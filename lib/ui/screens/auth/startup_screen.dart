@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
+import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/repositories/session_repository.dart';
 import '../../../util/pin_code_util.dart';
 import '../../navigation/destinations.dart';
@@ -26,18 +25,18 @@ class _StartupScreenState extends State<StartupScreen> {
 
   Future<void> _initialize() async {
     final session = GetIt.instance<SessionRepository>();
+    final serverRepo = GetIt.instance<ServerRepository>();
 
-    // Wait for session restoration to complete
     if (session.state != SessionState.ready) {
       await session.stateStream.firstWhere((s) => s == SessionState.ready);
     }
 
+    await serverRepo.loadStoredServers();
     final restored = await session.restoreSession();
 
     if (!mounted) return;
 
     if (restored && session.activeUserId != null) {
-      // Check if user has PIN enabled
       final store = GetIt.instance<PreferenceStore>();
       final pinUtil = PinCodeUtil(store, session.activeUserId!);
 
@@ -47,7 +46,6 @@ class _StartupScreenState extends State<StartupScreen> {
           mode: PinEntryMode.verify,
           onVerify: pinUtil.verifyPin,
           onForgotPin: () {
-            // Fall back to full login
             if (mounted) context.go(Destinations.serverSelect);
           },
         );

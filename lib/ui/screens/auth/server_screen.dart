@@ -225,9 +225,9 @@ class _ServerScreenState extends State<ServerScreen> {
         _buildUserCard(_users[i], i),
     ];
 
-    const isDesktop = TargetPlatform.linux == defaultTargetPlatform ||
-        TargetPlatform.macOS == defaultTargetPlatform ||
-        TargetPlatform.windows == defaultTargetPlatform;
+    final isDesktop = defaultTargetPlatform == TargetPlatform.linux ||
+        defaultTargetPlatform == TargetPlatform.macOS ||
+        defaultTargetPlatform == TargetPlatform.windows;
 
     final listView = SizedBox(
       height: 130,

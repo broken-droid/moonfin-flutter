@@ -1,5 +1,7 @@
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../auth/repositories/session_repository.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/server_screen.dart';
 import '../screens/auth/server_select_screen.dart';
@@ -49,8 +51,24 @@ import '../screens/settings/settings_screen.dart';
 import '../screens/settings/subtitle_settings_screen.dart';
 import 'destinations.dart';
 
+const _authRoutes = {
+  Destinations.startup,
+  Destinations.serverSelect,
+  Destinations.server,
+  Destinations.login,
+};
+
 final appRouter = GoRouter(
   initialLocation: Destinations.startup,
+  redirect: (context, state) {
+    final path = state.uri.path;
+    if (_authRoutes.contains(path)) return null;
+
+    final session = GetIt.instance<SessionRepository>();
+    if (session.activeUserId == null) return Destinations.startup;
+
+    return null;
+  },
   routes: [
     // Auth
     GoRoute(
