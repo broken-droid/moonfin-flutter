@@ -15,6 +15,7 @@ Future<void> configureDependencies() async {
   await preferenceStore.init();
 
   registerPreferenceModule(preferenceStore);
+
   registerServerModule();
   registerAuthModule();
   registerPlaybackModule();
