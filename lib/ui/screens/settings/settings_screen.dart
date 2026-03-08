@@ -52,6 +52,12 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => context.push(Destinations.settingsAuth),
           ),
           ListTile(
+            leading: const Icon(Icons.pin),
+            title: const Text('PIN Code'),
+            subtitle: const Text('Set up PIN code protection'),
+            onTap: () => context.push(Destinations.settingsPinCode),
+          ),
+          ListTile(
             leading: const Icon(Icons.child_care),
             title: const Text('Parental Controls'),
             subtitle: const Text('Content rating restrictions'),

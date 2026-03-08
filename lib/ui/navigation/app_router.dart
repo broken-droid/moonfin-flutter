@@ -41,6 +41,7 @@ import '../screens/settings/appearance_settings_screen.dart';
 import '../screens/settings/auth_settings_screen.dart';
 import '../screens/settings/home_sections_screen.dart';
 import '../screens/settings/parental_settings_screen.dart';
+import '../screens/settings/pin_code_settings_screen.dart';
 import '../screens/settings/playback_settings_screen.dart';
 import '../screens/settings/screensaver_settings_screen.dart';
 import '../screens/settings/settings_screen.dart';
@@ -267,6 +268,10 @@ final appRouter = GoRouter(
         GoRoute(
           path: 'auth',
           builder: (context, state) => const AuthSettingsScreen(),
+        ),
+        GoRoute(
+          path: 'pin-code',
+          builder: (context, state) => const PinCodeSettingsScreen(),
         ),
         GoRoute(
           path: 'screensaver',

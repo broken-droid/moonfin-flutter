@@ -46,6 +46,7 @@ class Destinations {
   static const settingsHomeSections = '/settings/home-sections';
   static const settingsSubtitles = '/settings/subtitles';
   static const settingsAuth = '/settings/auth';
+  static const settingsPinCode = '/settings/pin-code';
   static const settingsScreensaver = '/settings/screensaver';
   static const settingsParental = '/settings/parental';
   static const settingsAbout = '/settings/about';

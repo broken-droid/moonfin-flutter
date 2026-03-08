@@ -1,7 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:jellyfin_preference/jellyfin_preference.dart';
+
+import '../../../auth/repositories/session_repository.dart';
+import '../../../util/pin_code_util.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/pin_entry_dialog.dart';
 
 class StartupScreen extends StatefulWidget {
   const StartupScreen({super.key});
@@ -18,8 +25,42 @@ class _StartupScreenState extends State<StartupScreen> {
   }
 
   Future<void> _initialize() async {
-    if (mounted) {
-      context.go(Destinations.serverSelect);
+    final session = GetIt.instance<SessionRepository>();
+
+    // Wait for session restoration to complete
+    if (session.state != SessionState.ready) {
+      await session.stateStream.firstWhere((s) => s == SessionState.ready);
+    }
+
+    final restored = await session.restoreSession();
+
+    if (!mounted) return;
+
+    if (restored && session.activeUserId != null) {
+      // Check if user has PIN enabled
+      final store = GetIt.instance<PreferenceStore>();
+      final pinUtil = PinCodeUtil(store, session.activeUserId!);
+
+      if (pinUtil.isPinEnabled) {
+        final verified = await PinEntryDialog.show(
+          context,
+          mode: PinEntryMode.verify,
+          onVerify: pinUtil.verifyPin,
+          onForgotPin: () {
+            // Fall back to full login
+            if (mounted) context.go(Destinations.serverSelect);
+          },
+        );
+
+        if (!verified) {
+          if (mounted) context.go(Destinations.serverSelect);
+          return;
+        }
+      }
+
+      if (mounted) context.go(Destinations.home);
+    } else {
+      if (mounted) context.go(Destinations.serverSelect);
     }
   }
 
