@@ -4,6 +4,7 @@ class Destinations {
   // Auth
   static const startup = '/';
   static const serverSelect = '/server-select';
+  static const server = '/server';
   static const login = '/login';
 
   // General

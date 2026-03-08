@@ -4,6 +4,10 @@ abstract class AuthApi {
     String password,
   );
 
+  Future<Map<String, dynamic>> initiateQuickConnect();
+
+  Future<Map<String, dynamic>> checkQuickConnect(String secret);
+
   Future<Map<String, dynamic>> authenticateWithQuickConnect(String secret);
 
   Future<void> logout();

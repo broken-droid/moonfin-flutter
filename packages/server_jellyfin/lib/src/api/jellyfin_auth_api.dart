@@ -19,6 +19,21 @@ class JellyfinAuthApi implements AuthApi {
   }
 
   @override
+  Future<Map<String, dynamic>> initiateQuickConnect() async {
+    final response = await _dio.post('/QuickConnect/Initiate');
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> checkQuickConnect(String secret) async {
+    final response = await _dio.get(
+      '/QuickConnect/Connect',
+      queryParameters: {'Secret': secret},
+    );
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
   Future<Map<String, dynamic>> authenticateWithQuickConnect(
     String secret,
   ) async {

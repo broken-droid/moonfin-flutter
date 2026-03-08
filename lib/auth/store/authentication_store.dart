@@ -39,21 +39,25 @@ class AuthenticationStore {
     await file.writeAsString(jsonEncode(_data));
   }
 
-  Map<String, dynamic> get _servers =>
-      (_data['servers'] as Map<String, dynamic>?) ?? {};
+  Map<String, dynamic> get _servers {
+    final servers = _data['servers'];
+    if (servers is Map) return Map<String, dynamic>.from(servers);
+    return {};
+  }
 
   List<Server> getServers() {
     return _servers.entries.map((entry) {
       return Server.fromJson(
         entry.key,
-        entry.value as Map<String, dynamic>,
+        Map<String, dynamic>.from(entry.value as Map),
       );
     }).toList();
   }
 
   Server? getServer(String serverId) {
-    final serverData = _servers[serverId] as Map<String, dynamic>?;
-    if (serverData == null) return null;
+    final raw = _servers[serverId];
+    if (raw == null) return null;
+    final serverData = Map<String, dynamic>.from(raw as Map);
     return Server.fromJson(serverId, serverData);
   }
 
@@ -72,28 +76,31 @@ class AuthenticationStore {
   }
 
   List<PrivateUser> getUsers(String serverId) {
-    final serverData = _servers[serverId] as Map<String, dynamic>?;
-    if (serverData == null) return [];
+    final raw = _servers[serverId];
+    if (raw == null) return [];
+    final serverData = Map<String, dynamic>.from(raw as Map);
 
-    final users =
-        (serverData['users'] as Map<String, dynamic>?) ?? {};
+    final usersRaw = serverData['users'];
+    final users = usersRaw is Map ? Map<String, dynamic>.from(usersRaw) : <String, dynamic>{};
     return users.entries.map((entry) {
       return PrivateUser.fromJson(
         entry.key,
         serverId,
-        entry.value as Map<String, dynamic>,
+        Map<String, dynamic>.from(entry.value as Map),
       );
     }).toList();
   }
 
   PrivateUser? getUser(String serverId, String userId) {
-    final serverData = _servers[serverId] as Map<String, dynamic>?;
-    if (serverData == null) return null;
+    final raw = _servers[serverId];
+    if (raw == null) return null;
+    final serverData = Map<String, dynamic>.from(raw as Map);
 
-    final users =
-        (serverData['users'] as Map<String, dynamic>?) ?? {};
-    final userData = users[userId] as Map<String, dynamic>?;
-    if (userData == null) return null;
+    final usersRaw = serverData['users'];
+    final users = usersRaw is Map ? Map<String, dynamic>.from(usersRaw) : <String, dynamic>{};
+    final userRaw = users[userId];
+    if (userRaw == null) return null;
+    final userData = Map<String, dynamic>.from(userRaw as Map);
 
     return PrivateUser.fromJson(userId, serverId, userData);
   }

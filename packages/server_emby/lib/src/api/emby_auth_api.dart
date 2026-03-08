@@ -19,6 +19,16 @@ class EmbyAuthApi implements AuthApi {
   }
 
   @override
+  Future<Map<String, dynamic>> initiateQuickConnect() {
+    throw UnsupportedError('QuickConnect is not supported on Emby');
+  }
+
+  @override
+  Future<Map<String, dynamic>> checkQuickConnect(String secret) {
+    throw UnsupportedError('QuickConnect is not supported on Emby');
+  }
+
+  @override
   Future<Map<String, dynamic>> authenticateWithQuickConnect(String secret) {
     throw UnsupportedError('QuickConnect is not supported on Emby');
   }

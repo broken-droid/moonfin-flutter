@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../screens/auth/login_screen.dart';
+import '../screens/auth/server_screen.dart';
 import '../screens/auth/server_select_screen.dart';
 import '../screens/auth/startup_screen.dart';
 import '../screens/browse/all_genres_screen.dart';
@@ -61,10 +62,18 @@ final appRouter = GoRouter(
       builder: (context, state) => const ServerSelectScreen(),
     ),
     GoRoute(
+      path: Destinations.server,
+      builder: (context, state) {
+        final serverId = state.uri.queryParameters['serverId'] ?? '';
+        return ServerScreen(serverId: serverId);
+      },
+    ),
+    GoRoute(
       path: Destinations.login,
       builder: (context, state) {
         final serverId = state.uri.queryParameters['serverId'] ?? '';
-        return LoginScreen(serverId: serverId);
+        final username = state.uri.queryParameters['username'];
+        return LoginScreen(serverId: serverId, prefillUsername: username);
       },
     ),
 
