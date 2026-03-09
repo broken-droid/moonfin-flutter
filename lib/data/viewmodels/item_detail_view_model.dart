@@ -23,6 +23,15 @@ class ItemDetailViewModel extends ChangeNotifier {
   List<AggregatedItem> _similar = const [];
   List<AggregatedItem> get similar => _similar;
 
+  List<AggregatedItem> _seasons = const [];
+  List<AggregatedItem> get seasons => _seasons;
+
+  List<AggregatedItem> _episodes = const [];
+  List<AggregatedItem> get episodes => _episodes;
+
+  AggregatedItem? _nextUp;
+  AggregatedItem? get nextUp => _nextUp;
+
   Map<String, double> _ratings = const {};
   Map<String, double> get ratings => _ratings;
 
@@ -64,24 +73,72 @@ class ItemDetailViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadSecondary() async {
-    await Future.wait([
-      _loadSimilar(),
-      _loadRatings(),
-    ]);
+    final type = _item?.type;
+    final futures = <Future>[_loadRatings()];
+    if (type == 'Series') {
+      futures.add(_loadSeasons());
+      futures.add(_loadNextUp());
+    } else if (type == 'Season') {
+      futures.add(_loadEpisodes());
+    } else {
+      futures.add(_loadSimilar());
+    }
+    await Future.wait(futures);
+  }
+
+  Future<void> _loadSeasons() async {
+    try {
+      final data = await _client.itemsApi.getSeasons(itemId);
+      final items = (data['Items'] as List?) ?? [];
+      _seasons = _mapItems(items);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> _loadEpisodes() async {
+    final item = _item;
+    if (item == null) return;
+    final seriesId = item.seriesId ?? itemId;
+    try {
+      final data = await _client.itemsApi.getEpisodes(
+        seriesId,
+        seasonId: item.type == 'Season' ? itemId : null,
+      );
+      final items = (data['Items'] as List?) ?? [];
+      _episodes = _mapItems(items);
+      notifyListeners();
+    } catch (_) {}
+  }
+
+  Future<void> _loadNextUp() async {
+    try {
+      final data = await _client.itemsApi.getNextUp(seriesId: itemId, limit: 1);
+      final items = (data['Items'] as List?) ?? [];
+      if (items.isNotEmpty) {
+        final raw = items.first as Map<String, dynamic>;
+        _nextUp = AggregatedItem(
+          id: raw['Id'] as String,
+          serverId: _client.baseUrl,
+          rawData: raw,
+        );
+        notifyListeners();
+      }
+    } catch (_) {}
+  }
+
+  List<AggregatedItem> _mapItems(List items) {
+    return items.cast<Map<String, dynamic>>().map((raw) => AggregatedItem(
+      id: raw['Id'] as String,
+      serverId: _client.baseUrl,
+      rawData: raw,
+    )).toList();
   }
 
   Future<void> _loadSimilar() async {
     try {
       final data = await _client.itemsApi.getSimilarItems(itemId, limit: 12);
       final items = (data['Items'] as List?) ?? [];
-      _similar = items
-          .cast<Map<String, dynamic>>()
-          .map((raw) => AggregatedItem(
-                id: raw['Id'] as String,
-                serverId: _client.baseUrl,
-                rawData: raw,
-              ))
-          .toList();
+      _similar = _mapItems(items);
       notifyListeners();
     } catch (_) {}
   }

@@ -141,43 +141,121 @@ class _DetailContent extends StatelessWidget {
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 48),
               sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _ActionButtons(viewModel: viewModel),
-                  if (item.overview != null && item.overview!.isNotEmpty) ...[
-                    const SizedBox(height: 24),
-                    Text(
-                      item.overview!,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            shadows: _textShadows,
-                            height: 1.5,
-                          ),
-                    ),
-                  ],
-                  if (viewModel.actors.isNotEmpty) ...[
-                    const SizedBox(height: 32),
-                    _SectionHeader(title: 'Cast'),
-                    const SizedBox(height: 12),
-                    _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
-                  ],
-                  if (viewModel.similar.isNotEmpty) ...[
-                    const SizedBox(height: 32),
-                    _SectionHeader(title: 'More Like This'),
-                    const SizedBox(height: 12),
-                    _SimilarRow(items: viewModel.similar, imageApi: viewModel.imageApi, prefs: prefs),
-                  ],
-                  if (_hasExtendedInfo(item)) ...[
-                    const SizedBox(height: 32),
-                    _ExtendedInfo(viewModel: viewModel),
-                  ],
-                  const SizedBox(height: 48),
-                ]),
+                delegate: SliverChildListDelegate(
+                  _buildContentForType(item),
+                ),
               ),
             ),
           ],
         ),
       ],
     );
+  }
+
+  List<Widget> _buildContentForType(AggregatedItem item) {
+    return switch (item.type) {
+      'Series' => _buildSeriesContent(item),
+      'Season' => _buildSeasonContent(item),
+      'Episode' => _buildEpisodeContent(item),
+      _ => _buildMovieContent(item),
+    };
+  }
+
+  List<Widget> _overviewSection(AggregatedItem item) {
+    if (item.overview == null || item.overview!.isEmpty) return const [];
+    return [
+      const SizedBox(height: 24),
+      _OverviewText(text: item.overview!),
+    ];
+  }
+
+  List<Widget> _buildMovieContent(AggregatedItem item) {
+    return [
+      _ActionButtons(viewModel: viewModel),
+      ..._overviewSection(item),
+      if (viewModel.actors.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Cast'),
+        const SizedBox(height: 12),
+        _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
+      ],
+      if (viewModel.similar.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'More Like This'),
+        const SizedBox(height: 12),
+        _SimilarRow(items: viewModel.similar, imageApi: viewModel.imageApi, prefs: prefs),
+      ],
+      if (_hasExtendedInfo(item)) ...[
+        const SizedBox(height: 32),
+        _ExtendedInfo(viewModel: viewModel),
+      ],
+      const SizedBox(height: 48),
+    ];
+  }
+
+  List<Widget> _buildSeriesContent(AggregatedItem item) {
+    return [
+      _ActionButtons(viewModel: viewModel),
+      ..._overviewSection(item),
+      if (viewModel.nextUp != null) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Next Up'),
+        const SizedBox(height: 12),
+        _NextUpCard(episode: viewModel.nextUp!, imageApi: viewModel.imageApi),
+      ],
+      if (viewModel.seasons.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Seasons'),
+        const SizedBox(height: 12),
+        _SeasonsRow(seasons: viewModel.seasons, imageApi: viewModel.imageApi, prefs: prefs),
+      ],
+      if (viewModel.actors.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Cast'),
+        const SizedBox(height: 12),
+        _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
+      ],
+      if (_hasExtendedInfo(item)) ...[
+        const SizedBox(height: 32),
+        _ExtendedInfo(viewModel: viewModel),
+      ],
+      const SizedBox(height: 48),
+    ];
+  }
+
+  List<Widget> _buildSeasonContent(AggregatedItem item) {
+    return [
+      _ActionButtons(viewModel: viewModel),
+      ..._overviewSection(item),
+      if (viewModel.episodes.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Episodes'),
+        const SizedBox(height: 12),
+        ...viewModel.episodes.map((ep) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: _EpisodeCard(episode: ep, imageApi: viewModel.imageApi),
+        )),
+      ],
+      const SizedBox(height: 48),
+    ];
+  }
+
+  List<Widget> _buildEpisodeContent(AggregatedItem item) {
+    return [
+      _ActionButtons(viewModel: viewModel),
+      ..._overviewSection(item),
+      if (viewModel.actors.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Cast'),
+        const SizedBox(height: 12),
+        _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
+      ],
+      if (item.seriesId != null) ...[
+        const SizedBox(height: 32),
+        _EpisodeNavigationRow(item: item),
+      ],
+      const SizedBox(height: 48),
+    ];
   }
 
   bool _hasExtendedInfo(AggregatedItem item) {
@@ -260,20 +338,37 @@ class _HeaderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = viewModel.item!;
     final imageApi = viewModel.imageApi;
+    final isEpisode = item.type == 'Episode';
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(48, 80, 48, 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _PosterImage(item: item, imageApi: imageApi),
+          if (isEpisode)
+            _EpisodeThumbnail(item: item, imageApi: imageApi)
+          else
+            _PosterImage(item: item, imageApi: imageApi),
           const SizedBox(width: 32),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (item.logoImageTag != null)
+                if (isEpisode && item.seriesName != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      item.seriesName!,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            shadows: _textShadows,
+                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                if (!isEpisode && item.logoImageTag != null)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: LogoView(
@@ -284,7 +379,7 @@ class _HeaderSection extends StatelessWidget {
                   )
                 else
                   Text(
-                    item.name,
+                    isEpisode ? _episodeTitle(item) : item.name,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -329,6 +424,13 @@ class _HeaderSection extends StatelessWidget {
       ),
     );
   }
+
+  String _episodeTitle(AggregatedItem item) {
+    final s = item.parentIndexNumber;
+    final e = item.indexNumber;
+    final prefix = (s != null && e != null) ? 'S${s}E$e - ' : '';
+    return '$prefix${item.name}';
+  }
 }
 
 class _PosterImage extends StatelessWidget {
@@ -353,6 +455,33 @@ class _PosterImage extends StatelessWidget {
         height: 270,
         fit: BoxFit.cover,
         errorWidget: (_, __, ___) => const SizedBox(width: 180, height: 270),
+      ),
+    );
+  }
+}
+
+class _EpisodeThumbnail extends StatelessWidget {
+  final AggregatedItem item;
+  final ImageApi imageApi;
+
+  const _EpisodeThumbnail({required this.item, required this.imageApi});
+
+  @override
+  Widget build(BuildContext context) {
+    if (item.primaryImageTag == null) return const SizedBox(width: 240, height: 135);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: CachedNetworkImage(
+        imageUrl: imageApi.getPrimaryImageUrl(
+          item.id,
+          maxWidth: 480,
+          tag: item.primaryImageTag,
+        ),
+        width: 240,
+        height: 135,
+        fit: BoxFit.cover,
+        errorWidget: (_, __, ___) => const SizedBox(width: 240, height: 135),
       ),
     );
   }
@@ -783,6 +912,328 @@ class _ExtendedInfo extends StatelessWidget {
           Expanded(child: Text(value, style: valueStyle)),
         ],
       ),
+    );
+  }
+}
+
+class _OverviewText extends StatelessWidget {
+  final String text;
+
+  const _OverviewText({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: Colors.white.withValues(alpha: 0.9),
+            shadows: _textShadows,
+            height: 1.5,
+          ),
+    );
+  }
+}
+
+class _EpisodeProgressBar extends StatelessWidget {
+  final double percentage;
+
+  const _EpisodeProgressBar({required this.percentage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: LinearProgressIndicator(
+        value: percentage / 100.0,
+        minHeight: 3,
+        backgroundColor: Colors.black38,
+        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00A4DC)),
+      ),
+    );
+  }
+}
+
+class _SeasonsRow extends StatelessWidget {
+  final List<AggregatedItem> seasons;
+  final ImageApi imageApi;
+  final UserPreferences prefs;
+
+  const _SeasonsRow({required this.seasons, required this.imageApi, required this.prefs});
+
+  @override
+  Widget build(BuildContext context) {
+    final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
+
+    return SizedBox(
+      height: 280,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: seasons.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final season = seasons[index];
+          return MediaCard(
+            title: season.name,
+            subtitle: _progressText(season),
+            imageUrl: season.primaryImageTag != null
+                ? imageApi.getPrimaryImageUrl(
+                    season.id,
+                    maxHeight: 400,
+                    tag: season.primaryImageTag,
+                  )
+                : null,
+            width: 150,
+            aspectRatio: 2 / 3,
+            isPlayed: season.isPlayed,
+            unplayedCount: season.unplayedItemCount,
+            watchedBehavior: watchedBehavior,
+            itemType: season.type,
+            onTap: () => context.go(Destinations.item(season.id)),
+          );
+        },
+      ),
+    );
+  }
+
+  String? _progressText(AggregatedItem season) {
+    final total = season.childCount;
+    final unplayed = season.unplayedItemCount;
+    if (total == null) return null;
+    if (unplayed == null || unplayed == 0) return '$total Episodes';
+    final watched = total - unplayed;
+    return '$watched / $total';
+  }
+}
+
+class _NextUpCard extends StatelessWidget {
+  final AggregatedItem episode;
+  final ImageApi imageApi;
+
+  const _NextUpCard({required this.episode, required this.imageApi});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = episode.parentIndexNumber;
+    final e = episode.indexNumber;
+    final label = s != null && e != null ? 'S${s}E$e' : null;
+    final subtitle = [if (label != null) label, episode.name].join(' - ');
+
+    return GestureDetector(
+      onTap: () => context.go(Destinations.item(episode.id)),
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 213,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (episode.primaryImageTag != null)
+                    CachedNetworkImage(
+                      imageUrl: imageApi.getPrimaryImageUrl(
+                        episode.id,
+                        maxHeight: 240,
+                        tag: episode.primaryImageTag,
+                      ),
+                      fit: BoxFit.cover,
+                      errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                    ),
+                  if ((episode.playedPercentage ?? 0) > 0)
+                    _EpisodeProgressBar(percentage: episode.playedPercentage!),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (episode.overview != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      episode.overview!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Icon(Icons.play_circle_outline, color: Colors.white54, size: 40),
+            const SizedBox(width: 16),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EpisodeCard extends StatelessWidget {
+  final AggregatedItem episode;
+  final ImageApi imageApi;
+
+  const _EpisodeCard({required this.episode, required this.imageApi});
+
+  @override
+  Widget build(BuildContext context) {
+    final epNum = episode.indexNumber;
+    final runtime = episode.runtime;
+    final runtimeText = runtime != null
+        ? (runtime.inHours > 0
+            ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
+            : '${runtime.inMinutes}m')
+        : null;
+
+    return GestureDetector(
+      onTap: () => context.go(Destinations.item(episode.id)),
+      child: Container(
+        height: 110,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 196,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (episode.primaryImageTag != null)
+                    CachedNetworkImage(
+                      imageUrl: imageApi.getPrimaryImageUrl(
+                        episode.id,
+                        maxHeight: 220,
+                        tag: episode.primaryImageTag,
+                      ),
+                      fit: BoxFit.cover,
+                      errorWidget: (_, __, ___) => Container(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        child: const Icon(Icons.movie, color: Colors.white24, size: 32),
+                      ),
+                    )
+                  else
+                    Container(
+                      color: Colors.white.withValues(alpha: 0.05),
+                      child: const Icon(Icons.movie, color: Colors.white24, size: 32),
+                    ),
+                  if ((episode.playedPercentage ?? 0) > 0)
+                    _EpisodeProgressBar(percentage: episode.playedPercentage!),
+                  if (episode.isPlayed)
+                    const Positioned(
+                      top: 6,
+                      right: 6,
+                      child: Icon(Icons.check_circle, color: Colors.green, size: 20),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    [
+                      if (epNum != null) 'Episode $epNum',
+                      episode.name,
+                    ].join(' - '),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (runtimeText != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      runtimeText,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.5),
+                          ),
+                    ),
+                  ],
+                  if (episode.overview != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      episode.overview!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EpisodeNavigationRow extends StatelessWidget {
+  final AggregatedItem item;
+
+  const _EpisodeNavigationRow({required this.item});
+
+  static final _navButtonStyle = OutlinedButton.styleFrom(
+    foregroundColor: Colors.white,
+    side: BorderSide(color: Colors.white.withValues(alpha: 0.4)),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 10,
+      runSpacing: 8,
+      children: [
+        if (item.seriesId != null)
+          OutlinedButton.icon(
+            onPressed: () => context.go(Destinations.item(item.seriesId!)),
+            icon: const Icon(Icons.tv),
+            label: Text(item.seriesName ?? 'Go to Series'),
+            style: _navButtonStyle,
+          ),
+        if (item.seasonId != null)
+          OutlinedButton.icon(
+            onPressed: () => context.go(Destinations.item(item.seasonId!)),
+            icon: const Icon(Icons.list),
+            label: Text(item.parentIndexNumber != null
+                ? 'Season ${item.parentIndexNumber}'
+                : 'Go to Season'),
+            style: _navButtonStyle,
+          ),
+      ],
     );
   }
 }
