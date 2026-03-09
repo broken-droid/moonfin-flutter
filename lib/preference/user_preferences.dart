@@ -569,4 +569,51 @@ class UserPreferences {
     key: 'user_pin_enabled',
     defaultValue: false,
   );
+
+  static EnumPreference<LibrarySortBy> librarySortBy(String libraryId) =>
+      EnumPreference(
+        key: 'library_sort_by_$libraryId',
+        defaultValue: LibrarySortBy.name,
+        values: LibrarySortBy.values,
+      );
+
+  static EnumPreference<SortDirection> librarySortDirection(String libraryId) =>
+      EnumPreference(
+        key: 'library_sort_dir_$libraryId',
+        defaultValue: SortDirection.ascending,
+        values: SortDirection.values,
+      );
+
+  static EnumPreference<PlayedStatusFilter> libraryPlayedFilter(String libraryId) =>
+      EnumPreference(
+        key: 'library_played_filter_$libraryId',
+        defaultValue: PlayedStatusFilter.all,
+        values: PlayedStatusFilter.values,
+      );
+
+  static EnumPreference<SeriesStatusFilter> librarySeriesFilter(String libraryId) =>
+      EnumPreference(
+        key: 'library_series_filter_$libraryId',
+        defaultValue: SeriesStatusFilter.all,
+        values: SeriesStatusFilter.values,
+      );
+
+  static Preference<bool> libraryFavoriteFilter(String libraryId) =>
+      Preference(
+        key: 'library_fav_filter_$libraryId',
+        defaultValue: false,
+      );
+
+  static Preference<String> libraryLetterFilter(String libraryId) =>
+      Preference(
+        key: 'library_letter_filter_$libraryId',
+        defaultValue: '',
+      );
+
+  static EnumPreference<ImageType> libraryImageType(String libraryId) =>
+      EnumPreference(
+        key: 'library_image_type_$libraryId',
+        defaultValue: ImageType.poster,
+        values: ImageType.values,
+      );
 }

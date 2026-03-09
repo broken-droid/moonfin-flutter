@@ -155,3 +155,35 @@ enum HomeSectionType {
     );
   }
 }
+
+enum LibrarySortBy {
+  name('SortName', 'Name'),
+  dateAdded('DateCreated', 'Date Added'),
+  premiereDate('PremiereDate', 'Premiere Date'),
+  rating('OfficialRating', 'Rating'),
+  runtime('Runtime', 'Runtime'),
+  random('Random', 'Random'),
+  criticRating('CriticRating', 'Critic Rating'),
+  communityRating('CommunityRating', 'Community Rating');
+
+  const LibrarySortBy(this.apiValue, this.displayName);
+  final String apiValue;
+  final String displayName;
+}
+
+enum SortDirection {
+  ascending,
+  descending,
+}
+
+enum PlayedStatusFilter {
+  all,
+  watched,
+  unwatched,
+}
+
+enum SeriesStatusFilter {
+  all,
+  continuing,
+  ended,
+}

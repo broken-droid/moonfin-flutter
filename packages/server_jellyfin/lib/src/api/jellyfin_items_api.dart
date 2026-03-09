@@ -19,6 +19,11 @@ class JellyfinItemsApi implements ItemsApi {
     String? fields,
     List<String>? personIds,
     List<String>? artistIds,
+    List<String>? filters,
+    List<String>? seriesStatus,
+    String? nameStartsWith,
+    List<String>? genreIds,
+    bool? isFavorite,
   }) async {
     final response = await _dio.get('/Items', queryParameters: {
       if (parentId != null) 'ParentId': parentId,
@@ -33,6 +38,11 @@ class JellyfinItemsApi implements ItemsApi {
       if (fields != null) 'Fields': fields,
       if (personIds != null) 'PersonIds': personIds.join(','),
       if (artistIds != null) 'ArtistIds': artistIds.join(','),
+      if (filters != null) 'Filters': filters.join(','),
+      if (seriesStatus != null) 'SeriesStatus': seriesStatus.join(','),
+      if (nameStartsWith != null) 'NameStartsWith': nameStartsWith,
+      if (genreIds != null) 'GenreIds': genreIds.join(','),
+      if (isFavorite != null) 'IsFavorite': isFavorite,
     });
     return response.data as Map<String, dynamic>;
   }

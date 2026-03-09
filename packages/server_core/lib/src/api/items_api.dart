@@ -11,6 +11,11 @@ abstract class ItemsApi {
     String? fields,
     List<String>? personIds,
     List<String>? artistIds,
+    List<String>? filters,
+    List<String>? seriesStatus,
+    String? nameStartsWith,
+    List<String>? genreIds,
+    bool? isFavorite,
   });
 
   Future<Map<String, dynamic>> getItem(String itemId);
