@@ -13,8 +13,8 @@ import '../../navigation/destinations.dart';
 import '../../widgets/info_area.dart';
 import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
+import '../../widgets/navigation_layout.dart';
 import '../../widgets/responsive_layout.dart';
-import '../../widgets/top_toolbar.dart';
 import 'home_view_model.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -98,36 +98,33 @@ class _HomeShellState extends State<_HomeShell> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          if (backdropEnabled) _Backdrop(url: _backdropUrl, blurAmount: blurAmount),
-          const _GradientScrim(),
-          const Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            child: TopToolbar(activeRoute: Destinations.home),
-          ),
-          Positioned(
-            left: 48,
-            top: _infoAreaTop,
-            child: SafeArea(
-              child: InfoArea(item: _selectedItem),
+      body: NavigationLayout(
+        activeRoute: Destinations.home,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (backdropEnabled) _Backdrop(url: _backdropUrl, blurAmount: blurAmount),
+            const _GradientScrim(),
+            Positioned(
+              left: 48,
+              top: _infoAreaTop,
+              child: SafeArea(
+                child: InfoArea(item: _selectedItem),
+              ),
             ),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            top: _contentTop,
-            bottom: 0,
-            child: _ContentRows(
-              viewModel: _viewModel,
-              prefs: _userPrefs,
-              onItemSelected: onItemSelected,
+            Positioned(
+              left: 0,
+              right: 0,
+              top: _contentTop,
+              bottom: 0,
+              child: _ContentRows(
+                viewModel: _viewModel,
+                prefs: _userPrefs,
+                onItemSelected: onItemSelected,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

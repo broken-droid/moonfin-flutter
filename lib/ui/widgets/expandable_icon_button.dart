@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const _kExpandDuration = Duration(milliseconds: 200);
-const _kCollapsedWidth = 48.0;
-const _kButtonHeight = 40.0;
-const _kBorderRadius = 20.0;
-const _kIconSize = 20.0;
-const _kSpacing = 8.0;
+import '../../util/platform_detection.dart';
+
+const _kExpandDuration = Duration(milliseconds: 150);
+const _kSpacing = 10.0;
 
 class ExpandableIconButton extends StatefulWidget {
   final IconData icon;
@@ -67,23 +65,21 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformDetection.useMobileUi;
+    final isTV = PlatformDetection.useLeanbackUi;
+    final btnSize = isMobile ? 40.0 : 48.0;
+    final iconSize = isMobile ? 22.0 : 28.0;
+    final borderRadius = btnSize / 2;
+
     final bgColor = widget.isActive
-        ? widget.activeColor.withValues(alpha: 0.25)
-        : _isFocused
-            ? Colors.white.withValues(alpha: 0.15)
+        ? Colors.white.withValues(alpha: 0.22)
+        : (_isFocused || _isHovered)
+            ? Colors.white.withValues(alpha: 0.12)
             : Colors.transparent;
 
-    final fgColor = widget.isActive
-        ? widget.activeColor
-        : _isFocused
-            ? Colors.white
-            : Colors.white.withValues(alpha: 0.7);
-
-    final borderColor = _isFocused
-        ? widget.activeColor
-        : widget.isActive
-            ? widget.activeColor.withValues(alpha: 0.5)
-            : Colors.white.withValues(alpha: 0.1);
+    final fgColor = (widget.isActive || _isFocused || _isHovered)
+        ? Colors.white
+        : Colors.white.withValues(alpha: 0.6);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -95,25 +91,27 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
           onTap: widget.onPressed,
           child: AnimatedContainer(
             duration: _kExpandDuration,
-            curve: Curves.easeInOut,
-            height: _kButtonHeight,
+            curve: Curves.easeOut,
+            height: btnSize,
             constraints: BoxConstraints(
-              minWidth: _kCollapsedWidth,
-              maxWidth: _expanded ? 200 : _kCollapsedWidth,
+              minWidth: btnSize,
+              maxWidth: _expanded ? 200 : btnSize,
             ),
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(_kBorderRadius),
-              border: Border.all(color: borderColor, width: _isFocused ? 2 : 1),
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: isTV && _isFocused
+                  ? Border.all(color: widget.activeColor, width: 2)
+                  : null,
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: _expanded ? 14 : 0,
+              horizontal: _expanded ? 18 : 0,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(widget.icon, size: _kIconSize, color: fgColor),
+                Icon(widget.icon, size: iconSize, color: fgColor),
                 if (_expanded) ...[
                   const SizedBox(width: _kSpacing),
                   Flexible(
@@ -121,8 +119,8 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
                       widget.label,
                       style: TextStyle(
                         color: fgColor,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        fontSize: isMobile ? 14 : 16,
+                        fontWeight: FontWeight.w600,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,

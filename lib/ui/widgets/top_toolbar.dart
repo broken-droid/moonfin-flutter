@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,14 +15,19 @@ import '../../preference/user_preferences.dart';
 import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
 import 'expandable_icon_button.dart';
+import 'shuffle_options_dialog.dart';
+import 'user_menu_dialog.dart';
 
-const _kToolbarHeight = 95.0;
+const _kToolbarHeightTV = 95.0;
+const _kToolbarHeightDesktop = 80.0;
+const _kToolbarHeightMobile = 60.0;
 const _kOverscanH = 48.0;
 const _kOverscanV = 27.0;
 const _kAccent = Color(0xFF00A4DC);
-const _kAvatarSize = 36.0;
-const _kPillRadius = 24.0;
-const _kButtonSpacing = 6.0;
+const _kAvatarSizeDesktop = 44.0;
+const _kAvatarSizeMobile = 36.0;
+const _kPillRadius = 36.0;
+const _kButtonSpacing = 4.0;
 
 class TopToolbar extends StatefulWidget {
   final String? activeRoute;
@@ -38,7 +44,6 @@ class _TopToolbarState extends State<TopToolbar> {
 
   final _avatarFocus = FocusNode();
   List<AggregatedLibrary> _libraries = [];
-  bool _librariesExpanded = false;
   Timer? _clockTimer;
   String _currentTime = '';
   StreamSubscription? _userSub;
@@ -97,21 +102,34 @@ class _TopToolbarState extends State<TopToolbar> {
   @override
   Widget build(BuildContext context) {
     final isTV = PlatformDetection.useLeanbackUi;
-    final hPad = isTV ? _kOverscanH : 24.0;
-    final vPad = isTV ? _kOverscanV : 12.0;
+    final isMobile = PlatformDetection.useMobileUi;
+    final hPad = isTV ? _kOverscanH : isMobile ? 12.0 : 32.0;
+    final vPad = isTV ? _kOverscanV : isMobile ? 8.0 : 10.0;
+    final toolbarHeight = isTV
+        ? _kToolbarHeightTV
+        : isMobile
+            ? _kToolbarHeightMobile
+            : _kToolbarHeightDesktop;
 
-    return SizedBox(
-      height: _kToolbarHeight,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
-        child: FocusTraversalGroup(
-          policy: OrderedTraversalPolicy(),
-          child: Row(
-            children: [
-              Expanded(child: _buildStart()),
-              Expanded(flex: 3, child: _buildCenter()),
-              Expanded(child: _buildEnd()),
-            ],
+    return SafeArea(
+      bottom: false,
+      child: SizedBox(
+        height: toolbarHeight,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
+          child: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Row(
+              children: [
+                _buildStart(),
+                const SizedBox(width: 12),
+                Expanded(child: _buildCenter()),
+                if (!isMobile) ...[
+                  const SizedBox(width: 12),
+                  _buildEnd(),
+                ],
+              ],
+            ),
           ),
         ),
       ),
@@ -119,18 +137,16 @@ class _TopToolbarState extends State<TopToolbar> {
   }
 
   Widget _buildStart() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        FocusTraversalOrder(
-          order: const NumericFocusOrder(0),
-          child: _buildAvatar(),
-        ),
-      ],
+    return FocusTraversalOrder(
+      order: const NumericFocusOrder(0),
+      child: _buildAvatar(),
     );
   }
 
   Widget _buildAvatar() {
+    final isMobile = PlatformDetection.useMobileUi;
+    final avatarSize = isMobile ? _kAvatarSizeMobile : _kAvatarSizeDesktop;
+
     return Focus(
       focusNode: _avatarFocus,
       onKeyEvent: (node, event) {
@@ -145,23 +161,29 @@ class _TopToolbarState extends State<TopToolbar> {
       child: GestureDetector(
         onTap: _showUserMenu,
         child: AnimatedScale(
-          scale: _avatarFocus.hasFocus ? 1.15 : 1.0,
-          duration: const Duration(milliseconds: 150),
+          scale: _avatarFocus.hasFocus ? 1.08 : 1.0,
+          duration: const Duration(milliseconds: 200),
           child: Container(
-            width: _kAvatarSize,
-            height: _kAvatarSize,
+            width: avatarSize,
+            height: avatarSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: _avatarFocus.hasFocus ? _kAccent : Colors.white.withValues(alpha: 0.3),
-                width: _avatarFocus.hasFocus ? 2 : 1,
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF00A4DC), Color(0xFF0077B6)],
               ),
+              border: _avatarFocus.hasFocus
+                  ? Border.all(color: _kAccent, width: 2)
+                  : null,
             ),
             child: ClipOval(
               child: _userImageUrl != null
                   ? Image.network(
                       _userImageUrl!,
                       fit: BoxFit.cover,
+                      width: avatarSize,
+                      height: avatarSize,
                       errorBuilder: (_, __, ___) => _avatarFallback(),
                     )
                   : _avatarFallback(),
@@ -175,15 +197,22 @@ class _TopToolbarState extends State<TopToolbar> {
   Widget _avatarFallback() {
     final user = _userRepo.currentUser;
     final initial = (user?.name.isNotEmpty == true) ? user!.name[0].toUpperCase() : '?';
+    final isMobile = PlatformDetection.useMobileUi;
     return Container(
-      color: _kAccent.withValues(alpha: 0.3),
       alignment: Alignment.center,
-      child: Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      child: Text(
+        initial,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: isMobile ? 18 : 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 
   void _showUserMenu() {
-    context.push(Destinations.settings);
+    showUserMenu(context);
   }
 
   Widget _buildCenter() {
@@ -198,11 +227,10 @@ class _TopToolbarState extends State<TopToolbar> {
 
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.4),
+          color: Colors.white.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(_kPillRadius),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -311,12 +339,9 @@ class _TopToolbarState extends State<TopToolbar> {
   }
 
   Widget _buildLibrariesButton() {
-    return _LibrariesExpandableButton(
+    return _LibrariesDropdown(
       libraries: _libraries,
-      isExpanded: _librariesExpanded,
-      onToggle: () => setState(() => _librariesExpanded = !_librariesExpanded),
       onLibraryTap: (lib) {
-        setState(() => _librariesExpanded = false);
         if (lib.collectionType == 'music') {
           context.push('/music/${lib.id}');
         } else {
@@ -326,27 +351,24 @@ class _TopToolbarState extends State<TopToolbar> {
     );
   }
 
-  void _onShuffle() {}
+  void _onShuffle() {
+    showShuffleDialog(context);
+  }
 
   Widget _buildEnd() {
     final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
     final showClock = clockBehavior == ClockBehavior.always ||
         clockBehavior == ClockBehavior.inMenus;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (showClock)
-          Text(
-            _currentTime,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-      ],
+    if (!showClock) return const SizedBox.shrink();
+
+    return Text(
+      _currentTime,
+      style: TextStyle(
+        color: Colors.white.withValues(alpha: 0.9),
+        fontSize: 22,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 
@@ -360,156 +382,185 @@ class _TopToolbarState extends State<TopToolbar> {
   }
 }
 
-class _LibrariesExpandableButton extends StatelessWidget {
+class _LibrariesDropdown extends StatefulWidget {
   final List<AggregatedLibrary> libraries;
-  final bool isExpanded;
-  final VoidCallback onToggle;
   final ValueChanged<AggregatedLibrary> onLibraryTap;
 
-  const _LibrariesExpandableButton({
+  const _LibrariesDropdown({
     required this.libraries,
-    required this.isExpanded,
-    required this.onToggle,
     required this.onLibraryTap,
   });
 
-  IconData _libraryIcon(String collectionType) {
-    return switch (collectionType) {
-      'movies' => Icons.movie_rounded,
-      'tvshows' => Icons.tv_rounded,
-      'music' => Icons.music_note_rounded,
-      'books' => Icons.book_rounded,
-      'photos' => Icons.photo_library_rounded,
-      'homevideos' => Icons.videocam_rounded,
-      'livetv' => Icons.live_tv_rounded,
-      _ => Icons.video_library_rounded,
-    };
-  }
+  @override
+  State<_LibrariesDropdown> createState() => _LibrariesDropdownState();
+}
+
+class _LibrariesDropdownState extends State<_LibrariesDropdown> {
+  final _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
+  bool _buttonHovered = false;
+  bool _dropdownHovered = false;
+  Timer? _hideTimer;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ExpandableIconButton(
-          icon: isExpanded ? Icons.expand_less_rounded : Icons.video_library_rounded,
-          label: 'Libraries',
-          isActive: isExpanded,
-          onPressed: onToggle,
-        ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-          child: isExpanded
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.7),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.1),
+  void dispose() {
+    _hideTimer?.cancel();
+    _removeOverlay();
+    super.dispose();
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _showDropdown() {
+    _hideTimer?.cancel();
+    if (_overlayEntry != null) return;
+    _overlayEntry = OverlayEntry(builder: _buildOverlay);
+    Overlay.of(context).insert(_overlayEntry!);
+    setState(() {});
+  }
+
+  void _hideDropdown() {
+    _removeOverlay();
+    setState(() {});
+  }
+
+  void _scheduleHide() {
+    _hideTimer?.cancel();
+    _hideTimer = Timer(const Duration(milliseconds: 200), () {
+      if (!_buttonHovered && !_dropdownHovered) {
+        _hideDropdown();
+      }
+    });
+  }
+
+  Widget _buildOverlay(BuildContext context) {
+    return CompositedTransformFollower(
+      link: _layerLink,
+      targetAnchor: Alignment.bottomLeft,
+      followerAnchor: Alignment.topLeft,
+      offset: Offset.zero,
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: MouseRegion(
+          onEnter: (_) {
+            _dropdownHovered = true;
+            _hideTimer?.cancel();
+          },
+          onExit: (_) {
+            _dropdownHovered = false;
+            _scheduleHide();
+          },
+          child: Material(
+            color: Colors.transparent,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  constraints: const BoxConstraints(minWidth: 180),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
                       ),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                    child: Row(
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: IntrinsicWidth(
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: libraries
-                          .map((lib) => _LibraryChip(
-                                library: lib,
-                                icon: _libraryIcon(lib.collectionType),
-                                onTap: () => onLibraryTap(lib),
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: widget.libraries
+                          .map((lib) => _LibraryDropdownItem(
+                                name: lib.name,
+                                onTap: () {
+                                  _hideDropdown();
+                                  widget.onLibraryTap(lib);
+                                },
                               ))
                           .toList(),
                     ),
                   ),
-                )
-              : const SizedBox.shrink(),
+                ),
+              ),
+            ),
+          ),
         ),
-      ],
+      ),
     );
-  }
-}
-
-class _LibraryChip extends StatefulWidget {
-  final AggregatedLibrary library;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _LibraryChip({
-    required this.library,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  State<_LibraryChip> createState() => _LibraryChipState();
-}
-
-class _LibraryChipState extends State<_LibraryChip> {
-  final _focusNode = FocusNode();
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() => setState(() => _isFocused = _focusNode.hasFocus));
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Focus(
-        focusNode: _focusNode,
-        onKeyEvent: (node, event) {
-          if (event is KeyDownEvent &&
-              (event.logicalKey == LogicalKeyboardKey.select ||
-                  event.logicalKey == LogicalKeyboardKey.enter)) {
-            widget.onTap();
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: MouseRegion(
+        onEnter: (_) {
+          _buttonHovered = true;
+          if (PlatformDetection.useDesktopUi) _showDropdown();
         },
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: _isFocused
-                  ? _kAccent.withValues(alpha: 0.2)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: _isFocused ? _kAccent : Colors.transparent,
-                width: _isFocused ? 1.5 : 0,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  widget.icon,
-                  size: 16,
-                  color: _isFocused ? _kAccent : Colors.white.withValues(alpha: 0.7),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  widget.library.name,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: _isFocused ? Colors.white : Colors.white.withValues(alpha: 0.7),
-                    fontWeight: _isFocused ? FontWeight.w600 : FontWeight.w400,
-                  ),
-                ),
-              ],
+        onExit: (_) {
+          _buttonHovered = false;
+          _scheduleHide();
+        },
+        child: ExpandableIconButton(
+          icon: Icons.video_library_rounded,
+          label: 'Libraries',
+          isActive: _overlayEntry != null,
+          onPressed: () {
+            if (_overlayEntry != null) {
+              _hideDropdown();
+            } else {
+              _showDropdown();
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _LibraryDropdownItem extends StatefulWidget {
+  final String name;
+  final VoidCallback onTap;
+
+  const _LibraryDropdownItem({
+    required this.name,
+    required this.onTap,
+  });
+
+  @override
+  State<_LibraryDropdownItem> createState() => _LibraryDropdownItemState();
+}
+
+class _LibraryDropdownItemState extends State<_LibraryDropdownItem> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          color: _isHovered
+              ? Colors.white.withValues(alpha: 0.12)
+              : Colors.transparent,
+          child: Text(
+            widget.name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),

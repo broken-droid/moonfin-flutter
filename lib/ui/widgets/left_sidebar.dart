@@ -13,16 +13,13 @@ import '../../preference/preference_constants.dart';
 import '../../preference/user_preferences.dart';
 import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
+import 'shuffle_options_dialog.dart';
+import 'user_menu_dialog.dart';
 
-const _kCollapsedWidth = 56.0;
-const _kExpandedWidth = 280.0;
-const _kExpandDuration = Duration(milliseconds: 250);
-const _kLabelDelay = Duration(milliseconds: 150);
+const _kExpandedWidthDesktop = 240.0;
+const _kExpandedWidthMobile = 260.0;
+const _kExpandDuration = Duration(milliseconds: 200);
 const _kAccent = Color(0xFF00A4DC);
-const _kAvatarSize = 32.0;
-const _kIconBoxSize = 32.0;
-const _kItemHeight = 48.0;
-const _kItemBorderRadius = 24.0;
 
 class LeftSidebar extends StatefulWidget {
   final String? activeRoute;
@@ -49,6 +46,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
   String _currentTime = '';
   StreamSubscription? _userSub;
   String? _userImageUrl;
+
+  bool get _isMobile => PlatformDetection.useMobileUi;
 
   @override
   void initState() {
@@ -104,12 +103,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
     if (_isExpanded) return;
     setState(() => _isExpanded = true);
     _labelTimer?.cancel();
-    _labelTimer = Timer(_kLabelDelay, () {
+    _labelTimer = Timer(const Duration(milliseconds: 100), () {
       if (mounted) setState(() => _showLabels = true);
     });
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(0, duration: _kExpandDuration, curve: Curves.easeInOut);
-    }
   }
 
   void _collapse() {
@@ -122,11 +118,17 @@ class _LeftSidebarState extends State<LeftSidebar> {
     });
   }
 
+  void _toggle() {
+    if (_isExpanded) {
+      _collapse();
+    } else {
+      _expand();
+    }
+  }
+
   void _onSidebarFocusChange(bool hasFocus) {
     if (hasFocus) {
       _expand();
-    } else {
-      _collapse();
     }
   }
 
@@ -143,157 +145,186 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final isTV = PlatformDetection.useLeanbackUi;
-    final topPad = isTV ? 27.0 : 12.0;
+    return _buildDrawerLayout();
+  }
 
-    final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
-    final showClock = clockBehavior == ClockBehavior.always ||
-        clockBehavior == ClockBehavior.inMenus;
-
-    return MouseRegion(
-      onEnter: (_) => _expand(),
-      onExit: (_) {
-        if (!_sidebarFocus.hasFocus) _collapse();
-      },
-      child: FocusScope(
-        node: _sidebarFocus,
-        onFocusChange: _onSidebarFocusChange,
-        onKeyEvent: _onKeyEvent,
-        child: AnimatedContainer(
+  Widget _buildDrawerLayout() {
+    final expandedWidth = _isMobile ? _kExpandedWidthMobile : _kExpandedWidthDesktop;
+    return Stack(
+      children: [
+        if (_isExpanded)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: _collapse,
+              child: Container(color: Colors.black.withValues(alpha: 0.5)),
+            ),
+          ),
+        AnimatedPositioned(
           duration: _kExpandDuration,
           curve: Curves.easeInOut,
-          width: _isExpanded ? _kExpandedWidth : _kCollapsedWidth,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            gradient: _isExpanded
-                ? const LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Color.fromRGBO(0, 0, 0, 0.9),
-                      Color.fromRGBO(0, 0, 0, 0.7),
-                      Colors.transparent,
-                    ],
-                    stops: [0.0, 0.7, 1.0],
-                  )
-                : null,
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(top: topPad),
-            child: Stack(
-              children: [
-                _buildItemList(),
-                if (showClock && _isExpanded)
-                  Positioned(
-                    top: 8,
-                    right: 12,
-                    child: Text(
-                      _currentTime,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
+          left: _isExpanded ? 0 : -expandedWidth,
+          top: 0,
+          bottom: 0,
+          width: expandedWidth,
+          child: FocusScope(
+            node: _sidebarFocus,
+            onFocusChange: _onSidebarFocusChange,
+            onKeyEvent: _onKeyEvent,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: _isMobile
+                    ? null
+                    : const LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Color.fromRGBO(0, 0, 0, 0.92),
+                          Color.fromRGBO(0, 0, 0, 0.75),
+                          Colors.transparent,
+                        ],
+                        stops: [0.0, 0.7, 1.0],
                       ),
-                    ),
-                  ),
-              ],
+                color: _isMobile ? Colors.black.withValues(alpha: 0.95) : null,
+                boxShadow: _isExpanded
+                    ? [BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 20, offset: const Offset(4, 0))]
+                    : null,
+              ),
+              child: _isMobile
+                  ? SafeArea(right: false, child: _buildContent())
+                  : _buildContent(),
             ),
           ),
         ),
-      ),
+        if (!_isExpanded)
+          Positioned(
+            top: 0,
+            left: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: GestureDetector(
+                  onTap: _toggle,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.menu,
+                      size: 22,
+                      color: Colors.white.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
-  Widget _buildItemList() {
+  Widget _buildContent() {
     final showShuffle = _prefs.get(UserPreferences.showShuffleButton);
     final showGenres = _prefs.get(UserPreferences.showGenresButton);
     final showFavorites = _prefs.get(UserPreferences.showFavoritesButton);
     final showLibraries = _prefs.get(UserPreferences.showLibrariesInToolbar);
     final showFolders = _prefs.get(UserPreferences.enableFolderView);
     final showSyncPlay = _prefs.get(UserPreferences.syncPlayEnabled);
+    final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
+    final showClock = clockBehavior == ClockBehavior.always ||
+        clockBehavior == ClockBehavior.inMenus;
 
     return Column(
       children: [
+        _buildUserSection(),
+        _buildSeparator(),
         Expanded(
           child: ListView(
             controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             children: [
-              _buildAvatar(),
-              const SizedBox(height: 8),
-              _SidebarIconItem(
+              _SidebarItem(
                 icon: Icons.home_rounded,
                 label: 'Home',
                 showLabel: _showLabels,
                 isActive: _isActive(Destinations.home),
-                onPressed: () => context.go(Destinations.home),
+                onPressed: () { _onNavigate(); context.go(Destinations.home); },
               ),
-              _SidebarIconItem(
+              _SidebarItem(
                 icon: Icons.search_rounded,
                 label: 'Search',
                 showLabel: _showLabels,
                 isActive: _isActive(Destinations.search),
-                onPressed: () => context.push(Destinations.search),
+                onPressed: () { _onNavigate(); context.push(Destinations.search); },
               ),
               if (showShuffle)
-                _SidebarIconItem(
+                _SidebarItem(
                   icon: Icons.shuffle_rounded,
                   label: 'Shuffle',
                   showLabel: _showLabels,
-                  onPressed: () {},
+                  onPressed: () { _onNavigate(); showShuffleDialog(context); },
                 ),
               if (showGenres)
-                _SidebarIconItem(
+                _SidebarItem(
                   icon: Icons.theater_comedy_rounded,
                   label: 'Genres',
                   showLabel: _showLabels,
                   isActive: _isActive(Destinations.allGenres),
-                  onPressed: () => context.push(Destinations.allGenres),
+                  onPressed: () { _onNavigate(); context.push(Destinations.allGenres); },
                 ),
               if (showFavorites)
-                _SidebarIconItem(
+                _SidebarItem(
                   icon: Icons.favorite_rounded,
                   label: 'Favorites',
                   showLabel: _showLabels,
                   isActive: _isActive(Destinations.allFavorites),
-                  onPressed: () => context.push(Destinations.allFavorites),
+                  onPressed: () { _onNavigate(); context.push(Destinations.allFavorites); },
                 ),
               if (showFolders)
-                _SidebarIconItem(
+                _SidebarItem(
                   icon: Icons.folder_rounded,
                   label: 'Folders',
                   showLabel: _showLabels,
                   isActive: _isActive(Destinations.folderView),
-                  onPressed: () => context.push(Destinations.folderView),
+                  onPressed: () { _onNavigate(); context.push(Destinations.folderView); },
                 ),
               if (showSyncPlay)
-                _SidebarIconItem(
+                _SidebarItem(
                   icon: Icons.groups_rounded,
                   label: 'SyncPlay',
                   showLabel: _showLabels,
                   onPressed: () {},
                 ),
               if (showLibraries && _libraries.isNotEmpty) ...[
-                _SidebarIconItem(
-                  icon: _librariesExpanded
-                      ? Icons.expand_less_rounded
-                      : Icons.video_library_rounded,
+                _buildSeparator(),
+                _SidebarItem(
+                  icon: Icons.video_library_rounded,
                   label: 'Libraries',
                   showLabel: _showLabels,
                   isActive: _librariesExpanded,
+                  trailing: _showLabels
+                      ? AnimatedRotation(
+                          turns: _librariesExpanded ? 0.5 : 0,
+                          duration: _kExpandDuration,
+                          child: Icon(Icons.expand_more, size: 16,
+                              color: Colors.white.withValues(alpha: 0.5)),
+                        )
+                      : null,
                   onPressed: () => setState(() => _librariesExpanded = !_librariesExpanded),
                 ),
                 AnimatedSize(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 250),
                   curve: Curves.easeInOut,
                   child: _librariesExpanded
                       ? Column(
                           children: _libraries
-                              .map((lib) => _SidebarTextItem(
+                              .map((lib) => _SidebarLibraryItem(
                                     label: lib.name,
-                                    icon: _libraryIcon(lib.collectionType),
                                     showLabel: _showLabels,
                                     onPressed: () {
+                                      _onNavigate();
                                       if (lib.collectionType == 'music') {
                                         context.push('/music/${lib.id}');
                                       } else {
@@ -309,118 +340,136 @@ class _LeftSidebarState extends State<LeftSidebar> {
             ],
           ),
         ),
+        _buildSeparator(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: _SidebarIconItem(
+          child: _SidebarItem(
             icon: Icons.settings_rounded,
             label: 'Settings',
             showLabel: _showLabels,
             isActive: _isActive(Destinations.settings),
-            onPressed: () => context.push(Destinations.settings),
+            onPressed: () { _onNavigate(); context.push(Destinations.settings); },
           ),
         ),
-        const SizedBox(height: 16),
+        if (showClock && _showLabels)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              _currentTime,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.5),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        SizedBox(height: showClock && _showLabels ? 8 : 16),
       ],
     );
   }
 
-  Widget _buildAvatar() {
+  void _onNavigate() {
+    if (_isMobile) _collapse();
+  }
+
+  Widget _buildUserSection() {
     final user = _userRepo.currentUser;
     final initial = (user?.name.isNotEmpty == true) ? user!.name[0].toUpperCase() : '?';
-    final fallback = Container(
-      color: _kAccent.withValues(alpha: 0.3),
-      alignment: Alignment.center,
+    final fallback = Center(
       child: Text(initial,
           style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18)),
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
       child: GestureDetector(
-        onTap: () => context.push(Destinations.settings),
-        child: Row(
-          children: [
-            SizedBox(
-              width: _kIconBoxSize + 8,
-              child: Center(
-                child: Container(
-                  width: _kAvatarSize,
-                  height: _kAvatarSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.3),
+        onTap: () { _onNavigate(); showUserMenu(context); },
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF00A4DC), Color(0xFF0077B6)],
+                  ),
+                ),
+                child: ClipOval(
+                  child: _userImageUrl != null
+                      ? Image.network(
+                          _userImageUrl!,
+                          fit: BoxFit.cover,
+                          width: 40,
+                          height: 40,
+                          errorBuilder: (_, __, ___) => fallback,
+                        )
+                      : fallback,
+                ),
+              ),
+              if (_showLabels) ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    user?.name ?? '',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ),
-                  child: ClipOval(
-                    child: _userImageUrl != null
-                        ? Image.network(
-                            _userImageUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => fallback,
-                          )
-                        : fallback,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ),
-            ),
-            if (_showLabels) ...[
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  user?.name ?? '',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
   }
 
-  IconData _libraryIcon(String collectionType) {
-    return switch (collectionType) {
-      'movies' => Icons.movie_rounded,
-      'tvshows' => Icons.tv_rounded,
-      'music' => Icons.music_note_rounded,
-      'books' => Icons.book_rounded,
-      'photos' => Icons.photo_library_rounded,
-      'homevideos' => Icons.videocam_rounded,
-      'livetv' => Icons.live_tv_rounded,
-      _ => Icons.video_library_rounded,
-    };
+  Widget _buildSeparator() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Container(
+        height: 1,
+        color: Colors.white.withValues(alpha: 0.1),
+      ),
+    );
   }
 }
 
-class _SidebarIconItem extends StatefulWidget {
+class _SidebarItem extends StatefulWidget {
   final IconData icon;
   final String label;
   final bool showLabel;
   final bool isActive;
   final VoidCallback onPressed;
+  final Widget? trailing;
 
-  const _SidebarIconItem({
+  const _SidebarItem({
     required this.icon,
     required this.label,
     required this.showLabel,
     this.isActive = false,
     required this.onPressed,
+    this.trailing,
   });
 
   @override
-  State<_SidebarIconItem> createState() => _SidebarIconItemState();
+  State<_SidebarItem> createState() => _SidebarItemState();
 }
 
-class _SidebarIconItemState extends State<_SidebarIconItem> {
+class _SidebarItemState extends State<_SidebarItem> {
   final _focusNode = FocusNode();
   bool _isFocused = false;
+  bool _isHovered = false;
 
   @override
   void initState() {
@@ -436,67 +485,66 @@ class _SidebarIconItemState extends State<_SidebarIconItem> {
 
   @override
   Widget build(BuildContext context) {
+    final highlighted = _isFocused || _isHovered;
     final fgColor = widget.isActive
         ? _kAccent
-        : _isFocused
+        : highlighted
             ? Colors.white
-            : Colors.white.withValues(alpha: 0.7);
+            : Colors.white.withValues(alpha: 0.6);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Focus(
-        focusNode: _focusNode,
-        onKeyEvent: (node, event) {
-          if (event is KeyDownEvent &&
-              (event.logicalKey == LogicalKeyboardKey.select ||
-                  event.logicalKey == LogicalKeyboardKey.enter)) {
-            widget.onPressed();
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        },
-        child: GestureDetector(
-          onTap: widget.onPressed,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            height: _kItemHeight,
-            decoration: BoxDecoration(
-              color: _isFocused
-                  ? Colors.white.withValues(alpha: 0.12)
-                  : widget.isActive
-                      ? _kAccent.withValues(alpha: 0.15)
-                      : Colors.transparent,
-              borderRadius: BorderRadius.circular(_kItemBorderRadius),
-              border: Border.all(
-                color: _isFocused ? _kAccent : Colors.transparent,
-                width: 2,
+      padding: const EdgeInsets.symmetric(vertical: 1),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: Focus(
+          focusNode: _focusNode,
+          onKeyEvent: (node, event) {
+            if (event is KeyDownEvent &&
+                (event.logicalKey == LogicalKeyboardKey.select ||
+                    event.logicalKey == LogicalKeyboardKey.enter)) {
+              widget.onPressed();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: GestureDetector(
+            onTap: widget.onPressed,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: highlighted
+                    ? Colors.white.withValues(alpha: 0.12)
+                    : widget.isActive
+                        ? _kAccent.withValues(alpha: 0.15)
+                        : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
               ),
-            ),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: _kIconBoxSize + 8,
-                  child: Center(
-                    child: Icon(widget.icon, size: 22, color: fgColor),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 32,
+                    child: Icon(widget.icon, size: 24, color: fgColor),
                   ),
-                ),
-                if (widget.showLabel) ...[
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      widget.label,
-                      style: TextStyle(
-                        color: fgColor,
-                        fontSize: 14,
-                        fontWeight: _isFocused || widget.isActive
-                            ? FontWeight.w600
-                            : FontWeight.w400,
+                  if (widget.showLabel) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        widget.label,
+                        style: TextStyle(
+                          color: fgColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
+                    if (widget.trailing != null) widget.trailing!,
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -505,85 +553,57 @@ class _SidebarIconItemState extends State<_SidebarIconItem> {
   }
 }
 
-class _SidebarTextItem extends StatefulWidget {
+class _SidebarLibraryItem extends StatefulWidget {
   final String label;
-  final IconData icon;
   final bool showLabel;
   final VoidCallback onPressed;
 
-  const _SidebarTextItem({
+  const _SidebarLibraryItem({
     required this.label,
-    required this.icon,
     required this.showLabel,
     required this.onPressed,
   });
 
   @override
-  State<_SidebarTextItem> createState() => _SidebarTextItemState();
+  State<_SidebarLibraryItem> createState() => _SidebarLibraryItemState();
 }
 
-class _SidebarTextItemState extends State<_SidebarTextItem> {
-  final _focusNode = FocusNode();
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() => setState(() => _isFocused = _focusNode.hasFocus));
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
+class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    final fgColor = _isFocused ? Colors.white : Colors.white.withValues(alpha: 0.6);
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1),
-      child: Focus(
-        focusNode: _focusNode,
-        onKeyEvent: (node, event) {
-          if (event is KeyDownEvent &&
-              (event.logicalKey == LogicalKeyboardKey.select ||
-                  event.logicalKey == LogicalKeyboardKey.enter)) {
-            widget.onPressed();
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        },
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
         child: GestureDetector(
           onTap: widget.onPressed,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            height: 40,
+            height: 36,
+            padding: const EdgeInsets.only(left: 50, right: 10),
             decoration: BoxDecoration(
-              color: _isFocused ? _kAccent.withValues(alpha: 0.15) : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
+              color: _isHovered
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Row(
-              children: [
-                const SizedBox(width: 48),
-                Icon(widget.icon, size: 18, color: fgColor),
-                if (widget.showLabel) ...[
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      widget.label,
-                      style: TextStyle(
-                        color: fgColor,
-                        fontSize: 13,
-                        fontWeight: _isFocused ? FontWeight.w600 : FontWeight.w400,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+            alignment: Alignment.centerLeft,
+            child: widget.showLabel
+                ? Text(
+                    widget.label,
+                    style: TextStyle(
+                      color: _isHovered
+                          ? Colors.white
+                          : Colors.white.withValues(alpha: 0.5),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
                     ),
-                  ),
-                ],
-              ],
-            ),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : const SizedBox.shrink(),
           ),
         ),
       ),
