@@ -11,13 +11,17 @@ import '../../../data/models/aggregated_item.dart';
 import '../../../data/repositories/item_mutation_repository.dart';
 import '../../../data/repositories/mdblist_repository.dart';
 import '../../../data/services/background_service.dart';
+import '../../../data/services/theme_music_service.dart';
 import '../../../data/viewmodels/item_detail_view_model.dart';
 import '../../../preference/user_preferences.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/add_to_playlist_dialog.dart';
 import '../../widgets/logo_view.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../widgets/rating_display.dart';
+import '../../widgets/track_action_dialog.dart';
+import '../../widgets/track_selector_dialog.dart';
 
 const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
 
@@ -33,9 +37,11 @@ class ItemDetailScreen extends StatefulWidget {
 class _ItemDetailScreenState extends State<ItemDetailScreen> {
   late final ItemDetailViewModel _viewModel;
   final _backgroundService = GetIt.instance<BackgroundService>();
+  final _themeMusicService = GetIt.instance<ThemeMusicService>();
   final _prefs = GetIt.instance<UserPreferences>();
   StreamSubscription<String?>? _backgroundSub;
   String? _backdropUrl;
+  bool _themeMusicStarted = false;
 
   @override
   void initState() {
@@ -58,6 +64,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   @override
   void dispose() {
     _backgroundSub?.cancel();
+    _themeMusicService.fadeOutAndStop();
     _viewModel.removeListener(_onChanged);
     _viewModel.dispose();
     super.dispose();
@@ -69,6 +76,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     final item = _viewModel.item;
     if (item != null) {
       _backgroundService.setBackground(item, context: BlurContext.details);
+      if (!_themeMusicStarted) {
+        _themeMusicStarted = true;
+        _themeMusicService.playForItem(item);
+      }
     }
   }
 
@@ -752,6 +763,12 @@ class _ActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = viewModel.item!;
     final hasProgress = (item.playedPercentage ?? 0) > 0;
+    final audioStreams = item.mediaStreams
+        .where((s) => s['Type'] == 'Audio')
+        .toList();
+    final subtitleStreams = item.mediaStreams
+        .where((s) => s['Type'] == 'Subtitle')
+        .toList();
 
     return Wrap(
       spacing: 10,
@@ -774,6 +791,20 @@ class _ActionButtons extends StatelessWidget {
             label: const Text('Play from Start'),
             style: _outlinedStyle(),
           ),
+        if (audioStreams.length > 1)
+          OutlinedButton.icon(
+            onPressed: () => _showAudioSelector(context, audioStreams),
+            icon: const Icon(Icons.audiotrack),
+            label: const Text('Audio'),
+            style: _outlinedStyle(),
+          ),
+        if (subtitleStreams.isNotEmpty)
+          OutlinedButton.icon(
+            onPressed: () => _showSubtitleSelector(context, subtitleStreams),
+            icon: const Icon(Icons.subtitles),
+            label: const Text('Subtitles'),
+            style: _outlinedStyle(),
+          ),
         if (item.remoteTrailers.isNotEmpty)
           OutlinedButton.icon(
             onPressed: () {},
@@ -793,7 +824,45 @@ class _ActionButtons extends StatelessWidget {
           label: Text(item.isPlayed ? 'Watched' : 'Unwatched'),
           style: _outlinedStyle(),
         ),
+        OutlinedButton.icon(
+          onPressed: () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
+          icon: const Icon(Icons.playlist_add),
+          label: const Text('Playlist'),
+          style: _outlinedStyle(),
+        ),
       ],
+    );
+  }
+
+  void _showAudioSelector(BuildContext context, List<Map<String, dynamic>> streams) {
+    final defaultIdx = streams.indexWhere((s) => s['IsDefault'] == true);
+    TrackSelectorDialog.show(
+      context,
+      title: 'Audio Track',
+      options: streams.map((s) {
+        final lang = s['DisplayTitle'] as String? ?? s['Language'] as String? ?? 'Unknown';
+        final codec = s['Codec'] as String?;
+        return TrackOption(label: lang, subtitle: codec?.toUpperCase());
+      }).toList(),
+      selectedIndex: defaultIdx >= 0 ? defaultIdx : null,
+    );
+  }
+
+  void _showSubtitleSelector(BuildContext context, List<Map<String, dynamic>> streams) {
+    final defaultIdx = streams.indexWhere((s) => s['IsDefault'] == true);
+    final options = [
+      const TrackOption(label: 'None'),
+      ...streams.map((s) {
+        final lang = s['DisplayTitle'] as String? ?? s['Language'] as String? ?? 'Unknown';
+        final codec = s['Codec'] as String?;
+        return TrackOption(label: lang, subtitle: codec?.toUpperCase());
+      }),
+    ];
+    TrackSelectorDialog.show(
+      context,
+      title: 'Subtitle Track',
+      options: options,
+      selectedIndex: defaultIdx >= 0 ? defaultIdx + 1 : 0,
     );
   }
 
@@ -1771,69 +1840,94 @@ class _TrackTile extends StatelessWidget {
         : null;
     final trackNumber = track.indexNumber ?? index;
 
-    return Container(
-      height: 56,
-      decoration: BoxDecoration(
-        color: index.isOdd ? Colors.white.withValues(alpha: 0.04) : Colors.transparent,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 40,
-            child: Center(
-              child: Text(
-                trackNumber.toString(),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.5),
+    return GestureDetector(
+      onLongPress: () => _showTrackActions(context),
+      child: Container(
+        height: 56,
+        decoration: BoxDecoration(
+          color: index.isOdd ? Colors.white.withValues(alpha: 0.04) : Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 40,
+              child: Center(
+                child: Text(
+                  trackNumber.toString(),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.5),
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  track.name,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (track.artists.isNotEmpty)
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Text(
-                    track.artists.join(', '),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.6),
+                    track.name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-              ],
-            ),
-          ),
-          if (runtimeText != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                runtimeText,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.5),
-                ),
+                  if (track.artists.isNotEmpty)
+                    Text(
+                      track.artists.join(', '),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.6),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
               ),
             ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.play_arrow, color: Colors.white54, size: 22),
-            splashRadius: 20,
-          ),
-          const SizedBox(width: 4),
-        ],
+            if (runtimeText != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  runtimeText,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.5),
+                  ),
+                ),
+              ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.play_arrow, color: Colors.white54, size: 22),
+              splashRadius: 20,
+            ),
+            IconButton(
+              onPressed: () => _showTrackActions(context),
+              icon: const Icon(Icons.more_vert, color: Colors.white54, size: 20),
+              splashRadius: 20,
+            ),
+            const SizedBox(width: 4),
+          ],
+        ),
       ),
+    );
+  }
+
+  void _showTrackActions(BuildContext context) {
+    TrackActionDialog.show(
+      context,
+      track: track,
+      onPlay: () {},
+      onPlayNext: () {},
+      onAddToQueue: () {},
+      onAddToPlaylist: () => AddToPlaylistDialog.show(context, itemIds: [track.id]),
+      onToggleFavorite: () {
+        GetIt.instance<ItemMutationRepository>().setFavorite(
+          track.id,
+          isFavorite: !track.isFavorite,
+        );
+      },
     );
   }
 }

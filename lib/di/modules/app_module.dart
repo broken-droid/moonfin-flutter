@@ -11,6 +11,7 @@ import '../../data/services/background_service.dart';
 import '../../data/services/plugin_sync_service.dart';
 import '../../data/services/row_data_source.dart';
 import '../../data/services/socket_handler.dart';
+import '../../data/services/theme_music_service.dart';
 import '../../data/viewmodels/media_bar_view_model.dart';
 import '../../preference/user_preferences.dart';
 import '../../ui/screens/home/home_view_model.dart';
@@ -45,5 +46,9 @@ void registerAppModule() {
         prefs: _getIt<UserPreferences>(),
         client: _getIt<MediaServerClient>(),
         mediaBarViewModel: _getIt<MediaBarViewModel>(),
+      ));
+  _getIt.registerLazySingleton(() => ThemeMusicService(
+        _getIt<MediaServerClient>(),
+        _getIt<UserPreferences>(),
       ));
 }

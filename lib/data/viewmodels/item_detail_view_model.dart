@@ -250,20 +250,43 @@ class ItemDetailViewModel extends ChangeNotifier {
     final item = _item;
     if (item == null) return;
     final newState = !item.isFavorite;
+    _applyOptimisticUpdate({'IsFavorite': newState});
     try {
       await _mutations.setFavorite(itemId, isFavorite: newState);
       await _reload();
-    } catch (_) {}
+    } catch (_) {
+      _applyOptimisticUpdate({'IsFavorite': !newState});
+    }
   }
 
   Future<void> togglePlayed() async {
     final item = _item;
     if (item == null) return;
     final newState = !item.isPlayed;
+    _applyOptimisticUpdate({'Played': newState});
     try {
       await _mutations.setPlayed(itemId, isPlayed: newState);
       await _reload();
-    } catch (_) {}
+    } catch (_) {
+      _applyOptimisticUpdate({'Played': !newState});
+    }
+  }
+
+  void _applyOptimisticUpdate(Map<String, dynamic> userDataPatch) {
+    final item = _item;
+    if (item == null) return;
+    final updatedRaw = Map<String, dynamic>.from(item.rawData);
+    final userData = Map<String, dynamic>.from(
+      (updatedRaw['UserData'] as Map?) ?? {},
+    );
+    userData.addAll(userDataPatch);
+    updatedRaw['UserData'] = userData;
+    _item = AggregatedItem(
+      id: item.id,
+      serverId: item.serverId,
+      rawData: updatedRaw,
+    );
+    notifyListeners();
   }
 
   Future<void> _reload() async {

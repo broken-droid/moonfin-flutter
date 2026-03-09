@@ -6,6 +6,7 @@ import 'package:server_core/server_core.dart';
 import '../../data/models/aggregated_library.dart';
 import '../../data/repositories/user_views_repository.dart';
 import '../../preference/user_preferences.dart';
+import 'focusable_dialog_row.dart';
 
 const _kAccent = Color(0xFF00A4DC);
 
@@ -103,9 +104,9 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
             const SizedBox(height: 4),
             Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
             const SizedBox(height: 4),
-            _DialogRow(
+            FocusableDialogRow(
               label: 'Cancel',
-              contentColor: Colors.white.withValues(alpha: 0.5),
+              dimmed: true,
               onTap: () => Navigator.pop(context),
             ),
           ],
@@ -143,13 +144,13 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
       _ShuffleMode.main => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _DialogRow(
+            FocusableDialogRow(
               icon: Icons.video_library_rounded,
               label: 'Library',
               onTap: () => setState(() => _mode = _ShuffleMode.libraries),
               autofocus: true,
             ),
-            _DialogRow(
+            FocusableDialogRow(
               icon: Icons.theater_comedy_rounded,
               label: 'Genre',
               onTap: () {
@@ -171,7 +172,7 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
                 itemCount: _libraries.length,
                 itemBuilder: (_, i) {
                   final lib = _libraries[i];
-                  return _DialogRow(
+                  return FocusableDialogRow(
                     label: lib.name,
                     autofocus: i == 0,
                     onTap: () {
@@ -198,7 +199,7 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
                 itemCount: _genres.length,
                 itemBuilder: (_, i) {
                   final genre = _genres[i];
-                  return _DialogRow(
+                  return FocusableDialogRow(
                     label: genre,
                     autofocus: i == 0,
                     onTap: () {
@@ -272,85 +273,6 @@ class _BackButtonState extends State<_BackButton> {
                 color: _isFocused ? Colors.white : Colors.white.withValues(alpha: 0.6),
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DialogRow extends StatefulWidget {
-  final String label;
-  final IconData? icon;
-  final VoidCallback onTap;
-  final Color contentColor;
-  final bool autofocus;
-
-  const _DialogRow({
-    required this.label,
-    this.icon,
-    required this.onTap,
-    this.contentColor = const Color.fromRGBO(255, 255, 255, 0.8),
-    this.autofocus = false,
-  });
-
-  @override
-  State<_DialogRow> createState() => _DialogRowState();
-}
-
-class _DialogRowState extends State<_DialogRow> {
-  final _focusNode = FocusNode();
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() => setState(() => _isFocused = _focusNode.hasFocus));
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _isFocused ? Colors.white : widget.contentColor;
-
-    return Focus(
-      focusNode: _focusNode,
-      autofocus: widget.autofocus,
-      onKeyEvent: (_, event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
-          widget.onTap();
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
-      },
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          width: double.infinity,
-          color: _isFocused ? Colors.white.withValues(alpha: 0.12) : Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          child: Row(
-            children: [
-              if (widget.icon != null) ...[
-                Icon(widget.icon, size: 20, color: color),
-                const SizedBox(width: 16),
-              ],
-              Expanded(
-                child: Text(
-                  widget.label,
-                  style: TextStyle(fontSize: 16, color: color),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
           ),
         ),
       ),

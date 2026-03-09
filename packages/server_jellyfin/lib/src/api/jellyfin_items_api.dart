@@ -113,4 +113,46 @@ class JellyfinItemsApi implements ItemsApi {
     });
     return response.data as Map<String, dynamic>;
   }
+
+  @override
+  Future<Map<String, dynamic>> getThemeMedia(
+    String itemId, {
+    bool inheritFromParent = true,
+  }) async {
+    final response = await _dio.get(
+      '/Items/$itemId/ThemeMedia',
+      queryParameters: {'InheritFromParent': inheritFromParent},
+    );
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getPlaylists() async {
+    final response = await _dio.get('/Items', queryParameters: {
+      'IncludeItemTypes': 'Playlist',
+      'Recursive': true,
+      'SortBy': 'SortName',
+      'SortOrder': 'Ascending',
+    });
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> createPlaylist({
+    required String name,
+    List<String>? itemIds,
+  }) async {
+    final response = await _dio.post('/Playlists', data: {
+      'Name': name,
+      if (itemIds != null) 'Ids': itemIds,
+    });
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<void> addToPlaylist(String playlistId, List<String> itemIds) async {
+    await _dio.post('/Playlists/$playlistId/Items', queryParameters: {
+      'Ids': itemIds.join(','),
+    });
+  }
 }

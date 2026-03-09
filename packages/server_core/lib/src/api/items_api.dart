@@ -38,4 +38,15 @@ abstract class ItemsApi {
     String seriesId, {
     String? seasonId,
   });
+
+  Future<Map<String, dynamic>> getThemeMedia(String itemId, {bool inheritFromParent = true});
+
+  Future<Map<String, dynamic>> getPlaylists();
+
+  Future<Map<String, dynamic>> createPlaylist({
+    required String name,
+    List<String>? itemIds,
+  });
+
+  Future<void> addToPlaylist(String playlistId, List<String> itemIds);
 }
