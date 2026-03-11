@@ -22,8 +22,13 @@ import '../../widgets/navigation_layout.dart';
 import '../../widgets/rating_display.dart';
 import '../../widgets/track_action_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
+import '../../../util/platform_detection.dart';
 
 const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
+const _kCompactBreakpoint = 600.0;
+
+bool _isCompact(BuildContext context) =>
+    PlatformDetection.isMobile || MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
 
 class ItemDetailScreen extends StatefulWidget {
   final String itemId;
@@ -152,7 +157,9 @@ class _DetailContent extends StatelessWidget {
                 item.type != 'MusicAlbum' && item.type != 'Playlist')
               SliverToBoxAdapter(child: _HeaderSection(viewModel: viewModel, prefs: prefs)),
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 48),
+              padding: EdgeInsets.symmetric(
+                horizontal: _isCompact(context) ? 16 : 48,
+              ),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   _buildContentForType(item),
@@ -178,21 +185,16 @@ class _DetailContent extends StatelessWidget {
     };
   }
 
-  List<Widget> _overviewSection(AggregatedItem item) {
-    if (item.overview == null || item.overview!.isEmpty) return const [];
-    return [
-      const SizedBox(height: 24),
-      _OverviewText(text: item.overview!),
-    ];
-  }
-
   List<Widget> _buildMovieContent(AggregatedItem item) {
     return [
       _ActionButtons(viewModel: viewModel),
-      ..._overviewSection(item),
+      if (_hasMetadata(item)) ...[
+        const SizedBox(height: 24),
+        _MetadataSection(viewModel: viewModel),
+      ],
       if (viewModel.actors.isNotEmpty) ...[
         const SizedBox(height: 32),
-        _SectionHeader(title: 'Cast'),
+        _SectionHeader(title: 'Cast & Crew'),
         const SizedBox(height: 12),
         _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
       ],
@@ -202,10 +204,6 @@ class _DetailContent extends StatelessWidget {
         const SizedBox(height: 12),
         _SimilarRow(items: viewModel.similar, imageApi: viewModel.imageApi, prefs: prefs),
       ],
-      if (_hasExtendedInfo(item)) ...[
-        const SizedBox(height: 32),
-        _ExtendedInfo(viewModel: viewModel),
-      ],
       const SizedBox(height: 48),
     ];
   }
@@ -213,7 +211,10 @@ class _DetailContent extends StatelessWidget {
   List<Widget> _buildSeriesContent(AggregatedItem item) {
     return [
       _ActionButtons(viewModel: viewModel),
-      ..._overviewSection(item),
+      if (_hasMetadata(item)) ...[
+        const SizedBox(height: 24),
+        _MetadataSection(viewModel: viewModel),
+      ],
       if (viewModel.nextUp != null) ...[
         const SizedBox(height: 32),
         _SectionHeader(title: 'Next Up'),
@@ -228,13 +229,15 @@ class _DetailContent extends StatelessWidget {
       ],
       if (viewModel.actors.isNotEmpty) ...[
         const SizedBox(height: 32),
-        _SectionHeader(title: 'Cast'),
+        _SectionHeader(title: 'Cast & Crew'),
         const SizedBox(height: 12),
         _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
       ],
-      if (_hasExtendedInfo(item)) ...[
+      if (viewModel.similar.isNotEmpty) ...[
         const SizedBox(height: 32),
-        _ExtendedInfo(viewModel: viewModel),
+        _SectionHeader(title: 'More Like This'),
+        const SizedBox(height: 12),
+        _SimilarRow(items: viewModel.similar, imageApi: viewModel.imageApi, prefs: prefs),
       ],
       const SizedBox(height: 48),
     ];
@@ -243,7 +246,6 @@ class _DetailContent extends StatelessWidget {
   List<Widget> _buildSeasonContent(AggregatedItem item) {
     return [
       _ActionButtons(viewModel: viewModel),
-      ..._overviewSection(item),
       if (viewModel.episodes.isNotEmpty) ...[
         const SizedBox(height: 32),
         _SectionHeader(title: 'Episodes'),
@@ -260,33 +262,57 @@ class _DetailContent extends StatelessWidget {
   List<Widget> _buildEpisodeContent(AggregatedItem item) {
     return [
       _ActionButtons(viewModel: viewModel),
-      ..._overviewSection(item),
+      if (_hasMetadata(item)) ...[
+        const SizedBox(height: 24),
+        _MetadataSection(viewModel: viewModel),
+      ],
+      if (viewModel.episodes.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Episodes'),
+        const SizedBox(height: 12),
+        _EpisodesRow(
+          episodes: viewModel.episodes,
+          currentEpisodeId: item.id,
+          imageApi: viewModel.imageApi,
+        ),
+      ],
       if (viewModel.actors.isNotEmpty) ...[
         const SizedBox(height: 32),
-        _SectionHeader(title: 'Cast'),
+        _SectionHeader(title: 'Cast & Crew'),
         const SizedBox(height: 12),
         _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
       ],
-      if (item.seriesId != null) ...[
+      if (viewModel.similar.isNotEmpty) ...[
         const SizedBox(height: 32),
-        _EpisodeNavigationRow(item: item),
+        _SectionHeader(title: 'More Like This'),
+        const SizedBox(height: 12),
+        _SimilarRow(items: viewModel.similar, imageApi: viewModel.imageApi, prefs: prefs),
       ],
       const SizedBox(height: 48),
     ];
   }
 
   List<Widget> _buildPersonContent(AggregatedItem item) {
+    final movies = viewModel.filmographyMovies;
+    final series = viewModel.filmographySeries;
+
     return [
       _PersonHeader(item: item, imageApi: viewModel.imageApi),
       if (item.overview != null && item.overview!.isNotEmpty) ...[
         const SizedBox(height: 24),
         _ExpandableBiography(text: item.overview!),
       ],
-      if (viewModel.filmography.isNotEmpty) ...[
+      if (movies.isNotEmpty) ...[
         const SizedBox(height: 32),
-        _SectionHeader(title: 'Filmography'),
+        _SectionHeader(title: 'Movies'),
         const SizedBox(height: 12),
-        _FilmographyRow(items: viewModel.filmography, imageApi: viewModel.imageApi, prefs: prefs),
+        _FilmographyRow(items: movies, imageApi: viewModel.imageApi, prefs: prefs),
+      ],
+      if (series.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Series'),
+        const SizedBox(height: 12),
+        _FilmographyRow(items: series, imageApi: viewModel.imageApi, prefs: prefs),
       ],
       const SizedBox(height: 48),
     ];
@@ -295,7 +321,10 @@ class _DetailContent extends StatelessWidget {
   List<Widget> _buildArtistContent(AggregatedItem item) {
     return [
       _ArtistHeader(item: item, imageApi: viewModel.imageApi),
-      ..._overviewSection(item),
+      if (item.overview != null && item.overview!.isNotEmpty) ...[
+        const SizedBox(height: 24),
+        _OverviewText(text: item.overview!),
+      ],
       if (viewModel.albums.isNotEmpty) ...[
         const SizedBox(height: 32),
         _SectionHeader(title: 'Discography'),
@@ -335,8 +364,10 @@ class _DetailContent extends StatelessWidget {
         .toList();
 
     return [
-      _ActionButtons(viewModel: viewModel),
-      ..._overviewSection(item),
+      if (_hasMetadata(item)) ...[
+        const SizedBox(height: 24),
+        _MetadataSection(viewModel: viewModel),
+      ],
       if (movies.isNotEmpty) ...[
         const SizedBox(height: 32),
         _SectionHeader(title: 'Movies'),
@@ -355,11 +386,17 @@ class _DetailContent extends StatelessWidget {
         const SizedBox(height: 12),
         _SimilarRow(items: other, imageApi: viewModel.imageApi, prefs: prefs),
       ],
+      if (viewModel.actors.isNotEmpty) ...[
+        const SizedBox(height: 32),
+        _SectionHeader(title: 'Cast & Crew'),
+        const SizedBox(height: 12),
+        _CastRow(people: viewModel.actors, imageApi: viewModel.imageApi),
+      ],
       const SizedBox(height: 48),
     ];
   }
 
-  bool _hasExtendedInfo(AggregatedItem item) {
+  bool _hasMetadata(AggregatedItem item) {
     return viewModel.directors.isNotEmpty ||
         viewModel.writers.isNotEmpty ||
         item.studios.isNotEmpty;
@@ -440,97 +477,154 @@ class _HeaderSection extends StatelessWidget {
     final item = viewModel.item!;
     final imageApi = viewModel.imageApi;
     final isEpisode = item.type == 'Episode';
+    final isMobile = _isCompact(context);
+
+    final infoColumn = Column(
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        if (isEpisode && item.seriesName != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Wrap(
+              alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              children: [
+                Text(
+                  item.seriesName!,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.7),
+                        shadows: _textShadows,
+                        fontSize: isMobile ? 14 : null,
+                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (item.parentIndexNumber != null && item.indexNumber != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'S${item.parentIndexNumber}E${item.indexNumber}',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        if (!isEpisode && item.logoImageTag != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: isMobile
+                ? Center(
+                    child: LogoView(
+                      imageUrl: imageApi.getLogoImageUrl(item.id, tag: item.logoImageTag),
+                      maxHeight: 56,
+                      maxWidth: 240,
+                    ),
+                  )
+                : LogoView(
+                    imageUrl: imageApi.getLogoImageUrl(item.id, tag: item.logoImageTag),
+                    maxHeight: 80,
+                    maxWidth: 350,
+                  ),
+          )
+        else
+          Text(
+            item.name,
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  shadows: _textShadows,
+                  fontSize: isMobile ? 24 : null,
+                ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: isMobile ? TextAlign.center : null,
+          ),
+        const SizedBox(height: 8),
+        _MetadataRow(item: item),
+        if (viewModel.ratings.isNotEmpty ||
+            item.communityRating != null ||
+            item.criticRating != null) ...[
+          const SizedBox(height: 8),
+          RatingsRow(
+            ratings: viewModel.ratings,
+            communityRating: item.communityRating,
+            criticRating: item.criticRating,
+            enableAdditionalRatings: prefs.get(UserPreferences.enableAdditionalRatings),
+            enabledRatings: prefs.get(UserPreferences.enabledRatings),
+            blockedRatings: prefs.get(UserPreferences.blockedRatings),
+          ),
+        ],
+        if (item.tagline != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            item.tagline!,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.7),
+                  fontStyle: FontStyle.italic,
+                  shadows: _textShadows,
+                  fontSize: isMobile ? 13 : null,
+                ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: isMobile ? TextAlign.center : null,
+          ),
+        ],
+        if (item.overview != null && item.overview!.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            item.overview!,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  shadows: _textShadows,
+                  height: 1.4,
+                  fontSize: isMobile ? 13 : null,
+                ),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+            textAlign: isMobile ? TextAlign.center : null,
+          ),
+        ],
+      ],
+    );
+
+    final posterWidget = isEpisode
+        ? _EpisodeThumbnail(item: item, imageApi: imageApi)
+        : _PosterImage(item: item, imageApi: imageApi);
+
+    if (isMobile) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 60, 16, 12),
+        child: Column(
+          children: [
+            posterWidget,
+            const SizedBox(height: 16),
+            infoColumn,
+          ],
+        ),
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(48, 80, 48, 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (isEpisode)
-            _EpisodeThumbnail(item: item, imageApi: imageApi)
-          else
-            _PosterImage(item: item, imageApi: imageApi),
+          Expanded(child: infoColumn),
           const SizedBox(width: 32),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (isEpisode && item.seriesName != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      item.seriesName!,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.7),
-                            shadows: _textShadows,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                if (!isEpisode && item.logoImageTag != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: LogoView(
-                      imageUrl: imageApi.getLogoImageUrl(item.id, tag: item.logoImageTag),
-                      maxHeight: 80,
-                      maxWidth: 350,
-                    ),
-                  )
-                else
-                  Text(
-                    isEpisode ? _episodeTitle(item) : item.name,
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          shadows: _textShadows,
-                        ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                if (item.tagline != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    item.tagline!,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.7),
-                          fontStyle: FontStyle.italic,
-                          shadows: _textShadows,
-                        ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                const SizedBox(height: 8),
-                _MetadataRow(item: item),
-                const SizedBox(height: 6),
-                _TechBadgeRow(item: item),
-                if (viewModel.ratings.isNotEmpty ||
-                    item.communityRating != null ||
-                    item.criticRating != null) ...[
-                  const SizedBox(height: 8),
-                  RatingsRow(
-                    ratings: viewModel.ratings,
-                    baseUrl: viewModel.baseUrl,
-                    communityRating: item.communityRating,
-                    criticRating: item.criticRating,
-                    enableAdditionalRatings: prefs.get(UserPreferences.enableAdditionalRatings),
-                  ),
-                ],
-              ],
-            ),
-          ),
+          posterWidget,
         ],
       ),
     );
-  }
-
-  String _episodeTitle(AggregatedItem item) {
-    final s = item.parentIndexNumber;
-    final e = item.indexNumber;
-    final prefix = (s != null && e != null) ? 'S${s}E$e - ' : '';
-    return '$prefix${item.name}';
   }
 }
 
@@ -542,20 +636,76 @@ class _PosterImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item.primaryImageTag == null) return const SizedBox(width: 180, height: 270);
+    final isMobile = _isCompact(context);
+    final w = isMobile ? 120.0 : 165.0;
+    final h = isMobile ? 180.0 : 248.0;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: CachedNetworkImage(
-        imageUrl: imageApi.getPrimaryImageUrl(
-          item.id,
-          maxHeight: 540,
-          tag: item.primaryImageTag,
-        ),
-        width: 180,
-        height: 270,
-        fit: BoxFit.cover,
-        errorWidget: (_, __, ___) => const SizedBox(width: 180, height: 270),
+    if (item.primaryImageTag == null) return SizedBox(width: w, height: h);
+
+    return SizedBox(
+      width: w,
+      height: h,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: imageApi.getPrimaryImageUrl(
+                item.id,
+                maxHeight: isMobile ? 360 : 500,
+                tag: item.primaryImageTag,
+              ),
+              width: w,
+              height: h,
+              fit: BoxFit.cover,
+              errorWidget: (_, __, ___) => SizedBox(width: w, height: h),
+            ),
+          ),
+          if (item.isFavorite)
+            Positioned(
+              top: 6,
+              left: 6,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.favorite, color: Color(0xFFFF4757), size: 16),
+              ),
+            ),
+          if (item.isPlayed)
+            Positioned(
+              top: 6,
+              right: 6,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check_circle, color: Colors.green, size: 16),
+              ),
+            ),
+          if ((item.playedPercentage ?? 0) > 0)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                child: LinearProgressIndicator(
+                  value: item.playedPercentage! / 100.0,
+                  minHeight: 4,
+                  backgroundColor: Colors.black38,
+                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00A4DC)),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -569,20 +719,76 @@ class _EpisodeThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item.primaryImageTag == null) return const SizedBox(width: 240, height: 135);
+    final isMobile = _isCompact(context);
+    final w = isMobile ? 200.0 : 280.0;
+    final h = isMobile ? 113.0 : 158.0;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: CachedNetworkImage(
-        imageUrl: imageApi.getPrimaryImageUrl(
-          item.id,
-          maxWidth: 480,
-          tag: item.primaryImageTag,
-        ),
-        width: 240,
-        height: 135,
-        fit: BoxFit.cover,
-        errorWidget: (_, __, ___) => const SizedBox(width: 240, height: 135),
+    if (item.primaryImageTag == null) return SizedBox(width: w, height: h);
+
+    return SizedBox(
+      width: w,
+      height: h,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: imageApi.getPrimaryImageUrl(
+                item.id,
+                maxWidth: isMobile ? 400 : 560,
+                tag: item.primaryImageTag,
+              ),
+              width: w,
+              height: h,
+              fit: BoxFit.cover,
+              errorWidget: (_, __, ___) => SizedBox(width: w, height: h),
+            ),
+          ),
+          if (item.isFavorite)
+            Positioned(
+              top: 6,
+              left: 6,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.favorite, color: Color(0xFFFF4757), size: 14),
+              ),
+            ),
+          if (item.isPlayed)
+            Positioned(
+              top: 6,
+              right: 6,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check_circle, color: Colors.green, size: 14),
+              ),
+            ),
+          if ((item.playedPercentage ?? 0) > 0)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                child: LinearProgressIndicator(
+                  value: item.playedPercentage! / 100.0,
+                  minHeight: 3,
+                  backgroundColor: Colors.black38,
+                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00A4DC)),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -648,11 +854,49 @@ class _MetadataRow extends StatelessWidget {
       }
     }
 
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 2,
-      runSpacing: 4,
-      children: separated,
+    final badges = <String>[];
+    final res = item.videoResolution;
+    if (res != null) badges.add(res);
+    final hdr = item.hdrType;
+    if (hdr != null) badges.add(hdr);
+    final vcodec = item.videoCodec?.toUpperCase();
+    if (vcodec != null) badges.add(vcodec);
+    final acodec = item.audioCodec?.toUpperCase();
+    if (acodec != null) badges.add(acodec);
+    final layout = item.channelLayout;
+    if (layout != null) badges.add(layout);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 2,
+          runSpacing: 4,
+          children: [
+            ...separated,
+            if (!_isCompact(context) && badges.isNotEmpty) ...[
+              Text(
+                ' \u2022 ',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  shadows: _textShadows,
+                ),
+              ),
+              ...badges.map((b) => _techChip(theme, b)),
+            ],
+          ],
+        ),
+        if (_isCompact(context) && badges.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: badges.map((b) => _techChip(theme, b)).toList(),
+            ),
+          ),
+      ],
     );
   }
 
@@ -701,42 +945,8 @@ class _MetadataRow extends StatelessWidget {
       ),
     );
   }
-}
 
-class _TechBadgeRow extends StatelessWidget {
-  final AggregatedItem item;
-
-  const _TechBadgeRow({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final badges = <String>[];
-
-    final res = item.videoResolution;
-    if (res != null) badges.add(res);
-
-    final hdr = item.hdrType;
-    if (hdr != null) badges.add(hdr);
-
-    final vcodec = item.videoCodec?.toUpperCase();
-    if (vcodec != null) badges.add(vcodec);
-
-    final acodec = item.audioCodec?.toUpperCase();
-    if (acodec != null) badges.add(acodec);
-
-    final layout = item.channelLayout;
-    if (layout != null) badges.add(layout);
-
-    if (badges.isEmpty) return const SizedBox.shrink();
-
-    return Wrap(
-      spacing: 6,
-      runSpacing: 4,
-      children: badges.map((b) => _chip(context, b)).toList(),
-    );
-  }
-
-  Widget _chip(BuildContext context, String label) {
+  Widget _techChip(ThemeData theme, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -745,10 +955,10 @@ class _TechBadgeRow extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.8),
-              fontWeight: FontWeight.w600,
-            ),
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: Colors.white.withValues(alpha: 0.8),
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -770,67 +980,68 @@ class _ActionButtons extends StatelessWidget {
         .where((s) => s['Type'] == 'Subtitle')
         .toList();
 
-    return Wrap(
-      spacing: 10,
-      runSpacing: 8,
-      children: [
-        FilledButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.play_arrow),
-          label: Text(hasProgress ? 'Resume' : 'Play'),
-          style: FilledButton.styleFrom(
-            backgroundColor: const Color(0xFF00A4DC),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          ),
-        ),
-        if (hasProgress)
-          OutlinedButton.icon(
+    return Center(
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 12,
+        alignment: WrapAlignment.center,
+        children: [
+          if (hasProgress)
+            _DetailActionButton(
+              label: 'Resume',
+              icon: Icons.play_arrow,
+              onPressed: () {},
+            ),
+          _DetailActionButton(
+            label: hasProgress ? 'Restart' : 'Play',
+            icon: hasProgress ? Icons.restart_alt : Icons.play_arrow,
             onPressed: () {},
-            icon: const Icon(Icons.restart_alt),
-            label: const Text('Play from Start'),
-            style: _outlinedStyle(),
           ),
-        if (audioStreams.length > 1)
-          OutlinedButton.icon(
-            onPressed: () => _showAudioSelector(context, audioStreams),
-            icon: const Icon(Icons.audiotrack),
-            label: const Text('Audio'),
-            style: _outlinedStyle(),
+          if (audioStreams.length > 1)
+            _DetailActionButton(
+              label: 'Audio',
+              icon: Icons.audiotrack,
+              onPressed: () => _showAudioSelector(context, audioStreams),
+            ),
+          if (subtitleStreams.isNotEmpty)
+            _DetailActionButton(
+              label: 'Subtitles',
+              icon: Icons.subtitles,
+              onPressed: () => _showSubtitleSelector(context, subtitleStreams),
+            ),
+          if (item.remoteTrailers.isNotEmpty)
+            _DetailActionButton(
+              label: 'Trailer',
+              icon: Icons.movie_outlined,
+              onPressed: () {},
+            ),
+          _DetailActionButton(
+            label: item.isPlayed ? 'Watched' : 'Unwatched',
+            icon: Icons.check_circle,
+            onPressed: viewModel.togglePlayed,
+            isActive: item.isPlayed,
+            activeColor: const Color(0xFF2196F3),
           ),
-        if (subtitleStreams.isNotEmpty)
-          OutlinedButton.icon(
-            onPressed: () => _showSubtitleSelector(context, subtitleStreams),
-            icon: const Icon(Icons.subtitles),
-            label: const Text('Subtitles'),
-            style: _outlinedStyle(),
+          _DetailActionButton(
+            label: item.isFavorite ? 'Favorited' : 'Favorite',
+            icon: Icons.favorite,
+            onPressed: viewModel.toggleFavorite,
+            isActive: item.isFavorite,
+            activeColor: const Color(0xFFFF4757),
           ),
-        if (item.remoteTrailers.isNotEmpty)
-          OutlinedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.movie_outlined),
-            label: const Text('Trailer'),
-            style: _outlinedStyle(),
+          _DetailActionButton(
+            label: 'Playlist',
+            icon: Icons.playlist_add,
+            onPressed: () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
           ),
-        OutlinedButton.icon(
-          onPressed: viewModel.toggleFavorite,
-          icon: Icon(item.isFavorite ? Icons.favorite : Icons.favorite_border),
-          label: Text(item.isFavorite ? 'Favorited' : 'Favorite'),
-          style: _outlinedStyle(),
-        ),
-        OutlinedButton.icon(
-          onPressed: viewModel.togglePlayed,
-          icon: Icon(item.isPlayed ? Icons.check_circle : Icons.check_circle_outline),
-          label: Text(item.isPlayed ? 'Watched' : 'Unwatched'),
-          style: _outlinedStyle(),
-        ),
-        OutlinedButton.icon(
-          onPressed: () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
-          icon: const Icon(Icons.playlist_add),
-          label: const Text('Playlist'),
-          style: _outlinedStyle(),
-        ),
-      ],
+          if (item.type == 'Episode' && item.seriesId != null)
+            _DetailActionButton(
+              label: 'Go to Series',
+              icon: Icons.tv,
+              onPressed: () => context.push(Destinations.item(item.seriesId!)),
+            ),
+        ],
+      ),
     );
   }
 
@@ -866,11 +1077,85 @@ class _ActionButtons extends StatelessWidget {
     );
   }
 
-  ButtonStyle _outlinedStyle() {
-    return OutlinedButton.styleFrom(
-      foregroundColor: Colors.white,
-      side: BorderSide(color: Colors.white.withValues(alpha: 0.4)),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+}
+
+class _DetailActionButton extends StatefulWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool isActive;
+  final Color? activeColor;
+
+  const _DetailActionButton({
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+    this.isActive = false,
+    this.activeColor,
+  });
+
+  @override
+  State<_DetailActionButton> createState() => _DetailActionButtonState();
+}
+
+class _DetailActionButtonState extends State<_DetailActionButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = _isCompact(context);
+    final iconColor = widget.isActive
+        ? (widget.activeColor ?? Colors.white)
+        : Colors.white;
+
+    final activeColor = widget.isActive ? widget.activeColor : null;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onPressed,
+        child: SizedBox(
+          width: isMobile ? 64 : 80,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: isMobile ? 44 : 52,
+                height: isMobile ? 44 : 52,
+                decoration: BoxDecoration(
+                  color: activeColor != null
+                      ? activeColor.withValues(alpha: _hovered ? 0.25 : 0.15)
+                      : (_hovered
+                          ? Colors.white.withValues(alpha: 0.15)
+                          : Colors.white.withValues(alpha: 0.08)),
+                  border: Border.all(
+                    color: activeColor?.withValues(alpha: 0.4) ??
+                        Colors.white.withValues(alpha: 0.15),
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  widget.icon,
+                  color: iconColor,
+                  size: isMobile ? 20 : 22,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                widget.label,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.w600,
+                    ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -888,6 +1173,7 @@ class _SectionHeader extends StatelessWidget {
             color: Colors.white,
             fontWeight: FontWeight.bold,
             shadows: _textShadows,
+            fontSize: _isCompact(context) ? 17 : null,
           ),
     );
   }
@@ -901,12 +1187,16 @@ class _CastRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = _isCompact(context);
+    final cardWidth = isMobile ? 80.0 : 100.0;
+    final avatarRadius = isMobile ? 35.0 : 45.0;
+
     return SizedBox(
-      height: 160,
+      height: isMobile ? 130 : 160,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: people.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
+        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 12 : 16),
         itemBuilder: (context, index) {
           final person = people[index];
           final name = person['Name'] as String? ?? '';
@@ -916,23 +1206,23 @@ class _CastRow extends StatelessWidget {
 
           String? imageUrl;
           if (personId != null && tag != null) {
-            imageUrl = imageApi.getPrimaryImageUrl(personId, maxHeight: 200, tag: tag);
+            imageUrl = imageApi.getPrimaryImageUrl(personId, maxHeight: isMobile ? 140 : 200, tag: tag);
           }
 
           return GestureDetector(
-            onTap: personId != null ? () => context.go(Destinations.item(personId)) : null,
+            onTap: personId != null ? () => context.push(Destinations.item(personId)) : null,
             child: SizedBox(
-              width: 100,
+              width: cardWidth,
               child: Column(
                 children: [
                   CircleAvatar(
-                    radius: 45,
+                    radius: avatarRadius,
                     backgroundColor: Colors.white.withValues(alpha: 0.1),
                     backgroundImage: imageUrl != null
                         ? CachedNetworkImageProvider(imageUrl)
                         : null,
                     child: imageUrl == null
-                        ? const Icon(Icons.person, color: Colors.white54, size: 32)
+                        ? Icon(Icons.person, color: Colors.white54, size: isMobile ? 24 : 32)
                         : null,
                   ),
                   const SizedBox(height: 8),
@@ -941,6 +1231,7 @@ class _CastRow extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
+                          fontSize: isMobile ? 11 : null,
                         ),
                     textAlign: TextAlign.center,
                     maxLines: 2,
@@ -951,7 +1242,7 @@ class _CastRow extends StatelessWidget {
                       role,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.white.withValues(alpha: 0.6),
-                            fontSize: 11,
+                            fontSize: isMobile ? 10 : 11,
                           ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
@@ -977,13 +1268,15 @@ class _SimilarRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
+    final isMobile = _isCompact(context);
+    final cardWidth = isMobile ? 120.0 : 150.0;
 
     return SizedBox(
-      height: 240,
+      height: isMobile ? 210 : 260,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final item = items[index];
           final ar = MediaCard.aspectRatioForType(item.type);
@@ -992,18 +1285,18 @@ class _SimilarRow extends StatelessWidget {
             imageUrl: item.primaryImageTag != null
                 ? imageApi.getPrimaryImageUrl(
                     item.id,
-                    maxHeight: 400,
+                    maxHeight: isMobile ? 300 : 400,
                     tag: item.primaryImageTag,
                   )
                 : null,
-            width: 150,
+            width: cardWidth,
             aspectRatio: ar,
             isFavorite: item.isFavorite,
             isPlayed: item.isPlayed,
             playedPercentage: item.playedPercentage,
             watchedBehavior: watchedBehavior,
             itemType: item.type,
-            onTap: () => context.go(Destinations.item(item.id)),
+            onTap: () => context.push(Destinations.item(item.id)),
           );
         },
       ),
@@ -1011,65 +1304,127 @@ class _SimilarRow extends StatelessWidget {
   }
 }
 
-class _ExtendedInfo extends StatelessWidget {
+class _MetadataSection extends StatelessWidget {
   final ItemDetailViewModel viewModel;
 
-  const _ExtendedInfo({required this.viewModel});
+  const _MetadataSection({required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
     final item = viewModel.item!;
-    final theme = Theme.of(context);
-    final labelStyle = theme.textTheme.bodySmall?.copyWith(
-      color: Colors.white.withValues(alpha: 0.5),
-      fontWeight: FontWeight.w600,
-    );
-    final valueStyle = theme.textTheme.bodySmall?.copyWith(
-      color: Colors.white.withValues(alpha: 0.9),
-    );
+    final entries = <MapEntry<String, String>>[];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _SectionHeader(title: 'Details'),
-        const SizedBox(height: 12),
-        if (viewModel.directors.isNotEmpty)
-          _infoLine(
-            'Director',
-            viewModel.directors.map((d) => d['Name'] as String).join(', '),
-            labelStyle!,
-            valueStyle!,
-          ),
-        if (viewModel.writers.isNotEmpty)
-          _infoLine(
-            'Writers',
-            viewModel.writers.map((w) => w['Name'] as String).join(', '),
-            labelStyle!,
-            valueStyle!,
-          ),
-        if (item.studios.isNotEmpty)
-          _infoLine(
-            'Studio',
-            item.studios.map((s) => s['Name'] as String).join(', '),
-            labelStyle!,
-            valueStyle!,
-          ),
-      ],
-    );
-  }
+    if (viewModel.directors.isNotEmpty) {
+      entries.add(MapEntry('DIRECTOR', viewModel.directors.map((d) => d['Name'] as String).join(', ')));
+    }
+    if (viewModel.writers.isNotEmpty) {
+      entries.add(MapEntry('WRITERS', viewModel.writers.map((w) => w['Name'] as String).join(', ')));
+    }
+    if (item.studios.isNotEmpty) {
+      final studioNames = item.studios.map((s) => s['Name'] as String).toList();
+      final display = studioNames.length > 5
+          ? '${studioNames.take(5).join(', ')} +${studioNames.length - 5} more'
+          : studioNames.join(', ');
+      entries.add(MapEntry('STUDIO', display));
+    }
 
-  Widget _infoLine(String label, String value, TextStyle labelStyle, TextStyle valueStyle) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(label, style: labelStyle),
-          ),
-          Expanded(child: Text(value, style: valueStyle)),
-        ],
+    if (entries.isEmpty) return const SizedBox.shrink();
+
+    final isMobile = _isCompact(context);
+    final cellPadding = isMobile
+        ? const EdgeInsets.symmetric(horizontal: 12, vertical: 10)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: isMobile
+          ? Wrap(
+              children: entries.asMap().entries.map((e) {
+                final entry = e.value;
+                return FractionallySizedBox(
+                  widthFactor: entries.length <= 2 ? 1.0 : 0.5,
+                  child: Padding(
+                    padding: cellPadding,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.key,
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                color: Colors.white.withValues(alpha: 0.4),
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 1.0,
+                                fontSize: 10,
+                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          entry.value,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Colors.white.withValues(alpha: 0.9),
+                                fontSize: 12,
+                              ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            )
+          : IntrinsicHeight(
+        child: Row(
+          children: [
+            ...entries.asMap().entries.map((e) {
+              final index = e.key;
+              final entry = e.value;
+              return Expanded(
+                child: Row(
+                  children: [
+                    if (index > 0)
+                      Container(
+                        width: 1,
+                        color: Colors.white.withValues(alpha: 0.08),
+                      ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              entry.key,
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.4),
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1.0,
+                                  ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              entry.value,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                  ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -1124,13 +1479,15 @@ class _SeasonsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
+    final isMobile = _isCompact(context);
+    final cardWidth = isMobile ? 120.0 : 150.0;
 
     return SizedBox(
-      height: 280,
+      height: isMobile ? 220 : 280,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: seasons.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final season = seasons[index];
           return MediaCard(
@@ -1139,17 +1496,17 @@ class _SeasonsRow extends StatelessWidget {
             imageUrl: season.primaryImageTag != null
                 ? imageApi.getPrimaryImageUrl(
                     season.id,
-                    maxHeight: 400,
+                    maxHeight: isMobile ? 300 : 400,
                     tag: season.primaryImageTag,
                   )
                 : null,
-            width: 150,
+            width: cardWidth,
             aspectRatio: 2 / 3,
             isPlayed: season.isPlayed,
             unplayedCount: season.unplayedItemCount,
             watchedBehavior: watchedBehavior,
             itemType: season.type,
-            onTap: () => context.go(Destinations.item(season.id)),
+            onTap: () => context.push(Destinations.item(season.id)),
           );
         },
       ),
@@ -1166,6 +1523,132 @@ class _SeasonsRow extends StatelessWidget {
   }
 }
 
+class _EpisodesRow extends StatelessWidget {
+  final List<AggregatedItem> episodes;
+  final String currentEpisodeId;
+  final ImageApi imageApi;
+
+  const _EpisodesRow({
+    required this.episodes,
+    required this.currentEpisodeId,
+    required this.imageApi,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = _isCompact(context);
+
+    return SizedBox(
+      height: isMobile ? 150 : 180,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: episodes.length,
+        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        itemBuilder: (context, index) {
+          final ep = episodes[index];
+          final isCurrent = ep.id == currentEpisodeId;
+          final epNum = ep.indexNumber;
+          final runtime = ep.runtime;
+          final runtimeText = runtime != null
+              ? (runtime.inHours > 0
+                  ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
+                  : '${runtime.inMinutes}m')
+              : null;
+
+          return GestureDetector(
+            onTap: () => context.push(Destinations.item(ep.id)),
+            child: Container(
+              width: isMobile ? 180.0 : 220.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: isCurrent
+                    ? Border.all(color: const Color(0xFF00A4DC), width: 2)
+                    : null,
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: isMobile ? 100 : 124,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        if (ep.primaryImageTag != null)
+                          CachedNetworkImage(
+                            imageUrl: imageApi.getPrimaryImageUrl(
+                              ep.id,
+                              maxHeight: 250,
+                              tag: ep.primaryImageTag,
+                            ),
+                            fit: BoxFit.cover,
+                            errorWidget: (_, __, ___) => Container(
+                              color: Colors.white.withValues(alpha: 0.05),
+                              child: const Icon(Icons.movie, color: Colors.white24, size: 32),
+                            ),
+                          )
+                        else
+                          Container(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            child: const Icon(Icons.movie, color: Colors.white24, size: 32),
+                          ),
+                        if ((ep.playedPercentage ?? 0) > 0)
+                          _EpisodeProgressBar(percentage: ep.playedPercentage!),
+                        if (ep.isPlayed && (ep.playedPercentage ?? 0) == 0)
+                          const Positioned(
+                            top: 6,
+                            right: 6,
+                            child: Icon(Icons.check_circle, color: Colors.green, size: 18),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
+                    child: Row(
+                      children: [
+                        if (epNum != null)
+                          Text(
+                            'E$epNum',
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        if (epNum != null) const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            ep.name,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (runtimeText != null) ...[
+                          const SizedBox(width: 4),
+                          Text(
+                            runtimeText,
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 class _NextUpCard extends StatelessWidget {
   final AggregatedItem episode;
   final ImageApi imageApi;
@@ -1179,10 +1662,12 @@ class _NextUpCard extends StatelessWidget {
     final label = s != null && e != null ? 'S${s}E$e' : null;
     final subtitle = [if (label != null) label, episode.name].join(' - ');
 
+    final isMobile = _isCompact(context);
+
     return GestureDetector(
-      onTap: () => context.go(Destinations.item(episode.id)),
+      onTap: () => context.push(Destinations.item(episode.id)),
       child: Container(
-        height: 120,
+        height: isMobile ? 100.0 : 120.0,
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(8),
@@ -1191,7 +1676,7 @@ class _NextUpCard extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 213,
+              width: isMobile ? 178.0 : 213.0,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -1265,10 +1750,12 @@ class _EpisodeCard extends StatelessWidget {
             : '${runtime.inMinutes}m')
         : null;
 
+    final isMobile = _isCompact(context);
+
     return GestureDetector(
-      onTap: () => context.go(Destinations.item(episode.id)),
+      onTap: () => context.push(Destinations.item(episode.id)),
       child: Container(
-        height: 110,
+        height: isMobile ? 90.0 : 110.0,
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(8),
@@ -1277,7 +1764,7 @@ class _EpisodeCard extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 196,
+              width: isMobile ? 160.0 : 196.0,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -1359,44 +1846,6 @@ class _EpisodeCard extends StatelessWidget {
   }
 }
 
-class _EpisodeNavigationRow extends StatelessWidget {
-  final AggregatedItem item;
-
-  const _EpisodeNavigationRow({required this.item});
-
-  static final _navButtonStyle = OutlinedButton.styleFrom(
-    foregroundColor: Colors.white,
-    side: BorderSide(color: Colors.white.withValues(alpha: 0.4)),
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 10,
-      runSpacing: 8,
-      children: [
-        if (item.seriesId != null)
-          OutlinedButton.icon(
-            onPressed: () => context.go(Destinations.item(item.seriesId!)),
-            icon: const Icon(Icons.tv),
-            label: Text(item.seriesName ?? 'Go to Series'),
-            style: _navButtonStyle,
-          ),
-        if (item.seasonId != null)
-          OutlinedButton.icon(
-            onPressed: () => context.go(Destinations.item(item.seasonId!)),
-            icon: const Icon(Icons.list),
-            label: Text(item.parentIndexNumber != null
-                ? 'Season ${item.parentIndexNumber}'
-                : 'Go to Season'),
-            style: _navButtonStyle,
-          ),
-      ],
-    );
-  }
-}
-
 class _PersonHeader extends StatelessWidget {
   final AggregatedItem item;
   final ImageApi imageApi;
@@ -1406,56 +1855,69 @@ class _PersonHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isMobile = _isCompact(context);
     String? imageUrl;
     if (item.primaryImageTag != null) {
       imageUrl = imageApi.getPrimaryImageUrl(item.id, maxHeight: 400, tag: item.primaryImageTag);
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 80),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 80,
-            backgroundColor: Colors.white.withValues(alpha: 0.1),
-            backgroundImage: imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
-            child: imageUrl == null
-                ? const Icon(Icons.person, color: Colors.white54, size: 64)
-                : null,
+    final avatarRadius = isMobile ? 60.0 : 80.0;
+    final avatar = CircleAvatar(
+      radius: avatarRadius,
+      backgroundColor: Colors.white.withValues(alpha: 0.1),
+      backgroundImage: imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
+      child: imageUrl == null
+          ? Icon(Icons.person, color: Colors.white54, size: isMobile ? 48 : 64)
+          : null,
+    );
+
+    final info = Column(
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        if (!isMobile) const SizedBox(height: 16),
+        Text(
+          item.name,
+          style: (isMobile ? theme.textTheme.headlineSmall : theme.textTheme.headlineLarge)?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            shadows: _textShadows,
           ),
-          const SizedBox(width: 32),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  item.name,
-                  style: theme.textTheme.headlineLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: _textShadows,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _PersonDates(item: item),
-                if (item.productionLocations.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      item.productionLocations.first,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        shadows: _textShadows,
-                      ),
-                    ),
-                  ),
-              ],
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        const SizedBox(height: 8),
+        _PersonDates(item: item),
+        if (item.productionLocations.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              item.productionLocations.first,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white.withValues(alpha: 0.7),
+                shadows: _textShadows,
+              ),
             ),
           ),
-        ],
-      ),
+      ],
+    );
+
+    return Padding(
+      padding: EdgeInsets.only(top: isMobile ? 60 : 80),
+      child: isMobile
+          ? Column(
+              children: [
+                avatar,
+                const SizedBox(height: 16),
+                info,
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                avatar,
+                const SizedBox(width: 32),
+                Expanded(child: info),
+              ],
+            ),
     );
   }
 }
@@ -1564,13 +2026,15 @@ class _FilmographyRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
+    final isMobile = _isCompact(context);
+    final cardWidth = isMobile ? 120.0 : 150.0;
 
     return SizedBox(
-      height: 280,
+      height: isMobile ? 220 : 280,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final item = items[index];
           final year = item.productionYear;
@@ -1579,16 +2043,16 @@ class _FilmographyRow extends StatelessWidget {
             title: item.name,
             subtitle: year?.toString(),
             imageUrl: item.primaryImageTag != null
-                ? imageApi.getPrimaryImageUrl(item.id, maxHeight: 400, tag: item.primaryImageTag)
+                ? imageApi.getPrimaryImageUrl(item.id, maxHeight: isMobile ? 300 : 400, tag: item.primaryImageTag)
                 : null,
-            width: 150,
+            width: cardWidth,
             aspectRatio: 2 / 3,
             isFavorite: item.isFavorite,
             isPlayed: item.isPlayed,
             playedPercentage: item.playedPercentage,
             watchedBehavior: watchedBehavior,
             itemType: item.type,
-            onTap: () => context.go(Destinations.item(item.id)),
+            onTap: () => context.push(Destinations.item(item.id)),
           );
         },
       ),
@@ -1605,53 +2069,66 @@ class _ArtistHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isMobile = _isCompact(context);
     String? imageUrl;
     if (item.primaryImageTag != null) {
       imageUrl = imageApi.getPrimaryImageUrl(item.id, maxHeight: 400, tag: item.primaryImageTag);
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 80),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 80,
-            backgroundColor: Colors.white.withValues(alpha: 0.1),
-            backgroundImage: imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
-            child: imageUrl == null
-                ? const Icon(Icons.music_note, color: Colors.white54, size: 64)
-                : null,
+    final avatarRadius = isMobile ? 60.0 : 80.0;
+    final avatar = CircleAvatar(
+      radius: avatarRadius,
+      backgroundColor: Colors.white.withValues(alpha: 0.1),
+      backgroundImage: imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
+      child: imageUrl == null
+          ? Icon(Icons.music_note, color: Colors.white54, size: isMobile ? 48 : 64)
+          : null,
+    );
+
+    final info = Column(
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        if (!isMobile) const SizedBox(height: 16),
+        Text(
+          item.name,
+          style: (isMobile ? theme.textTheme.headlineSmall : theme.textTheme.headlineLarge)?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            shadows: _textShadows,
           ),
-          const SizedBox(width: 32),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  item.name,
-                  style: theme.textTheme.headlineLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: _textShadows,
-                  ),
-                ),
-                if (item.genres.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    item.genres.join(' \u2022 '),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.7),
-                      shadows: _textShadows,
-                    ),
-                  ),
-                ],
-              ],
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        if (item.genres.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            item.genres.join(' \u2022 '),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white.withValues(alpha: 0.7),
+              shadows: _textShadows,
             ),
           ),
         ],
-      ),
+      ],
+    );
+
+    return Padding(
+      padding: EdgeInsets.only(top: isMobile ? 60 : 80),
+      child: isMobile
+          ? Column(
+              children: [
+                avatar,
+                const SizedBox(height: 16),
+                info,
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                avatar,
+                const SizedBox(width: 32),
+                Expanded(child: info),
+              ],
+            ),
     );
   }
 }
@@ -1665,78 +2142,91 @@ class _AlbumHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isMobile = _isCompact(context);
+    final albumSize = isMobile ? 150.0 : 200.0;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 80),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: item.primaryImageTag != null
-                ? CachedNetworkImage(
-                    imageUrl: imageApi.getPrimaryImageUrl(
-                      item.id,
-                      maxHeight: 400,
-                      tag: item.primaryImageTag,
-                    ),
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
-                    errorWidget: (_, __, ___) => _albumPlaceholder(),
-                  )
-                : _albumPlaceholder(),
+    final albumArt = ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: item.primaryImageTag != null
+          ? CachedNetworkImage(
+              imageUrl: imageApi.getPrimaryImageUrl(
+                item.id,
+                maxHeight: 400,
+                tag: item.primaryImageTag,
+              ),
+              width: albumSize,
+              height: albumSize,
+              fit: BoxFit.cover,
+              errorWidget: (_, __, ___) => _albumPlaceholder(albumSize),
+            )
+          : _albumPlaceholder(albumSize),
+    );
+
+    final info = Column(
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        if (!isMobile) const SizedBox(height: 16),
+        Text(
+          item.name,
+          style: (isMobile ? theme.textTheme.headlineSmall : theme.textTheme.headlineLarge)?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            shadows: _textShadows,
           ),
-          const SizedBox(width: 32),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  item.name,
-                  style: theme.textTheme.headlineLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: _textShadows,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (item.albumArtist != null) ...[
-                  const SizedBox(height: 4),
-                  GestureDetector(
-                    onTap: () {
-                      final artistId = item.albumArtists.isNotEmpty
-                          ? item.albumArtists.first['Id'] as String?
-                          : null;
-                      if (artistId != null) {
-                        context.go(Destinations.item(artistId));
-                      }
-                    },
-                    child: Text(
-                      item.albumArtist!,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: const Color(0xFF00A4DC),
-                        shadows: _textShadows,
-                      ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 8),
-                _AlbumMeta(item: item),
-              ],
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        if (item.albumArtist != null) ...[
+          const SizedBox(height: 4),
+          GestureDetector(
+            onTap: () {
+              final artistId = item.albumArtists.isNotEmpty
+                  ? item.albumArtists.first['Id'] as String?
+                  : null;
+              if (artistId != null) {
+                context.push(Destinations.item(artistId));
+              }
+            },
+            child: Text(
+              item.albumArtist!,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: const Color(0xFF00A4DC),
+                shadows: _textShadows,
+              ),
             ),
           ),
         ],
-      ),
+        const SizedBox(height: 8),
+        _AlbumMeta(item: item),
+      ],
+    );
+
+    return Padding(
+      padding: EdgeInsets.only(top: isMobile ? 60 : 80),
+      child: isMobile
+          ? Column(
+              children: [
+                albumArt,
+                const SizedBox(height: 16),
+                info,
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                albumArt,
+                const SizedBox(width: 32),
+                Expanded(child: info),
+              ],
+            ),
     );
   }
 
-  Widget _albumPlaceholder() {
+  Widget _albumPlaceholder(double size) {
     return Container(
-      width: 200,
-      height: 200,
+      width: size,
+      height: size,
       color: Colors.white.withValues(alpha: 0.1),
       child: const Icon(Icons.album, color: Colors.white24, size: 64),
     );
@@ -1780,26 +2270,28 @@ class _AlbumsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
+    final isMobile = _isCompact(context);
+    final cardWidth = isMobile ? 120.0 : 150.0;
 
     return SizedBox(
-      height: 220,
+      height: isMobile ? 180 : 220,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: albums.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final album = albums[index];
           return MediaCard(
             title: album.name,
             subtitle: album.productionYear?.toString(),
             imageUrl: album.primaryImageTag != null
-                ? imageApi.getPrimaryImageUrl(album.id, maxHeight: 300, tag: album.primaryImageTag)
+                ? imageApi.getPrimaryImageUrl(album.id, maxHeight: isMobile ? 240 : 300, tag: album.primaryImageTag)
                 : null,
-            width: 150,
+            width: cardWidth,
             aspectRatio: 1.0,
             watchedBehavior: watchedBehavior,
             itemType: album.type,
-            onTap: () => context.go(Destinations.item(album.id)),
+            onTap: () => context.push(Destinations.item(album.id)),
           );
         },
       ),

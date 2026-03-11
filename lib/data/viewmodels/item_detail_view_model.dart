@@ -93,9 +93,14 @@ class ItemDetailViewModel extends ChangeNotifier {
       futures.add(_loadRatings());
       futures.add(_loadSeasons());
       futures.add(_loadNextUp());
+      futures.add(_loadSimilar());
     } else if (type == 'Season') {
       futures.add(_loadRatings());
       futures.add(_loadEpisodes());
+    } else if (type == 'Episode') {
+      futures.add(_loadRatings());
+      futures.add(_loadEpisodes());
+      futures.add(_loadSimilar());
     } else if (type == 'MusicArtist') {
       futures.add(_loadAlbums());
       futures.add(_loadSimilar());
@@ -126,7 +131,7 @@ class ItemDetailViewModel extends ChangeNotifier {
     try {
       final data = await _client.itemsApi.getEpisodes(
         seriesId,
-        seasonId: item.type == 'Season' ? itemId : null,
+        seasonId: item.type == 'Season' ? itemId : item.seasonId,
       );
       final items = (data['Items'] as List?) ?? [];
       _episodes = _mapItems(items);
@@ -309,4 +314,10 @@ class ItemDetailViewModel extends ChangeNotifier {
 
   List<Map<String, dynamic>> get actors =>
       _item?.people.where((p) => p['Type'] == 'Actor').toList() ?? const [];
+
+  List<AggregatedItem> get filmographyMovies =>
+      _filmography.where((i) => i.type == 'Movie').toList();
+
+  List<AggregatedItem> get filmographySeries =>
+      _filmography.where((i) => i.type == 'Series').toList();
 }

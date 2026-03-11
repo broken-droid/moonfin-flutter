@@ -209,10 +209,11 @@ class _MediaBarState extends State<MediaBar> with TickerProviderStateMixin {
                   ratings: widget.viewModel.ratingsFor(
                     items.elementAtOrNull(_currentIndex)?.itemId ?? '',
                   ),
-                  baseUrl: widget.viewModel.baseUrl,
                   enableAdditionalRatings: widget.prefs.get(
                     UserPreferences.enableAdditionalRatings,
                   ),
+                  enabledRatings: widget.prefs.get(UserPreferences.enabledRatings),
+                  blockedRatings: widget.prefs.get(UserPreferences.blockedRatings),
                 ),
                 if (items.length > 1)
                   _IndicatorDots(
@@ -345,8 +346,9 @@ class _ContentOverlay extends StatelessWidget {
   final Color overlayColor;
   final double overlayOpacity;
   final Map<String, double> ratings;
-  final String baseUrl;
   final bool enableAdditionalRatings;
+  final String enabledRatings;
+  final String blockedRatings;
 
   const _ContentOverlay({
     required this.items,
@@ -354,8 +356,9 @@ class _ContentOverlay extends StatelessWidget {
     required this.overlayColor,
     required this.overlayOpacity,
     required this.ratings,
-    required this.baseUrl,
     required this.enableAdditionalRatings,
+    required this.enabledRatings,
+    required this.blockedRatings,
   });
 
   @override
@@ -375,8 +378,9 @@ class _ContentOverlay extends StatelessWidget {
           overlayColor: overlayColor,
           overlayOpacity: overlayOpacity,
           ratings: ratings,
-          baseUrl: baseUrl,
           enableAdditionalRatings: enableAdditionalRatings,
+          enabledRatings: enabledRatings,
+          blockedRatings: blockedRatings,
         ),
       ),
     );
@@ -388,8 +392,9 @@ class _SlideInfo extends StatelessWidget {
   final Color overlayColor;
   final double overlayOpacity;
   final Map<String, double> ratings;
-  final String baseUrl;
   final bool enableAdditionalRatings;
+  final String enabledRatings;
+  final String blockedRatings;
 
   const _SlideInfo({
     super.key,
@@ -397,8 +402,9 @@ class _SlideInfo extends StatelessWidget {
     required this.overlayColor,
     required this.overlayOpacity,
     required this.ratings,
-    required this.baseUrl,
     required this.enableAdditionalRatings,
+    required this.enabledRatings,
+    required this.blockedRatings,
   });
 
   @override
@@ -443,10 +449,11 @@ class _SlideInfo extends StatelessWidget {
             const SizedBox(height: 6),
             RatingsRow(
               ratings: ratings,
-              baseUrl: baseUrl,
               communityRating: item.communityRating,
               criticRating: item.criticRating,
               enableAdditionalRatings: enableAdditionalRatings,
+              enabledRatings: enabledRatings,
+              blockedRatings: blockedRatings,
             ),
           ],
           if (item.overview != null) ...[

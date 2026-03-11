@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -202,7 +203,7 @@ final appRouter = GoRouter(
       path: Destinations.itemDetail,
       builder: (context, state) {
         final itemId = state.pathParameters['itemId']!;
-        return ItemDetailScreen(itemId: itemId);
+        return ItemDetailScreen(key: ValueKey(itemId), itemId: itemId);
       },
       routes: [
         GoRoute(

@@ -138,8 +138,9 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                 totalCount: _vm.totalCount,
                 focusedItem: _vm.focusedItem,
                 focusedRatings: _vm.focusedRatings,
-                baseUrl: GetIt.instance<MediaServerClient>().baseUrl,
                 enableAdditionalRatings: _prefs.get(UserPreferences.enableAdditionalRatings),
+                enabledRatings: _prefs.get(UserPreferences.enabledRatings),
+                blockedRatings: _prefs.get(UserPreferences.blockedRatings),
                 sortBy: _vm.sortBy,
                 letterFilter: _vm.letterFilter,
                 onHome: () => context.go(Destinations.home),
@@ -298,8 +299,9 @@ class _LibraryHeader extends StatelessWidget {
   final int totalCount;
   final AggregatedItem? focusedItem;
   final Map<String, double> focusedRatings;
-  final String baseUrl;
   final bool enableAdditionalRatings;
+  final String enabledRatings;
+  final String blockedRatings;
   final LibrarySortBy sortBy;
   final String letterFilter;
   final VoidCallback onHome;
@@ -312,8 +314,9 @@ class _LibraryHeader extends StatelessWidget {
     required this.totalCount,
     this.focusedItem,
     this.focusedRatings = const {},
-    required this.baseUrl,
     this.enableAdditionalRatings = false,
+    this.enabledRatings = 'tomatoes,stars',
+    this.blockedRatings = '',
     required this.sortBy,
     required this.letterFilter,
     required this.onHome,
@@ -331,7 +334,6 @@ class _LibraryHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Library name + item count
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -356,15 +358,14 @@ class _LibraryHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          // Focused item HUD
           _FocusedItemHud(
             item: focusedItem,
             ratings: focusedRatings,
-            baseUrl: baseUrl,
             enableAdditionalRatings: enableAdditionalRatings,
+            enabledRatings: enabledRatings,
+            blockedRatings: blockedRatings,
           ),
           const SizedBox(height: 6),
-          // Toolbar + letter picker
           Row(
             children: [
               _ToolbarButton(
@@ -401,14 +402,16 @@ class _LibraryHeader extends StatelessWidget {
 class _FocusedItemHud extends StatelessWidget {
   final AggregatedItem? item;
   final Map<String, double> ratings;
-  final String baseUrl;
   final bool enableAdditionalRatings;
+  final String enabledRatings;
+  final String blockedRatings;
 
   const _FocusedItemHud({
     this.item,
     this.ratings = const {},
-    required this.baseUrl,
     this.enableAdditionalRatings = false,
+    this.enabledRatings = 'tomatoes,stars',
+    this.blockedRatings = '',
   });
 
   @override
@@ -437,10 +440,11 @@ class _FocusedItemHud extends StatelessWidget {
                 const SizedBox(height: 4),
                 RatingsRow(
                   ratings: ratings,
-                  baseUrl: baseUrl,
                   communityRating: item!.communityRating,
                   criticRating: item!.criticRating,
                   enableAdditionalRatings: enableAdditionalRatings,
+                  enabledRatings: enabledRatings,
+                  blockedRatings: blockedRatings,
                 ),
               ],
             ),

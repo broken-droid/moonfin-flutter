@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../data/services/rating_icon_provider.dart';
 
@@ -9,22 +8,35 @@ const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
 
 class RatingsRow extends StatelessWidget {
   final Map<String, double> ratings;
-  final String baseUrl;
   final double? communityRating;
   final int? criticRating;
   final bool enableAdditionalRatings;
+  final String enabledRatings;
+  final String blockedRatings;
 
   const RatingsRow({
     super.key,
     required this.ratings,
-    required this.baseUrl,
     this.communityRating,
     this.criticRating,
     this.enableAdditionalRatings = false,
+    this.enabledRatings = 'tomatoes,stars',
+    this.blockedRatings = '',
   });
 
   @override
   Widget build(BuildContext context) {
+    final enabled = enabledRatings
+        .split(',')
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toSet();
+    final blocked = blockedRatings
+        .split(',')
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toSet();
+
     final allRatings = LinkedHashMap<String, double>();
 
     if (communityRating != null) {
@@ -47,15 +59,15 @@ class RatingsRow extends StatelessWidget {
       runSpacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: allRatings.entries.where((e) {
-        if (!enableAdditionalRatings && e.key != 'stars' && e.key != 'tomatoes') {
-          return false;
+        if (blocked.contains(e.key)) return false;
+        if (!enableAdditionalRatings) {
+          return enabled.contains(e.key);
         }
         return true;
       }).map((e) {
         return _SingleRating(
           source: e.key,
           value: e.value,
-          baseUrl: baseUrl,
         );
       }).toList(),
     );
@@ -65,12 +77,10 @@ class RatingsRow extends StatelessWidget {
 class _SingleRating extends StatelessWidget {
   final String source;
   final double value;
-  final String baseUrl;
 
   const _SingleRating({
     required this.source,
     required this.value,
-    required this.baseUrl,
   });
 
   @override
@@ -91,7 +101,7 @@ class _SingleRating extends StatelessWidget {
           ),
           const SizedBox(width: 4),
         ] else ...[
-          _RatingIcon(source: source, value: value, baseUrl: baseUrl),
+          _RatingIcon(source: source, value: value),
           const SizedBox(width: 6),
         ],
         Text(
@@ -111,33 +121,25 @@ class _SingleRating extends StatelessWidget {
 class _RatingIcon extends StatelessWidget {
   final String source;
   final double value;
-  final String baseUrl;
 
   const _RatingIcon({
     required this.source,
     required this.value,
-    required this.baseUrl,
   });
 
   @override
   Widget build(BuildContext context) {
-    final iconUrl = RatingIconProvider.getIconUrl(
-      baseUrl,
+    final assetPath = RatingIconProvider.getIconAssetPath(
       source,
       value.toInt(),
     );
 
-    if (iconUrl == null) return const SizedBox.shrink();
+    if (assetPath == null) return const SizedBox.shrink();
 
-    return SizedBox(
-      width: 20,
+    return Image.asset(
+      assetPath,
       height: 20,
-      child: SvgPicture.network(
-        iconUrl,
-        width: 20,
-        height: 20,
-        placeholderBuilder: (_) => const SizedBox.shrink(),
-      ),
+      filterQuality: FilterQuality.medium,
     );
   }
 }
