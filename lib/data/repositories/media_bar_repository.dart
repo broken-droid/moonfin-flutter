@@ -43,7 +43,10 @@ class MediaBarRepository {
           allItems.addAll(results.expand((r) => r));
       }
 
-      final withBackdrops = allItems.where(_hasBackdrop).toList()..shuffle();
+      final withBackdrops = allItems
+          .where((item) => _hasBackdrop(item) && !_isBoxSet(item))
+          .toList()
+        ..shuffle();
       final selected = withBackdrops.take(maxItems).toList();
 
       if (selected.isEmpty) {
@@ -88,6 +91,10 @@ class MediaBarRepository {
   bool _hasBackdrop(Map<String, dynamic> item) {
     final tags = item['BackdropImageTags'] as List?;
     return tags != null && tags.isNotEmpty;
+  }
+
+  bool _isBoxSet(Map<String, dynamic> item) {
+    return item['Type'] == 'BoxSet';
   }
 
   MediaBarSlideItem _toSlideItem(Map<String, dynamic> data) {

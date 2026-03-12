@@ -29,18 +29,21 @@ abstract class ItemsApi {
     String? seriesId,
     String? parentId,
     int? limit,
+    String? fields,
   });
 
   Future<Map<String, dynamic>> getResumeItems({
     String? parentId,
     List<String>? includeItemTypes,
     int? limit,
+    String? fields,
   });
 
   Future<Map<String, dynamic>> getLatestItems({
     String? parentId,
     List<String>? includeItemTypes,
     int? limit,
+    String? fields,
   });
 
   Future<Map<String, dynamic>> getSeasons(String seriesId);

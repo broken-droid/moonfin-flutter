@@ -11,9 +11,9 @@ class RowDataSource {
 
   static const _fields =
       'PrimaryImageAspectRatio,BasicSyncInfo,Overview,Genres,CommunityRating,'
-      'OfficialRating,RunTimeTicks,ProductionYear,SeriesName,ParentIndexNumber,'
-      'IndexNumber,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,'
-      'ParentBackdropImageTags';
+      'CriticRating,OfficialRating,RunTimeTicks,ProductionYear,SeriesName,'
+      'ParentIndexNumber,IndexNumber,Status,ImageTags,BackdropImageTags,'
+      'ParentBackdropItemId,ParentBackdropImageTags,ProviderIds';
 
   RowDataSource(this._client);
 
@@ -23,6 +23,7 @@ class RowDataSource {
     final response = await _client.itemsApi.getResumeItems(
       includeItemTypes: ['Video'],
       limit: _defaultLimit,
+      fields: _fields,
     );
     return _buildRow(
       id: 'resume',
@@ -37,6 +38,7 @@ class RowDataSource {
     final response = await _client.itemsApi.getResumeItems(
       includeItemTypes: ['Audio'],
       limit: _defaultLimit,
+      fields: _fields,
     );
     return _buildRow(
       id: 'resumeAudio',
@@ -48,7 +50,10 @@ class RowDataSource {
   }
 
   Future<HomeRow> loadNextUp(String serverId) async {
-    final response = await _client.itemsApi.getNextUp(limit: _defaultLimit);
+    final response = await _client.itemsApi.getNextUp(
+      limit: _defaultLimit,
+      fields: _fields,
+    );
     return _buildRow(
       id: 'nextUp',
       title: 'Next Up',
@@ -66,6 +71,7 @@ class RowDataSource {
     final response = await _client.itemsApi.getLatestItems(
       parentId: parentId,
       limit: _defaultLimit,
+      fields: _fields,
     );
     return _buildRow(
       id: 'latest_$parentId',
@@ -113,6 +119,7 @@ class RowDataSource {
       parentId: parentId,
       includeItemTypes: ['Video'],
       limit: _defaultLimit,
+      fields: _fields,
     );
     return _buildRow(
       id: 'resume_$parentId',
@@ -130,6 +137,7 @@ class RowDataSource {
     final response = await _client.itemsApi.getNextUp(
       parentId: parentId,
       limit: _defaultLimit,
+      fields: _fields,
     );
     return _buildRow(
       id: 'nextUp_$parentId',

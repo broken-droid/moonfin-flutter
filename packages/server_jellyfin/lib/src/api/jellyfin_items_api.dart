@@ -78,11 +78,13 @@ class JellyfinItemsApi implements ItemsApi {
     String? seriesId,
     String? parentId,
     int? limit,
+    String? fields,
   }) async {
     final response = await _dio.get('/Shows/NextUp', queryParameters: {
       if (seriesId != null) 'SeriesId': seriesId,
       if (parentId != null) 'ParentId': parentId,
       if (limit != null) 'Limit': limit,
+      if (fields != null) 'Fields': fields,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -92,12 +94,14 @@ class JellyfinItemsApi implements ItemsApi {
     String? parentId,
     List<String>? includeItemTypes,
     int? limit,
+    String? fields,
   }) async {
     final response = await _dio.get('/Items/Resume', queryParameters: {
       if (parentId != null) 'ParentId': parentId,
       if (includeItemTypes != null)
         'IncludeItemTypes': includeItemTypes.join(','),
       if (limit != null) 'Limit': limit,
+      if (fields != null) 'Fields': fields,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -107,12 +111,14 @@ class JellyfinItemsApi implements ItemsApi {
     String? parentId,
     List<String>? includeItemTypes,
     int? limit,
+    String? fields,
   }) async {
     final response = await _dio.get('/Items/Latest', queryParameters: {
       if (parentId != null) 'ParentId': parentId,
       if (includeItemTypes != null)
         'IncludeItemTypes': includeItemTypes.join(','),
       if (limit != null) 'Limit': limit,
+      if (fields != null) 'Fields': fields,
     });
     final data = response.data;
     if (data is List) return {'Items': data, 'TotalRecordCount': data.length};

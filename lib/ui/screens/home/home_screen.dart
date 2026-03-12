@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -52,12 +52,13 @@ class _HomeShellState extends State<_HomeShell> {
   String? _backdropUrl;
   Timer? _selectionDebounce;
   Timer? _backdropDebounce;
+  Timer? _hoverPauseTimer;
   StreamSubscription<String?>? _backgroundSub;
+  bool _isHoverPaused = false;
+  bool _isScrolledToTop = true;
 
   static const _selectionDelay = Duration(milliseconds: 150);
   static const _backdropDelay = Duration(milliseconds: 200);
-  static const _infoAreaTop = 80.0;
-  static const _contentTop = 243.0;
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _HomeShellState extends State<_HomeShell> {
 
     _viewModel = GetIt.instance<HomeViewModel>();
     _viewModel.addListener(_onViewModelChanged);
+    _viewModel.mediaBarViewModel.addListener(_onViewModelChanged);
     _viewModel.load();
   }
 
@@ -76,7 +78,9 @@ class _HomeShellState extends State<_HomeShell> {
   void dispose() {
     _selectionDebounce?.cancel();
     _backdropDebounce?.cancel();
+    _hoverPauseTimer?.cancel();
     _backgroundSub?.cancel();
+    _viewModel.mediaBarViewModel.removeListener(_onViewModelChanged);
     _viewModel.removeListener(_onViewModelChanged);
     super.dispose();
   }
@@ -89,7 +93,15 @@ class _HomeShellState extends State<_HomeShell> {
     _selectionDebounce?.cancel();
     _selectionDebounce = Timer(_selectionDelay, () {
       if (!mounted) return;
-      setState(() => _selectedItem = item);
+      setState(() {
+        _selectedItem = item;
+        _isHoverPaused = true;
+      });
+
+      _hoverPauseTimer?.cancel();
+      _hoverPauseTimer = Timer(const Duration(seconds: 15), () {
+        if (mounted) setState(() => _isHoverPaused = false);
+      });
 
       _backdropDebounce?.cancel();
       _backdropDebounce = Timer(_backdropDelay, () {
@@ -121,23 +133,19 @@ class _HomeShellState extends State<_HomeShell> {
             children: [
               if (backdropEnabled) _Backdrop(url: _backdropUrl, blurAmount: blurAmount),
               const _GradientScrim(),
-              Positioned(
-                left: 48,
-                top: _infoAreaTop,
-                child: SafeArea(
-                  child: InfoArea(item: _selectedItem),
-                ),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                top: _contentTop,
-                bottom: 0,
+              Positioned.fill(
                 child: _ContentRows(
                   viewModel: _viewModel,
                   mediaBarViewModel: _viewModel.mediaBarViewModel,
                   prefs: _userPrefs,
+                  selectedItem: _selectedItem,
                   onItemSelected: onItemSelected,
+                  isHoverPaused: _isHoverPaused,
+                  onScrolledToTopChanged: (atTop) {
+                    if (atTop != _isScrolledToTop) {
+                      setState(() => _isScrolledToTop = atTop);
+                    }
+                  },
                 ),
               ),
               if (seasonalEffect != 'none')
@@ -203,7 +211,7 @@ class _Backdrop extends StatelessWidget {
     );
     if (blur <= 0) return image;
     return ImageFiltered(
-      imageFilter: ImageFilter.blur(
+      imageFilter: ui.ImageFilter.blur(
         sigmaX: blur,
         sigmaY: blur,
         tileMode: TileMode.decal,
@@ -236,87 +244,208 @@ class _GradientScrim extends StatelessWidget {
   }
 }
 
-class _ContentRows extends StatelessWidget {
+class _ContentRows extends StatefulWidget {
   final HomeViewModel viewModel;
   final MediaBarViewModel mediaBarViewModel;
   final UserPreferences prefs;
+  final AggregatedItem? selectedItem;
   final ValueChanged<AggregatedItem?> onItemSelected;
+  final bool isHoverPaused;
+  final ValueChanged<bool>? onScrolledToTopChanged;
 
   const _ContentRows({
     required this.viewModel,
     required this.mediaBarViewModel,
     required this.prefs,
+    required this.selectedItem,
     required this.onItemSelected,
+    this.isHoverPaused = false,
+    this.onScrolledToTopChanged,
   });
 
   @override
+  State<_ContentRows> createState() => _ContentRowsState();
+}
+
+class _ContentRowsState extends State<_ContentRows> {
+  final _scrollController = ScrollController();
+  double _scrollOffset = 0;
+  bool _isScrolledToTop = true;
+  bool _infoRevealed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final offset = _scrollController.offset;
+    final atTop = offset <= 0;
+    if (atTop != _isScrolledToTop) {
+      _isScrolledToTop = atTop;
+      widget.onScrolledToTopChanged?.call(atTop);
+      if (atTop) _infoRevealed = false;
+    }
+    setState(() => _scrollOffset = offset);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final rows = viewModel.rows;
+    final rows = widget.viewModel.rows;
+    final prefs = widget.prefs;
     final posterSize = prefs.get(UserPreferences.posterSize);
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
     final focusColor = Color(prefs.get(UserPreferences.focusColor).colorValue);
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final useSeriesThumbs = prefs.get(UserPreferences.seriesThumbnailsEnabled);
 
-    if (viewModel.isLoading && rows.isEmpty) {
+    if (widget.viewModel.isLoading && rows.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final showMediaBar = mediaBarViewModel.state is MediaBarReady;
-    final offset = showMediaBar ? 1 : 0;
+    final mediaBarState = widget.mediaBarViewModel.state;
+    final includeMediaBar = mediaBarState is MediaBarLoading ||
+        mediaBarState is MediaBarError ||
+        (mediaBarState is MediaBarReady && mediaBarState.items.isNotEmpty);
 
-    return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 32),
-      itemCount: rows.length + offset,
-      itemBuilder: (context, index) {
-        if (showMediaBar && index == 0) {
-          return MediaBar(
-            viewModel: mediaBarViewModel,
-            prefs: prefs,
-          );
-        }
-        final row = rows[index - offset];
-        if (row.isLoading) {
-          return LibraryRow(title: row.title, children: const []);
-        }
-        double maxCardHeight = 0;
-        final cards = row.items.map((item) {
-            final ar = MediaCard.aspectRatioForType(item.type);
-            final height = ar > 1
-                ? posterSize.landscapeHeight.toDouble()
-                : posterSize.portraitHeight.toDouble();
-            final cardHeight = height + 46;
-            if (cardHeight > maxCardHeight) maxCardHeight = cardHeight;
-            final width = height * ar;
-            final imageUrl = _resolveImageUrl(
-              item, viewModel.imageApi, height, useSeriesThumbs,
-            );
-            return MediaCard(
-              title: item.name,
-              subtitle: item.subtitle,
-              imageUrl: imageUrl,
-              width: width,
-              aspectRatio: ar,
-              isFavorite: item.isFavorite,
-              isPlayed: item.isPlayed,
-              unplayedCount: item.unplayedItemCount,
-              playedPercentage: item.playedPercentage,
-              watchedBehavior: watchedBehavior,
-              itemType: item.type,
-              focusColor: focusColor,
-              cardFocusExpansion: cardExpansion,
-              onFocus: () => onItemSelected(item),
-              onHoverStart: () => onItemSelected(item),
-              onLongPress: () => onItemSelected(item),
-              onTap: () => context.push(Destinations.item(item.id)),
-            );
-          }).toList();
-        return LibraryRow(
-          title: row.title,
-          rowHeight: maxCardHeight,
-          children: cards,
-        );
-      },
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isMobile = PlatformDetection.useMobileUi;
+    final mediaBarHeight = isMobile ? screenHeight * 0.55 : screenHeight;
+    final carouselPaused = widget.isHoverPaused || !_isScrolledToTop;
+
+    final pinThreshold = includeMediaBar ? mediaBarHeight : 0.0;
+    final infoAreaIsPinned = _scrollOffset > pinThreshold;
+    final headerCount = (includeMediaBar ? 1 : 0) + 1;
+
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: ListView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.only(bottom: 32),
+            itemCount: rows.length + headerCount,
+            itemBuilder: (context, index) {
+              if (includeMediaBar && index == 0) {
+                return MediaBar(
+                  viewModel: widget.mediaBarViewModel,
+                  prefs: prefs,
+                  externallyPaused: carouselPaused,
+                  height: mediaBarHeight,
+                );
+              }
+              final infoIndex = includeMediaBar ? 1 : 0;
+              if (index == infoIndex) {
+                if (!_infoRevealed || (isMobile && _scrollOffset == 0)) {
+                  return const SizedBox.shrink();
+                }
+                final safeTop = MediaQuery.of(context).padding.top;
+                final topPad = !includeMediaBar ? safeTop + 48 : 8.0;
+                final bottomPad = safeTop + 48 - topPad + 8;
+                final showInList = !infoAreaIsPinned && _infoRevealed &&
+                    (!isMobile || _scrollOffset > 0);
+                return Opacity(
+                  opacity: showInList ? 1.0 : 0.0,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, topPad, 16, bottomPad),
+                    child: InfoArea(item: widget.selectedItem),
+                  ),
+                );
+              }
+              final row = rows[index - headerCount];
+              if (row.isLoading) {
+                return LibraryRow(title: row.title, children: const []);
+              }
+              double maxCardHeight = 0;
+              final cards = row.items.map((item) {
+                final ar = MediaCard.aspectRatioForType(item.type);
+                final height = ar > 1
+                    ? posterSize.landscapeHeight.toDouble()
+                    : posterSize.portraitHeight.toDouble();
+                final cardHeight = height + 46;
+                if (cardHeight > maxCardHeight) maxCardHeight = cardHeight;
+                final width = height * ar;
+                final imageUrl = _resolveImageUrl(
+                  item, widget.viewModel.imageApi, height, useSeriesThumbs,
+                );
+                return MediaCard(
+                  title: item.name,
+                  subtitle: item.subtitle,
+                  imageUrl: imageUrl,
+                  width: width,
+                  aspectRatio: ar,
+                  isFavorite: item.isFavorite,
+                  isPlayed: item.isPlayed,
+                  unplayedCount: item.unplayedItemCount,
+                  playedPercentage: item.playedPercentage,
+                  watchedBehavior: watchedBehavior,
+                  itemType: item.type,
+                  focusColor: focusColor,
+                  cardFocusExpansion: cardExpansion,
+                  onFocus: () => widget.onItemSelected(item),
+                  onHoverStart: () {
+                    if (!_infoRevealed) {
+                      setState(() => _infoRevealed = true);
+                    }
+                    widget.onItemSelected(item);
+                  },
+                  onLongPress: () {
+                    if (!_infoRevealed) {
+                      setState(() => _infoRevealed = true);
+                    }
+                    widget.onItemSelected(item);
+                  },
+                  onTap: () => context.push(Destinations.item(item.id)),
+                );
+              }).toList();
+              return LibraryRow(
+                title: row.title,
+                rowHeight: maxCardHeight,
+                children: cards,
+              );
+            },
+          ),
+        ),
+        if (infoAreaIsPinned && _infoRevealed)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.85),
+                        Colors.black.withValues(alpha: 0.7),
+                        Colors.black.withValues(alpha: 0.0),
+                      ],
+                      stops: const [0.0, 0.85, 1.0],
+                    ),
+                  ),
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    MediaQuery.of(context).padding.top + 48,
+                    16,
+                    8,
+                  ),
+                  child: InfoArea(item: widget.selectedItem),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 

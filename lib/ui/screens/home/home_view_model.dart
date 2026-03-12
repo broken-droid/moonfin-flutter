@@ -38,6 +38,8 @@ class HomeViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
+    _mediaBarViewModel.load();
+
     final sections = _prefs.activeHomeSections;
     final merge = _prefs.get(UserPreferences.mergeContinueWatchingNextUp);
     final placeholders = <HomeRow>[];

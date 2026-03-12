@@ -87,11 +87,13 @@ class EmbyItemsApi implements ItemsApi {
     String? seriesId,
     String? parentId,
     int? limit,
+    String? fields,
   }) async {
     final response = await _dio.get('/Shows/NextUp', queryParameters: {
       if (seriesId != null) 'SeriesId': seriesId,
       if (parentId != null) 'ParentId': parentId,
       if (limit != null) 'Limit': limit,
+      if (fields != null) 'Fields': fields,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -101,6 +103,7 @@ class EmbyItemsApi implements ItemsApi {
     String? parentId,
     List<String>? includeItemTypes,
     int? limit,
+    String? fields,
   }) async {
     final userId = _getUserId();
     final response = await _dio.get(
@@ -110,6 +113,7 @@ class EmbyItemsApi implements ItemsApi {
         if (includeItemTypes != null)
           'IncludeItemTypes': includeItemTypes.join(','),
         if (limit != null) 'Limit': limit,
+        if (fields != null) 'Fields': fields,
       },
     );
     return response.data as Map<String, dynamic>;
@@ -120,6 +124,7 @@ class EmbyItemsApi implements ItemsApi {
     String? parentId,
     List<String>? includeItemTypes,
     int? limit,
+    String? fields,
   }) async {
     final userId = _getUserId();
     final response = await _dio.get(
@@ -129,6 +134,7 @@ class EmbyItemsApi implements ItemsApi {
         if (includeItemTypes != null)
           'IncludeItemTypes': includeItemTypes.join(','),
         if (limit != null) 'Limit': limit,
+        if (fields != null) 'Fields': fields,
       },
     );
     return response.data as Map<String, dynamic>;
