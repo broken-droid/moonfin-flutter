@@ -54,8 +54,24 @@ class EmbyLiveTvApi implements LiveTvApi {
   }
 
   @override
-  Future<Map<String, dynamic>> getRecordings() async {
-    final response = await _dio.get('/LiveTv/Recordings');
+  Future<Map<String, dynamic>> getRecordings({
+    int? limit,
+    String? fields,
+    bool? enableImages,
+    bool? isSeries,
+    bool? isMovie,
+    bool? isSports,
+    bool? isKids,
+  }) async {
+    final response = await _dio.get('/LiveTv/Recordings', queryParameters: {
+      if (limit != null) 'Limit': limit,
+      if (fields != null) 'Fields': fields,
+      if (enableImages != null) 'EnableImages': enableImages,
+      if (isSeries != null) 'IsSeries': isSeries,
+      if (isMovie != null) 'IsMovie': isMovie,
+      if (isSports != null) 'IsSports': isSports,
+      if (isKids != null) 'IsKids': isKids,
+    });
     return response.data as Map<String, dynamic>;
   }
 
@@ -63,5 +79,21 @@ class EmbyLiveTvApi implements LiveTvApi {
   Future<Map<String, dynamic>> getTimers() async {
     final response = await _dio.get('/LiveTv/Timers');
     return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getSeriesTimers() async {
+    final response = await _dio.get('/LiveTv/SeriesTimers');
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<void> cancelTimer(String timerId) async {
+    await _dio.delete('/LiveTv/Timers/$timerId');
+  }
+
+  @override
+  Future<void> cancelSeriesTimer(String seriesTimerId) async {
+    await _dio.delete('/LiveTv/SeriesTimers/$seriesTimerId');
   }
 }

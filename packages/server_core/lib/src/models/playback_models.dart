@@ -92,6 +92,7 @@ class PlaybackMediaSource {
   final bool supportsTranscoding;
   final String? transcodingUrl;
   final String? directStreamUrl;
+  final String? liveStreamId;
   final PlayMethod? defaultPlayMethod;
   final List<Map<String, dynamic>> mediaStreams;
   final List<String> transcodingReasons;
@@ -106,6 +107,7 @@ class PlaybackMediaSource {
     this.supportsTranscoding = false,
     this.transcodingUrl,
     this.directStreamUrl,
+    this.liveStreamId,
     this.defaultPlayMethod,
     this.mediaStreams = const [],
     this.transcodingReasons = const [],
@@ -122,6 +124,7 @@ class PlaybackMediaSource {
         supportsTranscoding: json['SupportsTranscoding'] as bool? ?? false,
         transcodingUrl: json['TranscodingUrl'] as String?,
         directStreamUrl: json['DirectStreamUrl'] as String?,
+        liveStreamId: json['LiveStreamId'] as String?,
         mediaStreams: (json['MediaStreams'] as List?)
                 ?.cast<Map<String, dynamic>>() ??
             const [],

@@ -14,5 +14,6 @@ abstract class PlaybackApi {
     String? mediaSourceId,
     String? audioStreamIndex,
     String? subtitleStreamIndex,
+    String? liveStreamId,
   });
 }

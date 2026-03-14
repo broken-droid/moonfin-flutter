@@ -148,24 +148,26 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
   ) {
     if (source.supportsDirectPlay) {
       return (
-        _client.playbackApi.getStreamUrl(itemId, mediaSourceId: source.id),
+        _client.playbackApi.getStreamUrl(itemId, mediaSourceId: source.id, liveStreamId: source.liveStreamId),
         StreamPlayMethod.directPlay,
       );
     }
     if (source.supportsDirectStream && source.directStreamUrl != null) {
-      return (
-        '${_client.baseUrl}${source.directStreamUrl}',
-        StreamPlayMethod.directStream,
-      );
+      var dsUrl = '${_client.baseUrl}${source.directStreamUrl}';
+      if (source.liveStreamId != null) {
+        dsUrl = '$dsUrl${dsUrl.contains('?') ? '&' : '?'}LiveStreamId=${Uri.encodeComponent(source.liveStreamId!)}';
+      }
+      return (dsUrl, StreamPlayMethod.directStream);
     }
     if (source.supportsTranscoding && source.transcodingUrl != null) {
-      return (
-        '${_client.baseUrl}${source.transcodingUrl}',
-        StreamPlayMethod.transcode,
-      );
+      var tcUrl = '${_client.baseUrl}${source.transcodingUrl}';
+      if (source.liveStreamId != null) {
+        tcUrl = '$tcUrl${tcUrl.contains('?') ? '&' : '?'}LiveStreamId=${Uri.encodeComponent(source.liveStreamId!)}';
+      }
+      return (tcUrl, StreamPlayMethod.transcode);
     }
     return (
-      _client.playbackApi.getStreamUrl(itemId, mediaSourceId: source.id),
+      _client.playbackApi.getStreamUrl(itemId, mediaSourceId: source.id, liveStreamId: source.liveStreamId),
       StreamPlayMethod.directPlay,
     );
   }

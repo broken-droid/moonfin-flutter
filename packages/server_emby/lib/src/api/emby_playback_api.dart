@@ -44,12 +44,14 @@ class EmbyPlaybackApi implements PlaybackApi {
     String? mediaSourceId,
     String? audioStreamIndex,
     String? subtitleStreamIndex,
+    String? liveStreamId,
   }) {
     final params = <String, String>{
       if (mediaSourceId != null) 'MediaSourceId': mediaSourceId,
       if (audioStreamIndex != null) 'AudioStreamIndex': audioStreamIndex,
       if (subtitleStreamIndex != null)
         'SubtitleStreamIndex': subtitleStreamIndex,
+      if (liveStreamId != null) 'LiveStreamId': liveStreamId,
       'Static': 'true',
     };
     final uri = Uri.parse('${_getBaseUrl()}/Videos/$itemId/stream')
