@@ -11,6 +11,7 @@ import '../../../data/models/aggregated_item.dart';
 import '../../../data/repositories/item_mutation_repository.dart';
 import '../../../data/repositories/mdblist_repository.dart';
 import '../../../data/services/background_service.dart';
+import '../../../data/services/download_service.dart';
 import '../../../data/services/theme_music_service.dart';
 import '../../../data/viewmodels/item_detail_view_model.dart';
 import '../../../preference/user_preferences.dart';
@@ -1051,6 +1052,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
             icon: Icons.playlist_add,
             onPressed: () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
           ),
+          if (_isDownloadable(item.type))
+            _DownloadButton(
+              item: item,
+              viewModel: viewModel,
+            ),
           if (item.type == 'Episode' && item.seriesId != null)
             _DetailActionButton(
               label: 'Go to Series',
@@ -1167,6 +1173,82 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
   }
 
+}
+
+bool _isDownloadable(String? type) {
+  return type == 'Movie' || type == 'Episode' || type == 'Season' || type == 'Series';
+}
+
+class _DownloadButton extends StatelessWidget {
+  final AggregatedItem item;
+  final ItemDetailViewModel viewModel;
+
+  const _DownloadButton({required this.item, required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    final downloadService = GetIt.instance<DownloadService>();
+    return ListenableBuilder(
+      listenable: downloadService,
+      builder: (context, _) {
+        final isMulti = item.type == 'Season' || item.type == 'Series';
+        final progress = downloadService.activeDownloads[item.id];
+        final isBatch = downloadService.isBatchDownloading;
+
+        if (progress != null && !progress.isComplete && progress.error == null) {
+          return _DetailActionButton(
+            label: '${(progress.progress * 100).toInt()}%',
+            icon: Icons.close,
+            onPressed: () => downloadService.cancelDownload(item.id),
+            isActive: true,
+            activeColor: const Color(0xFF00A4DC),
+          );
+        }
+
+        if (isBatch && isMulti) {
+          return _DetailActionButton(
+            label: '${downloadService.completedCount}/${downloadService.totalQueued}',
+            icon: Icons.close,
+            onPressed: () => downloadService.cancelAll(),
+            isActive: true,
+            activeColor: const Color(0xFF00A4DC),
+          );
+        }
+
+        return _DetailActionButton(
+          label: isMulti ? 'Download All' : 'Download',
+          icon: Icons.download,
+          onPressed: () => _startDownload(context, downloadService),
+        );
+      },
+    );
+  }
+
+  void _startDownload(BuildContext context, DownloadService service) {
+    switch (item.type) {
+      case 'Movie':
+      case 'Episode':
+        service.downloadItem(item);
+      case 'Season':
+        final episodes = viewModel.episodes;
+        if (episodes.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No episodes loaded')),
+          );
+          return;
+        }
+        service.downloadEpisodes(episodes);
+      case 'Series':
+        service.downloadSeries(item.id);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Downloading ${item.name}...'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 }
 
 class _DetailActionButton extends StatefulWidget {
