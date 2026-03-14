@@ -224,4 +224,14 @@ class EmbyItemsApi implements ItemsApi {
     });
     return response.data as Map<String, dynamic>;
   }
+
+  @override
+  Future<Map<String, dynamic>> getLyrics(String itemId) async {
+    return const {'Lyrics': []};
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getMediaSegments(String itemId) async {
+    return const [];
+  }
 }

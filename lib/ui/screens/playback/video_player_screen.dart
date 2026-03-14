@@ -7,12 +7,18 @@ import 'package:get_it/get_it.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:playback_core/playback_core.dart';
+import 'package:server_core/server_core.dart';
 
 import '../../../playback/media_kit_player_backend.dart';
 import '../../../data/models/aggregated_item.dart';
+import '../../../data/models/media_segment.dart';
+import '../../../data/services/media_segment_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
+import '../../widgets/playback/skip_segment_overlay.dart';
+import '../../widgets/playback/next_up_overlay.dart';
+import '../../widgets/playback/still_watching_dialog.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   const VideoPlayerScreen({super.key});
@@ -25,6 +31,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   final _manager = GetIt.instance<PlaybackManager>();
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
   final _prefs = GetIt.instance<UserPreferences>();
+  final _client = GetIt.instance<MediaServerClient>();
+  late final MediaSegmentService _segmentService;
 
   bool _controlsVisible = true;
   Timer? _hideTimer;
@@ -35,6 +43,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   double _subtitleDelay = 0.0;
   bool _isStopping = false;
 
+  MediaSegment? _skipSegment;
+  Duration? _skipTo;
+  bool _showNextUp = false;
+  AggregatedItem? _nextUpItem;
+  bool _nextUpDismissed = false;
+  int _consecutiveEpisodes = 0;
+  StreamSubscription? _positionSub;
+  StreamSubscription? _queueSub;
+
   final _overlayFocus = FocusNode();
 
   PlayerState get _state => _manager.state;
@@ -43,6 +60,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   void initState() {
     super.initState();
+    _segmentService = MediaSegmentService(
+      _client,
+      FeatureDetector(serverType: _client.serverType, serverVersion: ''),
+      _prefs,
+    );
     _zoomMode = _prefs.get(UserPreferences.playerZoomMode);
     _applySubtitleStyle();
     _scheduleHide();
@@ -51,16 +73,122 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    _loadSegmentsForCurrentItem();
+    _positionSub = _state.positionStream.listen(_onPositionUpdate);
+    _queueSub = _queue.queueChangedStream.listen((_) {
+      _loadSegmentsForCurrentItem();
+      _nextUpDismissed = false;
+      _showNextUp = false;
+      _skipSegment = null;
+      _consecutiveEpisodes++;
+    });
   }
 
   @override
   void dispose() {
     _hideTimer?.cancel();
+    _positionSub?.cancel();
+    _queueSub?.cancel();
     _overlayFocus.dispose();
     if (!_isStopping) _manager.stop();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([]);
     super.dispose();
+  }
+
+  Future<void> _loadSegmentsForCurrentItem() async {
+    final item = _queue.currentItem;
+    if (item is AggregatedItem) {
+      await _segmentService.loadSegments(item.id);
+    }
+  }
+
+  void _onPositionUpdate(Duration position) {
+    if (!mounted || _isSeeking) return;
+    _checkSegments(position);
+    _checkNextUp(position);
+  }
+
+  void _checkSegments(Duration position) {
+    final result = _segmentService.checkPosition(position);
+    if (result.shouldSkip && result.skipTo != null) {
+      _manager.seekTo(result.skipTo!);
+      return;
+    }
+    if (result.action == MediaSegmentAction.askToSkip && result.segment != null) {
+      if (_skipSegment?.id != result.segment!.id) {
+        setState(() {
+          _skipSegment = result.segment;
+          _skipTo = result.skipTo;
+        });
+      }
+    } else if (_skipSegment != null && result.action == MediaSegmentAction.nothing) {
+      setState(() {
+        _skipSegment = null;
+        _skipTo = null;
+      });
+    }
+  }
+
+  void _checkNextUp(Duration position) {
+    final nextUpBehavior = _prefs.get(UserPreferences.nextUpBehavior);
+    if (nextUpBehavior == NextUpBehavior.disabled || _nextUpDismissed || _showNextUp) return;
+
+    final duration = _state.duration;
+    if (duration <= Duration.zero) return;
+
+    final remaining = duration - position;
+    final threshold = nextUpBehavior == NextUpBehavior.extended
+        ? const Duration(seconds: 30)
+        : const Duration(seconds: 15);
+
+    if (remaining <= threshold && _queue.hasNext) {
+      final nextItem = _queue.peekNext;
+      if (nextItem is AggregatedItem) {
+        setState(() {
+          _showNextUp = true;
+          _nextUpItem = nextItem;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleNextUpPlay() async {
+    setState(() => _showNextUp = false);
+    await _checkStillWatching();
+    _manager.next();
+  }
+
+  void _handleNextUpDismiss() {
+    setState(() {
+      _showNextUp = false;
+      _nextUpDismissed = true;
+    });
+  }
+
+  Future<void> _checkStillWatching() async {
+    final behavior = _prefs.get(UserPreferences.stillWatchingBehavior);
+    if (behavior == StillWatchingBehavior.disabled) return;
+    if (_consecutiveEpisodes < behavior.episodes) return;
+
+    _manager.pause();
+    final shouldContinue = await StillWatchingDialog.show(context);
+    if (shouldContinue == true) {
+      _consecutiveEpisodes = 0;
+      _manager.resume();
+    } else {
+      _exitPlayback();
+    }
+  }
+
+  void _skipCurrentSegment() {
+    if (_skipTo != null) {
+      _manager.seekTo(_skipTo!);
+    }
+    setState(() {
+      _skipSegment = null;
+      _skipTo = null;
+    });
   }
 
   Future<void> _exitPlayback() async {
@@ -216,6 +344,29 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   _buildBottomOverlay(context),
                 ],
                 _buildBufferingIndicator(),
+                if (_skipSegment != null)
+                  SkipSegmentOverlay(
+                    segment: _skipSegment!,
+                    onSkip: _skipCurrentSegment,
+                    onDismiss: () => setState(() {
+                      _skipSegment = null;
+                      _skipTo = null;
+                    }),
+                  ),
+                if (_showNextUp && _nextUpItem != null)
+                  NextUpOverlay(
+                    nextItem: _nextUpItem!,
+                    imageUrl: _nextUpItem!.primaryImageTag != null
+                        ? _client.imageApi.getPrimaryImageUrl(
+                            _nextUpItem!.id,
+                            maxWidth: 400,
+                            tag: _nextUpItem!.primaryImageTag,
+                          )
+                        : null,
+                    timeoutMs: _prefs.get(UserPreferences.nextUpTimeout),
+                    onPlayNext: _handleNextUpPlay,
+                    onDismiss: _handleNextUpDismiss,
+                  ),
               ],
             ),
           ),

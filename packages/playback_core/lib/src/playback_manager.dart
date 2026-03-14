@@ -240,6 +240,8 @@ class PlaybackManager {
       item,
       resolution,
       positionTicks: startTicks,
+      audioStreamIndex: _audioStreamIndex,
+      subtitleStreamIndex: _subtitleStreamIndex,
     );
     _startProgressTimer();
   }
@@ -255,6 +257,8 @@ class PlaybackManager {
         resolution,
         state.position,
         isPaused: !state.isPlaying,
+        audioStreamIndex: _audioStreamIndex,
+        subtitleStreamIndex: _subtitleStreamIndex,
       );
     });
   }

@@ -172,6 +172,8 @@ class PlaybackProgressReport {
   final String itemId;
   final String? mediaSourceId;
   final String? playSessionId;
+  final int? audioStreamIndex;
+  final int? subtitleStreamIndex;
   final int? positionTicks;
   final bool isPaused;
   final bool isMuted;
@@ -180,6 +182,8 @@ class PlaybackProgressReport {
     required this.itemId,
     this.mediaSourceId,
     this.playSessionId,
+    this.audioStreamIndex,
+    this.subtitleStreamIndex,
     this.positionTicks,
     this.isPaused = false,
     this.isMuted = false,
@@ -189,6 +193,8 @@ class PlaybackProgressReport {
         'ItemId': itemId,
         if (mediaSourceId != null) 'MediaSourceId': mediaSourceId,
         if (playSessionId != null) 'PlaySessionId': playSessionId,
+        if (audioStreamIndex != null) 'AudioStreamIndex': audioStreamIndex,
+        if (subtitleStreamIndex != null) 'SubtitleStreamIndex': subtitleStreamIndex,
         if (positionTicks != null) 'PositionTicks': positionTicks,
         'IsPaused': isPaused,
         'IsMuted': isMuted,

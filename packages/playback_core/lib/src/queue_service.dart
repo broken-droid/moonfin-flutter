@@ -36,6 +36,12 @@ class QueueService {
     return _currentIndex > 0;
   }
 
+  dynamic get peekNext {
+    if (_currentIndex < _items.length - 1) return _items[_currentIndex + 1];
+    if (_repeatMode == RepeatMode.repeatAll && _items.isNotEmpty) return _items[0];
+    return null;
+  }
+
   void setQueue(List<dynamic> items, {int startIndex = 0}) {
     _items
       ..clear()

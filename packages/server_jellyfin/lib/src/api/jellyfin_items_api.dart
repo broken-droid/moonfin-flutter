@@ -202,4 +202,18 @@ class JellyfinItemsApi implements ItemsApi {
     });
     return response.data as Map<String, dynamic>;
   }
+
+  @override
+  Future<Map<String, dynamic>> getLyrics(String itemId) async {
+    final response = await _dio.get('/Audio/$itemId/Lyrics');
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getMediaSegments(String itemId) async {
+    final response = await _dio.get('/MediaSegments/$itemId');
+    final data = response.data as Map<String, dynamic>;
+    final items = data['Items'] as List? ?? [];
+    return items.cast<Map<String, dynamic>>();
+  }
 }

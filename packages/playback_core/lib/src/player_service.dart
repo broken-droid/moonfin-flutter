@@ -5,6 +5,8 @@ abstract class PlayerService {
     dynamic mediaItem,
     StreamResolutionResult resolution, {
     int? positionTicks,
+    int? audioStreamIndex,
+    int? subtitleStreamIndex,
   });
 
   Future<void> onPlaybackProgress(
@@ -12,6 +14,8 @@ abstract class PlayerService {
     StreamResolutionResult resolution,
     Duration position, {
     bool isPaused = false,
+    int? audioStreamIndex,
+    int? subtitleStreamIndex,
   });
 
   Future<void> onPlaybackStop(

@@ -9,6 +9,8 @@ import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/models/aggregated_item.dart';
+import '../../../data/models/lyrics.dart';
+import '../../widgets/playback/lyrics_view.dart';
 
 class AudioPlayerScreen extends StatefulWidget {
   const AudioPlayerScreen({super.key});
@@ -22,6 +24,9 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   final _client = GetIt.instance<MediaServerClient>();
   final _subs = <StreamSubscription>[];
   bool _showQueue = false;
+  bool _showLyrics = false;
+  LyricsData? _lyrics;
+  String? _lyricsItemId;
 
   PlayerState get _state => _manager.state;
   QueueService get _queue => _manager.queueService;
@@ -35,8 +40,12 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       _state.durationStream.listen((_) => _rebuild()),
       _state.repeatModeStream.listen((_) => _rebuild()),
       _state.shuffleStream.listen((_) => _rebuild()),
-      _queue.queueChangedStream.listen((_) => _rebuild()),
+      _queue.queueChangedStream.listen((_) {
+        _rebuild();
+        _loadLyricsIfNeeded();
+      }),
     ]);
+    _loadLyricsIfNeeded();
   }
 
   void _rebuild() {
@@ -49,6 +58,21 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       sub.cancel();
     }
     super.dispose();
+  }
+
+  Future<void> _loadLyricsIfNeeded() async {
+    final item = _queue.currentItem;
+    if (item is! AggregatedItem) return;
+    if (item.id == _lyricsItemId) return;
+    _lyricsItemId = item.id;
+    try {
+      final data = await _client.itemsApi.getLyrics(item.id);
+      if (mounted && _lyricsItemId == item.id) {
+        setState(() => _lyrics = LyricsData.fromJson(data));
+      }
+    } catch (_) {
+      if (mounted) setState(() => _lyrics = LyricsData.empty);
+    }
   }
 
   String? _getArtUrl(AggregatedItem item) {
@@ -106,7 +130,13 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                 Expanded(
                   child: _showQueue
                       ? _buildQueueList()
-                      : _buildNowPlaying(item, artUrl),
+                      : _showLyrics && _lyrics != null && _lyrics!.isNotEmpty
+                          ? LyricsView(
+                              lyrics: _lyrics!,
+                              positionStream: _state.positionStream,
+                              position: _state.position,
+                            )
+                          : _buildNowPlaying(item, artUrl),
                 ),
                 _buildProgressBar(),
                 _buildTransportControls(),
@@ -132,12 +162,28 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           const Spacer(),
+          if (_lyrics != null && _lyrics!.isNotEmpty)
+            IconButton(
+              icon: Icon(
+                Icons.lyrics_outlined,
+                size: 24,
+                color: _showLyrics ? AppColorScheme.accent : null,
+              ),
+              onPressed: () => setState(() {
+                _showLyrics = !_showLyrics;
+                if (_showLyrics) _showQueue = false;
+              }),
+            ),
           IconButton(
             icon: Icon(
               _showQueue ? Icons.album : Icons.queue_music,
               size: 24,
+              color: _showQueue ? AppColorScheme.accent : null,
             ),
-            onPressed: () => setState(() => _showQueue = !_showQueue),
+            onPressed: () => setState(() {
+              _showQueue = !_showQueue;
+              if (_showQueue) _showLyrics = false;
+            }),
           ),
         ],
       ),

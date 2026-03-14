@@ -11,6 +11,8 @@ class EmbyPlaySessionService implements PlayerService {
     dynamic mediaItem,
     StreamResolutionResult resolution, {
     int? positionTicks,
+    int? audioStreamIndex,
+    int? subtitleStreamIndex,
   }) async {
     final report = PlaybackStartReport(
       itemId: MediaStreamResolver.extractItemId(mediaItem),
@@ -18,6 +20,8 @@ class EmbyPlaySessionService implements PlayerService {
       playSessionId: resolution.playSessionId,
       playMethod: _toPlayMethod(resolution.playMethod),
       positionTicks: positionTicks,
+      audioStreamIndex: audioStreamIndex,
+      subtitleStreamIndex: subtitleStreamIndex,
     );
     await _client.playbackApi.reportPlaybackStart(report.toJson());
   }
@@ -28,6 +32,8 @@ class EmbyPlaySessionService implements PlayerService {
     StreamResolutionResult resolution,
     Duration position, {
     bool isPaused = false,
+    int? audioStreamIndex,
+    int? subtitleStreamIndex,
   }) async {
     final report = PlaybackProgressReport(
       itemId: MediaStreamResolver.extractItemId(mediaItem),
@@ -35,6 +41,8 @@ class EmbyPlaySessionService implements PlayerService {
       playSessionId: resolution.playSessionId,
       positionTicks: position.inMicroseconds * 10,
       isPaused: isPaused,
+      audioStreamIndex: audioStreamIndex,
+      subtitleStreamIndex: subtitleStreamIndex,
     );
     await _client.playbackApi.reportPlaybackProgress(report.toJson());
   }
