@@ -29,6 +29,8 @@ import '../screens/jellyseerr/jellyseerr_person_screen.dart';
 import '../screens/jellyseerr/jellyseerr_requests_screen.dart';
 import '../screens/jellyseerr/jellyseerr_settings_screen.dart';
 import '../screens/livetv/live_tv_guide_screen.dart';
+import '../screens/livetv/live_tv_player_screen.dart';
+import '../../data/viewmodels/live_tv_guide_view_model.dart';
 import '../screens/livetv/live_tv_recordings_screen.dart';
 import '../screens/livetv/live_tv_schedule_screen.dart';
 import '../screens/livetv/live_tv_screen.dart';
@@ -238,6 +240,16 @@ final appRouter = GoRouter(
           path: 'series-recordings',
           builder: (context, state) =>
               const LiveTvSeriesRecordingsScreen(),
+        ),
+        GoRoute(
+          path: 'player',
+          builder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>;
+            return LiveTvPlayerScreen(
+              channels: extra['channels'] as List<GuideChannel>,
+              startIndex: extra['startIndex'] as int,
+            );
+          },
         ),
       ],
     ),

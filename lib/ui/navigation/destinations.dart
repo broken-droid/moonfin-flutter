@@ -45,6 +45,7 @@ class Destinations {
   static const liveTvSchedule = '/live-tv/schedule';
   static const liveTvRecordings = '/live-tv/recordings';
   static const liveTvSeriesRecordings = '/live-tv/series-recordings';
+  static const liveTvPlayer = '/live-tv/player';
 
   // Playback
   static const videoPlayer = '/player/video';

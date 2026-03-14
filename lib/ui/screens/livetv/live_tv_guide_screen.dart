@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/viewmodels/live_tv_guide_view_model.dart';
+import '../../navigation/destinations.dart';
 import '../../widgets/navigation_layout.dart';
 
 const _kChannelColumnWidth = 160.0;
@@ -454,6 +456,16 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
     );
   }
 
+  void _watchChannel(String channelId) {
+    final channels = _vm.filteredChannels;
+    final index = channels.indexWhere((c) => c.id == channelId);
+    if (index < 0) return;
+    context.push(Destinations.liveTvPlayer, extra: {
+      'channels': channels,
+      'startIndex': index,
+    });
+  }
+
   void _showProgramDetails(GuideProgram program) {
     showDialog(
       context: context,
@@ -493,6 +505,13 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
           ),
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _watchChannel(program.channelId);
+            },
+            child: const Text('Watch'),
+          ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Close'),
