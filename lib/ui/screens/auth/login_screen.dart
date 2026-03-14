@@ -499,18 +499,18 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildActionButton(
-              label: 'Sign In',
-              focusNode: _signInFocus,
-              onPressed: _isLoading ? null : _login,
-              isLoading: _isLoading,
-            ),
-            const SizedBox(width: 12),
-            _buildActionButton(
               label: 'Back',
               focusNode: _backFocus,
               onPressed: () => context.go(
                 '${Destinations.server}?serverId=${_server!.id}',
               ),
+            ),
+            const SizedBox(width: 12),
+            _buildActionButton(
+              label: 'Sign In',
+              focusNode: _signInFocus,
+              onPressed: _isLoading ? null : _login,
+              isLoading: _isLoading,
             ),
           ],
         ),
