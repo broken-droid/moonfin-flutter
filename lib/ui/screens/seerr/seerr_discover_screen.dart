@@ -16,15 +16,15 @@ import '../../widgets/navigation_layout.dart';
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w300';
 const _tmdbBackdropBase = 'https://image.tmdb.org/t/p/w1280';
 
-class JellyseerrDiscoverScreen extends StatefulWidget {
-  const JellyseerrDiscoverScreen({super.key});
+class SeerrDiscoverScreen extends StatefulWidget {
+  const SeerrDiscoverScreen({super.key});
 
   @override
-  State<JellyseerrDiscoverScreen> createState() =>
-      _JellyseerrDiscoverScreenState();
+  State<SeerrDiscoverScreen> createState() =>
+      _SeerrDiscoverScreenState();
 }
 
-class _JellyseerrDiscoverScreenState extends State<JellyseerrDiscoverScreen> {
+class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
   SeerrDiscoverViewModel? _viewModel;
 
   SeerrDiscoverItem? _selectedItem;
@@ -81,7 +81,7 @@ class _JellyseerrDiscoverScreenState extends State<JellyseerrDiscoverScreen> {
   void _onItemTap(SeerrDiscoverItem item) {
     final mediaType = item.mediaType ?? 'movie';
     context.push(
-      Destinations.jellyseerrMedia(item.id.toString()),
+      Destinations.seerrMedia(item.id.toString()),
       extra: {'mediaType': mediaType},
     );
   }
@@ -205,7 +205,7 @@ class _JellyseerrDiscoverScreenState extends State<JellyseerrDiscoverScreen> {
         imageUrl: backdrop,
         onTap: () {
           final uri = Uri(
-            path: Destinations.jellyseerrBrowse,
+            path: Destinations.seerrBrowse,
             queryParameters: {
               'filterId': genre.id.toString(),
               'filterName': genre.name,
@@ -232,7 +232,7 @@ class _JellyseerrDiscoverScreenState extends State<JellyseerrDiscoverScreen> {
         logoUrl: network.logoPath,
         onTap: () {
           final uri = Uri(
-            path: Destinations.jellyseerrBrowse,
+            path: Destinations.seerrBrowse,
             queryParameters: {
               'filterId': network.id.toString(),
               'filterName': network.name,
@@ -259,7 +259,7 @@ class _JellyseerrDiscoverScreenState extends State<JellyseerrDiscoverScreen> {
         logoUrl: studio.logoPath,
         onTap: () {
           final uri = Uri(
-            path: Destinations.jellyseerrBrowse,
+            path: Destinations.seerrBrowse,
             queryParameters: {
               'filterId': studio.id.toString(),
               'filterName': studio.name,
@@ -341,7 +341,7 @@ class _InfoPanel extends StatelessWidget {
 
     final theme = Theme.of(context);
     const shadows = [Shadow(blurRadius: 4, color: Colors.black54)];
-    final year = _JellyseerrDiscoverScreenState._yearFromItem(item!);
+    final year = _SeerrDiscoverScreenState._yearFromItem(item!);
     final rating = item!.voteAverage;
     final mediaType = item!.mediaType == 'tv' ? 'Series' : 'Movie';
 

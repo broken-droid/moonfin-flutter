@@ -84,9 +84,9 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.movie_filter),
-            title: const Text('Jellyseerr'),
+            title: const Text('Seerr'),
             subtitle: const Text('Media request integration'),
-            onTap: () => context.push(Destinations.settingsJellyseerr),
+            onTap: () => context.push(Destinations.settingsSeerr),
           ),
           const _SettingsSection(title: 'Other'),
           ListTile(

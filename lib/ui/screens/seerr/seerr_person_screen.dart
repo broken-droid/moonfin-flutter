@@ -14,17 +14,17 @@ import '../../widgets/navigation_layout.dart';
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 const _tmdbProfileLarge = 'https://image.tmdb.org/t/p/w500';
 
-class JellyseerrPersonScreen extends StatefulWidget {
+class SeerrPersonScreen extends StatefulWidget {
   final String personId;
 
-  const JellyseerrPersonScreen({super.key, required this.personId});
+  const SeerrPersonScreen({super.key, required this.personId});
 
   @override
-  State<JellyseerrPersonScreen> createState() =>
-      _JellyseerrPersonScreenState();
+  State<SeerrPersonScreen> createState() =>
+      _SeerrPersonScreenState();
 }
 
-class _JellyseerrPersonScreenState extends State<JellyseerrPersonScreen> {
+class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
   SeerrPersonViewModel? _vm;
   bool _initializing = true;
   bool _bioExpanded = false;
@@ -281,7 +281,7 @@ class _JellyseerrPersonScreenState extends State<JellyseerrPersonScreen> {
                 onTap: () {
                   final mediaType = item.mediaType ?? 'movie';
                   context.push(
-                    Destinations.jellyseerrMedia(item.id.toString()),
+                    Destinations.seerrMedia(item.id.toString()),
                     extra: {'mediaType': mediaType},
                   );
                 },

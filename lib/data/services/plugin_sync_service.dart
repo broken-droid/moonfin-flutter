@@ -16,10 +16,10 @@ class PluginSyncService {
   bool _pluginAvailable = false;
   bool get pluginAvailable => _pluginAvailable;
 
-  String? _jellyseerrUrl;
-  String? get jellyseerrUrl => _jellyseerrUrl;
-  bool _jellyseerrEnabled = false;
-  bool get jellyseerrEnabled => _jellyseerrEnabled;
+  String? _seerrUrl;
+  String? get seerrUrl => _seerrUrl;
+  bool _seerrEnabled = false;
+  bool get seerrEnabled => _seerrEnabled;
 
   bool _mdblistAvailable = false;
   bool get mdblistAvailable => _mdblistAvailable;
@@ -42,8 +42,8 @@ class PluginSyncService {
         return;
       }
       _pluginAvailable = true;
-      _jellyseerrUrl = pingResult['jellyseerrUrl'] as String?;
-      _jellyseerrEnabled = pingResult['jellyseerrEnabled'] as bool? ?? false;
+      _seerrUrl = pingResult['jellyseerrUrl'] as String?;
+      _seerrEnabled = pingResult['jellyseerrEnabled'] as bool? ?? false;
       _mdblistAvailable = pingResult['mdblistAvailable'] as bool? ?? false;
       _tmdbAvailable = pingResult['tmdbAvailable'] as bool? ?? false;
 
@@ -63,7 +63,7 @@ class PluginSyncService {
     } catch (_) {}
   }
 
-  Future<void> configureJellyseerr(
+  Future<void> configureSeerr(
     MediaServerClient client, {
     String? username,
     String? password,
@@ -74,7 +74,7 @@ class PluginSyncService {
     if (token == null || token.isEmpty) return;
 
     try {
-      await _prefs.set(UserPreferences.jellyseerrEnabled, true);
+      await _prefs.set(UserPreferences.seerrEnabled, true);
 
       final seerrRepo = await GetIt.instance.getAsync<SeerrRepository>();
       final status = await seerrRepo.configureWithMoonfin(
@@ -221,7 +221,7 @@ class PluginSyncService {
         UserPreferences.enableEpisodeRatings);
     _applyString(resolved, 'tmdbApiKey', UserPreferences.tmdbApiKey);
 
-    _applyBool(resolved, 'jellyseerrEnabled', UserPreferences.jellyseerrEnabled);
+    _applyBool(resolved, 'jellyseerrEnabled', UserPreferences.seerrEnabled);
 
     if (resolved['mdblistRatingSources'] is List) {
       final sources = (resolved['mdblistRatingSources'] as List)
@@ -347,7 +347,7 @@ class PluginSyncService {
       'tmdbEpisodeRatingsEnabled':
           _prefs.get(UserPreferences.enableEpisodeRatings),
       'tmdbApiKey': _prefs.get(UserPreferences.tmdbApiKey),
-      'jellyseerrEnabled': _prefs.get(UserPreferences.jellyseerrEnabled),
+      'jellyseerrEnabled': _prefs.get(UserPreferences.seerrEnabled),
       'mdblistRatingSources':
           _prefs.get(UserPreferences.enabledRatings).split(','),
     };

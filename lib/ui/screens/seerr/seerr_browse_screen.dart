@@ -11,13 +11,13 @@ import '../../widgets/navigation_layout.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 
-class JellyseerrBrowseScreen extends StatefulWidget {
+class SeerrBrowseScreen extends StatefulWidget {
   final String? filterId;
   final String? filterName;
   final String? mediaType;
   final String? filterType;
 
-  const JellyseerrBrowseScreen({
+  const SeerrBrowseScreen({
     super.key,
     this.filterId,
     this.filterName,
@@ -26,11 +26,11 @@ class JellyseerrBrowseScreen extends StatefulWidget {
   });
 
   @override
-  State<JellyseerrBrowseScreen> createState() =>
-      _JellyseerrBrowseScreenState();
+  State<SeerrBrowseScreen> createState() =>
+      _SeerrBrowseScreenState();
 }
 
-class _JellyseerrBrowseScreenState extends State<JellyseerrBrowseScreen> {
+class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
   SeerrBrowseViewModel? _vm;
   bool _initializing = true;
   final _scrollController = ScrollController();
@@ -269,7 +269,7 @@ class _JellyseerrBrowseScreenState extends State<JellyseerrBrowseScreen> {
           onTap: () {
             final mt = item.mediaType ?? widget.mediaType ?? 'movie';
             context.push(
-              Destinations.jellyseerrMedia(item.id.toString()),
+              Destinations.seerrMedia(item.id.toString()),
               extra: {'mediaType': mt},
             );
           },

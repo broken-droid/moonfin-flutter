@@ -616,8 +616,8 @@ class UserPreferences extends ChangeNotifier {
         values: FavoriteTypeFilter.values,
       );
 
-  static final jellyseerrEnabled = Preference(
-    key: 'jellyseerr_enabled',
+  static final seerrEnabled = Preference(
+    key: 'seerr_enabled',
     defaultValue: false,
   );
 }

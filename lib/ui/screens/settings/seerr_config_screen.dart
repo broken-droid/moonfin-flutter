@@ -4,28 +4,28 @@ import 'package:jellyfin_preference/jellyfin_preference.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_tiles.dart';
 
-class JellyseerrConfigScreen extends StatelessWidget {
-  const JellyseerrConfigScreen({super.key});
+class SeerrConfigScreen extends StatelessWidget {
+  const SeerrConfigScreen({super.key});
 
-  static const _jellyseerrNsfw = Preference(
-    key: 'jellyseerr_nsfw_filter',
+  static const _seerrNsfw = Preference(
+    key: 'seerr_nsfw_filter',
     defaultValue: true,
   );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Jellyseerr')),
+      appBar: AppBar(title: const Text('Seerr')),
       body: ListView(
         children: [
           SwitchPreferenceTile(
-            preference: UserPreferences.jellyseerrEnabled,
-            title: 'Enable Jellyseerr',
-            subtitle: 'Show Jellyseerr in navigation (requires Moonfin plugin)',
+            preference: UserPreferences.seerrEnabled,
+            title: 'Enable Seerr',
+            subtitle: 'Show Seerr in navigation (requires Moonfin plugin)',
             icon: Icons.movie_filter,
           ),
           SwitchPreferenceTile(
-            preference: _jellyseerrNsfw,
+            preference: _seerrNsfw,
             title: 'NSFW Filter',
             subtitle: 'Hide adult content in results',
             icon: Icons.visibility_off,

@@ -18,18 +18,18 @@ const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 const _tmdbBackdropBase = 'https://image.tmdb.org/t/p/w1280';
 const _tmdbProfileBase = 'https://image.tmdb.org/t/p/w185';
 
-class JellyseerrMediaDetailScreen extends StatefulWidget {
+class SeerrMediaDetailScreen extends StatefulWidget {
   final String itemId;
 
-  const JellyseerrMediaDetailScreen({super.key, required this.itemId});
+  const SeerrMediaDetailScreen({super.key, required this.itemId});
 
   @override
-  State<JellyseerrMediaDetailScreen> createState() =>
-      _JellyseerrMediaDetailScreenState();
+  State<SeerrMediaDetailScreen> createState() =>
+      _SeerrMediaDetailScreenState();
 }
 
-class _JellyseerrMediaDetailScreenState
-    extends State<JellyseerrMediaDetailScreen> {
+class _SeerrMediaDetailScreenState
+    extends State<SeerrMediaDetailScreen> {
   SeerrMediaDetailViewModel? _vm;
   bool _initializing = true;
 
@@ -322,7 +322,7 @@ class _JellyseerrMediaDetailScreenState
                             MaterialTapTargetSize.shrinkWrap,
                         visualDensity: VisualDensity.compact,
                         onPressed: () => context.push(
-                          Destinations.jellyseerrBrowseWith(
+                          Destinations.seerrBrowseWith(
                             filterId: g.id.toString(),
                             filterName: g.name,
                             mediaType: mediaType,
@@ -350,7 +350,7 @@ class _JellyseerrMediaDetailScreenState
                             MaterialTapTargetSize.shrinkWrap,
                         visualDensity: VisualDensity.compact,
                         onPressed: () => context.push(
-                          Destinations.jellyseerrBrowseWith(
+                          Destinations.seerrBrowseWith(
                             filterId: n.id.toString(),
                             filterName: n.name,
                             mediaType: mediaType,
@@ -378,7 +378,7 @@ class _JellyseerrMediaDetailScreenState
                             MaterialTapTargetSize.shrinkWrap,
                         visualDensity: VisualDensity.compact,
                         onPressed: () => context.push(
-                          Destinations.jellyseerrBrowseWith(
+                          Destinations.seerrBrowseWith(
                             filterId: k.id.toString(),
                             filterName: k.name,
                             mediaType: mediaType,
@@ -452,7 +452,7 @@ class _JellyseerrMediaDetailScreenState
           .map((m) => _CastCard(
                 member: m,
                 onTap: () => context.push(
-                  Destinations.jellyseerrPerson(m.id.toString()),
+                  Destinations.seerrPerson(m.id.toString()),
                 ),
               ))
           .toList(),
@@ -474,7 +474,7 @@ class _JellyseerrMediaDetailScreenState
                 onTap: () {
                   final mediaType = item.mediaType ?? 'movie';
                   context.push(
-                    Destinations.jellyseerrMedia(item.id.toString()),
+                    Destinations.seerrMedia(item.id.toString()),
                     extra: {'mediaType': mediaType},
                   );
                 },

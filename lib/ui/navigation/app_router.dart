@@ -22,12 +22,12 @@ import '../screens/detail/item_detail_screen.dart';
 import '../screens/detail/item_list_screen.dart';
 import '../screens/detail/music_favorites_screen.dart';
 import '../screens/home/home_screen.dart';
-import '../screens/jellyseerr/jellyseerr_browse_screen.dart';
-import '../screens/jellyseerr/jellyseerr_discover_screen.dart';
-import '../screens/jellyseerr/jellyseerr_media_detail_screen.dart';
-import '../screens/jellyseerr/jellyseerr_person_screen.dart';
-import '../screens/jellyseerr/jellyseerr_requests_screen.dart';
-import '../screens/jellyseerr/jellyseerr_settings_screen.dart';
+import '../screens/seerr/seerr_browse_screen.dart';
+import '../screens/seerr/seerr_discover_screen.dart';
+import '../screens/seerr/seerr_media_detail_screen.dart';
+import '../screens/seerr/seerr_person_screen.dart';
+import '../screens/seerr/seerr_requests_screen.dart';
+import '../screens/seerr/seerr_settings_screen.dart';
 import '../screens/livetv/live_tv_guide_screen.dart';
 import '../screens/livetv/live_tv_player_screen.dart';
 import '../../data/viewmodels/live_tv_guide_view_model.dart';
@@ -46,7 +46,7 @@ import '../screens/settings/about_screen.dart';
 import '../screens/settings/appearance_settings_screen.dart';
 import '../screens/settings/auth_settings_screen.dart';
 import '../screens/settings/home_sections_screen.dart';
-import '../screens/settings/jellyseerr_config_screen.dart';
+import '../screens/settings/seerr_config_screen.dart';
 import '../screens/settings/library_settings_screen.dart';
 import '../screens/settings/media_bar_settings_screen.dart';
 import '../screens/settings/moonfin_settings_screen.dart';
@@ -343,8 +343,8 @@ final appRouter = GoRouter(
           builder: (context, state) => const LibrarySettingsScreen(),
         ),
         GoRoute(
-          path: 'jellyseerr-config',
-          builder: (context, state) => const JellyseerrConfigScreen(),
+          path: 'seerr-config',
+          builder: (context, state) => const SeerrConfigScreen(),
         ),
         GoRoute(
           path: 'moonfin',
@@ -357,24 +357,24 @@ final appRouter = GoRouter(
       ],
     ),
 
-    // Jellyseerr
+    // Seerr
     GoRoute(
-      path: Destinations.jellyseerrDiscover,
-      builder: (context, state) => const JellyseerrDiscoverScreen(),
+      path: Destinations.seerrDiscover,
+      builder: (context, state) => const SeerrDiscoverScreen(),
     ),
     GoRoute(
-      path: Destinations.jellyseerrRequests,
-      builder: (context, state) => const JellyseerrRequestsScreen(),
+      path: Destinations.seerrRequests,
+      builder: (context, state) => const SeerrRequestsScreen(),
     ),
     GoRoute(
-      path: Destinations.jellyseerrSettings,
-      builder: (context, state) => const JellyseerrSettingsScreen(),
+      path: Destinations.seerrSettings,
+      builder: (context, state) => const SeerrSettingsScreen(),
     ),
     GoRoute(
-      path: Destinations.jellyseerrBrowse,
+      path: Destinations.seerrBrowse,
       builder: (context, state) {
         final params = state.uri.queryParameters;
-        return JellyseerrBrowseScreen(
+        return SeerrBrowseScreen(
           filterId: params['filterId'],
           filterName: params['filterName'],
           mediaType: params['mediaType'],
@@ -383,17 +383,17 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: Destinations.jellyseerrMediaDetail,
+      path: Destinations.seerrMediaDetail,
       builder: (context, state) {
         final itemId = state.pathParameters['itemId']!;
-        return JellyseerrMediaDetailScreen(itemId: itemId);
+        return SeerrMediaDetailScreen(itemId: itemId);
       },
     ),
     GoRoute(
-      path: Destinations.jellyseerrPersonDetail,
+      path: Destinations.seerrPersonDetail,
       builder: (context, state) {
         final personId = state.pathParameters['personId']!;
-        return JellyseerrPersonScreen(personId: personId);
+        return SeerrPersonScreen(personId: personId);
       },
     ),
   ],

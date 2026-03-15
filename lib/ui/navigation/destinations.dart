@@ -68,17 +68,17 @@ class Destinations {
   static const settingsAbout = '/settings/about';
   static const settingsMediaBar = '/settings/media-bar';
   static const settingsLibrary = '/settings/library';
-  static const settingsJellyseerr = '/settings/jellyseerr-config';
+  static const settingsSeerr = '/settings/seerr-config';
   static const settingsMoonfin = '/settings/moonfin';
   static const settingsNavigation = '/settings/navigation';
 
-  // Jellyseerr
-  static const jellyseerrDiscover = '/jellyseerr/discover';
-  static const jellyseerrRequests = '/jellyseerr/requests';
-  static const jellyseerrSettings = '/jellyseerr/settings';
-  static const jellyseerrBrowse = '/jellyseerr/browse';
-  static const jellyseerrMediaDetail = '/jellyseerr/media/:itemId';
-  static const jellyseerrPersonDetail = '/jellyseerr/person/:personId';
+  // Seerr
+  static const seerrDiscover = '/seerr/discover';
+  static const seerrRequests = '/seerr/requests';
+  static const seerrSettings = '/seerr/settings';
+  static const seerrBrowse = '/seerr/browse';
+  static const seerrMediaDetail = '/seerr/media/:itemId';
+  static const seerrPersonDetail = '/seerr/person/:personId';
 
   static String library(String libraryId) => '/library/$libraryId';
   static String libraryView(String libraryId) => '/library-view/$libraryId';
@@ -109,18 +109,18 @@ class Destinations {
       '/player/still-watching/$itemId';
   static String searchWith(String query) =>
       '/search?query=${Uri.encodeComponent(query)}';
-  static String jellyseerrMedia(String itemId) => '/jellyseerr/media/$itemId';
-  static String jellyseerrPerson(String personId) =>
-      '/jellyseerr/person/$personId';
+  static String seerrMedia(String itemId) => '/seerr/media/$itemId';
+  static String seerrPerson(String personId) =>
+      '/seerr/person/$personId';
 
-  static String jellyseerrBrowseWith({
+  static String seerrBrowseWith({
     required String filterId,
     required String filterName,
     required String mediaType,
     required String filterType,
   }) {
     return Uri(
-      path: '/jellyseerr/browse',
+      path: '/seerr/browse',
       queryParameters: {
         'filterId': filterId,
         'filterName': filterName,

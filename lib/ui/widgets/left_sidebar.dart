@@ -335,13 +335,13 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   showLabel: _showLabels,
                   onPressed: () {},
                 ),
-              if (_prefs.get(UserPreferences.jellyseerrEnabled))
+              if (_prefs.get(UserPreferences.seerrEnabled))
                 _SidebarItem(
                   icon: Icons.movie_filter_rounded,
                   label: 'Seerr',
                   showLabel: _showLabels,
-                  isActive: _isActive(Destinations.jellyseerrDiscover),
-                  onPressed: () { _onNavigate(); context.push(Destinations.jellyseerrDiscover); },
+                  isActive: _isActive(Destinations.seerrDiscover),
+                  onPressed: () { _onNavigate(); context.push(Destinations.seerrDiscover); },
                 ),
               if (showLibraries && _libraries.isNotEmpty) ...[
                 _buildSeparator(),

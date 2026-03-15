@@ -352,15 +352,15 @@ class _TopToolbarState extends State<TopToolbar> {
                   ),
                 ),
               ],
-              if (_prefs.get(UserPreferences.jellyseerrEnabled)) ...[
+              if (_prefs.get(UserPreferences.seerrEnabled)) ...[
                 _gap(),
                 _orderButton(
                   order: (order++).toDouble(),
                   child: ExpandableIconButton(
                     icon: Icons.movie_filter_rounded,
                     label: 'Seerr',
-                    isActive: _isActive(Destinations.jellyseerrDiscover),
-                    onPressed: () => context.push(Destinations.jellyseerrDiscover),
+                    isActive: _isActive(Destinations.seerrDiscover),
+                    onPressed: () => context.push(Destinations.seerrDiscover),
                   ),
                 ),
               ],

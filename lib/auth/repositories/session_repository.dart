@@ -125,7 +125,7 @@ class SessionRepository {
 
     await _pluginSyncService.syncOnLogin(client);
 
-    await _pluginSyncService.configureJellyseerr(
+    await _pluginSyncService.configureSeerr(
       client,
       username: username ?? user.name,
       password: password,

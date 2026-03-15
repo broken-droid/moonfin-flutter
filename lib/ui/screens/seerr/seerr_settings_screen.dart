@@ -5,23 +5,22 @@ import 'package:jellyfin_preference/jellyfin_preference.dart';
 import '../../../auth/repositories/session_repository.dart';
 import '../../widgets/navigation_layout.dart';
 
-/// Jellyseerr integration settings.
-class JellyseerrSettingsScreen extends StatefulWidget {
-  const JellyseerrSettingsScreen({super.key});
+class SeerrSettingsScreen extends StatefulWidget {
+  const SeerrSettingsScreen({super.key});
 
   @override
-  State<JellyseerrSettingsScreen> createState() =>
-      _JellyseerrSettingsScreenState();
+  State<SeerrSettingsScreen> createState() =>
+      _SeerrSettingsScreenState();
 }
 
-class _JellyseerrSettingsScreenState extends State<JellyseerrSettingsScreen> {
+class _SeerrSettingsScreenState extends State<SeerrSettingsScreen> {
   late final PreferenceStore _store;
   late final String _userId;
 
   // Per-user preference keys
-  String get _showInToolbarKey => 'jellyseerr_show_in_toolbar_$_userId';
-  String get _connectionUrlKey => 'jellyseerr_connection_url';
-  String get _nsfwFilterKey => 'jellyseerr_nsfw_filter';
+  String get _showInToolbarKey => 'seerr_show_in_toolbar_$_userId';
+  String get _connectionUrlKey => 'seerr_connection_url';
+  String get _nsfwFilterKey => 'seerr_nsfw_filter';
 
   bool _showInToolbar = false;
   String _connectionUrl = '';
@@ -62,7 +61,7 @@ class _JellyseerrSettingsScreenState extends State<JellyseerrSettingsScreen> {
               ),
               SwitchListTile(
                 title: const Text('Show in Toolbar'),
-                subtitle: const Text('Display Jellyseerr button in the toolbar'),
+                subtitle: const Text('Display Seerr button in the toolbar'),
                 secondary: const Icon(Icons.visibility),
                 value: _showInToolbar,
                 onChanged: (value) async {
@@ -92,11 +91,11 @@ class _JellyseerrSettingsScreenState extends State<JellyseerrSettingsScreen> {
     final result = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Jellyseerr URL'),
+        title: const Text('Seerr URL'),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(
-            hintText: 'https://jellyseerr.example.com',
+            hintText: 'https://seerr.example.com',
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.url,
