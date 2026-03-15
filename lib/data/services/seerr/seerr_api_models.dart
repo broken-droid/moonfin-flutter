@@ -251,6 +251,9 @@ class SeerrDiscoverItem {
   final double? popularity;
   final bool adult;
   final SeerrMediaInfo? mediaInfo;
+  final String? character;
+  final String? job;
+  final String? department;
 
   const SeerrDiscoverItem({
     required this.id,
@@ -271,6 +274,9 @@ class SeerrDiscoverItem {
     this.popularity,
     this.adult = false,
     this.mediaInfo,
+    this.character,
+    this.job,
+    this.department,
   });
 
   String get displayTitle => title ?? name ?? '';
