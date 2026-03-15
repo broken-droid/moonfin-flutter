@@ -70,6 +70,7 @@ class Destinations {
   static const settingsLibrary = '/settings/library';
   static const settingsJellyseerr = '/settings/jellyseerr-config';
   static const settingsMoonfin = '/settings/moonfin';
+  static const settingsNavigation = '/settings/navigation';
 
   // Jellyseerr
   static const jellyseerrDiscover = '/jellyseerr/discover';

@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
+import '../../data/repositories/seerr_repository.dart';
 import '../../preference/preference_constants.dart' as prefs;
 import '../../preference/user_preferences.dart';
 import '../../util/platform_detection.dart';
@@ -46,16 +47,50 @@ class PluginSyncService {
       _mdblistAvailable = pingResult['mdblistAvailable'] as bool? ?? false;
       _tmdbAvailable = pingResult['tmdbAvailable'] as bool? ?? false;
 
+      final neverConfigured = !_store.containsKey(UserPreferences.pluginSyncEnabled.key);
       final syncEnabled = _prefs.get(UserPreferences.pluginSyncEnabled);
-      if (!syncEnabled) return;
+
+      if (!syncEnabled && !neverConfigured) return;
 
       final resolved = await _fetchResolvedProfile(client, _profileName);
       if (resolved == null) return;
 
+      if (neverConfigured) {
+        await _prefs.set(UserPreferences.pluginSyncEnabled, true);
+      }
+
       _applyServerSettings(resolved);
-    } catch (e) {
-      debugPrint('[Moonfin] Plugin sync failed: $e');
-    }
+    } catch (_) {}
+  }
+
+  Future<void> configureJellyseerr(
+    MediaServerClient client, {
+    String? username,
+    String? password,
+  }) async {
+    if (!_pluginAvailable) return;
+
+    final token = client.accessToken;
+    if (token == null || token.isEmpty) return;
+
+    try {
+      await _prefs.set(UserPreferences.jellyseerrEnabled, true);
+
+      final seerrRepo = await GetIt.instance.getAsync<SeerrRepository>();
+      final status = await seerrRepo.configureWithMoonfin(
+        jellyfinBaseUrl: client.baseUrl,
+        jellyfinToken: token,
+      );
+
+      if (!status.authenticated && status.enabled &&
+          username != null && username.isNotEmpty &&
+          password != null && password.isNotEmpty) {
+        await seerrRepo.loginWithMoonfin(
+          username: username,
+          password: password,
+        );
+      }
+    } catch (_) {}
   }
 
   Future<void> pushSettings(MediaServerClient client) async {
@@ -75,9 +110,7 @@ class PluginSyncService {
           'Content-Type': 'application/json',
         }),
       );
-    } catch (e) {
-      debugPrint('[Moonfin] Plugin push failed: $e');
-    }
+    } catch (_) {}
   }
 
   Future<Map<String, dynamic>?> _ping(MediaServerClient client) async {
@@ -188,6 +221,8 @@ class PluginSyncService {
         UserPreferences.enableEpisodeRatings);
     _applyString(resolved, 'tmdbApiKey', UserPreferences.tmdbApiKey);
 
+    _applyBool(resolved, 'jellyseerrEnabled', UserPreferences.jellyseerrEnabled);
+
     if (resolved['mdblistRatingSources'] is List) {
       final sources = (resolved['mdblistRatingSources'] as List)
           .cast<String>()
@@ -201,6 +236,8 @@ class PluginSyncService {
           .join(',');
       _store.set(UserPreferences.blockedRatings, blocked);
     }
+
+    _prefs.notifyPreferenceChanged();
   }
 
   void _applyBool(
@@ -310,6 +347,7 @@ class PluginSyncService {
       'tmdbEpisodeRatingsEnabled':
           _prefs.get(UserPreferences.enableEpisodeRatings),
       'tmdbApiKey': _prefs.get(UserPreferences.tmdbApiKey),
+      'jellyseerrEnabled': _prefs.get(UserPreferences.jellyseerrEnabled),
       'mdblistRatingSources':
           _prefs.get(UserPreferences.enabledRatings).split(','),
     };

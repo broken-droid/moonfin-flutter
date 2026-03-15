@@ -262,6 +262,8 @@ class _LoginScreenState extends State<LoginScreen> {
         await _sessionRepo.switchCurrentSession(
           serverId: result.serverId,
           userId: result.userId,
+          username: username,
+          password: _passwordController.text,
         );
         if (mounted) context.go(Destinations.home);
       case ApiClientError(:final error):

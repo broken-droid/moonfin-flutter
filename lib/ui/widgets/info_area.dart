@@ -43,17 +43,28 @@ class _InfoAreaContent extends StatefulWidget {
 }
 
 class _InfoAreaContentState extends State<_InfoAreaContent> {
+  final _prefs = GetIt.instance<UserPreferences>();
   Map<String, double> _ratings = const {};
 
   @override
   void initState() {
     super.initState();
+    _prefs.addListener(_onPrefsChanged);
     _loadRatings();
   }
 
+  @override
+  void dispose() {
+    _prefs.removeListener(_onPrefsChanged);
+    super.dispose();
+  }
+
+  void _onPrefsChanged() {
+    if (mounted) setState(() {});
+  }
+
   Future<void> _loadRatings() async {
-    final prefs = GetIt.instance<UserPreferences>();
-    if (!prefs.get(UserPreferences.enableAdditionalRatings)) return;
+    if (!_prefs.get(UserPreferences.enableAdditionalRatings)) return;
 
     final tmdbId = widget.item.tmdbId;
     if (tmdbId == null) return;
@@ -72,7 +83,6 @@ class _InfoAreaContentState extends State<_InfoAreaContent> {
     final item = widget.item;
     final theme = Theme.of(context);
     final isMobile = PlatformDetection.useMobileUi;
-    final prefs = GetIt.instance<UserPreferences>();
 
     final showRatings = _ratings.isNotEmpty ||
         item.communityRating != null ||
@@ -123,10 +133,10 @@ class _InfoAreaContentState extends State<_InfoAreaContent> {
               communityRating: item.communityRating,
               criticRating: item.criticRating,
               enableAdditionalRatings:
-                  prefs.get(UserPreferences.enableAdditionalRatings),
-              enabledRatings: prefs.get(UserPreferences.enabledRatings),
-              blockedRatings: prefs.get(UserPreferences.blockedRatings),
-              showLabels: prefs.get(UserPreferences.showRatingLabels),
+                  _prefs.get(UserPreferences.enableAdditionalRatings),
+              enabledRatings: _prefs.get(UserPreferences.enabledRatings),
+              blockedRatings: _prefs.get(UserPreferences.blockedRatings),
+              showLabels: _prefs.get(UserPreferences.showRatingLabels),
             ) : const SizedBox.shrink(),
           ),
           const SizedBox(height: 8),

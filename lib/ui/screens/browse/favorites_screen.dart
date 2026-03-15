@@ -55,6 +55,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       if (mounted) setState(() => _backdropUrl = url);
     });
     _backdropUrl = _backgroundService.currentUrl;
+    _prefs.addListener(_onChanged);
   }
 
   @override
@@ -62,6 +63,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     _backgroundSub?.cancel();
     _scrollController.dispose();
     _vm.removeListener(_onChanged);
+    _prefs.removeListener(_onChanged);
     _vm.dispose();
     super.dispose();
   }

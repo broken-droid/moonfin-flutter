@@ -57,6 +57,7 @@ class _TopToolbarState extends State<TopToolbar> {
     _clockTimer = Timer.periodic(const Duration(seconds: 30), (_) => _updateClock());
     _loadUserImage();
     _userSub = _userRepo.currentUserStream.listen((_) => _loadUserImage());
+    _prefs.addListener(_onPrefsChanged);
     _loadLibraries();
   }
 
@@ -65,7 +66,12 @@ class _TopToolbarState extends State<TopToolbar> {
     _clockTimer?.cancel();
     _avatarFocus.dispose();
     _userSub?.cancel();
+    _prefs.removeListener(_onPrefsChanged);
     super.dispose();
+  }
+
+  void _onPrefsChanged() {
+    if (mounted) setState(() {});
   }
 
   void _updateClock() {
@@ -343,6 +349,18 @@ class _TopToolbarState extends State<TopToolbar> {
                     icon: Icons.groups_rounded,
                     label: 'SyncPlay',
                     onPressed: () {},
+                  ),
+                ),
+              ],
+              if (_prefs.get(UserPreferences.jellyseerrEnabled)) ...[
+                _gap(),
+                _orderButton(
+                  order: (order++).toDouble(),
+                  child: ExpandableIconButton(
+                    icon: Icons.movie_filter_rounded,
+                    label: 'Seerr',
+                    isActive: _isActive(Destinations.jellyseerrDiscover),
+                    onPressed: () => context.push(Destinations.jellyseerrDiscover),
                   ),
                 ),
               ],

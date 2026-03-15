@@ -69,6 +69,7 @@ class _GenreBrowseScreenState extends State<GenreBrowseScreen> {
       if (mounted) setState(() => _backdropUrl = url);
     });
     _backdropUrl = _backgroundService.currentUrl;
+    _prefs.addListener(_onPrefsChanged);
     _loadLibraries();
     _load();
   }
@@ -77,7 +78,12 @@ class _GenreBrowseScreenState extends State<GenreBrowseScreen> {
   void dispose() {
     _backgroundSub?.cancel();
     _scrollController.dispose();
+    _prefs.removeListener(_onPrefsChanged);
     super.dispose();
+  }
+
+  void _onPrefsChanged() {
+    if (mounted) setState(() {});
   }
 
   void _onScroll() {

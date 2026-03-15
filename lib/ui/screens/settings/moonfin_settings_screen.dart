@@ -21,27 +21,6 @@ class MoonfinSettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           SwitchPreferenceTile(
-            preference: UserPreferences.showShuffleButton,
-            title: 'Show Shuffle Button',
-            icon: Icons.shuffle,
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.showGenresButton,
-            title: 'Show Genres Button',
-            icon: Icons.category,
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.showFavoritesButton,
-            title: 'Show Favorites Button',
-            icon: Icons.favorite,
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.showLibrariesInToolbar,
-            title: 'Show Libraries in Toolbar',
-            icon: Icons.video_library,
-          ),
-          const Divider(),
-          SwitchPreferenceTile(
             preference: UserPreferences.themeMusicEnabled,
             title: 'Theme Music',
             subtitle: 'Play theme music on detail pages',
@@ -56,12 +35,13 @@ class MoonfinSettingsScreen extends StatelessWidget {
             divisions: 20,
             labelOf: (v) => '$v%',
           ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.themeMusicOnHomeRows,
-            title: 'Theme Music on Home Rows',
-            subtitle: 'Play when browsing home screen',
-            icon: Icons.queue_music,
-          ),
+          if (!PlatformDetection.isMobile)
+            SwitchPreferenceTile(
+              preference: UserPreferences.themeMusicOnHomeRows,
+              title: 'Theme Music on Home Rows',
+              subtitle: 'Play when browsing home screen',
+              icon: Icons.queue_music,
+            ),
           const Divider(),
           StringPickerPreferenceTile(
             preference: UserPreferences.seasonalSurprise,

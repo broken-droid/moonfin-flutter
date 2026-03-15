@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
@@ -105,8 +104,7 @@ class SeerrRepository {
         _isAvailable = false;
       }
       _initialized = true;
-    } catch (e) {
-      debugPrint('[Seerr] Failed to auto-initialize: $e');
+    } catch (_) {
       _isAvailable = false;
       _initialized = true;
     }
@@ -132,9 +130,8 @@ class SeerrRepository {
     try {
       final status = await _httpClient!.getMoonfinStatus();
       _isAvailable = status.authenticated;
-    } catch (e) {
+    } catch (_) {
       _isAvailable = false;
-      debugPrint('[Seerr] Failed to check Moonfin status: $e');
     }
   }
 

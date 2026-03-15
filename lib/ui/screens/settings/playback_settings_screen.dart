@@ -13,6 +13,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Playback')),
       body: ListView(
         children: [
+          _section(context, 'Video'),
           StringPickerPreferenceTile(
             preference: UserPreferences.maxBitrate,
             title: 'Max Streaming Bitrate',
@@ -44,6 +45,38 @@ class PlaybackSettingsScreen extends StatelessWidget {
               MaxVideoResolution.res2160p => '4K',
             },
           ),
+          EnumPreferenceTile<ZoomMode>(
+            preference: UserPreferences.playerZoomMode,
+            title: 'Player Zoom Mode',
+            icon: Icons.crop,
+            labelOf: (v) => switch (v) {
+              ZoomMode.fit => 'Fit',
+              ZoomMode.autoCrop => 'Auto Crop',
+              ZoomMode.stretch => 'Stretch',
+            },
+          ),
+          EnumPreferenceTile<RefreshRateSwitchingBehavior>(
+            preference: UserPreferences.refreshRateSwitchingBehavior,
+            title: 'Refresh Rate Switching',
+            icon: Icons.monitor,
+            labelOf: (v) => switch (v) {
+              RefreshRateSwitchingBehavior.disabled => 'Disabled',
+              RefreshRateSwitchingBehavior.scaleOnTv => 'Scale on TV',
+              RefreshRateSwitchingBehavior.scaleOnDevice => 'Scale on Device',
+            },
+          ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.trickPlayEnabled,
+            title: 'Trick Play',
+            subtitle: 'Show preview thumbnails when seeking',
+            icon: Icons.preview,
+          ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.showDescriptionOnPause,
+            title: 'Show Description on Pause',
+            icon: Icons.description,
+          ),
+          _section(context, 'Audio'),
           EnumPreferenceTile<AudioBehavior>(
             preference: UserPreferences.audioBehavior,
             title: 'Audio Behavior',
@@ -53,6 +86,18 @@ class PlaybackSettingsScreen extends StatelessWidget {
               AudioBehavior.downmixToStereo => 'Downmix to Stereo',
             },
           ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.ac3Enabled,
+            title: 'AC3 Passthrough',
+            icon: Icons.speaker,
+          ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.audioNightMode,
+            title: 'Night Mode',
+            subtitle: 'Compress dynamic range',
+            icon: Icons.nightlight,
+          ),
+          _section(context, 'Next Up & Queuing'),
           EnumPreferenceTile<NextUpBehavior>(
             preference: UserPreferences.nextUpBehavior,
             title: 'Next Up Behavior',
@@ -71,18 +116,6 @@ class PlaybackSettingsScreen extends StatelessWidget {
             max: 30000,
             divisions: 30,
             labelOf: (v) => v == 0 ? 'Disabled' : '${(v / 1000).round()}s',
-          ),
-          StringPickerPreferenceTile(
-            preference: UserPreferences.resumeSubtractDuration,
-            title: 'Resume Rewind',
-            icon: Icons.replay,
-            options: const {
-              '0': 'None',
-              '5': '5 seconds',
-              '10': '10 seconds',
-              '15': '15 seconds',
-              '30': '30 seconds',
-            },
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.cinemaModeEnabled,
@@ -105,47 +138,18 @@ class PlaybackSettingsScreen extends StatelessWidget {
               _ => 'After ${v.episodes} episodes / ${v.hours}h',
             },
           ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.ac3Enabled,
-            title: 'AC3 Passthrough',
-            icon: Icons.speaker,
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.audioNightMode,
-            title: 'Night Mode',
-            subtitle: 'Compress dynamic range',
-            icon: Icons.nightlight,
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.trickPlayEnabled,
-            title: 'Trick Play',
-            subtitle: 'Show preview thumbnails when seeking',
-            icon: Icons.preview,
-          ),
-          EnumPreferenceTile<ZoomMode>(
-            preference: UserPreferences.playerZoomMode,
-            title: 'Player Zoom Mode',
-            icon: Icons.crop,
-            labelOf: (v) => switch (v) {
-              ZoomMode.fit => 'Fit',
-              ZoomMode.autoCrop => 'Auto Crop',
-              ZoomMode.stretch => 'Stretch',
+          _section(context, 'Resume & Skip'),
+          StringPickerPreferenceTile(
+            preference: UserPreferences.resumeSubtractDuration,
+            title: 'Resume Rewind',
+            icon: Icons.replay,
+            options: const {
+              '0': 'None',
+              '5': '5 seconds',
+              '10': '10 seconds',
+              '15': '15 seconds',
+              '30': '30 seconds',
             },
-          ),
-          EnumPreferenceTile<RefreshRateSwitchingBehavior>(
-            preference: UserPreferences.refreshRateSwitchingBehavior,
-            title: 'Refresh Rate Switching',
-            icon: Icons.monitor,
-            labelOf: (v) => switch (v) {
-              RefreshRateSwitchingBehavior.disabled => 'Disabled',
-              RefreshRateSwitchingBehavior.scaleOnTv => 'Scale on TV',
-              RefreshRateSwitchingBehavior.scaleOnDevice => 'Scale on Device',
-            },
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.showDescriptionOnPause,
-            title: 'Show Description on Pause',
-            icon: Icons.description,
           ),
           SliderPreferenceTile(
             preference: UserPreferences.skipBackLength,
@@ -166,6 +170,20 @@ class PlaybackSettingsScreen extends StatelessWidget {
             labelOf: (v) => '${(v / 1000).round()}s',
           ),
         ],
+      ),
+    );
+  }
+
+  static Widget _section(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }

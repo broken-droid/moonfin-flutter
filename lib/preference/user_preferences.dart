@@ -1,15 +1,25 @@
+import 'package:flutter/foundation.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import 'home_section_config.dart';
 import 'preference_constants.dart';
 
-class UserPreferences {
+class UserPreferences extends ChangeNotifier {
   final PreferenceStore _store;
 
   UserPreferences(this._store);
 
   T get<T>(Preference<T> pref) => _store.get(pref);
-  Future<void> set<T>(Preference<T> pref, T value) => _store.set(pref, value);
+
+  Future<void> set<T>(Preference<T> pref, T value) async {
+    await _store.set(pref, value);
+    notifyListeners();
+  }
+
+  void notifyPreferenceChanged() {
+    notifyListeners();
+  }
+
   static final posterSize = EnumPreference(
     key: 'poster_size',
     defaultValue: PosterSize.medium,
@@ -605,4 +615,9 @@ class UserPreferences {
         defaultValue: FavoriteTypeFilter.all,
         values: FavoriteTypeFilter.values,
       );
+
+  static final jellyseerrEnabled = Preference(
+    key: 'jellyseerr_enabled',
+    defaultValue: false,
+  );
 }

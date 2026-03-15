@@ -73,6 +73,7 @@ class _HomeShellState extends State<_HomeShell> {
     _viewModel = GetIt.instance<HomeViewModel>();
     _viewModel.addListener(_onViewModelChanged);
     _viewModel.mediaBarViewModel.addListener(_onViewModelChanged);
+    _userPrefs.addListener(_onViewModelChanged);
     _viewModel.load();
   }
 
@@ -84,6 +85,7 @@ class _HomeShellState extends State<_HomeShell> {
     _backgroundSub?.cancel();
     _viewModel.mediaBarViewModel.removeListener(_onViewModelChanged);
     _viewModel.removeListener(_onViewModelChanged);
+    _userPrefs.removeListener(_onViewModelChanged);
     super.dispose();
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
+import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_tiles.dart';
 
 class AuthSettingsScreen extends StatelessWidget {
@@ -29,12 +30,13 @@ class AuthSettingsScreen extends StatelessWidget {
             subtitle: 'Require password even with stored token',
             icon: Icons.security,
           ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.confirmExit,
-            title: 'Confirm Exit',
-            subtitle: 'Show confirmation before exiting',
-            icon: Icons.exit_to_app,
-          ),
+          if (!PlatformDetection.isMobile)
+            SwitchPreferenceTile(
+              preference: UserPreferences.confirmExit,
+              title: 'Confirm Exit',
+              subtitle: 'Show confirmation before exiting',
+              icon: Icons.exit_to_app,
+            ),
         ],
       ),
     );

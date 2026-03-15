@@ -49,12 +49,14 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
       if (mounted) setState(() => _backdropUrl = url);
     });
     _backdropUrl = _backgroundService.currentUrl;
+    _prefs.addListener(_onChanged);
   }
 
   @override
   void dispose() {
     _backgroundSub?.cancel();
     _vm.removeListener(_onChanged);
+    _prefs.removeListener(_onChanged);
     _vm.dispose();
     super.dispose();
   }

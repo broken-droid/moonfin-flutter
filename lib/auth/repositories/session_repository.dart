@@ -79,6 +79,8 @@ class SessionRepository {
   Future<bool> switchCurrentSession({
     required String serverId,
     required String userId,
+    String? username,
+    String? password,
   }) async {
     _setState(SessionState.switching);
 
@@ -122,6 +124,12 @@ class SessionRepository {
     await _authPrefs.setLastUserId(userId);
 
     await _pluginSyncService.syncOnLogin(client);
+
+    await _pluginSyncService.configureJellyseerr(
+      client,
+      username: username ?? user.name,
+      password: password,
+    );
 
     _setState(SessionState.ready);
     return true;

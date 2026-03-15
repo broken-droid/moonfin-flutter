@@ -20,6 +20,10 @@ class MediaBarViewModel extends ChangeNotifier {
 
   String get baseUrl => _client.baseUrl;
 
+  late bool _lastEnabled;
+  late String _lastContentType;
+  late String _lastItemCount;
+
   List<MediaBarSlideItem> get items =>
       _state is MediaBarReady ? (_state as MediaBarReady).items : const [];
 
@@ -31,7 +35,33 @@ class MediaBarViewModel extends ChangeNotifier {
     this._mdbListRepository,
     this._prefs,
     this._client,
-  );
+  ) {
+    _lastEnabled = _prefs.get(UserPreferences.mediaBarEnabled);
+    _lastContentType = _prefs.get(UserPreferences.mediaBarContentType);
+    _lastItemCount = _prefs.get(UserPreferences.mediaBarItemCount);
+    _prefs.addListener(_onPrefsChanged);
+  }
+
+  void _onPrefsChanged() {
+    final enabled = _prefs.get(UserPreferences.mediaBarEnabled);
+    final contentType = _prefs.get(UserPreferences.mediaBarContentType);
+    final itemCount = _prefs.get(UserPreferences.mediaBarItemCount);
+
+    if (enabled != _lastEnabled ||
+        contentType != _lastContentType ||
+        itemCount != _lastItemCount) {
+      _lastEnabled = enabled;
+      _lastContentType = contentType;
+      _lastItemCount = itemCount;
+      load();
+    }
+  }
+
+  @override
+  void dispose() {
+    _prefs.removeListener(_onPrefsChanged);
+    super.dispose();
+  }
 
   Future<void> load({BuildContext? context}) async {
     _state = const MediaBarLoading();

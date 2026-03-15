@@ -45,6 +45,7 @@ class _MediaBarState extends State<MediaBar> {
   void initState() {
     super.initState();
     widget.viewModel.addListener(_onStateChanged);
+    widget.prefs.addListener(_onPrefsChanged);
   }
 
   @override
@@ -52,6 +53,7 @@ class _MediaBarState extends State<MediaBar> {
     _autoAdvanceTimer?.cancel();
     _pageController.dispose();
     widget.viewModel.removeListener(_onStateChanged);
+    widget.prefs.removeListener(_onPrefsChanged);
     super.dispose();
   }
 
@@ -74,6 +76,10 @@ class _MediaBarState extends State<MediaBar> {
     if (state is MediaBarReady && state.items.isNotEmpty) {
       _startAutoAdvance();
     }
+  }
+
+  void _onPrefsChanged() {
+    if (mounted) setState(() {});
   }
 
   void _startAutoAdvance() {

@@ -58,6 +58,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
       mdbListRepository: GetIt.instance<MdbListRepository>(),
     );
     _viewModel.addListener(_onChanged);
+    _prefs.addListener(_onPrefsChanged);
     _viewModel.load();
 
     _backdropUrl = _backgroundService.currentUrl;
@@ -68,6 +69,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     _themeMusicService.fadeOutAndStop();
     _backgroundService.clearBackgrounds();
     _viewModel.removeListener(_onChanged);
+    _prefs.removeListener(_onPrefsChanged);
     _viewModel.dispose();
     super.dispose();
   }
@@ -84,6 +86,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         _themeMusicService.playForItem(item);
       }
     }
+  }
+
+  void _onPrefsChanged() {
+    if (mounted) setState(() {});
   }
 
   @override

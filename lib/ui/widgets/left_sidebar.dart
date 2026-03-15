@@ -57,6 +57,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _clockTimer = Timer.periodic(const Duration(seconds: 30), (_) => _updateClock());
     _loadUserImage();
     _userSub = _userRepo.currentUserStream.listen((_) => _loadUserImage());
+    _prefs.addListener(_onPrefsChanged);
     _loadLibraries();
   }
 
@@ -67,7 +68,12 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _sidebarFocus.dispose();
     _scrollController.dispose();
     _userSub?.cancel();
+    _prefs.removeListener(_onPrefsChanged);
     super.dispose();
+  }
+
+  void _onPrefsChanged() {
+    if (mounted) setState(() {});
   }
 
   void _updateClock() {
@@ -328,6 +334,14 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   label: 'SyncPlay',
                   showLabel: _showLabels,
                   onPressed: () {},
+                ),
+              if (_prefs.get(UserPreferences.jellyseerrEnabled))
+                _SidebarItem(
+                  icon: Icons.movie_filter_rounded,
+                  label: 'Seerr',
+                  showLabel: _showLabels,
+                  isActive: _isActive(Destinations.jellyseerrDiscover),
+                  onPressed: () { _onNavigate(); context.push(Destinations.jellyseerrDiscover); },
                 ),
               if (showLibraries && _libraries.isNotEmpty) ...[
                 _buildSeparator(),

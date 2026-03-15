@@ -4,7 +4,7 @@ import 'package:jellyfin_design/jellyfin_design.dart';
 
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
-import '../../widgets/navigation_layout.dart';
+import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_tiles.dart';
 
 class AppearanceSettingsScreen extends StatefulWidget {
@@ -19,41 +19,29 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final navbarPosition = _prefs.get(UserPreferences.navbarPosition);
+    final isMobile = PlatformDetection.isMobile;
     final focusColor = _prefs.get(UserPreferences.focusColor);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Theme & Appearance')),
       body: ListView(
         children: [
-          ListTile(
-            leading: const Icon(Icons.view_sidebar),
-            title: const Text('Navigation Style'),
-            subtitle: Text(navbarPosition == NavbarPosition.top ? 'Top Bar' : 'Left Sidebar'),
-            onTap: () {
-              final newPos = navbarPosition == NavbarPosition.top
-                  ? NavbarPosition.left
-                  : NavbarPosition.top;
-              _prefs.set(UserPreferences.navbarPosition, newPos);
-              NavigationLayout.positionNotifier.value = newPos;
-              setState(() {});
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.border_outer),
-            title: const Text('Focus Border Color'),
-            subtitle: Text(focusColor.name),
-            trailing: Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: Color(focusColor.colorValue),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white24),
+          if (!isMobile)
+            ListTile(
+              leading: const Icon(Icons.border_outer),
+              title: const Text('Focus Border Color'),
+              subtitle: Text(focusColor.name),
+              trailing: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: Color(focusColor.colorValue),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white24),
+                ),
               ),
+              onTap: () => _showFocusColorPicker(context),
             ),
-            onTap: () => _showFocusColorPicker(context),
-          ),
           EnumPreferenceTile<WatchedIndicatorBehavior>(
             preference: UserPreferences.watchedIndicatorBehavior,
             title: 'Watched Indicators',
@@ -65,12 +53,13 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
               WatchedIndicatorBehavior.never => 'Never',
             },
           ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.cardFocusExpansion,
-            title: 'Card Focus Expansion',
-            subtitle: 'Scale cards when focused',
-            icon: Icons.zoom_in,
-          ),
+          if (!isMobile)
+            SwitchPreferenceTile(
+              preference: UserPreferences.cardFocusExpansion,
+              title: 'Card Focus Expansion',
+              subtitle: 'Scale cards when focused',
+              icon: Icons.zoom_in,
+            ),
           SwitchPreferenceTile(
             preference: UserPreferences.backdropEnabled,
             title: 'Background Backdrops',
