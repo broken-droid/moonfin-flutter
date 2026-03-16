@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../navigation/destinations.dart';
+import '../../util/platform_detection.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -35,7 +36,9 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.palette),
             title: const Text('Theme & Appearance'),
-            subtitle: const Text('Focus color, watched indicators, backdrops'),
+            subtitle: Text(PlatformDetection.isMobile
+                ? 'Watched indicators, backdrops'
+                : 'Focus color, watched indicators, backdrops'),
             onTap: () => context.push(Destinations.settingsAppearance),
           ),
           ListTile(
