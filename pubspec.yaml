@@ -80,6 +80,7 @@ dev_dependencies:
   injectable_generator: ^2.7.0
   riverpod_generator: ^2.6.3
   mocktail: ^1.0.4
+  msix: ^3.16.8
 
 flutter:
   uses-material-design: true
@@ -88,3 +89,12 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/icons/ratings/
+
+msix_config:
+  display_name: Moonfin
+  publisher_display_name: Moonfin
+  identity_name: com.moonfin.app
+  msix_version: 0.1.0.0
+  logo_path: assets/icons/app_icon.png
+  capabilities: internetClient, internetClientServer
+  languages: en-us
