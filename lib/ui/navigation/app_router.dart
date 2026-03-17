@@ -75,6 +75,9 @@ import '../screens/admin/settings/admin_general_settings_screen.dart';
 import '../screens/admin/settings/admin_branding_screen.dart';
 import '../screens/admin/settings/admin_networking_screen.dart';
 import '../screens/admin/settings/admin_playback_settings_screen.dart';
+import '../screens/admin/settings/admin_resume_settings_screen.dart';
+import '../screens/admin/settings/admin_streaming_screen.dart';
+import '../screens/admin/settings/admin_trickplay_screen.dart';
 import '../screens/admin/plugins/admin_plugins_screen.dart';
 import '../screens/admin/plugins/admin_plugin_detail_screen.dart';
 import '../screens/admin/plugins/admin_repositories_screen.dart';
@@ -364,6 +367,18 @@ final appRouter = GoRouter(
         GoRoute(
           path: Destinations.adminSettingsPlayback,
           builder: (context, state) => const AdminPlaybackSettingsScreen(),
+        ),
+        GoRoute(
+          path: Destinations.adminSettingsResume,
+          builder: (context, state) => const AdminResumeSettingsScreen(),
+        ),
+        GoRoute(
+          path: Destinations.adminSettingsStreaming,
+          builder: (context, state) => const AdminStreamingScreen(),
+        ),
+        GoRoute(
+          path: Destinations.adminSettingsTrickplay,
+          builder: (context, state) => const AdminTrickplayScreen(),
         ),
         GoRoute(
           path: Destinations.adminSettingsNetworking,

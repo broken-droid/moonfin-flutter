@@ -65,6 +65,9 @@ class Destinations {
   static const adminLibrariesEdit = '/admin/libraries/:libraryId';
   static const adminSettings = '/admin/settings';
   static const adminSettingsPlayback = '/admin/settings/playback';
+  static const adminSettingsResume = '/admin/settings/resume';
+  static const adminSettingsStreaming = '/admin/settings/streaming';
+  static const adminSettingsTrickplay = '/admin/settings/trickplay';
   static const adminSettingsNetworking = '/admin/settings/networking';
   static const adminSettingsBranding = '/admin/settings/branding';
   static const adminTasks = '/admin/tasks';
