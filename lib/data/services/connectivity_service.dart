@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:server_core/server_core.dart';
 
+import 'sync_service.dart';
+
 class ConnectivityService extends ChangeNotifier {
   final Connectivity _connectivity = Connectivity();
   final Dio _pingDio = Dio(BaseOptions(
@@ -41,15 +43,29 @@ class ConnectivityService extends ChangeNotifier {
 
   void _onConnectivityChanged(List<ConnectivityResult> results) {
     final wasOnline = _isOnline;
+    final wasReachable = _serverReachable;
     _isOnline = results.any((r) => r != ConnectivityResult.none);
     if (_isOnline != wasOnline) {
       if (_isOnline) {
-        _checkServerReachability();
+        _checkServerReachability().then((_) {
+          if (_serverReachable && !wasReachable) {
+            _triggerSync();
+          }
+        });
       } else {
         _serverReachable = false;
         notifyListeners();
       }
     }
+  }
+
+  void _triggerSync() {
+    final getIt = GetIt.instance;
+    if (!getIt.isRegistered<SyncService>() ||
+        !getIt.isRegistered<MediaServerClient>()) return;
+    final syncService = getIt<SyncService>();
+    final client = getIt<MediaServerClient>();
+    syncService.syncPlaybackProgress(client);
   }
 
   Future<void> _checkServerReachability() async {

@@ -7,6 +7,7 @@ import '../auth/repositories/user_repository.dart';
 import '../data/services/connectivity_service.dart';
 import '../data/services/media_server_client_factory.dart';
 import '../data/services/socket_handler.dart';
+import '../data/services/sync_service.dart';
 import '../preference/user_preferences.dart';
 import 'injection.dart';
 
@@ -54,4 +55,11 @@ final connectivityServiceProvider =
 
 final isOnlineProvider = Provider<bool>((ref) {
   return ref.watch(connectivityServiceProvider).canReachServer;
+});
+
+final syncServiceProvider =
+    ChangeNotifierProvider<SyncService>((_) => getIt<SyncService>());
+
+final syncStateProvider = Provider<SyncState>((ref) {
+  return ref.watch(syncServiceProvider).state;
 });

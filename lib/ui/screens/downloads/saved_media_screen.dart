@@ -13,6 +13,7 @@ import '../../../di/providers.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/offline_image.dart';
+import '../../widgets/sync_indicator.dart';
 
 class SavedMediaScreen extends ConsumerStatefulWidget {
   const SavedMediaScreen({super.key});
@@ -65,6 +66,8 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
             ),
           ),
           const Spacer(),
+          const SyncIndicator(),
+          const SizedBox(width: 8),
           storage.when(
             data: (bytes) => Text(
               _formatBytes(bytes),

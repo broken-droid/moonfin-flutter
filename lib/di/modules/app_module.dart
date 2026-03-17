@@ -9,6 +9,7 @@ import '../../auth/store/credential_store.dart';
 import '../../data/repositories/mdblist_repository.dart';
 import '../../data/repositories/multi_server_repository.dart';
 import '../../data/repositories/media_bar_repository.dart';
+import '../../data/repositories/offline_repository.dart';
 import '../../data/services/media_server_client_factory.dart';
 import '../../data/repositories/seerr_repository.dart';
 import '../../data/repositories/tmdb_repository.dart';
@@ -20,6 +21,7 @@ import '../../data/services/plugin_sync_service.dart';
 import '../../data/services/row_data_source.dart';
 import '../../data/services/seerr/seerr_cookie_jar.dart';
 import '../../data/services/socket_handler.dart';
+import '../../data/services/sync_service.dart';
 import '../../data/services/theme_music_service.dart';
 import '../../data/viewmodels/media_bar_view_model.dart';
 import '../../data/viewmodels/seerr_discover_view_model.dart';
@@ -65,6 +67,9 @@ void registerAppModule() {
   _getIt.registerLazySingleton(() => SeerrPreferences(
         _getIt<PreferenceStore>(),
         _getIt<SessionRepository>(),
+      ));
+  _getIt.registerLazySingleton<SyncService>(() => SyncService(
+        _getIt<OfflineRepository>(),
       ));
 
   _registerUserScopedSingletons();
