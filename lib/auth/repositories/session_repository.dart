@@ -151,11 +151,30 @@ class SessionRepository {
   }
 
   Future<void> destroyCurrentSession() async {
+    final serverId = _activeServerId;
+    final userId = _activeUserId;
+
+    // Revoke the token server-side
+    if (serverId != null) {
+      try {
+        final client = _clientFactory.getClientIfExists(serverId);
+        await client?.authApi.logout();
+      } catch (_) {}
+    }
+
     _socketHandler.disconnect();
 
-    if (_activeServerId != null) {
-      _clientFactory.removeClient(_activeServerId!);
+    if (serverId != null) {
+      await _credentialStore.deleteToken(serverId);
+      if (userId != null) {
+        await _authStore.removeUser(serverId, userId);
+      }
+      _clientFactory.removeClient(serverId);
     }
+
+    await _authPrefs.setLastServerId('');
+    await _authPrefs.setLastUserId('');
+    await _authPrefs.clearAutoLogin();
 
     _activeServerId = null;
     _activeUserId = null;
