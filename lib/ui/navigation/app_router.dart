@@ -60,6 +60,8 @@ import '../screens/settings/playback_settings_screen.dart';
 import '../screens/settings/screensaver_settings_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/subtitle_settings_screen.dart';
+import '../screens/admin/admin_shell_screen.dart';
+import '../screens/admin/admin_dashboard_screen.dart';
 import 'destinations.dart';
 
 const _authRoutes = {
@@ -303,11 +305,98 @@ final appRouter = GoRouter(
     ),
 
     // Admin
-    GoRoute(
-      path: Destinations.admin,
-      builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Server Administration')),
-      ),
+    ShellRoute(
+      builder: (context, state, child) => AdminShellScreen(child: child),
+      routes: [
+        GoRoute(
+          path: Destinations.admin,
+          builder: (context, state) => const AdminDashboardScreen(),
+        ),
+        GoRoute(
+          path: Destinations.adminUsers,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Users'),
+        ),
+        GoRoute(
+          path: Destinations.adminUsersAdd,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Add User'),
+        ),
+        GoRoute(
+          path: Destinations.adminUsersEdit,
+          builder: (context, state) => _AdminPlaceholder(
+            title: 'Edit User: ${state.pathParameters['userId']}',
+          ),
+        ),
+        GoRoute(
+          path: Destinations.adminLibraries,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Libraries'),
+        ),
+        GoRoute(
+          path: Destinations.adminSettings,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Server Settings'),
+        ),
+        GoRoute(
+          path: Destinations.adminSettingsPlayback,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Playback Settings'),
+        ),
+        GoRoute(
+          path: Destinations.adminSettingsNetworking,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Networking'),
+        ),
+        GoRoute(
+          path: Destinations.adminSettingsBranding,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Branding'),
+        ),
+        GoRoute(
+          path: Destinations.adminTasks,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Scheduled Tasks'),
+        ),
+        GoRoute(
+          path: Destinations.adminTasksDetail,
+          builder: (context, state) => _AdminPlaceholder(
+            title: 'Task: ${state.pathParameters['taskId']}',
+          ),
+        ),
+        GoRoute(
+          path: Destinations.adminPlugins,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Plugins'),
+        ),
+        GoRoute(
+          path: Destinations.adminPluginsDetail,
+          builder: (context, state) => _AdminPlaceholder(
+            title: 'Plugin: ${state.pathParameters['pluginId']}',
+          ),
+        ),
+        GoRoute(
+          path: Destinations.adminActivity,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Activity Log'),
+        ),
+        GoRoute(
+          path: Destinations.adminDevices,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Devices'),
+        ),
+        GoRoute(
+          path: Destinations.adminKeys,
+          builder: (context, state) => const _AdminPlaceholder(title: 'API Keys'),
+        ),
+        GoRoute(
+          path: Destinations.adminBackups,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Backups'),
+        ),
+        GoRoute(
+          path: Destinations.adminLogs,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Server Logs'),
+        ),
+        GoRoute(
+          path: Destinations.adminLogsFile,
+          builder: (context, state) => _AdminPlaceholder(
+            title: 'Log: ${state.pathParameters['fileName']}',
+          ),
+        ),
+        GoRoute(
+          path: Destinations.adminLiveTv,
+          builder: (context, state) => const _AdminPlaceholder(title: 'Live TV Settings'),
+        ),
+      ],
     ),
 
     // Settings
@@ -421,3 +510,15 @@ final appRouter = GoRouter(
     ),
   ],
 );
+
+class _AdminPlaceholder extends StatelessWidget {
+  final String title;
+  const _AdminPlaceholder({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(title, style: Theme.of(context).textTheme.headlineSmall),
+    );
+  }
+}

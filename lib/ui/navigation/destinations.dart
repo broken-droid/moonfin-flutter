@@ -57,6 +57,25 @@ class Destinations {
 
   // Admin
   static const admin = '/admin';
+  static const adminUsers = '/admin/users';
+  static const adminUsersAdd = '/admin/users/add';
+  static const adminUsersEdit = '/admin/users/:userId';
+  static const adminLibraries = '/admin/libraries';
+  static const adminSettings = '/admin/settings';
+  static const adminSettingsPlayback = '/admin/settings/playback';
+  static const adminSettingsNetworking = '/admin/settings/networking';
+  static const adminSettingsBranding = '/admin/settings/branding';
+  static const adminTasks = '/admin/tasks';
+  static const adminTasksDetail = '/admin/tasks/:taskId';
+  static const adminPlugins = '/admin/plugins';
+  static const adminPluginsDetail = '/admin/plugins/:pluginId';
+  static const adminActivity = '/admin/activity';
+  static const adminDevices = '/admin/devices';
+  static const adminKeys = '/admin/keys';
+  static const adminBackups = '/admin/backups';
+  static const adminLogs = '/admin/logs';
+  static const adminLogsFile = '/admin/logs/:fileName';
+  static const adminLiveTv = '/admin/live-tv';
 
   // Settings
   static const settings = '/settings';
@@ -119,6 +138,11 @@ class Destinations {
   static String seerrMedia(String itemId) => '/seerr/media/$itemId';
   static String seerrPerson(String personId) =>
       '/seerr/person/$personId';
+
+  static String adminUser(String userId) => '/admin/users/$userId';
+  static String adminTask(String taskId) => '/admin/tasks/$taskId';
+  static String adminPlugin(String pluginId) => '/admin/plugins/$pluginId';
+  static String adminLogFile(String fileName) => '/admin/logs/$fileName';
 
   static String seerrBrowseWith({
     required String filterId,
