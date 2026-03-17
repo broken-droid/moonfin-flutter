@@ -17,6 +17,7 @@ import 'api/jellyfin_admin_system_api.dart';
 import 'api/jellyfin_admin_users_api.dart';
 import 'api/jellyfin_admin_library_api.dart';
 import 'api/jellyfin_admin_environment_api.dart';
+import 'api/jellyfin_admin_tasks_api.dart';
 
 class JellyfinMediaServerClient extends MediaServerClient {
   final Dio _dio;
@@ -127,6 +128,9 @@ class JellyfinMediaServerClient extends MediaServerClient {
   @override
   late final AdminEnvironmentApi adminEnvironmentApi =
       JellyfinAdminEnvironmentApi(_dio);
+
+  @override
+  late final AdminTasksApi adminTasksApi = JellyfinAdminTasksApi(_dio);
 
   @override
   void dispose() {

@@ -68,6 +68,8 @@ import '../screens/admin/users/admin_user_edit_screen.dart';
 import '../screens/admin/libraries/admin_libraries_screen.dart';
 import '../screens/admin/libraries/admin_library_add_screen.dart';
 import '../screens/admin/libraries/admin_library_edit_screen.dart';
+import '../screens/admin/tasks/admin_tasks_screen.dart';
+import '../screens/admin/tasks/admin_task_detail_screen.dart';
 import 'destinations.dart';
 
 const _authRoutes = {
@@ -364,12 +366,12 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: Destinations.adminTasks,
-          builder: (context, state) => const _AdminPlaceholder(title: 'Scheduled Tasks'),
+          builder: (context, state) => const AdminTasksScreen(),
         ),
         GoRoute(
           path: Destinations.adminTasksDetail,
-          builder: (context, state) => _AdminPlaceholder(
-            title: 'Task: ${state.pathParameters['taskId']}',
+          builder: (context, state) => AdminTaskDetailScreen(
+            taskId: state.pathParameters['taskId']!,
           ),
         ),
         GoRoute(

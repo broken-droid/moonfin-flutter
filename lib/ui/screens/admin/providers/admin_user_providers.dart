@@ -18,3 +18,16 @@ final adminLibrariesProvider =
   final client = GetIt.instance<MediaServerClient>();
   return client.adminLibraryApi.getVirtualFolders();
 });
+
+final adminTasksProvider = FutureProvider<List<TaskInfo>>((ref) async {
+  final client = GetIt.instance<MediaServerClient>();
+  final data = await client.adminTasksApi.getTasks();
+  return data.map((json) => TaskInfo.fromJson(json)).toList();
+});
+
+final adminTaskProvider =
+    FutureProvider.family<TaskInfo, String>((ref, taskId) async {
+  final client = GetIt.instance<MediaServerClient>();
+  final data = await client.adminTasksApi.getTask(taskId);
+  return TaskInfo.fromJson(data);
+});

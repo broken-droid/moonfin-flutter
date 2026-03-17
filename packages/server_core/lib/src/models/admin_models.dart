@@ -129,3 +129,98 @@ class StorageInfo {
         transcodingTempPath: json['TranscodingTempPath'] as String? ?? '',
       );
 }
+
+class TaskInfo {
+  final String id;
+  final String name;
+  final String? description;
+  final String? category;
+  final String state;
+  final double? currentProgressPercentage;
+  final TaskResult? lastExecutionResult;
+  final List<TaskTriggerInfo> triggers;
+
+  const TaskInfo({
+    required this.id,
+    required this.name,
+    this.description,
+    this.category,
+    this.state = 'Idle',
+    this.currentProgressPercentage,
+    this.lastExecutionResult,
+    this.triggers = const [],
+  });
+
+  factory TaskInfo.fromJson(Map<String, dynamic> json) => TaskInfo(
+        id: json['Id'] as String? ?? '',
+        name: json['Name'] as String? ?? '',
+        description: json['Description'] as String?,
+        category: json['Category'] as String?,
+        state: json['State'] as String? ?? 'Idle',
+        currentProgressPercentage:
+            (json['CurrentProgressPercentage'] as num?)?.toDouble(),
+        lastExecutionResult: json['LastExecutionResult'] != null
+            ? TaskResult.fromJson(
+                json['LastExecutionResult'] as Map<String, dynamic>)
+            : null,
+        triggers: (json['Triggers'] as List<dynamic>?)
+                ?.map(
+                    (e) => TaskTriggerInfo.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+      );
+}
+
+class TaskResult {
+  final DateTime startTime;
+  final DateTime endTime;
+  final String status;
+  final String? errorMessage;
+
+  const TaskResult({
+    required this.startTime,
+    required this.endTime,
+    this.status = 'Completed',
+    this.errorMessage,
+  });
+
+  factory TaskResult.fromJson(Map<String, dynamic> json) => TaskResult(
+        startTime: DateTime.parse(json['StartTimeUtc'] as String),
+        endTime: DateTime.parse(json['EndTimeUtc'] as String),
+        status: json['Status'] as String? ?? 'Completed',
+        errorMessage: json['ErrorMessage'] as String?,
+      );
+}
+
+class TaskTriggerInfo {
+  final String type;
+  final int? timeOfDayTicks;
+  final int? intervalTicks;
+  final String? dayOfWeek;
+  final int? maxRuntimeTicks;
+
+  const TaskTriggerInfo({
+    required this.type,
+    this.timeOfDayTicks,
+    this.intervalTicks,
+    this.dayOfWeek,
+    this.maxRuntimeTicks,
+  });
+
+  factory TaskTriggerInfo.fromJson(Map<String, dynamic> json) =>
+      TaskTriggerInfo(
+        type: json['Type'] as String? ?? '',
+        timeOfDayTicks: json['TimeOfDayTicks'] as int?,
+        intervalTicks: json['IntervalTicks'] as int?,
+        dayOfWeek: json['DayOfWeek'] as String?,
+        maxRuntimeTicks: json['MaxRuntimeTicks'] as int?,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'Type': type,
+        if (timeOfDayTicks != null) 'TimeOfDayTicks': timeOfDayTicks,
+        if (intervalTicks != null) 'IntervalTicks': intervalTicks,
+        if (dayOfWeek != null) 'DayOfWeek': dayOfWeek,
+        if (maxRuntimeTicks != null) 'MaxRuntimeTicks': maxRuntimeTicks,
+      };
+}
