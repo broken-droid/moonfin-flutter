@@ -31,3 +31,21 @@ final adminTaskProvider =
   final data = await client.adminTasksApi.getTask(taskId);
   return TaskInfo.fromJson(data);
 });
+
+final adminInstalledPluginsProvider =
+    FutureProvider<List<PluginInfo>>((ref) async {
+  final client = GetIt.instance<MediaServerClient>();
+  return client.adminPluginsApi.getInstalledPlugins();
+});
+
+final adminAvailablePackagesProvider =
+    FutureProvider<List<PackageInfo>>((ref) async {
+  final client = GetIt.instance<MediaServerClient>();
+  return client.adminPluginsApi.getAvailablePackages();
+});
+
+final adminRepositoriesProvider =
+    FutureProvider<List<RepositoryInfo>>((ref) async {
+  final client = GetIt.instance<MediaServerClient>();
+  return client.adminPluginsApi.getRepositories();
+});

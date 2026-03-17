@@ -42,6 +42,8 @@ class AdminDrawer extends StatelessWidget {
             Destinations.adminTasks),
         _section(context, 'Plugins'),
         _tile(context, 'Plugins', Icons.extension, Destinations.adminPlugins),
+        _tile(context, 'Repositories', Icons.source,
+            Destinations.adminRepositories),
       ],
     );
 

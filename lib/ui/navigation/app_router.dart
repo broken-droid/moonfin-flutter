@@ -75,6 +75,9 @@ import '../screens/admin/settings/admin_general_settings_screen.dart';
 import '../screens/admin/settings/admin_branding_screen.dart';
 import '../screens/admin/settings/admin_networking_screen.dart';
 import '../screens/admin/settings/admin_playback_settings_screen.dart';
+import '../screens/admin/plugins/admin_plugins_screen.dart';
+import '../screens/admin/plugins/admin_plugin_detail_screen.dart';
+import '../screens/admin/plugins/admin_repositories_screen.dart';
 import 'destinations.dart';
 
 const _authRoutes = {
@@ -381,13 +384,17 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: Destinations.adminPlugins,
-          builder: (context, state) => const _AdminPlaceholder(title: 'Plugins'),
+          builder: (context, state) => const AdminPluginsScreen(),
         ),
         GoRoute(
           path: Destinations.adminPluginsDetail,
-          builder: (context, state) => _AdminPlaceholder(
-            title: 'Plugin: ${state.pathParameters['pluginId']}',
+          builder: (context, state) => AdminPluginDetailScreen(
+            pluginId: state.pathParameters['pluginId']!,
           ),
+        ),
+        GoRoute(
+          path: Destinations.adminRepositories,
+          builder: (context, state) => const AdminRepositoriesScreen(),
         ),
         GoRoute(
           path: Destinations.adminActivity,

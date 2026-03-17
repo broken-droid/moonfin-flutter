@@ -71,6 +71,7 @@ class Destinations {
   static const adminTasksDetail = '/admin/tasks/:taskId';
   static const adminPlugins = '/admin/plugins';
   static const adminPluginsDetail = '/admin/plugins/:pluginId';
+  static const adminRepositories = '/admin/repositories';
   static const adminActivity = '/admin/activity';
   static const adminDevices = '/admin/devices';
   static const adminKeys = '/admin/keys';
