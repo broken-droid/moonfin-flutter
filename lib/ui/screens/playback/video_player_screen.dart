@@ -582,6 +582,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
       episodeInfo = item['IndexNumber'] != null
           ? 'S${item['ParentIndexNumber'] ?? '?'}:E${item['IndexNumber']}'
           : null;
+    } else if (item is String) {
+      final meta = _manager.currentOfflineMetadata;
+      title = (meta?['Name'] as String?) ?? item.split('/').last;
+      seriesName = meta?['SeriesName'] as String?;
+      final idx = meta?['IndexNumber'] as int?;
+      final parentIdx = meta?['ParentIndexNumber'] as int?;
+      episodeInfo =
+          idx != null ? 'S${parentIdx ?? '?'}:E$idx' : null;
     } else {
       title = item.toString();
       seriesName = null;

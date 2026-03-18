@@ -161,6 +161,13 @@ class AggregatedItem {
     return null;
   }
 
+  int? get sourceVideoWidth {
+    for (final stream in mediaStreams) {
+      if (stream['Type'] == 'Video') return stream['Width'] as int?;
+    }
+    return null;
+  }
+
   String? get videoCodec {
     for (final stream in mediaStreams) {
       if (stream['Type'] == 'Video') return stream['Codec'] as String?;

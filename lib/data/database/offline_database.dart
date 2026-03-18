@@ -38,4 +38,10 @@ class OfflineDatabase extends _$OfflineDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {},
+  );
 }

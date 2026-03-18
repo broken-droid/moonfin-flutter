@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playback_core/playback_core.dart';
@@ -38,13 +39,25 @@ Future<void> launchOfflinePlayback(
 
   var queueUrls = const <String>[];
   var startIndex = 0;
+  final metadataByUrl = <String, Map<String, dynamic>>{
+    result.url: jsonDecode(item.metadataJson) as Map<String, dynamic>,
+  };
+
   if (episodeQueue != null && episodeQueue.length > 1) {
     queueUrls = episodeQueue
         .where((e) => e.localFilePath != null && e.downloadStatus == 2)
         .map((e) => File(e.localFilePath!).uri.toString())
         .toList();
     startIndex = queueUrls.indexOf(result.url).clamp(0, queueUrls.length - 1);
+    for (final ep in episodeQueue) {
+      if (ep.localFilePath != null && ep.downloadStatus == 2) {
+        final url = File(ep.localFilePath!).uri.toString();
+        metadataByUrl[url] = jsonDecode(ep.metadataJson) as Map<String, dynamic>;
+      }
+    }
   }
+
+  manager.setOfflineMetadataByUrl(metadataByUrl);
 
   await manager.playOffline(
     result.url,

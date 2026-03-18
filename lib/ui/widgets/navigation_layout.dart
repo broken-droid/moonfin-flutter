@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import '../../preference/preference_constants.dart';
 import '../../preference/user_preferences.dart';
+import 'download_progress_bar.dart';
 import 'left_sidebar.dart';
 import 'top_toolbar.dart';
 
@@ -74,33 +75,47 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
   }
 
   Widget _buildToolbar() {
-    return Stack(
+    return Column(
       children: [
-        Positioned.fill(child: widget.child),
-        Positioned(
-          left: 0,
-          right: 0,
-          top: 0,
-          child: TopToolbar(
-            activeRoute: widget.activeRoute,
-            showBackButton: widget.showBackButton,
+        Expanded(
+          child: Stack(
+            children: [
+              Positioned.fill(child: widget.child),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: TopToolbar(
+                  activeRoute: widget.activeRoute,
+                  showBackButton: widget.showBackButton,
+                ),
+              ),
+            ],
           ),
         ),
+        const DownloadProgressBar(),
       ],
     );
   }
 
   Widget _buildSidebar() {
-    return Stack(
+    return Column(
       children: [
-        Positioned.fill(child: widget.child),
-        Positioned.fill(
-          child: LeftSidebar(
-            activeRoute: widget.activeRoute,
-            contentFocusNode: _contentFocusNode,
-            showBackButton: widget.showBackButton,
+        Expanded(
+          child: Stack(
+            children: [
+              Positioned.fill(child: widget.child),
+              Positioned.fill(
+                child: LeftSidebar(
+                  activeRoute: widget.activeRoute,
+                  contentFocusNode: _contentFocusNode,
+                  showBackButton: widget.showBackButton,
+                ),
+              ),
+            ],
           ),
         ),
+        const DownloadProgressBar(),
       ],
     );
   }

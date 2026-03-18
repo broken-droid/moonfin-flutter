@@ -48,6 +48,7 @@ import '../screens/search/search_screen.dart';
 import '../screens/settings/about_screen.dart';
 import '../screens/settings/appearance_settings_screen.dart';
 import '../screens/settings/auth_settings_screen.dart';
+import '../screens/settings/download_settings_screen.dart';
 import '../screens/settings/home_sections_screen.dart';
 import '../screens/settings/seerr_config_screen.dart';
 import '../screens/settings/library_settings_screen.dart';
@@ -86,6 +87,7 @@ import '../screens/admin/devices/admin_devices_screen.dart';
 import '../screens/downloads/saved_media_screen.dart';
 import '../screens/downloads/saved_season_screen.dart';
 import '../screens/downloads/saved_series_screen.dart';
+import '../screens/downloads/storage_management_screen.dart';
 import 'destinations.dart';
 
 const _authRoutes = {
@@ -96,7 +98,6 @@ const _authRoutes = {
 };
 
 bool _isOfflineAllowed(String path) {
-  if (path.startsWith('/downloads')) return true;
   if (path.startsWith('/settings')) return true;
   if (path == Destinations.videoPlayer || path == Destinations.audioPlayer) return true;
   return false;
@@ -108,6 +109,8 @@ final appRouter = GoRouter(
     final path = state.uri.path;
     if (_authRoutes.contains(path)) return null;
 
+    if (path.startsWith('/downloads')) return null;
+
     final session = GetIt.instance<SessionRepository>();
     if (session.activeUserId == null) return Destinations.startup;
 
@@ -117,7 +120,7 @@ final appRouter = GoRouter(
     }
 
     final connectivity = GetIt.instance<ConnectivityService>();
-    if (!connectivity.canReachServer && !_isOfflineAllowed(path)) {
+    if (!connectivity.isOnline && !_isOfflineAllowed(path)) {
       return Destinations.downloads;
     }
 
@@ -527,6 +530,16 @@ final appRouter = GoRouter(
         GoRoute(
           path: 'navigation',
           builder: (context, state) => const NavigationSettingsScreen(),
+        ),
+        GoRoute(
+          path: 'downloads',
+          builder: (context, state) => const DownloadSettingsScreen(),
+          routes: [
+            GoRoute(
+              path: 'storage',
+              builder: (context, state) => const StorageManagementScreen(),
+            ),
+          ],
         ),
       ],
     ),

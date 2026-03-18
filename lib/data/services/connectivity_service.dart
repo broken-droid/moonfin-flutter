@@ -15,6 +15,7 @@ class ConnectivityService extends ChangeNotifier {
     receiveTimeout: const Duration(seconds: 5),
   ));
   StreamSubscription<List<ConnectivityResult>>? _subscription;
+  Timer? _recheckDebounce;
 
   bool _isOnline = true;
   bool get isOnline => _isOnline;
@@ -23,6 +24,11 @@ class ConnectivityService extends ChangeNotifier {
   bool get serverReachable => _serverReachable;
 
   bool get canReachServer => _isOnline && _serverReachable;
+
+  /// Whether the initial connectivity check has completed.
+  /// Stream events are ignored until this is true to prevent
+  /// a false "offline" flash at boot.
+  bool _initialCheckDone = false;
 
   void initialize() {
     _subscription =
@@ -38,25 +44,37 @@ class ConnectivityService extends ChangeNotifier {
     } else {
       _serverReachable = false;
     }
+    _initialCheckDone = true;
     notifyListeners();
   }
 
   void _onConnectivityChanged(List<ConnectivityResult> results) {
+    if (!_initialCheckDone) return;
+
     final wasOnline = _isOnline;
     final wasReachable = _serverReachable;
     _isOnline = results.any((r) => r != ConnectivityResult.none);
-    if (_isOnline != wasOnline) {
-      if (_isOnline) {
-        _checkServerReachability().then((_) {
-          if (_serverReachable && !wasReachable) {
-            _triggerSync();
-          }
-        });
-      } else {
+
+    if (!_isOnline) {
+      if (wasOnline) {
         _serverReachable = false;
         notifyListeners();
       }
+      return;
     }
+
+    if (!wasOnline) {
+      notifyListeners();
+    }
+
+    _recheckDebounce?.cancel();
+    _recheckDebounce = Timer(const Duration(seconds: 2), () {
+      _checkServerReachability().then((_) {
+        if (_serverReachable && !wasReachable) {
+          _triggerSync();
+        }
+      });
+    });
   }
 
   void _triggerSync() {
@@ -69,11 +87,7 @@ class ConnectivityService extends ChangeNotifier {
   }
 
   Future<void> _checkServerReachability() async {
-    if (!GetIt.instance.isRegistered<MediaServerClient>()) {
-      _serverReachable = false;
-      notifyListeners();
-      return;
-    }
+    if (!GetIt.instance.isRegistered<MediaServerClient>()) return;
     final client = GetIt.instance<MediaServerClient>();
     try {
       await _pingDio.get('${client.baseUrl}/System/Ping');
@@ -98,6 +112,7 @@ class ConnectivityService extends ChangeNotifier {
   @override
   void dispose() {
     _subscription?.cancel();
+    _recheckDebounce?.cancel();
     super.dispose();
   }
 }

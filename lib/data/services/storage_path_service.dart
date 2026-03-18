@@ -1,28 +1,36 @@
 import 'dart:io';
 
+import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../preference/user_preferences.dart';
+import '../../util/platform_detection.dart';
 
 class StoragePathService {
   Directory? _cachedRoot;
 
+  void clearCache() => _cachedRoot = null;
+
   Future<Directory> getOfflineRoot() async {
     if (_cachedRoot != null) return _cachedRoot!;
 
-    Directory dir;
-    if (Platform.isAndroid) {
-      dir = Directory('/storage/emulated/0/Download/Moonfin');
-      if (!await dir.exists()) {
-        try {
-          await dir.create(recursive: true);
-        } catch (_) {
-          final extDirs = await getExternalStorageDirectories();
-          final base = extDirs != null && extDirs.isNotEmpty
-              ? extDirs.first
-              : await getApplicationDocumentsDirectory();
-          dir = Directory('${base.path}/Moonfin');
-          await dir.create(recursive: true);
+    if (PlatformDetection.isDesktop) {
+      final prefs = GetIt.instance<UserPreferences>();
+      final customPath = prefs.get(UserPreferences.customDownloadPath);
+      if (customPath.isNotEmpty) {
+        final dir = Directory(customPath);
+        if (await dir.exists() || await _tryCreate(dir)) {
+          _cachedRoot = dir;
+          return dir;
         }
       }
+    }
+
+    Directory dir;
+    if (Platform.isAndroid) {
+      final extDir = await getExternalStorageDirectory();
+      final base = extDir ?? await getApplicationDocumentsDirectory();
+      dir = Directory('${base.path}/Moonfin');
     } else if (Platform.isIOS) {
       final docs = await getApplicationDocumentsDirectory();
       dir = Directory('${docs.path}/Moonfin');
@@ -34,6 +42,15 @@ class StoragePathService {
     if (!await dir.exists()) await dir.create(recursive: true);
     _cachedRoot = dir;
     return dir;
+  }
+
+  Future<bool> _tryCreate(Directory dir) async {
+    try {
+      await dir.create(recursive: true);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<File> getDatabaseFile() async {

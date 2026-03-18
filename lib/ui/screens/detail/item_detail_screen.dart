@@ -13,6 +13,8 @@ import '../../../data/repositories/mdblist_repository.dart';
 import '../../../data/services/background_service.dart';
 import '../../../data/services/download_service.dart';
 import '../../../data/models/download_quality.dart';
+import '../../../data/database/offline_database.dart';
+import '../../../data/repositories/offline_repository.dart';
 import '../../../data/services/media_server_client_factory.dart';
 import '../../../data/services/theme_music_service.dart';
 import '../../../data/viewmodels/item_detail_view_model.dart';
@@ -25,6 +27,7 @@ import '../../widgets/navigation_layout.dart';
 import '../../widgets/rating_display.dart';
 import '../../widgets/track_action_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
+import '../../../playback/offline_playback_launcher.dart';
 import '../../../util/platform_detection.dart';
 
 const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
@@ -644,6 +647,68 @@ class _HeaderSection extends StatelessWidget {
   }
 }
 
+class _DownloadedBadge extends StatefulWidget {
+  final String itemId;
+  final String serverId;
+  const _DownloadedBadge({required this.itemId, required this.serverId});
+
+  @override
+  State<_DownloadedBadge> createState() => _DownloadedBadgeState();
+}
+
+class _DownloadedBadgeState extends State<_DownloadedBadge> {
+  bool _downloaded = false;
+  DownloadService? _downloadService;
+
+  @override
+  void initState() {
+    super.initState();
+    if (GetIt.instance.isRegistered<DownloadService>()) {
+      _downloadService = GetIt.instance<DownloadService>();
+      _downloadService!.addListener(_onDownloadChanged);
+    }
+    _check();
+  }
+
+  @override
+  void dispose() {
+    _downloadService?.removeListener(_onDownloadChanged);
+    super.dispose();
+  }
+
+  void _onDownloadChanged() => _check();
+
+  Future<void> _check() async {
+    final repo = GetIt.instance<OfflineRepository>();
+    final available = await repo.isAvailableOffline(widget.itemId, widget.serverId);
+    if (mounted && available != _downloaded) setState(() => _downloaded = available);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_downloaded) return const SizedBox.shrink();
+    return Positioned(
+      bottom: 8,
+      left: 6,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        decoration: BoxDecoration(
+          color: const Color(0xFF4CAF50),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.download_done, color: Colors.white, size: 12),
+            SizedBox(width: 3),
+            Text('Downloaded', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PosterImage extends StatelessWidget {
   final AggregatedItem item;
   final ImageApi imageApi;
@@ -723,6 +788,7 @@ class _PosterImage extends StatelessWidget {
                 ),
               ),
             ),
+          _DownloadedBadge(itemId: item.id, serverId: item.serverId),
         ],
       ),
     );
@@ -1003,10 +1069,60 @@ class _ActionButtonsState extends State<_ActionButtons> {
   int? _selectedAudioIndex;
   int? _selectedSubtitleIndex;
   bool _expanded = false;
+  DownloadedItem? _offlineRow;
+  List<DownloadedItem>? _offlineQueue;
+  DownloadService? _downloadService;
 
   static const _maxVisible = 4;
 
   ItemDetailViewModel get viewModel => widget.viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    if (GetIt.instance.isRegistered<DownloadService>()) {
+      _downloadService = GetIt.instance<DownloadService>();
+      _downloadService!.addListener(_onDownloadChanged);
+    }
+    _checkOffline();
+  }
+
+  @override
+  void dispose() {
+    _downloadService?.removeListener(_onDownloadChanged);
+    super.dispose();
+  }
+
+  void _onDownloadChanged() => _checkOffline();
+
+  Future<void> _checkOffline() async {
+    final item = viewModel.item;
+    if (item == null || !_isDownloadable(item.type)) return;
+    final repo = GetIt.instance<OfflineRepository>();
+    final type = item.type;
+
+    if (type == 'Season' || type == 'Series') {
+      final episodes = type == 'Season'
+          ? await repo.getSeasonEpisodes(item.id, item.serverId)
+          : await repo.getSeriesEpisodes(item.id, item.serverId);
+      final playable = episodes
+          .where((e) => e.downloadStatus == 2 && e.localFilePath != null)
+          .toList();
+      if (mounted) {
+        setState(() {
+          _offlineRow = playable.isNotEmpty ? playable.first : null;
+          _offlineQueue = playable.isNotEmpty ? playable : null;
+        });
+      }
+    } else {
+      final row = await repo.getItem(item.id, item.serverId);
+      if (mounted) {
+        setState(() {
+          _offlineRow = (row != null && row.downloadStatus == 2) ? row : null;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1032,6 +1148,20 @@ class _ActionButtonsState extends State<_ActionButtons> {
           label: 'Restart',
           icon: Icons.restart_alt,
           onPressed: () => _play(context, item),
+        ),
+      if (_offlineRow != null)
+        _DetailActionButton(
+          label: _offlineRow!.qualityPreset != 'original'
+              ? 'Play Offline (${_offlineRow!.qualityPreset})'
+              : 'Play Offline',
+          icon: Icons.offline_pin,
+          onPressed: () async {
+            if (context.mounted) {
+              await launchOfflinePlayback(context, _offlineRow!, episodeQueue: _offlineQueue);
+            }
+          },
+          isActive: true,
+          activeColor: const Color(0xFF4CAF50),
         ),
       if (audioStreams.length > 1)
         _DetailActionButton(
@@ -1269,8 +1399,11 @@ class _DownloadButton extends StatelessWidget {
         final isBatch = downloadService.isBatchDownloading;
 
         if (progress != null && !progress.isComplete && progress.error == null) {
+          final label = progress.progress >= 0
+              ? '${(progress.progress * 100).toInt()}%'
+              : '${(progress.bytesReceived / 1048576).toStringAsFixed(1)} MB';
           return _DetailActionButton(
-            label: '${(progress.progress * 100).toInt()}%',
+            label: label,
             icon: Icons.close,
             onPressed: () => downloadService.cancelDownload(item.id),
             isActive: true,
@@ -1299,6 +1432,12 @@ class _DownloadButton extends StatelessWidget {
 
   void _showQualityPicker(BuildContext context, DownloadService service) {
     final isMulti = item.type == 'Season' || item.type == 'Series';
+    final sourceWidth = isMulti ? null : item.sourceVideoWidth;
+    final availableQualities = DownloadQuality.values.where((q) {
+      if (q.maxWidth == null) return true;
+      if (sourceWidth == null) return true;
+      return q.maxWidth! <= sourceWidth;
+    }).toList();
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1E1E1E),
@@ -1320,7 +1459,7 @@ class _DownloadButton extends StatelessWidget {
                     ),
               ),
             ),
-            ...DownloadQuality.values.map((quality) => ListTile(
+            ...availableQualities.map((quality) => ListTile(
                   leading: Icon(
                     quality.isTranscoded ? Icons.compress : Icons.file_copy_outlined,
                     color: Colors.white70,
@@ -1386,12 +1525,25 @@ class _DeleteDownloadButton extends StatefulWidget {
 class _DeleteDownloadButtonState extends State<_DeleteDownloadButton> {
   bool _hasFiles = false;
   bool _checking = true;
+  DownloadService? _downloadService;
 
   @override
   void initState() {
     super.initState();
+    if (GetIt.instance.isRegistered<DownloadService>()) {
+      _downloadService = GetIt.instance<DownloadService>();
+      _downloadService!.addListener(_onDownloadChanged);
+    }
     _checkFiles();
   }
+
+  @override
+  void dispose() {
+    _downloadService?.removeListener(_onDownloadChanged);
+    super.dispose();
+  }
+
+  void _onDownloadChanged() => _checkFiles();
 
   Future<void> _checkFiles() async {
     final service = GetIt.instance<DownloadService>();

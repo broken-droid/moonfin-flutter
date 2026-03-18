@@ -636,4 +636,29 @@ class UserPreferences extends ChangeNotifier {
     key: 'seerr_enabled',
     defaultValue: false,
   );
+
+  static final defaultDownloadQuality = Preference(
+    key: 'download_default_quality',
+    defaultValue: 'original',
+  );
+
+  static final downloadWifiOnly = Preference(
+    key: 'download_wifi_only',
+    defaultValue: false,
+  );
+
+  static final downloadStorageLimitMb = Preference(
+    key: 'download_storage_limit_mb',
+    defaultValue: 0,
+  );
+
+  static final downloadConcurrentCount = Preference(
+    key: 'download_concurrent_count',
+    defaultValue: 2,
+  );
+
+  static final customDownloadPath = Preference(
+    key: 'download_custom_path',
+    defaultValue: '',
+  );
 }

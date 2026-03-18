@@ -29,6 +29,7 @@ class PlaybackManager {
   bool _isOfflinePlayback = false;
   Future<void> Function()? _onOfflineStop;
   Future<void> Function(String url)? _onOfflineAutoNext;
+  Map<String, Map<String, dynamic>> _offlineMetadataByUrl = {};
 
   PlayerBackend? get backend => _backend;
   StreamResolutionResult? get currentResolution => _currentResolution;
@@ -36,6 +37,15 @@ class PlaybackManager {
   int? get subtitleStreamIndex => _subtitleStreamIndex;
   int? get maxBitrateOverrideMbps => _maxBitrateOverrideMbps;
   bool get isOfflinePlayback => _isOfflinePlayback;
+  Map<String, dynamic>? get currentOfflineMetadata {
+    final url = queueService.currentItem;
+    if (url is! String) return null;
+    return _offlineMetadataByUrl[url];
+  }
+
+  void setOfflineMetadataByUrl(Map<String, Map<String, dynamic>> metadata) {
+    _offlineMetadataByUrl = metadata;
+  }
 
   void setBackend(PlayerBackend backend) {
     _disposeStreamSubs();

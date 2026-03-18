@@ -76,6 +76,11 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
             loading: () => const SizedBox.shrink(),
             error: (_, __) => const SizedBox.shrink(),
           ),
+          const SizedBox(width: 4),
+          IconButton(
+            icon: Icon(Icons.settings, color: Colors.white.withValues(alpha: 0.6), size: 20),
+            onPressed: () => context.push(Destinations.storageManagement),
+          ),
         ],
       ),
     );

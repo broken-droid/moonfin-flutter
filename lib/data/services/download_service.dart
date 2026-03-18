@@ -1,23 +1,27 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:server_core/server_core.dart';
 
+import '../../platform/ios_storage.dart';
+import '../../preference/user_preferences.dart';
 import '../database/offline_database.dart';
 import '../models/aggregated_item.dart';
 import '../models/download_quality.dart';
 import '../repositories/offline_repository.dart';
+import 'download_notification_service.dart';
 import 'storage_path_service.dart';
 
 class DownloadProgress {
   final String itemId;
   final String fileName;
   final double progress;
+  final int bytesReceived;
   final bool isComplete;
   final String? error;
 
@@ -25,6 +29,7 @@ class DownloadProgress {
     required this.itemId,
     required this.fileName,
     this.progress = 0,
+    this.bytesReceived = 0,
     this.isComplete = false,
     this.error,
   });
@@ -32,7 +37,11 @@ class DownloadProgress {
 
 class DownloadService extends ChangeNotifier {
   final MediaServerClient _client;
-  final Dio _downloadDio = Dio();
+  final DownloadNotificationService _notificationService;
+  final Dio _downloadDio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(hours: 6),
+  ));
 
   final Map<String, DownloadProgress> _activeDownloads = {};
   Map<String, DownloadProgress> get activeDownloads =>
@@ -46,24 +55,28 @@ class DownloadService extends ChangeNotifier {
   int get completedCount => _completedCount;
   bool get isBatchDownloading => _totalQueued > 0 && _completedCount < _totalQueued;
 
-  DownloadService(this._client);
+  DownloadService(this._client, this._notificationService);
 
   bool isDownloading(String itemId) => _activeDownloads.containsKey(itemId);
 
-  Future<bool> _requestStoragePermission() async {
-    if (!Platform.isAndroid) return true;
-    if (await Permission.manageExternalStorage.isGranted) return true;
-    final status = await Permission.manageExternalStorage.request();
-    return status.isGranted;
+  UserPreferences get _prefs => GetIt.instance<UserPreferences>();
+
+  Future<bool> _checkWifiPolicy() async {
+    if (!_prefs.get(UserPreferences.downloadWifiOnly)) return true;
+    final results = await Connectivity().checkConnectivity();
+    return results.any((r) => r == ConnectivityResult.wifi);
+  }
+
+  Future<bool> _checkStorageLimit(int estimatedBytes) async {
+    final limitMb = _prefs.get(UserPreferences.downloadStorageLimitMb);
+    if (limitMb <= 0) return true;
+    final serverId = _client.baseUrl;
+    final used = await _offlineRepo.getTotalStorageUsed(serverId);
+    return (used + estimatedBytes) <= limitMb * 1024 * 1024;
   }
 
   StoragePathService get _storagePath => GetIt.instance<StoragePathService>();
   OfflineRepository get _offlineRepo => GetIt.instance<OfflineRepository>();
-
-  Future<Directory> _getDownloadsDir() async {
-    if (Platform.isAndroid) await _requestStoragePermission();
-    return _storagePath.getOfflineRoot();
-  }
 
   String _sanitizePath(String name) {
     return name.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_').trim();
@@ -155,9 +168,30 @@ class DownloadService extends ChangeNotifier {
   Future<void> downloadItem(AggregatedItem item, {DownloadQuality quality = DownloadQuality.original}) async {
     if (isDownloading(item.id)) return;
 
+    if (!await _checkWifiPolicy()) {
+      _activeDownloads[item.id] = DownloadProgress(
+        itemId: item.id,
+        fileName: item.name,
+        error: 'WiFi-only mode enabled. Connect to WiFi to download.',
+      );
+      notifyListeners();
+      return;
+    }
+
     try {
       final fullItem = await _ensureFullItem(item);
-      final downloadsDir = await _getDownloadsDir();
+      final estimatedSize =
+          (fullItem.mediaSources.isNotEmpty ? fullItem.mediaSources.first['Size'] as int? : null) ?? 0;
+      if (!await _checkStorageLimit(estimatedSize)) {
+        _activeDownloads[item.id] = DownloadProgress(
+          itemId: item.id,
+          fileName: item.name,
+          error: 'Storage limit reached. Free up space or increase the limit.',
+        );
+        notifyListeners();
+        return;
+      }
+      final downloadsDir = await _storagePath.getOfflineRoot();
       final subFolder = _buildSubFolder(fullItem);
       final fileName = _buildFileName(fullItem, quality);
       final dir = Directory('${downloadsDir.path}/$subFolder');
@@ -197,14 +231,24 @@ class DownloadService extends ChangeNotifier {
         url,
         savePath,
         cancelToken: cancelToken,
+        deleteOnError: false,
         onReceiveProgress: (received, total) {
-          final progress = total > 0 ? received / total : 0.0;
+          final effectiveTotal = total > 0 ? total : estimatedSize;
+          final progress = effectiveTotal > 0 ? received / effectiveTotal : -1.0;
           _activeDownloads[item.id] = DownloadProgress(
             itemId: item.id,
             fileName: fileName,
             progress: progress,
+            bytesReceived: received,
           );
-          _offlineRepo.updateDownloadStatus(item.id, item.serverId, 1, progress: progress);
+          _offlineRepo.updateDownloadStatus(item.id, item.serverId, 1,
+              progress: progress < 0 ? 0 : progress);
+          _notificationService.showProgress(
+            itemName: item.name,
+            progress: progress,
+            batchTotal: _totalQueued,
+            batchCompleted: _completedCount,
+          );
           notifyListeners();
         },
       );
@@ -214,6 +258,10 @@ class DownloadService extends ChangeNotifier {
       await _downloadExternalSubtitles(fullItem, dir, fileName.replaceAll(RegExp(r'\.[^.]+$'), ''));
       await _offlineRepo.updateDownloadStatus(item.id, item.serverId, 2);
 
+      if (Platform.isIOS) {
+        await IosStorage.excludeFromBackup(savePath);
+      }
+
       _activeDownloads[item.id] = DownloadProgress(
         itemId: item.id,
         fileName: fileName,
@@ -221,10 +269,18 @@ class DownloadService extends ChangeNotifier {
         isComplete: true,
       );
       _completedCount++;
+
+      if (_totalQueued <= 1 || _completedCount >= _totalQueued) {
+        await _notificationService.showComplete(
+          itemName: item.name,
+          batchTotal: _totalQueued > 1 ? _completedCount : 0,
+        );
+      }
     } on DioException catch (e) {
       if (e.type == DioExceptionType.cancel) {
         _activeDownloads.remove(item.id);
         await _offlineRepo.deleteItem(item.id, item.serverId);
+        await _notificationService.dismiss();
       } else {
         _activeDownloads[item.id] = DownloadProgress(
           itemId: item.id,
@@ -232,6 +288,10 @@ class DownloadService extends ChangeNotifier {
           error: e.message ?? 'Download failed',
         );
         await _offlineRepo.updateDownloadStatus(item.id, item.serverId, 3, error: e.message);
+        await _notificationService.showError(
+          itemName: item.name,
+          error: e.message ?? 'Download failed',
+        );
       }
     } catch (e) {
       _activeDownloads[item.id] = DownloadProgress(
@@ -240,6 +300,10 @@ class DownloadService extends ChangeNotifier {
         error: e.toString(),
       );
       await _offlineRepo.updateDownloadStatus(item.id, item.serverId, 3, error: e.toString());
+      await _notificationService.showError(
+        itemName: item.name,
+        error: e.toString(),
+      );
     } finally {
       _cancelTokens.remove(item.id);
       notifyListeners();
@@ -251,12 +315,25 @@ class DownloadService extends ChangeNotifier {
     _completedCount = 0;
     notifyListeners();
 
-    for (final episode in episodes) {
-      await downloadItem(episode, quality: quality);
+    final concurrency = _prefs.get(UserPreferences.downloadConcurrentCount).clamp(1, 5);
+    final queue = List<AggregatedItem>.from(episodes);
+    final futures = <Future<void>>[];
+
+    Future<void> processNext() async {
+      while (queue.isNotEmpty) {
+        final episode = queue.removeAt(0);
+        await downloadItem(episode, quality: quality);
+      }
     }
+
+    for (var i = 0; i < concurrency; i++) {
+      futures.add(processNext());
+    }
+    await Future.wait(futures);
 
     _totalQueued = 0;
     _completedCount = 0;
+    await _notificationService.dismiss();
     notifyListeners();
   }
 
@@ -287,7 +364,7 @@ class DownloadService extends ChangeNotifier {
 
   Future<bool> deleteDownloadedFiles(AggregatedItem item) async {
     try {
-      final downloadsDir = await _getDownloadsDir();
+      final downloadsDir = await _storagePath.getOfflineRoot();
       final subFolder = _buildSubFolder(item);
       final targetDir = Directory('${downloadsDir.path}/$subFolder');
       final imageDir = await _storagePath.getImageCacheDir();
@@ -501,6 +578,63 @@ class DownloadService extends ChangeNotifier {
   void cancelAll() {
     for (final token in _cancelTokens.values) {
       token.cancel();
+    }
+    _notificationService.dismiss();
+  }
+
+  Future<void> clearAllDownloads() async {
+    final serverId = _client.baseUrl;
+    final allItems = await _offlineRepo.getItems(serverId);
+    for (final item in allItems) {
+      if (item.localFilePath != null) {
+        final f = File(item.localFilePath!);
+        if (await f.exists()) await f.delete();
+      }
+      await _offlineRepo.deleteItem(item.itemId, item.serverId);
+    }
+    final imageDir = await _storagePath.getImageCacheDir();
+    if (await imageDir.exists()) await imageDir.delete(recursive: true);
+  }
+
+  Future<void> recoverIncompleteDownloads() async {
+    final serverId = _client.baseUrl;
+    final allItems = await _offlineRepo.getItems(serverId);
+
+    for (final item in allItems) {
+      if (item.downloadStatus == 1) {
+        if (item.localFilePath != null) {
+          final file = File(item.localFilePath!);
+          if (await file.exists()) await file.delete();
+        }
+        if (item.metadataJson.isNotEmpty) {
+          final qualityName = item.qualityPreset;
+          final quality = DownloadQuality.values.firstWhere(
+            (q) => q.name == qualityName,
+            orElse: () => DownloadQuality.original,
+          );
+          final isStatic = !quality.isTranscoded;
+          if (isStatic) {
+            await _offlineRepo.updateDownloadStatus(item.itemId, serverId, 0);
+          } else {
+            await _offlineRepo.updateDownloadStatus(
+              item.itemId, serverId, 3,
+              error: 'Interrupted. Transcoded downloads cannot be resumed.',
+            );
+          }
+        } else {
+          await _offlineRepo.updateDownloadStatus(item.itemId, serverId, 3, error: 'Interrupted');
+        }
+      } else if (item.downloadStatus == 2) {
+        if (item.localFilePath != null) {
+          final file = File(item.localFilePath!);
+          if (!await file.exists()) {
+            await _offlineRepo.updateDownloadStatus(
+              item.itemId, serverId, 3,
+              error: 'File missing from disk',
+            );
+          }
+        }
+      }
     }
   }
 

@@ -113,6 +113,8 @@ class Destinations {
   static const downloads = '/downloads';
   static const downloadsSeries = '/downloads/series/:seriesId';
   static const downloadsSeason = '/downloads/series/:seriesId/season/:seasonId';
+  static const settingsDownloads = '/settings/downloads';
+  static const storageManagement = '/settings/downloads/storage';
 
   static String library(String libraryId) => '/library/$libraryId';
   static String libraryView(String libraryId) => '/library-view/$libraryId';

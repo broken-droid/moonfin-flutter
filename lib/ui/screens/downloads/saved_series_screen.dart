@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
+import '../../../data/repositories/offline_repository.dart';
+import '../../../data/services/storage_path_service.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/offline_image.dart';
 
@@ -29,7 +33,7 @@ class SavedSeriesScreen extends ConsumerWidget {
                 child: Text('Series not found', style: TextStyle(color: Colors.white54)),
               );
             }
-            return _buildContent(context, series, episodesAsync);
+            return _buildContent(context, ref, series, episodesAsync);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, __) => const Center(
@@ -42,6 +46,7 @@ class SavedSeriesScreen extends ConsumerWidget {
 
   Widget _buildContent(
     BuildContext context,
+    WidgetRef ref,
     DownloadedItem series,
     AsyncValue<List<DownloadedItem>> episodesAsync,
   ) {
@@ -67,7 +72,7 @@ class SavedSeriesScreen extends ConsumerWidget {
           ),
         ),
         episodesAsync.when(
-          data: (episodes) => _buildSeasonList(context, episodes),
+          data: (episodes) => _buildSeasonList(context, ref, episodes),
           loading: () => const SliverToBoxAdapter(
             child: Center(child: CircularProgressIndicator()),
           ),
@@ -162,7 +167,7 @@ class SavedSeriesScreen extends ConsumerWidget {
     );
   }
 
-  SliverList _buildSeasonList(BuildContext context, List<DownloadedItem> episodes) {
+  SliverList _buildSeasonList(BuildContext context, WidgetRef ref, List<DownloadedItem> episodes) {
     final seasons = <int?, List<DownloadedItem>>{};
     for (final ep in episodes) {
       (seasons[ep.parentIndexNumber] ??= []).add(ep);
@@ -183,6 +188,9 @@ class SavedSeriesScreen extends ConsumerWidget {
             onTap: seasonId != null
                 ? () => context.push(Destinations.downloadedSeason(seriesId, seasonId))
                 : null,
+            onLongPress: seasonId != null
+                ? () => _confirmDeleteSeason(context, ref, seasonLabel, seasonId, seasonEpisodes)
+                : null,
           );
         },
         childCount: sortedKeys.length,
@@ -197,23 +205,67 @@ class SavedSeriesScreen extends ConsumerWidget {
       return {};
     }
   }
+
+  Future<void> _confirmDeleteSeason(
+    BuildContext context,
+    WidgetRef ref,
+    String seasonLabel,
+    String seasonId,
+    List<DownloadedItem> episodes,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Season'),
+        content: Text('Delete all downloaded episodes in $seasonLabel?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    final repo = GetIt.instance<OfflineRepository>();
+    final storagePath = GetIt.instance<StoragePathService>();
+    final imageDir = await storagePath.getImageCacheDir();
+    final serverId = episodes.first.serverId;
+
+    for (final ep in episodes) {
+      if (ep.localFilePath != null) {
+        final f = File(ep.localFilePath!);
+        if (await f.exists()) await f.delete();
+      }
+      final imgDir = Directory('${imageDir.path}/${ep.itemId}');
+      if (await imgDir.exists()) await imgDir.delete(recursive: true);
+    }
+    await repo.deleteSeasonItems(seasonId, serverId);
+    ref.invalidate(downloadedEpisodesProvider(seriesId));
+  }
 }
 
 class _SeasonSection extends StatelessWidget {
   final String label;
   final int episodeCount;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const _SeasonSection({
     required this.label,
     required this.episodeCount,
     this.onTap,
+    this.onLongPress,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
+      onLongPress: onLongPress,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20),
       title: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
       subtitle: Text(

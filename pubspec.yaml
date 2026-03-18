@@ -47,6 +47,9 @@ dependencies:
   # Connectivity
   connectivity_plus: ^6.1.0
 
+  # Notifications
+  flutter_local_notifications: ^19.0.0
+
   # Utilities
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
@@ -74,6 +77,7 @@ dependencies:
   jellyfin_preference:
     path: packages/preference
   url_launcher: ^6.3.2
+  file_picker: ^8.1.7
 
 dev_dependencies:
   flutter_test:

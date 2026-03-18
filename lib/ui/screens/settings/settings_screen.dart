@@ -92,6 +92,12 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: const Text('Language, size, appearance'),
             onTap: () => context.push(Destinations.settingsSubtitles),
           ),
+          ListTile(
+            leading: const Icon(Icons.download),
+            title: const Text('Downloads'),
+            subtitle: const Text('Quality, storage, WiFi-only'),
+            onTap: () => context.push(Destinations.settingsDownloads),
+          ),
           const _SettingsSection(title: 'Moonfin'),
           ListTile(
             leading: const Icon(Icons.tune),
