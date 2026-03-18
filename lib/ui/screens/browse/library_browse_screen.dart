@@ -101,6 +101,9 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
   }
 
   double _cardWidth() {
+    if (_vm.isMusicBrowse) {
+      return _vm.posterSize.portraitHeight.toDouble();
+    }
     final posterSize = _vm.posterSize;
     return switch (_vm.imageType) {
       ImageType.thumb => posterSize.landscapeHeight * (16 / 9),
@@ -110,6 +113,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
   }
 
   double _aspectRatio() {
+    if (_vm.isMusicBrowse) return 1.0;
     return switch (_vm.imageType) {
       ImageType.thumb => 16 / 9,
       ImageType.banner => 1000 / 185,
@@ -165,7 +169,8 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                 showLabels: _prefs.get(UserPreferences.showRatingLabels),
                 sortBy: _vm.sortBy,
                 letterFilter: _vm.letterFilter,
-                onHome: () => context.go(Destinations.home),
+                isMusicBrowse: _vm.isMusicBrowse,
+                onBack: () => context.pop(),
                 onSort: () => _showFilterSortDialog(context),
                 onSettings: () => _showSettingsDialog(context),
                 onLetterChanged: (l) => _vm.setLetterFilter(l),
@@ -328,7 +333,8 @@ class _LibraryHeader extends StatelessWidget {
   final bool showLabels;
   final LibrarySortBy sortBy;
   final String letterFilter;
-  final VoidCallback onHome;
+  final bool isMusicBrowse;
+  final VoidCallback onBack;
   final VoidCallback onSort;
   final VoidCallback onSettings;
   final ValueChanged<String> onLetterChanged;
@@ -344,7 +350,8 @@ class _LibraryHeader extends StatelessWidget {
     this.showLabels = true,
     required this.sortBy,
     required this.letterFilter,
-    required this.onHome,
+    this.isMusicBrowse = false,
+    required this.onBack,
     required this.onSort,
     required this.onSettings,
     required this.onLetterChanged,
@@ -401,19 +408,21 @@ class _LibraryHeader extends StatelessWidget {
             mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
               _ToolbarButton(
-                icon: Icons.home,
-                onTap: onHome,
+                icon: Icons.arrow_back,
+                onTap: onBack,
               ),
               const SizedBox(width: 4),
               _ToolbarButton(
                 icon: Icons.sort,
                 onTap: onSort,
               ),
-              const SizedBox(width: 4),
-              _ToolbarButton(
-                icon: Icons.settings,
-                onTap: onSettings,
-              ),
+              if (!isMusicBrowse) ...[
+                const SizedBox(width: 4),
+                _ToolbarButton(
+                  icon: Icons.settings,
+                  onTap: onSettings,
+                ),
+              ],
               if (!isMobile && sortBy == LibrarySortBy.name) ...[
                 const SizedBox(width: 16),
                 Expanded(

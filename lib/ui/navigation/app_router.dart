@@ -169,7 +169,14 @@ final appRouter = GoRouter(
       path: Destinations.libraryBrowse,
       builder: (context, state) {
         final libraryId = state.pathParameters['libraryId']!;
-        return LibraryBrowseScreen(libraryId: libraryId);
+        final typesParam = state.uri.queryParameters['types'];
+        final includeItemTypes = typesParam != null
+            ? typesParam.split(',').map(Uri.decodeComponent).toList()
+            : null;
+        return LibraryBrowseScreen(
+          libraryId: libraryId,
+          includeItemTypes: includeItemTypes,
+        );
       },
       routes: [
         GoRoute(

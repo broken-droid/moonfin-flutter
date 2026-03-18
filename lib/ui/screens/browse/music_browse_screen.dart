@@ -12,7 +12,7 @@ import '../../navigation/destinations.dart';
 
 const _navyBackground = Color(0xFF101528);
 const _cardSize = 140.0;
-const _horizontalPadding = 60.0;
+const _horizontalPadding = 20.0;
 const _cardSpacing = 12.0;
 
 class MusicBrowseScreen extends StatefulWidget {
@@ -138,9 +138,10 @@ class _MusicHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPad = MediaQuery.of(context).padding.top;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          _horizontalPadding, 12, _horizontalPadding, 4),
+      padding: EdgeInsets.fromLTRB(
+          _horizontalPadding, topPad + 8, _horizontalPadding, 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -190,6 +191,8 @@ class _MusicHeader extends StatelessWidget {
             children: [
               _ToolbarButton(
                 icon: Icons.home,
+                size: 52,
+                iconSize: 28,
                 onTap: () => context.go(Destinations.home),
               ),
             ],
@@ -203,10 +206,14 @@ class _MusicHeader extends StatelessWidget {
 class _ToolbarButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
+  final double size;
+  final double iconSize;
 
   const _ToolbarButton({
     required this.icon,
     required this.onTap,
+    this.size = 34,
+    this.iconSize = 18,
   });
 
   @override
@@ -217,13 +224,13 @@ class _ToolbarButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(6),
         child: Container(
-          width: 34,
-          height: 34,
+          width: size,
+          height: size,
           decoration: BoxDecoration(
             color: Colors.white.withAlpha(20),
             borderRadius: BorderRadius.circular(6),
           ),
-          child: Icon(icon, color: Colors.white, size: 18),
+          child: Icon(icon, color: Colors.white, size: iconSize),
         ),
       ),
     );
@@ -262,19 +269,17 @@ class _MusicViewsRow extends StatelessWidget {
               _ViewButton(
                 icon: Icons.album,
                 label: 'Albums',
-                onTap: () => context.push(Destinations.library(libraryId)),
+                onTap: () => context.push(
+                    Destinations.library(libraryId,
+                        includeItemTypes: ['MusicAlbum'])),
               ),
               const SizedBox(width: _cardSpacing),
               _ViewButton(
                 icon: Icons.person,
-                label: 'Album Artists',
-                onTap: () => context.push(Destinations.library(libraryId)),
-              ),
-              const SizedBox(width: _cardSpacing),
-              _ViewButton(
-                icon: Icons.person_outline,
                 label: 'Artists',
-                onTap: () => context.push(Destinations.library(libraryId)),
+                onTap: () => context.push(
+                    Destinations.library(libraryId,
+                        includeItemTypes: ['MusicArtist'])),
               ),
               const SizedBox(width: _cardSpacing),
               _ViewButton(
@@ -282,12 +287,6 @@ class _MusicViewsRow extends StatelessWidget {
                 label: 'Genres',
                 onTap: () =>
                     context.push(Destinations.libraryGenresOf(libraryId)),
-              ),
-              const SizedBox(width: _cardSpacing),
-              _ViewButton(
-                icon: Icons.shuffle,
-                label: 'Random',
-                onTap: onRandomAlbum,
               ),
             ],
           ),
@@ -397,7 +396,7 @@ class _MusicItemRow extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding:
-                const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+                const EdgeInsets.only(left: _horizontalPadding, right: 24),
             itemCount: items.length,
             separatorBuilder: (_, __) => const SizedBox(width: _cardSpacing),
             itemBuilder: (_, i) {

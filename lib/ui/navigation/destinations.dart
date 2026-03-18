@@ -116,7 +116,14 @@ class Destinations {
   static const settingsDownloads = '/settings/downloads';
   static const storageManagement = '/settings/downloads/storage';
 
-  static String library(String libraryId) => '/library/$libraryId';
+  static String library(String libraryId, {List<String>? includeItemTypes}) {
+    final base = '/library/$libraryId';
+    if (includeItemTypes != null && includeItemTypes.isNotEmpty) {
+      final types = includeItemTypes.map(Uri.encodeComponent).join(',');
+      return '$base?types=$types';
+    }
+    return base;
+  }
   static String libraryView(String libraryId) => '/library-view/$libraryId';
   static String libraryGenresOf(String libraryId) =>
       '/library/$libraryId/genres';

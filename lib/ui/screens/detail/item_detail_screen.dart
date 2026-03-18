@@ -178,7 +178,7 @@ class _DetailContent extends StatelessWidget {
               ),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
-                  _buildContentForType(item),
+                  _buildContentForType(context, item),
                 ),
               ),
             ),
@@ -188,14 +188,14 @@ class _DetailContent extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildContentForType(AggregatedItem item) {
+  List<Widget> _buildContentForType(BuildContext context, AggregatedItem item) {
     return switch (item.type) {
       'Series' => _buildSeriesContent(item),
       'Season' => _buildSeasonContent(item),
       'Episode' => _buildEpisodeContent(item),
       'Person' => _buildPersonContent(item),
       'MusicArtist' => _buildArtistContent(item),
-      'MusicAlbum' || 'Playlist' => _buildAlbumContent(item),
+      'MusicAlbum' || 'Playlist' => _buildAlbumContent(context, item),
       'BoxSet' => _buildBoxSetContent(item),
       'Photo' => _buildPhotoContent(item),
       _ => _buildMovieContent(item),
@@ -399,12 +399,24 @@ class _DetailContent extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildAlbumContent(AggregatedItem item) {
+  List<Widget> _buildAlbumContent(BuildContext context, AggregatedItem item) {
     return [
       _AlbumHeader(item: item, imageApi: viewModel.imageApi),
+      const SizedBox(height: 16),
+      _AlbumActions(
+        item: item,
+        tracks: viewModel.tracks,
+      ),
       if (viewModel.tracks.isNotEmpty) ...[
         const SizedBox(height: 24),
-        _TrackList(tracks: viewModel.tracks),
+        _TrackList(
+          tracks: viewModel.tracks,
+          onPlayTrack: (index) {
+            final manager = GetIt.instance<PlaybackManager>();
+            manager.playItems(viewModel.tracks, startIndex: index);
+            context.push(Destinations.audioPlayer);
+          },
+        ),
       ],
       const SizedBox(height: 48),
     ];
@@ -2862,6 +2874,51 @@ class _AlbumMeta extends StatelessWidget {
   }
 }
 
+class _AlbumActions extends StatelessWidget {
+  final AggregatedItem item;
+  final List<AggregatedItem> tracks;
+
+  const _AlbumActions({required this.item, required this.tracks});
+
+  @override
+  Widget build(BuildContext context) {
+    final manager = GetIt.instance<PlaybackManager>();
+    return Center(
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 12,
+        alignment: WrapAlignment.center,
+        children: [
+          _DetailActionButton(
+            label: 'Play',
+            icon: Icons.play_arrow,
+            onPressed: () {
+              if (tracks.isEmpty) return;
+              manager.playItems(tracks);
+              context.push(Destinations.audioPlayer);
+            },
+          ),
+          _DetailActionButton(
+            label: 'Shuffle',
+            icon: Icons.shuffle,
+            onPressed: () {
+              if (tracks.isEmpty) return;
+              final shuffled = List<AggregatedItem>.from(tracks)..shuffle();
+              manager.playItems(shuffled);
+              context.push(Destinations.audioPlayer);
+            },
+          ),
+          _DetailActionButton(
+            label: 'Playlist',
+            icon: Icons.playlist_add,
+            onPressed: () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _AlbumsRow extends StatelessWidget {
   final List<AggregatedItem> albums;
   final ImageApi imageApi;
@@ -2903,8 +2960,9 @@ class _AlbumsRow extends StatelessWidget {
 
 class _TrackList extends StatelessWidget {
   final List<AggregatedItem> tracks;
+  final ValueChanged<int> onPlayTrack;
 
-  const _TrackList({required this.tracks});
+  const _TrackList({required this.tracks, required this.onPlayTrack});
 
   @override
   Widget build(BuildContext context) {
@@ -2913,6 +2971,7 @@ class _TrackList extends StatelessWidget {
         return _TrackTile(
           track: tracks[index],
           index: index + 1,
+          onTap: () => onPlayTrack(index),
         );
       }),
     );
@@ -2922,8 +2981,9 @@ class _TrackList extends StatelessWidget {
 class _TrackTile extends StatelessWidget {
   final AggregatedItem track;
   final int index;
+  final VoidCallback onTap;
 
-  const _TrackTile({required this.track, required this.index});
+  const _TrackTile({required this.track, required this.index, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -2935,7 +2995,9 @@ class _TrackTile extends StatelessWidget {
     final trackNumber = track.indexNumber ?? index;
 
     return GestureDetector(
+      onTap: onTap,
       onLongPress: () => _showTrackActions(context),
+      behavior: HitTestBehavior.opaque,
       child: Container(
         height: 56,
         decoration: BoxDecoration(
@@ -2992,7 +3054,7 @@ class _TrackTile extends StatelessWidget {
                 ),
               ),
             IconButton(
-              onPressed: () {},
+              onPressed: onTap,
               icon: const Icon(Icons.play_arrow, color: Colors.white54, size: 22),
               splashRadius: 20,
             ),
@@ -3009,12 +3071,13 @@ class _TrackTile extends StatelessWidget {
   }
 
   void _showTrackActions(BuildContext context) {
+    final manager = GetIt.instance<PlaybackManager>();
     TrackActionDialog.show(
       context,
       track: track,
-      onPlay: () {},
-      onPlayNext: () {},
-      onAddToQueue: () {},
+      onPlay: onTap,
+      onPlayNext: () => manager.queueService.insertNext(track),
+      onAddToQueue: () => manager.queueService.addToQueue(track),
       onAddToPlaylist: () => AddToPlaylistDialog.show(context, itemIds: [track.id]),
       onToggleFavorite: () {
         GetIt.instance<ItemMutationRepository>().setFavorite(

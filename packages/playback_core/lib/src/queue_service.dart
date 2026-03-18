@@ -60,6 +60,19 @@ class QueueService {
     _queueChangedController.add(null);
   }
 
+  void insertNext(dynamic item) {
+    final insertAt = _currentIndex + 1;
+    _items.insert(insertAt.clamp(0, _items.length), item);
+    _originalOrder.add(item);
+    _queueChangedController.add(null);
+  }
+
+  void addToQueue(dynamic item) {
+    _items.add(item);
+    _originalOrder.add(item);
+    _queueChangedController.add(null);
+  }
+
   bool next() {
     if (_items.isEmpty) return false;
     if (_repeatMode == RepeatMode.repeatOne) return true;

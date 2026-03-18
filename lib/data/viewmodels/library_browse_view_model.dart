@@ -398,6 +398,12 @@ class LibraryBrowseViewModel extends ChangeNotifier {
       _collectionType == 'tvshows' ||
       (includeItemTypes != null && includeItemTypes!.contains('Series'));
 
+  bool get isMusicBrowse =>
+      _collectionType == 'music' ||
+      (includeItemTypes != null &&
+          includeItemTypes!.any((t) =>
+              t == 'MusicAlbum' || t == 'MusicArtist' || t == 'Audio'));
+
   String get statusText {
     final parts = <String>[];
     if (_favoriteFilter) parts.add('Favorites');

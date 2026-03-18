@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'di/providers.dart';
 import 'ui/navigation/app_router.dart';
 import 'ui/theme/app_theme.dart';
+import 'ui/widgets/mini_audio_player.dart';
 import 'ui/widgets/offline_banner.dart';
 
 class MoonfinApp extends StatelessWidget {
@@ -18,6 +19,13 @@ class MoonfinApp extends StatelessWidget {
         routerConfig: appRouter,
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
+          final location = appRouter.routerDelegate.currentConfiguration.uri.path;
+          final hidePlayer = location.startsWith('/player/video') ||
+              location.startsWith('/player/audio') ||
+              location == '/' ||
+              location == '/server-select' ||
+              location == '/server' ||
+              location == '/login';
           return Column(
             children: [
               const OfflineBanner(),
@@ -26,6 +34,7 @@ class MoonfinApp extends StatelessWidget {
                   child: child ?? const SizedBox.shrink(),
                 ),
               ),
+              if (!hidePlayer) const MiniAudioPlayer(),
             ],
           );
         },

@@ -55,7 +55,7 @@ class MusicBrowseViewModel extends ChangeNotifier {
             includeItemTypes: ['Audio']),
         _dataSource.loadLibraryFavorites(libraryId, _serverId,
             includeItemTypes: ['MusicAlbum']),
-        _dataSource.loadPlaylists(_serverId),
+        _dataSource.loadPlaylists(_serverId, mediaType: 'Audio'),
         _dataSource.loadLibraryItemsByType(libraryId, _serverId,
             title: 'Artists',
             includeItemTypes: ['MusicArtist'],

@@ -14,11 +14,11 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.util.Rational
-import io.flutter.embedding.android.FlutterActivity
+import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity : FlutterActivity() {
+class MainActivity : AudioServiceActivity() {
 
     private var methodChannel: MethodChannel? = null
     private var pipEnabled = false

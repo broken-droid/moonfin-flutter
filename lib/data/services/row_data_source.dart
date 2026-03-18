@@ -94,7 +94,7 @@ class RowDataSource {
     );
   }
 
-  Future<HomeRow> loadPlaylists(String serverId) async {
+  Future<HomeRow> loadPlaylists(String serverId, {String? mediaType}) async {
     final response = await _client.itemsApi.getItems(
       includeItemTypes: ['Playlist'],
       sortBy: 'SortName',
@@ -103,13 +103,21 @@ class RowDataSource {
       limit: _defaultLimit,
       fields: _fields,
     );
-    return _buildRow(
+    var row = _buildRow(
       id: 'playlists',
       title: 'Playlists',
       response: response,
       serverId: serverId,
       rowType: HomeRowType.playlists,
     );
+    if (mediaType != null) {
+      row = row.copyWith(
+        items: row.items
+            .where((i) => (i.rawData['MediaType'] as String?) == mediaType)
+            .toList(),
+      );
+    }
+    return row;
   }
 
   Future<HomeRow> loadLibraryTiles(String serverId, [HomeRowType rowType = HomeRowType.libraryTiles]) async {
