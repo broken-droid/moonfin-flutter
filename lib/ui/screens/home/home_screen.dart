@@ -441,7 +441,7 @@ class _ContentRowsState extends State<_ContentRows> {
                     if (row.rowType == HomeRowType.libraryTiles) {
                       _navigateToLibrary(context, item);
                     } else {
-                      context.push(Destinations.item(item.id, serverId: item.serverId));
+                      context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type));
                     }
                   },
                 );

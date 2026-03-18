@@ -191,7 +191,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 unplayedCount: item.unplayedItemCount,
                 playedPercentage: item.playedPercentage,
                 itemType: item.type,
-                onTap: () => context.push(Destinations.item(item.id, serverId: item.serverId)),
+                onTap: () => context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type)),
               );
             }).toList(),
           );

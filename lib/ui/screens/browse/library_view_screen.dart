@@ -168,7 +168,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
               onFocus: () => _onItemFocused(item),
               onHoverStart: () => _onItemFocused(item),
               onHoverEnd: () => _vm.setFocusedItem(null),
-              onTap: () => context.push(Destinations.item(item.id, serverId: item.serverId)),
+              onTap: () => context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type)),
             );
           }).toList(),
         );

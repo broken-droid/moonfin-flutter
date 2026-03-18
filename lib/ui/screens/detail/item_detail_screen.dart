@@ -197,8 +197,50 @@ class _DetailContent extends StatelessWidget {
       'MusicArtist' => _buildArtistContent(item),
       'MusicAlbum' || 'Playlist' => _buildAlbumContent(item),
       'BoxSet' => _buildBoxSetContent(item),
+      'Photo' => _buildPhotoContent(item),
       _ => _buildMovieContent(item),
     };
+  }
+
+  List<Widget> _buildPhotoContent(AggregatedItem item) {
+    final raw = item.rawData;
+    final width = raw['Width'] as int?;
+    final height = raw['Height'] as int?;
+    final cameraMake = raw['CameraMake'] as String?;
+    final cameraModel = raw['CameraModel'] as String?;
+    final software = raw['Software'] as String?;
+    final dateTaken = raw['DateCreated'] as String?;
+
+    final exifEntries = <String>[
+      if (width != null && height != null) '$width×$height',
+      if (cameraMake != null) cameraMake,
+      if (cameraModel != null) cameraModel,
+      if (software != null) software,
+      if (dateTaken != null) dateTaken.split('T').first,
+    ];
+
+    return [
+      _ActionButtons(viewModel: viewModel),
+      if (exifEntries.isNotEmpty) ...[
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: exifEntries
+                .map((e) => Chip(
+                      label: Text(e, style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                      backgroundColor: Colors.white.withValues(alpha: 0.08),
+                      side: BorderSide.none,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+      const SizedBox(height: 48),
+    ];
   }
 
   List<Widget> _buildMovieContent(AggregatedItem item) {
@@ -1127,6 +1169,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   @override
   Widget build(BuildContext context) {
     final item = viewModel.item!;
+    final isPhoto = item.type == 'Photo';
     final hasProgress = (item.playedPercentage ?? 0) > 0;
     final audioStreams = item.mediaStreams
         .where((s) => s['Type'] == 'Audio')
@@ -1137,13 +1180,15 @@ class _ActionButtonsState extends State<_ActionButtons> {
 
     final allButtons = <Widget>[
       _DetailActionButton(
-        label: hasProgress
-            ? 'Resume from ${_formatResumePosition(item.playbackPosition)}'
-            : 'Play',
-        icon: Icons.play_arrow,
-        onPressed: () => _play(context, item, resume: hasProgress),
+        label: isPhoto
+            ? 'View'
+            : hasProgress
+                ? 'Resume from ${_formatResumePosition(item.playbackPosition)}'
+                : 'Play',
+        icon: isPhoto ? Icons.photo : Icons.play_arrow,
+        onPressed: () => _play(context, item, resume: !isPhoto && hasProgress),
       ),
-      if (hasProgress)
+      if (hasProgress && !isPhoto)
         _DetailActionButton(
           label: 'Restart',
           icon: Icons.restart_alt,
@@ -1265,6 +1310,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
 
   void _play(BuildContext context, AggregatedItem item, {bool resume = false}) async {
     final manager = GetIt.instance<PlaybackManager>();
+
+    if (item.type == 'Photo') {
+      await context.push(Destinations.photo(item.id));
+      return;
+    }
 
     final isAudio = item.type == 'Audio' || item.type == 'MusicAlbum';
 

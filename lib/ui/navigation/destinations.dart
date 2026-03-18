@@ -143,6 +143,8 @@ class Destinations {
       '/collection/$collectionId';
   static String musicLibrary(String libraryId) => '/music/$libraryId';
   static String photo(String itemId) => '/player/photo/$itemId';
+  static String itemOrPhoto(String itemId, {String? serverId, String? type}) =>
+      type == 'Photo' ? photo(itemId) : item(itemId, serverId: serverId);
   static String nextUpFor(String itemId) => '/player/next-up/$itemId';
   static String stillWatchingFor(String itemId) =>
       '/player/still-watching/$itemId';
