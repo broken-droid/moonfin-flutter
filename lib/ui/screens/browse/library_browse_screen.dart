@@ -108,11 +108,15 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
 
     context.push(
       Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type),
-    );
+    ).then((result) {
+      if (result == true && mounted) {
+        _vm.load();
+      }
+    });
   }
 
   double _cardWidth() {
-    if (_vm.isMusicBrowse) {
+    if (_vm.isMusicBrowse || _vm.isPlaylistBrowse) {
       return _vm.posterSize.portraitHeight.toDouble();
     }
     final posterSize = _vm.posterSize;
@@ -124,7 +128,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
   }
 
   double _aspectRatio() {
-    if (_vm.isMusicBrowse) return 1.0;
+    if (_vm.isMusicBrowse || _vm.isPlaylistBrowse) return 1.0;
     return switch (_vm.imageType) {
       ImageType.thumb => 16 / 9,
       ImageType.banner => 1000 / 185,
@@ -134,6 +138,9 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
 
   String? _imageUrl(AggregatedItem item) {
     final api = _vm.imageApi;
+    if (_vm.isPlaylistBrowse) {
+      return item.primaryImageTag != null ? api.getPrimaryImageUrl(item.id) : null;
+    }
     if (_vm.imageType == ImageType.thumb && item.backdropImageTags.isNotEmpty) {
       return api.getBackdropImageUrl(item.id);
     }
@@ -328,6 +335,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
   void _showFilterSortDialog(BuildContext context) {
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => _FilterSortDialog(vm: _vm),
     );
   }
@@ -335,6 +343,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
   void _showSettingsDialog(BuildContext context) {
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (_) => _SettingsDialog(vm: _vm),
     );
   }
@@ -1027,20 +1036,22 @@ class _SettingsDialogState extends State<_SettingsDialog> {
               ),
             ),
             Divider(color: Colors.white.withAlpha(20)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
-              child: Text(
-                'Image Type',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white.withAlpha(115),
+            if (!vm.isPlaylistBrowse) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
+                child: Text(
+                  'Image Type',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white.withAlpha(115),
+                  ),
                 ),
               ),
-            ),
-            for (final type in ImageType.values)
-              _settingsRadioTile(vm, type),
-            Divider(color: Colors.white.withAlpha(20)),
+              for (final type in ImageType.values)
+                _settingsRadioTile(vm, type),
+              Divider(color: Colors.white.withAlpha(20)),
+            ],
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
               child: Text(

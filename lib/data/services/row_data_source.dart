@@ -2,6 +2,7 @@ import 'package:server_core/server_core.dart';
 
 import '../models/aggregated_item.dart';
 import '../models/home_row.dart';
+import '../utils/playlist_utils.dart';
 
 class RowDataSource {
   final MediaServerClient _client;
@@ -20,7 +21,9 @@ class RowDataSource {
   ImageApi get imageApi => _client.imageApi;
 
   Future<HomeRow> loadOnNow(String serverId) async {
-    final response = await _client.liveTvApi.getRecommendedPrograms(limit: _defaultLimit);
+    final response = await _client.liveTvApi.getRecommendedPrograms(
+      limit: _defaultLimit,
+    );
     return _buildRow(
       id: 'liveTvOnNow',
       title: 'On Now',
@@ -110,20 +113,26 @@ class RowDataSource {
       serverId: serverId,
       rowType: HomeRowType.playlists,
     );
-    if (mediaType != null) {
-      row = row.copyWith(
-        items: row.items
-            .where((i) => (i.rawData['MediaType'] as String?) == mediaType)
-            .toList(),
-      );
-    }
+    row = row.copyWith(
+      items: await filterBrowsablePlaylists(
+        _client,
+        row.items,
+        mediaType: mediaType,
+      ),
+    );
     return row;
   }
 
-  Future<HomeRow> loadLibraryTiles(String serverId, [HomeRowType rowType = HomeRowType.libraryTiles]) async {
+  Future<HomeRow> loadLibraryTiles(
+    String serverId, [
+    HomeRowType rowType = HomeRowType.libraryTiles,
+  ]) async {
     final response = await _client.userViewsApi.getUserViews();
     return _buildRow(
-      id: rowType == HomeRowType.libraryTilesSmall ? 'libraryTilesSmall' : 'libraryTiles',
+      id:
+          rowType == HomeRowType.libraryTilesSmall
+              ? 'libraryTilesSmall'
+              : 'libraryTiles',
       title: 'My Media',
       response: response,
       serverId: serverId,
@@ -131,10 +140,7 @@ class RowDataSource {
     );
   }
 
-  Future<HomeRow> loadLibraryResume(
-    String parentId,
-    String serverId,
-  ) async {
+  Future<HomeRow> loadLibraryResume(String parentId, String serverId) async {
     final response = await _client.itemsApi.getResumeItems(
       parentId: parentId,
       includeItemTypes: ['Video'],
@@ -150,10 +156,7 @@ class RowDataSource {
     );
   }
 
-  Future<HomeRow> loadLibraryNextUp(
-    String parentId,
-    String serverId,
-  ) async {
+  Future<HomeRow> loadLibraryNextUp(String parentId, String serverId) async {
     final response = await _client.itemsApi.getNextUp(
       parentId: parentId,
       limit: _defaultLimit,
@@ -246,15 +249,28 @@ class RowDataSource {
     String sortBy = 'SortName',
     String sortOrder = 'Ascending',
   }) async {
-    final response = await _client.itemsApi.getItems(
-      parentId: parentId,
-      includeItemTypes: includeItemTypes,
-      sortBy: sortBy,
-      sortOrder: sortOrder,
-      recursive: true,
-      limit: _defaultLimit,
-      fields: _fields,
-    );
+    final isAlbumArtistBrowse =
+        includeItemTypes.length == 1 && includeItemTypes.first == 'AlbumArtist';
+    final response =
+        isAlbumArtistBrowse
+            ? await _client.itemsApi.getAlbumArtists(
+              parentId: parentId,
+              userId: _client.userId,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              recursive: true,
+              limit: _defaultLimit,
+              fields: 'PrimaryImageAspectRatio,SortName',
+            )
+            : await _client.itemsApi.getItems(
+              parentId: parentId,
+              includeItemTypes: includeItemTypes,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              recursive: true,
+              limit: _defaultLimit,
+              fields: _fields,
+            );
     return _buildRow(
       id: '${includeItemTypes.first.toLowerCase()}_$parentId',
       title: title,
@@ -296,7 +312,18 @@ class RowDataSource {
         return row.items;
     }
 
-    final newItems = _parseItems(response, serverId);
+    final newItems =
+        row.rowType == HomeRowType.playlists
+            ? await filterBrowsablePlaylists(
+              _client,
+              _parseItems(response, serverId),
+              mediaType:
+                  row.items.isNotEmpty &&
+                          row.items.every(isAudioPlaylistSummary)
+                      ? 'Audio'
+                      : null,
+            )
+            : _parseItems(response, serverId);
     return [...row.items, ...newItems];
   }
 

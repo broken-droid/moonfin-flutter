@@ -11,6 +11,7 @@ import '../models/aggregated_item.dart';
 import '../models/aggregated_library.dart';
 import '../models/home_row.dart';
 import '../services/media_server_client_factory.dart';
+import '../utils/playlist_utils.dart';
 
 class ServerUserSession {
   final Server server;
@@ -74,7 +75,8 @@ class MultiServerRepository {
         String? accessToken;
 
         if (server.id == activeServerId && _sessionRepo.activeUserId != null) {
-          final activeUser = users.where((u) => u.id == _sessionRepo.activeUserId).firstOrNull;
+          final activeUser =
+              users.where((u) => u.id == _sessionRepo.activeUserId).firstOrNull;
           if (activeUser != null && activeUser.accessToken.isNotEmpty) {
             userId = activeUser.id;
             accessToken = activeUser.accessToken;
@@ -93,7 +95,9 @@ class MultiServerRepository {
           }
         }
 
-        if (userId == null || accessToken == null || accessToken.isEmpty) continue;
+        if (userId == null || accessToken == null || accessToken.isEmpty) {
+          continue;
+        }
 
         final client = _clientFactory.getClient(
           serverId: server.id,
@@ -103,11 +107,9 @@ class MultiServerRepository {
         client.accessToken = accessToken;
         client.userId = userId;
 
-        sessions.add(ServerUserSession(
-          server: server,
-          userId: userId,
-          client: client,
-        ));
+        sessions.add(
+          ServerUserSession(server: server, userId: userId, client: client),
+        );
       } catch (e) {
         _logger.w('MultiServer: Error checking server ${server.name}: $e');
       }
@@ -123,20 +125,22 @@ class MultiServerRepository {
     final hasMultiple = sessions.length > 1;
 
     final results = await Future.wait(
-      sessions.map((session) => _withTimeout(() async {
-        final response = await session.client.userViewsApi.getUserViews();
-        final items = response['Items'] as List? ?? [];
-        return items.map((item) {
-          final data = item as Map<String, dynamic>;
-          final name = data['Name'] as String? ?? '';
-          return AggregatedLibrary(
-            id: data['Id'] as String,
-            name: hasMultiple ? '$name (${session.server.name})' : name,
-            collectionType: data['CollectionType'] as String? ?? '',
-            serverId: session.server.id,
-          );
-        }).toList();
-      }, label: 'libraries from ${session.server.name}')),
+      sessions.map(
+        (session) => _withTimeout(() async {
+          final response = await session.client.userViewsApi.getUserViews();
+          final items = response['Items'] as List? ?? [];
+          return items.map((item) {
+            final data = item as Map<String, dynamic>;
+            final name = data['Name'] as String? ?? '';
+            return AggregatedLibrary(
+              id: data['Id'] as String,
+              name: hasMultiple ? '$name (${session.server.name})' : name,
+              collectionType: data['CollectionType'] as String? ?? '',
+              serverId: session.server.id,
+            );
+          }).toList();
+        }, label: 'libraries from ${session.server.name}'),
+      ),
     );
 
     return results.expand((e) => e).toList()
@@ -148,14 +152,16 @@ class MultiServerRepository {
     final perServer = (limit * 3).clamp(1, 100);
 
     final results = await Future.wait(
-      sessions.map((session) => _withTimeout(() async {
-        final response = await session.client.itemsApi.getResumeItems(
-          includeItemTypes: ['Movie', 'Episode'],
-          limit: perServer,
-          fields: _fields,
-        );
-        return _parseItems(response, session.server.id);
-      }, label: 'resume from ${session.server.name}')),
+      sessions.map(
+        (session) => _withTimeout(() async {
+          final response = await session.client.itemsApi.getResumeItems(
+            includeItemTypes: ['Movie', 'Episode'],
+            limit: perServer,
+            fields: _fields,
+          );
+          return _parseItems(response, session.server.id);
+        }, label: 'resume from ${session.server.name}'),
+      ),
     );
 
     final all = results.expand((e) => e).toList()..sort(_compareByLastPlayed);
@@ -173,14 +179,16 @@ class MultiServerRepository {
     final perServer = (limit * 3).clamp(1, 100);
 
     final results = await Future.wait(
-      sessions.map((session) => _withTimeout(() async {
-        final response = await session.client.itemsApi.getResumeItems(
-          includeItemTypes: ['Audio'],
-          limit: perServer,
-          fields: _fields,
-        );
-        return _parseItems(response, session.server.id);
-      }, label: 'resume audio from ${session.server.name}')),
+      sessions.map(
+        (session) => _withTimeout(() async {
+          final response = await session.client.itemsApi.getResumeItems(
+            includeItemTypes: ['Audio'],
+            limit: perServer,
+            fields: _fields,
+          );
+          return _parseItems(response, session.server.id);
+        }, label: 'resume audio from ${session.server.name}'),
+      ),
     );
 
     final all = results.expand((e) => e).toList()..sort(_compareByLastPlayed);
@@ -198,14 +206,16 @@ class MultiServerRepository {
     final perServer = (limit * 3).clamp(1, 100);
 
     final results = await Future.wait(
-      sessions.map((session) => _withTimeout(() async {
-        final response = await session.client.itemsApi.getNextUp(
-          limit: perServer,
-          fields: _fields,
-          enableResumable: false,
-        );
-        return _parseItems(response, session.server.id);
-      }, label: 'next up from ${session.server.name}')),
+      sessions.map(
+        (session) => _withTimeout(() async {
+          final response = await session.client.itemsApi.getNextUp(
+            limit: perServer,
+            fields: _fields,
+            enableResumable: false,
+          );
+          return _parseItems(response, session.server.id);
+        }, label: 'next up from ${session.server.name}'),
+      ),
     );
 
     final all = results.expand((e) => e).toList()..sort(_compareByLastPlayed);
@@ -222,21 +232,26 @@ class MultiServerRepository {
     final sessions = await getLoggedInServers();
 
     final results = await Future.wait(
-      sessions.map((session) => _withTimeout(() async {
-        final response = await session.client.itemsApi.getItems(
-          includeItemTypes: ['Playlist'],
-          sortBy: 'SortName',
-          sortOrder: 'Ascending',
-          recursive: true,
-          limit: limit,
-          fields: _fields,
-        );
-        return _parseItems(response, session.server.id);
-      }, label: 'playlists from ${session.server.name}')),
+      sessions.map(
+        (session) => _withTimeout(() async {
+          final response = await session.client.itemsApi.getItems(
+            includeItemTypes: ['Playlist'],
+            sortBy: 'SortName',
+            sortOrder: 'Ascending',
+            recursive: true,
+            limit: limit,
+            fields: _fields,
+          );
+          return _parseItems(response, session.server.id);
+        }, label: 'playlists from ${session.server.name}'),
+      ),
     );
 
-    final all = results.expand((e) => e).toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
+    final all =
+        results.expand((e) => e).where((item) {
+            return isPlaylistNonEmpty(item) && !isAudioPlaylistSummary(item);
+          }).toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
 
     return HomeRow(
       id: 'playlists',
@@ -250,19 +265,27 @@ class MultiServerRepository {
     HomeRowType rowType = HomeRowType.libraryTiles,
   }) async {
     final libraries = await getAggregatedLibraries();
-    final items = libraries.map((lib) => AggregatedItem(
-      id: lib.id,
-      serverId: lib.serverId,
-      rawData: {
-        'Id': lib.id,
-        'Name': lib.name,
-        'CollectionType': lib.collectionType,
-        'Type': 'CollectionFolder',
-      },
-    )).toList();
+    final items =
+        libraries
+            .map(
+              (lib) => AggregatedItem(
+                id: lib.id,
+                serverId: lib.serverId,
+                rawData: {
+                  'Id': lib.id,
+                  'Name': lib.name,
+                  'CollectionType': lib.collectionType,
+                  'Type': 'CollectionFolder',
+                },
+              ),
+            )
+            .toList();
 
     return HomeRow(
-      id: rowType == HomeRowType.libraryTilesSmall ? 'libraryTilesSmall' : 'libraryTiles',
+      id:
+          rowType == HomeRowType.libraryTilesSmall
+              ? 'libraryTilesSmall'
+              : 'libraryTiles',
       title: 'My Media',
       items: items,
       rowType: rowType,
@@ -302,7 +325,8 @@ class MultiServerRepository {
           if (latestExcludes.contains(id)) continue;
 
           final name = data['Name'] as String? ?? '';
-          final displayName = hasMultiple ? '$name (${session.server.name})' : name;
+          final displayName =
+              hasMultiple ? '$name (${session.server.name})' : name;
 
           try {
             final latestResponse = await _withTimeout(
@@ -316,19 +340,23 @@ class MultiServerRepository {
 
             final items = _parseItems(latestResponse, session.server.id);
             if (items.isNotEmpty) {
-              rows.add(HomeRow(
-                id: 'latest_${session.server.id}_$id',
-                title: 'Latest $displayName',
-                items: items,
-                rowType: HomeRowType.latestMedia,
-              ));
+              rows.add(
+                HomeRow(
+                  id: 'latest_${session.server.id}_$id',
+                  title: 'Latest $displayName',
+                  items: items,
+                  rowType: HomeRowType.latestMedia,
+                ),
+              );
             }
           } catch (e) {
             _logger.w('MultiServer: Failed to load latest for $name: $e');
           }
         }
       } catch (e) {
-        _logger.w('MultiServer: Failed to load views from ${session.server.name}: $e');
+        _logger.w(
+          'MultiServer: Failed to load views from ${session.server.name}: $e',
+        );
       }
     }
 

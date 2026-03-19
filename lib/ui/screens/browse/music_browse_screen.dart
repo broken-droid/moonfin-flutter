@@ -276,6 +276,14 @@ class _MusicViewsRow extends StatelessWidget {
               const SizedBox(width: _cardSpacing),
               _ViewButton(
                 icon: Icons.person,
+                label: 'Album Artists',
+                onTap: () => context.push(
+                    Destinations.library(libraryId,
+                        includeItemTypes: ['AlbumArtist'])),
+              ),
+              const SizedBox(width: _cardSpacing),
+              _ViewButton(
+                icon: Icons.groups,
                 label: 'Artists',
                 onTap: () => context.push(
                     Destinations.library(libraryId,

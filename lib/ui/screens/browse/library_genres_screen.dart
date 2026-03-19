@@ -7,12 +7,18 @@ import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/services/background_service.dart';
+import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/genre_grid_card.dart';
 
 const _navyBackground = Color(0xFF101528);
 const _jellyfinBlue = Color(0xFF00A4DC);
 const _horizontalPadding = 60.0;
+const _mobileHorizontalPadding = 16.0;
+const _kCompactBreakpoint = 600.0;
+
+bool _isCompact(BuildContext context) =>
+  PlatformDetection.isMobile || MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
 
 class LibraryGenresScreen extends StatefulWidget {
   final String libraryId;
@@ -61,8 +67,11 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
 
       final response = await _client.itemsApi.getGenres(
         parentId: widget.libraryId,
+        userId: _client.userId,
         sortBy: 'SortName',
         sortOrder: 'Ascending',
+        recursive: true,
+        fields: 'PrimaryImageAspectRatio,ItemCounts',
       );
 
       final items = (response['Items'] as List?) ?? [];
@@ -74,12 +83,14 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
           itemCount: data['ChildCount'] as int? ??
               (data['MovieCount'] as int? ?? 0) +
                   (data['SeriesCount'] as int? ?? 0) +
-                  (data['AlbumCount'] as int? ?? 0),
+                  (data['AlbumCount'] as int? ?? 0) +
+                  (data['SongCount'] as int? ?? 0) +
+                  (data['ArtistCount'] as int? ?? 0) +
+                  (data['MusicVideoCount'] as int? ?? 0),
         );
-      }).where((g) => g.itemCount > 0).toList();
-    } catch (e) {
-      debugPrint('Failed to load genres: $e');
-    }
+      }).toList();
+    } catch (_) {}
+
 
     _isLoading = false;
     if (!_disposed && mounted) setState(() {});
@@ -102,10 +113,36 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
         sortBy: 'Random',
         sortOrder: 'Ascending',
         recursive: true,
-        limit: 10,
-        fields: 'BackdropImageTags',
+        limit: 20,
+        fields: 'PrimaryImageAspectRatio,PrimaryImageTag,ImageTags,BackdropImageTags',
       );
       final items = (response['Items'] as List?) ?? [];
+
+      if (_collectionType == 'music') {
+        for (final raw in items) {
+          final item = raw as Map<String, dynamic>;
+          final imageTags = item['ImageTags'];
+          final hasPrimaryTag = item['PrimaryImageTag'] != null ||
+              (imageTags is Map && imageTags['Primary'] != null);
+          if (hasPrimaryTag) {
+            genre.backdropUrl = _client.imageApi.getPrimaryImageUrl(
+              item['Id'] as String,
+            );
+            if (!_disposed && mounted) setState(() {});
+            return;
+          }
+        }
+
+        if (items.isNotEmpty) {
+          final first = items.first as Map<String, dynamic>;
+          genre.backdropUrl = _client.imageApi.getPrimaryImageUrl(
+            first['Id'] as String,
+          );
+          if (!_disposed && mounted) setState(() {});
+          return;
+        }
+      }
+
       for (final raw in items) {
         final item = raw as Map<String, dynamic>;
         final tags = (item['BackdropImageTags'] as List?) ?? [];
@@ -126,6 +163,8 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
         return 'Movie';
       case 'tvshows':
         return 'Series';
+      case 'music':
+        return 'MusicAlbum';
       default:
         return null;
     }
@@ -133,7 +172,8 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final hasBackdrop = _backdropUrl != null;
+    final isMobile = _isCompact(context);
+    final hasBackdrop = !isMobile && _backdropUrl != null;
     return Scaffold(
       backgroundColor: _navyBackground,
       body: Stack(
@@ -146,6 +186,7 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
                   key: ValueKey(_backdropUrl),
                   imageUrl: _backdropUrl!,
                   fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
                   fadeInDuration: const Duration(milliseconds: 300),
                   errorWidget: (_, __, ___) => const SizedBox.shrink(),
                 ),
@@ -184,28 +225,31 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
     }
 
     return LayoutBuilder(builder: (context, constraints) {
-      const cardWidth = 280.0;
+      final isMobile = _isCompact(context);
+      final isMusic = _collectionType == 'music';
+      final horizontalPadding = isMobile ? _mobileHorizontalPadding : _horizontalPadding;
       const spacing = 16.0;
-      final crossAxisCount =
-          ((constraints.maxWidth - _horizontalPadding * 2 + spacing) /
-                  (cardWidth + spacing))
-              .floor()
-              .clamp(2, 8);
+      final crossAxisCount = isMobile
+        ? 2
+        : ((constraints.maxWidth - horizontalPadding * 2 + spacing) /
+            (280.0 + spacing))
+          .floor()
+          .clamp(2, 8);
 
       return GridView.builder(
-        padding: const EdgeInsets.fromLTRB(
-            _horizontalPadding, 20, _horizontalPadding, 32),
+        padding: EdgeInsets.fromLTRB(horizontalPadding, 20, horizontalPadding, 32),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: spacing,
           crossAxisSpacing: spacing,
-          childAspectRatio: 16 / 9,
+          childAspectRatio: isMusic ? 1 : 16 / 9,
         ),
         itemCount: _genres.length,
         itemBuilder: (context, index) {
           final genre = _genres[index];
           return GenreGridCard(
             genre: genre,
+            centerTitle: isMusic,
             onTap: () {
               context.push(Destinations.genre(
                 genre.name,
@@ -214,7 +258,7 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
                 includeType: _includeType,
               ));
             },
-            onHover: (hovering) {
+            onHover: isMobile ? null : (hovering) {
               if (hovering && genre.backdropUrl != null) {
                 _backgroundService.setBackgroundUrl(genre.backdropUrl!);
               }
@@ -234,10 +278,18 @@ class _GenresHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = _isCompact(context);
+    final topPadding = isMobile ? MediaQuery.of(context).padding.top + 8 : 20.0;
+    final horizontalPadding = isMobile ? _mobileHorizontalPadding : _horizontalPadding;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          _horizontalPadding, 20, _horizontalPadding, 8),
+      padding: EdgeInsets.fromLTRB(
+        horizontalPadding,
+        topPadding,
+        horizontalPadding,
+        8,
+      ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 22),

@@ -9,6 +9,9 @@ class TrackActionDialog extends StatelessWidget {
   final VoidCallback? onPlayNext;
   final VoidCallback? onAddToQueue;
   final VoidCallback? onAddToPlaylist;
+  final VoidCallback? onRemoveFromPlaylist;
+  final VoidCallback? onMoveUp;
+  final VoidCallback? onMoveDown;
   final VoidCallback? onToggleFavorite;
   final VoidCallback? onGoToAlbum;
   final VoidCallback? onGoToArtist;
@@ -20,6 +23,9 @@ class TrackActionDialog extends StatelessWidget {
     this.onPlayNext,
     this.onAddToQueue,
     this.onAddToPlaylist,
+    this.onRemoveFromPlaylist,
+    this.onMoveUp,
+    this.onMoveDown,
     this.onToggleFavorite,
     this.onGoToAlbum,
     this.onGoToArtist,
@@ -32,6 +38,9 @@ class TrackActionDialog extends StatelessWidget {
     VoidCallback? onPlayNext,
     VoidCallback? onAddToQueue,
     VoidCallback? onAddToPlaylist,
+    VoidCallback? onRemoveFromPlaylist,
+    VoidCallback? onMoveUp,
+    VoidCallback? onMoveDown,
     VoidCallback? onToggleFavorite,
     VoidCallback? onGoToAlbum,
     VoidCallback? onGoToArtist,
@@ -44,6 +53,9 @@ class TrackActionDialog extends StatelessWidget {
         onPlayNext: onPlayNext,
         onAddToQueue: onAddToQueue,
         onAddToPlaylist: onAddToPlaylist,
+        onRemoveFromPlaylist: onRemoveFromPlaylist,
+        onMoveUp: onMoveUp,
+        onMoveDown: onMoveDown,
         onToggleFavorite: onToggleFavorite,
         onGoToAlbum: onGoToAlbum,
         onGoToArtist: onGoToArtist,
@@ -123,6 +135,24 @@ class TrackActionDialog extends StatelessWidget {
                 icon: Icons.playlist_add,
                 label: 'Add to Playlist',
                 onTap: () { Navigator.pop(context); onAddToPlaylist!(); },
+              ),
+            if (onRemoveFromPlaylist != null)
+              FocusableDialogRow(
+                icon: Icons.playlist_remove,
+                label: 'Delete from Playlist',
+                onTap: () { Navigator.pop(context); onRemoveFromPlaylist!(); },
+              ),
+            if (onMoveUp != null)
+              FocusableDialogRow(
+                icon: Icons.arrow_upward,
+                label: 'Move Up',
+                onTap: () { Navigator.pop(context); onMoveUp!(); },
+              ),
+            if (onMoveDown != null)
+              FocusableDialogRow(
+                icon: Icons.arrow_downward,
+                label: 'Move Down',
+                onTap: () { Navigator.pop(context); onMoveDown!(); },
               ),
             if (onToggleFavorite != null)
               FocusableDialogRow(

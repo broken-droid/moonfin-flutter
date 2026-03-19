@@ -93,74 +93,84 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
     _nameController.clear();
     showDialog(
       context: context,
-      builder: (ctx) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          constraints: const BoxConstraints(minWidth: 340, maxWidth: 440),
-          decoration: BoxDecoration(
-            color: const Color(0xE6141414),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-          ),
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'New Playlist',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
+      builder: (ctx) {
+        final insets = MediaQuery.of(ctx).viewInsets;
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: AnimatedPadding(
+            duration: const Duration(milliseconds: 150),
+            padding: EdgeInsets.only(bottom: insets.bottom),
+            child: SingleChildScrollView(
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 320, maxWidth: 440),
+                decoration: BoxDecoration(
+                  color: const Color(0xE6141414),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _nameController,
-                autofocus: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: 'Playlist name',
-                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
-                  filled: true,
-                  fillColor: Colors.white.withValues(alpha: 0.08),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                onSubmitted: (_) {
-                  Navigator.pop(ctx);
-                  _createAndAdd();
-                },
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'New Playlist',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.pop(ctx);
-                      _createAndAdd();
-                    },
-                    style: FilledButton.styleFrom(backgroundColor: _kAccent),
-                    child: const Text('Create'),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _nameController,
+                      autofocus: true,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'Playlist name',
+                        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
+                        filled: true,
+                        fillColor: Colors.white.withValues(alpha: 0.08),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onSubmitted: (_) {
+                        Navigator.pop(ctx);
+                        _createAndAdd();
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        FilledButton(
+                          onPressed: () {
+                            Navigator.pop(ctx);
+                            _createAndAdd();
+                          },
+                          style: FilledButton.styleFrom(backgroundColor: _kAccent),
+                          child: const Text('Create'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

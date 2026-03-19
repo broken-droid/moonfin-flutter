@@ -54,6 +54,7 @@ class MediaCard extends StatefulWidget {
       case 'MusicAlbum':
       case 'Audio':
       case 'MusicArtist':
+      case 'Playlist':
       case 'Person':
         return 1;
       default:

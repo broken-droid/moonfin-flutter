@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:server_core/server_core.dart';
 
 import '../models/aggregated_item.dart';
+import '../utils/playlist_utils.dart';
 
 class BreadcrumbEntry {
   final String id;
@@ -16,7 +17,8 @@ class FolderBrowseViewModel extends ChangeNotifier {
   final MediaServerClient _client;
 
   static const _pageSize = 100;
-  static const _fields = 'ProductionYear,ImageTags,BackdropImageTags,ChildCount';
+  static const _fields =
+      'ProductionYear,ImageTags,BackdropImageTags,ChildCount';
 
   FolderBrowseViewModel(this._client);
 
@@ -39,29 +41,43 @@ class FolderBrowseViewModel extends ChangeNotifier {
   final List<BreadcrumbEntry> _breadcrumbs = [];
   List<BreadcrumbEntry> get breadcrumbs => List.unmodifiable(_breadcrumbs);
 
+  String? _rootCollectionType;
+  bool _disposed = false;
+
   String get currentFolderId =>
       _breadcrumbs.isNotEmpty ? _breadcrumbs.last.id : '';
+
+  void _notify() {
+    if (!_disposed) notifyListeners();
+  }
 
   Future<void> loadFolder(String folderId) async {
     _state = FolderBrowseState.loading;
     _items = const [];
     _totalCount = 0;
-    notifyListeners();
+    _notify();
 
     try {
       if (!_breadcrumbs.any((b) => b.id == folderId)) {
         final folderData = await _client.itemsApi.getItem(folderId);
+        if (_disposed) return;
         final folderName = folderData['Name'] as String? ?? '';
+        if (_breadcrumbs.isEmpty) {
+          _rootCollectionType =
+              (folderData['CollectionType'] as String?)?.toLowerCase();
+        }
         _breadcrumbs.add(BreadcrumbEntry(id: folderId, name: folderName));
       }
 
       await _fetchPage(folderId, 0);
+      if (_disposed) return;
       _state = FolderBrowseState.ready;
     } catch (e) {
+      if (_disposed) return;
       _errorMessage = e.toString();
       _state = FolderBrowseState.error;
     }
-    notifyListeners();
+    _notify();
   }
 
   Future<void> navigateTo(int breadcrumbIndex) async {
@@ -78,14 +94,28 @@ class FolderBrowseViewModel extends ChangeNotifier {
   Future<void> loadMore() async {
     if (_loadingMore || !hasMore) return;
     _loadingMore = true;
-    notifyListeners();
+    _notify();
 
     try {
       await _fetchPage(currentFolderId, _items.length);
     } catch (_) {}
 
+    if (_disposed) return;
     _loadingMore = false;
-    notifyListeners();
+    _notify();
+  }
+
+  Future<List<AggregatedItem>> _filterItemsForFolder(
+    List<AggregatedItem> items,
+  ) async {
+    final isPlaylistRoot = _rootCollectionType == 'playlists';
+    if (!isPlaylistRoot) return items;
+
+    return filterBrowsablePlaylists(
+      _client,
+      items,
+      assumeNonEmptyWhenUnknown: true,
+    );
   }
 
   Future<void> _fetchPage(String parentId, int startIndex) async {
@@ -103,18 +133,21 @@ class FolderBrowseViewModel extends ChangeNotifier {
     final rawItems = (response['Items'] as List?) ?? [];
     _totalCount = response['TotalRecordCount'] as int? ?? rawItems.length;
 
-    final mapped = rawItems.cast<Map<String, dynamic>>().map((raw) {
-      return AggregatedItem(
-        id: raw['Id'] as String,
-        serverId: _client.baseUrl,
-        rawData: raw,
-      );
-    }).toList();
+    final mapped =
+        rawItems.cast<Map<String, dynamic>>().map((raw) {
+          return AggregatedItem(
+            id: raw['Id'] as String,
+            serverId: _client.baseUrl,
+            rawData: raw,
+          );
+        }).toList();
+
+    final filtered = await _filterItemsForFolder(mapped);
 
     if (startIndex == 0) {
-      _items = mapped;
+      _items = filtered;
     } else {
-      _items = [..._items, ...mapped];
+      _items = [..._items, ...filtered];
     }
   }
 
@@ -129,5 +162,11 @@ class FolderBrowseViewModel extends ChangeNotifier {
         type == 'Series' ||
         type == 'PhotoAlbum' ||
         type == 'Playlist';
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 }

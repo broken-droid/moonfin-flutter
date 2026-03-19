@@ -4,6 +4,7 @@ import 'package:server_core/server_core.dart';
 import '../models/aggregated_item.dart';
 import '../repositories/item_mutation_repository.dart';
 import '../repositories/mdblist_repository.dart';
+import '../utils/playlist_utils.dart';
 
 enum ItemDetailState { loading, ready, error }
 
@@ -53,6 +54,11 @@ class ItemDetailViewModel extends ChangeNotifier {
   ImageApi get imageApi => _client.imageApi;
   String get baseUrl => _client.baseUrl;
 
+  bool get canManagePlaylistTracks =>
+      _item?.type == 'Playlist' &&
+      _tracks.isNotEmpty &&
+      _tracks.every(hasPlaylistEntryId);
+
   final String? _serverId;
 
   ItemDetailViewModel({
@@ -61,10 +67,10 @@ class ItemDetailViewModel extends ChangeNotifier {
     required MediaServerClient client,
     required ItemMutationRepository mutations,
     required MdbListRepository mdbListRepository,
-  })  : _serverId = serverId,
-        _client = client,
-        _mutations = mutations,
-        _mdbListRepository = mdbListRepository;
+  }) : _serverId = serverId,
+       _client = client,
+       _mutations = mutations,
+       _mdbListRepository = mdbListRepository;
 
   Future<void> load() async {
     _state = ItemDetailState.loading;
@@ -160,11 +166,16 @@ class ItemDetailViewModel extends ChangeNotifier {
   }
 
   List<AggregatedItem> _mapItems(List items) {
-    return items.cast<Map<String, dynamic>>().map((raw) => AggregatedItem(
-      id: raw['Id'] as String,
-      serverId: _serverId ?? _client.baseUrl,
-      rawData: raw,
-    )).toList();
+    return items
+        .cast<Map<String, dynamic>>()
+        .map(
+          (raw) => AggregatedItem(
+            id: raw['Id'] as String,
+            serverId: _serverId ?? _client.baseUrl,
+            rawData: raw,
+          ),
+        )
+        .toList();
   }
 
   Future<void> _loadAlbums() async {
@@ -185,16 +196,118 @@ class ItemDetailViewModel extends ChangeNotifier {
 
   Future<void> _loadTracks() async {
     try {
-      final data = await _client.itemsApi.getItems(
-        parentId: itemId,
-        includeItemTypes: ['Audio'],
-        sortBy: _item?.type == 'MusicAlbum' ? 'IndexNumber' : null,
-        fields: 'PrimaryImageAspectRatio,BasicSyncInfo',
-      );
+      final data =
+          _item?.type == 'Playlist'
+              ? await _client.itemsApi.getPlaylistItems(itemId)
+              : await _client.itemsApi.getItems(
+                parentId: itemId,
+                includeItemTypes: ['Audio'],
+                sortBy: 'IndexNumber',
+                fields: 'PrimaryImageAspectRatio,BasicSyncInfo',
+              );
       final items = (data['Items'] as List?) ?? [];
       _tracks = _mapItems(items);
       notifyListeners();
     } catch (_) {}
+  }
+
+  String? _playlistEntryId(AggregatedItem track) =>
+      track.rawData['PlaylistItemId'] as String?;
+
+  Future<void> removeTrackFromPlaylist(AggregatedItem track) async {
+    if (_item?.type != 'Playlist') return;
+    final entryId = _playlistEntryId(track);
+    if (entryId == null) return;
+
+    final previousTracks = List<AggregatedItem>.from(_tracks);
+    _tracks =
+        _tracks.where((t) {
+          final sameId = t.id == track.id;
+          final sameEntry = _playlistEntryId(t) == entryId;
+          return !(sameId && sameEntry);
+        }).toList();
+    notifyListeners();
+
+    try {
+      await _client.itemsApi.removeFromPlaylist(itemId, [entryId]);
+      await _loadTracks();
+      await _reload();
+    } catch (_) {
+      _tracks = previousTracks;
+      notifyListeners();
+    }
+  }
+
+  Future<void> reorderPlaylistTrack(int oldIndex, int newIndex) async {
+    if (_item?.type != 'Playlist') return;
+    if (oldIndex < 0 || oldIndex >= _tracks.length) {
+      return;
+    }
+    var targetIndex = newIndex;
+    if (targetIndex > oldIndex) targetIndex -= 1;
+    if (targetIndex < 0 || targetIndex >= _tracks.length) {
+      return;
+    }
+
+    final moved = _tracks[oldIndex];
+    final entryId = _playlistEntryId(moved);
+    if (entryId == null) return;
+
+    final previousTracks = List<AggregatedItem>.from(_tracks);
+    final reordered = List<AggregatedItem>.from(_tracks);
+    final item = reordered.removeAt(oldIndex);
+    reordered.insert(targetIndex, item);
+    _tracks = reordered;
+    notifyListeners();
+
+    try {
+      await _client.itemsApi.movePlaylistItem(itemId, entryId, targetIndex);
+      await _loadTracks();
+    } catch (_) {
+      _tracks = previousTracks;
+      notifyListeners();
+    }
+  }
+
+  Future<void> renamePlaylist(String name) async {
+    final item = _item;
+    if (item == null || item.type != 'Playlist') return;
+    final trimmed = name.trim();
+    if (trimmed.isEmpty || trimmed == item.name) return;
+
+    final previous = item.name;
+    final patched = Map<String, dynamic>.from(item.rawData)..['Name'] = trimmed;
+    _item = AggregatedItem(
+      id: item.id,
+      serverId: item.serverId,
+      rawData: patched,
+    );
+    notifyListeners();
+
+    try {
+      await _client.itemsApi.renamePlaylist(itemId, trimmed);
+      await _reload();
+    } catch (_) {
+      final reverted = Map<String, dynamic>.from(item.rawData)
+        ..['Name'] = previous;
+      _item = AggregatedItem(
+        id: item.id,
+        serverId: item.serverId,
+        rawData: reverted,
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<bool> deletePlaylist() async {
+    final item = _item;
+    if (item == null || item.type != 'Playlist') return false;
+    try {
+      await _client.itemsApi.deletePlaylist(itemId);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<void> _loadCollectionItems() async {

@@ -169,6 +169,68 @@ class JellyfinItemsApi implements ItemsApi {
   }
 
   @override
+  Future<Map<String, dynamic>> getArtists({
+    String? parentId,
+    String? userId,
+    String? sortBy,
+    String? sortOrder,
+    int? startIndex,
+    int? limit,
+    bool? recursive,
+    String? fields,
+    String? nameStartsWith,
+    bool? isFavorite,
+  }) async {
+    final response = await _dio.get('/Artists', queryParameters: {
+      if (parentId != null) 'ParentId': parentId,
+      if (userId != null) 'UserId': userId,
+      if (sortBy != null) 'SortBy': sortBy,
+      if (sortOrder != null) 'SortOrder': sortOrder,
+      if (startIndex != null) 'StartIndex': startIndex,
+      if (limit != null) 'Limit': limit,
+      if (recursive != null) 'Recursive': recursive,
+      if (fields != null) 'Fields': fields,
+      if (nameStartsWith != null) 'NameStartsWith': nameStartsWith,
+      if (isFavorite != null) 'IsFavorite': isFavorite,
+    });
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getAlbumArtists({
+    String? parentId,
+    String? userId,
+    String? sortBy,
+    String? sortOrder,
+    int? startIndex,
+    int? limit,
+    bool? recursive,
+    String? fields,
+    String? nameStartsWith,
+    bool? isFavorite,
+  }) async {
+    final response = await _dio.get('/Artists/AlbumArtists', queryParameters: {
+      if (parentId != null) 'ParentId': parentId,
+      if (userId != null) 'UserId': userId,
+      if (sortBy != null) 'SortBy': sortBy,
+      if (sortOrder != null) 'SortOrder': sortOrder,
+      if (startIndex != null) 'StartIndex': startIndex,
+      if (limit != null) 'Limit': limit,
+      if (recursive != null) 'Recursive': recursive,
+      if (fields != null) 'Fields': fields,
+      if (nameStartsWith != null) 'NameStartsWith': nameStartsWith,
+      if (isFavorite != null) 'IsFavorite': isFavorite,
+    });
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getPlaylistItems(String playlistId) async {
+    final response = await _dio.get('/Playlists/$playlistId/Items');
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
   Future<Map<String, dynamic>> createPlaylist({
     required String name,
     List<String>? itemIds,
@@ -188,19 +250,53 @@ class JellyfinItemsApi implements ItemsApi {
   }
 
   @override
+  Future<void> removeFromPlaylist(String playlistId, List<String> entryIds) async {
+    await _dio.delete('/Playlists/$playlistId/Items', queryParameters: {
+      'EntryIds': entryIds.join(','),
+    });
+  }
+
+  @override
+  Future<void> movePlaylistItem(
+    String playlistId,
+    String playlistItemId,
+    int newIndex,
+  ) async {
+    await _dio.post('/Playlists/$playlistId/Items/$playlistItemId/Move/$newIndex');
+  }
+
+  @override
+  Future<void> renamePlaylist(String playlistId, String name) async {
+    await _dio.post('/Playlists/$playlistId', data: {
+      'Name': name,
+    });
+  }
+
+  @override
+  Future<void> deletePlaylist(String playlistId) async {
+    await _dio.delete('/Items/$playlistId');
+  }
+
+  @override
   Future<Map<String, dynamic>> getGenres({
     String? parentId,
+    String? userId,
     String? sortBy,
     String? sortOrder,
     int? startIndex,
     int? limit,
+    bool? recursive,
+    String? fields,
   }) async {
     final response = await _dio.get('/Genres', queryParameters: {
       if (parentId != null) 'ParentId': parentId,
+      if (userId != null) 'UserId': userId,
       if (sortBy != null) 'SortBy': sortBy,
       if (sortOrder != null) 'SortOrder': sortOrder,
       if (startIndex != null) 'StartIndex': startIndex,
       if (limit != null) 'Limit': limit,
+      if (recursive != null) 'Recursive': recursive,
+      if (fields != null) 'Fields': fields,
     });
     return response.data as Map<String, dynamic>;
   }

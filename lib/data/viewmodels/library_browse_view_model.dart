@@ -5,6 +5,7 @@ import '../../preference/preference_constants.dart';
 import '../../preference/user_preferences.dart';
 import '../models/aggregated_item.dart';
 import '../repositories/mdblist_repository.dart';
+import '../utils/playlist_utils.dart';
 
 enum LibraryBrowseState { loading, ready, error }
 
@@ -83,6 +84,18 @@ class LibraryBrowseViewModel extends ChangeNotifier {
 
   ImageApi get imageApi => _client.imageApi;
 
+  Future<List<AggregatedItem>> _filterLibraryItems(
+    List<AggregatedItem> items,
+  ) async {
+    if (!isPlaylistBrowse) return items;
+
+    return filterBrowsablePlaylists(
+      _client,
+      items,
+      assumeNonEmptyWhenUnknown: true,
+    );
+  }
+
   void setFocusedItem(AggregatedItem? item) {
     _focusedItem = item;
     _focusedRatings = const {};
@@ -114,14 +127,16 @@ class LibraryBrowseViewModel extends ChangeNotifier {
     this.genreId,
     this.overrideName,
     this.includeItemTypes,
-  })  : _client = client,
-        _prefs = prefs,
-        _mdbListRepository = mdbListRepository {
+  }) : _client = client,
+       _prefs = prefs,
+       _mdbListRepository = mdbListRepository {
     _sortBy = _prefs.get(UserPreferences.librarySortBy(_prefKey));
     _sortDirection = _prefs.get(UserPreferences.librarySortDirection(_prefKey));
     _playedFilter = _prefs.get(UserPreferences.libraryPlayedFilter(_prefKey));
     _seriesFilter = _prefs.get(UserPreferences.librarySeriesFilter(_prefKey));
-    _favoriteFilter = _prefs.get(UserPreferences.libraryFavoriteFilter(_prefKey));
+    _favoriteFilter = _prefs.get(
+      UserPreferences.libraryFavoriteFilter(_prefKey),
+    );
     _letterFilter = _prefs.get(UserPreferences.libraryLetterFilter(_prefKey));
     _imageType = _prefs.get(UserPreferences.libraryImageType(_prefKey));
     _posterSize = _prefs.get(UserPreferences.posterSize);
@@ -146,13 +161,15 @@ class LibraryBrowseViewModel extends ChangeNotifier {
         if (libraryId.isNotEmpty) {
           try {
             final parentData = await _client.itemsApi.getItem(libraryId);
-            _collectionType = (parentData['CollectionType'] as String?)?.toLowerCase();
+            _collectionType =
+                (parentData['CollectionType'] as String?)?.toLowerCase();
           } catch (_) {}
         }
       } else {
         final parentData = await _client.itemsApi.getItem(libraryId);
         _libraryName = parentData['Name'] as String? ?? '';
-        _collectionType = (parentData['CollectionType'] as String?)?.toLowerCase();
+        _collectionType =
+            (parentData['CollectionType'] as String?)?.toLowerCase();
       }
 
       if (!_imageTypeSynced) {
@@ -201,6 +218,14 @@ class LibraryBrowseViewModel extends ChangeNotifier {
     bool? collapseBoxSets;
     bool recursive = true;
     String sortBy = _sortBy.apiValue;
+    final isAlbumArtistBrowse =
+        includeItemTypes != null &&
+        includeItemTypes!.length == 1 &&
+        includeItemTypes!.first == 'AlbumArtist';
+    final isArtistBrowse =
+        includeItemTypes != null &&
+        includeItemTypes!.length == 1 &&
+        includeItemTypes!.first == 'MusicArtist';
     if (includeItemTypes != null) {
       includeTypes = includeItemTypes;
     } else {
@@ -213,6 +238,9 @@ class LibraryBrowseViewModel extends ChangeNotifier {
         case 'tvshows':
           includeTypes = ['Series'];
           collapseBoxSets = false;
+          break;
+        case 'playlists':
+          includeTypes = ['Playlist'];
           break;
         case 'boxsets':
           recursive = false;
@@ -232,37 +260,98 @@ class LibraryBrowseViewModel extends ChangeNotifier {
       sortBy = 'IsFolder,SortName';
     }
 
-    final response = await _client.itemsApi.getItems(
-      parentId: _effectiveParentId,
-      genreIds: genreId != null ? [genreId!] : null,
-      includeItemTypes: includeTypes,
-      excludeItemTypes: excludeTypes,
-      collapseBoxSetItems: collapseBoxSets,
-      sortBy: sortBy,
-      sortOrder: _sortDirection == SortDirection.ascending ? 'Ascending' : 'Descending',
-      startIndex: startIndex,
-      limit: _pageSize,
-      recursive: recursive,
-      fields: 'PrimaryImageAspectRatio,BasicSyncInfo,Overview,Genres,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,CriticRating,ProviderIds',
-      filters: filters.isEmpty ? null : filters,
-      seriesStatus: seriesStatus.isEmpty ? null : seriesStatus,
-      nameStartsWith: _letterFilter.isEmpty ? null : _letterFilter,
-      isFavorite: _favoriteFilter ? true : null,
-    );
+    if (genreId != null &&
+        _collectionType == 'music' &&
+        includeItemTypes == null) {
+      includeTypes = ['MusicAlbum'];
+    }
+
+    if (isAlbumArtistBrowse || isArtistBrowse) {
+      includeTypes = null;
+      excludeTypes = null;
+      collapseBoxSets = null;
+      recursive = true;
+      sortBy = 'SortName';
+    }
+
+    final Map<String, dynamic> response;
+    if (isAlbumArtistBrowse) {
+      response = await _client.itemsApi.getAlbumArtists(
+        parentId: _effectiveParentId,
+        userId: _client.userId,
+        sortBy: sortBy,
+        sortOrder:
+            _sortDirection == SortDirection.ascending
+                ? 'Ascending'
+                : 'Descending',
+        startIndex: startIndex,
+        limit: _pageSize,
+        recursive: recursive,
+        fields: 'PrimaryImageAspectRatio,SortName',
+        nameStartsWith: _letterFilter.isEmpty ? null : _letterFilter,
+        isFavorite: _favoriteFilter ? true : null,
+      );
+    } else if (isArtistBrowse) {
+      response = await _client.itemsApi.getArtists(
+        parentId: _effectiveParentId,
+        userId: _client.userId,
+        sortBy: sortBy,
+        sortOrder:
+            _sortDirection == SortDirection.ascending
+                ? 'Ascending'
+                : 'Descending',
+        startIndex: startIndex,
+        limit: _pageSize,
+        recursive: recursive,
+        fields: 'PrimaryImageAspectRatio,SortName',
+        nameStartsWith: _letterFilter.isEmpty ? null : _letterFilter,
+        isFavorite: _favoriteFilter ? true : null,
+      );
+    } else {
+      response = await _client.itemsApi.getItems(
+        parentId: _effectiveParentId,
+        genreIds: genreId != null ? [genreId!] : null,
+        includeItemTypes: includeTypes,
+        excludeItemTypes: excludeTypes,
+        collapseBoxSetItems: collapseBoxSets,
+        sortBy: sortBy,
+        sortOrder:
+            _sortDirection == SortDirection.ascending
+                ? 'Ascending'
+                : 'Descending',
+        startIndex: startIndex,
+        limit: _pageSize,
+        recursive: recursive,
+        fields:
+            'PrimaryImageAspectRatio,BasicSyncInfo,Overview,Genres,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,CriticRating,ProviderIds',
+        filters: filters.isEmpty ? null : filters,
+        seriesStatus: seriesStatus.isEmpty ? null : seriesStatus,
+        nameStartsWith: _letterFilter.isEmpty ? null : _letterFilter,
+        isFavorite: _favoriteFilter ? true : null,
+      );
+    }
 
     final rawItems = (response['Items'] as List?) ?? [];
     _totalCount = response['TotalRecordCount'] as int? ?? rawItems.length;
 
-    final mapped = rawItems.cast<Map<String, dynamic>>().map((raw) => AggregatedItem(
-      id: raw['Id'] as String,
-      serverId: _client.baseUrl,
-      rawData: raw,
-    )).toList();
+    final mapped =
+        rawItems
+            .cast<Map<String, dynamic>>()
+            .map(
+              (raw) => AggregatedItem(
+                id: raw['Id'] as String,
+                serverId: _client.baseUrl,
+                rawData: raw,
+              ),
+            )
+            .toList();
+
+    final filtered = await _filterLibraryItems(mapped);
 
     if (startIndex == 0) {
-      _items = mapped;
+      _items = filtered;
     } else {
-      _items = [..._items, ...mapped];
+      _items = [..._items, ...filtered];
     }
   }
 
@@ -275,13 +364,11 @@ class LibraryBrowseViewModel extends ChangeNotifier {
     try {
       final response = await _client.userViewsApi.getUserViews();
       final items = (response['Items'] as List?) ?? [];
-      _libraries = items
-          .cast<Map<String, dynamic>>()
-          .where((lib) {
+      _libraries =
+          items.cast<Map<String, dynamic>>().where((lib) {
             final type = lib['CollectionType'] as String?;
             return type == 'movies' || type == 'tvshows' || type == null;
-          })
-          .toList();
+          }).toList();
       notifyListeners();
     } catch (_) {}
   }
@@ -293,7 +380,8 @@ class LibraryBrowseViewModel extends ChangeNotifier {
     if (value != null) {
       try {
         final parentData = await _client.itemsApi.getItem(value);
-        _collectionType = (parentData['CollectionType'] as String?)?.toLowerCase();
+        _collectionType =
+            (parentData['CollectionType'] as String?)?.toLowerCase();
       } catch (_) {}
     }
     await load();
@@ -369,7 +457,10 @@ class LibraryBrowseViewModel extends ChangeNotifier {
         );
         if (match.isNotEmpty && match.first != _imageType) {
           _imageType = match.first;
-          await _prefs.set(UserPreferences.libraryImageType(_prefKey), _imageType);
+          await _prefs.set(
+            UserPreferences.libraryImageType(_prefKey),
+            _imageType,
+          );
         }
       }
     } catch (_) {}
@@ -411,8 +502,17 @@ class LibraryBrowseViewModel extends ChangeNotifier {
   bool get isMusicBrowse =>
       _collectionType == 'music' ||
       (includeItemTypes != null &&
-          includeItemTypes!.any((t) =>
-              t == 'MusicAlbum' || t == 'MusicArtist' || t == 'Audio'));
+          includeItemTypes!.any(
+            (t) =>
+                t == 'MusicAlbum' ||
+                t == 'MusicArtist' ||
+                t == 'AlbumArtist' ||
+                t == 'Audio',
+          ));
+
+  bool get isPlaylistBrowse =>
+      _collectionType == 'playlists' ||
+      (includeItemTypes != null && includeItemTypes!.contains('Playlist'));
 
   bool get isBookLibrary =>
       _collectionType == 'books' ||
@@ -420,9 +520,7 @@ class LibraryBrowseViewModel extends ChangeNotifier {
 
   bool isNavigableFolder(AggregatedItem item) {
     final type = item.type;
-    return type == 'Folder' ||
-        type == 'CollectionFolder' ||
-        type == 'UserView';
+    return type == 'Folder' || type == 'CollectionFolder' || type == 'UserView';
   }
 
   String get statusText {

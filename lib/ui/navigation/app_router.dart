@@ -247,7 +247,7 @@ final appRouter = GoRouter(
           libraryId: parentId ?? '',
           genreId: genreId,
           genreName: Uri.decodeComponent(genreName),
-          includeItemTypes: includeType != null ? [includeType] : ['Movie', 'Series'],
+          includeItemTypes: includeType != null ? [includeType] : null,
         );
       },
     ),

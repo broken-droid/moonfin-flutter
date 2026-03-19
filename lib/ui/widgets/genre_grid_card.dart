@@ -19,12 +19,14 @@ class GenreGridCard extends StatefulWidget {
   final GenreCardData genre;
   final VoidCallback onTap;
   final ValueChanged<bool>? onHover;
+  final bool centerTitle;
 
   const GenreGridCard({
     super.key,
     required this.genre,
     required this.onTap,
     this.onHover,
+    this.centerTitle = false,
   });
 
   @override
@@ -83,13 +85,17 @@ class _GenreGridCardState extends State<GenreGridCard> {
                   right: 12,
                   bottom: 10,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: widget.centerTitle
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         widget.genre.name,
-                        maxLines: 1,
+                        maxLines: widget.centerTitle ? 2 : 1,
                         overflow: TextOverflow.ellipsis,
+                        textAlign:
+                            widget.centerTitle ? TextAlign.center : TextAlign.start,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

@@ -58,6 +58,34 @@ abstract class ItemsApi {
 
   Future<Map<String, dynamic>> getPlaylists();
 
+  Future<Map<String, dynamic>> getArtists({
+    String? parentId,
+    String? userId,
+    String? sortBy,
+    String? sortOrder,
+    int? startIndex,
+    int? limit,
+    bool? recursive,
+    String? fields,
+    String? nameStartsWith,
+    bool? isFavorite,
+  });
+
+  Future<Map<String, dynamic>> getAlbumArtists({
+    String? parentId,
+    String? userId,
+    String? sortBy,
+    String? sortOrder,
+    int? startIndex,
+    int? limit,
+    bool? recursive,
+    String? fields,
+    String? nameStartsWith,
+    bool? isFavorite,
+  });
+
+  Future<Map<String, dynamic>> getPlaylistItems(String playlistId);
+
   Future<Map<String, dynamic>> createPlaylist({
     required String name,
     List<String>? itemIds,
@@ -65,12 +93,27 @@ abstract class ItemsApi {
 
   Future<void> addToPlaylist(String playlistId, List<String> itemIds);
 
+  Future<void> removeFromPlaylist(String playlistId, List<String> entryIds);
+
+  Future<void> movePlaylistItem(
+    String playlistId,
+    String playlistItemId,
+    int newIndex,
+  );
+
+  Future<void> renamePlaylist(String playlistId, String name);
+
+  Future<void> deletePlaylist(String playlistId);
+
   Future<Map<String, dynamic>> getGenres({
     String? parentId,
+    String? userId,
     String? sortBy,
     String? sortOrder,
     int? startIndex,
     int? limit,
+    bool? recursive,
+    String? fields,
   });
 
   Future<Map<String, dynamic>> getLyrics(String itemId);
