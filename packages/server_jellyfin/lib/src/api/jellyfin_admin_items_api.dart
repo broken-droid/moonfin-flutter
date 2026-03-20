@@ -14,7 +14,7 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
       methods: const ['POST', 'PUT'],
       paths: ['/Items/$itemId'],
       data: itemData,
-      convert: (_) => null,
+      convert: _ignoreResponse,
     );
   }
 
@@ -36,7 +36,7 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
       methods: const ['POST'],
       paths: ['/Items/$itemId/ContentType'],
       queryParameters: {'ContentType': contentType},
-      convert: (_) => null,
+      convert: _ignoreResponse,
     );
   }
 
@@ -56,7 +56,7 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
           'ReplaceAllMetadata': replaceAllMetadata,
         if (replaceAllImages != null) 'ReplaceAllImages': replaceAllImages,
       },
-      convert: (_) => null,
+      convert: _ignoreResponse,
     );
   }
 
@@ -96,7 +96,7 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
         '/Items/$itemId/RemoteSearch/Apply',
       ],
       data: result,
-      convert: (_) => null,
+      convert: _ignoreResponse,
     );
   }
 
@@ -156,7 +156,7 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
         'Type': imageType.toServerString(),
         'ImageUrl': imageUrl,
       },
-      convert: (_) => null,
+      convert: _ignoreResponse,
     );
   }
 
@@ -204,6 +204,8 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
     }
     return const [];
   }
+
+  void _ignoreResponse(dynamic _) {}
 
   Future<T> _requestWithFallback<T>({
     required List<String> methods,

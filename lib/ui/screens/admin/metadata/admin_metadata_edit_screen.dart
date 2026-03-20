@@ -1127,12 +1127,14 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
       withData: true,
     );
 
-    if (result == null || result.files.isEmpty || !mounted) return;
+    if (!mounted || result == null || result.files.isEmpty) return;
+
+    final messenger = ScaffoldMessenger.of(context);
 
     final file = result.files.single;
     final contentType = _contentTypeForFileName(file.name);
     if (contentType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(content: Text('Unsupported image format')),
       );
       return;
@@ -1140,8 +1142,10 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
 
     final bytes = file.bytes ??
         (file.path != null ? await File(file.path!).readAsBytes() : null);
-    if (bytes == null || !mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    if (!mounted) return;
+
+    if (bytes == null) {
+      messenger.showSnackBar(
         const SnackBar(content: Text('Failed to read selected image')),
       );
       return;
@@ -1156,13 +1160,13 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
           contentType: contentType,
         );
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           SnackBar(content: Text('${imageType.toServerString()} image uploaded')),
         );
       });
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(content: Text('Failed to upload image: $e')),
       );
     }
