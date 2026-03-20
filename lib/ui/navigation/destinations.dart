@@ -184,7 +184,8 @@ class Destinations {
   static String adminLibrary(String libraryId) => '/admin/libraries/$libraryId';
   static String adminTask(String taskId) => '/admin/tasks/$taskId';
   static String adminPlugin(String pluginId) => '/admin/plugins/$pluginId';
-  static String adminLogFile(String fileName) => '/admin/logs/$fileName';
+  static String adminLogFile(String fileName) =>
+      '/admin/logs/${Uri.encodeComponent(fileName)}';
 
   static String seerrBrowseWith({
     required String filterId,

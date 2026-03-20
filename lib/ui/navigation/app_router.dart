@@ -85,6 +85,8 @@ import '../screens/admin/plugins/admin_plugin_detail_screen.dart';
 import '../screens/admin/plugins/admin_repositories_screen.dart';
 import '../screens/admin/devices/admin_devices_screen.dart';
 import '../screens/admin/keys/admin_api_keys_screen.dart';
+import '../screens/admin/logs/admin_logs_screen.dart';
+import '../screens/admin/logs/admin_log_viewer_screen.dart';
 import '../screens/downloads/saved_media_screen.dart';
 import '../screens/downloads/saved_album_screen.dart';
 import '../screens/downloads/saved_season_screen.dart';
@@ -467,12 +469,12 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: Destinations.adminLogs,
-          builder: (context, state) => const _AdminPlaceholder(title: 'Server Logs'),
+          builder: (context, state) => const AdminLogsScreen(),
         ),
         GoRoute(
           path: Destinations.adminLogsFile,
-          builder: (context, state) => _AdminPlaceholder(
-            title: 'Log: ${state.pathParameters['fileName']}',
+          builder: (context, state) => AdminLogViewerScreen(
+            fileName: Uri.decodeComponent(state.pathParameters['fileName']!),
           ),
         ),
         GoRoute(
