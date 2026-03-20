@@ -27,6 +27,7 @@ const _kToolbarHeightMobile = 60.0;
 const _kOverscanH = 48.0;
 const _kOverscanV = 27.0;
 const _kAccent = Color(0xFF00A4DC);
+const _kNavbarBackdrop = Color(0x1AFFFFFF);
 const _kAvatarSize = 40.0;
 const _kPillRadius = 36.0;
 const _kButtonSpacing = 12.0;
@@ -211,11 +212,6 @@ class _TopToolbarState extends State<TopToolbar> {
             height: avatarSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF00A4DC), Color(0xFF0077B6)],
-              ),
               border: _avatarFocus.hasFocus
                   ? Border.all(color: _kAccent, width: 2)
                   : null,
@@ -242,6 +238,10 @@ class _TopToolbarState extends State<TopToolbar> {
     final initial = (user?.name.isNotEmpty == true) ? user!.name[0].toUpperCase() : '?';
     final isMobile = PlatformDetection.useMobileUi;
     return Container(
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: _kNavbarBackdrop,
+      ),
       alignment: Alignment.center,
       child: Text(
         initial,

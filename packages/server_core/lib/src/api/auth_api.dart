@@ -8,6 +8,8 @@ abstract class AuthApi {
 
   Future<Map<String, dynamic>> checkQuickConnect(String secret);
 
+  Future<bool> authorizeQuickConnect(String code, {String? userId});
+
   Future<Map<String, dynamic>> authenticateWithQuickConnect(String secret);
 
   Future<void> logout();

@@ -34,6 +34,18 @@ class JellyfinAuthApi implements AuthApi {
   }
 
   @override
+  Future<bool> authorizeQuickConnect(String code, {String? userId}) async {
+    final response = await _dio.post(
+      '/QuickConnect/Authorize',
+      queryParameters: {
+        'code': code,
+        if (userId != null && userId.isNotEmpty) 'userId': userId,
+      },
+    );
+    return response.data == true;
+  }
+
+  @override
   Future<Map<String, dynamic>> authenticateWithQuickConnect(
     String secret,
   ) async {

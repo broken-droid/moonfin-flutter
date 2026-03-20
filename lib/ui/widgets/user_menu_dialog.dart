@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
+import 'package:server_core/server_core.dart';
 
 import '../../auth/repositories/session_repository.dart';
 import '../../auth/repositories/user_repository.dart';
@@ -9,11 +11,13 @@ import '../navigation/destinations.dart';
 
 const _kAccent = Color(0xFF00A4DC);
 
+enum _UserMenuAction { quickConnect }
+
 void showUserMenu(BuildContext context) {
   final userRepo = GetIt.instance<UserRepository>();
   final user = userRepo.currentUser;
 
-  showDialog(
+  showDialog<_UserMenuAction>(
     context: context,
     builder: (ctx) => Dialog(
       backgroundColor: Colors.transparent,
@@ -68,6 +72,13 @@ void showUserMenu(BuildContext context) {
               },
             ),
             _MenuRow(
+              icon: Icons.phonelink_lock_rounded,
+              label: 'Quick Connect',
+              onTap: () {
+                Navigator.pop(ctx, _UserMenuAction.quickConnect);
+              },
+            ),
+            _MenuRow(
               icon: Icons.download_done_rounded,
               label: 'Saved Media',
               onTap: () {
@@ -92,7 +103,126 @@ void showUserMenu(BuildContext context) {
         ),
       ),
     ),
+  ).then((action) {
+    if (action != _UserMenuAction.quickConnect) return;
+    if (!context.mounted) return;
+    _showQuickConnectCodeDialog(context);
+  });
+}
+
+Future<void> _showQuickConnectCodeDialog(BuildContext context) async {
+  final code = await _promptQuickConnectCode(context);
+  if (code == null || code.isEmpty || !context.mounted) return;
+
+  final messenger = ScaffoldMessenger.of(context);
+
+  try {
+    final client = GetIt.instance<MediaServerClient>();
+    final userId = GetIt.instance<UserRepository>().currentUser?.id;
+    final authorized = await client.authApi.authorizeQuickConnect(
+      code,
+      userId: userId,
+    );
+
+    if (!context.mounted) return;
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          authorized
+              ? 'Quick Connect request authorized.'
+              : 'Quick Connect code is invalid or expired.',
+        ),
+      ),
+    );
+  } on UnsupportedError {
+    messenger.showSnackBar(
+      const SnackBar(content: Text('Quick Connect is not supported on this server.')),
+    );
+  } on DioException catch (e) {
+    final message = _quickConnectErrorMessage(e);
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+  } catch (_) {
+    messenger.showSnackBar(
+      const SnackBar(content: Text('Failed to authorize Quick Connect code.')),
+    );
+  }
+}
+
+String _quickConnectErrorMessage(DioException e) {
+  final status = e.response?.statusCode;
+  final data = e.response?.data;
+  final serverMessage = data is String
+      ? data
+      : (data is Map<String, dynamic>
+            ? (data['message'] ?? data['Message'])?.toString()
+            : null);
+
+  if (status == 401) {
+    return 'Quick Connect is disabled on this server.';
+  }
+
+  if (status == 403) {
+    return serverMessage ?? 'Your account cannot authorize this Quick Connect request.';
+  }
+
+  if (status == 404) {
+    return 'Quick Connect code was not found. Try a new code.';
+  }
+
+  if (serverMessage != null && serverMessage.isNotEmpty) {
+    return 'Quick Connect failed: $serverMessage';
+  }
+
+  return 'Failed to authorize Quick Connect code.';
+}
+
+Future<String?> _promptQuickConnectCode(BuildContext context) async {
+  final controller = TextEditingController();
+
+  final code = await showDialog<String>(
+    context: context,
+    useRootNavigator: true,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: const Color(0xE6141414),
+      title: const Text('Quick Connect', style: TextStyle(color: Colors.white)),
+      content: TextField(
+        controller: controller,
+        autofocus: true,
+        textCapitalization: TextCapitalization.characters,
+        keyboardType: TextInputType.text,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+          LengthLimitingTextInputFormatter(8),
+        ],
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          hintText: 'Enter code',
+          hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+        ),
+        onSubmitted: (_) {
+          final value = controller.text.trim().toUpperCase();
+          if (value.isNotEmpty) Navigator.pop(ctx, value);
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () {
+            final value = controller.text.trim().toUpperCase();
+            if (value.isNotEmpty) Navigator.pop(ctx, value);
+          },
+          child: const Text('Authorize'),
+        ),
+      ],
+    ),
   );
+
+  controller.dispose();
+  return code;
 }
 
 class _MenuRow extends StatefulWidget {
