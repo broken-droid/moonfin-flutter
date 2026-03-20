@@ -397,9 +397,25 @@ class DownloadService extends ChangeNotifier {
     String savePath, {
     required Options options,
     required CancelToken cancelToken,
+    required int estimatedSize,
     required void Function(int, int) onReceiveProgress,
   }) async {
     final bytesComplete = Completer<void>();
+    Timer? estimatedCompletionTimer;
+
+    void completeIfPending() {
+      if (!bytesComplete.isCompleted) {
+        bytesComplete.complete();
+      }
+    }
+
+    void armEstimatedCompletionTimer() {
+      estimatedCompletionTimer?.cancel();
+      estimatedCompletionTimer = Timer(
+        const Duration(seconds: 5),
+        completeIfPending,
+      );
+    }
 
     final downloadFuture = _downloadDio.download(
       url,
@@ -410,19 +426,30 @@ class DownloadService extends ChangeNotifier {
       onReceiveProgress: (received, total) {
         onReceiveProgress(received, total);
         if (total > 0 && received >= total && !bytesComplete.isCompleted) {
-          bytesComplete.complete();
+          completeIfPending();
+          return;
+        }
+
+        if (total <= 0 && estimatedSize > 0 && received >= estimatedSize) {
+          armEstimatedCompletionTimer();
+        } else {
+          estimatedCompletionTimer?.cancel();
         }
       },
     );
 
-    return Future.any<Response?>([
-      downloadFuture.then<Response?>((r) => r),
-      bytesComplete.future
-          .then((_) => Future<Response?>.delayed(
-                const Duration(seconds: 5),
-                () => null,
-              )),
-    ]);
+    try {
+      return await Future.any<Response?>([
+        downloadFuture.then<Response?>((r) => r),
+        bytesComplete.future
+            .then((_) => Future<Response?>.delayed(
+                  const Duration(seconds: 5),
+                  () => null,
+                )),
+      ]);
+    } finally {
+      estimatedCompletionTimer?.cancel();
+    }
   }
 
   bool _supportsTranscodedDownload(String? type) {
@@ -691,6 +718,7 @@ class DownloadService extends ChangeNotifier {
           savePath,
           options: requestOptions,
           cancelToken: cancelToken,
+          estimatedSize: estimatedSize,
           onReceiveProgress: onReceiveProgress,
         );
       } on DioException catch (e) {
@@ -710,6 +738,7 @@ class DownloadService extends ChangeNotifier {
               savePath,
               options: requestOptions,
               cancelToken: cancelToken,
+              estimatedSize: estimatedSize,
               onReceiveProgress: onReceiveProgress,
             );
             retrySucceeded = true;
