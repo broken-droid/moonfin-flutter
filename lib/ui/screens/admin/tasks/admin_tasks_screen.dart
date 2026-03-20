@@ -175,12 +175,27 @@ class _CategorySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: Text(
-            category,
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: theme.colorScheme.primary,
-            ),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
+          child: Row(
+            children: [
+              Container(
+                width: 3,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                category.toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ),
         ),
         ...tasks.map((task) => _TaskRow(
@@ -217,6 +232,11 @@ class _TaskRow extends StatelessWidget {
 
     return ListTile(
       onTap: onTap,
+      leading: SizedBox(
+        width: 36,
+        height: 36,
+        child: Center(child: _buildLeading(theme)),
+      ),
       title: Text(task.name),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,7 +286,13 @@ class _TaskRow extends StatelessWidget {
               ],
             ),
           ] else
-            Text('Never run', style: theme.textTheme.bodySmall),
+            Text(
+              'Never run',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
         ],
       ),
       trailing: isRunning || isCancelling
@@ -280,6 +306,30 @@ class _TaskRow extends StatelessWidget {
               tooltip: 'Run',
               onPressed: onStart,
             ),
+    );
+  }
+
+  Widget _buildLeading(ThemeData theme) {
+    if (task.state == 'Running') {
+      return const SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    if (task.state == 'Cancelling') {
+      return const Icon(Icons.stop_circle_outlined,
+          color: Colors.orange, size: 22);
+    }
+    final result = task.lastExecutionResult;
+    if (result == null) {
+      return Icon(Icons.schedule,
+          color: theme.colorScheme.onSurfaceVariant, size: 22);
+    }
+    return Icon(
+      _resultIcon(result.status),
+      color: _resultColor(result.status, theme),
+      size: 22,
     );
   }
 

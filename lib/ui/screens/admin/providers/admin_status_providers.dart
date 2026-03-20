@@ -5,20 +5,53 @@ import 'package:server_core/server_core.dart';
 import 'admin_user_providers.dart';
 
 class AdminNotificationSummary {
-  final bool hasPluginUpdates;
-  final bool hasFailedTasks;
-  final bool hasAlerts;
+  final int pluginUpdateCount;
+  final int failedTaskCount;
+  final int alertCount;
+  final String? latestAlertText;
 
   const AdminNotificationSummary({
-    this.hasPluginUpdates = false,
-    this.hasFailedTasks = false,
-    this.hasAlerts = false,
+    this.pluginUpdateCount = 0,
+    this.failedTaskCount = 0,
+    this.alertCount = 0,
+    this.latestAlertText,
   });
+
+  bool get hasPluginUpdates => pluginUpdateCount > 0;
+
+  bool get hasFailedTasks => failedTaskCount > 0;
+
+  bool get hasAlerts => alertCount > 0;
 
   int get count =>
       (hasPluginUpdates ? 1 : 0) +
       (hasFailedTasks ? 1 : 0) +
       (hasAlerts ? 1 : 0);
+}
+
+int _compareVersionStrings(String left, String right) {
+  final leftParts = RegExp(r'\d+')
+      .allMatches(left)
+      .map((m) => int.tryParse(m.group(0) ?? '') ?? 0)
+      .toList();
+  final rightParts = RegExp(r'\d+')
+      .allMatches(right)
+      .map((m) => int.tryParse(m.group(0) ?? '') ?? 0)
+      .toList();
+
+  final maxLen = leftParts.length > rightParts.length
+      ? leftParts.length
+      : rightParts.length;
+
+  for (var i = 0; i < maxLen; i++) {
+    final a = i < leftParts.length ? leftParts[i] : 0;
+    final b = i < rightParts.length ? rightParts[i] : 0;
+    if (a != b) {
+      return a.compareTo(b);
+    }
+  }
+
+  return 0;
 }
 
 final adminNotificationSummaryProvider =
@@ -43,26 +76,42 @@ final adminNotificationSummaryProvider =
         if (package.id.isNotEmpty) package.id: package,
     };
 
-    final hasPluginUpdates = installed.any((plugin) {
+    final pluginUpdateCount = installed.where((plugin) {
       final package = availableById[plugin.id];
       if (package == null || plugin.version.isEmpty) {
         return false;
       }
-      return package.versions.any((version) => version.version != plugin.version);
-    });
+      return package.versions.any((version) {
+        if (version.version.isEmpty) {
+          return false;
+        }
+        return _compareVersionStrings(version.version, plugin.version) > 0;
+      });
+    }).length;
 
-    final hasFailedTasks = tasks.any(
+    final failedTaskCount = tasks.where(
       (task) => task.lastExecutionResult?.status == 'Failed',
-    );
+    ).length;
 
-    final hasAlerts = activity.items.any(
-      (entry) => entry.severity == 'Error' || entry.severity == 'Warning' || entry.severity == 'Warn',
-    );
+    final alertEntries = activity.items
+        .where(
+          (entry) =>
+              entry.severity == 'Error' ||
+              entry.severity == 'Warning' ||
+              entry.severity == 'Warn',
+        )
+        .toList();
+
+    final alertCount = alertEntries.length;
+    final latestAlertText = alertEntries.isNotEmpty
+        ? alertEntries.first.name
+        : null;
 
     return AdminNotificationSummary(
-      hasPluginUpdates: hasPluginUpdates,
-      hasFailedTasks: hasFailedTasks,
-      hasAlerts: hasAlerts,
+      pluginUpdateCount: pluginUpdateCount,
+      failedTaskCount: failedTaskCount,
+      alertCount: alertCount,
+      latestAlertText: latestAlertText,
     );
   } catch (_) {
     return const AdminNotificationSummary();

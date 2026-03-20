@@ -25,6 +25,7 @@ class _AdminLogViewerScreenState extends State<AdminLogViewerScreen> {
   String? _error;
   String _content = '';
   String _query = '';
+  String? _levelFilter;
 
   AdminSystemApi get _api => GetIt.instance<MediaServerClient>().adminSystemApi;
 
@@ -65,8 +66,14 @@ class _AdminLogViewerScreenState extends State<AdminLogViewerScreen> {
   List<String> get _lines {
     final all = _content.replaceAll('\r\n', '\n').split('\n');
     final q = _query.trim().toLowerCase();
-    if (q.isEmpty) return all;
-    return all.where((line) => line.toLowerCase().contains(q)).toList();
+    return all.where((line) {
+      if (q.isNotEmpty && !line.toLowerCase().contains(q)) return false;
+      if (_levelFilter != null &&
+          !line.toUpperCase().contains('[$_levelFilter]')) {
+        return false;
+      }
+      return true;
+    }).toList();
   }
 
   Future<void> _copyAll() async {
@@ -214,6 +221,41 @@ class _AdminLogViewerScreenState extends State<AdminLogViewerScreen> {
             ),
           ),
         ),
+        SizedBox(
+          height: 38,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              for (final (label, filter) in <(String, String?)>[
+                ('All', null),
+                ('ERR', 'ERR'),
+                ('WRN', 'WRN'),
+                ('INF', 'INF'),
+                ('DBG', 'DBG'),
+              ])
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: FilterChip(
+                    label: Text(label),
+                    selected: _levelFilter == filter,
+                    onSelected: (_) => setState(() => _levelFilter = filter),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+              if (_query.isNotEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      '${lines.length} matches',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
         const Divider(height: 1),
         Expanded(
           child: lines.isEmpty
@@ -235,13 +277,34 @@ class _AdminLogViewerScreenState extends State<AdminLogViewerScreen> {
                     );
 
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
-                      child: SelectableText.rich(
-                        _buildLineSpan(
-                          line: line,
-                          baseStyle: base,
-                          highlightStyle: highlight,
-                        ),
+                      padding: const EdgeInsets.symmetric(vertical: 1),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 48,
+                            child: Text(
+                              '${index + 1}',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: theme.colorScheme.outlineVariant,
+                                fontFamily: 'monospace',
+                                height: 1.35,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: SelectableText.rich(
+                              _buildLineSpan(
+                                line: line,
+                                baseStyle: base,
+                                highlightStyle: highlight,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },

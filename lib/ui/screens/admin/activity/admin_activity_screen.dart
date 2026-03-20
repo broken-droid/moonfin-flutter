@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../../data/services/socket_handler.dart';
+import '../widgets/activity_log_ui.dart';
 
 enum _ActivityFilter { all, user, system }
 
@@ -28,8 +29,7 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
 
   static const _pageSize = 30;
 
-  AdminSystemApi get _api =>
-      GetIt.instance<MediaServerClient>().adminSystemApi;
+  AdminSystemApi get _api => GetIt.instance<MediaServerClient>().adminSystemApi;
 
   @override
   void initState() {
@@ -138,16 +138,20 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
             runSpacing: 8,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              ..._ActivityFilter.values.map((f) => FilterChip(
-                    selected: _filter == f,
-                    label: Text(_filterLabel(f)),
-                    onSelected: (_) => _changeFilter(f),
-                  )),
+              ..._ActivityFilter.values.map(
+                (f) => FilterChip(
+                  selected: _filter == f,
+                  label: Text(_filterLabel(f)),
+                  onSelected: (_) => _changeFilter(f),
+                ),
+              ),
               FilterChip(
                 selected: _dateRange != null,
-                label: Text(_dateRange == null
-                    ? 'Date range'
-                    : '${_dateRange!.start.month}/${_dateRange!.start.day} - ${_dateRange!.end.month}/${_dateRange!.end.day}'),
+                label: Text(
+                  _dateRange == null
+                      ? 'Date range'
+                      : '${_dateRange!.start.month}/${_dateRange!.start.day} - ${_dateRange!.end.month}/${_dateRange!.end.day}',
+                ),
                 onSelected: (_) => _pickDateRange(),
               ),
               if (_dateRange != null)
@@ -158,8 +162,10 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
               if (_totalCount > 0)
                 Padding(
                   padding: const EdgeInsets.only(left: 8),
-                  child: Text('${_entries.length} of $_totalCount',
-                      style: theme.textTheme.bodySmall),
+                  child: Text(
+                    '${_entries.length} of $_totalCount',
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ),
             ],
           ),
@@ -176,8 +182,19 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
         return true;
       }
       final localDate = entry.date.toLocal();
-      final rangeStart = DateTime(_dateRange!.start.year, _dateRange!.start.month, _dateRange!.start.day);
-      final rangeEnd = DateTime(_dateRange!.end.year, _dateRange!.end.month, _dateRange!.end.day, 23, 59, 59);
+      final rangeStart = DateTime(
+        _dateRange!.start.year,
+        _dateRange!.start.month,
+        _dateRange!.start.day,
+      );
+      final rangeEnd = DateTime(
+        _dateRange!.end.year,
+        _dateRange!.end.month,
+        _dateRange!.end.day,
+        23,
+        59,
+        59,
+      );
       return !localDate.isBefore(rangeStart) && !localDate.isAfter(rangeEnd);
     }).toList();
 
@@ -205,20 +222,25 @@ class _AdminActivityScreenState extends State<AdminActivityScreen> {
       return const Center(child: Text('No activity entries'));
     }
 
+    final listItems = buildActivityListItems(visibleEntries);
     return RefreshIndicator(
       onRefresh: _refresh,
       child: ListView.builder(
         controller: _scrollController,
         padding: const EdgeInsets.only(bottom: 16),
-        itemCount: visibleEntries.length + (_hasMore ? 1 : 0),
+        itemCount: listItems.length + (_hasMore ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index >= visibleEntries.length) {
+          if (index >= listItems.length) {
             return const Padding(
               padding: EdgeInsets.all(16),
               child: Center(child: CircularProgressIndicator()),
             );
           }
-          return _ActivityTile(entry: visibleEntries[index]);
+          final item = listItems[index];
+          if (item is String) {
+            return _DateHeader(label: item);
+          }
+          return _ActivityTile(entry: item as ActivityLogEntry);
         },
       ),
     );
@@ -243,36 +265,62 @@ class _ActivityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final (rail, icon) = activitySeverityIndicator(entry.severity, theme);
 
-    return ListTile(
-      leading: _SeverityBadge(severity: entry.severity),
-      title: Text(
-        entry.name,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (entry.shortOverview != null) ...[
-            const SizedBox(height: 2),
-            Text(
-              entry.shortOverview!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall,
-            ),
-          ],
-          const SizedBox(height: 4),
-          Text(
-            _timeAgo(entry.date),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
+    return InkWell(
       onTap: () => _showDetail(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                width: 3,
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  color: rail,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              icon,
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      entry.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w500),
+                    ),
+                    if ((entry.shortOverview ?? '').trim().isNotEmpty)
+                      Text(
+                        entry.shortOverview!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                activityTimeAgo(entry.date, compact: false),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -290,8 +338,6 @@ class _ActivityTile extends StatelessWidget {
               Row(
                 children: [
                   _SeverityBadge(severity: entry.severity),
-                  const SizedBox(width: 8),
-                  Text(entry.severity),
                   const Spacer(),
                   Text(
                     _formatDateTime(entry.date),
@@ -306,13 +352,14 @@ class _ActivityTile extends StatelessWidget {
               if (entry.shortOverview != null &&
                   entry.shortOverview != entry.overview) ...[
                 const SizedBox(height: 8),
-                Text(entry.shortOverview!,
-                    style: theme.textTheme.bodySmall),
+                Text(entry.shortOverview!, style: theme.textTheme.bodySmall),
               ],
               const SizedBox(height: 8),
-              Text('Type: ${entry.type}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant)),
+              Text(
+                'Type: ${entry.type}',
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
             ],
           ),
         ),
@@ -326,14 +373,6 @@ class _ActivityTile extends StatelessWidget {
     );
   }
 
-  String _timeAgo(DateTime dt) {
-    final diff = DateTime.now().difference(dt);
-    if (diff.inDays > 0) return '${diff.inDays}d ago';
-    if (diff.inHours > 0) return '${diff.inHours}h ago';
-    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
-    return 'just now';
-  }
-
   String _formatDateTime(DateTime dt) {
     final local = dt.toLocal();
     return '${local.year}-${_p(local.month)}-${_p(local.day)} '
@@ -343,6 +382,27 @@ class _ActivityTile extends StatelessWidget {
   String _p(int n) => n.toString().padLeft(2, '0');
 }
 
+class _DateHeader extends StatelessWidget {
+  final String label;
+  const _DateHeader({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: Text(
+        label.toUpperCase(),
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+          letterSpacing: 1.1,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
 class _SeverityBadge extends StatelessWidget {
   final String severity;
   const _SeverityBadge({required this.severity});
@@ -350,27 +410,41 @@ class _SeverityBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (color, icon) = _severityStyle(severity);
-    return CircleAvatar(
-      radius: 16,
-      backgroundColor: color.withValues(alpha: 0.15),
-      child: Icon(icon, size: 18, color: color),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 4),
+          Text(
+            severity,
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   (Color, IconData) _severityStyle(String severity) {
     switch (severity) {
       case 'Error':
-        return (Colors.red, Icons.error);
+        return (Colors.red, Icons.error_outline);
       case 'Warning':
       case 'Warn':
-        return (Colors.orange, Icons.warning);
+        return (Colors.orange, Icons.warning_amber);
       case 'Information':
-        return (Colors.blue, Icons.info);
-      case 'Debug':
-      case 'Trace':
-        return (Colors.grey, Icons.bug_report);
+        return (Colors.blue, Icons.info_outline);
       default:
-        return (Colors.blue, Icons.info);
+        return (Colors.blueGrey, Icons.info_outline);
     }
   }
 }

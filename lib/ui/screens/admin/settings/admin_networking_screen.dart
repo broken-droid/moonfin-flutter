@@ -83,6 +83,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafe = MediaQuery.of(context).padding.bottom;
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -104,7 +105,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
     }
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, bottomSafe + 40),
       children: [
         Text('Networking', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),

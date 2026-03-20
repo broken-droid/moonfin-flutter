@@ -42,7 +42,25 @@ class JellyfinAdminUsersApi implements AdminUsersApi {
 
   @override
   Future<void> updateUser(String userId, Map<String, dynamic> userData) async {
-    await _dio.post('/Users/$userId', data: userData);
+    final payload = <String, dynamic>{
+      'Name': userData['Name'],
+      'Configuration': userData['Configuration'] ?? <String, dynamic>{},
+    };
+
+    try {
+      await _dio.post(
+        '/Users',
+        queryParameters: {'userId': userId},
+        data: payload,
+      );
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      if (status == 400 || status == 404 || status == 405) {
+        await _dio.post('/Users/$userId', data: payload);
+        return;
+      }
+      rethrow;
+    }
   }
 
   @override

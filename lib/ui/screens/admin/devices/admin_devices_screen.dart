@@ -118,6 +118,14 @@ class _AdminDevicesScreenState extends ConsumerState<AdminDevicesScreen> {
     }
   }
 
+  Color _lastSeenColor(DateTime? date, ThemeData theme) {
+    if (date == null) return theme.colorScheme.onSurfaceVariant;
+    final diff = DateTime.now().difference(date);
+    if (diff.inHours < 1) return Colors.green;
+    if (diff.inDays < 1) return Colors.orange.shade700;
+    return theme.colorScheme.onSurfaceVariant;
+  }
+
   String _formatDate(DateTime? date) {
     if (date == null) return 'Never';
     final local = date.toLocal();
@@ -178,52 +186,60 @@ class _AdminDevicesScreenState extends ConsumerState<AdminDevicesScreen> {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: (value) => setState(() => _searchQuery = value.trim()),
-                      decoration: InputDecoration(
-                        hintText: 'Search devices',
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: _searchQuery.isEmpty
-                            ? null
-                            : IconButton(
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                                icon: const Icon(Icons.clear),
-                              ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) => setState(() => _searchQuery = value.trim()),
+                decoration: InputDecoration(
+                  hintText: 'Search devices',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _searchQuery.isEmpty
+                      ? null
+                      : IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                          },
+                          icon: const Icon(Icons.clear),
+                        ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+            if (users.isNotEmpty)
+              SizedBox(
+                height: 40,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: FilterChip(
+                        label: const Text('All'),
+                        selected: _userFilter == null,
+                        onSelected: (_) => setState(() => _userFilter = null),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                    ...users.map(
+                      (user) => Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: FilterChip(
+                          label: Text(user),
+                          selected: _userFilter == user,
+                          onSelected: (_) => setState(
+                            () => _userFilter = _userFilter == user ? null : user,
+                          ),
+                          visualDensity: VisualDensity.compact,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  DropdownButton<String?>(
-                    value: _userFilter,
-                    hint: const Text('User'),
-                    onChanged: (value) => setState(() => _userFilter = value),
-                    items: [
-                      const DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text('All users'),
-                      ),
-                      ...users.map(
-                        (user) => DropdownMenuItem<String?>(
-                          value: user,
-                          child: Text(user),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             Expanded(
               child: filtered.isEmpty
           ? Center(
@@ -277,11 +293,18 @@ class _AdminDevicesScreenState extends ConsumerState<AdminDevicesScreen> {
                                   style: theme.textTheme.bodySmall),
                               const SizedBox(width: 12),
                             ],
-                            Icon(Icons.access_time, size: 14,
-                                color: theme.colorScheme.onSurfaceVariant),
+                            Icon(
+                              Icons.access_time,
+                              size: 14,
+                              color: _lastSeenColor(device.dateLastActivity, theme),
+                            ),
                             const SizedBox(width: 4),
-                            Text(_formatDate(device.dateLastActivity),
-                                style: theme.textTheme.bodySmall),
+                            Text(
+                              _formatDate(device.dateLastActivity),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: _lastSeenColor(device.dateLastActivity, theme),
+                              ),
+                            ),
                           ],
                         ),
                       ],

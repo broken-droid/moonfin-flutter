@@ -8,6 +8,12 @@ class ServerInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final os = _value(
+      systemInfo,
+      const ['OperatingSystemDisplayName', 'OperatingSystem'],
+      fallback: 'Unknown',
+    );
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -24,7 +30,7 @@ class ServerInfoCard extends StatelessWidget {
             const SizedBox(height: 12),
             _row('Name', systemInfo['ServerName'] as String? ?? ''),
             _row('Version', systemInfo['Version'] as String? ?? ''),
-            _row('OS', systemInfo['OperatingSystem'] as String? ?? 'Unknown'),
+            _row('OS', os),
             if (systemInfo['HasPendingRestart'] == true)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
@@ -38,6 +44,21 @@ class ServerInfoCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _value(
+    Map<String, dynamic> source,
+    List<String> keys, {
+    String fallback = '',
+  }) {
+    for (final key in keys) {
+      final raw = source[key];
+      final text = (raw ?? '').toString().trim();
+      if (text.isNotEmpty) {
+        return text;
+      }
+    }
+    return fallback;
   }
 
   Widget _row(String label, String value) {

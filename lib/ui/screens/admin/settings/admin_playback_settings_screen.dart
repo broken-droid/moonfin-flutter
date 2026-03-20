@@ -98,6 +98,7 @@ class _AdminPlaybackSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafe = MediaQuery.of(context).padding.bottom;
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -122,7 +123,7 @@ class _AdminPlaybackSettingsScreenState
         _config!['HardwareAccelerationType']?.toString() ?? 'none';
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, bottomSafe + 40),
       children: [
         Text('Playback / Transcoding',
             style: Theme.of(context).textTheme.headlineSmall),

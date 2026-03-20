@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../navigation/destinations.dart';
@@ -35,6 +36,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
   bool _loading = true;
   bool _saving = false;
   String? _error;
+  String _originalName = '';
 
   @override
   void initState() {
@@ -71,7 +73,8 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
       setState(() {
         _user = user;
         _libraries = libs;
-        _nameController.text = user.name ?? '';
+        _originalName = (user.name ?? '').trim();
+        _nameController.text = _originalName;
         _policy = user.policy?.toJson() ?? <String, dynamic>{};
         _bitrateLimitController.text =
             (_policy['RemoteClientBitrateLimit'] as int?)?.toString() ?? '';
@@ -89,11 +92,28 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
   }
 
   Future<void> _saveProfile() async {
+    final newName = _nameController.text.trim();
+    if (newName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Username cannot be empty')),
+      );
+      return;
+    }
+
+    if (newName == _originalName) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No profile changes to save')),
+      );
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       await _client.adminUsersApi.updateUser(widget.userId, {
-        'Name': _nameController.text.trim(),
+        'Name': newName,
+        'Configuration': <String, dynamic>{},
       });
+      _originalName = newName;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile saved')),
@@ -104,12 +124,35 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save: $e')),
+          SnackBar(content: Text('Failed to save: ${_formatError(e)}')),
         );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+
+  String _formatError(Object error) {
+    if (error is DioException) {
+      final responseData = error.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        final detail = responseData['message'] ??
+            responseData['Message'] ??
+            responseData['error'] ??
+            responseData['title'];
+        if (detail != null && detail.toString().trim().isNotEmpty) {
+          return detail.toString();
+        }
+      } else if (responseData is String && responseData.trim().isNotEmpty) {
+        return responseData;
+      }
+
+      final status = error.response?.statusCode;
+      if (status != null) {
+        return 'Server returned HTTP $status';
+      }
+    }
+    return error.toString();
   }
 
   Future<void> _savePolicy() async {
@@ -218,6 +261,25 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
 
     return Column(
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+          child: Row(
+            children: [
+              TextButton.icon(
+                onPressed: () => context.go(Destinations.adminUsers),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Back to Users'),
+              ),
+              const Spacer(),
+              Text(
+                _user?.name?.isNotEmpty == true
+                    ? _user!.name!
+                    : 'User Settings',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
+        ),
         TabBar(
           controller: _tabController,
           isScrollable: true,

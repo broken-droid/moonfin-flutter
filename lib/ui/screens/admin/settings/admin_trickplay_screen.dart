@@ -98,6 +98,7 @@ class _AdminTrickplayScreenState extends State<AdminTrickplayScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafe = MediaQuery.of(context).padding.bottom;
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_error != null || _config == null) {
       return Center(
@@ -117,7 +118,7 @@ class _AdminTrickplayScreenState extends State<AdminTrickplayScreen> {
     }
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, bottomSafe + 40),
       children: [
         Text('Trickplay', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),

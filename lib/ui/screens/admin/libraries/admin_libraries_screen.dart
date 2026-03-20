@@ -46,6 +46,9 @@ class AdminLibrariesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bottomSafe = MediaQuery.of(context).padding.bottom;
+    final listBottomPadding = bottomSafe + 120;
+    final actionsBottom = bottomSafe + 16;
     final librariesAsync = ref.watch(adminLibrariesProvider);
 
     return librariesAsync.when(
@@ -71,7 +74,7 @@ class AdminLibrariesScreen extends ConsumerWidget {
           libraries.isEmpty
               ? const Center(child: Text('No libraries configured'))
               : ListView.builder(
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.fromLTRB(8, 8, 8, listBottomPadding),
                   itemCount: libraries.length,
                   itemBuilder: (context, index) {
                     final lib = libraries[index];
@@ -141,7 +144,7 @@ class AdminLibrariesScreen extends ConsumerWidget {
                 ),
           Positioned(
             right: 16,
-            bottom: 16,
+            bottom: actionsBottom,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

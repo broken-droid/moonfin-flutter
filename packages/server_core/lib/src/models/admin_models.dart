@@ -104,6 +104,13 @@ class LogFileInfo {
 }
 
 class StorageInfo {
+  final FolderStorageInfo? programDataFolder;
+  final FolderStorageInfo? imageCacheFolder;
+  final FolderStorageInfo? cacheFolder;
+  final FolderStorageInfo? logFolder;
+  final FolderStorageInfo? internalMetadataFolder;
+  final FolderStorageInfo? transcodingTempFolder;
+  final FolderStorageInfo? webFolder;
   final String programDataPath;
   final String itemsByNamePath;
   final String cachePath;
@@ -112,6 +119,13 @@ class StorageInfo {
   final String transcodingTempPath;
 
   const StorageInfo({
+    this.programDataFolder,
+    this.imageCacheFolder,
+    this.cacheFolder,
+    this.logFolder,
+    this.internalMetadataFolder,
+    this.transcodingTempFolder,
+    this.webFolder,
     this.programDataPath = '',
     this.itemsByNamePath = '',
     this.cachePath = '',
@@ -120,13 +134,132 @@ class StorageInfo {
     this.transcodingTempPath = '',
   });
 
-  factory StorageInfo.fromJson(Map<String, dynamic> json) => StorageInfo(
-        programDataPath: json['ProgramDataPath'] as String? ?? '',
-        itemsByNamePath: json['ItemsByNamePath'] as String? ?? '',
-        cachePath: json['CachePath'] as String? ?? '',
-        logPath: json['LogPath'] as String? ?? '',
-        internalMetadataPath: json['InternalMetadataPath'] as String? ?? '',
-        transcodingTempPath: json['TranscodingTempPath'] as String? ?? '',
+  static FolderStorageInfo? _readFolder(Map<String, dynamic> json, String key) {
+    final direct = json[key];
+    if (direct is Map<String, dynamic>) {
+      return FolderStorageInfo.fromJson(direct);
+    }
+
+    final camelKey = key.isEmpty
+        ? key
+        : '${key[0].toLowerCase()}${key.substring(1)}';
+    final camelDirect = json[camelKey];
+    if (camelDirect is Map<String, dynamic>) {
+      return FolderStorageInfo.fromJson(camelDirect);
+    }
+
+    return null;
+  }
+
+  static String _readPath(Map<String, dynamic> json, String key) {
+    final direct = json[key];
+    if (direct is String && direct.trim().isNotEmpty) {
+      return direct;
+    }
+    if (direct is Map<String, dynamic>) {
+      final nested = direct['Path'];
+      if (nested is String && nested.trim().isNotEmpty) {
+        return nested;
+      }
+    }
+
+    final camelKey = key.isEmpty
+        ? key
+        : '${key[0].toLowerCase()}${key.substring(1)}';
+    final camelDirect = json[camelKey];
+    if (camelDirect is String && camelDirect.trim().isNotEmpty) {
+      return camelDirect;
+    }
+    if (camelDirect is Map<String, dynamic>) {
+      final nested = camelDirect['Path'] ?? camelDirect['path'];
+      if (nested is String && nested.trim().isNotEmpty) {
+        return nested;
+      }
+    }
+
+    return '';
+  }
+
+  factory StorageInfo.fromJson(Map<String, dynamic> json) {
+    final programDataFolder = _readFolder(json, 'ProgramDataFolder');
+    final imageCacheFolder = _readFolder(json, 'ImageCacheFolder');
+    final cacheFolder = _readFolder(json, 'CacheFolder');
+    final logFolder = _readFolder(json, 'LogFolder');
+    final internalMetadataFolder = _readFolder(json, 'InternalMetadataFolder');
+    final transcodingTempFolder = _readFolder(json, 'TranscodingTempFolder');
+    final webFolder = _readFolder(json, 'WebFolder');
+
+    final programDataPath = _readPath(json, 'ProgramDataPath');
+    final itemsByNamePath = _readPath(json, 'ItemsByNamePath');
+    final cachePath = _readPath(json, 'CachePath');
+    final logPath = _readPath(json, 'LogPath');
+    final internalMetadataPath = _readPath(json, 'InternalMetadataPath');
+    final transcodingTempPath = _readPath(json, 'TranscodingTempPath');
+
+    return StorageInfo(
+      programDataFolder: programDataFolder,
+      imageCacheFolder: imageCacheFolder,
+      cacheFolder: cacheFolder,
+      logFolder: logFolder,
+      internalMetadataFolder: internalMetadataFolder,
+      transcodingTempFolder: transcodingTempFolder,
+      webFolder: webFolder,
+      programDataPath: programDataPath.isNotEmpty
+        ? programDataPath
+          : (programDataFolder?.path ?? _readPath(json, 'ProgramDataFolder')),
+      itemsByNamePath: itemsByNamePath,
+      cachePath: cachePath.isNotEmpty
+        ? cachePath
+          : (cacheFolder?.path ?? _readPath(json, 'CacheFolder')),
+      logPath: logPath.isNotEmpty
+        ? logPath
+          : (logFolder?.path ?? _readPath(json, 'LogFolder')),
+      internalMetadataPath: internalMetadataPath.isNotEmpty
+        ? internalMetadataPath
+          : (internalMetadataFolder?.path ?? _readPath(json, 'InternalMetadataFolder')),
+      transcodingTempPath: transcodingTempPath.isNotEmpty
+        ? transcodingTempPath
+          : (transcodingTempFolder?.path ?? _readPath(json, 'TranscodingTempFolder')),
+    );
+  }
+}
+
+class FolderStorageInfo {
+  final String path;
+  final int freeSpace;
+  final int usedSpace;
+  final String? storageType;
+  final String? deviceId;
+
+  const FolderStorageInfo({
+    this.path = '',
+    this.freeSpace = 0,
+    this.usedSpace = 0,
+    this.storageType,
+    this.deviceId,
+  });
+
+  int get totalSpace => usedSpace + freeSpace;
+
+  double get usageFraction {
+    final total = totalSpace;
+    if (total <= 0) {
+      return 0;
+    }
+    return usedSpace / total;
+  }
+
+  factory FolderStorageInfo.fromJson(Map<String, dynamic> json) =>
+      FolderStorageInfo(
+        path: (json['Path'] ?? json['path'] ?? '').toString(),
+        freeSpace: (json['FreeSpace'] as num?)?.toInt() ??
+            (json['freeSpace'] as num?)?.toInt() ??
+            0,
+        usedSpace: (json['UsedSpace'] as num?)?.toInt() ??
+            (json['usedSpace'] as num?)?.toInt() ??
+            0,
+        storageType: (json['StorageType'] ?? json['storageType'])?.toString(),
+        deviceId: (json['DeviceId'] ?? json['deviceId'])?.toString(),
       );
 }
 

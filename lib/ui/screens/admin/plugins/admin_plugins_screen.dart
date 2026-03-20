@@ -353,28 +353,60 @@ class _InstalledPluginTile extends StatelessWidget {
     final theme = Theme.of(context);
     final statusColor = _statusColor(plugin.status, theme);
 
+    final (statusIcon, statusLabel) = _statusInfo(plugin.status);
     return ListTile(
       onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: CircleAvatar(
-        backgroundColor: theme.colorScheme.surfaceContainerHighest,
-        child: const Icon(Icons.extension),
+        backgroundColor: statusColor.withValues(alpha: 0.15),
+        child: Icon(Icons.extension, color: statusColor, size: 20),
       ),
-      title: Text(plugin.name),
-      subtitle: Row(
+      title: Row(
         children: [
-          Text('v${plugin.version}'),
+          Flexible(
+            child: Text(plugin.name, overflow: TextOverflow.ellipsis),
+          ),
           const SizedBox(width: 8),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: statusColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(4),
+              color: statusColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(999),
             ),
-            child: Text(
-              plugin.status.label,
-              style: TextStyle(fontSize: 11, color: statusColor),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(statusIcon, size: 11, color: statusColor),
+                const SizedBox(width: 3),
+                Text(
+                  statusLabel,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: statusColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
+        ],
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'v${plugin.version}',
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+          if (plugin.description.trim().isNotEmpty)
+            Text(
+              plugin.description,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
         ],
       ),
       trailing: PopupMenuButton<String>(
@@ -401,6 +433,25 @@ class _InstalledPluginTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  (IconData, String) _statusInfo(PluginStatus status) {
+    switch (status) {
+      case PluginStatus.active:
+        return (Icons.check_circle_outline, 'Active');
+      case PluginStatus.disabled:
+        return (Icons.block, 'Disabled');
+      case PluginStatus.restart:
+        return (Icons.restart_alt, 'Restart');
+      case PluginStatus.malfunctioned:
+        return (Icons.warning_amber, 'Error');
+      case PluginStatus.notSupported:
+        return (Icons.error_outline, 'Unsupported');
+      case PluginStatus.superseded:
+        return (Icons.new_releases, 'Superseded');
+      case PluginStatus.deleted:
+        return (Icons.delete_outline, 'Deleted');
+    }
   }
 
   Color _statusColor(PluginStatus status, ThemeData theme) {
@@ -550,48 +601,115 @@ class _CatalogPackageTile extends StatelessWidget {
     final latestVersion =
         package.versions.isNotEmpty ? package.versions.first : null;
 
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: theme.colorScheme.surfaceContainerHighest,
-        child: const Icon(Icons.extension),
-      ),
-      title: Text(package.name),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (package.overview.isNotEmpty)
-            Text(
-              package.overview,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          const SizedBox(height: 2),
-          Row(
+    final initials =
+        package.name.isNotEmpty ? package.name[0].toUpperCase() : '?';
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Card(
+        elevation: 0,
+        color: theme.colorScheme.surfaceContainerLow,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (package.owner.isNotEmpty)
-                Text(package.owner,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant)),
+              CircleAvatar(
+                backgroundColor: theme.colorScheme.primaryContainer,
+                child: Text(
+                  initials,
+                  style: TextStyle(
+                    color: theme.colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            package.name,
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (package.category.isNotEmpty) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.secondaryContainer,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              package.category,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: theme.colorScheme.onSecondaryContainer,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    if (package.overview.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        package.overview,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        if (package.owner.isNotEmpty)
+                          Text(
+                            package.owner,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant),
+                          ),
+                        if (latestVersion != null) ...[
+                          if (package.owner.isNotEmpty)
+                            Text(
+                              ' · ',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant),
+                            ),
+                          Text(
+                            'v${latestVersion.version}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               if (latestVersion != null) ...[
-                if (package.owner.isNotEmpty)
-                  Text(' · ',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant)),
-                Text('v${latestVersion.version}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant)),
+                const SizedBox(width: 8),
+                FilledButton.tonal(
+                  onPressed: () => onInstall(latestVersion),
+                  style: FilledButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                  ),
+                  child: const Text('Install'),
+                ),
               ],
             ],
           ),
-        ],
+        ),
       ),
-      trailing: latestVersion != null
-          ? IconButton(
-              icon: const Icon(Icons.download),
-              tooltip: 'Install',
-              onPressed: () => onInstall(latestVersion),
-            )
-          : null,
     );
   }
 }

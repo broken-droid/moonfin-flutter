@@ -33,6 +33,8 @@ class UserPolicy {
   final List<String> blockedTags;
   final int? loginAttemptsBeforeLockout;
   final int? maxActiveSessions;
+  final String authenticationProviderId;
+  final String passwordResetProviderId;
 
   const UserPolicy({
     this.isAdministrator = false,
@@ -69,6 +71,10 @@ class UserPolicy {
     this.blockedTags = const [],
     this.loginAttemptsBeforeLockout,
     this.maxActiveSessions,
+    this.authenticationProviderId =
+        'Jellyfin.Server.Implementations.Users.DefaultAuthenticationProvider',
+    this.passwordResetProviderId =
+        'Jellyfin.Server.Implementations.Users.DefaultPasswordResetProvider',
   });
 
   factory UserPolicy.fromJson(Map<String, dynamic> json) => UserPolicy(
@@ -122,6 +128,10 @@ class UserPolicy {
         loginAttemptsBeforeLockout:
             json['LoginAttemptsBeforeLockout'] as int?,
         maxActiveSessions: json['MaxActiveSessions'] as int?,
+        authenticationProviderId: json['AuthenticationProviderId'] as String? ??
+            'Jellyfin.Server.Implementations.Users.DefaultAuthenticationProvider',
+        passwordResetProviderId: json['PasswordResetProviderId'] as String? ??
+            'Jellyfin.Server.Implementations.Users.DefaultPasswordResetProvider',
       );
 
   Map<String, dynamic> toJson() => {
@@ -163,6 +173,8 @@ class UserPolicy {
           'LoginAttemptsBeforeLockout': loginAttemptsBeforeLockout,
         if (maxActiveSessions != null)
           'MaxActiveSessions': maxActiveSessions,
+        'AuthenticationProviderId': authenticationProviderId,
+        'PasswordResetProviderId': passwordResetProviderId,
       };
 
   static List<String> _stringList(dynamic value) {

@@ -19,6 +19,67 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
+  Future<void> _toggleUserDisabled(ServerUser user) async {
+    final currentPolicy = user.policy ?? const UserPolicy();
+    final willDisable = !currentPolicy.isDisabled;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(willDisable ? 'Disable User' : 'Enable User'),
+        content: Text(
+          willDisable
+              ? 'Disable ${user.name ?? 'this user'}? They will not be able to sign in.'
+              : 'Enable ${user.name ?? 'this user'}? They will be able to sign in again.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(willDisable ? 'Disable' : 'Enable'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    try {
+      final updatedPolicy = currentPolicy.toJson()
+        ..['IsDisabled'] = willDisable;
+      await GetIt.instance<MediaServerClient>()
+          .adminUsersApi
+          .updateUserPolicy(user.id, updatedPolicy);
+
+      ref.invalidate(adminUsersListProvider);
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            willDisable
+                ? 'User "${user.name}" disabled'
+                : 'User "${user.name}" enabled',
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update user policy: $e')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -49,6 +110,10 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
         ),
       ),
       data: (users) {
+        final theme = Theme.of(context);
+        final bottomSafe = MediaQuery.of(context).padding.bottom;
+        final listBottomPadding = bottomSafe + 108;
+        final fabBottom = bottomSafe + 16;
         final filtered = users.where((user) {
           if (_searchQuery.isEmpty) {
             return true;
@@ -92,99 +157,142 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                 ),
               )
             : ListView.builder(
-                padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.fromLTRB(8, 8, 8, listBottomPadding),
                 itemCount: filtered.length,
                 itemBuilder: (context, index) {
                   final user = filtered[index];
-                  final isAdmin =
-                      user.policy?.isAdministrator ?? false;
-                  final isDisabled = user.policy?.isDisabled ?? false;
+                  final policy = user.policy;
+                  final isAdmin = policy?.isAdministrator ?? false;
+                  final isDisabled = policy?.isDisabled ?? false;
+                  final hasRemoteAccess = policy?.enableRemoteAccess ?? false;
+                  final isHidden = policy?.isHidden ?? false;
+                  final displayName = (user.name ?? 'Unknown').trim();
+                  final initials = displayName.isEmpty
+                      ? '?'
+                      : displayName.characters.first.toUpperCase();
 
                   return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: user.primaryImageTag != null
-                            ? NetworkImage(
-                                client.imageApi.getUserImageUrl(user.id))
-                            : null,
-                        child: user.primaryImageTag == null
-                            ? Text(
-                                (user.name ?? '?')[0].toUpperCase(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : null,
-                      ),
-                      title: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              user.name ?? 'Unknown',
-                              style: TextStyle(
-                                decoration: isDisabled
-                                    ? TextDecoration.lineThrough
-                                    : null,
-                                color: isDisabled
-                                    ? Theme.of(context).disabledColor
-                                    : null,
-                              ),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: () => context.push(Destinations.adminUser(user.id)),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 21,
+                                  backgroundImage: user.primaryImageTag != null
+                                      ? NetworkImage(client.imageApi.getUserImageUrl(user.id))
+                                      : null,
+                                  child: user.primaryImageTag == null
+                                      ? Text(
+                                          initials,
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        )
+                                      : null,
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        displayName,
+                                        style: theme.textTheme.titleMedium?.copyWith(
+                                          decoration: isDisabled
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                          color: isDisabled
+                                              ? theme.disabledColor
+                                              : null,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        user.hasPassword
+                                            ? 'Password set'
+                                            : 'No password configured',
+                                        style: theme.textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: 'Edit User',
+                                  onPressed: () => context.push(Destinations.adminUser(user.id)),
+                                  icon: const Icon(Icons.edit_outlined),
+                                ),
+                              ],
                             ),
-                          ),
-                          if (isAdmin) ...[
-                            const SizedBox(width: 8),
-                            Icon(Icons.shield,
-                                size: 16,
-                                color:
-                                    Theme.of(context).colorScheme.primary),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 6,
+                              children: [
+                                if (isAdmin) _statusChip(context, 'Admin', Icons.shield),
+                                if (isDisabled)
+                                  _statusChip(
+                                    context,
+                                    'Disabled',
+                                    Icons.block,
+                                    tint: theme.colorScheme.error,
+                                  ),
+                                _statusChip(
+                                  context,
+                                  hasRemoteAccess ? 'Remote Access' : 'Local Only',
+                                  hasRemoteAccess ? Icons.cloud_done : Icons.cloud_off,
+                                ),
+                                if (isHidden)
+                                  _statusChip(
+                                    context,
+                                    'Hidden',
+                                    Icons.visibility_off,
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                OutlinedButton.icon(
+                                  onPressed: () => context.push(Destinations.adminUser(user.id)),
+                                  icon: const Icon(Icons.manage_accounts_outlined, size: 18),
+                                  label: const Text('Manage'),
+                                ),
+                                OutlinedButton.icon(
+                                  onPressed: () => _toggleUserDisabled(user),
+                                  icon: Icon(
+                                    isDisabled
+                                        ? Icons.check_circle_outline
+                                        : Icons.block,
+                                    size: 18,
+                                  ),
+                                  label: Text(isDisabled ? 'Enable' : 'Disable'),
+                                ),
+                                OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: theme.colorScheme.error,
+                                  ),
+                                  onPressed: () => showAdminUserDeleteDialog(
+                                    context,
+                                    user: user,
+                                    onDeleted: () =>
+                                        ref.invalidate(adminUsersListProvider),
+                                  ),
+                                  icon: const Icon(Icons.delete_outline, size: 18),
+                                  label: const Text('Delete'),
+                                ),
+                              ],
+                            ),
                           ],
-                          if (isDisabled) ...[
-                            const SizedBox(width: 8),
-                            Icon(Icons.block,
-                                size: 16,
-                                color: Theme.of(context).colorScheme.error),
-                          ],
-                        ],
+                        ),
                       ),
-                      subtitle: Text(
-                        user.hasPassword ? 'Password set' : 'No password',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      trailing: PopupMenuButton<String>(
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'edit':
-                              context
-                                  .go(Destinations.adminUser(user.id));
-                            case 'delete':
-                              showAdminUserDeleteDialog(
-                                context,
-                                user: user,
-                                onDeleted: () =>
-                                    ref.invalidate(adminUsersListProvider),
-                              );
-                          }
-                        },
-                        itemBuilder: (_) => const [
-                          PopupMenuItem(
-                            value: 'edit',
-                            child: ListTile(
-                              leading: Icon(Icons.edit),
-                              title: Text('Edit'),
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'delete',
-                            child: ListTile(
-                              leading: Icon(Icons.delete),
-                              title: Text('Delete'),
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ],
-                      ),
-                      onTap: () =>
-                          context.push(Destinations.adminUser(user.id)),
                     ),
                   );
                 },
@@ -194,7 +302,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
           ),
           Positioned(
             right: 16,
-            bottom: 16,
+            bottom: fabBottom,
             child: FloatingActionButton.extended(
               onPressed: () => context.push(Destinations.adminUsersAdd),
               icon: const Icon(Icons.person_add),
@@ -204,6 +312,39 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
         ],
       );
       },
+    );
+  }
+
+  Widget _statusChip(
+    BuildContext context,
+    String label,
+    IconData icon, {
+    Color? tint,
+  }) {
+    final theme = Theme.of(context);
+    final base = tint ?? theme.colorScheme.primary;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: base.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: base.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: base),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: base,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

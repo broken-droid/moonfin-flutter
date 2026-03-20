@@ -64,6 +64,16 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
         '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
   }
 
+  String _relativeDate(DateTime date) {
+    final local = date.toLocal();
+    final diff = DateTime.now().difference(local);
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return _formatDate(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     final logs = _sortedLogs;
@@ -132,15 +142,44 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
             separatorBuilder: (_, __) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final item = logs[index];
+              final isActive = index == 0 && _newestFirst;
+              final theme = Theme.of(context);
               return ListTile(
-                leading: const Icon(Icons.description_outlined),
-                title: Text(item.name),
+                leading: Icon(
+                  isActive
+                      ? Icons.description
+                      : Icons.description_outlined,
+                  color: isActive ? theme.colorScheme.primary : null,
+                ),
+                title: Row(
+                  children: [
+                    Flexible(child: Text(item.name)),
+                    if (isActive) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: const Text(
+                          'LIVE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
                 subtitle: Text(
-                  '${formatBytes(item.size)} | ${_formatDate(item.dateModified)}',
+                  '${formatBytes(item.size)} \u00b7 ${_relativeDate(item.dateModified)}',
                 ),
-                onTap: () => context.push(
-                  Destinations.adminLogFile(item.name),
-                ),
+                onTap: () =>
+                    context.push(Destinations.adminLogFile(item.name)),
               );
             },
           ),

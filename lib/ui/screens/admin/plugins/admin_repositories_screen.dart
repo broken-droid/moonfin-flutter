@@ -128,6 +128,9 @@ class _AdminRepositoriesScreenState
 
   Widget _buildContent(BuildContext context, List<RepositoryInfo> repos) {
     final theme = Theme.of(context);
+    final bottomSafe = MediaQuery.of(context).padding.bottom;
+    final listBottomPadding = bottomSafe + 96;
+    final fabBottom = bottomSafe + 16;
 
     return Stack(
       children: [
@@ -150,7 +153,7 @@ class _AdminRepositoriesScreenState
           )
         else
           ListView.builder(
-            padding: const EdgeInsets.only(bottom: 80),
+            padding: EdgeInsets.only(bottom: listBottomPadding),
             itemCount: repos.length,
             itemBuilder: (context, index) {
               final repo = repos[index];
@@ -166,7 +169,7 @@ class _AdminRepositoriesScreenState
           const Center(child: CircularProgressIndicator()),
         Positioned(
           right: 16,
-          bottom: 16,
+          bottom: fabBottom,
           child: FloatingActionButton(
             onPressed: _addRepository,
             child: const Icon(Icons.add),

@@ -662,6 +662,7 @@ class _AdminLiveTvScreenState extends State<AdminLiveTvScreen> {
         _sectionCard(
           context,
           title: 'Tuner Discovery',
+          actionBelowTitle: true,
           action: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -709,6 +710,7 @@ class _AdminLiveTvScreenState extends State<AdminLiveTvScreen> {
     required String title,
     required Widget child,
     Widget? action,
+    bool actionBelowTitle = false,
   }) {
     return Card(
       child: Padding(
@@ -716,17 +718,28 @@ class _AdminLiveTvScreenState extends State<AdminLiveTvScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleMedium,
+            if (!actionBelowTitle)
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
-                ),
-                if (action != null) action,
+                  if (action != null) action,
+                ],
+              )
+            else ...[
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              if (action != null) ...[
+                const SizedBox(height: 8),
+                action,
               ],
-            ),
+            ],
             const SizedBox(height: 8),
             child,
           ],
