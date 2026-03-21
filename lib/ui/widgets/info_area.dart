@@ -18,17 +18,20 @@ class InfoArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final item = this.item;
+    final isMobile = PlatformDetection.useMobileUi;
+    final fixedHeight = isMobile ? 186.0 : 214.0;
+
     if (item == null) {
-      final isMobile = PlatformDetection.useMobileUi;
-      return SizedBox(
-        width: double.infinity,
-        height: isMobile ? 160 : 190,
-      );
+      return SizedBox(width: double.infinity, height: fixedHeight);
     }
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      child: _InfoAreaContent(key: ValueKey(item.id), item: item),
+    return SizedBox(
+      width: double.infinity,
+      height: fixedHeight,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: _InfoAreaContent(key: ValueKey(item.id), item: item),
+      ),
     );
   }
 }
@@ -103,45 +106,58 @@ class _InfoAreaContentState extends State<_InfoAreaContent> {
     );
     final overviewLineHeight =
         (overviewStyle?.fontSize ?? 14) * (overviewStyle?.height ?? 1.4);
+    final overviewReservedHeight = (overviewLineHeight * 3) + 4;
+    final titleStyle = (isMobile
+            ? theme.textTheme.titleLarge
+            : theme.textTheme.headlineSmall)
+        ?.copyWith(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      shadows: _textShadows,
+    );
+    final infoRowHeight = isMobile ? 22.0 : 24.0;
+    final ratingsRowHeight = 22.0;
+    final spacing = isMobile ? 6.0 : 8.0;
+    final titleToMetaSpacing = isMobile ? 4.0 : 6.0;
 
     return SizedBox(
       width: double.infinity,
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
           Text(
             title,
-            style: (isMobile
-                    ? theme.textTheme.titleLarge
-                    : theme.textTheme.headlineSmall)
-                ?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              shadows: _textShadows,
-            ),
-            maxLines: 2,
+            style: titleStyle,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
-          SimpleInfoRow(item: item, showRating: !showRatings),
-          const SizedBox(height: 8),
+          SizedBox(height: titleToMetaSpacing),
           SizedBox(
-            height: 22,
-            child: showRatings ? RatingsRow(
-              ratings: _ratings,
-              communityRating: item.communityRating,
-              criticRating: item.criticRating,
-              enableAdditionalRatings:
-                  _prefs.get(UserPreferences.enableAdditionalRatings),
-              enabledRatings: _prefs.get(UserPreferences.enabledRatings),
-              blockedRatings: _prefs.get(UserPreferences.blockedRatings),
-              showLabels: _prefs.get(UserPreferences.showRatingLabels),
-            ) : const SizedBox.shrink(),
+            height: infoRowHeight,
+            child: ClipRect(
+              child: SimpleInfoRow(item: item, showRating: !showRatings),
+            ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: spacing),
           SizedBox(
-            height: (overviewLineHeight * 3) + 4,
+            height: ratingsRowHeight,
+            child: showRatings
+                ? RatingsRow(
+                    ratings: _ratings,
+                    communityRating: item.communityRating,
+                    criticRating: item.criticRating,
+                    enableAdditionalRatings:
+                        _prefs.get(UserPreferences.enableAdditionalRatings),
+                    enabledRatings: _prefs.get(UserPreferences.enabledRatings),
+                    blockedRatings: _prefs.get(UserPreferences.blockedRatings),
+                    showLabels: _prefs.get(UserPreferences.showRatingLabels),
+                  )
+                : const SizedBox.shrink(),
+            ),
+          SizedBox(height: spacing),
+          SizedBox(
+            height: overviewReservedHeight,
             child: Text(
               item.overview ?? '',
               style: overviewStyle,
