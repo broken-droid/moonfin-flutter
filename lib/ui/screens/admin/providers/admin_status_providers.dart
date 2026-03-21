@@ -2,16 +2,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:server_core/server_core.dart';
 
+import '../admin_plugin_version_utils.dart';
 import 'admin_user_providers.dart';
 
 class AdminNotificationSummary {
   final int pluginUpdateCount;
+  final int restartPendingPluginCount;
+  final List<String> restartPendingPlugins;
   final int failedTaskCount;
   final int alertCount;
   final String? latestAlertText;
 
   const AdminNotificationSummary({
     this.pluginUpdateCount = 0,
+    this.restartPendingPluginCount = 0,
+    this.restartPendingPlugins = const [],
     this.failedTaskCount = 0,
     this.alertCount = 0,
     this.latestAlertText,
@@ -19,39 +24,17 @@ class AdminNotificationSummary {
 
   bool get hasPluginUpdates => pluginUpdateCount > 0;
 
+  bool get hasRestartPendingPlugins => restartPendingPluginCount > 0;
+
   bool get hasFailedTasks => failedTaskCount > 0;
 
   bool get hasAlerts => alertCount > 0;
 
   int get count =>
       (hasPluginUpdates ? 1 : 0) +
+      (hasRestartPendingPlugins ? 1 : 0) +
       (hasFailedTasks ? 1 : 0) +
       (hasAlerts ? 1 : 0);
-}
-
-int _compareVersionStrings(String left, String right) {
-  final leftParts = RegExp(r'\d+')
-      .allMatches(left)
-      .map((m) => int.tryParse(m.group(0) ?? '') ?? 0)
-      .toList();
-  final rightParts = RegExp(r'\d+')
-      .allMatches(right)
-      .map((m) => int.tryParse(m.group(0) ?? '') ?? 0)
-      .toList();
-
-  final maxLen = leftParts.length > rightParts.length
-      ? leftParts.length
-      : rightParts.length;
-
-  for (var i = 0; i < maxLen; i++) {
-    final a = i < leftParts.length ? leftParts[i] : 0;
-    final b = i < rightParts.length ? rightParts[i] : 0;
-    if (a != b) {
-      return a.compareTo(b);
-    }
-  }
-
-  return 0;
 }
 
 final adminNotificationSummaryProvider =
@@ -85,9 +68,16 @@ final adminNotificationSummaryProvider =
         if (version.version.isEmpty) {
           return false;
         }
-        return _compareVersionStrings(version.version, plugin.version) > 0;
+        return compareVersionStrings(version.version, plugin.version) > 0;
       });
     }).length;
+
+    final restartPendingPlugins = installed
+        .where((plugin) =>
+            plugin.status == PluginStatus.restart ||
+            plugin.status == PluginStatus.deleted)
+        .map((plugin) => plugin.name)
+        .toList();
 
     final failedTaskCount = tasks.where(
       (task) => task.lastExecutionResult?.status == 'Failed',
@@ -109,6 +99,8 @@ final adminNotificationSummaryProvider =
 
     return AdminNotificationSummary(
       pluginUpdateCount: pluginUpdateCount,
+      restartPendingPluginCount: restartPendingPlugins.length,
+      restartPendingPlugins: restartPendingPlugins,
       failedTaskCount: failedTaskCount,
       alertCount: alertCount,
       latestAlertText: latestAlertText,

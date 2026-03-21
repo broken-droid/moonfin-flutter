@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../navigation/destinations.dart';
+import '../admin_plugin_version_utils.dart';
 import '../providers/admin_user_providers.dart';
 
 class AdminPluginsScreen extends ConsumerStatefulWidget {
@@ -202,6 +203,7 @@ class _InstalledTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pluginsAsync = ref.watch(adminInstalledPluginsProvider);
+    final packagesAsync = ref.watch(adminAvailablePackagesProvider);
 
     return pluginsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -219,8 +221,20 @@ class _InstalledTab extends ConsumerWidget {
         ),
       ),
       data: (plugins) {
+        final availableById = {
+          for (final package in packagesAsync.valueOrNull ?? <PackageInfo>[])
+            if (package.id.isNotEmpty) package.id: package,
+        };
+        final updateInfoByPluginId = {
+          for (final plugin in plugins)
+            plugin.id: _pluginUpdateInfo(plugin, availableById[plugin.id]),
+        };
+
         var filtered = plugins;
         filtered = filtered.where((plugin) {
+          final updateInfo =
+              updateInfoByPluginId[plugin.id] ?? const _PluginUpdateInfo();
+          final hasUpdate = updateInfo.latestVersion != null;
           switch (statusFilter) {
             case _InstalledPluginFilter.all:
               return true;
@@ -229,10 +243,12 @@ class _InstalledTab extends ConsumerWidget {
             case _InstalledPluginFilter.disabled:
               return plugin.status == PluginStatus.disabled;
             case _InstalledPluginFilter.restart:
-              return plugin.status == PluginStatus.restart;
+              return plugin.status == PluginStatus.restart ||
+                  plugin.status == PluginStatus.deleted;
             case _InstalledPluginFilter.problem:
               return plugin.status == PluginStatus.malfunctioned ||
-                  plugin.status == PluginStatus.notSupported;
+                  plugin.status == PluginStatus.notSupported ||
+                  hasUpdate;
           }
         }).toList();
         if (searchQuery.isNotEmpty) {
@@ -294,8 +310,12 @@ class _InstalledTab extends ConsumerWidget {
                 itemCount: filtered.length,
                 itemBuilder: (context, index) {
                   final plugin = filtered[index];
+                  final updateInfo =
+                      updateInfoByPluginId[plugin.id] ?? const _PluginUpdateInfo();
                   return _InstalledPluginTile(
                     plugin: plugin,
+                    hasUpdate: updateInfo.latestVersion != null,
+                    latestVersion: updateInfo.latestVersion,
                     onTap: () =>
                         context.push(Destinations.adminPlugin(plugin.id)),
                     onToggle: () => onToggle(plugin),
@@ -309,6 +329,22 @@ class _InstalledTab extends ConsumerWidget {
       },
     );
   }
+
+  _PluginUpdateInfo _pluginUpdateInfo(PluginInfo plugin, PackageInfo? package) {
+    if (package == null || plugin.version.isEmpty) {
+      return const _PluginUpdateInfo();
+    }
+
+    return _PluginUpdateInfo(
+      latestVersion: latestVersionAfter(plugin.version, package.versions),
+    );
+  }
+}
+
+class _PluginUpdateInfo {
+  final String? latestVersion;
+
+  const _PluginUpdateInfo({this.latestVersion});
 }
 
 class _InstalledFilterChip extends StatelessWidget {
@@ -337,12 +373,16 @@ class _InstalledFilterChip extends StatelessWidget {
 
 class _InstalledPluginTile extends StatelessWidget {
   final PluginInfo plugin;
+  final bool hasUpdate;
+  final String? latestVersion;
   final VoidCallback onTap;
   final VoidCallback onToggle;
   final VoidCallback onUninstall;
 
   const _InstalledPluginTile({
     required this.plugin,
+    required this.hasUpdate,
+    this.latestVersion,
     required this.onTap,
     required this.onToggle,
     required this.onUninstall,
@@ -406,6 +446,31 @@ class _InstalledPluginTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodySmall
                   ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
+          if (hasUpdate)
+            Text(
+              latestVersion != null
+                  ? 'Update available: v$latestVersion'
+                  : 'Update available',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          if (plugin.status == PluginStatus.restart ||
+              plugin.status == PluginStatus.deleted)
+            Text(
+              plugin.status == PluginStatus.deleted
+                  ? 'Pending removal after restart'
+                  : 'Changes pending restart',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.orange,
+                fontWeight: FontWeight.w600,
+              ),
             ),
         ],
       ),

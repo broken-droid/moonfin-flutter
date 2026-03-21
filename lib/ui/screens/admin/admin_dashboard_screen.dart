@@ -248,6 +248,19 @@ class _AdminAttentionCard extends StatelessWidget {
             const SizedBox(height: 10),
             if (summary.hasPluginUpdates)
               Text('Plugin updates available: ${summary.pluginUpdateCount}'),
+            if (summary.hasRestartPendingPlugins)
+              Text('Plugins requiring restart: ${summary.restartPendingPluginCount}'),
+            if (summary.restartPendingPlugins.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                summary.restartPendingPlugins.take(3).join(', '),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
             if (summary.hasFailedTasks)
               Text('Failed scheduled tasks: ${summary.failedTaskCount}'),
             if (summary.hasAlerts)
