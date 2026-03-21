@@ -30,7 +30,7 @@ class DeviceProfileBuilder {
   }
 
   static String _profileName() {
-    if (PlatformDetection.isAndroid) return 'Moonfin Android';
+    if (PlatformDetection.isAndroid) return 'Moonfin for Android';
     if (PlatformDetection.isIOS) return 'Moonfin iOS';
     if (PlatformDetection.isMacOS) return 'Moonfin macOS';
     if (PlatformDetection.isWindows) return 'Moonfin Windows';
