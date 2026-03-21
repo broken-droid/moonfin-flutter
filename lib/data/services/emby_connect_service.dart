@@ -24,22 +24,70 @@ class EmbyConnectService {
     required String username,
     required String password,
   }) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/user/authenticate',
-      options: Options(
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Application': _applicationHeader,
-        },
-      ),
-      data: {'nameOrEmail': username, 'rawpw': password},
-    );
+    final headers = {
+      'Content-Type': 'application/json',
+      'X-Application': _applicationHeader,
+    };
 
-    final data = response.data;
-    if (data == null) {
-      throw const FormatException('Invalid Emby Connect response');
+    final queryVariants = <Map<String, String>>[
+      {'nameOrEmail': username, 'rawpw': password},
+      {'nameOrEmail': username, 'pw': password},
+      {'username': username, 'pw': password},
+      {'name': username, 'pw': password},
+    ];
+
+    DioException? firstError;
+
+    for (final query in queryVariants) {
+      try {
+        final response = await _dio.get<Map<String, dynamic>>(
+          '/user/authenticate',
+          queryParameters: query,
+          options: Options(headers: headers),
+        );
+
+        final data = response.data;
+        if (data == null) {
+          throw const FormatException('Invalid Emby Connect response');
+        }
+        return EmbyConnectAuthResult.fromJson(data);
+      } on DioException catch (e) {
+        firstError ??= e;
+        // 401 can still indicate wrong credentials; keep trying known variants.
+        if (e.response?.statusCode == 404 || e.response?.statusCode == 405) {
+          break;
+        }
+      }
     }
-    return EmbyConnectAuthResult.fromJson(data);
+
+    // Keep compatibility for deployments that still accept POST auth payload.
+    final fallbackBodies = <Map<String, String>>[
+      {'nameOrEmail': username, 'rawpw': password},
+      {'nameOrEmail': username, 'pw': password},
+      {'username': username, 'pw': password},
+      {'name': username, 'pw': password},
+      {'Username': username, 'Pw': password},
+    ];
+
+    for (final body in fallbackBodies) {
+      try {
+        final response = await _dio.post<Map<String, dynamic>>(
+          '/user/authenticate',
+          options: Options(headers: headers),
+          data: body,
+        );
+        final data = response.data;
+        if (data == null) {
+          continue;
+        }
+        return EmbyConnectAuthResult.fromJson(data);
+      } on DioException catch (e) {
+        firstError ??= e;
+      }
+    }
+
+    if (firstError != null) throw firstError;
+    throw const FormatException('Invalid Emby Connect response');
   }
 
   Future<List<EmbyConnectServer>> getServers({
@@ -75,37 +123,70 @@ class EmbyConnectService {
   }) async {
     final dio = Dio(
       BaseOptions(
-        baseUrl: serverAddress,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
       ),
     );
 
-    try {
-      final response = await dio.get<Map<String, dynamic>>(
-        '/Connect/Exchange',
-        queryParameters: {'format': 'json', 'ConnectUserId': connectUserId},
-        options: Options(
-          headers: {
-            'X-Emby-Token': accessKey,
-            'X-Emby-Authorization':
-                'Emby Client="${_deviceInfo.appName}", '
-                'Device="${_deviceInfo.name}", '
-                'DeviceId="${_deviceInfo.id}", '
-                'Version="${_deviceInfo.appVersion}"',
-          },
-        ),
-      );
+    DioException? lastDioError;
+    Object? lastError;
 
-      final data = response.data;
-      if (data == null) {
-        throw const FormatException('Invalid exchange response');
+    try {
+      for (final exchangeUri in _exchangeUris(serverAddress)) {
+        try {
+          final response = await dio.getUri<Map<String, dynamic>>(
+            exchangeUri.replace(
+              queryParameters: {
+                ...exchangeUri.queryParameters,
+                'format': 'json',
+                'ConnectUserId': connectUserId,
+              },
+            ),
+            options: Options(
+              headers: {
+                'X-Emby-Token': accessKey,
+                'X-Emby-Authorization':
+                    'Emby Client="${_deviceInfo.appName}", '
+                    'Device="${_deviceInfo.name}", '
+                    'DeviceId="${_deviceInfo.id}", '
+                    'Version="${_deviceInfo.appVersion}"',
+              },
+            ),
+          );
+
+          final data = response.data;
+          if (data == null) {
+            throw const FormatException('Invalid exchange response');
+          }
+
+          return EmbyConnectExchangeResult.fromJson(data);
+        } on DioException catch (e) {
+          lastDioError = e;
+          lastError = e;
+          continue;
+        } catch (e) {
+          lastError = e;
+          continue;
+        }
       }
 
-      return EmbyConnectExchangeResult.fromJson(data);
+      if (lastDioError != null) throw lastDioError;
+      throw lastError ?? const FormatException('Invalid exchange response');
     } finally {
       dio.close();
     }
+  }
+
+  Iterable<Uri> _exchangeUris(String serverAddress) sync* {
+    final normalized = serverAddress.endsWith('/') ? serverAddress : '$serverAddress/';
+    final base = Uri.parse(normalized);
+
+    // Keep any existing base path from Emby Connect (for example, /emby).
+    yield base.resolve('Connect/Exchange');
+
+    // Some servers expose exchange under /emby even when base path is root.
+    final root = base.replace(path: '/', query: '', fragment: '');
+    yield root.resolve('emby/Connect/Exchange');
   }
 }
 
@@ -163,11 +244,26 @@ class EmbyConnectServer {
       if (trimmed == null || trimmed.isEmpty) {
         continue;
       }
-      if (seen.add(trimmed.toLowerCase())) {
-        addresses.add(trimmed);
+      for (final normalized in _normalizedCandidates(trimmed)) {
+        if (seen.add(normalized.toLowerCase())) {
+          addresses.add(normalized);
+        }
       }
     }
     return addresses;
+  }
+
+  Iterable<String> _normalizedCandidates(String value) sync* {
+    final sanitized = value.endsWith('/') ? value.substring(0, value.length - 1) : value;
+
+    if (sanitized.startsWith('http://') || sanitized.startsWith('https://')) {
+      yield sanitized;
+      return;
+    }
+
+    // Emby Connect can return host:port without scheme; try both transports.
+    yield 'https://$sanitized';
+    yield 'http://$sanitized';
   }
 
   factory EmbyConnectServer.fromJson(Map<String, dynamic> json) {

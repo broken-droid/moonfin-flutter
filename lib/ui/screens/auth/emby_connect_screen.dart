@@ -175,7 +175,8 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
     if (statusCode == 404) {
       return 'Server does not support Emby Connect exchange';
     }
-    return e.message ?? 'Network error';
+    return e.message ??
+        'Network error while contacting Emby Connect or the selected server';
   }
 
   void _resetAfterError() {
