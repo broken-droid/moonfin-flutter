@@ -52,6 +52,25 @@ class PluginSyncService {
       _mdblistAvailable = pingResult['mdblistAvailable'] as bool? ?? false;
       _tmdbAvailable = pingResult['tmdbAvailable'] as bool? ?? false;
 
+      final seerrConfig = await _fetchJellyseerrConfig(client);
+      if (seerrConfig != null) {
+        _seerrUrl = seerrConfig['url'] as String? ?? _seerrUrl;
+
+        final enabled = seerrConfig['enabled'] as bool?;
+        final userEnabled = seerrConfig['userEnabled'] as bool?;
+        _seerrEnabled = (enabled ?? _seerrEnabled) && (userEnabled ?? true);
+
+        final variant = seerrConfig['variant'] as String?;
+        if (variant != null && variant.trim().isNotEmpty) {
+          await _seerrPrefs.setMoonfinVariant(variant);
+        }
+
+        final displayName = seerrConfig['displayName'] as String?;
+        if (displayName != null && displayName.trim().isNotEmpty) {
+          await _seerrPrefs.setMoonfinDisplayName(displayName);
+        }
+      }
+
       final neverConfigured = !_store.containsKey(UserPreferences.pluginSyncEnabled.key);
       final syncEnabled = _prefs.get(UserPreferences.pluginSyncEnabled);
 
@@ -125,6 +144,26 @@ class PluginSyncService {
     try {
       final response = await _dio.get(
         '${client.baseUrl}/Moonfin/Ping',
+        options: Options(headers: {
+          'Authorization': 'MediaBrowser Token="$token"',
+        }),
+      );
+      if (response.data is Map<String, dynamic>) {
+        return response.data as Map<String, dynamic>;
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  Future<Map<String, dynamic>?> _fetchJellyseerrConfig(
+    MediaServerClient client,
+  ) async {
+    final token = client.accessToken;
+    if (token == null) return null;
+
+    try {
+      final response = await _dio.get(
+        '${client.baseUrl}/Moonfin/Jellyseerr/Config',
         options: Options(headers: {
           'Authorization': 'MediaBrowser Token="$token"',
         }),

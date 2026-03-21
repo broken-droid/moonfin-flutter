@@ -393,7 +393,7 @@ class _TopToolbarState extends State<TopToolbar> {
                   order: (order++).toDouble(),
                   child: Builder(builder: (context) {
                     final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                    final isSeerr = seerrPrefs.moonfinVariant == 'seerr';
+                    final isSeerr = seerrPrefs.isSeerrVariant;
                     final label = seerrPrefs.moonfinDisplayName.isNotEmpty
                         ? seerrPrefs.moonfinDisplayName
                         : (isSeerr ? 'Seerr' : 'Jellyseerr');

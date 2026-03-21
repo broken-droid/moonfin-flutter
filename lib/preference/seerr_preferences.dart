@@ -15,6 +15,14 @@ class SeerrPreferences {
     return 'seerr_${key}_$uid';
   }
 
+    static String normalizeVariant(String? value) {
+        final normalized = value?.trim().toLowerCase() ?? '';
+        if (normalized == 'jellyseerr' || normalized == 'jelly') {
+            return 'jellyseerr';
+        }
+        return 'seerr';
+    }
+
   bool get enabled => _store.getBool(_userKey('enabled')) ?? false;
   Future<void> setEnabled(bool value) => _store.setBool(_userKey('enabled'), value);
 
@@ -34,9 +42,10 @@ class SeerrPreferences {
   Future<void> setMoonfinDisplayName(String value) =>
       _store.setString(_userKey('moonfin_display_name'), value);
 
-  String get moonfinVariant => _store.getString(_userKey('moonfin_variant')) ?? 'jellyseerr';
+  String get moonfinVariant => normalizeVariant(_store.getString(_userKey('moonfin_variant')));
+  bool get isSeerrVariant => moonfinVariant == 'seerr';
   Future<void> setMoonfinVariant(String value) =>
-      _store.setString(_userKey('moonfin_variant'), value);
+      _store.setString(_userKey('moonfin_variant'), normalizeVariant(value));
 
   String get moonfinUserId => _store.getString(_userKey('moonfin_user_id')) ?? '';
   Future<void> setMoonfinUserId(String value) =>

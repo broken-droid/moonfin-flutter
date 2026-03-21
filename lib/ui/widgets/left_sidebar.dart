@@ -378,7 +378,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
               if (_prefs.get(UserPreferences.seerrEnabled))
                 Builder(builder: (context) {
                   final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                  final isSeerr = seerrPrefs.moonfinVariant == 'seerr';
+                  final isSeerr = seerrPrefs.isSeerrVariant;
                   final label = seerrPrefs.moonfinDisplayName.isNotEmpty
                       ? seerrPrefs.moonfinDisplayName
                       : (isSeerr ? 'Seerr' : 'Jellyseerr');
