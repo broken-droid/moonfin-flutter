@@ -16,6 +16,7 @@ import '../models/aggregated_item.dart';
 import '../models/download_quality.dart';
 import '../repositories/offline_repository.dart';
 import 'book_reader_service.dart';
+import 'download_logger.dart';
 import 'download_notification_service.dart';
 import 'storage_path_service.dart';
 
@@ -50,6 +51,7 @@ class DownloadService extends ChangeNotifier {
       Map.unmodifiable(_activeDownloads);
 
   final Map<String, CancelToken> _cancelTokens = {};
+  final Map<String, DateTime> _downloadStartTimes = {};
 
   int _totalQueued = 0;
   int _completedCount = 0;
@@ -94,6 +96,7 @@ class DownloadService extends ChangeNotifier {
 
   StoragePathService get _storagePath => GetIt.instance<StoragePathService>();
   OfflineRepository get _offlineRepo => GetIt.instance<OfflineRepository>();
+  DownloadLogger get _logger => GetIt.instance<DownloadLogger>();
 
   String _fileNameBaseFromPath(String savePath) {
     final fileName = savePath.split(Platform.pathSeparator).last;
@@ -623,6 +626,7 @@ class DownloadService extends ChangeNotifier {
         fileName: item.name,
         error: 'WiFi-only mode enabled. Connect to WiFi to download.',
       );
+      unawaited(_logger.logWarn(item, 'Blocked — WiFi-only mode is enabled'));
       notifyListeners();
       return;
     }
@@ -637,6 +641,7 @@ class DownloadService extends ChangeNotifier {
           fileName: item.name,
           error: 'Storage limit reached. Free up space or increase the limit.',
         );
+        unawaited(_logger.logWarn(item, 'Blocked — storage limit reached'));
         notifyListeners();
         return;
       }
@@ -663,8 +668,11 @@ class DownloadService extends ChangeNotifier {
         parentIndexNumber: Value(item.parentIndexNumber),
       ));
 
+      unawaited(_logger.logQueued(fullItem, quality));
+
       final cancelToken = CancelToken();
       _cancelTokens[item.id] = cancelToken;
+      _downloadStartTimes[item.id] = DateTime.now();
 
       final initialProgress = _initialProgressForQuality(quality);
 
@@ -683,6 +691,8 @@ class DownloadService extends ChangeNotifier {
 
       final url = _buildDownloadUrl(item.id, fullItem, quality);
       final requestOptions = Options(headers: _buildAuthHeaders());
+
+      unawaited(_logger.logStarted(fullItem, quality));
 
       void onReceiveProgress(int received, int total) {
         final progress = _calculateProgress(
@@ -708,6 +718,7 @@ class DownloadService extends ChangeNotifier {
           batchTotal: _totalQueued,
           batchCompleted: _completedCount,
         );
+        unawaited(_logger.logProgress(fullItem, progress, received));
         notifyListeners();
       }
 
@@ -757,6 +768,7 @@ class DownloadService extends ChangeNotifier {
       final fileSize = await savedFile.length();
 
       if (fileSize == 0) {
+        unawaited(_logger.logZeroByteFile(fullItem));
         throw StateError('Downloaded file is empty (0 bytes)');
       }
 
@@ -770,6 +782,7 @@ class DownloadService extends ChangeNotifier {
       }
 
       final finalSize = await File(savePath).length();
+      unawaited(_logger.logFileVerified(fullItem, finalSize));
       await _offlineRepo.setLocalFilePath(item.id, savePath, fileSize: finalSize);
       await _offlineRepo.updateDownloadStatus(item.id, 2);
       await _populateOfflineAssets(fullItem);
@@ -777,6 +790,12 @@ class DownloadService extends ChangeNotifier {
       if (Platform.isIOS) {
         await IosStorage.excludeFromBackup(savePath);
       }
+
+      final elapsed = DateTime.now().difference(
+        _downloadStartTimes[item.id] ?? DateTime.now(),
+      );
+      unawaited(_logger.logComplete(fullItem, quality, finalSize, elapsed));
+      unawaited(_logger.uploadToServer(_client));
 
       _activeDownloads[item.id] = DownloadProgress(
         itemId: item.id,
@@ -806,6 +825,8 @@ class DownloadService extends ChangeNotifier {
         await _offlineRepo.deleteItem(item.id);
         await _cleanupEpisodeContainers(item, imageDir);
         await _notificationService.dismiss();
+        unawaited(_logger.logCancelled(item));
+        unawaited(_logger.uploadToServer(_client));
       } else {
         final friendlyError = _friendlyDioError(e);
         if (savePath != null) {
@@ -821,6 +842,8 @@ class DownloadService extends ChangeNotifier {
           itemName: item.name,
           error: friendlyError,
         );
+        unawaited(_logger.logFailed(item, quality, friendlyError));
+        unawaited(_logger.uploadToServer(_client));
       }
     } catch (e) {
       if (savePath != null) {
@@ -836,7 +859,10 @@ class DownloadService extends ChangeNotifier {
         itemName: item.name,
         error: e.toString(),
       );
+      unawaited(_logger.logFailed(item, quality, e.toString()));
+      unawaited(_logger.uploadToServer(_client));
     } finally {
+      _downloadStartTimes.remove(item.id);
       _cancelTokens.remove(item.id);
       notifyListeners();
     }
@@ -846,6 +872,9 @@ class DownloadService extends ChangeNotifier {
     _totalQueued = items.length;
     _completedCount = 0;
     notifyListeners();
+
+    final batchStart = DateTime.now();
+    unawaited(_logger.logBatchStarted(items.length, quality));
 
     final concurrency = _concurrencyLimit();
     final queue = List<AggregatedItem>.from(items);
@@ -862,6 +891,13 @@ class DownloadService extends ChangeNotifier {
       futures.add(processNext());
     }
     await Future.wait(futures);
+
+    unawaited(_logger.logBatchComplete(
+      _completedCount,
+      items.length,
+      DateTime.now().difference(batchStart),
+    ));
+    unawaited(_logger.uploadToServer(_client));
 
     _totalQueued = 0;
     _completedCount = 0;
@@ -1168,14 +1204,29 @@ class DownloadService extends ChangeNotifier {
           final isStatic = !quality.isTranscoded;
           if (isStatic) {
             await _offlineRepo.updateDownloadStatus(item.itemId, 0);
+            unawaited(_logger.logRecovered(
+              item.itemId,
+              item.name,
+              'Re-queued for download (static / resumable)',
+            ));
           } else {
             await _offlineRepo.updateDownloadStatus(
               item.itemId, 3,
               error: 'Interrupted. Transcoded downloads cannot be resumed.',
             );
+            unawaited(_logger.logRecovered(
+              item.itemId,
+              item.name,
+              'Marked FAILED — transcoded download interrupted and cannot resume',
+            ));
           }
         } else {
           await _offlineRepo.updateDownloadStatus(item.itemId, 3, error: 'Interrupted');
+          unawaited(_logger.logRecovered(
+            item.itemId,
+            item.name,
+            'Marked FAILED — no metadata, interrupted',
+          ));
         }
       } else if (item.downloadStatus == 2) {
         if (item.localFilePath != null) {
@@ -1185,6 +1236,11 @@ class DownloadService extends ChangeNotifier {
               item.itemId, 3,
               error: 'File missing from disk',
             );
+            unawaited(_logger.logRecovered(
+              item.itemId,
+              item.name,
+              'Marked FAILED — file missing from disk (was status=complete in DB)',
+            ));
           }
         }
       }

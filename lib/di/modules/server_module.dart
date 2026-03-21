@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:server_core/server_core.dart';
 
+import '../../data/services/download_logger.dart';
 import '../../data/services/download_notification_service.dart';
 import '../../data/services/download_service.dart';
 import '../../data/services/media_server_client_factory.dart';
@@ -18,6 +19,10 @@ void registerServerModule() {
     _getIt.registerLazySingleton<DownloadNotificationService>(
       () => DownloadNotificationService(),
     );
+  }
+
+  if (!_getIt.isRegistered<DownloadLogger>()) {
+    _getIt.registerLazySingleton<DownloadLogger>(() => DownloadLogger());
   }
 }
 
