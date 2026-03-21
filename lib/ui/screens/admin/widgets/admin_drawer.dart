@@ -31,7 +31,7 @@ class AdminDrawer extends StatelessWidget {
         _tile(context, 'Settings', Icons.settings, Destinations.adminSettings),
         _tile(context, 'Branding', Icons.brush, Destinations.adminSettingsBranding),
         _tile(context, 'Users', Icons.people, Destinations.adminUsers),
-        _tile(context, 'Libraries', Icons.video_library,
+        _tile(context, 'Libraries', Icons.movie_creation,
           Destinations.adminLibraries),
         _section(context, 'Playback'),
         _tile(context, 'Transcoding', Icons.swap_horiz,

@@ -147,13 +147,13 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             FocusableDialogRow(
-              icon: Icons.video_library_rounded,
+              icon: Icons.movie_creation,
               label: 'Library',
               onTap: () => setState(() => _mode = _ShuffleMode.libraries),
               autofocus: true,
             ),
             FocusableDialogRow(
-              icon: Icons.theater_comedy_rounded,
+              icon: Icons.album,
               label: 'Genre',
               onTap: () {
                 setState(() => _mode = _ShuffleMode.genres);

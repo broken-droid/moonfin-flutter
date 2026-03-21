@@ -103,13 +103,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     final moonfinEntries = <_SettingsEntry>[
       _SettingsEntry(
-        icon: Icons.rocket_launch,
+        iconBuilder: (size, color) => Image.asset(
+          'assets/icons/moonfin.png',
+          width: size,
+          height: size,
+          color: color,
+          fit: BoxFit.contain,
+        ),
         title: 'Moonfin Settings',
         subtitle: 'Plugin sync, theme music, ratings',
         onTap: () => context.push(Destinations.settingsMoonfin),
       ),
       _SettingsEntry(
-        icon: Icons.movie_filter,
+        iconBuilder: (size, color) => Image.asset(
+          'assets/icons/seerr.png',
+          width: size,
+          height: size,
+          color: color,
+          fit: BoxFit.contain,
+        ),
         title: 'Seerr',
         subtitle: 'Media request integration',
         onTap: () => context.push(Destinations.settingsSeerr),
@@ -167,7 +179,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         entries: playbackEntries,
       ),
       _SettingsSectionData(
-        icon: Icons.rocket_launch,
+        iconBuilder: (size, color) => Image.asset(
+          'assets/icons/moonfin.png',
+          width: size,
+          height: size,
+          color: color,
+          fit: BoxFit.contain,
+        ),
         title: 'Moonfin',
         subtitle: 'Integrations',
         entries: moonfinEntries,
@@ -276,7 +294,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 }
 
 class _SettingsSectionData {
-  final IconData icon;
+  final IconData? icon;
+  final Widget Function(double size, Color color)? iconBuilder;
   final String title;
   final String subtitle;
   final List<_SettingsEntry> entries;
@@ -284,7 +303,8 @@ class _SettingsSectionData {
   final int badgeCount;
 
   const _SettingsSectionData({
-    required this.icon,
+    this.icon,
+    this.iconBuilder,
     required this.title,
     required this.subtitle,
     required this.entries,
@@ -332,7 +352,11 @@ class _SettingsSectionCard extends StatelessWidget {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    Center(child: Icon(section.icon, size: 22)),
+                    Center(
+                      child: section.iconBuilder != null
+                          ? section.iconBuilder!(22, Colors.white)
+                          : Icon(section.icon, size: 22),
+                    ),
                     if (section.badgeCount > 0)
                       Positioned(
                         top: -4,
@@ -477,13 +501,15 @@ class _SettingsListCard extends StatelessWidget {
 }
 
 class _SettingsEntry {
-  final IconData icon;
+  final IconData? icon;
+  final Widget Function(double size, Color color)? iconBuilder;
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
 
   const _SettingsEntry({
-    required this.icon,
+    this.icon,
+    this.iconBuilder,
     required this.title,
     required this.onTap,
     this.subtitle,
@@ -508,7 +534,9 @@ class _SettingsEntryTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: theme.colorScheme.primaryContainer.withValues(alpha: 0.45),
         ),
-        child: Icon(entry.icon, size: 20),
+        child: entry.iconBuilder != null
+            ? entry.iconBuilder!(20, Colors.white)
+            : Icon(entry.icon, size: 20),
       ),
       title: Text(
         entry.title,

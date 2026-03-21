@@ -334,7 +334,12 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 ),
               if (showGenres)
                 _SidebarItem(
-                  icon: Icons.theater_comedy_rounded,
+                  iconBuilder: (size, color) => Image.asset(
+                    'assets/icons/genres.png',
+                    width: size,
+                    height: size,
+                    color: color,
+                  ),
                   label: 'Genres',
                   showLabel: _showLabels,
                   isActive: _isActive(Destinations.allGenres),
@@ -383,7 +388,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
               if (showLibraries && _libraries.isNotEmpty) ...[
                 _buildSeparator(),
                 _SidebarItem(
-                  icon: Icons.video_library_rounded,
+                  icon: Icons.movie_creation,
                   label: 'Libraries',
                   showLabel: _showLabels,
                   isActive: _librariesExpanded,

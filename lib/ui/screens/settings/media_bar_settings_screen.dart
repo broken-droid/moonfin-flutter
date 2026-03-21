@@ -236,7 +236,7 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.video_library),
+            leading: const Icon(Icons.movie_creation, color: Colors.white),
             title: const Text('Source Libraries'),
             subtitle: Text(
               _sourceSubtitle(

@@ -61,7 +61,7 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
           SwitchPreferenceTile(
             preference: UserPreferences.showLibrariesInToolbar,
             title: 'Show Libraries in Toolbar',
-            icon: Icons.video_library,
+            icon: Icons.movie_creation,
           ),
         ],
       ),

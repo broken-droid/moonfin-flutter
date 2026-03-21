@@ -516,7 +516,7 @@ class _ContentRowsState extends State<_ContentRows> {
           onTap: () => context.push(Destinations.liveTvSchedule),
         ),
         GridButtonCard(
-          icon: Icons.video_library_rounded,
+          icon: Icons.movie_creation,
           label: 'Series',
           focusColor: focusColor,
           onTap: () => context.push(Destinations.liveTvSeriesRecordings),

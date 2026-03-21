@@ -291,7 +291,7 @@ class _MusicViewsRow extends StatelessWidget {
               ),
               const SizedBox(width: _cardSpacing),
               _ViewButton(
-                icon: Icons.theater_comedy,
+                icon: Icons.album,
                 label: 'Genres',
                 onTap: () =>
                     context.push(Destinations.libraryGenresOf(libraryId)),
