@@ -914,8 +914,7 @@ class _BookReaderScreenState extends State<BookReaderScreen>
 
   void _setComicZoom(double value) {
     final clamped = value.clamp(1.0, 5.0);
-    _comicTransformController.value =
-        Matrix4.identity()..scaleByDouble(clamped, clamped, clamped, 1.0);
+    _comicTransformController.value = Matrix4.identity()..scale(clamped);
     if (mounted) {
       setState(() {
         _comicZoom = clamped;
