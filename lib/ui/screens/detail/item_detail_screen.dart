@@ -29,6 +29,7 @@ import '../../widgets/navigation_layout.dart';
 import '../../widgets/rating_display.dart';
 import '../../widgets/track_action_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
+import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../../util/platform_detection.dart';
 
@@ -1574,6 +1575,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
           icon: Icons.subtitles,
           onPressed: () => _showSubtitleSelector(context, subtitleStreams),
         ),
+      if (!isBook)
+        _DetailActionButton(
+          label: 'Cast',
+          icon: Icons.cast,
+          onPressed: () => _castToDevice(context, item),
+        ),
       if (item.remoteTrailers.isNotEmpty)
         _DetailActionButton(
           label: 'Trailer',
@@ -1784,6 +1791,22 @@ class _ActionButtonsState extends State<_ActionButtons> {
       isAudio ? Destinations.audioPlayer : Destinations.videoPlayer,
     );
     viewModel.load();
+  }
+
+  Future<void> _castToDevice(BuildContext context, AggregatedItem item) {
+    final positionTicks =
+        item.playbackPosition == null
+            ? null
+            : item.playbackPosition!.inMicroseconds * 10;
+    return showRemotePlayToSessionDialog(
+      context,
+      item: item,
+      startPositionTicks: positionTicks,
+      audioStreamIndex: _selectedAudioIndex,
+      subtitleStreamIndex: _selectedSubtitleIndex == -1
+          ? null
+          : _selectedSubtitleIndex,
+    );
   }
 
   void _showAudioSelector(

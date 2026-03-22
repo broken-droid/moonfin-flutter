@@ -18,6 +18,33 @@ class JellyfinSessionApi implements SessionApi {
   }
 
   @override
+  Future<void> sendPlayCommand(
+    String sessionId, {
+    required String playCommand,
+    required List<String> itemIds,
+    int? startPositionTicks,
+    String? mediaSourceId,
+    int? audioStreamIndex,
+    int? subtitleStreamIndex,
+    int? startIndex,
+  }) async {
+    await _dio.post(
+      '/Sessions/$sessionId/Playing',
+      queryParameters: {
+        'playCommand': playCommand,
+        'itemIds': itemIds.join(','),
+        if (startPositionTicks != null)
+          'startPositionTicks': startPositionTicks,
+        if (mediaSourceId != null) 'mediaSourceId': mediaSourceId,
+        if (audioStreamIndex != null) 'audioStreamIndex': audioStreamIndex,
+        if (subtitleStreamIndex != null)
+          'subtitleStreamIndex': subtitleStreamIndex,
+        if (startIndex != null) 'startIndex': startIndex,
+      },
+    );
+  }
+
+  @override
   Future<void> sendPlayStateCommand(
     String sessionId,
     String command, {

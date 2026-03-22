@@ -18,6 +18,7 @@ import '../../../platform/pip_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
+import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/playback/skip_segment_overlay.dart';
 import '../../widgets/playback/next_up_overlay.dart';
 import '../../widgets/playback/still_watching_dialog.dart';
@@ -832,6 +833,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
               Icons.people_outline_rounded,
               onPressed: _showCast,
             ),
+          _controlButton(
+            Icons.cast,
+            onPressed: _castToDevice,
+          ),
           if (_manager.currentResolution?.playMethod == StreamPlayMethod.transcode)
             _buildBitrateButton(),
           _buildZoomButton(),
@@ -1195,6 +1200,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
           ],
         ),
       ),
+    );
+    _showControls();
+  }
+
+  Future<void> _castToDevice() async {
+    final item = _queue.currentItem;
+    if (item is! AggregatedItem) return;
+    final positionTicks = _state.position.inMicroseconds * 10;
+    await showRemotePlayToSessionDialog(
+      context,
+      item: item,
+      startPositionTicks: positionTicks,
     );
     _showControls();
   }

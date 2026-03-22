@@ -2,6 +2,17 @@ abstract class SessionApi {
   Future<void> reportCapabilities(Map<String, dynamic> capabilities);
   Future<List<Map<String, dynamic>>> getSessions();
 
+  Future<void> sendPlayCommand(
+    String sessionId, {
+    required String playCommand,
+    required List<String> itemIds,
+    int? startPositionTicks,
+    String? mediaSourceId,
+    int? audioStreamIndex,
+    int? subtitleStreamIndex,
+    int? startIndex,
+  });
+
   Future<void> sendPlayStateCommand(
     String sessionId,
     String command, {

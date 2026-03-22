@@ -17,6 +17,12 @@ import '../../data/repositories/user_views_repository.dart';
 import '../../data/repositories/search_repository.dart';
 import '../../data/repositories/item_mutation_repository.dart';
 import '../../data/services/background_service.dart';
+import '../../data/services/cast/airplay_provider.dart';
+import '../../data/services/cast/cast_service.dart';
+import '../../data/services/cast/dlna_provider.dart';
+import '../../data/services/cast/google_cast_provider.dart';
+import '../../data/services/cast/native_cast_channel.dart';
+import '../../data/services/cast/remote_session_cast_provider.dart';
 import '../../data/services/plugin_sync_service.dart';
 import '../../data/services/row_data_source.dart';
 import '../../data/services/seerr/seerr_cookie_jar.dart';
@@ -60,6 +66,13 @@ void registerAppModule() {
       SeerrCookieJar(await SharedPreferences.getInstance()));
   _getIt.registerLazySingleton(() => SocketHandler());
   _getIt.registerLazySingleton(() => BackgroundService());
+  _getIt.registerLazySingleton(() => const NativeCastChannel());
+  _getIt.registerLazySingleton(() => CastService([
+        RemoteSessionCastProvider(_getIt<MediaServerClientFactory>()),
+        GoogleCastProvider(_getIt<NativeCastChannel>(), _getIt<MediaServerClientFactory>()),
+        AirPlayProvider(_getIt<NativeCastChannel>()),
+        const DlnaProvider(),
+      ]));
   _getIt.registerLazySingleton(() => PluginSyncService(
         _getIt<UserPreferences>(),
         _getIt(),
