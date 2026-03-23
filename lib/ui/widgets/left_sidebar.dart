@@ -119,9 +119,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
   Color _overlayColor() {
-    final colorName = _prefs.get(UserPreferences.mediaBarOverlayColor);
+    final colorName = _prefs.get(UserPreferences.navbarColor);
     return switch (colorName) {
       'black' => Colors.black,
+      'gray' => Colors.grey,
       'dark_blue' => const Color(0xFF1A2332),
       'purple' => const Color(0xFF4A148C),
       'teal' => const Color(0xFF00695C),
@@ -137,7 +138,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
   double _overlayOpacity() {
-    return _prefs.get(UserPreferences.mediaBarOverlayOpacity) / 100.0;
+    return _prefs.get(UserPreferences.navbarOpacity) / 100.0;
   }
 
   void _expand() {

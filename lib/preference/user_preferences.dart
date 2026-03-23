@@ -336,12 +336,12 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: '10',
   );
 
-  static final mediaBarOverlayOpacity = Preference(
+  static final navbarOpacity = Preference(
     key: 'mediaBarOverlayOpacity',
     defaultValue: 50,
   );
 
-  static final mediaBarOverlayColor = Preference(
+  static final navbarColor = Preference(
     key: 'mediaBarOverlayColor',
     defaultValue: 'gray',
   );

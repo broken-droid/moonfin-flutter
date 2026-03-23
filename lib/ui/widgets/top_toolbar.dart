@@ -75,9 +75,10 @@ class _TopToolbarState extends State<TopToolbar> {
   }
 
   Color _overlayColor() {
-    final colorName = _prefs.get(UserPreferences.mediaBarOverlayColor);
+    final colorName = _prefs.get(UserPreferences.navbarColor);
     return switch (colorName) {
       'black' => Colors.black,
+      'gray' => Colors.grey,
       'dark_blue' => const Color(0xFF1A2332),
       'purple' => const Color(0xFF4A148C),
       'teal' => const Color(0xFF00695C),
@@ -93,7 +94,11 @@ class _TopToolbarState extends State<TopToolbar> {
   }
 
   double _overlayOpacity() {
-    return _prefs.get(UserPreferences.mediaBarOverlayOpacity) / 100.0;
+    return _prefs.get(UserPreferences.navbarOpacity) / 100.0;
+  }
+
+  Color _toolbarSurfaceColor() {
+    return _overlayColor().withValues(alpha: _overlayOpacity());
   }
 
   void _onPrefsChanged() {
@@ -155,9 +160,8 @@ class _TopToolbarState extends State<TopToolbar> {
 
     return SafeArea(
       bottom: false,
-      child: Container(
+      child: SizedBox(
         height: toolbarHeight,
-        color: _overlayColor().withValues(alpha: _overlayOpacity()),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
           child: FocusTraversalGroup(
@@ -195,7 +199,7 @@ class _TopToolbarState extends State<TopToolbar> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: _toolbarSurfaceColor(),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -295,7 +299,7 @@ class _TopToolbarState extends State<TopToolbar> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.1),
+          color: _toolbarSurfaceColor(),
           borderRadius: BorderRadius.circular(_kPillRadius),
         ),
         child: SingleChildScrollView(
@@ -435,6 +439,7 @@ class _TopToolbarState extends State<TopToolbar> {
   Widget _buildLibrariesButton() {
     return _LibrariesDropdown(
       libraries: _libraries,
+      surfaceColor: _toolbarSurfaceColor(),
       onLibraryTap: (lib) {
         if (lib.collectionType == 'music') {
           context.push('/music/${lib.id}');
@@ -483,10 +488,12 @@ class _TopToolbarState extends State<TopToolbar> {
 
 class _LibrariesDropdown extends StatefulWidget {
   final List<AggregatedLibrary> libraries;
+  final Color surfaceColor;
   final ValueChanged<AggregatedLibrary> onLibraryTap;
 
   const _LibrariesDropdown({
     required this.libraries,
+    required this.surfaceColor,
     required this.onLibraryTap,
   });
 
@@ -580,7 +587,7 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
                     maxWidth: _menuWidth,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.7),
+                    color: widget.surfaceColor,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(

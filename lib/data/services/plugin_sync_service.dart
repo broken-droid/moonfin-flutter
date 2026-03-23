@@ -226,10 +226,10 @@ class PluginSyncService {
         UserPreferences.mediaBarContentType);
     _applyInt(
         resolved, 'mediaBarItemCount', UserPreferences.mediaBarItemCount);
-    _applyInt(
-        resolved, 'mediaBarOpacity', UserPreferences.mediaBarOverlayOpacity);
-    _applyString(resolved, 'mediaBarOverlayColor',
-        UserPreferences.mediaBarOverlayColor);
+    _applyInt(resolved, 'mediaBarOpacity', UserPreferences.navbarOpacity);
+    _applyString(resolved, 'mediaBarOverlayColor', UserPreferences.navbarColor);
+    _applyInt(resolved, 'navbarOpacity', UserPreferences.navbarOpacity);
+    _applyString(resolved, 'navbarColor', UserPreferences.navbarColor);
     _applyBool(resolved, 'mediaBarAutoAdvance',
         UserPreferences.mediaBarAutoAdvance);
     _applyInt(resolved, 'mediaBarIntervalMs',
@@ -438,9 +438,10 @@ class PluginSyncService {
       'mediaBarSourceType': _prefs.get(UserPreferences.mediaBarContentType),
       'mediaBarItemCount':
           int.tryParse(_prefs.get(UserPreferences.mediaBarItemCount)) ?? 10,
-      'mediaBarOpacity': _prefs.get(UserPreferences.mediaBarOverlayOpacity),
-      'mediaBarOverlayColor':
-          _prefs.get(UserPreferences.mediaBarOverlayColor),
+      'mediaBarOpacity': _prefs.get(UserPreferences.navbarOpacity),
+      'mediaBarOverlayColor': _prefs.get(UserPreferences.navbarColor),
+      'navbarOpacity': _prefs.get(UserPreferences.navbarOpacity),
+      'navbarColor': _prefs.get(UserPreferences.navbarColor),
       'mediaBarAutoAdvance': _prefs.get(UserPreferences.mediaBarAutoAdvance),
       'mediaBarIntervalMs': _prefs.get(UserPreferences.mediaBarIntervalMs),
       'mediaBarTrailerPreview':

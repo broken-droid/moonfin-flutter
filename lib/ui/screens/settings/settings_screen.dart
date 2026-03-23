@@ -57,7 +57,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       _SettingsEntry(
         icon: Icons.view_sidebar,
         title: 'Navigation',
-        subtitle: 'Navbar style, toolbar buttons',
+        subtitle: 'Navbar style, toolbar buttons, appearance',
         onTap: () => context.push(Destinations.settingsNavigation),
       ),
       _SettingsEntry(
