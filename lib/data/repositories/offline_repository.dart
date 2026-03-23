@@ -10,7 +10,18 @@ class OfflineRepository {
   OfflineRepository(this._db);
 
   Future<void> upsertItem(DownloadedItemsCompanion item) async {
-    await _db.into(_db.downloadedItems).insertOnConflictUpdate(item);
+    if (!item.itemId.present) {
+      await _db.into(_db.downloadedItems).insertOnConflictUpdate(item);
+      return;
+    }
+
+    final id = item.itemId.value;
+    await _db.transaction(() async {
+      await (_db.delete(_db.downloadedItems)
+            ..where((t) => t.itemId.equals(id)))
+          .go();
+      await _db.into(_db.downloadedItems).insertOnConflictUpdate(item);
+    });
   }
 
   Future<void> updateDownloadStatus(
@@ -110,8 +121,13 @@ class OfflineRepository {
 
   Future<DownloadedItem?> getItem(String itemId) async {
     final query = _db.select(_db.downloadedItems)
-      ..where((t) => t.itemId.equals(itemId));
-    return query.getSingleOrNull();
+      ..where((t) => t.itemId.equals(itemId))
+      ..orderBy([
+        (t) => OrderingTerm.desc(t.downloadStatus),
+        (t) => OrderingTerm.desc(t.downloadedAt),
+      ]);
+    final rows = await query.get();
+    return rows.isNotEmpty ? rows.first : null;
   }
 
   Future<bool> isAvailableOffline(String itemId) async {
@@ -192,8 +208,12 @@ class OfflineRepository {
 
   Stream<DownloadedItem?> watchItem(String itemId) {
     final query = _db.select(_db.downloadedItems)
-      ..where((t) => t.itemId.equals(itemId));
-    return query.watchSingleOrNull();
+      ..where((t) => t.itemId.equals(itemId))
+      ..orderBy([
+        (t) => OrderingTerm.desc(t.downloadStatus),
+        (t) => OrderingTerm.desc(t.downloadedAt),
+      ]);
+    return query.watch().map((rows) => rows.isNotEmpty ? rows.first : null);
   }
 
   Stream<int> watchTotalStorageUsed() {
