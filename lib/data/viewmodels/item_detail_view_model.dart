@@ -9,6 +9,8 @@ import '../utils/playlist_utils.dart';
 enum ItemDetailState { loading, ready, error }
 
 class ItemDetailViewModel extends ChangeNotifier {
+  static const _episodeOverviewFields = 'Overview';
+
   final MediaServerClient _client;
   final ItemMutationRepository _mutations;
   final MdbListRepository _mdbListRepository;
@@ -142,6 +144,7 @@ class ItemDetailViewModel extends ChangeNotifier {
       final data = await _client.itemsApi.getEpisodes(
         seriesId,
         seasonId: item.type == 'Season' ? itemId : item.seasonId,
+        fields: _episodeOverviewFields,
       );
       final items = (data['Items'] as List?) ?? [];
       _episodes = _mapItems(items);
@@ -151,7 +154,11 @@ class ItemDetailViewModel extends ChangeNotifier {
 
   Future<void> _loadNextUp() async {
     try {
-      final data = await _client.itemsApi.getNextUp(seriesId: itemId, limit: 1);
+      final data = await _client.itemsApi.getNextUp(
+        seriesId: itemId,
+        limit: 1,
+        fields: _episodeOverviewFields,
+      );
       final items = (data['Items'] as List?) ?? [];
       if (items.isNotEmpty) {
         final raw = items.first as Map<String, dynamic>;

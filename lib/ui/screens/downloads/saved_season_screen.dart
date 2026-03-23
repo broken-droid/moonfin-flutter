@@ -132,6 +132,7 @@ class _EpisodeRow extends StatelessWidget {
     final metadata = _parseMetadata(episode.metadataJson);
     final runtime = metadata['RunTimeTicks'] as int?;
     final durationMin = runtime != null ? (runtime / 600000000).round() : null;
+    final overview = metadata['Overview'] as String? ?? '';
     final progress = episode.playbackPositionTicks > 0 && runtime != null && runtime > 0
         ? episode.playbackPositionTicks / runtime
         : null;
@@ -194,6 +195,15 @@ class _EpisodeRow extends StatelessWidget {
                     Text(
                       '$durationMin min',
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 12),
+                    ),
+                  ],
+                  if (overview.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      overview,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 12),
                     ),
                   ],
                 ],

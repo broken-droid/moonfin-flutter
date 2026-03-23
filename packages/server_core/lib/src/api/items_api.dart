@@ -52,6 +52,7 @@ abstract class ItemsApi {
   Future<Map<String, dynamic>> getEpisodes(
     String seriesId, {
     String? seasonId,
+    String? fields,
   });
 
   Future<Map<String, dynamic>> getThemeMedia(String itemId, {bool inheritFromParent = true});

@@ -152,11 +152,13 @@ class EmbyItemsApi implements ItemsApi {
   Future<Map<String, dynamic>> getEpisodes(
     String seriesId, {
     String? seasonId,
+    String? fields,
   }) async {
     final response = await _dio.get(
       '/Shows/$seriesId/Episodes',
       queryParameters: {
         if (seasonId != null) 'SeasonId': seasonId,
+        if (fields != null) 'Fields': fields,
       },
     );
     return response.data as Map<String, dynamic>;
