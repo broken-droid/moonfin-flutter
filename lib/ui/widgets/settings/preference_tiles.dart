@@ -10,6 +10,7 @@ class SwitchPreferenceTile extends StatefulWidget {
   final String? subtitle;
   final IconData? icon;
   final Widget Function(double size, Color color)? iconBuilder;
+  final VoidCallback? onChanged;
 
   const SwitchPreferenceTile({
     super.key,
@@ -18,6 +19,7 @@ class SwitchPreferenceTile extends StatefulWidget {
     this.subtitle,
     this.icon,
     this.iconBuilder,
+    this.onChanged,
   });
 
   @override
@@ -52,7 +54,10 @@ class _SwitchPreferenceTileState extends State<SwitchPreferenceTile> {
         title: Text(widget.title),
         subtitle: widget.subtitle != null ? Text(widget.subtitle!) : null,
         value: value,
-        onChanged: (v) => _binding.value = v,
+        onChanged: (v) {
+          _binding.value = v;
+          widget.onChanged?.call();
+        },
       ),
     );
   }
@@ -133,6 +138,7 @@ class SliderPreferenceTile extends StatefulWidget {
   final double max;
   final int? divisions;
   final String Function(int value)? labelOf;
+  final VoidCallback? onChangeEnd;
 
   const SliderPreferenceTile({
     super.key,
@@ -143,6 +149,7 @@ class SliderPreferenceTile extends StatefulWidget {
     required this.max,
     this.divisions,
     this.labelOf,
+    this.onChangeEnd,
   });
 
   @override
@@ -182,6 +189,7 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
               divisions: widget.divisions,
               label: widget.labelOf?.call(value) ?? value.toString(),
               onChanged: (v) => _binding.value = v.round(),
+              onChangeEnd: (_) => widget.onChangeEnd?.call(),
             ),
           ],
         ),
@@ -195,6 +203,7 @@ class StringPickerPreferenceTile extends StatefulWidget {
   final String title;
   final IconData? icon;
   final Map<String, String> options;
+  final VoidCallback? onChanged;
 
   const StringPickerPreferenceTile({
     super.key,
@@ -202,6 +211,7 @@ class StringPickerPreferenceTile extends StatefulWidget {
     required this.title,
     this.icon,
     required this.options,
+    this.onChanged,
   });
 
   @override
@@ -247,7 +257,10 @@ class _StringPickerPreferenceTileState extends State<StringPickerPreferenceTile>
             value: e.key,
             groupValue: current,
             onChanged: (selected) {
-              if (selected != null) _binding.value = selected;
+              if (selected != null) {
+                _binding.value = selected;
+                widget.onChanged?.call();
+              }
               Navigator.pop(ctx);
             },
           );

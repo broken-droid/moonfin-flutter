@@ -127,7 +127,7 @@ class PluginSyncService {
       if (token == null) return;
 
       await _dio.post(
-        '${client.baseUrl}/Moonfin/Settings/Profile/global',
+        '${client.baseUrl}/Moonfin/Settings/Profile/$_profileName',
         data: {'profile': profile, 'clientId': 'moonfin-flutter'},
         options: Options(headers: {
           'Authorization': 'MediaBrowser Token="$token"',

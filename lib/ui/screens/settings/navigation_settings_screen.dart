@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:server_core/server_core.dart';
 
+import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/navigation_layout.dart';
@@ -16,6 +18,14 @@ class NavigationSettingsScreen extends StatefulWidget {
 
 class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
   final _prefs = GetIt.instance<UserPreferences>();
+
+  void _pushSync() {
+    final syncService = GetIt.instance<PluginSyncService>();
+    if (syncService.pluginAvailable) {
+      final client = GetIt.instance<MediaServerClient>();
+      syncService.pushSettings(client);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +48,7 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
                   ? NavbarPosition.left
                   : NavbarPosition.top;
               _prefs.set(UserPreferences.navbarPosition, newPos);
+              _pushSync();
               NavigationLayout.positionNotifier.value = newPos;
               setState(() {});
             },
@@ -47,16 +58,19 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
             preference: UserPreferences.showShuffleButton,
             title: 'Show Shuffle Button',
             icon: Icons.shuffle,
+            onChanged: _pushSync,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.showGenresButton,
             title: 'Show Genres Button',
             icon: Icons.category,
+            onChanged: _pushSync,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.showFavoritesButton,
             title: 'Show Favorites Button',
             icon: Icons.favorite,
+            onChanged: _pushSync,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.showLibrariesInToolbar,
@@ -68,6 +82,7 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
               color: color,
               fit: BoxFit.contain,
             ),
+            onChanged: _pushSync,
           ),
           const Divider(),
           SliderPreferenceTile(
@@ -78,6 +93,7 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
             max: 100,
             divisions: 20,
             labelOf: (v) => '$v%',
+            onChangeEnd: _pushSync,
           ),
           StringPickerPreferenceTile(
             preference: UserPreferences.navbarColor,
@@ -97,6 +113,7 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
               'slate': 'Slate',
               'indigo': 'Indigo',
             },
+            onChanged: _pushSync,
           ),
         ],
       ),
