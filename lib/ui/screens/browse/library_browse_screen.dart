@@ -23,7 +23,8 @@ const _horizontalPadding = 60.0;
 const _kCompactBreakpoint = 600.0;
 
 bool _isCompact(BuildContext context) =>
-    PlatformDetection.isMobile || MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
+    PlatformDetection.isMobile ||
+    MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
 
 class LibraryBrowseScreen extends StatefulWidget {
   final String libraryId;
@@ -106,13 +107,19 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
       return;
     }
 
-    context.push(
-      Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type),
-    ).then((result) {
-      if (result == true && mounted) {
-        _vm.load();
-      }
-    });
+    context
+        .push(
+          Destinations.itemOrPhoto(
+            item.id,
+            serverId: item.serverId,
+            type: item.type,
+          ),
+        )
+        .then((result) {
+          if (result == true && mounted) {
+            _vm.load();
+          }
+        });
   }
 
   double _cardWidth() {
@@ -143,12 +150,18 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
 
   double _itemAspectRatio(AggregatedItem item) {
     if (_vm.isMusicBrowse || _vm.isPlaylistBrowse) return 1.0;
-    if (_vm.isNavigableFolder(item) && _vm.imageType != ImageType.poster) return 16 / 9;
+    if (_vm.isNavigableFolder(item) && _vm.imageType != ImageType.poster) {
+      return 16 / 9;
+    }
     return switch (_vm.imageType) {
       ImageType.thumb => switch (item.type) {
-          'MusicAlbum' || 'MusicArtist' || 'Audio' || 'Playlist' || 'Person' => 1.0,
-          _ => 16 / 9,
-        },
+        'MusicAlbum' ||
+        'MusicArtist' ||
+        'Audio' ||
+        'Playlist' ||
+        'Person' => 1.0,
+        _ => 16 / 9,
+      },
       ImageType.banner => 1000 / 185,
       ImageType.poster => MediaCard.aspectRatioForType(item.type),
     };
@@ -185,7 +198,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
           return api.getThumbImageUrl(item.id, tag: itemThumbTag);
         }
         if (item.backdropImageTags.isNotEmpty) {
-          return api.getBackdropImageUrl(item.id, tag: item.backdropImageTags.first);
+          return api.getBackdropImageUrl(
+            item.id,
+            tag: item.backdropImageTags.first,
+          );
         }
         return null;
       }
@@ -196,7 +212,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
         return api.getBannerImageUrl(item.id, tag: itemBannerTag);
       }
       if (item.backdropImageTags.isNotEmpty) {
-        return api.getBackdropImageUrl(item.id, tag: item.backdropImageTags.first);
+        return api.getBackdropImageUrl(
+          item.id,
+          tag: item.backdropImageTags.first,
+        );
       }
       if (item.primaryImageTag != null) {
         return api.getPrimaryImageUrl(item.id, tag: item.primaryImageTag);
@@ -208,7 +227,9 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
     }
 
     if (_vm.isPlaylistBrowse) {
-      return item.primaryImageTag != null ? api.getPrimaryImageUrl(item.id) : null;
+      return item.primaryImageTag != null
+          ? api.getPrimaryImageUrl(item.id)
+          : null;
     }
 
     if (_vm.imageType == ImageType.banner) {
@@ -219,7 +240,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
         return api.getPrimaryImageUrl(item.id, tag: item.primaryImageTag);
       }
       if (item.backdropImageTags.isNotEmpty) {
-        return api.getBackdropImageUrl(item.id, tag: item.backdropImageTags.first);
+        return api.getBackdropImageUrl(
+          item.id,
+          tag: item.backdropImageTags.first,
+        );
       }
       return null;
     }
@@ -229,12 +253,16 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
         return api.getThumbImageUrl(item.id, tag: itemThumbTag);
       }
       if (item.backdropImageTags.isNotEmpty) {
-        return api.getBackdropImageUrl(item.id, tag: item.backdropImageTags.first);
+        return api.getBackdropImageUrl(
+          item.id,
+          tag: item.backdropImageTags.first,
+        );
       }
       if (parentThumbItemId != null && parentThumbTag != null) {
         return api.getThumbImageUrl(parentThumbItemId, tag: parentThumbTag);
       }
-      if (item.parentBackdropItemId != null && item.parentBackdropImageTags.isNotEmpty) {
+      if (item.parentBackdropItemId != null &&
+          item.parentBackdropImageTags.isNotEmpty) {
         return api.getBackdropImageUrl(
           item.parentBackdropItemId!,
           tag: item.parentBackdropImageTags.first,
@@ -251,7 +279,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
         return api.getThumbImageUrl(item.id, tag: itemThumbTag);
       }
       if (item.backdropImageTags.isNotEmpty) {
-        return api.getBackdropImageUrl(item.id, tag: item.backdropImageTags.first);
+        return api.getBackdropImageUrl(
+          item.id,
+          tag: item.backdropImageTags.first,
+        );
       }
       if (parentThumbItemId != null && parentThumbTag != null) {
         return api.getThumbImageUrl(parentThumbItemId, tag: parentThumbTag);
@@ -263,7 +294,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
     }
 
     if (item.seriesId != null && item.seriesPrimaryImageTag != null) {
-      return api.getPrimaryImageUrl(item.seriesId!, tag: item.seriesPrimaryImageTag);
+      return api.getPrimaryImageUrl(
+        item.seriesId!,
+        tag: item.seriesPrimaryImageTag,
+      );
     }
 
     if (itemThumbTag != null) {
@@ -271,7 +305,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
     }
 
     if (item.backdropImageTags.isNotEmpty) {
-      return api.getBackdropImageUrl(item.id, tag: item.backdropImageTags.first);
+      return api.getBackdropImageUrl(
+        item.id,
+        tag: item.backdropImageTags.first,
+      );
     }
 
     return null;
@@ -311,7 +348,9 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                 totalCount: _vm.totalCount,
                 focusedItem: _vm.focusedItem,
                 focusedRatings: _vm.focusedRatings,
-                enableAdditionalRatings: _prefs.get(UserPreferences.enableAdditionalRatings),
+                enableAdditionalRatings: _prefs.get(
+                  UserPreferences.enableAdditionalRatings,
+                ),
                 enabledRatings: _prefs.get(UserPreferences.enabledRatings),
                 blockedRatings: _prefs.get(UserPreferences.blockedRatings),
                 showLabels: _prefs.get(UserPreferences.showRatingLabels),
@@ -338,20 +377,21 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
   Widget _buildBody() {
     return switch (_vm.state) {
       LibraryBrowseState.loading => const Center(
-          child: CircularProgressIndicator(color: _jellyfinBlue)),
+        child: CircularProgressIndicator(color: _jellyfinBlue),
+      ),
       LibraryBrowseState.error => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _vm.errorMessage ?? 'Failed to load library',
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(onPressed: _vm.load, child: const Text('Retry')),
-            ],
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              _vm.errorMessage ?? 'Failed to load library',
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: _vm.load, child: const Text('Retry')),
+          ],
         ),
+      ),
       LibraryBrowseState.ready => _buildGrid(),
     };
   }
@@ -365,42 +405,46 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
 
     final cardWidth = _cardWidth();
     const spacing = 12.0;
-    final watchedBehavior = _prefs.get(UserPreferences.watchedIndicatorBehavior);
+    final watchedBehavior = _prefs.get(
+      UserPreferences.watchedIndicatorBehavior,
+    );
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final isMobile = _isCompact(context);
-      final gridPadding = isMobile ? 16.0 : _horizontalPadding;
-      final crossAxisCount =
-          ((constraints.maxWidth - gridPadding * 2 + spacing) /
-                  (cardWidth + spacing))
-              .floor()
-              .clamp(2, 20);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = _isCompact(context);
+        final gridPadding = isMobile ? 16.0 : _horizontalPadding;
+        final crossAxisCount = ((constraints.maxWidth -
+                    gridPadding * 2 +
+                    spacing) /
+                (cardWidth + spacing))
+            .floor()
+            .clamp(2, 20);
 
-      final cellWidth = (constraints.maxWidth - gridPadding * 2 -
-              (crossAxisCount - 1) * spacing) /
-          crossAxisCount;
-      final ar = _gridBaseAspectRatio();
-      final hasSubtitles = _vm.items.any(
-        (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
-      );
-      final textHeight = hasSubtitles ? 38.0 : 22.0;
-      final childAspectRatio = cellWidth / (cellWidth / ar + textHeight);
+        final cellWidth =
+            (constraints.maxWidth -
+                gridPadding * 2 -
+                (crossAxisCount - 1) * spacing) /
+            crossAxisCount;
+        final ar = _gridBaseAspectRatio();
+        final hasSubtitles = _vm.items.any(
+          (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
+        );
+        final textHeight = hasSubtitles ? 38.0 : 22.0;
+        final childAspectRatio = cellWidth / (cellWidth / ar + textHeight);
 
-      return CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-                gridPadding, 20, gridPadding, 16),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: spacing,
-                childAspectRatio: childAspectRatio,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
+        return CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(gridPadding, 20, gridPadding, 16),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: spacing,
+                  childAspectRatio: childAspectRatio,
+                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
                   final item = _vm.items[index];
                   final itemAspectRatio = _itemAspectRatio(item);
                   return MediaCard(
@@ -417,26 +461,27 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                     itemType: item.type,
                     onFocus: isMobile ? null : () => _onItemFocused(item),
                     onHoverStart: isMobile ? null : () => _onItemFocused(item),
-                    onHoverEnd: isMobile ? null : () => _vm.setFocusedItem(null),
+                    onHoverEnd:
+                        isMobile ? null : () => _vm.setFocusedItem(null),
                     onLongPress: isMobile ? null : () => _onItemFocused(item),
                     onTap: () => _onItemTap(item),
                   );
-                },
-                childCount: _vm.items.length,
+                }, childCount: _vm.items.length),
               ),
             ),
-          ),
-          if (_vm.loadingMore)
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
-                child: Center(
-                    child: CircularProgressIndicator(color: _jellyfinBlue)),
+            if (_vm.loadingMore)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(
+                    child: CircularProgressIndicator(color: _jellyfinBlue),
+                  ),
+                ),
               ),
-            ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   String? _cardSubtitle(AggregatedItem item) {
@@ -566,23 +611,15 @@ class _LibraryHeader extends StatelessWidget {
           ],
           const SizedBox(height: 6),
           Row(
-            mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+            mainAxisAlignment:
+                isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
-              _ToolbarButton(
-                icon: Icons.arrow_back,
-                onTap: onBack,
-              ),
+              _ToolbarButton(icon: Icons.arrow_back, onTap: onBack),
               const SizedBox(width: 4),
-              _ToolbarButton(
-                icon: Icons.sort,
-                onTap: onSort,
-              ),
+              _ToolbarButton(icon: Icons.sort, onTap: onSort),
               if (!isMusicBrowse) ...[
                 const SizedBox(width: 4),
-                _ToolbarButton(
-                  icon: Icons.settings,
-                  onTap: onSettings,
-                ),
+                _ToolbarButton(icon: Icons.settings, onTap: onSettings),
               ],
               if (!isMobile && sortBy == LibrarySortBy.name) ...[
                 const SizedBox(width: 16),
@@ -624,37 +661,38 @@ class _FocusedItemHud extends StatelessWidget {
       height: 80,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
-        child: item == null
-            ? const SizedBox.shrink(key: ValueKey('empty'))
-            : Column(
-                key: ValueKey(item!.id),
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    item!.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+        child:
+            item == null
+                ? const SizedBox.shrink(key: ValueKey('empty'))
+                : Column(
+                  key: ValueKey(item!.id),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      item!.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    _MetadataRow(item: item!),
+                    const SizedBox(height: 4),
+                    RatingsRow(
+                      ratings: ratings,
+                      communityRating: item!.communityRating,
+                      criticRating: item!.criticRating,
+                      enableAdditionalRatings: enableAdditionalRatings,
+                      enabledRatings: enabledRatings,
+                      blockedRatings: blockedRatings,
+                      showLabels: showLabels,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 2),
-                _MetadataRow(item: item!),
-                const SizedBox(height: 4),
-                RatingsRow(
-                  ratings: ratings,
-                  communityRating: item!.communityRating,
-                  criticRating: item!.criticRating,
-                  enableAdditionalRatings: enableAdditionalRatings,
-                  enabledRatings: enabledRatings,
-                  blockedRatings: blockedRatings,
-                  showLabels: showLabels,
-                ),
-              ],
-            ),
       ),
     );
   }
@@ -685,41 +723,44 @@ class _MetadataRow extends StatelessWidget {
 
     if (item.type == 'Series' && item.status != null) {
       final continuing = item.status == 'Continuing';
-      children.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: continuing
-              ? const Color(0xFF22C55E)
-              : const Color(0xFFEF4444),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          continuing ? 'Continuing' : 'Ended',
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
+      children.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color:
+                continuing ? const Color(0xFF22C55E) : const Color(0xFFEF4444),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            continuing ? 'Continuing' : 'Ended',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
           ),
         ),
-      ));
+      );
     }
 
     if (item.officialRating != null) {
-      children.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: Colors.white.withAlpha(38),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          item.officialRating!,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
+      children.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(38),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            item.officialRating!,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
           ),
         ),
-      ));
+      );
     }
 
     return Wrap(
@@ -773,9 +814,10 @@ class _ToolbarButtonState extends State<_ToolbarButton> {
             decoration: BoxDecoration(
               color: _focused ? Colors.white : Colors.transparent,
               borderRadius: BorderRadius.circular(6),
-              border: showFocusBorder
-                  ? Border.all(color: Colors.white, width: 1.5)
-                  : null,
+              border:
+                  showFocusBorder
+                      ? Border.all(color: Colors.white, width: 1.5)
+                      : null,
             ),
             child: Icon(
               widget.icon,
@@ -796,9 +838,34 @@ class _AlphaPickerBar extends StatelessWidget {
   const _AlphaPickerBar({required this.selected, required this.onChanged});
 
   static const _letters = [
-    '', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-    'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-    'Y', 'Z',
+    '',
+    '#',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
   ];
 
   @override
@@ -806,14 +873,15 @@ class _AlphaPickerBar extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: _letters.map((letter) {
-          final isSelected = selected == letter;
-          return _AlphaLetterButton(
-            label: letter.isEmpty ? 'All' : letter,
-            isSelected: isSelected,
-            onTap: () => onChanged(letter),
-          );
-        }).toList(),
+        children:
+            _letters.map((letter) {
+              final isSelected = selected == letter;
+              return _AlphaLetterButton(
+                label: letter.isEmpty ? 'All' : letter,
+                isSelected: isSelected,
+                onTap: () => onChanged(letter),
+              );
+            }).toList(),
       ),
     );
   }
@@ -856,9 +924,10 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton> {
             decoration: BoxDecoration(
               color: widget.isSelected ? Colors.white.withAlpha(26) : null,
               borderRadius: BorderRadius.circular(4),
-              border: showFocusBorder
-                  ? Border.all(color: Colors.white, width: 1.5)
-                  : null,
+              border:
+                  showFocusBorder
+                      ? Border.all(color: Colors.white, width: 1.5)
+                      : null,
             ),
             child: Text(
               widget.label,
@@ -866,9 +935,10 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton> {
                 fontSize: 15,
                 fontWeight:
                     widget.isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: widget.isSelected
-                    ? _jellyfinBlue
-                    : Colors.white.withAlpha(140),
+                color:
+                    widget.isSelected
+                        ? _jellyfinBlue
+                        : Colors.white.withAlpha(140),
               ),
             ),
           ),
@@ -891,24 +961,17 @@ class _LibraryStatusBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final hPad = _isCompact(context) ? 16.0 : _horizontalPadding;
     return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: hPad, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             statusText,
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.white.withAlpha(77),
-            ),
+            style: TextStyle(fontSize: 11, color: Colors.white.withAlpha(77)),
           ),
           Text(
             counterText,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.white.withAlpha(115),
-            ),
+            style: TextStyle(fontSize: 13, color: Colors.white.withAlpha(115)),
           ),
         ],
       ),
@@ -945,6 +1008,10 @@ class _FilterSortDialogState extends State<_FilterSortDialog> {
   @override
   Widget build(BuildContext context) {
     final vm = widget.vm;
+    final dialogWidth = (MediaQuery.sizeOf(context).width - 32).clamp(
+      280.0,
+      380.0,
+    );
     return Dialog(
       backgroundColor: const Color(0xE6141414),
       shape: RoundedRectangleBorder(
@@ -952,7 +1019,7 @@ class _FilterSortDialogState extends State<_FilterSortDialog> {
         side: BorderSide(color: Colors.white.withAlpha(26)),
       ),
       child: SizedBox(
-        width: 380,
+        width: dialogWidth,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -974,18 +1041,19 @@ class _FilterSortDialogState extends State<_FilterSortDialog> {
               _radioTile(
                 label: option.displayName,
                 selected: vm.sortBy == option,
-                trailing: vm.sortBy == option
-                    ? IconButton(
-                        icon: Icon(
-                          vm.sortDirection == SortDirection.ascending
-                              ? Icons.arrow_upward
-                              : Icons.arrow_downward,
-                          color: _jellyfinBlue,
-                          size: 18,
-                        ),
-                        onPressed: () => vm.toggleSortDirection(),
-                      )
-                    : null,
+                trailing:
+                    vm.sortBy == option
+                        ? IconButton(
+                          icon: Icon(
+                            vm.sortDirection == SortDirection.ascending
+                                ? Icons.arrow_upward
+                                : Icons.arrow_downward,
+                            color: _jellyfinBlue,
+                            size: 18,
+                          ),
+                          onPressed: () => vm.toggleSortDirection(),
+                        )
+                        : null,
                 onTap: () {
                   if (vm.sortBy == option) {
                     vm.toggleSortDirection();
@@ -1085,18 +1153,19 @@ class _FilterSortDialogState extends State<_FilterSortDialog> {
                 ),
                 color: selected ? _jellyfinBlue : Colors.transparent,
               ),
-              child: selected
-                  ? Center(
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+              child:
+                  selected
+                      ? Center(
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    )
-                  : null,
+                      )
+                      : null,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -1132,24 +1201,24 @@ class _FilterSortDialogState extends State<_FilterSortDialog> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(
-                  color:
-                      checked ? _jellyfinBlue : Colors.white.withAlpha(128),
+                  color: checked ? _jellyfinBlue : Colors.white.withAlpha(128),
                   width: 2,
                 ),
                 color: checked ? _jellyfinBlue : Colors.transparent,
               ),
-              child: checked
-                  ? const Center(
-                      child: Text(
-                        '✓',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+              child:
+                  checked
+                      ? const Center(
+                        child: Text(
+                          '✓',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    )
-                  : null,
+                      )
+                      : null,
             ),
             const SizedBox(width: 12),
             Text(
@@ -1195,6 +1264,10 @@ class _SettingsDialogState extends State<_SettingsDialog> {
   @override
   Widget build(BuildContext context) {
     final vm = widget.vm;
+    final dialogWidth = (MediaQuery.sizeOf(context).width - 32).clamp(
+      280.0,
+      340.0,
+    );
     return Dialog(
       backgroundColor: const Color(0xE6141414),
       shape: RoundedRectangleBorder(
@@ -1202,7 +1275,7 @@ class _SettingsDialogState extends State<_SettingsDialog> {
         side: BorderSide(color: Colors.white.withAlpha(26)),
       ),
       child: SizedBox(
-        width: 340,
+        width: dialogWidth,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -1231,8 +1304,7 @@ class _SettingsDialogState extends State<_SettingsDialog> {
                   ),
                 ),
               ),
-              for (final type in ImageType.values)
-                _settingsRadioTile(vm, type),
+              for (final type in ImageType.values) _settingsRadioTile(vm, type),
               Divider(color: Colors.white.withAlpha(20)),
             ],
             Padding(
@@ -1318,18 +1390,19 @@ class _SettingsDialogState extends State<_SettingsDialog> {
         ),
         color: selected ? _jellyfinBlue : Colors.transparent,
       ),
-      child: selected
-          ? Center(
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
+      child:
+          selected
+              ? Center(
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            )
-          : null,
+              )
+              : null,
     );
   }
 }

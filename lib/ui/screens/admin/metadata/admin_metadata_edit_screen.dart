@@ -8,13 +8,11 @@ import 'package:server_core/server_core.dart';
 class AdminMetadataEditScreen extends StatefulWidget {
   final String itemId;
 
-  const AdminMetadataEditScreen({
-    super.key,
-    required this.itemId,
-  });
+  const AdminMetadataEditScreen({super.key, required this.itemId});
 
   @override
-  State<AdminMetadataEditScreen> createState() => _AdminMetadataEditScreenState();
+  State<AdminMetadataEditScreen> createState() =>
+      _AdminMetadataEditScreenState();
 }
 
 class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
@@ -117,7 +115,7 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
   void _hydrate(Map<String, dynamic> raw, List<Map<String, dynamic>> external) {
     _nameController.text = (raw['Name'] ?? '').toString();
     _sortNameController.text =
-      (raw['SortName'] ?? raw['ForcedSortName'] ?? '').toString();
+        (raw['SortName'] ?? raw['ForcedSortName'] ?? '').toString();
     _originalTitleController.text = (raw['OriginalTitle'] ?? '').toString();
     _premiereDateController.text = _dateOnly(raw['PremiereDate']);
     _endDateController.text = _dateOnly(raw['EndDate']);
@@ -125,8 +123,8 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
     _officialRatingController.text = (raw['OfficialRating'] ?? '').toString();
     _communityRatingController.text = (raw['CommunityRating'] ?? '').toString();
     _criticRatingController.text = (raw['CriticRating'] ?? '').toString();
-    _taglineController.text = _firstString(raw['Taglines']) ??
-      (raw['Tagline'] ?? '').toString();
+    _taglineController.text =
+        _firstString(raw['Taglines']) ?? (raw['Tagline'] ?? '').toString();
     _overviewController.text = (raw['Overview'] ?? '').toString();
 
     _genres = _stringList(raw['Genres']);
@@ -135,22 +133,26 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
 
     final peopleRaw = raw['People'];
     if (peopleRaw is List) {
-      _people = peopleRaw
-          .whereType<Map>()
-          .map((e) => e.cast<String, dynamic>())
-          .map((e) => {
-                'Name': (e['Name'] ?? '').toString(),
-                'Role': (e['Role'] ?? '').toString(),
-                'Type': (e['Type'] ?? '').toString(),
-              })
-          .toList();
+      _people =
+          peopleRaw
+              .whereType<Map>()
+              .map((e) => e.cast<String, dynamic>())
+              .map(
+                (e) => {
+                  'Name': (e['Name'] ?? '').toString(),
+                  'Role': (e['Role'] ?? '').toString(),
+                  'Type': (e['Type'] ?? '').toString(),
+                },
+              )
+              .toList();
     } else {
       _people = const [];
     }
 
-    final providerIds = raw['ProviderIds'] is Map
-        ? (raw['ProviderIds'] as Map).cast<String, dynamic>()
-        : <String, dynamic>{};
+    final providerIds =
+        raw['ProviderIds'] is Map
+            ? (raw['ProviderIds'] as Map).cast<String, dynamic>()
+            : <String, dynamic>{};
 
     for (final c in _externalControllers.values) {
       c.dispose();
@@ -225,7 +227,11 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
   }
 
   String _externalLabel(Map<String, dynamic> idInfo) {
-    return (idInfo['DisplayName'] ?? idInfo['Key'] ?? idInfo['Name'] ?? idInfo['Type'] ?? '')
+    return (idInfo['DisplayName'] ??
+            idInfo['Key'] ??
+            idInfo['Name'] ??
+            idInfo['Type'] ??
+            '')
         .toString();
   }
 
@@ -247,15 +253,20 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
   }
 
   List<Map<String, String>> _resolvedContentTypeOptions(String currentType) {
-    final fromEditor = _contentTypeOptions()
-        .map((option) => {
-              'Value': (option['Value'] ?? '').toString(),
-              'Name': (option['Name'] ?? option['Value'] ?? '').toString(),
-            })
-        .toList();
+    final fromEditor =
+        _contentTypeOptions()
+            .map(
+              (option) => {
+                'Value': (option['Value'] ?? '').toString(),
+                'Name': (option['Name'] ?? option['Value'] ?? '').toString(),
+              },
+            )
+            .toList();
 
-    final options = fromEditor.isNotEmpty ? fromEditor : _fallbackContentTypeOptions();
-    if (currentType.isNotEmpty && options.every((option) => option['Value'] != currentType)) {
+    final options =
+        fromEditor.isNotEmpty ? fromEditor : _fallbackContentTypeOptions();
+    if (currentType.isNotEmpty &&
+        options.every((option) => option['Value'] != currentType)) {
       return [
         ...options,
         {'Value': currentType, 'Name': currentType},
@@ -267,19 +278,31 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
   String _imageUrl(ImageType type) {
     final tag = _imageTag(type);
     return switch (type) {
-      ImageType.primary =>
-        _imageApi.getPrimaryImageUrl(widget.itemId, maxWidth: 600, tag: tag),
+      ImageType.primary => _imageApi.getPrimaryImageUrl(
+        widget.itemId,
+        maxWidth: 600,
+        tag: tag,
+      ),
       ImageType.backdrop => _imageApi.getBackdropImageUrl(
         widget.itemId,
         maxWidth: 900,
         tag: tag,
       ),
-      ImageType.logo =>
-        _imageApi.getLogoImageUrl(widget.itemId, maxWidth: 400, tag: tag),
-      ImageType.banner =>
-        _imageApi.getBannerImageUrl(widget.itemId, maxWidth: 900, tag: tag),
-      ImageType.thumb =>
-        _imageApi.getThumbImageUrl(widget.itemId, maxWidth: 500, tag: tag),
+      ImageType.logo => _imageApi.getLogoImageUrl(
+        widget.itemId,
+        maxWidth: 400,
+        tag: tag,
+      ),
+      ImageType.banner => _imageApi.getBannerImageUrl(
+        widget.itemId,
+        maxWidth: 900,
+        tag: tag,
+      ),
+      ImageType.thumb => _imageApi.getThumbImageUrl(
+        widget.itemId,
+        maxWidth: 500,
+        tag: tag,
+      ),
       _ => '',
     };
   }
@@ -322,7 +345,10 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
     };
   }
 
-  Future<void> _runImageAction(ImageType type, Future<void> Function() action) async {
+  Future<void> _runImageAction(
+    ImageType type,
+    Future<void> Function() action,
+  ) async {
     setState(() => _busyImageType = type);
     try {
       await action();
@@ -345,15 +371,16 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
       'OriginalTitle': _originalTitleController.text.trim(),
       'PremiereDate': _dateValue('PremiereDate', _premiereDateController.text),
       'EndDate': _dateValue('EndDate', _endDateController.text),
-      'ProductionYear': int.tryParse(_productionYearController.text.trim()) ??
+      'ProductionYear':
+          int.tryParse(_productionYearController.text.trim()) ??
           _raw['ProductionYear'],
       'OfficialRating': _officialRatingController.text.trim(),
       'CommunityRating':
           double.tryParse(_communityRatingController.text.trim()) ??
-              _raw['CommunityRating'],
+          _raw['CommunityRating'],
       'CriticRating':
           double.tryParse(_criticRatingController.text.trim()) ??
-              _raw['CriticRating'],
+          _raw['CriticRating'],
       'Taglines': tagline.isEmpty ? <String>[] : [tagline],
       'Overview': _overviewController.text.trim(),
       'Genres': _genres,
@@ -376,15 +403,15 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
         _raw = update;
         _saving = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Metadata saved')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Metadata saved')));
     } catch (e) {
       if (!mounted) return;
       setState(() => _saving = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save metadata: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to save metadata: $e')));
     }
   }
 
@@ -395,46 +422,53 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setStateDialog) => AlertDialog(
-          title: const Text('Refresh Metadata'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CheckboxListTile(
-                value: recursive,
-                onChanged: (v) => setStateDialog(() => recursive = v ?? false),
-                title: const Text('Recursive'),
-                contentPadding: EdgeInsets.zero,
-              ),
-              CheckboxListTile(
-                value: replaceAllMetadata,
-                onChanged: (v) =>
-                    setStateDialog(() => replaceAllMetadata = v ?? false),
-                title: const Text('Replace all metadata'),
-                contentPadding: EdgeInsets.zero,
-              ),
-              CheckboxListTile(
-                value: replaceAllImages,
-                onChanged: (v) =>
-                    setStateDialog(() => replaceAllImages = v ?? false),
-                title: const Text('Replace all images'),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ],
+      builder:
+          (ctx) => StatefulBuilder(
+            builder:
+                (ctx, setStateDialog) => AlertDialog(
+                  title: const Text('Refresh Metadata'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CheckboxListTile(
+                        value: recursive,
+                        onChanged:
+                            (v) => setStateDialog(() => recursive = v ?? false),
+                        title: const Text('Recursive'),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      CheckboxListTile(
+                        value: replaceAllMetadata,
+                        onChanged:
+                            (v) => setStateDialog(
+                              () => replaceAllMetadata = v ?? false,
+                            ),
+                        title: const Text('Replace all metadata'),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      CheckboxListTile(
+                        value: replaceAllImages,
+                        onChanged:
+                            (v) => setStateDialog(
+                              () => replaceAllImages = v ?? false,
+                            ),
+                        title: const Text('Replace all images'),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Cancel'),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Refresh'),
+                    ),
+                  ],
+                ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Refresh'),
-            ),
-          ],
-        ),
-      ),
     );
 
     if (confirmed != true || !mounted) return;
@@ -452,9 +486,9 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to refresh metadata: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to refresh metadata: $e')));
     }
   }
 
@@ -462,28 +496,30 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
     final queryController = TextEditingController();
     final query = await showDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Search Remote Person'),
-        content: TextField(
-          controller: queryController,
-          autofocus: true,
-          decoration: const InputDecoration(
-            labelText: 'Name',
-            border: OutlineInputBorder(),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Search Remote Person'),
+            content: TextField(
+              controller: queryController,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(),
+              ),
+              onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed:
+                    () => Navigator.pop(ctx, queryController.text.trim()),
+                child: const Text('Search'),
+              ),
+            ],
           ),
-          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, queryController.text.trim()),
-            child: const Text('Search'),
-          ),
-        ],
-      ),
     );
     queryController.dispose();
 
@@ -505,48 +541,51 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
 
       final selected = await showDialog<Map<String, dynamic>>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Remote Results'),
-          content: SizedBox(
-            width: 560,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: results.length,
-              itemBuilder: (context, index) {
-                final item = results[index];
-                final name = (item['Name'] ?? item['SearchHint'] ?? 'Unknown')
-                    .toString();
-                final provider =
-                    (item['ProviderName'] ?? item['Provider'] ?? '').toString();
-                return ListTile(
-                  title: Text(name),
-                  subtitle: provider.isEmpty ? null : Text(provider),
-                  onTap: () => Navigator.pop(ctx, item),
-                );
-              },
+        builder:
+            (ctx) => AlertDialog(
+              title: const Text('Remote Results'),
+              content: SizedBox(
+                width: (MediaQuery.sizeOf(ctx).width - 32).clamp(280.0, 560.0),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: results.length,
+                  itemBuilder: (context, index) {
+                    final item = results[index];
+                    final name =
+                        (item['Name'] ?? item['SearchHint'] ?? 'Unknown')
+                            .toString();
+                    final provider =
+                        (item['ProviderName'] ?? item['Provider'] ?? '')
+                            .toString();
+                    return ListTile(
+                      title: Text(name),
+                      subtitle: provider.isEmpty ? null : Text(provider),
+                      onTap: () => Navigator.pop(ctx, item),
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Cancel'),
+                ),
+              ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
-            ),
-          ],
-        ),
       );
 
       if (selected == null || !mounted) return;
       await _api.applyRemoteSearchResult(widget.itemId, selected);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Remote metadata applied')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Remote metadata applied')));
       await _load();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Remote search failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Remote search failed: $e')));
     }
   }
 
@@ -554,25 +593,26 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
     final controller = TextEditingController();
     final value = await showDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(title),
+            content: TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+                child: const Text('Add'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: const Text('Add'),
-          ),
-        ],
-      ),
     );
     controller.dispose();
 
@@ -588,64 +628,67 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
     final existing = index == null ? null : _people[index];
     final nameController = TextEditingController(text: existing?['Name'] ?? '');
     final roleController = TextEditingController(text: existing?['Role'] ?? '');
-    final typeController = TextEditingController(text: existing?['Type'] ?? 'Actor');
+    final typeController = TextEditingController(
+      text: existing?['Type'] ?? 'Actor',
+    );
 
     final person = await showDialog<Map<String, String>>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(index == null ? 'Add Person' : 'Edit Person'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(index == null ? 'Add Person' : 'Edit Person'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: roleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Role',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: typeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Type',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: roleController,
-                decoration: const InputDecoration(
-                  labelText: 'Role',
-                  border: OutlineInputBorder(),
-                ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: typeController,
-                decoration: const InputDecoration(
-                  labelText: 'Type',
-                  border: OutlineInputBorder(),
-                ),
+              FilledButton(
+                onPressed: () {
+                  final name = nameController.text.trim();
+                  if (name.isEmpty) {
+                    Navigator.pop(ctx);
+                    return;
+                  }
+                  Navigator.pop(ctx, {
+                    'Name': name,
+                    'Role': roleController.text.trim(),
+                    'Type': typeController.text.trim(),
+                  });
+                },
+                child: Text(index == null ? 'Add' : 'Save'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              final name = nameController.text.trim();
-              if (name.isEmpty) {
-                Navigator.pop(ctx);
-                return;
-              }
-              Navigator.pop(ctx, {
-                'Name': name,
-                'Role': roleController.text.trim(),
-                'Type': typeController.text.trim(),
-              });
-            },
-            child: Text(index == null ? 'Add' : 'Save'),
-          ),
-        ],
-      ),
     );
 
     nameController.dispose();
@@ -675,48 +718,53 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
 
     final value = await showDialog<String>(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setStateDialog) => AlertDialog(
-          title: const Text('Update Content Type'),
-          content: DropdownButtonFormField<String>(
-            value: selectedValue,
-            decoration: const InputDecoration(
-              labelText: 'Content type',
-              border: OutlineInputBorder(),
-            ),
-            items: options.map((option) {
-              final optionValue = option['Value'] ?? '';
-              final optionName = option['Name'] ?? optionValue;
-              return DropdownMenuItem<String>(
-                value: optionValue,
-                child: Text(optionName.isEmpty ? 'Default' : optionName),
-              );
-            }).toList(),
-            onChanged: (next) {
-              setStateDialog(() => selectedValue = next ?? '');
-            },
+      builder:
+          (ctx) => StatefulBuilder(
+            builder:
+                (ctx, setStateDialog) => AlertDialog(
+                  title: const Text('Update Content Type'),
+                  content: DropdownButtonFormField<String>(
+                    value: selectedValue,
+                    decoration: const InputDecoration(
+                      labelText: 'Content type',
+                      border: OutlineInputBorder(),
+                    ),
+                    items:
+                        options.map((option) {
+                          final optionValue = option['Value'] ?? '';
+                          final optionName = option['Name'] ?? optionValue;
+                          return DropdownMenuItem<String>(
+                            value: optionValue,
+                            child: Text(
+                              optionName.isEmpty ? 'Default' : optionName,
+                            ),
+                          );
+                        }).toList(),
+                    onChanged: (next) {
+                      setStateDialog(() => selectedValue = next ?? '');
+                    },
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text('Cancel'),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.pop(ctx, selectedValue),
+                      child: const Text('Update'),
+                    ),
+                  ],
+                ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, selectedValue),
-              child: const Text('Update'),
-            ),
-          ],
-        ),
-      ),
     );
 
     if (value == null || value.isEmpty || !mounted) return;
     try {
       await _api.updateContentType(widget.itemId, value);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Content type updated')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Content type updated')));
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -743,10 +791,7 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
             const SizedBox(height: 8),
             Text(_error!, textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            FilledButton.tonal(
-              onPressed: _load,
-              child: const Text('Retry'),
-            ),
+            FilledButton.tonal(onPressed: _load, child: const Text('Retry')),
           ],
         ),
       );
@@ -756,76 +801,77 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: compactHeader
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Metadata Editor',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        FilledButton.tonalIcon(
-                          onPressed: _refreshMetadata,
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Refresh'),
-                        ),
-                        FilledButton.tonalIcon(
-                          onPressed: _searchAndApplyRemote,
-                          icon: const Icon(Icons.travel_explore),
-                          label: const Text('Remote'),
-                        ),
-                        FilledButton.tonalIcon(
-                          onPressed: _changeContentType,
-                          icon: const Icon(Icons.category_outlined),
-                          label: const Text('Type'),
-                        ),
-                        FilledButton.icon(
-                          onPressed: _saving ? null : _save,
-                          icon: const Icon(Icons.save),
-                          label: const Text('Save'),
-                        ),
-                      ],
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: Text(
+          child:
+              compactHeader
+                  ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         'Metadata Editor',
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                    ),
-                    FilledButton.tonalIcon(
-                      onPressed: _refreshMetadata,
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Refresh'),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton.tonalIcon(
-                      onPressed: _searchAndApplyRemote,
-                      icon: const Icon(Icons.travel_explore),
-                      label: const Text('Remote'),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton.tonalIcon(
-                      onPressed: _changeContentType,
-                      icon: const Icon(Icons.category_outlined),
-                      label: const Text('Type'),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton.icon(
-                      onPressed: _saving ? null : _save,
-                      icon: const Icon(Icons.save),
-                      label: const Text('Save'),
-                    ),
-                  ],
-                ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          FilledButton.tonalIcon(
+                            onPressed: _refreshMetadata,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Refresh'),
+                          ),
+                          FilledButton.tonalIcon(
+                            onPressed: _searchAndApplyRemote,
+                            icon: const Icon(Icons.travel_explore),
+                            label: const Text('Remote'),
+                          ),
+                          FilledButton.tonalIcon(
+                            onPressed: _changeContentType,
+                            icon: const Icon(Icons.category_outlined),
+                            label: const Text('Type'),
+                          ),
+                          FilledButton.icon(
+                            onPressed: _saving ? null : _save,
+                            icon: const Icon(Icons.save),
+                            label: const Text('Save'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                  : Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Metadata Editor',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ),
+                      FilledButton.tonalIcon(
+                        onPressed: _refreshMetadata,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Refresh'),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton.tonalIcon(
+                        onPressed: _searchAndApplyRemote,
+                        icon: const Icon(Icons.travel_explore),
+                        label: const Text('Remote'),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton.tonalIcon(
+                        onPressed: _changeContentType,
+                        icon: const Icon(Icons.category_outlined),
+                        label: const Text('Type'),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton.icon(
+                        onPressed: _saving ? null : _save,
+                        icon: const Icon(Icons.save),
+                        label: const Text('Save'),
+                      ),
+                    ],
+                  ),
         ),
         TabBar(
           controller: _tabController,
@@ -863,25 +909,56 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _field(_premiereDateController, 'Premiere date (YYYY-MM-DD)')),
+            Expanded(
+              child: _field(
+                _premiereDateController,
+                'Premiere date (YYYY-MM-DD)',
+              ),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _field(_endDateController, 'End date (YYYY-MM-DD)')),
+            Expanded(
+              child: _field(_endDateController, 'End date (YYYY-MM-DD)'),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _field(_productionYearController, 'Production year', keyboardType: TextInputType.number)),
+            Expanded(
+              child: _field(
+                _productionYearController,
+                'Production year',
+                keyboardType: TextInputType.number,
+              ),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _field(_officialRatingController, 'Official rating')),
+            Expanded(
+              child: _field(_officialRatingController, 'Official rating'),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _field(_communityRatingController, 'Community rating', keyboardType: const TextInputType.numberWithOptions(decimal: true))),
+            Expanded(
+              child: _field(
+                _communityRatingController,
+                'Community rating',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+              ),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _field(_criticRatingController, 'Critic rating', keyboardType: const TextInputType.numberWithOptions(decimal: true))),
+            Expanded(
+              child: _field(
+                _criticRatingController,
+                'Critic rating',
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -900,7 +977,11 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
         const SizedBox(height: 12),
         _chipEditor('Tags', _tags, () => _addChip('Add tag', _tags)),
         const SizedBox(height: 12),
-        _chipEditor('Studios', _studios, () => _addChip('Add studio', _studios)),
+        _chipEditor(
+          'Studios',
+          _studios,
+          () => _addChip('Add studio', _studios),
+        ),
         const SizedBox(height: 16),
         Row(
           children: [
@@ -930,7 +1011,9 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
             return ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(name),
-              subtitle: Text([role, type].where((e) => e.isNotEmpty).join(' • ')),
+              subtitle: Text(
+                [role, type].where((e) => e.isNotEmpty).join(' • '),
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -966,9 +1049,11 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
           ..._externalIds.map((info) {
             final key = _externalKey(info);
             final label = _externalLabel(info);
-            final controller = _externalControllers[key] ??
+            final controller =
+                _externalControllers[key] ??
                 (_externalControllers[key] = TextEditingController());
-            final url = (info['UrlFormatString'] ?? info['Url'] ?? '').toString();
+            final url =
+                (info['UrlFormatString'] ?? info['Url'] ?? '').toString();
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Column(
@@ -1060,15 +1145,22 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
                 child: Image.network(
                   url,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.image_not_supported_outlined, size: 32),
-                    ),
-                  ),
+                  errorBuilder:
+                      (_, __, ___) => Container(
+                        decoration: BoxDecoration(
+                          color:
+                              Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.image_not_supported_outlined,
+                            size: 32,
+                          ),
+                        ),
+                      ),
                 ),
               ),
             ),
@@ -1110,11 +1202,12 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
     try {
       final selected = await showDialog<Map<String, dynamic>>(
         context: context,
-        builder: (ctx) => _RemoteImagePickerDialog(
-          api: _api,
-          itemId: widget.itemId,
-          imageType: imageType,
-        ),
+        builder:
+            (ctx) => _RemoteImagePickerDialog(
+              api: _api,
+              itemId: widget.itemId,
+              imageType: imageType,
+            ),
       );
 
       final imageUrl = (selected?['Url'] ?? '').toString();
@@ -1130,14 +1223,16 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
         );
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${imageType.toServerString()} image updated')),
+          SnackBar(
+            content: Text('${imageType.toServerString()} image updated'),
+          ),
         );
       });
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to download image: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to download image: $e')));
     }
   }
 
@@ -1162,7 +1257,8 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
       return;
     }
 
-    final bytes = file.bytes ??
+    final bytes =
+        file.bytes ??
         (file.path != null ? await File(file.path!).readAsBytes() : null);
     if (!mounted) return;
 
@@ -1183,7 +1279,9 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
         );
         if (!mounted) return;
         messenger.showSnackBar(
-          SnackBar(content: Text('${imageType.toServerString()} image uploaded')),
+          SnackBar(
+            content: Text('${imageType.toServerString()} image uploaded'),
+          ),
         );
       });
     } catch (e) {
@@ -1197,20 +1295,23 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
   Future<void> _deleteImage(ImageType imageType) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Delete ${imageType.toServerString()} image'),
-        content: const Text('This removes the current image from the item.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: Text('Delete ${imageType.toServerString()} image'),
+            content: const Text(
+              'This removes the current image from the item.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
     );
 
     if (confirmed != true || !mounted) return;
@@ -1220,14 +1321,16 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
         await _api.deleteItemImage(widget.itemId, imageType: imageType);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${imageType.toServerString()} image deleted')),
+          SnackBar(
+            content: Text('${imageType.toServerString()} image deleted'),
+          ),
         );
       });
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete image: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to delete image: $e')));
     }
   }
 
@@ -1248,11 +1351,7 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
     );
   }
 
-  Widget _chipEditor(
-    String label,
-    List<String> values,
-    VoidCallback onAdd,
-  ) {
+  Widget _chipEditor(String label, List<String> values, VoidCallback onAdd) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -1281,18 +1380,19 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: values
-                    .map(
-                      (value) => Chip(
-                        label: Text(value),
-                        onDeleted: () {
-                          setState(() {
-                            values.remove(value);
-                          });
-                        },
-                      ),
-                    )
-                    .toList(),
+                children:
+                    values
+                        .map(
+                          (value) => Chip(
+                            label: Text(value),
+                            onDeleted: () {
+                              setState(() {
+                                values.remove(value);
+                              });
+                            },
+                          ),
+                        )
+                        .toList(),
               ),
           ],
         ),
@@ -1313,7 +1413,8 @@ class _RemoteImagePickerDialog extends StatefulWidget {
   });
 
   @override
-  State<_RemoteImagePickerDialog> createState() => _RemoteImagePickerDialogState();
+  State<_RemoteImagePickerDialog> createState() =>
+      _RemoteImagePickerDialogState();
 }
 
 class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
@@ -1327,7 +1428,8 @@ class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
   List<String> _providers = const [];
   List<Map<String, dynamic>> _images = const [];
 
-  int get _totalPages => _totalCount == 0 ? 1 : ((_totalCount - 1) ~/ _pageSize) + 1;
+  int get _totalPages =>
+      _totalCount == 0 ? 1 : ((_totalCount - 1) ~/ _pageSize) + 1;
 
   double get _previewAspectRatio {
     return switch (widget.imageType) {
@@ -1384,13 +1486,15 @@ class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
 
       if (!mounted) return;
       setState(() {
-        _images = (result['Images'] as List?)
+        _images =
+            (result['Images'] as List?)
                 ?.whereType<Map>()
                 .map((entry) => entry.cast<String, dynamic>())
                 .toList() ??
             const [];
         if (_providers.isEmpty) {
-          _providers = (result['Providers'] as List?)
+          _providers =
+              (result['Providers'] as List?)
                   ?.map((entry) => entry.toString())
                   .where((entry) => entry.isNotEmpty)
                   .toList() ??
@@ -1414,9 +1518,10 @@ class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
     final compact = viewport.width < 700;
 
     return Dialog(
-      insetPadding: compact
-          ? const EdgeInsets.symmetric(horizontal: 12, vertical: 20)
-          : const EdgeInsets.symmetric(horizontal: 40, vertical: 28),
+      insetPadding:
+          compact
+              ? const EdgeInsets.symmetric(horizontal: 12, vertical: 20)
+              : const EdgeInsets.symmetric(horizontal: 40, vertical: 28),
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: compact ? viewport.width : 960,
@@ -1444,22 +1549,24 @@ class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        onPressed: _loading || _page == 0
-                            ? null
-                            : () {
-                                setState(() => _page -= 1);
-                                _load();
-                              },
+                        onPressed:
+                            _loading || _page == 0
+                                ? null
+                                : () {
+                                  setState(() => _page -= 1);
+                                  _load();
+                                },
                         icon: const Icon(Icons.chevron_left),
                       ),
                       Text('${_page + 1} / $_totalPages'),
                       IconButton(
-                        onPressed: _loading || _page + 1 >= _totalPages
-                            ? null
-                            : () {
-                                setState(() => _page += 1);
-                                _load();
-                              },
+                        onPressed:
+                            _loading || _page + 1 >= _totalPages
+                                ? null
+                                : () {
+                                  setState(() => _page += 1);
+                                  _load();
+                                },
                         icon: const Icon(Icons.chevron_right),
                       ),
                     ],
@@ -1538,109 +1645,137 @@ class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
               ),
               const SizedBox(height: 12),
               Expanded(
-                child: _loading
-                    ? const Center(child: CircularProgressIndicator())
-                    : _error != null
+                child:
+                    _loading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _error != null
                         ? Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(_error!, textAlign: TextAlign.center),
-                                const SizedBox(height: 12),
-                                FilledButton.tonal(
-                                  onPressed: _load,
-                                  child: const Text('Retry'),
-                                ),
-                              ],
-                            ),
-                          )
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(_error!, textAlign: TextAlign.center),
+                              const SizedBox(height: 12),
+                              FilledButton.tonal(
+                                onPressed: _load,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        )
                         : _images.isEmpty
-                            ? const Center(child: Text('No remote images found'))
-                            : LayoutBuilder(
-                                builder: (context, constraints) {
-                                  final maxWidth = constraints.maxWidth;
-                                  final crossAxisCount = maxWidth >= 980
-                                      ? 4
-                                      : maxWidth >= 660
-                                          ? 3
-                                          : maxWidth >= 420
-                                              ? 2
-                                              : 1;
+                        ? const Center(child: Text('No remote images found'))
+                        : LayoutBuilder(
+                          builder: (context, constraints) {
+                            final maxWidth = constraints.maxWidth;
+                            final crossAxisCount =
+                                maxWidth >= 980
+                                    ? 4
+                                    : maxWidth >= 660
+                                    ? 3
+                                    : maxWidth >= 420
+                                    ? 2
+                                    : 1;
 
-                                  return GridView.builder(
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: crossAxisCount,
-                                      mainAxisSpacing: 12,
-                                      crossAxisSpacing: 12,
-                                      childAspectRatio: _gridChildAspectRatio(crossAxisCount),
+                            return GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: crossAxisCount,
+                                    mainAxisSpacing: 12,
+                                    crossAxisSpacing: 12,
+                                    childAspectRatio: _gridChildAspectRatio(
+                                      crossAxisCount,
                                     ),
-                                    itemCount: _images.length,
-                                    itemBuilder: (context, index) {
-                                      final image = _images[index];
-                                      final previewUrl = (image['ThumbnailUrl'] ?? image['Url'] ?? '').toString();
-                                      final providerName = (image['ProviderName'] ?? '').toString();
-                                      final size = [image['Width'], image['Height']]
-                                          .where((value) => value != null)
-                                          .map((value) => value.toString())
-                                          .join(' x ');
+                                  ),
+                              itemCount: _images.length,
+                              itemBuilder: (context, index) {
+                                final image = _images[index];
+                                final previewUrl =
+                                    (image['ThumbnailUrl'] ??
+                                            image['Url'] ??
+                                            '')
+                                        .toString();
+                                final providerName =
+                                    (image['ProviderName'] ?? '').toString();
+                                final size = [image['Width'], image['Height']]
+                                    .where((value) => value != null)
+                                    .map((value) => value.toString())
+                                    .join(' x ');
 
-                                      return InkWell(
-                                        onTap: () => Navigator.pop(context, image),
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: AspectRatio(
-                                                  aspectRatio: _previewAspectRatio,
-                                                  child: previewUrl.isEmpty
-                                                      ? Container(
-                                                          color: Theme.of(context)
+                                return InkWell(
+                                  onTap: () => Navigator.pop(context, image),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Card(
+                                    clipBehavior: Clip.antiAlias,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: AspectRatio(
+                                            aspectRatio: _previewAspectRatio,
+                                            child:
+                                                previewUrl.isEmpty
+                                                    ? Container(
+                                                      color:
+                                                          Theme.of(context)
                                                               .colorScheme
                                                               .surfaceContainerHighest,
-                                                          child: const Center(
-                                                            child: Icon(Icons.image_not_supported_outlined),
-                                                          ),
-                                                        )
-                                                      : Image.network(
-                                                          previewUrl,
-                                                          width: double.infinity,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.all(10),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      providerName.isEmpty ? 'Remote image' : providerName,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: Theme.of(context).textTheme.titleSmall,
-                                                    ),
-                                                    if (size.isNotEmpty)
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(top: 2),
-                                                        child: Text(
-                                                          size,
-                                                          style: Theme.of(context).textTheme.bodySmall,
+                                                      child: const Center(
+                                                        child: Icon(
+                                                          Icons
+                                                              .image_not_supported_outlined,
                                                         ),
                                                       ),
-                                                  ],
-                                                ),
+                                                    )
+                                                    : Image.network(
+                                                      previewUrl,
+                                                      width: double.infinity,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                providerName.isEmpty
+                                                    ? 'Remote image'
+                                                    : providerName,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.titleSmall,
                                               ),
+                                              if (size.isNotEmpty)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        top: 2,
+                                                      ),
+                                                  child: Text(
+                                                    size,
+                                                    style:
+                                                        Theme.of(
+                                                          context,
+                                                        ).textTheme.bodySmall,
+                                                  ),
+                                                ),
                                             ],
                                           ),
                                         ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
               ),
               Align(
                 alignment: Alignment.centerRight,

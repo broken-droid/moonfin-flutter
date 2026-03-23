@@ -182,9 +182,10 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   void _resetAfterError() {
     setState(() {
       _errorMessage = null;
-      _phase = _servers.isEmpty
-          ? _EmbyConnectPhase.credentials
-          : _EmbyConnectPhase.serverList;
+      _phase =
+          _servers.isEmpty
+              ? _EmbyConnectPhase.credentials
+              : _EmbyConnectPhase.serverList;
     });
   }
 
@@ -270,28 +271,37 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
         ],
         const SizedBox(height: 24),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            OutlinedButton.icon(
-              onPressed: isBusy
-                  ? null
-                  : () => context.go(Destinations.serverSelect),
-              icon: const Icon(Icons.arrow_back, size: 18),
-              label: const Text('Back'),
-              style: _focusableButtonStyle(),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed:
+                    isBusy ? null : () => context.go(Destinations.serverSelect),
+                icon: const Icon(Icons.arrow_back, size: 18),
+                label: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text('Back'),
+                ),
+                style: _focusableButtonStyle(),
+              ),
             ),
             const SizedBox(width: 12),
-            OutlinedButton.icon(
-              onPressed: isBusy ? null : _signIn,
-              icon: isBusy
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.login, size: 18),
-              label: const Text('Sign In'),
-              style: _focusableButtonStyle(),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: isBusy ? null : _signIn,
+                icon:
+                    isBusy
+                        ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : const Icon(Icons.login, size: 18),
+                label: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text('Sign In'),
+                ),
+                style: _focusableButtonStyle(),
+              ),
             ),
           ],
         ),
@@ -320,20 +330,29 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
         ],
         const SizedBox(height: 16),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            OutlinedButton.icon(
-              onPressed: () => context.go(Destinations.serverSelect),
-              icon: const Icon(Icons.arrow_back, size: 18),
-              label: const Text('Back'),
-              style: _focusableButtonStyle(),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => context.go(Destinations.serverSelect),
+                icon: const Icon(Icons.arrow_back, size: 18),
+                label: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text('Back'),
+                ),
+                style: _focusableButtonStyle(),
+              ),
             ),
             const SizedBox(width: 12),
-            OutlinedButton.icon(
-              onPressed: _resetAfterError,
-              icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('Try Again'),
-              style: _focusableButtonStyle(),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _resetAfterError,
+                icon: const Icon(Icons.refresh, size: 18),
+                label: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text('Try Again'),
+                ),
+                style: _focusableButtonStyle(),
+              ),
             ),
           ],
         ),
@@ -342,9 +361,10 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   }
 
   Widget _buildServerTile(EmbyConnectServer server) {
-    final subtitle = server.candidateAddresses.isNotEmpty
-        ? server.candidateAddresses.first
-        : 'No reachable address provided';
+    final subtitle =
+        server.candidateAddresses.isNotEmpty
+            ? server.candidateAddresses.first
+            : 'No reachable address provided';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),

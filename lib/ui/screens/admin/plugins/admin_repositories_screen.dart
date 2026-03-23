@@ -39,9 +39,9 @@ class _AdminRepositoriesScreenState
     );
     if (result == null || !mounted) return;
 
-    final current =
-        List<RepositoryInfo>.from(
-            ref.read(adminRepositoriesProvider).valueOrNull ?? []);
+    final current = List<RepositoryInfo>.from(
+      ref.read(adminRepositoriesProvider).valueOrNull ?? [],
+    );
     current[index] = result;
     await _saveRepos(current);
   }
@@ -49,35 +49,37 @@ class _AdminRepositoriesScreenState
   Future<void> _removeRepository(int index, RepositoryInfo repo) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Remove Repository'),
-        content: Text(
-            'Are you sure you want to remove "${repo.name.isNotEmpty ? repo.name : repo.url}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Remove Repository'),
+            content: Text(
+              'Are you sure you want to remove "${repo.name.isNotEmpty ? repo.name : repo.url}"?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Remove'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Remove'),
-          ),
-        ],
-      ),
     );
     if (confirmed != true || !mounted) return;
 
-    final current =
-        List<RepositoryInfo>.from(
-            ref.read(adminRepositoriesProvider).valueOrNull ?? []);
+    final current = List<RepositoryInfo>.from(
+      ref.read(adminRepositoriesProvider).valueOrNull ?? [],
+    );
     current.removeAt(index);
     await _saveRepos(current);
   }
 
   Future<void> _toggleRepository(int index) async {
-    final current =
-        List<RepositoryInfo>.from(
-            ref.read(adminRepositoriesProvider).valueOrNull ?? []);
+    final current = List<RepositoryInfo>.from(
+      ref.read(adminRepositoriesProvider).valueOrNull ?? [],
+    );
     final repo = current[index];
     current[index] = RepositoryInfo(
       name: repo.name,
@@ -96,7 +98,8 @@ class _AdminRepositoriesScreenState
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to save repositories: $e')));
+          SnackBar(content: Text('Failed to save repositories: $e')),
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -109,19 +112,20 @@ class _AdminRepositoriesScreenState
 
     return reposAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Failed to load repositories: $error'),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () => ref.invalidate(adminRepositoriesProvider),
-              child: const Text('Retry'),
+      error:
+          (error, _) => Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Failed to load repositories: $error'),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () => ref.invalidate(adminRepositoriesProvider),
+                  child: const Text('Retry'),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
       data: (repos) => _buildContent(context, repos),
     );
   }
@@ -139,15 +143,23 @@ class _AdminRepositoriesScreenState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.source, size: 48,
-                    color: theme.colorScheme.onSurfaceVariant),
+                Icon(
+                  Icons.source,
+                  size: 48,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
                 const SizedBox(height: 16),
-                Text('No repositories configured',
-                    style: theme.textTheme.titleMedium),
+                Text(
+                  'No repositories configured',
+                  style: theme.textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
-                Text('Add a repository to browse available plugins',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant)),
+                Text(
+                  'Add a repository to browse available plugins',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           )
@@ -165,8 +177,7 @@ class _AdminRepositoriesScreenState
               );
             },
           ),
-        if (_saving)
-          const Center(child: CircularProgressIndicator()),
+        if (_saving) const Center(child: CircularProgressIndicator()),
         Positioned(
           right: 16,
           bottom: fabBottom,
@@ -199,9 +210,10 @@ class _RepositoryTile extends StatelessWidget {
     return ListTile(
       leading: Icon(
         Icons.source,
-        color: repo.enabled
-            ? theme.colorScheme.primary
-            : theme.colorScheme.onSurfaceVariant,
+        color:
+            repo.enabled
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurfaceVariant,
       ),
       title: Text(
         repo.name.isNotEmpty ? repo.name : '(unnamed)',
@@ -214,18 +226,16 @@ class _RepositoryTile extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: repo.enabled
-              ? theme.colorScheme.onSurfaceVariant
-              : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+          color:
+              repo.enabled
+                  ? theme.colorScheme.onSurfaceVariant
+                  : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
         ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Switch(
-            value: repo.enabled,
-            onChanged: (_) => onToggle(),
-          ),
+          Switch(value: repo.enabled, onChanged: (_) => onToggle()),
           PopupMenuButton<String>(
             onSelected: (value) {
               switch (value) {
@@ -235,10 +245,11 @@ class _RepositoryTile extends StatelessWidget {
                   onRemove();
               }
             },
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'edit', child: Text('Edit')),
-              PopupMenuItem(value: 'remove', child: Text('Remove')),
-            ],
+            itemBuilder:
+                (context) => const [
+                  PopupMenuItem(value: 'edit', child: Text('Edit')),
+                  PopupMenuItem(value: 'remove', child: Text('Remove')),
+                ],
           ),
         ],
       ),
@@ -288,10 +299,14 @@ class _RepositoryDialogState extends State<_RepositoryDialog> {
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.existing != null;
+    final dialogWidth = (MediaQuery.sizeOf(context).width - 32).clamp(
+      280.0,
+      400.0,
+    );
     return AlertDialog(
       title: Text(isEdit ? 'Edit Repository' : 'Add Repository'),
       content: SizedBox(
-        width: 400,
+        width: dialogWidth,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -308,7 +323,8 @@ class _RepositoryDialogState extends State<_RepositoryDialog> {
               controller: _urlController,
               decoration: const InputDecoration(
                 labelText: 'Repository URL',
-                hintText: 'https://repo.jellyfin.org/files/plugin/manifest.json',
+                hintText:
+                    'https://repo.jellyfin.org/files/plugin/manifest.json',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.url,
@@ -329,18 +345,19 @@ class _RepositoryDialogState extends State<_RepositoryDialog> {
           child: const Text('Cancel'),
         ),
         FilledButton(
-          onPressed: !_urlNotEmpty
-              ? null
-              : () {
-                  Navigator.pop(
-                    context,
-                    RepositoryInfo(
-                      name: _nameController.text.trim(),
-                      url: _urlController.text.trim(),
-                      enabled: _enabled,
-                    ),
-                  );
-                },
+          onPressed:
+              !_urlNotEmpty
+                  ? null
+                  : () {
+                    Navigator.pop(
+                      context,
+                      RepositoryInfo(
+                        name: _nameController.text.trim(),
+                        url: _urlController.text.trim(),
+                        enabled: _enabled,
+                      ),
+                    );
+                  },
           child: Text(isEdit ? 'Save' : 'Add'),
         ),
       ],

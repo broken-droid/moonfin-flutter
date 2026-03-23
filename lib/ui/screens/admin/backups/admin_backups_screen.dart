@@ -61,7 +61,8 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
   }
 
   String _backupPath(Map<String, dynamic> item) {
-    final value = item['Path'] ?? item['BackupPath'] ?? item['FilePath'] ?? item['Name'];
+    final value =
+        item['Path'] ?? item['BackupPath'] ?? item['FilePath'] ?? item['Name'];
     return (value ?? '').toString();
   }
 
@@ -81,7 +82,11 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
   }
 
   DateTime? _backupDate(Map<String, dynamic> item) {
-    final raw = item['DateCreated'] ?? item['Created'] ?? item['Date'] ?? item['DateModified'];
+    final raw =
+        item['DateCreated'] ??
+        item['Created'] ??
+        item['Date'] ??
+        item['DateModified'];
     if (raw is String && raw.isNotEmpty) {
       return DateTime.tryParse(raw);
     }
@@ -102,15 +107,16 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => const AlertDialog(
-        content: Row(
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(width: 16),
-            Expanded(child: Text('Creating backup...')),
-          ],
-        ),
-      ),
+      builder:
+          (ctx) => const AlertDialog(
+            content: Row(
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 16),
+                Expanded(child: Text('Creating backup...')),
+              ],
+            ),
+          ),
     );
 
     try {
@@ -128,9 +134,9 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
         Navigator.of(context, rootNavigator: true).pop();
       }
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to create backup: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to create backup: $e')));
     } finally {
       if (mounted) {
         setState(() => _creating = false);
@@ -153,50 +159,55 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
       final pretty = const JsonEncoder.withIndent('  ').convert(manifest);
       await showDialog<void>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Manifest: ${_backupName(backup)}'),
-          content: SizedBox(
-            width: 640,
-            child: SingleChildScrollView(
-              child: SelectableText(
-                pretty,
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+        builder:
+            (ctx) => AlertDialog(
+              title: Text('Manifest: ${_backupName(backup)}'),
+              content: SizedBox(
+                width: (MediaQuery.sizeOf(ctx).width - 32).clamp(280.0, 640.0),
+                child: SingleChildScrollView(
+                  child: SelectableText(
+                    pretty,
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
               ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Close'),
+                ),
+              ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Close'),
-            ),
-          ],
-        ),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load manifest: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to load manifest: $e')));
     }
   }
 
   Future<bool> _confirmStep(String message, String confirmLabel) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Confirm Restore'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Confirm Restore'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(confirmLabel),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(confirmLabel),
-          ),
-        ],
-      ),
     );
     return confirmed == true;
   }
@@ -237,15 +248,16 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => const AlertDialog(
-        content: Row(
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(width: 16),
-            Expanded(child: Text('Restoring backup...')),
-          ],
-        ),
-      ),
+      builder:
+          (ctx) => const AlertDialog(
+            content: Row(
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 16),
+                Expanded(child: Text('Restoring backup...')),
+              ],
+            ),
+          ),
     );
 
     try {
@@ -256,7 +268,9 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Restore requested. Server restart may disconnect this session.'),
+          content: Text(
+            'Restore requested. Server restart may disconnect this session.',
+          ),
         ),
       );
     } catch (e) {
@@ -264,23 +278,22 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
         Navigator.of(context, rootNavigator: true).pop();
       }
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to restore backup: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to restore backup: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final sorted = List<Map<String, dynamic>>.from(_backups)
-      ..sort((a, b) {
-        final ad = _backupDate(a);
-        final bd = _backupDate(b);
-        if (ad == null && bd == null) return 0;
-        if (ad == null) return 1;
-        if (bd == null) return -1;
-        return bd.compareTo(ad);
-      });
+    final sorted = List<Map<String, dynamic>>.from(_backups)..sort((a, b) {
+      final ad = _backupDate(a);
+      final bd = _backupDate(b);
+      if (ad == null && bd == null) return 0;
+      if (ad == null) return 1;
+      if (bd == null) return -1;
+      return bd.compareTo(ad);
+    });
 
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
@@ -332,44 +345,46 @@ class _AdminBackupsScreenState extends State<AdminBackupsScreen> {
         ),
         const Divider(height: 1),
         Expanded(
-          child: sorted.isEmpty
-              ? const Center(child: Text('No backups found'))
-              : ListView.separated(
-                  itemCount: sorted.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final backup = sorted[index];
-                    final size = _backupSize(backup);
-                    final date = _backupDate(backup);
-                    return ListTile(
-                      leading: const Icon(Icons.backup_outlined),
-                      title: Text(_backupName(backup)),
-                      subtitle: Text(
-                        '${_formatDate(date)} | ${formatBytes(size)}\n${_backupPath(backup)}',
-                      ),
-                      isThreeLine: true,
-                      trailing: PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == 'manifest') {
-                            _viewManifest(backup);
-                          } else if (value == 'restore') {
-                            _restoreBackup(backup);
-                          }
-                        },
-                        itemBuilder: (ctx) => const [
-                          PopupMenuItem(
-                            value: 'manifest',
-                            child: Text('View Details'),
-                          ),
-                          PopupMenuItem(
-                            value: 'restore',
-                            child: Text('Restore'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+          child:
+              sorted.isEmpty
+                  ? const Center(child: Text('No backups found'))
+                  : ListView.separated(
+                    itemCount: sorted.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final backup = sorted[index];
+                      final size = _backupSize(backup);
+                      final date = _backupDate(backup);
+                      return ListTile(
+                        leading: const Icon(Icons.backup_outlined),
+                        title: Text(_backupName(backup)),
+                        subtitle: Text(
+                          '${_formatDate(date)} | ${formatBytes(size)}\n${_backupPath(backup)}',
+                        ),
+                        isThreeLine: true,
+                        trailing: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'manifest') {
+                              _viewManifest(backup);
+                            } else if (value == 'restore') {
+                              _restoreBackup(backup);
+                            }
+                          },
+                          itemBuilder:
+                              (ctx) => const [
+                                PopupMenuItem(
+                                  value: 'manifest',
+                                  child: Text('View Details'),
+                                ),
+                                PopupMenuItem(
+                                  value: 'restore',
+                                  child: Text('Restore'),
+                                ),
+                              ],
+                        ),
+                      );
+                    },
+                  ),
         ),
       ],
     );

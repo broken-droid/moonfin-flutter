@@ -9,9 +9,9 @@ class SettingsPanel extends StatelessWidget {
 
   static Future<void> open(BuildContext context, Widget content) {
     if (PlatformDetection.useMobileUi) {
-      return Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => content),
-      );
+      return Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => content));
     }
     return showGeneralDialog(
       context: context,
@@ -25,13 +25,20 @@ class SettingsPanel extends StatelessWidget {
           begin: const Offset(1.0, 0.0),
           end: Offset.zero,
         ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic));
-        return SlideTransition(position: slide, child: FadeTransition(opacity: anim, child: child));
+        return SlideTransition(
+          position: slide,
+          child: FadeTransition(opacity: anim, child: child),
+        );
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final panelWidth = (MediaQuery.sizeOf(context).width - 16).clamp(
+      280.0,
+      380.0,
+    );
     return Align(
       alignment: Alignment.centerRight,
       child: Material(
@@ -39,7 +46,7 @@ class SettingsPanel extends StatelessWidget {
         borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
         clipBehavior: Clip.antiAlias,
         child: SizedBox(
-          width: 380,
+          width: panelWidth,
           height: double.infinity,
           child: _SettingsNavigator(initial: child),
         ),
@@ -74,9 +81,8 @@ class _SettingsNavigatorState extends State<_SettingsNavigator> {
       },
       child: Navigator(
         key: _navKey,
-        onGenerateRoute: (_) => MaterialPageRoute(
-          builder: (_) => widget.initial,
-        ),
+        onGenerateRoute:
+            (_) => MaterialPageRoute(builder: (_) => widget.initial),
       ),
     );
   }

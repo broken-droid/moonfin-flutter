@@ -23,7 +23,8 @@ const _horizontalPadding = 60.0;
 const _kCompactBreakpoint = 600.0;
 
 bool _isCompact(BuildContext context) =>
-    PlatformDetection.isMobile || MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
+    PlatformDetection.isMobile ||
+    MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -107,7 +108,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (_vm.imageType == ImageType.thumb && item.backdropImageTags.isNotEmpty) {
       return api.getBackdropImageUrl(item.id);
     }
-    return item.primaryImageTag != null ? api.getPrimaryImageUrl(item.id) : null;
+    return item.primaryImageTag != null
+        ? api.getPrimaryImageUrl(item.id)
+        : null;
   }
 
   @override
@@ -143,7 +146,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 totalCount: _vm.totalCount,
                 focusedItem: _vm.focusedItem,
                 focusedRatings: _vm.focusedRatings,
-                enableAdditionalRatings: _prefs.get(UserPreferences.enableAdditionalRatings),
+                enableAdditionalRatings: _prefs.get(
+                  UserPreferences.enableAdditionalRatings,
+                ),
                 enabledRatings: _prefs.get(UserPreferences.enabledRatings),
                 blockedRatings: _prefs.get(UserPreferences.blockedRatings),
                 showLabels: _prefs.get(UserPreferences.showRatingLabels),
@@ -166,20 +171,21 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget _buildBody() {
     return switch (_vm.state) {
       FavoritesState.loading => const Center(
-          child: CircularProgressIndicator(color: _jellyfinBlue)),
+        child: CircularProgressIndicator(color: _jellyfinBlue),
+      ),
       FavoritesState.error => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _vm.errorMessage ?? 'Failed to load favorites',
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(onPressed: _vm.load, child: const Text('Retry')),
-            ],
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              _vm.errorMessage ?? 'Failed to load favorites',
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: _vm.load, child: const Text('Retry')),
+          ],
         ),
+      ),
       FavoritesState.ready => _buildGrid(),
     };
   }
@@ -187,47 +193,55 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget _buildGrid() {
     if (_vm.items.isEmpty) {
       return const Center(
-        child: Text('No favorites yet', style: TextStyle(color: Colors.white70)),
+        child: Text(
+          'No favorites yet',
+          style: TextStyle(color: Colors.white70),
+        ),
       );
     }
 
     final cardWidth = _cardWidth();
     const spacing = 12.0;
-    final watchedBehavior = _prefs.get(UserPreferences.watchedIndicatorBehavior);
+    final watchedBehavior = _prefs.get(
+      UserPreferences.watchedIndicatorBehavior,
+    );
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final isMobile = _isCompact(context);
-      final gridPadding = isMobile ? 16.0 : _horizontalPadding;
-      final crossAxisCount =
-          ((constraints.maxWidth - gridPadding * 2 + spacing) /
-                  (cardWidth + spacing))
-              .floor()
-              .clamp(2, 20);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = _isCompact(context);
+        final gridPadding = isMobile ? 16.0 : _horizontalPadding;
+        final crossAxisCount = ((constraints.maxWidth -
+                    gridPadding * 2 +
+                    spacing) /
+                (cardWidth + spacing))
+            .floor()
+            .clamp(2, 20);
 
-      final cellWidth = (constraints.maxWidth - gridPadding * 2 -
-              (crossAxisCount - 1) * spacing) /
-          crossAxisCount;
-      final ar = _aspectRatio();
-      final hasSubtitles = _vm.items.any(
-        (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
-      );
-      final textHeight = hasSubtitles ? 38.0 : 22.0;
-      final childAspectRatio = cellWidth / (cellWidth / ar + textHeight);
+        final cellWidth =
+            (constraints.maxWidth -
+                gridPadding * 2 -
+                (crossAxisCount - 1) * spacing) /
+            crossAxisCount;
+        final ar = _aspectRatio();
+        final hasSubtitles = _vm.items.any(
+          (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
+        );
+        final textHeight = hasSubtitles ? 38.0 : 22.0;
+        final childAspectRatio = cellWidth / (cellWidth / ar + textHeight);
 
-      return CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(gridPadding, 20, gridPadding, 16),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: spacing,
-                childAspectRatio: childAspectRatio,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
+        return CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(gridPadding, 20, gridPadding, 16),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: spacing,
+                  childAspectRatio: childAspectRatio,
+                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
                   final item = _vm.items[index];
                   return MediaCard(
                     title: item.name,
@@ -243,26 +257,34 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     itemType: item.type,
                     onFocus: isMobile ? null : () => _onItemFocused(item),
                     onHoverStart: isMobile ? null : () => _onItemFocused(item),
-                    onHoverEnd: isMobile ? null : () => _vm.setFocusedItem(null),
+                    onHoverEnd:
+                        isMobile ? null : () => _vm.setFocusedItem(null),
                     onLongPress: isMobile ? null : () => _onItemFocused(item),
-                    onTap: () => context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type)),
+                    onTap:
+                        () => context.push(
+                          Destinations.itemOrPhoto(
+                            item.id,
+                            serverId: item.serverId,
+                            type: item.type,
+                          ),
+                        ),
                   );
-                },
-                childCount: _vm.items.length,
+                }, childCount: _vm.items.length),
               ),
             ),
-          ),
-          if (_vm.loadingMore)
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
-                child: Center(
-                    child: CircularProgressIndicator(color: _jellyfinBlue)),
+            if (_vm.loadingMore)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(
+                    child: CircularProgressIndicator(color: _jellyfinBlue),
+                  ),
+                ),
               ),
-            ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   String? _cardSubtitle(AggregatedItem item) {
@@ -286,10 +308,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   void _showSortDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => _SortDialog(vm: _vm),
-    );
+    showDialog(context: context, builder: (_) => _SortDialog(vm: _vm));
   }
 
   void _showSettingsDialog(BuildContext context) {
@@ -373,7 +392,8 @@ class _FavoritesHeader extends StatelessWidget {
           ],
           const SizedBox(height: 6),
           Row(
-            mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+            mainAxisAlignment:
+                isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
               _ToolbarButton(icon: Icons.home, onTap: onHome),
               const SizedBox(width: 4),
@@ -413,37 +433,38 @@ class _FocusedItemHud extends StatelessWidget {
       height: 80,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
-        child: item == null
-            ? const SizedBox.shrink(key: ValueKey('empty'))
-            : Column(
-                key: ValueKey(item!.id),
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    item!.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+        child:
+            item == null
+                ? const SizedBox.shrink(key: ValueKey('empty'))
+                : Column(
+                  key: ValueKey(item!.id),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      item!.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  _MetadataRow(item: item!),
-                  const SizedBox(height: 4),
-                  RatingsRow(
-                    ratings: ratings,
-                    communityRating: item!.communityRating,
-                    criticRating: item!.criticRating,
-                    enableAdditionalRatings: enableAdditionalRatings,
-                    enabledRatings: enabledRatings,
-                    blockedRatings: blockedRatings,
-                    showLabels: showLabels,
-                  ),
-                ],
-              ),
+                    const SizedBox(height: 2),
+                    _MetadataRow(item: item!),
+                    const SizedBox(height: 4),
+                    RatingsRow(
+                      ratings: ratings,
+                      communityRating: item!.communityRating,
+                      criticRating: item!.criticRating,
+                      enableAdditionalRatings: enableAdditionalRatings,
+                      enabledRatings: enabledRatings,
+                      blockedRatings: blockedRatings,
+                      showLabels: showLabels,
+                    ),
+                  ],
+                ),
       ),
     );
   }
@@ -474,39 +495,44 @@ class _MetadataRow extends StatelessWidget {
 
     if (item.type == 'Series' && item.status != null) {
       final continuing = item.status == 'Continuing';
-      children.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: continuing ? const Color(0xFF22C55E) : const Color(0xFFEF4444),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          continuing ? 'Continuing' : 'Ended',
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
+      children.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color:
+                continuing ? const Color(0xFF22C55E) : const Color(0xFFEF4444),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            continuing ? 'Continuing' : 'Ended',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
           ),
         ),
-      ));
+      );
     }
 
     if (item.officialRating != null) {
-      children.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: Colors.white.withAlpha(38),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          item.officialRating!,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
+      children.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(38),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            item.officialRating!,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
           ),
         ),
-      ));
+      );
     }
 
     return Wrap(
@@ -593,18 +619,19 @@ Widget _radioCircle(bool selected) {
       ),
       color: selected ? _jellyfinBlue : Colors.transparent,
     ),
-    child: selected
-        ? Center(
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
+    child:
+        selected
+            ? Center(
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          )
-        : null,
+            )
+            : null,
   );
 }
 
@@ -668,6 +695,10 @@ class _SortDialogState extends State<_SortDialog> {
   @override
   Widget build(BuildContext context) {
     final vm = widget.vm;
+    final dialogWidth = (MediaQuery.sizeOf(context).width - 32).clamp(
+      280.0,
+      380.0,
+    );
     return Dialog(
       backgroundColor: const Color(0xE6141414),
       shape: RoundedRectangleBorder(
@@ -675,7 +706,7 @@ class _SortDialogState extends State<_SortDialog> {
         side: BorderSide(color: Colors.white.withAlpha(26)),
       ),
       child: SizedBox(
-        width: 380,
+        width: dialogWidth,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -705,18 +736,19 @@ class _SortDialogState extends State<_SortDialog> {
               _radioTile(
                 label: option.displayName,
                 selected: vm.sortBy == option,
-                trailing: vm.sortBy == option
-                    ? IconButton(
-                        icon: Icon(
-                          vm.sortDirection == SortDirection.ascending
-                              ? Icons.arrow_upward
-                              : Icons.arrow_downward,
-                          color: _jellyfinBlue,
-                          size: 18,
-                        ),
-                        onPressed: () => vm.toggleSortDirection(),
-                      )
-                    : null,
+                trailing:
+                    vm.sortBy == option
+                        ? IconButton(
+                          icon: Icon(
+                            vm.sortDirection == SortDirection.ascending
+                                ? Icons.arrow_upward
+                                : Icons.arrow_downward,
+                            color: _jellyfinBlue,
+                            size: 18,
+                          ),
+                          onPressed: () => vm.toggleSortDirection(),
+                        )
+                        : null,
                 onTap: () {
                   if (vm.sortBy == option) {
                     vm.toggleSortDirection();
@@ -760,7 +792,6 @@ class _SortDialogState extends State<_SortDialog> {
       ),
     );
   }
-
 }
 
 class _DisplaySettingsDialog extends StatefulWidget {
@@ -792,6 +823,10 @@ class _DisplaySettingsDialogState extends State<_DisplaySettingsDialog> {
   @override
   Widget build(BuildContext context) {
     final vm = widget.vm;
+    final dialogWidth = (MediaQuery.sizeOf(context).width - 32).clamp(
+      280.0,
+      340.0,
+    );
     return Dialog(
       backgroundColor: const Color(0xE6141414),
       shape: RoundedRectangleBorder(
@@ -799,7 +834,7 @@ class _DisplaySettingsDialogState extends State<_DisplaySettingsDialog> {
         side: BorderSide(color: Colors.white.withAlpha(26)),
       ),
       child: SizedBox(
-        width: 340,
+        width: dialogWidth,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -817,8 +852,7 @@ class _DisplaySettingsDialogState extends State<_DisplaySettingsDialog> {
             ),
             Divider(color: Colors.white.withAlpha(20)),
             _sectionHeader('Image Type'),
-            for (final type in ImageType.values)
-              _imageTypeRadioTile(vm, type),
+            for (final type in ImageType.values) _imageTypeRadioTile(vm, type),
             Divider(color: Colors.white.withAlpha(20)),
             _sectionHeader('Poster Size'),
             for (final size in PosterSize.values)

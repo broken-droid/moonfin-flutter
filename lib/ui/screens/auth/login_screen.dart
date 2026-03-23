@@ -82,18 +82,21 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _setupFocusHandlers() {
-    _usernameFocus.onKeyEvent = (node, event) => _verticalNav(
-      event,
-      up: _supportsQuickConnect ? _pwBtnFocus : null,
-      down: _passwordFocus,
-    );
-    _passwordFocus.onKeyEvent = (node, event) => _verticalNav(
-      event,
-      up: _hasUsername
-          ? (_supportsQuickConnect ? _pwBtnFocus : null)
-          : _usernameFocus,
-      down: _signInFocus,
-    );
+    _usernameFocus.onKeyEvent =
+        (node, event) => _verticalNav(
+          event,
+          up: _supportsQuickConnect ? _pwBtnFocus : null,
+          down: _passwordFocus,
+        );
+    _passwordFocus.onKeyEvent =
+        (node, event) => _verticalNav(
+          event,
+          up:
+              _hasUsername
+                  ? (_supportsQuickConnect ? _pwBtnFocus : null)
+                  : _usernameFocus,
+          down: _signInFocus,
+        );
   }
 
   KeyEventResult _verticalNav(
@@ -207,9 +210,10 @@ class _LoginScreenState extends State<LoginScreen> {
           e.message ??
           'unknown error';
       setState(() {
-        _errorMessage = status == null
-            ? 'QuickConnect unavailable (${e.type.name}): $detail'
-            : 'QuickConnect unavailable ($status, ${e.type.name}): $detail';
+        _errorMessage =
+            status == null
+                ? 'QuickConnect unavailable (${e.type.name}): $detail'
+                : 'QuickConnect unavailable ($status, ${e.type.name}): $detail';
       });
     } catch (e) {
       if (!mounted) return;
@@ -316,9 +320,9 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Text(
             'Sign In',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
@@ -343,8 +347,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildToggleRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 12,
+      runSpacing: 12,
       children: [
         _buildToggleButton(
           label: 'Quick Connect',
@@ -352,7 +358,6 @@ class _LoginScreenState extends State<LoginScreen> {
           focusNode: _qcBtnFocus,
           onPressed: _selectQuickConnect,
         ),
-        const SizedBox(width: 12),
         _buildToggleButton(
           label: 'Password',
           isSelected: !_showQuickConnect,
@@ -370,40 +375,35 @@ class _LoginScreenState extends State<LoginScreen> {
     required VoidCallback onPressed,
   }) {
     if (isSelected) {
-      return SizedBox(
-        width: 140,
-        child: FilledButton(
-          focusNode: focusNode,
-          onPressed: onPressed,
-          style: FilledButton.styleFrom(
-            backgroundColor: _kAccent,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-          ).copyWith(
-            side: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.focused)) {
-                return const BorderSide(color: Colors.white, width: 2);
-              }
-              return null;
-            }),
-          ),
-          child: Text(label),
-        ),
-      );
-    }
-    return SizedBox(
-      width: 140,
-      child: OutlinedButton(
+      return FilledButton(
         focusNode: focusNode,
         onPressed: onPressed,
-        style: _outlinedFocusStyle(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+        style: FilledButton.styleFrom(
+          backgroundColor: _kAccent,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(120, 44),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ).copyWith(
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.focused)) {
+              return const BorderSide(color: Colors.white, width: 2);
+            }
+            return null;
+          }),
         ),
         child: Text(label),
-      ),
+      );
+    }
+    return OutlinedButton(
+      focusNode: focusNode,
+      onPressed: onPressed,
+      style: _outlinedFocusStyle(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      ).copyWith(minimumSize: const WidgetStatePropertyAll(Size(120, 44))),
+      child: Text(label),
     );
   }
 
@@ -411,9 +411,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return OutlinedButton.styleFrom(
       foregroundColor: Colors.white.withValues(alpha: 0.8),
       padding: padding,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     ).copyWith(
       side: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused)) {
@@ -471,15 +469,18 @@ class _LoginScreenState extends State<LoginScreen> {
           const CircularProgressIndicator(),
         if (_errorMessage != null) ...[
           const SizedBox(height: 16),
-          Text(_errorMessage!, style: const TextStyle(color: Color(0xFFef4444))),
+          Text(
+            _errorMessage!,
+            style: const TextStyle(color: Color(0xFFef4444)),
+          ),
         ],
         const SizedBox(height: 24),
         _buildActionButton(
           label: 'Back',
           focusNode: _backFocus,
-          onPressed: () => context.go(
-            '${Destinations.server}?serverId=${_server!.id}',
-          ),
+          onPressed:
+              () =>
+                  context.go('${Destinations.server}?serverId=${_server!.id}'),
         ),
       ],
     );
@@ -509,20 +510,25 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         if (_errorMessage != null) ...[
           const SizedBox(height: 12),
-          Text(_errorMessage!, style: const TextStyle(color: Color(0xFFef4444))),
+          Text(
+            _errorMessage!,
+            style: const TextStyle(color: Color(0xFFef4444)),
+          ),
         ],
         const SizedBox(height: 24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 12,
+          runSpacing: 12,
           children: [
             _buildActionButton(
               label: 'Back',
               focusNode: _backFocus,
-              onPressed: () => context.go(
-                '${Destinations.server}?serverId=${_server!.id}',
-              ),
+              onPressed:
+                  () => context.go(
+                    '${Destinations.server}?serverId=${_server!.id}',
+                  ),
             ),
-            const SizedBox(width: 12),
             _buildActionButton(
               label: 'Sign In',
               focusNode: _signInFocus,
@@ -584,13 +590,17 @@ class _LoginScreenState extends State<LoginScreen> {
       style: _outlinedFocusStyle(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
       ),
-      child: isLoading
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-            )
-          : Text(label),
+      child:
+          isLoading
+              ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+              : Text(label),
     );
   }
 

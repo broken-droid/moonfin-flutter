@@ -16,7 +16,8 @@ const _horizontalPadding = 60.0;
 const _kCompactBreakpoint = 600.0;
 
 bool _isCompact(BuildContext context) =>
-    PlatformDetection.isMobile || MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
+    PlatformDetection.isMobile ||
+    MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
 
 class SeerrBrowseScreen extends StatefulWidget {
   final String? filterId;
@@ -156,50 +157,63 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
     const cardWidth = 150.0;
     const spacing = 12.0;
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final isMobile = _isCompact(context);
-      final gridPadding = isMobile ? 16.0 : _horizontalPadding;
-      final crossAxisCount =
-          ((constraints.maxWidth - gridPadding * 2 + spacing) /
-                  (cardWidth + spacing))
-              .floor()
-              .clamp(2, 20);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = _isCompact(context);
+        final gridPadding = isMobile ? 16.0 : _horizontalPadding;
+        final crossAxisCount = ((constraints.maxWidth -
+                    gridPadding * 2 +
+                    spacing) /
+                (cardWidth + spacing))
+            .floor()
+            .clamp(2, 20);
 
-      final cellWidth = (constraints.maxWidth - gridPadding * 2 -
-              (crossAxisCount - 1) * spacing) /
-          crossAxisCount;
-      final hasSubtitles = s.items.any(
-        (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
-      );
-      final textHeight = hasSubtitles ? 38.0 : 22.0;
-      final childAspectRatio = cellWidth / (cellWidth / (2 / 3) + textHeight);
+        final cellWidth =
+            (constraints.maxWidth -
+                gridPadding * 2 -
+                (crossAxisCount - 1) * spacing) /
+            crossAxisCount;
+        final hasSubtitles = s.items.any(
+          (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
+        );
+        final textHeight = hasSubtitles ? 38.0 : 22.0;
+        final childAspectRatio = cellWidth / (cellWidth / (2 / 3) + textHeight);
 
-      return CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(gridPadding, 20, gridPadding, 16),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: spacing,
-                childAspectRatio: childAspectRatio,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
+        return CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(gridPadding, 20, gridPadding, 16),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: spacing,
+                  childAspectRatio: childAspectRatio,
+                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
                   final item = s.items[index];
                   return MediaCard(
                     title: item.displayTitle,
                     subtitle: _cardSubtitle(item),
-                    imageUrl: item.posterPath != null
-                        ? '$_tmdbPosterBase${item.posterPath}'
-                        : null,
+                    imageUrl:
+                        item.posterPath != null
+                            ? '$_tmdbPosterBase${item.posterPath}'
+                            : null,
                     width: double.infinity,
                     aspectRatio: 2 / 3,
-                    onFocus: isMobile ? null : () => setState(() => _focusedItem = item),
-                    onHoverStart: isMobile ? null : () => setState(() => _focusedItem = item),
-                    onHoverEnd: isMobile ? null : () => setState(() => _focusedItem = null),
+                    onFocus:
+                        isMobile
+                            ? null
+                            : () => setState(() => _focusedItem = item),
+                    onHoverStart:
+                        isMobile
+                            ? null
+                            : () => setState(() => _focusedItem = item),
+                    onHoverEnd:
+                        isMobile
+                            ? null
+                            : () => setState(() => _focusedItem = null),
                     onTap: () {
                       final mt = item.mediaType ?? widget.mediaType ?? 'movie';
                       context.push(
@@ -208,23 +222,22 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
                       );
                     },
                   );
-                },
-                childCount: s.items.length,
+                }, childCount: s.items.length),
               ),
             ),
-          ),
-          if (s.isLoadingMore)
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
-                child: Center(
-                  child: CircularProgressIndicator(color: _seerrAccent),
+            if (s.isLoadingMore)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(
+                    child: CircularProgressIndicator(color: _seerrAccent),
+                  ),
                 ),
               ),
-            ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   static String? _cardSubtitle(SeerrDiscoverItem item) {
@@ -244,10 +257,7 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
   }
 
   void _showSortDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => _SeerrSortDialog(vm: _vm!),
-    );
+    showDialog(context: context, builder: (_) => _SeerrSortDialog(vm: _vm!));
   }
 }
 
@@ -324,27 +334,28 @@ class _FocusedItemHud extends StatelessWidget {
       height: 56,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
-        child: item == null
-            ? const SizedBox.shrink(key: ValueKey('empty'))
-            : Column(
-                key: ValueKey(item!.id),
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    item!.displayTitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+        child:
+            item == null
+                ? const SizedBox.shrink(key: ValueKey('empty'))
+                : Column(
+                  key: ValueKey(item!.id),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      item!.displayTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  _MetadataRow(item: item!),
-                ],
-              ),
+                    const SizedBox(height: 2),
+                    _MetadataRow(item: item!),
+                  ],
+                ),
       ),
     );
   }
@@ -365,14 +376,16 @@ class _MetadataRow extends StatelessWidget {
     }
 
     if (item.voteAverage != null && item.voteAverage! > 0) {
-      children.add(Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.star, size: 14, color: Color(0xFFFFC107)),
-          const SizedBox(width: 2),
-          _infoText(item.voteAverage!.toStringAsFixed(1)),
-        ],
-      ));
+      children.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.star, size: 14, color: Color(0xFFFFC107)),
+            const SizedBox(width: 2),
+            _infoText(item.voteAverage!.toStringAsFixed(1)),
+          ],
+        ),
+      );
     }
 
     final status = item.mediaInfo?.status;
@@ -510,10 +523,7 @@ class _SeerrBrowseStatusBar extends StatelessWidget {
   final SeerrBrowseFilter filter;
   final int itemCount;
 
-  const _SeerrBrowseStatusBar({
-    required this.filter,
-    required this.itemCount,
-  });
+  const _SeerrBrowseStatusBar({required this.filter, required this.itemCount});
 
   @override
   Widget build(BuildContext context) {
@@ -530,17 +540,11 @@ class _SeerrBrowseStatusBar extends StatelessWidget {
         children: [
           Text(
             filterLabel,
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.white.withAlpha(77),
-            ),
+            style: TextStyle(fontSize: 11, color: Colors.white.withAlpha(77)),
           ),
           Text(
             '$itemCount Items',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.white.withAlpha(115),
-            ),
+            style: TextStyle(fontSize: 13, color: Colors.white.withAlpha(115)),
           ),
         ],
       ),
@@ -578,6 +582,10 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
   Widget build(BuildContext context) {
     final vm = widget.vm;
     final s = vm.state;
+    final dialogWidth = (MediaQuery.sizeOf(context).width - 32).clamp(
+      280.0,
+      380.0,
+    );
     return Dialog(
       backgroundColor: const Color(0xE6141414),
       shape: RoundedRectangleBorder(
@@ -585,7 +593,7 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
         side: BorderSide(color: Colors.white.withAlpha(26)),
       ),
       child: SizedBox(
-        width: 380,
+        width: dialogWidth,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -639,18 +647,19 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
                 ),
                 color: selected ? _seerrAccent : Colors.transparent,
               ),
-              child: selected
-                  ? Center(
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+              child:
+                  selected
+                      ? Center(
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    )
-                  : null,
+                      )
+                      : null,
             ),
             const SizedBox(width: 12),
             Expanded(

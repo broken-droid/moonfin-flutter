@@ -180,20 +180,29 @@ class _ServerScreenState extends State<ServerScreen> {
           _buildUserRow(),
           const SizedBox(height: 24),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              OutlinedButton.icon(
-                onPressed: () => context.go('${Destinations.login}?serverId=${_server!.id}'),
-                icon: const Icon(Icons.person, size: 18),
-                label: const Text('Add User'),
-                style: _focusableButtonStyle(),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => context.go('${Destinations.login}?serverId=${_server!.id}'),
+                  icon: const Icon(Icons.person, size: 18),
+                  label: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Add User'),
+                  ),
+                  style: _focusableButtonStyle(),
+                ),
               ),
               const SizedBox(width: 12),
-              OutlinedButton.icon(
-                onPressed: () => context.go(Destinations.serverSelect),
-                icon: const Icon(Icons.home, size: 18),
-                label: const Text('Select Server'),
-                style: _focusableButtonStyle(),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => context.go(Destinations.serverSelect),
+                  icon: const Icon(Icons.home, size: 18),
+                  label: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Select Server'),
+                  ),
+                  style: _focusableButtonStyle(),
+                ),
               ),
             ],
           ),

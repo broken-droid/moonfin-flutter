@@ -215,30 +215,39 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
             ),
           const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              OutlinedButton.icon(
-                onPressed: _isConnecting ? null : _showAddServerDialog,
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Connect manually'),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
-                  foregroundColor: Colors.white.withValues(alpha: 0.8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _isConnecting ? null : _showAddServerDialog,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Connect manually'),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                    foregroundColor: Colors.white.withValues(alpha: 0.8),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
-              OutlinedButton.icon(
-                onPressed: _isConnecting
-                    ? null
-                    : () => context.go(Destinations.embyConnect),
-                icon: const ServerTypeIcon(
-                  serverType: ServerType.emby,
-                  size: 18,
-                ),
-                label: const Text('Emby Connect'),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
-                  foregroundColor: Colors.white.withValues(alpha: 0.8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _isConnecting
+                      ? null
+                      : () => context.go(Destinations.embyConnect),
+                  icon: const ServerTypeIcon(
+                    serverType: ServerType.emby,
+                    size: 18,
+                  ),
+                  label: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Emby Connect'),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                    foregroundColor: Colors.white.withValues(alpha: 0.8),
+                  ),
                 ),
               ),
             ],
