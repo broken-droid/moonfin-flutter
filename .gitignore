@@ -55,3 +55,6 @@ app.*.map.json
 
 # Windows installer
 /Moonfin-Setup-x64.exe
+
+# Local private signing/notarization values
+/build-macos.private.env

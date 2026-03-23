@@ -20,6 +20,13 @@ APP_PATH="$REPO_ROOT/build/macos/Build/Products/Release/${APP_NAME}.app"
 STAGING_DIR="$REPO_ROOT/build/macos/dmg-staging"
 DMG_OUTPUT="$REPO_ROOT/${APP_NAME}.dmg"
 
+# Optional local overrides for private values.
+PRIVATE_ENV_FILE="$REPO_ROOT/build-macos.private.env"
+if [ -f "$PRIVATE_ENV_FILE" ]; then
+  # shellcheck disable=SC1090
+  source "$PRIVATE_ENV_FILE"
+fi
+
 for cmd in flutter lipo hdiutil; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     echo "Error: required command not found: $cmd" >&2
