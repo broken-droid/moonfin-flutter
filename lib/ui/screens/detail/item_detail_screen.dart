@@ -1634,38 +1634,46 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final compact = _isCompact(context);
     final needsOverflow = compact && allButtons.length > _maxVisible;
 
-    if (!needsOverflow || _expanded) {
+    if (!needsOverflow) {
       return Center(
         child: Wrap(
           spacing: 8,
           runSpacing: 12,
           alignment: WrapAlignment.center,
-          children: [
-            ...allButtons,
-            if (needsOverflow)
-              _DetailActionButton(
-                label: 'Less',
-                icon: Icons.expand_less,
-                onPressed: () => setState(() => _expanded = false),
-              ),
-          ],
+          children: allButtons,
         ),
       );
     }
 
-    final visibleButtons = allButtons.sublist(0, _maxVisible - 1);
+    final primaryButtons = allButtons.take(_maxVisible - 1).toList();
+    final extraButtons = allButtons.skip(_maxVisible - 1).toList();
+
     return Center(
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 12,
-        alignment: WrapAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          ...visibleButtons,
-          _DetailActionButton(
-            label: 'More',
-            icon: Icons.expand_more,
-            onPressed: () => setState(() => _expanded = true),
+          Wrap(
+            spacing: 8,
+            runSpacing: 12,
+            alignment: WrapAlignment.center,
+            children: [
+              ...primaryButtons,
+              _DetailActionButton(
+                label: _expanded ? 'Less' : 'More',
+                icon: _expanded ? Icons.expand_less : Icons.expand_more,
+                onPressed: () => setState(() => _expanded = !_expanded),
+              ),
+            ],
           ),
+          if (_expanded) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: extraButtons,
+            ),
+          ],
         ],
       ),
     );
