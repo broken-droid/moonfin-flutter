@@ -5,15 +5,13 @@ extension NavigationX on BuildContext {
   void popOrHome() {
     final router = GoRouter.of(this);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
+    if (!mounted) return;
 
-      if (router.canPop()) {
-        router.pop();
-      } else {
-        router.go(Destinations.home);
-      }
-    });
+    if (router.canPop()) {
+      router.pop();
+    } else {
+      router.go(Destinations.home);
+    }
   }
 }
 
