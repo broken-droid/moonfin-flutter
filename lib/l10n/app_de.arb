@@ -6149,11 +6149,35 @@
   "nextEpisode": "Nächste Episode",
   "moreFromThisSeason": "Mehr aus dieser Staffel",
   "playerTooltipPlaybackSpeed": "Wiedergabegeschwindigkeit",
+  "@playerTooltipPlaybackSpeed": {
+    "description": "Tooltip label for playback speed control in player"
+  },
   "playerTooltipCastControls": "Casting-Steuerung",
+  "@playerTooltipCastControls": {
+    "description": "Tooltip label for active cast controls button in player"
+  },
   "playerTooltipPlaybackQuality": "Wiedergabequalität",
+  "@playerTooltipPlaybackQuality": {
+    "description": "Tooltip label for playback quality/bitrate control in player"
+  },
   "playerTooltipEnterFullscreen": "Vollbild aktivieren",
+  "@playerTooltipEnterFullscreen": {
+    "description": "Tooltip label for entering fullscreen in player"
+  },
   "playerTooltipExitFullscreen": "Vollbild verlassen",
+  "@playerTooltipExitFullscreen": {
+    "description": "Tooltip label for exiting fullscreen in player"
+  },
   "playerTooltipPrevious": "Vorherige",
+  "@playerTooltipPrevious": {
+    "description": "Tooltip label for previous item control in player"
+  },
   "playerTooltipSeekBack": "Zurückspulen",
-  "playerTooltipSeekForward": "Vorspulen"
+  "@playerTooltipSeekBack": {
+    "description": "Tooltip label for seek back control in player"
+  },
+  "playerTooltipSeekForward": "Vorspulen",
+  "@playerTooltipSeekForward": {
+    "description": "Tooltip label for seek forward control in player"
+  }
 }
