@@ -122,7 +122,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
     await _applyCustomMpvConfIfEnabled();
     await _applyAssOverrideMode();
     await _applyAudioChannelLayout();
-    _player.open(Media(url));
+    await _player.open(Media(url));
     if (!_useLibass) {
       _enableNativeSubtitleRendering();
     }
