@@ -74,9 +74,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
       configuration: VideoControllerConfiguration(
         hwdec: PlatformDetection.isLinux && !PlatformDetection.isLinuxWayland
             ? 'no'
-            : Platform.isIOS
-                ? 'videotoolbox'
-                : null,
+            : null,
       ),
     );
     return MediaKitPlayerBackend._(
