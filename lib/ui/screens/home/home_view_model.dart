@@ -7,7 +7,6 @@ import '../../../data/models/aggregated_item.dart';
 import '../../../data/models/home_row.dart';
 import '../../../data/repositories/multi_server_repository.dart';
 import '../../../data/services/row_data_source.dart';
-import '../../../data/utils/latest_media_item_types.dart';
 import '../../../data/viewmodels/media_bar_view_model.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
@@ -231,14 +230,8 @@ class HomeViewModel extends ChangeNotifier {
     final tasks = filteredViews.map((data) async {
       final id = data['Id'] as String;
       final name = data['Name'] as String? ?? '';
-      final collectionType = (data['CollectionType'] as String?)?.toLowerCase();
       try {
-        final row = await _dataSource.loadLatestMedia(
-          id,
-          name,
-          _serverId,
-          includeItemTypes: latestIncludeTypesForCollection(collectionType),
-        );
+        final row = await _dataSource.loadLatestMedia(id, name, _serverId);
         return row.items.isNotEmpty ? row : null;
       } catch (_) {
         return null;

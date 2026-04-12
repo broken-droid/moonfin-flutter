@@ -11,7 +11,6 @@ import '../models/aggregated_item.dart';
 import '../models/aggregated_library.dart';
 import '../models/home_row.dart';
 import '../services/media_server_client_factory.dart';
-import '../utils/latest_media_item_types.dart';
 import '../utils/playlist_utils.dart';
 
 class ServerUserSession {
@@ -329,15 +328,11 @@ class MultiServerRepository {
           final name = data['Name'] as String? ?? '';
           final displayName =
               hasMultiple ? '$name (${session.server.name})' : name;
-          final includeItemTypes = latestIncludeTypesForCollection(
-            collectionType?.toLowerCase(),
-          );
 
           try {
             final latestResponse = await _withTimeout(
               () => session.client.itemsApi.getLatestItems(
                 parentId: id,
-                includeItemTypes: includeItemTypes,
                 limit: _defaultLimit,
                 fields: _fields,
               ),

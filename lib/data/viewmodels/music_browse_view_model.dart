@@ -50,12 +50,7 @@ class MusicBrowseViewModel extends ChangeNotifier {
 
     try {
       final results = await Future.wait([
-        _dataSource.loadLatestMedia(
-          libraryId,
-          _libraryName,
-          _serverId,
-          includeItemTypes: const ['MusicAlbum'],
-        ),
+        _dataSource.loadLatestMedia(libraryId, _libraryName, _serverId),
         _dataSource.loadLibraryLastPlayed(libraryId, _serverId,
             includeItemTypes: ['Audio']),
         _dataSource.loadLibraryFavorites(libraryId, _serverId,

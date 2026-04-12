@@ -117,13 +117,11 @@ class RowDataSource {
   Future<HomeRow> loadLatestMedia(
     String parentId,
     String libraryName,
-    String serverId, {
-    List<String>? includeItemTypes,
-  }) async {
+    String serverId,
+  ) async {
     final response = await _getLatestItemsWithFallback(
       parentId: parentId,
       limit: _defaultLimit,
-      includeItemTypes: includeItemTypes,
     );
     return _buildRow(
       id: 'latest_$parentId',
@@ -537,12 +535,10 @@ class RowDataSource {
   Future<Map<String, dynamic>> _getLatestItemsWithFallback({
     required String parentId,
     required int limit,
-    List<String>? includeItemTypes,
   }) async {
     try {
       final response = await _client.itemsApi.getLatestItems(
         parentId: parentId,
-        includeItemTypes: includeItemTypes,
         limit: limit,
         fields: _fields,
       );
@@ -552,7 +548,6 @@ class RowDataSource {
       if (statusCode < 500) rethrow;
       final response = await _client.itemsApi.getLatestItems(
         parentId: parentId,
-        includeItemTypes: includeItemTypes,
         limit: limit,
         fields: _fallbackFields,
       );
