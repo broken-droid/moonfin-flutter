@@ -1,5 +1,5 @@
 abstract class PlayerBackend {
-  Future<void> play(dynamic mediaItem);
+  Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero});
   Future<void> resume();
   Future<void> pause();
   Future<void> stop();

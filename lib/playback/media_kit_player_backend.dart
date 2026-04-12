@@ -113,14 +113,16 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
-  Future<void> play(dynamic mediaItem) async {
+  Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero}) async {
     final url = mediaItem as String;
     await _notifyNativeHandleReady();
     await _configureAppleMobileLibassFont();
     await _applyCustomMpvConfIfEnabled();
     await _applyAssOverrideMode();
     await _applyAudioChannelLayout();
-    await _player.open(Media(url));
+    final media = Media(url);
+    final openPaused = startPosition > Duration.zero;
+    await _player.open(media, play: !openPaused);
     if (!_useLibass) {
       _enableNativeSubtitleRendering();
     }

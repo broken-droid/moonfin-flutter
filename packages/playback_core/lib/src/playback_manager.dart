@@ -274,8 +274,13 @@ class PlaybackManager {
     bool mediaReady = false;
     Object? startupError;
     StackTrace? startupStackTrace;
+    final useNativeStart =
+        startTicks != null && resolution.playMethod != StreamPlayMethod.transcode;
     try {
-      await _backend!.play(resolution.streamUrl);
+      await _backend!.play(
+        resolution.streamUrl,
+        startPosition: useNativeStart ? startPosition : Duration.zero,
+      );
       mediaReady = await _waitForMediaReady(
         isTranscode: resolution.playMethod == StreamPlayMethod.transcode,
         timeout: _onlineStartupReadyTimeout,
@@ -311,18 +316,8 @@ class PlaybackManager {
       return;
     }
 
-    if (startTicks != null && resolution.playMethod != StreamPlayMethod.transcode) {
-      try {
-        await _backend!.seekTo(startPosition);
-
-        for (var i = 0; i < 30; i++) {
-          await Future.delayed(const Duration(milliseconds: 100));
-          final pos = _backend!.position;
-          if ((pos - startPosition).abs() < const Duration(seconds: 10)) {
-            break;
-          }
-        }
-      } catch (_) {}
+    if (useNativeStart) {
+      await _seekWhilePausedAndResume(startPosition);
     }
 
     for (final sub in resolution.externalSubtitles) {
@@ -334,8 +329,15 @@ class PlaybackManager {
     }
 
     if (resolution.playMethod == StreamPlayMethod.directPlay) {
-      if (_audioStreamIndex != null || (_subtitleStreamIndex != null && _subtitleStreamIndex != -1)) {
-        _waitAndApplyTrackSelections(sessionToken);
+      final hasRequestedTrackSelection =
+          _audioStreamIndex != null ||
+          (_subtitleStreamIndex != null && _subtitleStreamIndex != -1);
+
+      if (hasRequestedTrackSelection) {
+        _waitAndApplyTrackSelections(
+          sessionToken,
+          restorePosition: useNativeStart ? startPosition : null,
+        );
       } else if (_subtitleStreamIndex == -1) {
         _waitAndDisableSubtitles(sessionToken);
       }
@@ -413,6 +415,17 @@ class PlaybackManager {
     }
 
     return false;
+  }
+
+  Future<void> _seekWhilePausedAndResume(Duration position) async {
+    await _backend!.seekTo(position);
+    for (var i = 0; i < 30; i++) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      if ((_backend!.position - position).abs() < const Duration(seconds: 10)) {
+        break;
+      }
+    }
+    await _backend!.resume();
   }
 
   Future<void> stop() async {
@@ -567,8 +580,13 @@ class PlaybackManager {
     );
   }
 
-  Future<void> _applyStoredTrackSelections(int sessionToken) async {
+  Future<void> _applyStoredTrackSelections(
+    int sessionToken, {
+    Duration? restorePosition,
+  }) async {
     if (sessionToken != _playbackSessionToken) return;
+    final shouldRestore = restorePosition != null && restorePosition > Duration.zero;
+
     if (_audioStreamIndex != null) {
       final mpvId = _mpvTrackIdForStream(_audioStreamIndex!, 'Audio');
       if (mpvId != null && mpvId > 1) {
@@ -588,12 +606,28 @@ class PlaybackManager {
     } else if (_subtitleStreamIndex == -1) {
       await _backend?.disableSubtitleTrack();
     }
+
+    if (shouldRestore) {
+      await Future.delayed(const Duration(milliseconds: 150));
+      if (sessionToken != _playbackSessionToken) return;
+      final pos = _backend?.position ?? state.position;
+      final regressedBy = restorePosition - pos;
+      if (regressedBy > const Duration(seconds: 2)) {
+        await _backend?.seekTo(restorePosition);
+      }
+    }
   }
 
-  void _waitAndApplyTrackSelections(int sessionToken) {
+  void _waitAndApplyTrackSelections(
+    int sessionToken, {
+    Duration? restorePosition,
+  }) {
     _backend?.waitForTracksReady().then((_) {
       if (sessionToken != _playbackSessionToken) return;
-      _applyStoredTrackSelections(sessionToken);
+      _applyStoredTrackSelections(
+        sessionToken,
+        restorePosition: restorePosition,
+      );
     });
   }
 
@@ -697,14 +731,13 @@ class PlaybackManager {
 
     _playbackStartTime = DateTime.now();
     _waitingForMedia = true;
-    await _backend!.play(url);
+    ++_playbackSessionToken;
+    await _backend!.play(url, startPosition: startPosition);
     await _waitForMediaReady();
     _waitingForMedia = false;
 
     if (startPosition > Duration.zero) {
-      try {
-        await _backend!.seekTo(startPosition);
-      } catch (_) {}
+      await _seekWhilePausedAndResume(startPosition);
     }
   }
 
