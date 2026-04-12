@@ -533,6 +533,12 @@ class _BookReaderScreenState extends State<BookReaderScreen>
       ..setBackgroundColor(_readerBackgroundColor)
       ..setNavigationDelegate(
         NavigationDelegate(
+          onNavigationRequest: (request) {
+            if (_shouldAllowEpubNavigation(request.url, isMainFrame: request.isMainFrame)) {
+              return NavigationDecision.navigate;
+            }
+            return NavigationDecision.prevent;
+          },
           onProgress: (progress) {
             if (!mounted) {
               return;
@@ -542,6 +548,10 @@ class _BookReaderScreenState extends State<BookReaderScreen>
             });
           },
           onWebResourceError: (error) {
+            final isMainFrame = error.isForMainFrame ?? true;
+            if (!isMainFrame) {
+              return;
+            }
             if (!mounted) {
               return;
             }
@@ -572,6 +582,23 @@ class _BookReaderScreenState extends State<BookReaderScreen>
         : (prefs.getInt(_epubProgressPrefKey) ?? 0);
     final savedChapter = initialChapter.clamp(0, chapterHtml.length - 1);
     await _loadEpubChapter(savedChapter);
+  }
+
+  bool _shouldAllowEpubNavigation(String url, {required bool isMainFrame}) {
+    if (!isMainFrame) {
+      return true;
+    }
+
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      return false;
+    }
+    if (!uri.hasScheme) {
+      return false;
+    }
+
+    const allowedSchemes = {'about', 'data', 'http', 'https', 'file'};
+    return allowedSchemes.contains(uri.scheme.toLowerCase());
   }
 
   Future<void> _loadEpubChapter(int index) async {
