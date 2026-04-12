@@ -1672,7 +1672,7 @@ packages:
     source: hosted
     version: "14.3.1"
   volume_controller:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: volume_controller
       sha256: "966ed51695bed77823b7ab429854b63e616e414c31ed171147553c9ca5cc9672"

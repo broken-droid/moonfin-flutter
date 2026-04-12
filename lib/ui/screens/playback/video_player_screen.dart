@@ -9,6 +9,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
+import 'package:volume_controller/volume_controller.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../../playback/media_kit_player_backend.dart';
@@ -40,9 +41,11 @@ class VideoPlayerScreen extends StatefulWidget {
   State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindingObserver {
+class _VideoPlayerScreenState extends State<VideoPlayerScreen>
+    with WidgetsBindingObserver {
   static final _camelCaseSpaceRe = RegExp(r'(?<=[a-z])(?=[A-Z])');
-  static const double _maxLocalPlayerVolume = MediaKitPlayerBackend.maxPlayerVolume;
+  static const double _maxLocalPlayerVolume =
+      MediaKitPlayerBackend.maxPlayerVolume;
 
   final _manager = GetIt.instance<PlaybackManager>();
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
@@ -102,10 +105,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
   bool? _wasDesktopFullscreenOnEntry;
 
   double _brightnessValue = 0.5;
+  double _systemVolume = 1.0;
   bool _showVolumeOverlay = false;
   bool _showBrightnessOverlay = false;
   Timer? _volumeOverlayTimer;
   Timer? _brightnessOverlayTimer;
+  StreamSubscription<double>? _brightnessListenerSub;
+  StreamSubscription<double>? _volumeListenerSub;
   double _verticalDragStartY = 0.0;
   double _verticalDragStartValue = 0.0;
   bool _verticalDragIsVolume = false;
@@ -184,11 +190,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     _positionSub = _state.positionStream.listen(_onPositionUpdate);
     if (PlatformDetection.isAndroid || PlatformDetection.isIOS) {
       _castEventsSub = _nativeCast.googleCastEventStream().listen(
-        (e) => _onRemoteEvent(e, expectedKind: 'googleCast', castKind: CastTargetKind.googleCast),
+        (e) => _onRemoteEvent(
+          e,
+          expectedKind: 'googleCast',
+          castKind: CastTargetKind.googleCast,
+        ),
         onError: (_) {},
       );
       _dlnaEventsSub = _nativeDlna.dlnaEventStream().listen(
-        (e) => _onRemoteEvent(e, expectedKind: 'dlna', castKind: CastTargetKind.dlna),
+        (e) => _onRemoteEvent(
+          e,
+          expectedKind: 'dlna',
+          castKind: CastTargetKind.dlna,
+        ),
         onError: (_) {},
       );
       if (PlatformDetection.isIOS) {
@@ -234,6 +248,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
 
     if (PlatformDetection.isMobile) {
       _initBrightness();
+      _initMobileVolume();
     }
   }
 
@@ -246,10 +261,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     _skipForwardTimer?.cancel();
     _skipBackwardTimer?.cancel();
     if (PlatformDetection.isMobile) {
+      _brightnessListenerSub?.cancel();
+      _volumeListenerSub?.cancel();
+      VolumeController.instance.removeListener();
       Future.microtask(() async {
         try {
-          await ScreenBrightnessPlatform.instance
-              .resetApplicationScreenBrightness();
+          if (PlatformDetection.isIOS) {
+            await ScreenBrightnessPlatform.instance.setAutoReset(true);
+          } else {
+            await ScreenBrightnessPlatform.instance
+                .resetApplicationScreenBrightness();
+          }
         } catch (_) {}
       });
     }
@@ -275,7 +297,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     final kind = event['kind'] as String?;
     if (kind != 'airPlay') return;
 
-    _onRemoteEvent(event, expectedKind: 'airPlay', castKind: CastTargetKind.airPlay);
+    _onRemoteEvent(
+      event,
+      expectedKind: 'airPlay',
+      castKind: CastTargetKind.airPlay,
+    );
   }
 
   void _onRemoteEvent(
@@ -291,7 +317,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
       case 'connected':
         _castService.setActiveKind(castKind);
         _castService.remoteStateNotifier.value = null;
-        if (castKind == CastTargetKind.googleCast || castKind == CastTargetKind.dlna) {
+        if (castKind == CastTargetKind.googleCast ||
+            castKind == CastTargetKind.dlna) {
           _refreshRemoteVolume();
         }
         if (castKind == CastTargetKind.airPlay) {
@@ -320,8 +347,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
       case 'error':
         if (mounted) {
           final l10n = AppLocalizations.of(context);
-          final protocolLabel = castKind == CastTargetKind.googleCast ? 'Google Cast' : 'DLNA';
-          final message = event['message'] as String? ?? l10n.castSessionError(protocolLabel);
+          final protocolLabel = castKind == CastTargetKind.googleCast
+              ? 'Google Cast'
+              : 'DLNA';
+          final message =
+              event['message'] as String? ??
+              l10n.castSessionError(protocolLabel);
           _showThrottledCastError(message);
         }
     }
@@ -331,12 +362,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     final now = DateTime.now();
     final lastAt = _lastCastErrorAt;
     final repeated = _lastCastErrorMessage == message;
-    if (repeated && lastAt != null && now.difference(lastAt) < const Duration(seconds: 3)) {
+    if (repeated &&
+        lastAt != null &&
+        now.difference(lastAt) < const Duration(seconds: 3)) {
       return;
     }
     _lastCastErrorAt = now;
     _lastCastErrorMessage = message;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _refreshRemoteVolume() async {
@@ -370,7 +405,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
       await _castService.setVolume(kind, volume: volume);
     } catch (e) {
       if (!mounted) return;
-      _showThrottledCastError(AppLocalizations.of(context).failedToSetCastVolume('$e'));
+      _showThrottledCastError(
+        AppLocalizations.of(context).failedToSetCastVolume('$e'),
+      );
     }
   }
 
@@ -396,6 +433,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
         }
         _backend.setVideoEnabled(true);
         _restorePositionAfterScreenLock();
+        if (PlatformDetection.isMobile) _syncBrightnessFromSystem();
       default:
         break;
     }
@@ -512,7 +550,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     final item = _queue.currentItem;
     if (_rawDataForQueueItem(item) == null) return;
     final resolvedSourceId = _manager.currentResolution?.mediaSourceId;
-    if (resolvedSourceId != null && resolvedSourceId != _trickplayMediaSourceId) {
+    if (resolvedSourceId != null &&
+        resolvedSourceId != _trickplayMediaSourceId) {
       _loadTrickplayInfo(item);
     }
   }
@@ -537,8 +576,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
         )
         .catchError((_) {});
     _castService.remotePositionNotifier.value = ticks;
-    _castService.remoteStateNotifier.value =
-        _state.isBuffering ? 'buffering' : (_state.isPlaying ? 'playing' : 'paused');
+    _castService.remoteStateNotifier.value = _state.isBuffering
+        ? 'buffering'
+        : (_state.isPlaying ? 'playing' : 'paused');
   }
 
   void _checkSegments(Duration position) {
@@ -566,7 +606,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
 
   void _checkNextUp(Duration position) {
     final nextUpBehavior = _prefs.get(UserPreferences.nextUpBehavior);
-    if (nextUpBehavior == NextUpBehavior.disabled || _nextUpDismissed || _showNextUp) return;
+    if (nextUpBehavior == NextUpBehavior.disabled ||
+        _nextUpDismissed ||
+        _showNextUp)
+      return;
 
     final duration = _state.duration;
     if (duration <= Duration.zero) return;
@@ -644,8 +687,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     _isStopping = true;
     _pipService.enableAutoPiP(false);
     await _manager.stop();
-    if (PlatformDetection.isDesktop &&
-        _wasDesktopFullscreenOnEntry == false) {
+    if (PlatformDetection.isDesktop && _wasDesktopFullscreenOnEntry == false) {
       final isFullscreen = await windowManager.isFullScreen();
       if (isFullscreen) {
         await _setDesktopFullscreen(false);
@@ -690,7 +732,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
   void _seekRelative(int ms, {bool showControls = true}) {
     final target = _state.position + Duration(milliseconds: ms);
     final clamped = Duration(
-      milliseconds: target.inMilliseconds.clamp(0, _state.duration.inMilliseconds),
+      milliseconds: target.inMilliseconds.clamp(
+        0,
+        _state.duration.inMilliseconds,
+      ),
     );
     _manager.seekTo(clamped);
     if (showControls) _showControls();
@@ -700,7 +745,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     final h = d.inHours;
     final m = d.inMinutes.remainder(60);
     final s = d.inSeconds.remainder(60);
-    if (h > 0) return '$h:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+    if (h > 0)
+      return '$h:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
     return '$m:${s.toString().padLeft(2, '0')}';
   }
 
@@ -712,7 +758,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
   SubtitleViewConfiguration _buildSubtitleConfig() {
     final textColor = Color(_prefs.get(UserPreferences.subtitlesTextColor));
     final bgColor = Color(_prefs.get(UserPreferences.subtitlesBackgroundColor));
-    final strokeColor = Color(_prefs.get(UserPreferences.subtitleTextStrokeColor));
+    final strokeColor = Color(
+      _prefs.get(UserPreferences.subtitleTextStrokeColor),
+    );
     final prefSize = _prefs.get(UserPreferences.subtitlesTextSize);
     final fontWeight = _prefs.get(UserPreferences.subtitlesTextWeight);
     final offset = _prefs.get(UserPreferences.subtitlesOffsetPosition);
@@ -725,7 +773,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     // Offset 0.0 = bottom edge, 0.5 = halfway up.
     // Mobile: smaller base padding to keep subs near bottom.
     final basePadding = PlatformDetection.isMobile ? 16.0 : 24.0;
-    final bottomPadding = basePadding + (offset * MediaQuery.sizeOf(context).height * 0.5);
+    final bottomPadding =
+        basePadding + (offset * MediaQuery.sizeOf(context).height * 0.5);
 
     // Build stroke outline shadows when the stroke color is visible.
     final hasStroke = strokeColor.alpha > 0;
@@ -817,10 +866,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     if (_isInPiP) {
       return Scaffold(
         backgroundColor: Colors.black,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [_buildVideoSurface()],
-        ),
+        body: Stack(fit: StackFit.expand, children: [_buildVideoSurface()]),
       );
     }
 
@@ -838,11 +884,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
           onKeyEvent: _handleKeyEvent,
           child: GestureDetector(
             onTap: _toggleControls,
-            onDoubleTapDown: PlatformDetection.isMobile && !_isOsdLocked ? _onDoubleTapDown : null,
+            onDoubleTapDown: PlatformDetection.isMobile && !_isOsdLocked
+                ? _onDoubleTapDown
+                : null,
             onDoubleTap: _handleDoubleTapGesture,
-            onVerticalDragStart: PlatformDetection.isMobile && !_isOsdLocked ? _onVerticalDragStart : null,
-            onVerticalDragUpdate: PlatformDetection.isMobile && !_isOsdLocked ? _onVerticalDragUpdate : null,
-            onPanDown: PlatformDetection.isDesktop ? (_) => _showControls() : null,
+            onVerticalDragStart: PlatformDetection.isMobile && !_isOsdLocked
+                ? _onVerticalDragStart
+                : null,
+            onVerticalDragUpdate: PlatformDetection.isMobile && !_isOsdLocked
+                ? _onVerticalDragUpdate
+                : null,
+            onPanDown: PlatformDetection.isDesktop
+                ? (_) => _showControls()
+                : null,
             behavior: HitTestBehavior.opaque,
             child: MouseRegion(
               cursor: PlatformDetection.isDesktop && !_controlsVisible
@@ -860,41 +914,41 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                _buildVideoSurface(),
-                if (_isRestoringPosition)
-                  const Positioned.fill(
-                    child: ColoredBox(color: Colors.black),
-                  ),
-                _buildPausedDescriptionOverlay(),
-                if (_controlsVisible && !_isOsdLocked) ...[
-                  _buildTopOverlay(context),
-                  _buildBottomOverlay(context),
-                  Positioned.fill(
-                    child: Center(
-                      child: _buildCenterTransportControls(),
+                  _buildVideoSurface(),
+                  if (_isRestoringPosition)
+                    const Positioned.fill(
+                      child: ColoredBox(color: Colors.black),
                     ),
-                  ),
-                ],
-                _buildCastMiniBar(),
-                _buildBufferingIndicator(),
-                _buildVolumeOverlay(),
-                if (PlatformDetection.isMobile) _buildBrightnessOverlay(),
-                if (PlatformDetection.isMobile) _buildDoubleTapSkipOverlay(),
-                if (_isOsdLocked) _buildLockedOverlay(),
-                if (_skipSegment != null)
-                  SkipSegmentOverlay(
-                    segment: _skipSegment!,
-                    onSkip: _skipCurrentSegment,
-                    onDismiss: () => setState(() {
-                      _skipSegment = null;
-                      _skipTo = null;
-                    }),
-                  ),
+                  _buildPausedDescriptionOverlay(),
+                  if (_controlsVisible && !_isOsdLocked) ...[
+                    _buildTopOverlay(context),
+                    _buildBottomOverlay(context),
+                    Positioned.fill(
+                      child: Center(child: _buildCenterTransportControls()),
+                    ),
+                  ],
+                  _buildCastMiniBar(),
+                  _buildBufferingIndicator(),
+                  _buildVolumeOverlay(),
+                  if (PlatformDetection.isMobile) _buildBrightnessOverlay(),
+                  if (PlatformDetection.isMobile) _buildDoubleTapSkipOverlay(),
+                  if (_isOsdLocked) _buildLockedOverlay(),
+                  if (_skipSegment != null)
+                    SkipSegmentOverlay(
+                      segment: _skipSegment!,
+                      onSkip: _skipCurrentSegment,
+                      onDismiss: () => setState(() {
+                        _skipSegment = null;
+                        _skipTo = null;
+                      }),
+                    ),
                   if (_showNextUp && _nextUpItem != null)
                     NextUpOverlay(
                       nextItem: _nextUpItem!,
                       imageUrl: _nextUpItem!.primaryImageTag != null
-                          ? _clientForItem(_nextUpItem!).imageApi.getPrimaryImageUrl(
+                          ? _clientForItem(
+                              _nextUpItem!,
+                            ).imageApi.getPrimaryImageUrl(
                               _nextUpItem!.id,
                               maxWidth: 400,
                               tag: _nextUpItem!.primaryImageTag,
@@ -1037,16 +1091,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     }
     if (item is Map) {
       return _firstNonEmptyText([
-        item['SeriesName'] as String?,
-        item['Name'] as String?,
-      ]) ?? '';
+            item['SeriesName'] as String?,
+            item['Name'] as String?,
+          ]) ??
+          '';
     }
     if (item is String) {
       final meta = _manager.currentOfflineMetadata;
       return _firstNonEmptyText([
-        meta?['SeriesName'] as String?,
-        meta?['Name'] as String?,
-      ]) ?? item.split('/').last;
+            meta?['SeriesName'] as String?,
+            meta?['Name'] as String?,
+          ]) ??
+          item.split('/').last;
     }
     return '';
   }
@@ -1108,7 +1164,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                 tooltip: PlatformDetection.isDesktop
                     ? _tooltipMessage(l10n.back, shortcut: 'Esc')
                     : null,
-                icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
             const SizedBox(width: AppSpacing.spaceSm),
             Expanded(child: _buildTitleInfo()),
@@ -1122,7 +1182,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                     _isOsdLocked = true;
                   });
                 },
-                icon: const Icon(Icons.lock_outline, color: Colors.white, size: 22),
+                icon: const Icon(
+                  Icons.lock_outline,
+                  color: Colors.white,
+                  size: 22,
+                ),
               ),
             _buildClock(),
           ],
@@ -1156,8 +1220,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
       seriesName = meta?['SeriesName'] as String?;
       final idx = meta?['IndexNumber'] as int?;
       final parentIdx = meta?['ParentIndexNumber'] as int?;
-      episodeInfo =
-          idx != null ? 'S${parentIdx ?? '?'}:E$idx' : null;
+      episodeInfo = idx != null ? 'S${parentIdx ?? '?'}:E$idx' : null;
     } else {
       title = item.toString();
       seriesName = null;
@@ -1179,9 +1242,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             overflow: TextOverflow.ellipsis,
           ),
         Text(
-          [if (episodeInfo != null) episodeInfo, title]
-              .where((s) => s.isNotEmpty)
-              .join(' — '),
+          [
+            if (episodeInfo != null) episodeInfo,
+            title,
+          ].where((s) => s.isNotEmpty).join(' — '),
           style: const TextStyle(
             color: Colors.white,
             fontSize: AppTypography.fontSizeLg,
@@ -1246,7 +1310,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
               onTap: _showCastControls,
               borderRadius: BorderRadius.circular(999),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1B5E20).withValues(alpha: 0.94),
                   borderRadius: BorderRadius.circular(999),
@@ -1254,7 +1321,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.cast_connected, color: Colors.white, size: 16),
+                    const Icon(
+                      Icons.cast_connected,
+                      color: Colors.white,
+                      size: 16,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       '$label$stateLabel$positionLabel',
@@ -1319,9 +1390,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             final durationMs = math.max(duration.inMilliseconds, 1).toDouble();
             final double positionMs = _isSeeking
                 ? _seekValue
-                : position.inMilliseconds.clamp(0, duration.inMilliseconds).toDouble();
+                : position.inMilliseconds
+                      .clamp(0, duration.inMilliseconds)
+                      .toDouble();
             final seekPosition = Duration(milliseconds: positionMs.round());
-            final trickplayTile = _isSeeking ? _getTrickplayTile(seekPosition) : null;
+            final trickplayTile = _isSeeking
+                ? _getTrickplayTile(seekPosition)
+                : null;
 
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -1343,12 +1418,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                 SliderTheme(
                   data: SliderThemeData(
                     trackHeight: 4,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 7,
+                    ),
+                    overlayShape: const RoundSliderOverlayShape(
+                      overlayRadius: 14,
+                    ),
                     activeTrackColor: AppColorScheme.rangeProgress,
                     inactiveTrackColor: AppColorScheme.rangeTrack,
                     thumbColor: AppColorScheme.rangeThumb,
-                    overlayColor: AppColorScheme.rangeThumb.withValues(alpha: 0.2),
+                    overlayColor: AppColorScheme.rangeThumb.withValues(
+                      alpha: 0.2,
+                    ),
                   ),
                   child: Slider(
                     value: positionMs.clamp(0.0, durationMs),
@@ -1371,14 +1452,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spaceLg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spaceLg,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        _formatDuration(_isSeeking
-                            ? Duration(milliseconds: _seekValue.round())
-                            : position),
+                        _formatDuration(
+                          _isSeeking
+                              ? Duration(milliseconds: _seekValue.round())
+                              : position,
+                        ),
                         style: const TextStyle(
                           color: Colors.white70,
                           fontSize: AppTypography.fontSizeXs,
@@ -1439,16 +1524,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                   alignment: Alignment(
                     tileWidth <= 1
                         ? 0.0
-                        : -1.0 +
-                            2.0 *
-                                sourceRect.left /
-                                (tileW - thumbWidth),
+                        : -1.0 + 2.0 * sourceRect.left / (tileW - thumbWidth),
                     tileHeight <= 1
                         ? 0.0
-                        : -1.0 +
-                            2.0 *
-                                sourceRect.top /
-                                (tileH - thumbHeight),
+                        : -1.0 + 2.0 * sourceRect.top / (tileH - thumbHeight),
                   ),
                   child: Image.network(
                     imageUrl,
@@ -1482,7 +1561,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     );
   }
 
-  ({String url, Map<String, String> headers, Rect sourceRect, double thumbWidth, double thumbHeight, int tileWidth, int tileHeight})? _getTrickplayTile(Duration position) {
+  ({
+    String url,
+    Map<String, String> headers,
+    Rect sourceRect,
+    double thumbWidth,
+    double thumbHeight,
+    int tileWidth,
+    int tileHeight,
+  })?
+  _getTrickplayTile(Duration position) {
     if (!_prefs.get(UserPreferences.trickPlayEnabled)) return null;
 
     final info = _trickplayInfo;
@@ -1519,7 +1607,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     return (
       url: url,
       headers: headers,
-      sourceRect: Rect.fromLTWH(offsetX, offsetY, info.width.toDouble(), info.height.toDouble()),
+      sourceRect: Rect.fromLTWH(
+        offsetX,
+        offsetY,
+        info.width.toDouble(),
+        info.height.toDouble(),
+      ),
       thumbWidth: info.width.toDouble(),
       thumbHeight: info.height.toDouble(),
       tileWidth: info.tileWidth,
@@ -1539,8 +1632,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             MediaQuery.of(context).orientation == Orientation.landscape;
         final secondaryIconSize = isLandscape ? 28.0 : 24.0;
         final secondaryExtent = isLandscape ? 56.0 : 48.0;
-        final secondaryTextSize =
-            isLandscape ? AppTypography.fontSizeMd : AppTypography.fontSizeSm;
+        final secondaryTextSize = isLandscape
+            ? AppTypography.fontSizeMd
+            : AppTypography.fontSizeSm;
 
         final secondaryButtons = <Widget>[
           _buildSpeedButton(
@@ -1611,7 +1705,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
               extent: secondaryExtent,
               tooltip: l10n.playerTooltipCastControls,
             ),
-          if (_manager.currentResolution?.playMethod == StreamPlayMethod.transcode)
+          if (_manager.currentResolution?.playMethod ==
+              StreamPlayMethod.transcode)
             _buildBitrateButton(
               extent: secondaryExtent,
               iconSize: secondaryIconSize,
@@ -1638,8 +1733,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
               size: secondaryIconSize,
               extent: secondaryExtent,
               tooltip: _isDesktopFullscreen
-                  ? _tooltipMessage(l10n.playerTooltipExitFullscreen, shortcut: 'Esc')
-                  : _tooltipMessage(l10n.playerTooltipEnterFullscreen, shortcut: 'F11'),
+                  ? _tooltipMessage(
+                      l10n.playerTooltipExitFullscreen,
+                      shortcut: 'Esc',
+                    )
+                  : _tooltipMessage(
+                      l10n.playerTooltipEnterFullscreen,
+                      shortcut: 'F11',
+                    ),
             ),
         ];
 
@@ -1719,22 +1820,104 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
       return;
     }
 
+    if (PlatformDetection.isMobile) {
+      final next = (_systemVolume + delta).clamp(0.0, 1.0);
+      unawaited(_setMobileSystemVolume(next));
+      _showVolumeIndicator();
+      return;
+    }
+
     final backend = _manager.backend;
     if (backend == null) return;
 
-    final next = (_playerVolume + (delta * _maxLocalPlayerVolume)).clamp(0.0, _maxLocalPlayerVolume);
+    final next = (_playerVolume + (delta * _maxLocalPlayerVolume)).clamp(
+      0.0,
+      _maxLocalPlayerVolume,
+    );
     _playerVolume = next;
     await backend.setVolume(next);
     _showVolumeIndicator();
   }
 
   void _initBrightness() {
+    final brightness = ScreenBrightnessPlatform.instance;
+
     Future.microtask(() async {
       try {
-        _brightnessValue =
-            await ScreenBrightnessPlatform.instance.application;
+        if (PlatformDetection.isIOS) {
+          await brightness.setAutoReset(true);
+          final current = await brightness.system;
+          if (mounted) {
+            setState(() => _brightnessValue = current);
+          }
+          _brightnessListenerSub = brightness.onSystemScreenBrightnessChanged
+              .listen((value) {
+                if (mounted && (value - _brightnessValue).abs() > 0.01) {
+                  setState(() => _brightnessValue = value);
+                }
+              });
+        } else {
+          await brightness.setAutoReset(false);
+          final current = await brightness.application;
+          if (mounted) {
+            setState(() => _brightnessValue = current);
+          }
+          _brightnessListenerSub = brightness
+              .onApplicationScreenBrightnessChanged
+              .listen((value) {
+                if (mounted && (value - _brightnessValue).abs() > 0.01) {
+                  setState(() => _brightnessValue = value);
+                }
+              });
+        }
       } catch (_) {}
     });
+  }
+
+  void _syncBrightnessFromSystem() {
+    Future.microtask(() async {
+      try {
+        final current = PlatformDetection.isIOS
+            ? await ScreenBrightnessPlatform.instance.system
+            : await ScreenBrightnessPlatform.instance.application;
+        if (mounted && (current - _brightnessValue).abs() > 0.01) {
+          setState(() => _brightnessValue = current);
+        }
+      } catch (_) {}
+    });
+  }
+
+  void _initMobileVolume() {
+    final vc = VolumeController.instance;
+    vc.showSystemUI = false;
+
+    // Mobile volume gestures should map directly to system volume.
+    _playerVolume = _maxLocalPlayerVolume;
+    unawaited(_manager.backend?.setVolume(_maxLocalPlayerVolume));
+
+    _volumeListenerSub = vc.addListener((value) {
+      if (mounted && (value - _systemVolume).abs() > 0.001) {
+        setState(() => _systemVolume = value);
+      }
+    }, fetchInitialVolume: true);
+  }
+
+  Future<void> _setMobileSystemVolume(double value) async {
+    final clamped = value.clamp(0.0, 1.0);
+
+    if (mounted && (clamped - _systemVolume).abs() > 0.001) {
+      setState(() => _systemVolume = clamped);
+    }
+
+    try {
+      await VolumeController.instance.setVolume(clamped);
+
+      // Read back the real system value so UI remains accurate on iOS.
+      final actual = await VolumeController.instance.getVolume();
+      if (mounted && (actual - _systemVolume).abs() > 0.001) {
+        setState(() => _systemVolume = actual);
+      }
+    } catch (_) {}
   }
 
   void _showVolumeIndicator() {
@@ -1755,8 +1938,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
 
   Future<void> _setBrightness(double value) async {
     try {
-      await ScreenBrightnessPlatform.instance
-          .setApplicationScreenBrightness(value.clamp(0.0, 1.0));
+      final clamped = value.clamp(0.0, 1.0);
+      if (PlatformDetection.isIOS) {
+        await ScreenBrightnessPlatform.instance.setSystemScreenBrightness(
+          clamped,
+        );
+      } else {
+        await ScreenBrightnessPlatform.instance.setApplicationScreenBrightness(
+          clamped,
+        );
+      }
     } catch (_) {}
   }
 
@@ -1784,23 +1975,33 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
   }
 
   void _doubleTapSkip({required bool forward}) {
-    final ms = _prefs.get(forward
-        ? UserPreferences.skipForwardLength
-        : UserPreferences.skipBackLength);
+    final ms = _prefs.get(
+      forward
+          ? UserPreferences.skipForwardLength
+          : UserPreferences.skipBackLength,
+    );
     _seekRelative(forward ? ms : -ms, showControls: false);
     if (forward) {
       _skipForwardAccum += ms;
       setState(() => _showSkipForward = true);
       _skipForwardTimer?.cancel();
       _skipForwardTimer = Timer(const Duration(milliseconds: 600), () {
-        if (mounted) setState(() { _showSkipForward = false; _skipForwardAccum = 0; });
+        if (mounted)
+          setState(() {
+            _showSkipForward = false;
+            _skipForwardAccum = 0;
+          });
       });
     } else {
       _skipBackwardAccum += ms;
       setState(() => _showSkipBackward = true);
       _skipBackwardTimer?.cancel();
       _skipBackwardTimer = Timer(const Duration(milliseconds: 600), () {
-        if (mounted) setState(() { _showSkipBackward = false; _skipBackwardAccum = 0; });
+        if (mounted)
+          setState(() {
+            _showSkipBackward = false;
+            _skipBackwardAccum = 0;
+          });
       });
     }
   }
@@ -1810,7 +2011,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     _verticalDragIsVolume = details.localPosition.dx > screenWidth / 2;
     _verticalDragStartY = details.localPosition.dy;
     _verticalDragStartValue = _verticalDragIsVolume
-        ? _playerVolume / _maxLocalPlayerVolume
+        ? (PlatformDetection.isMobile
+              ? _systemVolume
+              : _playerVolume / _maxLocalPlayerVolume)
         : _brightnessValue;
   }
 
@@ -1821,12 +2024,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
 
     if (_verticalDragIsVolume) {
       final newVolume = (_verticalDragStartValue + deltaValue).clamp(0.0, 1.0);
-      _playerVolume = newVolume * _maxLocalPlayerVolume;
-      _manager.backend?.setVolume(_playerVolume);
+      if (PlatformDetection.isMobile) {
+        unawaited(_setMobileSystemVolume(newVolume));
+      } else {
+        _playerVolume = newVolume * _maxLocalPlayerVolume;
+        _manager.backend?.setVolume(_playerVolume);
+      }
       _showVolumeIndicator();
     } else {
-      final newBrightness =
-          (_verticalDragStartValue + deltaValue).clamp(0.0, 1.0);
+      final newBrightness = (_verticalDragStartValue + deltaValue).clamp(
+        0.0,
+        1.0,
+      );
       _brightnessValue = newBrightness;
       _setBrightness(newBrightness);
       _showBrightnessIndicator();
@@ -1834,6 +2043,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
   }
 
   Widget _buildVolumeOverlay() {
+    final isMobile = PlatformDetection.isMobile;
+    final displayVolume = isMobile
+        ? _systemVolume
+        : _playerVolume / _maxLocalPlayerVolume;
     return Positioned.fill(
       child: AnimatedOpacity(
         opacity: _showVolumeOverlay ? 1.0 : 0.0,
@@ -1842,13 +2055,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
           child: Align(
             alignment: const Alignment(0.85, 0.0),
             child: _buildGestureIndicator(
-              icon: _playerVolume <= 0
+              icon: displayVolume <= 0
                   ? Icons.volume_off_rounded
-                  : _playerVolume < (_maxLocalPlayerVolume * 0.5)
-                      ? Icons.volume_down_rounded
-                      : Icons.volume_up_rounded,
-              value: _playerVolume / _maxLocalPlayerVolume,
-              label: '${_playerVolume.round()}%',
+                  : displayVolume < 0.5
+                  ? Icons.volume_down_rounded
+                  : Icons.volume_up_rounded,
+              value: displayVolume,
+              label: '${(displayVolume * 100).round()}%',
             ),
           ),
         ),
@@ -1868,8 +2081,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
               icon: _brightnessValue <= 0.25
                   ? Icons.brightness_low_rounded
                   : _brightnessValue >= 0.75
-                      ? Icons.brightness_high_rounded
-                      : Icons.brightness_medium_rounded,
+                  ? Icons.brightness_high_rounded
+                  : Icons.brightness_medium_rounded,
               value: _brightnessValue,
               label: '${(_brightnessValue * 100).round()}%',
             ),
@@ -2004,12 +2217,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                       color: Colors.black.withValues(alpha: 0.58),
                       borderRadius: BorderRadius.circular(24),
                     ),
-                      child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.lock_rounded, color: Colors.white70, size: 18),
+                          Icon(
+                            Icons.lock_rounded,
+                            color: Colors.white70,
+                            size: 18,
+                          ),
                           SizedBox(width: 8),
                           Text(
                             AppLocalizations.of(context).longPressToUnlock,
@@ -2053,16 +2273,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
               ),
             _controlButton(
               Icons.replay_10_rounded,
-              onPressed: () => _seekRelative(
-                  -_prefs.get(UserPreferences.skipBackLength)),
+              onPressed: () =>
+                  _seekRelative(-_prefs.get(UserPreferences.skipBackLength)),
               size: 46,
               extent: 78,
-              tooltip: _tooltipMessage(l10n.playerTooltipSeekBack, shortcut: 'Left'),
+              tooltip: _tooltipMessage(
+                l10n.playerTooltipSeekBack,
+                shortcut: 'Left',
+              ),
             ),
             _controlButton(
               isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-              onPressed: () =>
-                  isPlaying ? _manager.pause() : _manager.resume(),
+              onPressed: () => isPlaying ? _manager.pause() : _manager.resume(),
               size: 64,
               extent: 92,
               tooltip: _tooltipMessage(
@@ -2072,11 +2294,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             ),
             _controlButton(
               Icons.forward_30_rounded,
-              onPressed: () => _seekRelative(
-                  _prefs.get(UserPreferences.skipForwardLength)),
+              onPressed: () =>
+                  _seekRelative(_prefs.get(UserPreferences.skipForwardLength)),
               size: 46,
               extent: 78,
-              tooltip: _tooltipMessage(l10n.playerTooltipSeekForward, shortcut: 'Right'),
+              tooltip: _tooltipMessage(
+                l10n.playerTooltipSeekForward,
+                shortcut: 'Right',
+              ),
             ),
             if (_queue.hasNext)
               _controlButton(
@@ -2132,25 +2357,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
         offset: const Offset(0, -200),
         color: AppColorScheme.surface,
         itemBuilder: (_) => [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
-            .map((s) => PopupMenuItem(
-                  value: s,
-                  child: Text(
-                    '${s}x',
-                    style: TextStyle(
-                      color: _state.playbackSpeed == s
-                          ? AppColorScheme.accent
-                          : Colors.white,
-                    ),
+            .map(
+              (s) => PopupMenuItem(
+                value: s,
+                child: Text(
+                  '${s}x',
+                  style: TextStyle(
+                    color: _state.playbackSpeed == s
+                        ? AppColorScheme.accent
+                        : Colors.white,
                   ),
-                ))
+                ),
+              ),
+            )
             .toList(),
         child: Center(
           child: Text(
             '${_state.playbackSpeed}x',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: textSize,
-            ),
+            style: TextStyle(color: Colors.white, fontSize: textSize),
           ),
         ),
       ),
@@ -2167,7 +2391,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     final options = <int?>[null, 40, 20, 12, 8, 4, 2];
     final current = _manager.maxBitrateOverrideMbps;
 
-    String label(int? mbps) => mbps == null ? l10n.auto : l10n.bitrateValueMbps(mbps);
+    String label(int? mbps) =>
+        mbps == null ? l10n.auto : l10n.bitrateValueMbps(mbps);
 
     return SizedBox(
       width: extent,
@@ -2181,17 +2406,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
         offset: const Offset(0, -280),
         color: AppColorScheme.surface,
         itemBuilder: (_) => options
-            .map((mbps) => PopupMenuItem(
-                  value: mbps,
-                  child: Text(
-                    label(mbps),
-                    style: TextStyle(
-                      color: current == mbps
-                          ? AppColorScheme.accent
-                          : Colors.white,
-                    ),
+            .map(
+              (mbps) => PopupMenuItem(
+                value: mbps,
+                child: Text(
+                  label(mbps),
+                  style: TextStyle(
+                    color: current == mbps
+                        ? AppColorScheme.accent
+                        : Colors.white,
                   ),
-                ))
+                ),
+              ),
+            )
             .toList(),
         child: Center(
           child: Icon(
@@ -2209,21 +2436,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     final resolution = _manager.currentResolution;
     final streamType = audio ? 'Audio' : 'Subtitle';
     final offlineMeta = _manager.currentOfflineMetadata;
-    final allStreams = resolution?.mediaStreams
-      ?? (offlineMeta?['MediaStreams'] as List?)?.cast<Map<String, dynamic>>()
-      ?? const <Map<String, dynamic>>[];
-    final streams = allStreams
-        .where((s) => s['Type'] == streamType)
-        .toList();
+    final allStreams =
+        resolution?.mediaStreams ??
+        (offlineMeta?['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ??
+        const <Map<String, dynamic>>[];
+    final streams = allStreams.where((s) => s['Type'] == streamType).toList();
 
     final int? currentStreamIndex;
     if (audio) {
-      currentStreamIndex = _manager.audioStreamIndex ??
-          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index'] as int?;
+      currentStreamIndex =
+          _manager.audioStreamIndex ??
+          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index']
+              as int?;
     } else {
       final subIdx = _manager.subtitleStreamIndex;
-      currentStreamIndex = subIdx ?? // null = server default
-          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index'] as int?;
+      currentStreamIndex =
+          subIdx ?? // null = server default
+          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index']
+              as int?;
     }
     final isSubsOff = !audio && _manager.subtitleStreamIndex == -1;
 
@@ -2257,11 +2487,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                   children: [
                     if (!audio)
                       ListTile(
-                        title: Text(l10n.off,
-                            style: const TextStyle(color: Colors.white)),
+                        title: Text(
+                          l10n.off,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                         leading: Icon(
                           Icons.radio_button_checked,
-                          color: isSubsOff || (currentStreamIndex == null && streams.isNotEmpty)
+                          color:
+                              isSubsOff ||
+                                  (currentStreamIndex == null &&
+                                      streams.isNotEmpty)
                               ? AppColorScheme.accent
                               : Colors.white38,
                         ),
@@ -2278,24 +2513,31 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                       final language = stream['Language'] as String?;
                       final codec = stream['Codec'] as String?;
 
-                      final label = displayTitle ??
+                      final label =
+                          displayTitle ??
                           title ??
                           language ??
                           l10n.streamTypeFallback(streamType, e.key + 1);
                       final subtitle = [
                         if (language != null && displayTitle != null) language,
                         if (codec != null) codec.toUpperCase(),
-                        if (stream['Channels'] != null) '${stream['Channels']}ch',
+                        if (stream['Channels'] != null)
+                          '${stream['Channels']}ch',
                       ].join(' · ');
 
-                      final selected = !isSubsOff && currentStreamIndex == streamIndex;
+                      final selected =
+                          !isSubsOff && currentStreamIndex == streamIndex;
 
                       return ListTile(
-                        title: Text(label,
-                            style: const TextStyle(color: Colors.white)),
+                        title: Text(
+                          label,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                         subtitle: subtitle.isNotEmpty
-                            ? Text(subtitle,
-                                style: const TextStyle(color: Colors.white54))
+                            ? Text(
+                                subtitle,
+                                style: const TextStyle(color: Colors.white54),
+                              )
                             : null,
                         leading: Icon(
                           Icons.radio_button_checked,
@@ -2390,11 +2632,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                 itemCount: chapters.length,
                 itemBuilder: (ctx, i) {
                   final ch = chapters[i];
-                  final name = (ch['Name'] as String?) ?? l10n.chapterNumber(i + 1);
+                  final name =
+                      (ch['Name'] as String?) ?? l10n.chapterNumber(i + 1);
                   final ticks = ch['StartPositionTicks'] as int? ?? 0;
                   final pos = Duration(microseconds: ticks ~/ 10);
                   return ListTile(
-                    title: Text(name, style: const TextStyle(color: Colors.white)),
+                    title: Text(
+                      name,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     trailing: Text(
                       _formatDuration(pos),
                       style: const TextStyle(color: Colors.white54),
@@ -2457,9 +2703,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                       backgroundColor: Colors.white12,
                       child: Icon(Icons.person, color: Colors.white54),
                     ),
-                    title: Text(name, style: const TextStyle(color: Colors.white)),
+                    title: Text(
+                      name,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     subtitle: subtitle.isNotEmpty
-                        ? Text(subtitle, style: const TextStyle(color: Colors.white54))
+                        ? Text(
+                            subtitle,
+                            style: const TextStyle(color: Colors.white54),
+                          )
                         : null,
                   );
                 },
@@ -2477,11 +2729,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     if (item is! AggregatedItem) return;
     final positionTicks = _state.position.inMicroseconds * 10;
     final startIndex = _queue.currentIndex < 0 ? 0 : _queue.currentIndex;
-    final queueItems =
-        _queue.items
-            .skip(startIndex)
-            .whereType<AggregatedItem>()
-            .toList(growable: false);
+    final queueItems = _queue.items
+        .skip(startIndex)
+        .whereType<AggregatedItem>()
+        .toList(growable: false);
     await showRemotePlayToSessionDialog(
       context,
       item: item,
@@ -2520,7 +2771,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             ListTile(
               title: Text(
                 l10n.castControlsTitle(label),
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               subtitle: _remotePlaybackState != null
                   ? Text(
@@ -2530,36 +2784,52 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                     )
                   : null,
             ),
-              if (kind == CastTargetKind.googleCast || kind == CastTargetKind.dlna)
-                ListTile(
-                  leading: const Icon(Icons.volume_up_rounded, color: Colors.white),
-                  title: Text(l10n.deviceVolume, style: const TextStyle(color: Colors.white)),
-                  subtitle: _remoteVolume == null
-                      ? Text(l10n.unavailable, style: const TextStyle(color: Colors.white54))
-                      : SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            activeTrackColor: AppColorScheme.accent,
-                            inactiveTrackColor: Colors.white24,
-                            thumbColor: Colors.white,
-                            overlayColor: Colors.white24,
-                          ),
-                          child: Slider(
-                            value: _remoteVolume!.clamp(0.0, 1.0),
-                            min: 0,
-                            max: 1,
-                            onChanged: (value) => _setRemoteVolume(value),
-                          ),
-                        ),
-                  trailing: _remoteVolume == null
-                      ? null
-                      : Text(
-                          '${(_remoteVolume! * 100).round()}%',
-                          style: const TextStyle(color: Colors.white70),
-                        ),
+            if (kind == CastTargetKind.googleCast ||
+                kind == CastTargetKind.dlna)
+              ListTile(
+                leading: const Icon(
+                  Icons.volume_up_rounded,
+                  color: Colors.white,
                 ),
+                title: Text(
+                  l10n.deviceVolume,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                subtitle: _remoteVolume == null
+                    ? Text(
+                        l10n.unavailable,
+                        style: const TextStyle(color: Colors.white54),
+                      )
+                    : SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          activeTrackColor: AppColorScheme.accent,
+                          inactiveTrackColor: Colors.white24,
+                          thumbColor: Colors.white,
+                          overlayColor: Colors.white24,
+                        ),
+                        child: Slider(
+                          value: _remoteVolume!.clamp(0.0, 1.0),
+                          min: 0,
+                          max: 1,
+                          onChanged: (value) => _setRemoteVolume(value),
+                        ),
+                      ),
+                trailing: _remoteVolume == null
+                    ? null
+                    : Text(
+                        '${(_remoteVolume! * 100).round()}%',
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+              ),
             ListTile(
-              leading: const Icon(Icons.play_arrow_rounded, color: Colors.white),
-              title: Text(l10n.play, style: const TextStyle(color: Colors.white)),
+              leading: const Icon(
+                Icons.play_arrow_rounded,
+                color: Colors.white,
+              ),
+              title: Text(
+                l10n.play,
+                style: const TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _runCastAction((k) => _castService.play(k));
@@ -2567,7 +2837,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             ),
             ListTile(
               leading: const Icon(Icons.pause_rounded, color: Colors.white),
-              title: Text(l10n.pause, style: const TextStyle(color: Colors.white)),
+              title: Text(
+                l10n.pause,
+                style: const TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _runCastAction((k) => _castService.pause(k));
@@ -2575,7 +2848,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             ),
             ListTile(
               leading: const Icon(Icons.sync_rounded, color: Colors.white),
-              title: Text(l10n.syncPosition, style: const TextStyle(color: Colors.white)),
+              title: Text(
+                l10n.syncPosition,
+                style: const TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(ctx).pop();
                 final positionTicks = _state.position.inMicroseconds * 10;
@@ -2586,7 +2862,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
             ),
             ListTile(
               leading: const Icon(Icons.stop_rounded, color: Colors.white),
-              title: Text(l10n.stopCast(label), style: const TextStyle(color: Colors.white)),
+              title: Text(
+                l10n.stopCast(label),
+                style: const TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _runCastAction((k) => _castService.stop(k));
@@ -2659,10 +2938,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                         setSheetState(() {});
                         _applyDelay(audio: audio, delay: delay);
                       },
-                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white, size: 32),
+                      icon: const Icon(
+                        Icons.remove_circle_outline,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.spaceSm),
-                    Text('-100ms', style: const TextStyle(color: Colors.white54, fontSize: AppTypography.fontSizeXs)),
+                    Text(
+                      '-100ms',
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: AppTypography.fontSizeXs,
+                      ),
+                    ),
                     const SizedBox(width: AppSpacing.spaceLg),
                     OutlinedButton(
                       onPressed: () {
@@ -2673,11 +2962,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.white38),
                       ),
-                      child: Text(l10n.reset,
-                          style: const TextStyle(color: Colors.white)),
+                      child: Text(
+                        l10n.reset,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.spaceLg),
-                    Text('+100ms', style: const TextStyle(color: Colors.white54, fontSize: AppTypography.fontSizeXs)),
+                    Text(
+                      '+100ms',
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: AppTypography.fontSizeXs,
+                      ),
+                    ),
                     const SizedBox(width: AppSpacing.spaceSm),
                     IconButton(
                       onPressed: () {
@@ -2685,7 +2982,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                         setSheetState(() {});
                         _applyDelay(audio: audio, delay: delay);
                       },
-                      icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 32),
+                      icon: const Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
                   ],
                 ),
@@ -2711,7 +3012,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
 
   String _formatBitrate(int? bitrate) {
     if (bitrate == null) return AppLocalizations.of(context).unknown;
-    if (bitrate >= 1000000) return '${(bitrate / 1000000).toStringAsFixed(1)} Mbps';
+    if (bitrate >= 1000000)
+      return '${(bitrate / 1000000).toStringAsFixed(1)} Mbps';
     if (bitrate >= 1000) return '${(bitrate / 1000).toStringAsFixed(0)} Kbps';
     return '$bitrate bps';
   }
@@ -2761,9 +3063,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
 
   String _getHdrType(Map<String, dynamic> stream) {
     final rangeType = stream['VideoRangeType'] as String? ?? '';
-    if (rangeType.contains('DOVI') || rangeType.contains('DoVi')) return 'Dolby Vision';
-    if (rangeType.contains('HDR10Plus') || rangeType.contains('HDR10+')) return 'HDR10+';
-    if (rangeType.contains('HDR10') || rangeType.contains('HDR')) return 'HDR10';
+    if (rangeType.contains('DOVI') || rangeType.contains('DoVi'))
+      return 'Dolby Vision';
+    if (rangeType.contains('HDR10Plus') || rangeType.contains('HDR10+'))
+      return 'HDR10+';
+    if (rangeType.contains('HDR10') || rangeType.contains('HDR'))
+      return 'HDR10';
     if (rangeType.contains('HLG')) return 'HLG';
     final range = stream['VideoRange'] as String?;
     if (range == 'HDR') return 'HDR';
@@ -2837,7 +3142,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     } else if (item is String) {
       final meta = _manager.currentOfflineMetadata;
       if (meta != null) {
-        final streams = (meta['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+        final streams =
+            (meta['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ?? [];
         populateStreams(streams);
         final sources = meta['MediaSources'] as List?;
         if (sources != null && sources.isNotEmpty) {
@@ -2884,13 +3190,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
     Widget sectionHeader(String title) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.spaceLg, AppSpacing.spaceMd, AppSpacing.spaceLg, 4,
+          AppSpacing.spaceLg,
+          AppSpacing.spaceMd,
+          AppSpacing.spaceLg,
+          4,
         ),
         child: Text(title, style: headerStyle),
       );
     }
 
-    final container = (mediaSource?['Container'] as String?)?.toUpperCase() ?? l10n.unknown;
+    final container =
+        (mediaSource?['Container'] as String?)?.toUpperCase() ?? l10n.unknown;
     final bitrate = mediaSource?['Bitrate'] as int?;
 
     showModalBottomSheet(
@@ -2926,7 +3236,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                 infoRow(
                   l10n.transcodeReasons,
                   resolution.transcodingReasons
-                      .map((r) => r.replaceAllMapped(_camelCaseSpaceRe, (_) => ' '))
+                      .map(
+                        (r) =>
+                            r.replaceAllMapped(_camelCaseSpaceRe, (_) => ' '),
+                      )
                       .join(', '),
                 ),
               infoRow(l10n.player, 'media_kit (libmpv)'),
@@ -2943,29 +3256,56 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with WidgetsBindi
                 infoRow(l10n.hdr, _getHdrType(video)),
                 infoRow(l10n.codec, _formatVideoCodec(video)),
                 if (video['BitRate'] != null)
-                  infoRow(l10n.videoBitrate, _formatBitrate(video['BitRate'] as int?)),
+                  infoRow(
+                    l10n.videoBitrate,
+                    _formatBitrate(video['BitRate'] as int?),
+                  ),
               ],
 
               if (audioStream case final audio?) ...[
                 sectionHeader(l10n.audio),
-                infoRow(l10n.track, audio['DisplayTitle'] as String?
-                    ?? audio['Language'] as String?
-                    ?? l10n.unknown),
+                infoRow(
+                  l10n.track,
+                  audio['DisplayTitle'] as String? ??
+                      audio['Language'] as String? ??
+                      l10n.unknown,
+                ),
                 infoRow(l10n.codec, _formatAudioCodec(audio)),
-                infoRow(l10n.channels, _formatChannels(audio['Channels'] as int?)),
+                infoRow(
+                  l10n.channels,
+                  _formatChannels(audio['Channels'] as int?),
+                ),
                 if (audio['BitRate'] != null)
-                  infoRow(l10n.audioBitrate, _formatBitrate(audio['BitRate'] as int?)),
+                  infoRow(
+                    l10n.audioBitrate,
+                    _formatBitrate(audio['BitRate'] as int?),
+                  ),
                 if (audio['SampleRate'] != null)
-                  infoRow(l10n.sampleRate, '${((audio['SampleRate'] as num) / 1000).toStringAsFixed(1)} kHz'),
+                  infoRow(
+                    l10n.sampleRate,
+                    '${((audio['SampleRate'] as num) / 1000).toStringAsFixed(1)} kHz',
+                  ),
               ],
 
               if (subtitleStream case final subtitle?) ...[
                 sectionHeader(l10n.subtitles),
-                infoRow(l10n.track, subtitle['DisplayTitle'] as String?
-                    ?? subtitle['Language'] as String?
-                    ?? l10n.unknown),
-                infoRow(l10n.format, ((subtitle['Codec'] as String?) ?? l10n.unknown).toUpperCase()),
-                infoRow(l10n.type, subtitle['IsExternal'] == true ? l10n.external : l10n.embedded),
+                infoRow(
+                  l10n.track,
+                  subtitle['DisplayTitle'] as String? ??
+                      subtitle['Language'] as String? ??
+                      l10n.unknown,
+                ),
+                infoRow(
+                  l10n.format,
+                  ((subtitle['Codec'] as String?) ?? l10n.unknown)
+                      .toUpperCase(),
+                ),
+                infoRow(
+                  l10n.type,
+                  subtitle['IsExternal'] == true
+                      ? l10n.external
+                      : l10n.embedded,
+                ),
               ],
 
               const SizedBox(height: AppSpacing.spaceLg),
