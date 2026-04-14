@@ -4070,12 +4070,16 @@ class _DownloadButtonState extends State<_DownloadButton> {
     DownloadQuality quality, {
     required bool supportsTranscoding,
     required bool isMulti,
+    String? multiEstimateSubtitle,
   }) {
     if (!quality.isTranscoded || !supportsTranscoding) {
       return _originalQualitySubtitle(item, isMulti: isMulti);
     }
 
     if (isMulti) {
+      if (multiEstimateSubtitle != null) {
+        return '$multiEstimateSubtitle • ${quality.encodingInfo}';
+      }
       return '${quality.estimatedSizePerHour} • ${quality.encodingInfo}';
     }
 
@@ -4085,6 +4089,53 @@ class _DownloadButtonState extends State<_DownloadButton> {
     }
 
     return '${quality.estimatedSizePerHour} • ${quality.encodingInfo}';
+  }
+
+  String? _multiTranscodedEstimateSubtitle(
+    List<AggregatedItem> episodes,
+    DownloadQuality quality,
+  ) {
+    if (episodes.isEmpty) {
+      return null;
+    }
+
+    var totalBytes = 0;
+    var estimatedCount = 0;
+    for (final episode in episodes) {
+      final estimate = estimateTranscodedSizeBytes(episode, quality);
+      if (estimate != null && estimate > 0) {
+        totalBytes += estimate;
+        estimatedCount++;
+      }
+    }
+
+    if (estimatedCount == 0) {
+      return null;
+    }
+
+    final totalLabel = '~${formatBytes(totalBytes)} total';
+    if (estimatedCount == episodes.length) {
+      return totalLabel;
+    }
+
+    return '$totalLabel (${episodes.length - estimatedCount} unknown)';
+  }
+
+  Map<DownloadQuality, String> _multiTranscodedEstimateSubtitles(
+    List<AggregatedItem> episodes,
+    List<DownloadQuality> qualities,
+  ) {
+    final subtitles = <DownloadQuality, String>{};
+    for (final quality in qualities) {
+      if (!quality.isTranscoded) {
+        continue;
+      }
+      final subtitle = _multiTranscodedEstimateSubtitle(episodes, quality);
+      if (subtitle != null) {
+        subtitles[quality] = subtitle;
+      }
+    }
+    return subtitles;
   }
 
   @override
@@ -4183,22 +4234,33 @@ class _DownloadButtonState extends State<_DownloadButton> {
   void _showQualityPicker(BuildContext context, DownloadService service) {
     final item = widget.item;
     final isMulti = item.type == 'Season' || item.type == 'Series';
-    final supportsTranscoding = item.type == 'Movie' || item.type == 'Episode';
+    final supportsTranscoding = item.type == 'Movie' || item.type == 'Episode' || isMulti;
+    final episodes = widget.viewModel.episodes;
 
     if (!isMulti && !supportsTranscoding) {
       _startDownload(context, service, DownloadQuality.original);
       return;
     }
 
-    final sourceWidth = isMulti ? null : item.sourceVideoWidth;
-    final availableQualities =
-        supportsTranscoding
-            ? DownloadQuality.values.where((q) {
-              if (q.maxWidth == null) return true;
-              if (sourceWidth == null) return true;
-              return q.maxWidth! <= sourceWidth;
-            }).toList()
-            : [DownloadQuality.original];
+    final sourceWidth = isMulti
+        ? (() {
+            int? maxWidth;
+            for (final episode in episodes) {
+              final width = episode.sourceVideoWidth;
+              if (width == null) continue;
+              maxWidth = maxWidth == null || width > maxWidth ? width : maxWidth;
+            }
+            return maxWidth;
+          })()
+        : item.sourceVideoWidth;
+    final availableQualities = DownloadQuality.values.where((q) {
+      if (q.maxWidth == null) return true;
+      if (sourceWidth == null) return true;
+      return q.maxWidth! <= sourceWidth;
+    }).toList();
+    final multiEstimateSubtitles = isMulti
+        ? _multiTranscodedEstimateSubtitles(episodes, availableQualities)
+        : const <DownloadQuality, String>{};
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1E1E1E),
@@ -4239,6 +4301,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
                         quality,
                         supportsTranscoding: supportsTranscoding,
                         isMulti: isMulti,
+                        multiEstimateSubtitle: multiEstimateSubtitles[quality],
                       ),
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.5),

@@ -1135,6 +1135,8 @@ class DownloadService extends ChangeNotifier {
         dir = Directory('${downloadsDir.path}/$subFolder');
         if (!await dir.exists()) await dir.create(recursive: true);
         savePath = '${dir.path}/$fileName';
+        final stale = File(savePath);
+        if (await stale.exists()) await stale.delete();
       }
 
       await _offlineRepo.upsertItem(DownloadedItemsCompanion(

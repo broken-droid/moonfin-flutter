@@ -10,7 +10,8 @@ import '../utils/playlist_utils.dart';
 enum ItemDetailState { loading, ready, error }
 
 class ItemDetailViewModel extends ChangeNotifier {
-  static const _episodeOverviewFields = 'Overview';
+  static const _episodeOverviewFields =
+      'Overview,MediaStreams,MediaSources,RunTimeTicks';
 
   final MediaServerClient _client;
   final ItemMutationRepository _mutations;

@@ -30,7 +30,7 @@ final socketHandlerProvider = Provider<SocketHandler>(
   (_) => getIt<SocketHandler>(),
 );
 
-final userPreferencesProvider = Provider<UserPreferences>(
+final userPreferencesProvider = ChangeNotifierProvider<UserPreferences>(
   (_) => getIt<UserPreferences>(),
 );
 

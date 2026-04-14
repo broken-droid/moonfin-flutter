@@ -65,7 +65,16 @@ class MediaStoreHelper(private val context: Context) : MethodChannel.MethodCallH
         } else {
             arrayOf(fileName)
         }
+
+        val existingPhysicalPath: String? = try {
+            context.contentResolver.query(collection, arrayOf(MediaStore.MediaColumns.DATA), selection, selectionArgs, null)?.use { cursor ->
+                if (cursor.moveToFirst()) cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)) else null
+            }
+        } catch (_: Exception) { null }
+
         context.contentResolver.delete(collection, selection, selectionArgs)
+
+        existingPhysicalPath?.let { java.io.File(it).delete() }
 
         val values = ContentValues().apply {
             put(MediaStore.Downloads.DISPLAY_NAME, fileName)

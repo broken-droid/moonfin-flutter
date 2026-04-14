@@ -212,6 +212,18 @@ class AggregatedItem {
     for (final stream in mediaStreams) {
       if (stream['Type'] == 'Video') return stream['Width'] as int?;
     }
+
+    for (final source in mediaSources) {
+      final streams = source['MediaStreams'] as List?;
+      if (streams == null) continue;
+      for (final raw in streams) {
+        if (raw is! Map) continue;
+        if (raw['Type'] == 'Video') {
+          return _toInt(raw['Width']);
+        }
+      }
+    }
+
     return null;
   }
 
