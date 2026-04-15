@@ -130,6 +130,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
 
   Future<void> _applyAudioChannelLayout() async {
     if (_player.platform is! NativePlayer) return;
+    if (!Platform.isAndroid) return;
     final native = _player.platform as NativePlayer;
     final stereoDownmix =
         _prefs.get(UserPreferences.audioBehavior) == AudioBehavior.downmixToStereo;
@@ -137,7 +138,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
       await native.setProperty('audio-channels', 'stereo');
       await native.setProperty('audio-normalize-downmix', 'yes');
     } else {
-      await native.setProperty('audio-channels', 'auto-safe');
+      await native.setProperty('audio-channels', 'auto');
       await native.setProperty('audio-normalize-downmix', 'no');
     }
   }
