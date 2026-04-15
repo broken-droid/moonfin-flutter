@@ -31,7 +31,7 @@ class CredentialStore {
   /// Get the saved access token for a server.
   Future<String?> getToken(String serverId) async {
     try {
-      return _storage.read(key: '$_tokenKeyPrefix$serverId');
+      return await _storage.read(key: '$_tokenKeyPrefix$serverId');
     } on PlatformException {
       _markUnavailable();
       return null;

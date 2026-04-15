@@ -133,72 +133,43 @@ resolve_shared_lib() {
   return 1
 }
 
-bundle_runtime_lib() {
-  local bundle_dir="$1"
-  local soname="$2"
-
-  local source_path
-  if ! source_path="$(resolve_shared_lib "$soname")"; then
-    echo "Warning: Could not resolve $soname on this build host; package may require host runtime library." >&2
-    return 1
-  fi
-
-  mkdir -p "$bundle_dir/lib"
-
-  local source_real
-  source_real="$(readlink -f "$source_path")"
-  if [ ! -f "$source_real" ]; then
-    echo "Warning: Resolved library path invalid for $soname: $source_path" >&2
-    return 1
-  fi
-
-  local base_name
-  base_name="$(basename "$source_real")"
-  cp -L "$source_real" "$bundle_dir/lib/$base_name"
-
-  if [ "$base_name" != "$soname" ]; then
-    ln -sf "$base_name" "$bundle_dir/lib/$soname"
-  fi
-
-  echo "Bundled runtime lib: $soname -> $base_name"
-}
-
-inject_linux_runtime_libs() {
-  local bundle_dir="$1"
-  bundle_runtime_lib "$bundle_dir" "libmpv.so.2" || true
-  bundle_runtime_lib "$bundle_dir" "libsecret-1.so.0" || true
-}
-
-# Bundle libmpv + transitive deps for Flatpak (sandboxed, no system libs available).
-inject_flatpak_libs() {
-  local dest_lib="$1"
-  mkdir -p "$dest_lib"
-  echo "Bundling runtime libraries for Flatpak..."
-
+runtime_seed_libs() {
   local seed_libs=""
+
   local libmpv_path
   if ! libmpv_path="$(resolve_shared_lib libmpv.so.2)"; then
     echo "Error: could not resolve libmpv.so.2. Install libmpv2 on the build host." >&2
     return 1
   fi
   seed_libs="$libmpv_path"
-  local libsecret_path
-  if libsecret_path="$(resolve_shared_lib libsecret-1.so.0)"; then
-    seed_libs="$seed_libs"$'\n'"$libsecret_path"
-  fi
 
+  local libsecret_path
+  if ! libsecret_path="$(resolve_shared_lib libsecret-1.so.0)"; then
+    echo "Error: could not resolve libsecret-1.so.0. Install libsecret-1-0 on the build host." >&2
+    return 1
+  fi
+  seed_libs="$seed_libs"$'\n'"$libsecret_path"
+
+  printf '%s\n' "$seed_libs" | grep -v '^$' || true
+}
+
+collect_transitive_libs() {
+  local seed_libs="$1"
   local all_deps=""
+
   while IFS= read -r seed; do
     [ -z "$seed" ] && continue
+    [ ! -f "$seed" ] && continue
+
     local deps
     deps="$(ldd "$seed" 2>/dev/null | grep -oP '=> \K/[^ ]+' || true)"
-    all_deps="$(printf '%s\n%s' "$all_deps" "$deps")"
+    all_deps="$(printf '%s\n%s\n%s' "$all_deps" "$deps" "$seed")"
   done <<< "$seed_libs"
 
-  all_deps="$(printf '%s\n%s' "$all_deps" "$seed_libs")"
-  all_deps="$(echo "$all_deps" | sort -u | grep -v '^$')"
+  printf '%s\n' "$all_deps" | sort -u | grep -v '^$' || true
+}
 
-  # Skip system/desktop libs provided by the freedesktop runtime
+runtime_skip_pattern() {
   local skip='linux-vdso|ld-linux|libc[.]so|libm[.]so|libpthread|libdl[.]so|librt[.]so'
   skip="$skip"'|libstdc[+][+]|libgcc_s'
   skip="$skip"'|libX[a-z]|libxcb|libxkb|libxshmfence|libICE|libSM'
@@ -209,6 +180,16 @@ inject_flatpak_libs() {
   skip="$skip"'|libfontconfig|libfreetype|libharfbuzz|libcairo|libpango|libpixman'
   skip="$skip"'|libatk|libgdk|libgtk|libepoxy'
   skip="$skip"'|libmount|libblkid|libselinux|libuuid|libresolv|libnss|libnsl|libcrypt'
+  skip="$skip"'|libsystemd'
+  printf '%s\n' "$skip"
+}
+
+copy_runtime_libs() {
+  local dest_lib="$1"
+  local lib_paths="$2"
+  local skip_pattern="$3"
+
+  mkdir -p "$dest_lib"
 
   local count=0
   while IFS= read -r lib_path; do
@@ -218,11 +199,13 @@ inject_flatpak_libs() {
     local lib_name
     lib_name="$(basename "$lib_path")"
     if [[ ! "$lib_name" =~ ^libXpresent[.]so ]]; then
-      [[ "$lib_name" =~ $skip ]] && continue
+      [[ "$lib_name" =~ $skip_pattern ]] && continue
     fi
 
     local real_path
     real_path="$(readlink -f "$lib_path")"
+    [ -f "$real_path" ] || continue
+
     local real_name
     real_name="$(basename "$real_path")"
 
@@ -234,7 +217,59 @@ inject_flatpak_libs() {
     if [ "$real_name" != "$lib_name" ] && [ ! -e "$dest_lib/$lib_name" ]; then
       ln -sf "$real_name" "$dest_lib/$lib_name"
     fi
-  done <<< "$all_deps"
+
+    local soname
+    soname="$(readelf -d "$real_path" 2>/dev/null | sed -n 's/.*SONAME.*\[\(.*\)\].*/\1/p' | head -n1)"
+    if [ -n "$soname" ] && [ "$soname" != "$real_name" ] && [ ! -e "$dest_lib/$soname" ]; then
+      ln -sf "$real_name" "$dest_lib/$soname"
+    fi
+  done <<< "$lib_paths"
+
+  printf '%s\n' "$count"
+}
+
+inject_linux_runtime_libs() {
+  local bundle_dir="$1"
+
+  local seed_libs
+  seed_libs="$(runtime_seed_libs)"
+  if [ -z "$seed_libs" ]; then
+    echo "Warning: Could not resolve runtime seed libraries on this build host." >&2
+    return 1
+  fi
+
+  local all_deps
+  all_deps="$(collect_transitive_libs "$seed_libs")"
+
+  local skip
+  skip="$(runtime_skip_pattern)"
+
+  local bundled_count
+  bundled_count="$(copy_runtime_libs "$bundle_dir/lib" "$all_deps" "$skip")"
+  echo "Bundled $bundled_count runtime libraries for AppImage/Tarball"
+}
+
+# Bundle libmpv + transitive deps for Flatpak (sandboxed, no system libs available).
+inject_flatpak_libs() {
+  local dest_lib="$1"
+  mkdir -p "$dest_lib"
+  echo "Bundling runtime libraries for Flatpak..."
+
+  local seed_libs
+  seed_libs="$(runtime_seed_libs)"
+  if [ -z "$seed_libs" ]; then
+    echo "Error: could not resolve required runtime seed libraries." >&2
+    return 1
+  fi
+
+  local all_deps
+  all_deps="$(collect_transitive_libs "$seed_libs")"
+
+  local skip
+  skip="$(runtime_skip_pattern)"
+
+  local count
+  count="$(copy_runtime_libs "$dest_lib" "$all_deps" "$skip")"
 
   echo "Bundled $count runtime libraries for Flatpak"
 }
@@ -674,6 +709,7 @@ build_flatpak() {
   local flatpak_name="${APP_NAME}_Linux_v${version}.flatpak"
   local flatpak_src="$flatpak_dir/src"
 
+  rm -rf "$flatpak_build_dir" "$flatpak_repo_dir"
   mkdir -p "$flatpak_src"
   cp -r "$BUILD_DIR"/* "$flatpak_src/"
   inject_flatpak_libs "$flatpak_src/lib/moonfin"
@@ -767,7 +803,7 @@ EOF
   flatpak-builder --force-clean \
     --repo="$flatpak_repo_dir" \
     "$flatpak_build_dir" \
-    "$flatpak_dir/${APP_ID}.yml" || true
+    "$flatpak_dir/${APP_ID}.yml"
 
   if flatpak build-bundle "$flatpak_repo_dir" "$REPO_ROOT/$flatpak_name" "${APP_ID}"; then
     echo "✓ Created: $REPO_ROOT/$flatpak_name"
