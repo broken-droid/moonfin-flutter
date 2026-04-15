@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 
 import '../models/aggregated_item.dart';
 import '../models/home_row.dart';
+import '../utils/latest_media_row_normalizer.dart';
 import '../utils/playlist_utils.dart';
 
 class RowDataSource {
@@ -117,18 +118,29 @@ class RowDataSource {
   Future<HomeRow> loadLatestMedia(
     String parentId,
     String libraryName,
-    String serverId,
-  ) async {
+    String serverId, [
+    String? collectionType,
+  ]) async {
+    final fetchLimit = latestMediaFetchLimitForCollection(
+      collectionType,
+      defaultLimit: _defaultLimit,
+      maxLimit: _maxItems,
+    );
     final response = await _getLatestItemsWithFallback(
       parentId: parentId,
+      limit: fetchLimit,
+    );
+    final items = normalizeLatestMediaItems(
+      _parseItems(response, serverId),
+      collectionType: collectionType,
       limit: _defaultLimit,
     );
-    return _buildRow(
+    return HomeRow(
       id: 'latest_$parentId',
       title: 'Latest $libraryName',
-      response: response,
-      serverId: serverId,
+      items: items,
       rowType: HomeRowType.latestMedia,
+      totalCount: items.length,
     );
   }
 

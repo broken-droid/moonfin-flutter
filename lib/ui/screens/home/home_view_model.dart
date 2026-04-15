@@ -230,8 +230,14 @@ class HomeViewModel extends ChangeNotifier {
     final tasks = filteredViews.map((data) async {
       final id = data['Id'] as String;
       final name = data['Name'] as String? ?? '';
+      final collectionType = (data['CollectionType'] as String?)?.toLowerCase();
       try {
-        final row = await _dataSource.loadLatestMedia(id, name, _serverId);
+        final row = await _dataSource.loadLatestMedia(
+          id,
+          name,
+          _serverId,
+          collectionType,
+        );
         return row.items.isNotEmpty ? row : null;
       } catch (_) {
         return null;

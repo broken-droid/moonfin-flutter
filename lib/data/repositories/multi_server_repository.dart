@@ -11,6 +11,7 @@ import '../models/aggregated_item.dart';
 import '../models/aggregated_library.dart';
 import '../models/home_row.dart';
 import '../services/media_server_client_factory.dart';
+import '../utils/latest_media_row_normalizer.dart';
 import '../utils/playlist_utils.dart';
 
 class ServerUserSession {
@@ -315,7 +316,7 @@ class MultiServerRepository {
         for (final view in views) {
           final data = view as Map<String, dynamic>;
           final id = data['Id'] as String;
-          final collectionType = data['CollectionType'] as String?;
+          final collectionType = (data['CollectionType'] as String?)?.toLowerCase();
           if (collectionType == 'music' ||
               collectionType == 'books' ||
               collectionType == 'playlists' ||
@@ -328,18 +329,27 @@ class MultiServerRepository {
           final name = data['Name'] as String? ?? '';
           final displayName =
               hasMultiple ? '$name (${session.server.name})' : name;
+          final fetchLimit = latestMediaFetchLimitForCollection(
+            collectionType,
+            defaultLimit: _defaultLimit,
+            maxLimit: 100,
+          );
 
           try {
             final latestResponse = await _withTimeout(
               () => session.client.itemsApi.getLatestItems(
                 parentId: id,
-                limit: _defaultLimit,
+                limit: fetchLimit,
                 fields: _fields,
               ),
               label: 'latest $name from ${session.server.name}',
             );
 
-            final items = _parseItems(latestResponse, session.server.id);
+            final items = normalizeLatestMediaItems(
+              _parseItems(latestResponse, session.server.id),
+              collectionType: collectionType,
+              limit: _defaultLimit,
+            );
             if (items.isNotEmpty) {
               rows.add(
                 HomeRow(
