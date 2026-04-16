@@ -349,6 +349,17 @@ Control other Jellyfin devices on your network directly from Moonfin.
 ### Pre-built Releases
 Download platform artifacts from the [Releases page](https://github.com/Moonfin-Client/Mobile-Desktop/releases).
 
+### Arch Linux (AUR)
+Install from the AUR using any of these commands:
+
+```bash
+yay -S moonfin-bin
+paru -S moonfin-bin
+pamac build moonfin-bin
+```
+
+If you use another AUR helper, substitute the command accordingly.
+
 ### Android
 - Primary output: APK (`Moonfin_Android_v<version>.apk`)
 - Optional output: App Bundle (`Moonfin_Android_v<version>.aab`)
