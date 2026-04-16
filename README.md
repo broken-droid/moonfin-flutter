@@ -353,9 +353,9 @@ Download platform artifacts from the [Releases page](https://github.com/Moonfin-
 Install from the AUR using any of these commands:
 
 ```bash
-yay -S moonfin-bin
-paru -S moonfin-bin
-pamac build moonfin-bin
+yay -S moonfin
+paru -S moonfin
+pamac build moonfin
 ```
 
 If you use another AUR helper, substitute the command accordingly.
