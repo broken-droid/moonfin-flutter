@@ -2945,6 +2945,10 @@
   "@unsafeMpvOptionsDescription": {
     "description": "Description for unsafe mpv options"
   },
+  "linuxExperimentalHwDecodingSubtitle": "Utilise hwdec=auto-safe. Si aucune première image n’apparaît rapidement, la lecture revient automatiquement au décodage logiciel.",
+  "@linuxExperimentalHwDecodingSubtitle": {
+    "description": "Description for Linux experimental hardware decoding toggle"
+  },
   "nextUpAndQueuing": "À suivre et file d’attente",
   "@nextUpAndQueuing": {
     "description": "Section title for next up and queuing"

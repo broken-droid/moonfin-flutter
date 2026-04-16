@@ -251,6 +251,11 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: false,
   );
 
+  static final linuxExperimentalHwDecoding = Preference(
+    key: 'linux_experimental_hwdecoding',
+    defaultValue: false,
+  );
+
   static final defaultAudioLanguage = Preference(
     key: 'pref_audio_language',
     defaultValue: '',

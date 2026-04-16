@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -26,11 +27,13 @@ class _ParsedMpvConfCacheEntry {
 
 class MediaKitPlayerBackend implements PlayerBackend {
   static const double maxPlayerVolume = 200.0;
+  static const Duration _linuxHwdecFirstFrameTimeout = Duration(seconds: 4);
 
   final Player _player;
   final VideoController _videoController;
   final UserPreferences _prefs;
   final Future<void> Function(int handle)? _onNativeHandleReady;
+  final bool _linuxExperimentalHwDecoding;
   bool _didNotifyNativeHandle = false;
   bool _didConfigureAppleMobileLibassFont = false;
   String? _appliedCustomMpvConfPath;
@@ -46,12 +49,17 @@ class MediaKitPlayerBackend implements PlayerBackend {
     this._videoController,
     this._prefs,
     this._onNativeHandleReady,
+    this._linuxExperimentalHwDecoding,
   );
 
   factory MediaKitPlayerBackend(
     UserPreferences prefs, {
     Future<void> Function(int handle)? onNativeHandleReady,
   }) {
+    final linuxExperimentalHwDecoding =
+        PlatformDetection.isLinux &&
+        prefs.get(UserPreferences.linuxExperimentalHwDecoding);
+
     final player = Player(
       configuration: PlayerConfiguration(
         libass: _useLibass,
@@ -72,8 +80,8 @@ class MediaKitPlayerBackend implements PlayerBackend {
     final controller = VideoController(
       player,
       configuration: VideoControllerConfiguration(
-        hwdec: PlatformDetection.isLinux && !PlatformDetection.isLinuxWayland
-            ? 'no'
+        hwdec: PlatformDetection.isLinux
+            ? (linuxExperimentalHwDecoding ? 'auto-safe' : 'no')
             : null,
       ),
     );
@@ -82,6 +90,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
       controller,
       prefs,
       onNativeHandleReady,
+      linuxExperimentalHwDecoding,
     );
   }
 
@@ -123,9 +132,54 @@ class MediaKitPlayerBackend implements PlayerBackend {
     final media = Media(url);
     final openPaused = startPosition > Duration.zero;
     await _player.open(media, play: !openPaused);
+    await _applyLinuxHwdecFallbackIfNeeded(media, openPaused: openPaused);
     if (!_useLibass) {
       _enableNativeSubtitleRendering();
     }
+  }
+
+  Future<void> _applyLinuxHwdecFallbackIfNeeded(
+    Media media, {
+    required bool openPaused,
+  }) async {
+    if (!PlatformDetection.isLinux || !_linuxExperimentalHwDecoding) {
+      return;
+    }
+    if (openPaused) {
+      return;
+    }
+    if (_prefs.get(UserPreferences.customMpvConfEnabled)) {
+      return;
+    }
+    try {
+      await _videoController.waitUntilFirstFrameRendered
+          .timeout(_linuxHwdecFirstFrameTimeout);
+      return;
+    } on TimeoutException {
+      var hasVideoTrack = _player.state.tracks.video.isNotEmpty;
+      if (!hasVideoTrack) {
+        try {
+          final tracks = await _player.stream.tracks
+              .firstWhere((t) => t.video.isNotEmpty)
+              .timeout(const Duration(milliseconds: 800));
+          hasVideoTrack = tracks.video.isNotEmpty;
+        } catch (_) {}
+      }
+      if (!hasVideoTrack) {
+        return;
+      }
+      try {
+        final native = _player.platform as NativePlayer;
+        await native.setProperty('hwdec', 'no');
+
+        final resumePosition = _player.state.position;
+        await _player.open(media, play: false);
+        if (resumePosition > Duration.zero) {
+          await _player.seek(resumePosition);
+        }
+        await _player.play();
+      } catch (_) {}
+    } catch (_) {}
   }
 
   Future<void> _applyAudioChannelLayout() async {

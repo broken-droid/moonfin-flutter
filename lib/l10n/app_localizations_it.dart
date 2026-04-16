@@ -2118,6 +2118,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Consenti un set più ampio di opzioni mpv. Potrebbe compromettere il comportamento della riproduzione.';
 
   @override
+  String get linuxExperimentalHwDecodingSubtitle =>
+      'Usa hwdec=auto-safe. Se il primo fotogramma non appare rapidamente, la riproduzione torna automaticamente alla decodifica software.';
+
+  @override
   String get nextUpAndQueuing => 'Prossimo e Coda';
 
   @override

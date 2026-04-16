@@ -2135,6 +2135,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Autoriser un ensemble plus large d’options mpv. Peut perturber la lecture.';
 
   @override
+  String get linuxExperimentalHwDecodingSubtitle =>
+      'Utilise hwdec=auto-safe. Si aucune première image n’apparaît rapidement, la lecture revient automatiquement au décodage logiciel.';
+
+  @override
   String get nextUpAndQueuing => 'À suivre et file d’attente';
 
   @override

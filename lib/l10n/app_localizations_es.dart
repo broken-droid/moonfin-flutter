@@ -2123,6 +2123,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Estas opciones pueden causar fallos o comportamiento inesperado';
 
   @override
+  String get linuxExperimentalHwDecodingSubtitle =>
+      'Usa hwdec=auto-safe. Si no aparece un primer fotograma rápidamente, la reproducción vuelve automáticamente a la decodificación por software.';
+
+  @override
   String get nextUpAndQueuing => 'A continuación y cola';
 
   @override

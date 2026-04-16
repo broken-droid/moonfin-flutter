@@ -432,9 +432,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     _trailerController = VideoController(
       player,
       configuration: VideoControllerConfiguration(
-        hwdec: PlatformDetection.isLinux && !PlatformDetection.isLinuxWayland
-            ? 'no'
-            : null,
+        hwdec: PlatformDetection.isLinux ? 'no' : null,
       ),
     );
     return player;

@@ -153,6 +153,13 @@ class PlaybackSettingsScreen extends StatelessWidget {
           ),
           if (PlatformDetection.isDesktop || Platform.isAndroid) ...[
             _section(context, l10n.advancedMpv),
+            if (PlatformDetection.isLinux)
+              SwitchPreferenceTile(
+                preference: UserPreferences.linuxExperimentalHwDecoding,
+                title: '${l10n.adminEnableHardwareDecoding} Linux (Experimental)',
+                subtitle: l10n.linuxExperimentalHwDecodingSubtitle,
+                icon: Icons.memory,
+              ),
             SwitchPreferenceTile(
               preference: UserPreferences.customMpvConfEnabled,
               title: l10n.enableCustomMpvConf,
