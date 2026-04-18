@@ -3,8 +3,8 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_NAME="Moonfin"
-APK_SOURCE="$REPO_ROOT/build/app/outputs/flutter-apk/app-release.apk"
-BUNDLE_SOURCE="$REPO_ROOT/build/app/outputs/bundle/release/app-release.aab"
+APK_SOURCE="$REPO_ROOT/build/app/outputs/flutter-apk/app-mobile-release.apk"
+BUNDLE_SOURCE="$REPO_ROOT/build/app/outputs/bundle/mobileRelease/app-mobile-release.aab"
 PAGE_SIZE_CHECKER="$REPO_ROOT/scripts/check-android-16kb-pages.sh"
 
 resolve_flutter() {
@@ -61,6 +61,7 @@ echo "Resolving packages..."
 
 echo "Building Android release APK (arm64-v8a only)..."
 "$FLUTTER" build apk --release \
+  --flavor mobile \
   --build-name "$APP_VERSION" \
   --build-number "$APP_BUILD_NUMBER" \
   --target-platform android-arm64
@@ -84,12 +85,13 @@ echo "APK copied to root: $APK_OUTPUT"
 
 echo "Building Android App Bundle..."
 if ! "$FLUTTER" build appbundle --release \
+  --flavor mobile \
   --build-name "$APP_VERSION" \
   --build-number "$APP_BUILD_NUMBER"; then
   echo "Flutter appbundle build failed. Retrying with Gradle bundleRelease fallback..."
   (
     cd "$REPO_ROOT/android"
-    ./gradlew bundleRelease
+    ./gradlew bundleMobileRelease
   )
 fi
 

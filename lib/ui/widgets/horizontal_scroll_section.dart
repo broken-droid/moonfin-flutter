@@ -119,15 +119,25 @@ class _HorizontalScrollSectionState extends State<HorizontalScrollSection> {
               ),
               if (widget.trailing != null) widget.trailing!,
               if (widget.showControls) ...[
-                IconButton(
-                  icon: const Icon(Icons.chevron_left),
-                  onPressed: () => _scrollBy(-_scrollStep),
-                  visualDensity: VisualDensity.compact,
+                Focus(
+                  canRequestFocus: false,
+                  skipTraversal: true,
+                  descendantsAreFocusable: false,
+                  child: IconButton(
+                    icon: const Icon(Icons.chevron_left),
+                    onPressed: () => _scrollBy(-_scrollStep),
+                    visualDensity: VisualDensity.compact,
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.chevron_right),
-                  onPressed: () => _scrollBy(_scrollStep),
-                  visualDensity: VisualDensity.compact,
+                Focus(
+                  canRequestFocus: false,
+                  skipTraversal: true,
+                  descendantsAreFocusable: false,
+                  child: IconButton(
+                    icon: const Icon(Icons.chevron_right),
+                    onPressed: () => _scrollBy(_scrollStep),
+                    visualDensity: VisualDensity.compact,
+                  ),
                 ),
               ],
             ],

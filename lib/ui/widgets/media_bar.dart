@@ -29,6 +29,9 @@ class MediaBar extends StatefulWidget {
   final UserPreferences prefs;
   final bool externallyPaused;
   final double height;
+  final Future<void> Function()? onNavigateDown;
+  final VoidCallback? onNavigateUp;
+  final FocusNode? focusNode;
 
   const MediaBar({
     super.key,
@@ -36,6 +39,9 @@ class MediaBar extends StatefulWidget {
     required this.prefs,
     this.externallyPaused = false,
     this.height = 220,
+    this.onNavigateDown,
+    this.onNavigateUp,
+    this.focusNode,
   });
 
   @override
@@ -581,7 +587,8 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       onEnter: (_) => _setPaused(true),
       onExit: (_) => _setPaused(false),
       child: Focus(
-        autofocus: true,
+        focusNode: widget.focusNode,
+        autofocus: widget.focusNode == null,
         skipTraversal: true,
         onFocusChange: (focused) => _setPaused(focused),
         onKeyEvent: (node, event) => _handleKeyEvent(event, items),
@@ -753,6 +760,14 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     }
     if (key == LogicalKeyboardKey.arrowRight) {
       if (_currentIndex < items.length - 1) _goToPage(_currentIndex + 1);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowDown && widget.onNavigateDown != null) {
+      unawaited(widget.onNavigateDown!());
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowUp) {
+      widget.onNavigateUp?.call();
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.select || key == LogicalKeyboardKey.enter) {

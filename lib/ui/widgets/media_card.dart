@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../preference/preference_constants.dart';
 import '../mixins/focus_state_mixin.dart';
@@ -25,6 +26,8 @@ class MediaCard extends StatefulWidget {
   final int? seerrStatus;
   final Color? focusColor;
   final bool cardFocusExpansion;
+  final FocusNode? focusNode;
+  final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
 
   const MediaCard({
     super.key,
@@ -48,6 +51,8 @@ class MediaCard extends StatefulWidget {
     this.seerrStatus,
     this.focusColor,
     this.cardFocusExpansion = true,
+    this.focusNode,
+    this.onKeyEvent,
   });
 
   static IconData iconForType(String? type) {
@@ -128,6 +133,16 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
           widget.onHoverEnd?.call();
         },
         child: Focus(
+          focusNode: widget.focusNode,
+          onKeyEvent: (node, event) {
+            if (event is KeyDownEvent &&
+                (event.logicalKey == LogicalKeyboardKey.select ||
+                    event.logicalKey == LogicalKeyboardKey.enter)) {
+              widget.onTap?.call();
+              return KeyEventResult.handled;
+            }
+            return widget.onKeyEvent?.call(node, event) ?? KeyEventResult.ignored;
+          },
           onFocusChange: (hasFocus) {
             setFocused(hasFocus);
             if (hasFocus) widget.onFocus?.call();

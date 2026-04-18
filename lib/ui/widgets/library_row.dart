@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../util/platform_detection.dart';
 import 'horizontal_scroll_section.dart';
 
 class LibraryRow extends StatefulWidget {
@@ -26,6 +27,7 @@ class _LibraryRowState extends State<LibraryRow> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final hasItems = widget.children.isNotEmpty;
+    final showControls = hasItems && PlatformDetection.isDesktop;
     return HorizontalScrollSection(
       title: widget.title,
       headerPadding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
@@ -36,7 +38,7 @@ class _LibraryRowState extends State<LibraryRow> {
               onPressed: widget.onSeeAll,
               child: Text(l10n.seeAll),
             ),
-      showControls: hasItems,
+      showControls: showControls,
       builder: (_, scrollController) => SizedBox(
         height: (widget.rowHeight ?? 220) + 10,
         child: hasItems

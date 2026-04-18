@@ -494,7 +494,7 @@ class RowDataSource {
         parentId: parentId,
         includeItemTypes: includeItemTypes,
         limit: limit,
-        fields: _fallbackFields,
+        fields: _fields,
       ).timeout(const Duration(seconds: 20));
       return response;
     } on TimeoutException {
@@ -523,7 +523,7 @@ class RowDataSource {
       final response = await _client.itemsApi.getNextUp(
         parentId: parentId,
         limit: limit,
-        fields: _fallbackFields,
+        fields: _fields,
         enableResumable: enableResumable,
       ).timeout(const Duration(seconds: 20));
       return response;

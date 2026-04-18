@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 import '../mixins/focus_state_mixin.dart';
 
@@ -10,6 +11,9 @@ class GridButtonCard extends StatefulWidget {
   final double height;
   final Color? focusColor;
   final bool cardFocusExpansion;
+  final FocusNode? focusNode;
+  final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
+  final ValueChanged<bool>? onFocusChanged;
 
   const GridButtonCard({
     super.key,
@@ -20,6 +24,9 @@ class GridButtonCard extends StatefulWidget {
     this.height = 120,
     this.focusColor,
     this.cardFocusExpansion = true,
+    this.focusNode,
+    this.onKeyEvent,
+    this.onFocusChanged,
   });
 
   @override
@@ -48,7 +55,20 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
-        onFocusChange: (f) => setFocused(f),
+        focusNode: widget.focusNode,
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent &&
+              (event.logicalKey == LogicalKeyboardKey.select ||
+                  event.logicalKey == LogicalKeyboardKey.enter)) {
+            widget.onTap();
+            return KeyEventResult.handled;
+          }
+          return widget.onKeyEvent?.call(node, event) ?? KeyEventResult.ignored;
+        },
+        onFocusChange: (f) {
+          setFocused(f);
+          widget.onFocusChanged?.call(f);
+        },
         child: GestureDetector(
           onTap: widget.onTap,
           child: AnimatedScale(

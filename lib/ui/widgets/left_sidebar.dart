@@ -18,6 +18,7 @@ import '../../l10n/app_localizations.dart';
 import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
 import '../navigation/home_refresh_bus.dart';
+import 'navigation_layout.dart';
 import 'seerr_icons.dart';
 import 'shuffle_options_dialog.dart';
 import 'user_menu_dialog.dart';
@@ -42,6 +43,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
   final _userRepo = GetIt.instance<UserRepository>();
   final _prefs = GetIt.instance<UserPreferences>();
   final _sidebarFocus = FocusScopeNode(debugLabel: 'LeftSidebar');
+  final _homeFocusNode = FocusNode(debugLabel: 'LeftSidebarHome');
+  late final VoidCallback _focusNavbarCallback;
   final _scrollController = ScrollController();
 
   List<AggregatedLibrary> _libraries = [];
@@ -59,6 +62,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
   @override
   void initState() {
     super.initState();
+    _focusNavbarCallback = () => _homeFocusNode.requestFocus();
+    NavigationLayout.focusNavbarNotifier.value = _focusNavbarCallback;
     _updateClock();
     _clockTimer = Timer.periodic(const Duration(seconds: 30), (_) => _updateClock());
     _loadUserImage();
@@ -69,8 +74,12 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   @override
   void dispose() {
+    if (identical(NavigationLayout.focusNavbarNotifier.value, _focusNavbarCallback)) {
+      NavigationLayout.focusNavbarNotifier.value = null;
+    }
     _clockTimer?.cancel();
     _labelTimer?.cancel();
+    _homeFocusNode.dispose();
     _sidebarFocus.dispose();
     _scrollController.dispose();
     _userSub?.cancel();
@@ -323,6 +332,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
               _SidebarItem(
                 icon: Icons.home_rounded,
                 label: l10n.home,
+                focusNode: _homeFocusNode,
                 showLabel: _showLabels,
                 isActive: _isActive(Destinations.home),
                 onPressed: () {
@@ -581,6 +591,7 @@ class _SidebarItem extends StatefulWidget {
   final VoidCallback onPressed;
   final VoidCallback? onLongPress;
   final Widget? trailing;
+  final FocusNode? focusNode;
 
   const _SidebarItem({
     this.icon,
@@ -591,6 +602,7 @@ class _SidebarItem extends StatefulWidget {
     required this.onPressed,
     this.onLongPress,
     this.trailing,
+    this.focusNode,
   });
 
   @override
@@ -599,19 +611,22 @@ class _SidebarItem extends StatefulWidget {
 
 class _SidebarItemState extends State<_SidebarItem> {
   final _prefs = GetIt.instance<UserPreferences>();
-  final _focusNode = FocusNode();
+  late final FocusNode _focusNode;
   bool _isFocused = false;
   bool _isHovered = false;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(() => setState(() => _isFocused = _focusNode.hasFocus));
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 

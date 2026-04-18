@@ -57,6 +57,15 @@ Future<void> _restoreWindowGeometry() async {
   });
 }
 
+Future<void> _detectAndSetTvMode() async {
+  if (!PlatformDetection.isAndroid) return;
+  try {
+    const channel = MethodChannel('org.moonfin.androidtv/platform');
+    final isTV = await channel.invokeMethod<bool>('isTvDevice') ?? false;
+    PlatformDetection.setTvMode(isTV);
+  } catch (_) {}
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -66,6 +75,8 @@ void main() async {
 
   _configureImageCache();
   MediaKit.ensureInitialized();
+
+  await _detectAndSetTvMode();
 
   // On Linux the GTK font pipeline loads fonts asynchronously. The first frame
   // can render before MaterialIcons and other fonts are ready, causing icons to

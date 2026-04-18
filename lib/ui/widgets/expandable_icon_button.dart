@@ -18,6 +18,8 @@ class ExpandableIconButton extends StatefulWidget {
   final VoidCallback onPressed;
   final VoidCallback? onLongPress;
   final FocusNode? focusNode;
+  final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
+  final ValueChanged<bool>? onFocusChanged;
   final bool isActive;
   final Color activeColor;
 
@@ -29,6 +31,8 @@ class ExpandableIconButton extends StatefulWidget {
     required this.onPressed,
     this.onLongPress,
     this.focusNode,
+    this.onKeyEvent,
+    this.onFocusChanged,
     this.isActive = false,
     this.activeColor = const Color(0xFF00A4DC),
   });
@@ -62,10 +66,16 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
   }
 
   void _onFocusChange() {
-    setState(() => _isFocused = _focusNode.hasFocus);
+    final hasFocus = _focusNode.hasFocus;
+    setState(() => _isFocused = hasFocus);
+    widget.onFocusChanged?.call(hasFocus);
   }
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    final delegated = widget.onKeyEvent?.call(node, event);
+    if (delegated != null && delegated != KeyEventResult.ignored) {
+      return delegated;
+    }
     if (event is KeyDownEvent &&
         (event.logicalKey == LogicalKeyboardKey.select ||
             event.logicalKey == LogicalKeyboardKey.enter)) {

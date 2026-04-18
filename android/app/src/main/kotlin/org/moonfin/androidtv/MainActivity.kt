@@ -3,6 +3,7 @@ package org.moonfin.androidtv
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
 import android.app.RemoteAction
+import android.app.UiModeManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -62,6 +63,7 @@ class MainActivity : AudioServiceActivity() {
         private const val DLNA_EVENTS_CHANNEL = "com.moonfin/native_dlna_events"
         private const val ACTION_PLAY_PAUSE = "org.moonfin.androidtv.ACTION_PIP_PLAY_PAUSE"
         private const val DISMISS_DELAY_MS = 300L
+        private const val PLATFORM_CHANNEL = "org.moonfin.androidtv/platform"
     }
 
     private val pipReceiver = object : BroadcastReceiver() {
@@ -90,6 +92,19 @@ class MainActivity : AudioServiceActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             MediaStoreHelper.CHANNEL,
         ).setMethodCallHandler(MediaStoreHelper(this))
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            PLATFORM_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "isTvDevice" -> {
+                    val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
+                    result.success(uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION)
+                }
+                else -> result.notImplemented()
+            }
+        }
 
         methodChannel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,

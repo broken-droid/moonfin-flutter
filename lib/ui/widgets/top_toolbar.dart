@@ -20,6 +20,7 @@ import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
 import '../navigation/home_refresh_bus.dart';
 import 'expandable_icon_button.dart';
+import 'navigation_layout.dart';
 import 'seerr_icons.dart';
 import 'shuffle_options_dialog.dart';
 import 'user_menu_dialog.dart';
@@ -51,6 +52,8 @@ class _TopToolbarState extends State<TopToolbar> {
   final _prefs = GetIt.instance<UserPreferences>();
 
   final _avatarFocus = FocusNode();
+  final _homeFocus = FocusNode(debugLabel: 'TopToolbarHome');
+  late final VoidCallback _focusNavbarCallback;
   List<AggregatedLibrary> _libraries = [];
   Timer? _clockTimer;
   String _currentTime = '';
@@ -60,6 +63,8 @@ class _TopToolbarState extends State<TopToolbar> {
   @override
   void initState() {
     super.initState();
+    _focusNavbarCallback = () => _homeFocus.requestFocus();
+    NavigationLayout.focusNavbarNotifier.value = _focusNavbarCallback;
     _updateClock();
     _clockTimer = Timer.periodic(const Duration(seconds: 30), (_) => _updateClock());
     _loadUserImage();
@@ -70,8 +75,12 @@ class _TopToolbarState extends State<TopToolbar> {
 
   @override
   void dispose() {
+    if (identical(NavigationLayout.focusNavbarNotifier.value, _focusNavbarCallback)) {
+      NavigationLayout.focusNavbarNotifier.value = null;
+    }
     _clockTimer?.cancel();
     _avatarFocus.dispose();
+    _homeFocus.dispose();
     _userSub?.cancel();
     _prefs.removeListener(_onPrefsChanged);
     super.dispose();
@@ -344,6 +353,7 @@ class _TopToolbarState extends State<TopToolbar> {
                 child: ExpandableIconButton(
                   icon: Icons.home_rounded,
                   label: l10n.home,
+                  focusNode: _homeFocus,
                   isActive: _isActive(Destinations.home),
                   onPressed: () {
                     if (_isActive(Destinations.home)) {
@@ -479,6 +489,7 @@ class _TopToolbarState extends State<TopToolbar> {
 
   Widget _buildLibrariesButton() {
     return _LibrariesDropdown(
+      activeRoute: widget.activeRoute,
       libraries: _libraries,
       surfaceColor: _toolbarSurfaceColor(),
       onLibraryTap: (lib) {
@@ -528,11 +539,13 @@ class _TopToolbarState extends State<TopToolbar> {
 }
 
 class _LibrariesDropdown extends StatefulWidget {
+  final String? activeRoute;
   final List<AggregatedLibrary> libraries;
   final Color surfaceColor;
   final ValueChanged<AggregatedLibrary> onLibraryTap;
 
   const _LibrariesDropdown({
+    this.activeRoute,
     required this.libraries,
     required this.surfaceColor,
     required this.onLibraryTap,
@@ -545,6 +558,8 @@ class _LibrariesDropdown extends StatefulWidget {
 class _LibrariesDropdownState extends State<_LibrariesDropdown> {
   final _targetKey = GlobalKey();
   final _layerLink = LayerLink();
+  final _buttonFocusNode = FocusNode(debugLabel: 'TopToolbarLibraries');
+  final List<FocusNode> _itemFocusNodes = [];
   OverlayEntry? _overlayEntry;
   bool _buttonHovered = false;
   bool _dropdownHovered = false;
@@ -553,10 +568,56 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
   double _menuWidth = 220;
 
   @override
+  void initState() {
+    super.initState();
+    _syncItemFocusNodes();
+  }
+
+  @override
+  void didUpdateWidget(covariant _LibrariesDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncItemFocusNodes();
+    if (oldWidget.activeRoute != widget.activeRoute && _overlayEntry != null) {
+      _hideDropdown();
+    }
+  }
+
+  @override
   void dispose() {
     _hideTimer?.cancel();
     _removeOverlay();
+    _buttonFocusNode.dispose();
+    for (final node in _itemFocusNodes) {
+      node.dispose();
+    }
     super.dispose();
+  }
+
+  void _syncItemFocusNodes() {
+    while (_itemFocusNodes.length < widget.libraries.length) {
+      _itemFocusNodes.add(
+        FocusNode(debugLabel: 'TopToolbarLibraryItem_${_itemFocusNodes.length}'),
+      );
+    }
+    while (_itemFocusNodes.length > widget.libraries.length) {
+      _itemFocusNodes.removeLast().dispose();
+    }
+  }
+
+  bool _hasManagedFocus(FocusNode? node) {
+    if (node == null) return false;
+    if (identical(node, _buttonFocusNode)) return true;
+    return _itemFocusNodes.any((candidate) => identical(candidate, node));
+  }
+
+  void _handleManagedFocusChange() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _overlayEntry == null) return;
+      final current = FocusManager.instance.primaryFocus;
+      if (!_hasManagedFocus(current) && !_buttonHovered && !_dropdownHovered) {
+        _hideDropdown();
+      }
+    });
   }
 
   void _removeOverlay() {
@@ -564,7 +625,7 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
     _overlayEntry = null;
   }
 
-  void _showDropdown() {
+  void _showDropdown({bool focusFirstItem = false}) {
     _hideTimer?.cancel();
     if (_overlayEntry != null) return;
 
@@ -583,17 +644,35 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
     _overlayEntry = OverlayEntry(builder: _buildOverlay);
     Overlay.of(context).insert(_overlayEntry!);
     setState(() {});
+
+    if (focusFirstItem && _itemFocusNodes.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _overlayEntry != null) {
+          _itemFocusNodes.first.requestFocus();
+        }
+      });
+    }
   }
 
-  void _hideDropdown() {
+  void _hideDropdown({bool focusButton = false}) {
     _removeOverlay();
     setState(() {});
+
+    if (focusButton) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _buttonFocusNode.requestFocus();
+        }
+      });
+    }
   }
 
   void _scheduleHide() {
     _hideTimer?.cancel();
     _hideTimer = Timer(const Duration(milliseconds: 200), () {
-      if (!_buttonHovered && !_dropdownHovered) {
+      if (!_buttonHovered &&
+          !_dropdownHovered &&
+          !_hasManagedFocus(FocusManager.instance.primaryFocus)) {
         _hideDropdown();
       }
     });
@@ -650,12 +729,23 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
                     child: ListView(
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
-                      children: widget.libraries
-                          .map((lib) => _LibraryDropdownItem(
-                                name: lib.name,
+                      children: widget.libraries.indexed
+                          .map((entry) => _LibraryDropdownItem(
+                                focusNode: _itemFocusNodes[entry.$1],
+                                isFirst: entry.$1 == 0,
+                                isLast: entry.$1 == widget.libraries.length - 1,
+                            name: entry.$2.name,
+                                onFocusChanged: (_) => _handleManagedFocusChange(),
+                                onMoveUpFromFirst: () => _hideDropdown(focusButton: true),
+                                onMoveDown: entry.$1 < widget.libraries.length - 1
+                                    ? () => _itemFocusNodes[entry.$1 + 1].requestFocus()
+                                    : null,
+                                onMoveUp: entry.$1 > 0
+                                    ? () => _itemFocusNodes[entry.$1 - 1].requestFocus()
+                                    : null,
                                 onTap: () {
                                   _hideDropdown();
-                                  widget.onLibraryTap(lib);
+                                  widget.onLibraryTap(entry.$2);
                                 },
                               ))
                           .toList(),
@@ -685,6 +775,25 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
           _scheduleHide();
         },
         child: ExpandableIconButton(
+          focusNode: _buttonFocusNode,
+          onFocusChanged: (_) => _handleManagedFocusChange(),
+          onKeyEvent: (_, event) {
+            if (event is! KeyDownEvent) return KeyEventResult.ignored;
+            if (event.logicalKey == LogicalKeyboardKey.arrowDown && _itemFocusNodes.isNotEmpty) {
+              _showDropdown(focusFirstItem: true);
+              return KeyEventResult.handled;
+            }
+            if (event.logicalKey == LogicalKeyboardKey.select ||
+                event.logicalKey == LogicalKeyboardKey.enter) {
+              if (_overlayEntry != null) {
+                _hideDropdown();
+              } else {
+                _showDropdown(focusFirstItem: true);
+              }
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
           iconBuilder: (size, color) => Image.asset(
             'assets/icons/clapperboard.png',
             width: size,
@@ -708,11 +817,25 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
 }
 
 class _LibraryDropdownItem extends StatefulWidget {
+  final FocusNode focusNode;
+  final bool isFirst;
+  final bool isLast;
   final String name;
+  final ValueChanged<bool>? onFocusChanged;
+  final VoidCallback? onMoveUp;
+  final VoidCallback? onMoveDown;
+  final VoidCallback? onMoveUpFromFirst;
   final VoidCallback onTap;
 
   const _LibraryDropdownItem({
+    required this.focusNode,
+    required this.isFirst,
+    required this.isLast,
     required this.name,
+    this.onFocusChanged,
+    this.onMoveUp,
+    this.onMoveDown,
+    this.onMoveUpFromFirst,
     required this.onTap,
   });
 
@@ -722,6 +845,7 @@ class _LibraryDropdownItem extends StatefulWidget {
 
 class _LibraryDropdownItemState extends State<_LibraryDropdownItem> {
   final _prefs = GetIt.instance<UserPreferences>();
+  bool _isFocused = false;
   bool _isHovered = false;
 
   @override
@@ -730,19 +854,47 @@ class _LibraryDropdownItemState extends State<_LibraryDropdownItem> {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          color: _isHovered
-              ? focusColor.withValues(alpha: 0.12)
-              : Colors.transparent,
-          child: Text(
-            widget.name,
-            style: TextStyle(
-              color: _isHovered ? focusColor : Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
+      child: Focus(
+        focusNode: widget.focusNode,
+        onFocusChange: (focused) {
+          setState(() => _isFocused = focused);
+          widget.onFocusChanged?.call(focused);
+        },
+        onKeyEvent: (_, event) {
+          if (event is! KeyDownEvent) return KeyEventResult.ignored;
+          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            if (widget.isFirst) {
+              widget.onMoveUpFromFirst?.call();
+            } else {
+              widget.onMoveUp?.call();
+            }
+            return KeyEventResult.handled;
+          }
+          if (event.logicalKey == LogicalKeyboardKey.arrowDown && !widget.isLast) {
+            widget.onMoveDown?.call();
+            return KeyEventResult.handled;
+          }
+          if (event.logicalKey == LogicalKeyboardKey.select ||
+              event.logicalKey == LogicalKeyboardKey.enter) {
+            widget.onTap();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            color: (_isHovered || _isFocused)
+                ? focusColor.withValues(alpha: 0.12)
+                : Colors.transparent,
+            child: Text(
+              widget.name,
+              style: TextStyle(
+                color: (_isHovered || _isFocused) ? focusColor : Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),

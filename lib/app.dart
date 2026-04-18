@@ -13,7 +13,6 @@ import 'di/providers.dart';
 import 'l10n/app_localizations.dart';
 import 'preference/user_preferences.dart';
 import 'ui/navigation/app_router.dart';
-import 'ui/navigation/destinations.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/widgets/cast_mini_player.dart';
 import 'ui/widgets/mini_audio_player.dart';
@@ -96,6 +95,7 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
   final FocusNode _focusNode = FocusNode(debugLabel: 'GlobalShortcutScope');
   late final KeyEventCallback _hardwareKeyHandler;
   Timer? _geometrySaveTimer;
+  bool _exitDialogShowing = false;
 
   @override
   void initState() {
@@ -123,20 +123,20 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
         keys.contains(LogicalKeyboardKey.controlLeft) ||
         keys.contains(LogicalKeyboardKey.controlRight);
 
-    if (key == LogicalKeyboardKey.escape) {
+    if (key == LogicalKeyboardKey.escape ||
+        key == LogicalKeyboardKey.backspace) {
       if (_isPlayerRoute()) {
         return false;
       }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) {
-          return;
-        }
-        if (appRouter.canPop()) {
+      if (appRouter.canPop()) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
           appRouter.pop();
-        } else {
-          appRouter.go(Destinations.home);
-        }
-      });
+        });
+      } else if (!_exitDialogShowing) {
+        _exitDialogShowing = true;
+        unawaited(_showExitConfirmation());
+      }
       return true;
     }
 
@@ -154,6 +154,36 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
     }
 
     return false;
+  }
+
+  Future<void> _showExitConfirmation() async {
+    try {
+      final navContext = appRouter.routerDelegate.navigatorKey.currentContext;
+      if (navContext == null || !navContext.mounted) return;
+      final l10n = AppLocalizations.of(navContext);
+      final result = await showDialog<bool>(
+        context: navContext,
+        builder: (dialogCtx) => AlertDialog(
+          title: Text(l10n.exitApp),
+          content: Text(l10n.exitAppConfirmation),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogCtx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogCtx).pop(true),
+              child: Text(l10n.exit),
+            ),
+          ],
+        ),
+      );
+      if (result == true) {
+        SystemNavigator.pop();
+      }
+    } finally {
+      _exitDialogShowing = false;
+    }
   }
 
   @override

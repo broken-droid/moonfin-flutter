@@ -1,5 +1,29 @@
 import java.util.Properties
 
+fun loadAndroidTvVersionCode(rootDir: File, fallback: Int): Int {
+    val pubspec = rootDir.resolve("../pubspec.yaml")
+    if (!pubspec.exists()) return fallback
+
+    val line = pubspec.readLines().firstOrNull {
+        it.trimStart().startsWith("android_tv_build_number:")
+    } ?: return fallback
+
+    val rawValue = line.substringAfter(":", "").trim()
+    return rawValue.toIntOrNull() ?: fallback
+}
+
+fun loadAndroidTvVersionName(rootDir: File, fallback: String): String {
+    val pubspec = rootDir.resolve("../pubspec.yaml")
+    if (!pubspec.exists()) return fallback
+
+    val line = pubspec.readLines().firstOrNull {
+        it.trimStart().startsWith("android_tv_version:")
+    } ?: return fallback
+
+    val rawValue = line.substringAfter(":", "").trim()
+    return rawValue.ifEmpty { fallback }
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -16,6 +40,8 @@ android {
     namespace = "org.moonfin.androidtv"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
+    val androidTvVersionCode = loadAndroidTvVersionCode(rootDir, flutter.versionCode)
+    val androidTvVersionName = loadAndroidTvVersionName(rootDir, flutter.versionName)
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -28,14 +54,38 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.moonfin.androidtv"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+    }
 
-        ndk {
-            abiFilters += listOf("arm64-v8a")
+    flavorDimensions += "device"
+    productFlavors {
+        create("mobile") {
+            dimension = "device"
+            applicationId = "org.moonfin.mobile"
+            versionCode = flutter.versionCode
+            versionName = flutter.versionName
+
+            ndk {
+                abiFilters += listOf("arm64-v8a")
+            }
+        }
+        create("androidTv") {
+            dimension = "device"
+            applicationId = "org.moonfin.androidtv"
+            versionCode = androidTvVersionCode
+            versionName = androidTvVersionName
+
+            ndk {
+                abiFilters += listOf(
+                    "arm64-v8a",
+                    "armeabi-v7a",
+                    "x86",
+                    "x86_64",
+                )
+            }
         }
     }
 
@@ -54,15 +104,6 @@ android {
         }
     }
 
-    packaging {
-        jniLibs {
-            excludes += setOf(
-                "**/armeabi-v7a/*.so",
-                "**/x86/*.so",
-                "**/x86_64/*.so",
-            )
-        }
-    }
 }
 
 flutter {

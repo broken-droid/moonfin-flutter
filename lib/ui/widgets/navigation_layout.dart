@@ -17,6 +17,8 @@ class NavigationLayout extends StatefulWidget {
     GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition),
   );
 
+  static final focusNavbarNotifier = ValueNotifier<VoidCallback?>(null);
+
   const NavigationLayout({
     super.key,
     this.activeRoute,
