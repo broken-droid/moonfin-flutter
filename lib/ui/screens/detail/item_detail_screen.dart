@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playback_core/playback_core.dart';
@@ -52,6 +53,12 @@ bool _useDesktopDetailLayout(BuildContext context) {
   final isLandscape = size.width > size.height;
   return !(_isCompact(context)) ||
       (PlatformDetection.isMobile && isLandscape && size.width >= 700);
+}
+
+bool _isActivateKey(KeyEvent event) {
+  return event is KeyDownEvent &&
+      (event.logicalKey == LogicalKeyboardKey.select ||
+          event.logicalKey == LogicalKeyboardKey.enter);
 }
 
 Future<bool> _showDeleteConfirmationDialog(
@@ -2771,6 +2778,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
   DownloadedItem? _offlineRow;
   List<DownloadedItem>? _offlineQueue;
   DownloadService? _downloadService;
+  final FocusNode _tvPlayFocusNode = FocusNode(debugLabel: 'detail_play_button');
+  String? _tvPlayFocusAppliedForItemId;
 
   ItemDetailViewModel get viewModel => widget.viewModel;
 
@@ -2787,7 +2796,20 @@ class _ActionButtonsState extends State<_ActionButtons> {
   @override
   void dispose() {
     _downloadService?.removeListener(_onDownloadChanged);
+    _tvPlayFocusNode.dispose();
     super.dispose();
+  }
+
+  void _ensureTvPlayFocus(String itemId) {
+    if (!PlatformDetection.isTV) return;
+    if (_tvPlayFocusAppliedForItemId == itemId) return;
+    _tvPlayFocusAppliedForItemId = itemId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (_tvPlayFocusNode.context != null) {
+        _tvPlayFocusNode.requestFocus();
+      }
+    });
   }
 
   void _onDownloadChanged() => _checkOffline();
@@ -2859,6 +2881,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final subtitleStreams = mediaStreams.where((s) => s['Type'] == 'Subtitle').toList();
     final l10n = AppLocalizations.of(context);
 
+    _ensureTvPlayFocus(item.id);
+
     final allButtons = <Widget>[
       _DetailActionButton(
         label:
@@ -2875,6 +2899,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
                 : isBook
                 ? Icons.menu_book
                 : Icons.play_arrow,
+              focusNode: PlatformDetection.isTV ? _tvPlayFocusNode : null,
         onPressed: () => _play(context, item, resume: !isPhoto && hasProgress),
       ),
       if (hasProgress && !isPhoto)
@@ -2933,7 +2958,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
           isActive: widget.selectedMediaSourceId != null,
           activeColor: const Color(0xFF00A4DC),
         ),
-      if (!isBook)
+      if (!isBook && !PlatformDetection.isTV)
         _DetailActionButton(
           label: l10n.cast,
           icon: Icons.cast,
@@ -2968,9 +2993,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
           onPressed:
               () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
         ),
-      if (_isDownloadable(item.type) && _canUserDownload())
+      if (_isDownloadable(item.type) && _canUserDownload() && !PlatformDetection.isTV)
         _DownloadButton(item: item, viewModel: viewModel),
-      if (_isDownloadable(item.type) && _canUserDownload()) _DeleteDownloadButton(item: item),
+      if (_isDownloadable(item.type) && _canUserDownload() && !PlatformDetection.isTV) _DeleteDownloadButton(item: item),
       if (item.canDelete)
         _DetailActionButton(
           label: l10n.delete,
@@ -4475,6 +4500,7 @@ class _DetailActionButton extends StatefulWidget {
   final VoidCallback onPressed;
   final bool isActive;
   final Color? activeColor;
+  final FocusNode? focusNode;
 
   const _DetailActionButton({
     required this.label,
@@ -4482,6 +4508,7 @@ class _DetailActionButton extends StatefulWidget {
     required this.onPressed,
     this.isActive = false,
     this.activeColor,
+    this.focusNode,
   });
 
   @override
@@ -4507,7 +4534,15 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
+        focusNode: widget.focusNode,
         onFocusChange: (focused) => setFocused(focused),
+        onKeyEvent: (_, event) {
+          if (_isActivateKey(event)) {
+            widget.onPressed();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap: widget.onPressed,
           child: SizedBox(
@@ -4672,6 +4707,13 @@ class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
       onExit: (_) => setHovered(false),
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
+        onKeyEvent: (_, event) {
+          if (widget.onTap != null && _isActivateKey(event)) {
+            widget.onTap!();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap: widget.onTap,
           child: AnimatedScale(
@@ -4906,60 +4948,14 @@ class _ChaptersRow extends StatelessWidget {
             tag: imageTag,
           );
 
-          return SizedBox(
-            width: chapterCardWidth,
-            child: Column(
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () => onPlayFromChapter(position),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.1),
-                        ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(9),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Image.network(
-                            chapterImageUrl,
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.high,
-                            errorBuilder:
-                                (_, __, ___) => Container(
-                                  color: Colors.white.withValues(alpha: 0.08),
-                                  alignment: Alignment.center,
-                                  child: Icon(
-                                    Icons.movie,
-                                    size: isMobile ? 22 : 26,
-                                    color: Colors.white.withValues(alpha: 0.4),
-                                  ),
-                                ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '$name - ${_formatDuration(position)}',
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+          return _ChapterListCard(
+            chapterName: name,
+            chapterImageUrl: chapterImageUrl,
+            chapterCardWidth: chapterCardWidth,
+            isMobile: isMobile,
+            position: position,
+            onTap: () => onPlayFromChapter(position),
+            formatDuration: _formatDuration,
           );
         },
       ),
@@ -4974,6 +4970,110 @@ class _ChaptersRow extends StatelessWidget {
       return '$h:$m:$s';
     }
     return '${d.inMinutes}:$s';
+  }
+}
+
+class _ChapterListCard extends StatefulWidget {
+  final String chapterName;
+  final String chapterImageUrl;
+  final double chapterCardWidth;
+  final bool isMobile;
+  final Duration position;
+  final VoidCallback onTap;
+  final String Function(Duration) formatDuration;
+
+  const _ChapterListCard({
+    required this.chapterName,
+    required this.chapterImageUrl,
+    required this.chapterCardWidth,
+    required this.isMobile,
+    required this.position,
+    required this.onTap,
+    required this.formatDuration,
+  });
+
+  @override
+  State<_ChapterListCard> createState() => _ChapterListCardState();
+}
+
+class _ChapterListCardState extends State<_ChapterListCard> with FocusStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    final focusColor =
+        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setHovered(true),
+      onExit: (_) => setHovered(false),
+      child: Focus(
+        onFocusChange: (focused) => setFocused(focused),
+        onKeyEvent: (_, event) {
+          if (_isActivateKey(event)) {
+            widget.onTap();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: SizedBox(
+            width: widget.chapterCardWidth,
+            child: Column(
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(10),
+                      border:
+                          showFocusBorder
+                              ? Border.all(color: focusColor, width: 1.5)
+                              : Border.all(
+                                color: Colors.white.withValues(alpha: 0.1),
+                              ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(9),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Image.network(
+                          widget.chapterImageUrl,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                          errorBuilder:
+                              (_, __, ___) => Container(
+                                color: Colors.white.withValues(alpha: 0.08),
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.movie,
+                                  size: widget.isMobile ? 22 : 26,
+                                  color: Colors.white.withValues(alpha: 0.4),
+                                ),
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${widget.chapterName} - ${widget.formatDuration(widget.position)}',
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -5296,127 +5396,173 @@ class _EpisodesRow extends StatelessWidget {
         itemBuilder: (context, index) {
           final ep = episodes[index];
           final isCurrent = ep.id == currentEpisodeId;
-          final epNum = ep.indexNumber;
-          final runtime = ep.runtime;
-          final runtimeText =
-              runtime != null
-                  ? (runtime.inHours > 0
-                      ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
-                      : '${runtime.inMinutes}m')
-                  : null;
-
-          return GestureDetector(
-            onTap:
-                () => context.push(
-                  Destinations.item(ep.id, serverId: ep.serverId),
-                ),
-            child: Container(
-              width: isMobile ? 180.0 : 220.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border:
-                    isCurrent
-                        ? Border.all(color: const Color(0xFF00A4DC), width: 2)
-                        : null,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: isMobile ? 100 : 124,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        if (ep.primaryImageTag != null)
-                          CachedNetworkImage(
-                            imageUrl: imageApi.getPrimaryImageUrl(
-                              ep.id,
-                              maxHeight: 250,
-                              tag: ep.primaryImageTag,
-                            ),
-                            fit: BoxFit.cover,
-                            errorWidget:
-                                (_, __, ___) => Container(
-                                  color: Colors.white.withValues(alpha: 0.05),
-                                  child: const Icon(
-                                    Icons.movie,
-                                    color: Colors.white24,
-                                    size: 32,
-                                  ),
-                                ),
-                          )
-                        else
-                          Container(
-                            color: Colors.white.withValues(alpha: 0.05),
-                            child: const Icon(
-                              Icons.movie,
-                              color: Colors.white24,
-                              size: 32,
-                            ),
-                          ),
-                        if ((ep.playedPercentage ?? 0) > 0)
-                          _EpisodeProgressBar(percentage: ep.playedPercentage!),
-                        if (ep.isPlayed && (ep.playedPercentage ?? 0) == 0)
-                          const Positioned(
-                            top: 6,
-                            right: 6,
-                            child: Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 18,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
-                    child: Row(
-                      children: [
-                        if (epNum != null)
-                          Text(
-                            'E$epNum',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.labelSmall?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.5),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        if (epNum != null) const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            ep.name,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (runtimeText != null) ...[
-                          const SizedBox(width: 4),
-                          Text(
-                            runtimeText,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.labelSmall?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.5),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          return _EpisodeListCard(
+            episode: ep,
+            isCurrent: isCurrent,
+            imageApi: imageApi,
+            isMobile: isMobile,
           );
         },
+      ),
+    );
+  }
+}
+
+class _EpisodeListCard extends StatefulWidget {
+  final AggregatedItem episode;
+  final bool isCurrent;
+  final ImageApi imageApi;
+  final bool isMobile;
+
+  const _EpisodeListCard({
+    required this.episode,
+    required this.isCurrent,
+    required this.imageApi,
+    required this.isMobile,
+  });
+
+  @override
+  State<_EpisodeListCard> createState() => _EpisodeListCardState();
+}
+
+class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    final ep = widget.episode;
+    final epNum = ep.indexNumber;
+    final runtime = ep.runtime;
+    final runtimeText =
+        runtime != null
+            ? (runtime.inHours > 0
+                ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
+                : '${runtime.inMinutes}m')
+            : null;
+    final focusColor =
+        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setHovered(true),
+      onExit: (_) => setHovered(false),
+      child: Focus(
+        onFocusChange: (focused) => setFocused(focused),
+        onKeyEvent: (_, event) {
+          if (_isActivateKey(event)) {
+            context.push(Destinations.item(ep.id, serverId: ep.serverId));
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: GestureDetector(
+          onTap: () => context.push(Destinations.item(ep.id, serverId: ep.serverId)),
+          child: Container(
+            width: widget.isMobile ? 180.0 : 220.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border:
+                  widget.isCurrent
+                      ? Border.all(color: const Color(0xFF00A4DC), width: 2)
+                      : showFocusBorder
+                          ? Border.all(color: focusColor, width: 1.5)
+                          : null,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: widget.isMobile ? 100 : 124,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      if (ep.primaryImageTag != null)
+                        CachedNetworkImage(
+                          imageUrl: widget.imageApi.getPrimaryImageUrl(
+                            ep.id,
+                            maxHeight: 250,
+                            tag: ep.primaryImageTag,
+                          ),
+                          fit: BoxFit.cover,
+                          errorWidget:
+                              (_, __, ___) => Container(
+                                color: Colors.white.withValues(alpha: 0.05),
+                                child: const Icon(
+                                  Icons.movie,
+                                  color: Colors.white24,
+                                  size: 32,
+                                ),
+                              ),
+                        )
+                      else
+                        Container(
+                          color: Colors.white.withValues(alpha: 0.05),
+                          child: const Icon(
+                            Icons.movie,
+                            color: Colors.white24,
+                            size: 32,
+                          ),
+                        ),
+                      if ((ep.playedPercentage ?? 0) > 0)
+                        _EpisodeProgressBar(percentage: ep.playedPercentage!),
+                      if (ep.isPlayed && (ep.playedPercentage ?? 0) == 0)
+                        const Positioned(
+                          top: 6,
+                          right: 6,
+                          child: Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 18,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
+                  child: Row(
+                    children: [
+                      if (epNum != null)
+                        Text(
+                          'E$epNum',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.5),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      if (epNum != null) const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          ep.name,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (runtimeText != null) ...[
+                        const SizedBox(width: 4),
+                        Text(
+                          runtimeText,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.5),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -5454,6 +5600,13 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
       onExit: (_) => setHovered(false),
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
+        onKeyEvent: (_, event) {
+          if (_isActivateKey(event)) {
+            context.push(Destinations.item(episode.id, serverId: episode.serverId));
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap:
               () => context.push(
@@ -5576,6 +5729,13 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
       onExit: (_) => setHovered(false),
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
+        onKeyEvent: (_, event) {
+          if (_isActivateKey(event)) {
+            context.push(Destinations.item(episode.id, serverId: episode.serverId));
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap:
               () => context.push(
@@ -5862,6 +6022,7 @@ class _ExpandableBiography extends StatefulWidget {
 
 class _ExpandableBiographyState extends State<_ExpandableBiography> {
   bool _expanded = false;
+  bool _toggleFocused = false;
 
   @override
   Widget build(BuildContext context) {
@@ -5887,13 +6048,34 @@ class _ExpandableBiographyState extends State<_ExpandableBiography> {
           duration: const Duration(milliseconds: 300),
         ),
         const SizedBox(height: 8),
-        GestureDetector(
-          onTap: () => setState(() => _expanded = !_expanded),
-          child: Text(
-            _expanded ? AppLocalizations.of(context).showLess : AppLocalizations.of(context).readMore,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: const Color(0xFF00A4DC),
-              fontWeight: FontWeight.w600,
+        Focus(
+          onFocusChange: (focused) => setState(() => _toggleFocused = focused),
+          onKeyEvent: (_, event) {
+            if (_isActivateKey(event)) {
+              setState(() => _expanded = !_expanded);
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: GestureDetector(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 120),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border:
+                    _toggleFocused
+                        ? Border.all(color: const Color(0xFF00A4DC), width: 1.5)
+                        : null,
+              ),
+              child: Text(
+                _expanded ? AppLocalizations.of(context).showLess : AppLocalizations.of(context).readMore,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: const Color(0xFF00A4DC),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ),
@@ -6479,6 +6661,13 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
       onExit: (_) => setHovered(false),
       child: Focus(
         onFocusChange: (hasFocus) => setFocused(hasFocus),
+        onKeyEvent: (_, event) {
+          if (_isActivateKey(event)) {
+            widget.onTap();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap: widget.onTap,
           onLongPress: widget.reorderable ? null : () => _showTrackActions(context),

@@ -9,6 +9,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../../preference/user_preferences.dart';
 import '../../mixins/focus_state_mixin.dart';
+import '../../../util/platform_detection.dart';
 import '../../widgets/offline_image.dart';
 
 class SavedAlbumScreen extends ConsumerWidget {
@@ -144,10 +145,11 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 12, 20, 8),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => context.pop(),
-          ),
+          if (!PlatformDetection.isTV)
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => context.pop(),
+            ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -27,6 +29,8 @@ const _kExpandedWidthDesktop = 240.0;
 const _kExpandedWidthMobile = 260.0;
 const _kExpandDuration = Duration(milliseconds: 200);
 const _kAccent = Color(0xFF00A4DC);
+const _kCollapsedWidthTV = 56.0;
+const _kExpandedWidthTV = 280.0;
 
 class LeftSidebar extends StatefulWidget {
   final String? activeRoute;
@@ -44,6 +48,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   final _prefs = GetIt.instance<UserPreferences>();
   final _sidebarFocus = FocusScopeNode(debugLabel: 'LeftSidebar');
   final _homeFocusNode = FocusNode(debugLabel: 'LeftSidebarHome');
+  final _profileFocusNode = FocusNode(debugLabel: 'LeftSidebarProfile');
   late final VoidCallback _focusNavbarCallback;
   final _scrollController = ScrollController();
 
@@ -51,8 +56,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
   bool _isExpanded = false;
   bool _showLabels = false;
   bool _librariesExpanded = false;
+  bool _canExpandViaFocus = false;
   Timer? _clockTimer;
   Timer? _labelTimer;
+  Timer? _focusExpandGateTimer;
   String _currentTime = '';
   StreamSubscription? _userSub;
   String? _userImageUrl;
@@ -70,6 +77,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _userSub = _userRepo.currentUserStream.listen((_) => _loadUserImage());
     _prefs.addListener(_onPrefsChanged);
     _loadLibraries();
+    if (PlatformDetection.isTV) {
+      _armTvFocusGate();
+      _profileFocusNode.addListener(() { if (mounted) setState(() {}); });
+    }
   }
 
   @override
@@ -79,7 +90,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
     }
     _clockTimer?.cancel();
     _labelTimer?.cancel();
+    _focusExpandGateTimer?.cancel();
     _homeFocusNode.dispose();
+    _profileFocusNode.dispose();
     _sidebarFocus.dispose();
     _scrollController.dispose();
     _userSub?.cancel();
@@ -157,7 +170,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
     if (_isExpanded) return;
     setState(() => _isExpanded = true);
     _labelTimer?.cancel();
-    _labelTimer = Timer(const Duration(milliseconds: 100), () {
+    final delay = PlatformDetection.isTV
+        ? const Duration(milliseconds: 150)
+        : const Duration(milliseconds: 100);
+    _labelTimer = Timer(delay, () {
       if (mounted) setState(() => _showLabels = true);
     });
   }
@@ -181,16 +197,39 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
   void _onSidebarFocusChange(bool hasFocus) {
+    if (PlatformDetection.isTV) {
+      if (_canExpandViaFocus || !hasFocus) {
+        if (hasFocus) {
+          _expand();
+        } else {
+          _collapse();
+        }
+      }
+      return;
+    }
     if (hasFocus) {
       _expand();
     }
   }
 
+  void _armTvFocusGate() {
+    setState(() => _canExpandViaFocus = false);
+    _focusExpandGateTimer?.cancel();
+    _focusExpandGateTimer = Timer(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _canExpandViaFocus = true);
+    });
+  }
+
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowRight) {
-      _collapse();
-      widget.contentFocusNode?.requestFocus();
-      return KeyEventResult.handled;
+    if (event is KeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _collapse();
+        widget.contentFocusNode?.requestFocus();
+        return KeyEventResult.handled;
+      }
+      if (PlatformDetection.isTV && event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        return KeyEventResult.handled;
+      }
     }
     return KeyEventResult.ignored;
   }
@@ -203,6 +242,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
   Widget _buildDrawerLayout() {
+    if (PlatformDetection.isTV) return _buildTvLayout();
     final expandedWidth = _isMobile ? _kExpandedWidthMobile : _kExpandedWidthDesktop;
     return Stack(
       children: [
@@ -304,6 +344,41 @@ class _LeftSidebarState extends State<LeftSidebar> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildTvLayout() {
+    final overlayColor = _overlayColor();
+    final opacity = _overlayOpacity();
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AnimatedContainer(
+        duration: _kExpandDuration,
+        curve: Curves.easeInOut,
+        width: _isExpanded ? _kExpandedWidthTV : _kCollapsedWidthTV,
+        child: FocusScope(
+          node: _sidebarFocus,
+          onFocusChange: _onSidebarFocusChange,
+          onKeyEvent: _onKeyEvent,
+          child: Container(
+            decoration: _isExpanded
+                ? BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        overlayColor.withValues(alpha: math.max(opacity, 0.7)),
+                        overlayColor.withValues(alpha: math.max(opacity, 0.5)),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.7, 1.0],
+                    ),
+                  )
+                : null,
+            child: _buildContent(),
+          ),
+        ),
+      ),
     );
   }
 
@@ -519,55 +594,92 @@ class _LeftSidebarState extends State<LeftSidebar> {
               color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18)),
     );
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
-      child: GestureDetector(
-        onTap: () { _onNavigate(); showUserMenu(context); },
-        child: Container(
-          padding: const EdgeInsets.all(6),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF00A4DC), Color(0xFF0077B6)],
-                  ),
-                ),
-                child: ClipOval(
-                  child: _userImageUrl != null
-                      ? Image.network(
-                          _userImageUrl!,
-                          fit: BoxFit.cover,
-                          width: 40,
-                          height: 40,
-                          errorBuilder: (_, __, ___) => fallback,
-                        )
-                      : fallback,
-                ),
-              ),
-              if (_showLabels) ...[
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    user?.name ?? '',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ],
-          ),
+    final tvCompact = PlatformDetection.isTV && !_showLabels;
+    final innerPad = tvCompact ? 0.0 : 6.0;
+    final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
+    final isFocused = _profileFocusNode.hasFocus;
+
+    final avatar = Container(
+      width: 40,
+      height: 40,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF00A4DC), Color(0xFF0077B6)],
         ),
       ),
+      child: ClipOval(
+        child: _userImageUrl != null
+            ? Image.network(
+                _userImageUrl!,
+                fit: BoxFit.cover,
+                width: 40,
+                height: 40,
+                errorBuilder: (_, __, ___) => fallback,
+              )
+            : fallback,
+      ),
+    );
+
+    final content = AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      padding: EdgeInsets.all(innerPad),
+      decoration: BoxDecoration(
+        color: (PlatformDetection.isTV && isFocused && _showLabels)
+            ? focusColor.withValues(alpha: 0.12)
+            : Colors.transparent,
+        border: (PlatformDetection.isTV && isFocused && _showLabels)
+            ? Border.all(color: focusColor, width: 2)
+            : null,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        children: [
+          avatar,
+          if (_showLabels) ...[
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                user?.name ?? '',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+      child: PlatformDetection.isTV
+          ? Focus(
+              focusNode: _profileFocusNode,
+              onKeyEvent: (_, event) {
+                if (event is KeyDownEvent &&
+                    (event.logicalKey == LogicalKeyboardKey.select ||
+                        event.logicalKey == LogicalKeyboardKey.enter)) {
+                  _onNavigate();
+                  showUserMenu(context);
+                  return KeyEventResult.handled;
+                }
+                return KeyEventResult.ignored;
+              },
+              child: GestureDetector(
+                onTap: () { _onNavigate(); showUserMenu(context); },
+                child: content,
+              ),
+            )
+          : GestureDetector(
+              onTap: () { _onNavigate(); showUserMenu(context); },
+              child: content,
+            ),
     );
   }
 
@@ -614,6 +726,8 @@ class _SidebarItemState extends State<_SidebarItem> {
   late final FocusNode _focusNode;
   bool _isFocused = false;
   bool _isHovered = false;
+
+  bool get _tvCompact => PlatformDetection.isTV && !widget.showLabel;
 
   @override
   void initState() {
@@ -662,14 +776,17 @@ class _SidebarItemState extends State<_SidebarItem> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: _tvCompact ? 4 : 10),
               decoration: BoxDecoration(
                 color: highlighted
                     ? focusColor.withValues(alpha: 0.12)
                     : widget.isActive
                         ? _kAccent.withValues(alpha: 0.15)
                         : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
+                border: (PlatformDetection.isTV && _isFocused && !_tvCompact)
+                    ? Border.all(color: focusColor, width: 2)
+                    : null,
+                borderRadius: BorderRadius.circular(PlatformDetection.isTV ? 24 : 8),
               ),
               child: Row(
                 children: [
@@ -719,42 +836,74 @@ class _SidebarLibraryItem extends StatefulWidget {
 
 class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
   final _prefs = GetIt.instance<UserPreferences>();
+  final _focusNode = FocusNode();
   bool _isHovered = false;
+  bool _isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (mounted) setState(() => _isFocused = _focusNode.hasFocus);
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
+    final highlighted = _isHovered || _isFocused;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
-        child: GestureDetector(
-          onTap: widget.onPressed,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            height: 36,
-            padding: const EdgeInsets.only(left: 50, right: 10),
-            decoration: BoxDecoration(
-              color: _isHovered
-                  ? focusColor.withValues(alpha: 0.1)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+        child: Focus(
+          focusNode: _focusNode,
+          onKeyEvent: (_, event) {
+            if (event is KeyDownEvent &&
+                (event.logicalKey == LogicalKeyboardKey.select ||
+                    event.logicalKey == LogicalKeyboardKey.enter)) {
+              widget.onPressed();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: GestureDetector(
+            onTap: widget.onPressed,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              height: 36,
+              padding: const EdgeInsets.only(left: 50, right: 10),
+              decoration: BoxDecoration(
+                color: highlighted
+                    ? focusColor.withValues(alpha: 0.1)
+                    : Colors.transparent,
+                border: (PlatformDetection.isTV && _isFocused)
+                    ? Border.all(color: focusColor, width: 2)
+                    : null,
+                borderRadius: BorderRadius.circular(PlatformDetection.isTV ? 24 : 8),
+              ),
+              alignment: Alignment.centerLeft,
+              child: widget.showLabel
+                  ? Text(
+                      widget.label,
+                      style: TextStyle(
+                        color: highlighted
+                            ? focusColor
+                            : Colors.white.withValues(alpha: 0.5),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  : const SizedBox.shrink(),
             ),
-            alignment: Alignment.centerLeft,
-            child: widget.showLabel
-                ? Text(
-                    widget.label,
-                    style: TextStyle(
-                      color: _isHovered
-                          ? focusColor
-                          : Colors.white.withValues(alpha: 0.5),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  )
-                : const SizedBox.shrink(),
           ),
         ),
       ),

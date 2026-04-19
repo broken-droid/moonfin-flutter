@@ -557,6 +557,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
   Duration get duration => _player.state.duration;
 
   @override
+  Duration get buffer => _player.state.buffer;
+
+  @override
   bool get isPlaying => _player.state.playing;
 
   @override
@@ -570,6 +573,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
 
   @override
   Stream<Duration> get durationStream => _player.stream.duration;
+
+  @override
+  Stream<Duration> get bufferStream => _player.stream.buffer;
 
   @override
   Stream<bool> get playingStream => _player.stream.playing;

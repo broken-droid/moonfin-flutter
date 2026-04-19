@@ -228,8 +228,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
     final bottomPadding =
         basePadding + (offset * MediaQuery.sizeOf(context).height * 0.5);
 
-    // Build stroke outline shadows when the stroke color is visible.
-    final hasStroke = strokeColor.alpha > 0;
+    final hasStroke = strokeColor.a > 0;
     final strokeShadows = hasStroke
         ? <Shadow>[
             Shadow(offset: const Offset(-1, -1), color: strokeColor),
@@ -302,8 +301,10 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
           autofocus: true,
           onKeyEvent: _handleKeyEvent,
           child: GestureDetector(
-            onTap: _toggleInfo,
-            onVerticalDragEnd: (details) {
+            onTap: PlatformDetection.isTV ? null : _toggleInfo,
+            onVerticalDragEnd: PlatformDetection.isTV
+                ? null
+                : (details) {
               if (details.primaryVelocity == null) return;
               if (details.primaryVelocity! < -200) {
                 _nextChannel();

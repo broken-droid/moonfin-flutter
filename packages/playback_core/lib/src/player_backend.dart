@@ -7,12 +7,14 @@ abstract class PlayerBackend {
 
   Duration get position;
   Duration get duration;
+  Duration get buffer;
   bool get isPlaying;
   bool get isBuffering;
   double get playbackSpeed;
 
   Stream<Duration> get positionStream;
   Stream<Duration> get durationStream;
+  Stream<Duration> get bufferStream;
   Stream<bool> get playingStream;
   Stream<bool> get bufferingStream;
   Stream<bool> get completedStream;

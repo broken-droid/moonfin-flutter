@@ -2368,10 +2368,11 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
     final isMobile = _isCompact(context);
     return Row(
       children: [
-        _buildBookIconButton(
-          icon: Icons.arrow_back_rounded,
-          onTap: () => context.popOrHome(),
-        ),
+        if (!PlatformDetection.isTV)
+          _buildBookIconButton(
+            icon: Icons.arrow_back_rounded,
+            onTap: () => context.popOrHome(),
+          ),
         const SizedBox(width: 12),
         Expanded(
           child: InkWell(
@@ -4187,7 +4188,8 @@ class _LibraryHeader extends StatelessWidget {
                 ? MainAxisAlignment.center
                 : MainAxisAlignment.start,
             children: [
-              _ToolbarButton(icon: Icons.arrow_back, onTap: onBack),
+              if (!PlatformDetection.isTV)
+                _ToolbarButton(icon: Icons.arrow_back, onTap: onBack),
               if (!isBookBrowse) ...[
                 const SizedBox(width: 4),
                 _ToolbarButton(

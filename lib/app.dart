@@ -17,6 +17,7 @@ import 'ui/theme/app_theme.dart';
 import 'ui/widgets/cast_mini_player.dart';
 import 'ui/widgets/mini_audio_player.dart';
 import 'ui/widgets/offline_banner.dart';
+import 'util/app_exit.dart';
 import 'util/platform_detection.dart';
 
 class MoonfinApp extends StatelessWidget {
@@ -179,7 +180,7 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
         ),
       );
       if (result == true) {
-        SystemNavigator.pop();
+        await AppExit.closeApp();
       }
     } finally {
       _exitDialogShowing = false;

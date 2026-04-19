@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -13,6 +14,7 @@ import 'package:volume_controller/volume_controller.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../../playback/media_kit_player_backend.dart';
+import '../../../auth/repositories/user_repository.dart';
 import '../../../data/models/aggregated_item.dart';
 import '../../../data/models/media_segment.dart';
 import '../../../data/models/trickplay_info.dart';
@@ -29,6 +31,7 @@ import '../../../preference/user_preferences.dart';
 import '../../../util/audio_labels.dart';
 import '../../../util/platform_detection.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
+import '../../widgets/track_selector_dialog.dart';
 import '../../widgets/playback/skip_segment_overlay.dart';
 import '../../widgets/playback/next_up_overlay.dart';
 import '../../widgets/playback/still_watching_dialog.dart';
@@ -74,6 +77,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   double _playerVolume = 100.0;
   bool _didRequestIosPiPForBackground = false;
   bool _isStartingIosPiPForBackground = false;
+  bool _didHandleBackgroundSuspend = false;
   Duration? _positionBeforeScreenLock;
   StreamSubscription? _screenLockSub;
   bool _isRestoringPosition = false;
@@ -99,6 +103,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   String? _trickplayMediaSourceId;
 
   final _overlayFocus = FocusNode();
+  final _tvSeekbarFocus = FocusNode(debugLabel: 'video_player_tv_seekbar');
+  final _tvSkipSegmentFocus = FocusNode(
+    debugLabel: 'video_player_tv_skip_segment',
+  );
+  final _tvTransportFirstFocus = FocusNode(
+    debugLabel: 'video_player_tv_transport_first',
+  );
+  final _tvBottomPrimaryFocus = FocusNode(
+    debugLabel: 'video_player_tv_bottom_primary',
+  );
+  final _tvSecondaryFocus = FocusNode(debugLabel: 'video_player_tv_secondary');
+  final _tvTransportLastFocus = FocusNode(
+    debugLabel: 'video_player_tv_transport_last',
+  );
+  final _tvSecondaryLastFocus = FocusNode(
+    debugLabel: 'video_player_tv_secondary_last',
+  );
+  bool _seekbarFocused = false;
   bool _isDesktopFullscreen = false;
   bool? _wasDesktopFullscreenOnEntry;
 
@@ -159,6 +181,302 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     return null;
   }
 
+  Future<void> _showTvDialogBox({
+    required Widget child,
+    double maxWidth = 760,
+    double heightFactor = 0.78,
+  }) async {
+    final mediaQuery = MediaQuery.of(context);
+    final size = mediaQuery.size;
+    final dialogMaxWidth = math.min(maxWidth, math.max(320.0, size.width - 36));
+    final dialogMaxHeight = math.min(
+      size.height - 24,
+      math.max(280.0, size.height * heightFactor),
+    );
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: AppColorScheme.surface,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: dialogMaxWidth,
+            maxHeight: dialogMaxHeight,
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  bool _canDownloadRemoteSubtitles(AggregatedItem item) {
+    final client = _clientForItem(item);
+    final user = GetIt.instance<UserRepository>().currentUser;
+    final mediaType = item.rawData['MediaType'] as String?;
+    final isAudio =
+        item.type == 'Audio' ||
+        item.type == 'MusicAlbum' ||
+        item.type == 'AudioBook' ||
+        mediaType == 'Audio';
+
+    return client.serverType == ServerType.jellyfin &&
+        (user?.canManageSubtitles ?? false) &&
+        item.mediaSources.isNotEmpty &&
+        item.type != 'Photo' &&
+        item.type != 'Book' &&
+        !isAudio;
+  }
+
+  String _remoteSubtitleErrorMessage(
+    Object error, {
+    required String action,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    if (error is DioException) {
+      final status = error.response?.statusCode;
+      if (status == 403) {
+        return l10n.remoteSubtitlePermissionError(action);
+      }
+      if (status == 404) {
+        return l10n.remoteSubtitleNotFoundError(action);
+      }
+
+      final data = error.response?.data;
+      String? detail;
+      if (data is Map) {
+        detail = (data['message'] ??
+                data['Message'] ??
+                data['error'] ??
+                data['Error'])
+            as String?;
+      } else if (data is String && data.trim().isNotEmpty) {
+        detail = data.trim();
+      }
+
+      if (detail != null && detail.isNotEmpty) {
+        return l10n.remoteSubtitleDetailError(action, detail);
+      }
+      if (status != null) {
+        return l10n.remoteSubtitleHttpError(action, status);
+      }
+    }
+
+    return l10n.remoteSubtitleGenericError(action);
+  }
+
+  String _remoteSubtitleLanguage(
+    List<Map<String, dynamic>> subtitleStreams,
+    List<Map<String, dynamic>> audioStreams,
+  ) {
+    final preferred = _prefs.get(UserPreferences.defaultSubtitleLanguage).trim();
+    if (preferred.isNotEmpty) {
+      return preferred;
+    }
+
+    for (final stream in [...subtitleStreams, ...audioStreams]) {
+      final language = (stream['Language'] as String?)?.trim();
+      if (language != null && language.isNotEmpty) {
+        return language;
+      }
+    }
+
+    return 'eng';
+  }
+
+  String _remoteSubtitleOptionSubtitle(Map<String, dynamic> subtitle) {
+    final details = <String>[];
+    final language =
+        (subtitle['ThreeLetterISOLanguageName'] as String?)?.trim() ??
+            (subtitle['Language'] as String?)?.trim();
+    final provider = subtitle['ProviderName'] as String?;
+    final format = subtitle['Format'] as String?;
+    final downloadCount = subtitle['DownloadCount'] as num?;
+    final rating = subtitle['CommunityRating'] as num?;
+    final isHashMatch = subtitle['IsHashMatch'] == true;
+
+    if (language != null && language.isNotEmpty) {
+      details.add(language.toUpperCase());
+    }
+    if (provider != null && provider.isNotEmpty) {
+      details.add(provider);
+    }
+    if (format != null && format.isNotEmpty) {
+      details.add(format.toUpperCase());
+    }
+    if (rating != null) {
+      details.add('${rating.toStringAsFixed(1)}★');
+    }
+    if (downloadCount != null) {
+      details.add(AppLocalizations.of(context).downloadsCount(downloadCount.toInt()));
+    }
+    if (isHashMatch) {
+      details.add(AppLocalizations.of(context).perfectMatch);
+    }
+
+    return details.join(' | ');
+  }
+
+  Future<List<Map<String, dynamic>>> _refreshSubtitleStreams(
+    AggregatedItem currentItem,
+    Set<int> existingIndexes,
+  ) async {
+    const attempts = 8;
+    const delay = Duration(milliseconds: 500);
+    final client = _clientForItem(currentItem);
+
+    List<Map<String, dynamic>> latestStreams = currentItem.mediaStreams
+        .where((stream) => stream['Type'] == 'Subtitle')
+        .toList(growable: false);
+
+    for (var attempt = 0; attempt < attempts; attempt++) {
+      try {
+        final refreshedRaw = await client.itemsApi.getItem(currentItem.id);
+        if (!mounted) return latestStreams;
+        final refreshedItem = AggregatedItem(
+          id: currentItem.id,
+          serverId: currentItem.serverId,
+          rawData: refreshedRaw,
+        );
+        latestStreams = refreshedItem.mediaStreams
+            .where((stream) => stream['Type'] == 'Subtitle')
+            .toList(growable: false);
+
+        final hasNewStream = latestStreams.any((stream) {
+          final index = stream['Index'] as int?;
+          return index != null && !existingIndexes.contains(index);
+        });
+        if (hasNewStream) {
+          return latestStreams;
+        }
+      } catch (_) {
+        break;
+      }
+
+      if (attempt < attempts - 1) {
+        await Future.delayed(delay);
+      }
+    }
+
+    return latestStreams;
+  }
+
+  Map<String, dynamic>? _findNewSubtitleStream(
+    Set<int> existingIndexes,
+    List<Map<String, dynamic>> after,
+  ) {
+    for (final stream in after) {
+      final index = stream['Index'] as int?;
+      if (index != null && !existingIndexes.contains(index)) {
+        return stream;
+      }
+    }
+    return null;
+  }
+
+  Future<void> _downloadRemoteSubtitles(
+    AggregatedItem item,
+    List<Map<String, dynamic>> subtitleStreams,
+    List<Map<String, dynamic>> audioStreams,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final client = _clientForItem(item);
+    final language = _remoteSubtitleLanguage(subtitleStreams, audioStreams);
+
+    List<Map<String, dynamic>> results;
+    try {
+      results = await client.itemsApi.searchRemoteSubtitles(
+        item.id,
+        language: language,
+      );
+    } catch (error) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(_remoteSubtitleErrorMessage(error, action: 'search'))),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    if (results.isEmpty) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).noRemoteSubtitlesFound(language))),
+      );
+      return;
+    }
+
+    final result = await TrackSelectorDialog.show(
+      context,
+      title: AppLocalizations.of(context).downloadSubtitles,
+      options: results.map((subtitle) {
+        final label =
+            subtitle['Name'] as String? ?? subtitle['Author'] as String? ?? 'Subtitle';
+        final subtitleText = _remoteSubtitleOptionSubtitle(subtitle);
+        return TrackOption(
+          label: label,
+          subtitle: subtitleText.isNotEmpty ? subtitleText : null,
+        );
+      }).toList(),
+    );
+
+    if (!mounted || result == null || result >= results.length) return;
+
+    final subtitleId = results[result]['Id'] as String?;
+    if (subtitleId == null || subtitleId.isEmpty) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).selectedSubtitleInvalid)),
+      );
+      return;
+    }
+
+    try {
+      await client.itemsApi.downloadRemoteSubtitle(item.id, subtitleId);
+      if (!mounted) return;
+
+      final existingIndexes = subtitleStreams
+          .map((stream) => stream['Index'] as int?)
+          .whereType<int>()
+          .toSet();
+
+      final refreshedSubtitleStreams = await _refreshSubtitleStreams(
+        item,
+        existingIndexes,
+      );
+      if (!mounted) return;
+
+      final newStream = _findNewSubtitleStream(existingIndexes, refreshedSubtitleStreams);
+      if (newStream != null) {
+        final streamIndex = newStream['Index'] as int?;
+        if (streamIndex != null) {
+          _manager.changeSubtitleTrack(streamIndex);
+        }
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).subtitleDownloadedSelected(
+                newStream['DisplayTitle'] as String? ??
+                    newStream['Title'] as String? ??
+                    newStream['Language'] as String? ??
+                    AppLocalizations.of(context).unknown,
+              ),
+            ),
+          ),
+        );
+        return;
+      }
+
+      messenger.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).subtitleDownloadedPending)),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(_remoteSubtitleErrorMessage(error, action: 'download'))),
+      );
+    }
+  }
+
   MediaSegmentService _createSegmentService([AggregatedItem? item]) {
     final client = item != null
         ? _clientForItem(item)
@@ -186,6 +504,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     WidgetsBinding.instance.addObserver(this);
     _loadSegmentsForCurrentItem();
     _positionSub = _state.positionStream.listen(_onPositionUpdate);
+    if (PlatformDetection.isTV) _tvSeekbarFocus.addListener(_onSeekbarFocusChange);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showControls(focusSeekbar: true);
+    });
     if (PlatformDetection.isAndroid || PlatformDetection.isIOS) {
       _castEventsSub = _nativeCast.googleCastEventStream().listen(
         (e) => _onRemoteEvent(
@@ -284,6 +606,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _airPlayEventsSub?.cancel();
     _screenLockSub?.cancel();
     _overlayFocus.dispose();
+    _tvSeekbarFocus.dispose();
+    _tvSkipSegmentFocus.dispose();
+    _tvTransportFirstFocus.dispose();
+    _tvBottomPrimaryFocus.dispose();
+    _tvSecondaryFocus.dispose();
+    _tvTransportLastFocus.dispose();
+    _tvSecondaryLastFocus.dispose();
     _pipService.enableAutoPiP(false);
     if (!_isStopping) _manager.stop();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -417,7 +746,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _tryStartIosPiPForBackground();
           return;
         }
+        if (PlatformDetection.isTV) {
+          return;
+        }
+        if (_isInPiP || _isStopping || _pipService.isScreenLocked) return;
+        _backend.setVideoEnabled(false);
+      case AppLifecycleState.paused:
       case AppLifecycleState.hidden:
+        if (PlatformDetection.isTV) {
+          if (_didHandleBackgroundSuspend) return;
+          _didHandleBackgroundSuspend = true;
+          unawaited(_exitPlayback());
+          return;
+        }
         if (PlatformDetection.isIOS) {
           _tryStartIosPiPForBackground();
           return;
@@ -425,6 +766,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         if (_isInPiP || _isStopping || _pipService.isScreenLocked) return;
         _backend.setVideoEnabled(false);
       case AppLifecycleState.resumed:
+        _didHandleBackgroundSuspend = false;
         _didRequestIosPiPForBackground = false;
         if (PlatformDetection.isIOS && _isInPiP) {
           _pipService.enableAutoPiP(false);
@@ -432,7 +774,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _backend.setVideoEnabled(true);
         _restorePositionAfterScreenLock();
         if (PlatformDetection.isMobile) _syncBrightnessFromSystem();
-      default:
+      case AppLifecycleState.detached:
         break;
     }
   }
@@ -594,6 +936,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _skipSegment = result.segment;
         _skipTo = result.skipTo;
       });
+      _showControls(focusSeekbar: true);
     } else if (result.isNone && _skipSegment != null) {
       setState(() {
         _skipSegment = null;
@@ -606,8 +949,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final nextUpBehavior = _prefs.get(UserPreferences.nextUpBehavior);
     if (nextUpBehavior == NextUpBehavior.disabled ||
         _nextUpDismissed ||
-        _showNextUp)
+        _showNextUp) {
       return;
+    }
 
     final duration = _state.duration;
     if (duration <= Duration.zero) return;
@@ -678,6 +1022,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _skipSegment = null;
       _skipTo = null;
     });
+    _showControls(focusSeekbar: true);
   }
 
   Future<void> _exitPlayback() async {
@@ -709,9 +1054,55 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     });
   }
 
-  void _showControls() {
+  void _onSeekbarFocusChange() {
+    if (mounted) setState(() => _seekbarFocused = _tvSeekbarFocus.hasFocus);
+  }
+
+  void _focusTvSeekbar({int attempt = 0}) {
+    if (!PlatformDetection.isTV) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_controlsVisible || _isOsdLocked) return;
+      _tvSeekbarFocus.requestFocus();
+
+      if (!_tvSeekbarFocus.hasFocus && attempt < 8) {
+        Future<void>.delayed(const Duration(milliseconds: 50), () {
+          if (!mounted) return;
+          _focusTvSeekbar(attempt: attempt + 1);
+        });
+      }
+    });
+  }
+
+  void _focusTvSkipSegment({int attempt = 0}) {
+    if (!PlatformDetection.isTV || _skipSegment == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _skipSegment == null) return;
+      _tvSkipSegmentFocus.requestFocus();
+
+      if (!_tvSkipSegmentFocus.hasFocus && attempt < 8) {
+        Future<void>.delayed(const Duration(milliseconds: 50), () {
+          if (!mounted) return;
+          _focusTvSkipSegment(attempt: attempt + 1);
+        });
+      }
+    });
+  }
+
+  void _focusPreferredTvOverlayTarget() {
+    if (!PlatformDetection.isTV) return;
+    if (_skipSegment != null) {
+      _focusTvSkipSegment();
+      return;
+    }
+    _focusTvSeekbar();
+  }
+
+  void _showControls({bool focusSeekbar = false}) {
     setState(() => _controlsVisible = true);
     _scheduleHide();
+    if (focusSeekbar) {
+      _focusPreferredTvOverlayTarget();
+    }
   }
 
   void _toggleControls() {
@@ -736,15 +1127,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       ),
     );
     _manager.seekTo(clamped);
-    if (showControls) _showControls();
+    if (showControls) {
+      _showControls();
+    }
   }
 
   String _formatDuration(Duration d) {
     final h = d.inHours;
     final m = d.inMinutes.remainder(60);
     final s = d.inSeconds.remainder(60);
-    if (h > 0)
+    if (h > 0) {
       return '$h:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+    }
     return '$m:${s.toString().padLeft(2, '0')}';
   }
 
@@ -763,19 +1157,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final fontWeight = _prefs.get(UserPreferences.subtitlesTextWeight);
     final offset = _prefs.get(UserPreferences.subtitlesOffsetPosition);
 
-    // Preference size is a scale factor (12-48, default 24 = 1x).
-    // Mobile needs larger text due to smaller screens held closer.
     final baseSize = PlatformDetection.isMobile ? 40.0 : 32.0;
     final fontSize = (prefSize / 24.0) * baseSize;
 
-    // Offset 0.0 = bottom edge, 0.5 = halfway up.
-    // Mobile: smaller base padding to keep subs near bottom.
     final basePadding = PlatformDetection.isMobile ? 16.0 : 24.0;
     final bottomPadding =
         basePadding + (offset * MediaQuery.sizeOf(context).height * 0.5);
 
-    // Build stroke outline shadows when the stroke color is visible.
-    final hasStroke = strokeColor.alpha > 0;
+    final hasStroke = strokeColor.a > 0;
     final strokeShadows = hasStroke
         ? <Shadow>[
             Shadow(offset: const Offset(-1, -1), color: strokeColor),
@@ -814,6 +1203,84 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
+    }
+
+    if (PlatformDetection.isTV) {
+      final primaryFocus = FocusManager.instance.primaryFocus;
+
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        final isBoundaryFocus = primaryFocus == _tvTransportLastFocus ||
+            primaryFocus == _tvSecondaryLastFocus ||
+            primaryFocus == _tvSeekbarFocus;
+        if (isBoundaryFocus && _skipSegment != null) {
+          _focusTvSkipSegment();
+          return KeyEventResult.handled;
+        }
+        if (isBoundaryFocus || primaryFocus == _tvSkipSegmentFocus) {
+          _showControls();
+          return KeyEventResult.handled;
+        }
+      }
+
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        if (primaryFocus == _tvSkipSegmentFocus) {
+          _focusTvSeekbar();
+          return KeyEventResult.handled;
+        }
+        if (primaryFocus == _tvTransportFirstFocus ||
+            primaryFocus == _tvSecondaryFocus) {
+          _showControls();
+          return KeyEventResult.handled;
+        }
+      }
+
+      switch (event.logicalKey) {
+        case LogicalKeyboardKey.goBack:
+        case LogicalKeyboardKey.escape:
+        case LogicalKeyboardKey.browserBack:
+        case LogicalKeyboardKey.backspace:
+          _exitPlayback();
+          return KeyEventResult.handled;
+        case LogicalKeyboardKey.arrowLeft:
+          if (!_controlsVisible) {
+            _seekRelative(
+              -_prefs.get(UserPreferences.skipBackLength),
+              showControls: false,
+            );
+            _showControls(focusSeekbar: true);
+            return KeyEventResult.handled;
+          }
+          if (_controlsVisible) _scheduleHide();
+          return KeyEventResult.ignored;
+        case LogicalKeyboardKey.arrowRight:
+          if (!_controlsVisible) {
+            _seekRelative(
+              _prefs.get(UserPreferences.skipForwardLength),
+              showControls: false,
+            );
+            _showControls(focusSeekbar: true);
+            return KeyEventResult.handled;
+          }
+          if (_controlsVisible) _scheduleHide();
+          return KeyEventResult.ignored;
+        case LogicalKeyboardKey.arrowUp:
+        case LogicalKeyboardKey.arrowDown:
+          if (!_controlsVisible) {
+            _showControls(focusSeekbar: true);
+            return KeyEventResult.handled;
+          }
+          if (_controlsVisible) _scheduleHide();
+          return KeyEventResult.ignored;
+        case LogicalKeyboardKey.select:
+        case LogicalKeyboardKey.enter:
+          if (!_controlsVisible) {
+            _showControls(focusSeekbar: true);
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        default:
+          return KeyEventResult.ignored;
+      }
     }
 
     switch (event.logicalKey) {
@@ -881,15 +1348,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           autofocus: true,
           onKeyEvent: _handleKeyEvent,
           child: GestureDetector(
-            onTap: _toggleControls,
-            onDoubleTapDown: PlatformDetection.isMobile && !_isOsdLocked
+            onTap: PlatformDetection.isTV ? null : _toggleControls,
+            onDoubleTapDown: PlatformDetection.isTV
+              ? null
+              : PlatformDetection.isMobile && !_isOsdLocked
                 ? _onDoubleTapDown
                 : null,
             onDoubleTap: _handleDoubleTapGesture,
-            onVerticalDragStart: PlatformDetection.isMobile && !_isOsdLocked
+            onVerticalDragStart: PlatformDetection.isTV
+              ? null
+              : PlatformDetection.isMobile && !_isOsdLocked
                 ? _onVerticalDragStart
                 : null,
-            onVerticalDragUpdate: PlatformDetection.isMobile && !_isOsdLocked
+            onVerticalDragUpdate: PlatformDetection.isTV
+              ? null
+              : PlatformDetection.isMobile && !_isOsdLocked
                 ? _onVerticalDragUpdate
                 : null,
             onPanDown: PlatformDetection.isDesktop
@@ -921,9 +1394,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   if (_controlsVisible && !_isOsdLocked) ...[
                     _buildTopOverlay(context),
                     _buildBottomOverlay(context),
-                    Positioned.fill(
-                      child: Center(child: _buildCenterTransportControls()),
-                    ),
+                    if (!PlatformDetection.useLeanbackUi)
+                      Positioned.fill(
+                        child: Center(child: _buildCenterTransportControls()),
+                      ),
                   ],
                   _buildCastMiniBar(),
                   _buildBufferingIndicator(),
@@ -935,10 +1409,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                     SkipSegmentOverlay(
                       segment: _skipSegment!,
                       onSkip: _skipCurrentSegment,
-                      onDismiss: () => setState(() {
-                        _skipSegment = null;
-                        _skipTo = null;
-                      }),
+                      focusNode: PlatformDetection.isTV
+                          ? _tvSkipSegmentFocus
+                          : null,
+                      onDismiss: () {
+                        setState(() {
+                          _skipSegment = null;
+                          _skipTo = null;
+                        });
+                        _showControls(focusSeekbar: true);
+                      },
                     ),
                   if (_showNextUp && _nextUpItem != null)
                     NextUpOverlay(
@@ -972,18 +1452,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   };
 
   Widget _buildVideoSurface() {
-    final size = MediaQuery.sizeOf(context);
     return Positioned.fill(
-      child: Video(
-        controller: _backend.videoController,
-        controls: NoVideoControls,
-        width: size.width,
-        height: size.height,
-        fit: _zoomToFit(_zoomMode),
-        fill: Colors.black,
-        // Disabled on iOS: we manage background playback via PiP.
-        pauseUponEnteringBackgroundMode: !PlatformDetection.isIOS,
-        subtitleViewConfiguration: _buildSubtitleConfig(),
+      child: LayoutBuilder(
+        builder: (context, constraints) => Video(
+          controller: _backend.videoController,
+          controls: NoVideoControls,
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+          fit: _zoomToFit(_zoomMode),
+          fill: Colors.black,
+          pauseUponEnteringBackgroundMode: !PlatformDetection.isIOS,
+          subtitleViewConfiguration: _buildSubtitleConfig(),
+        ),
       ),
     );
   }
@@ -1156,7 +1636,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         ),
         child: Row(
           children: [
-            if (!PlatformDetection.useLeanbackUi)
+            if (!PlatformDetection.useLeanbackUi && !PlatformDetection.isTV)
               IconButton(
                 onPressed: _exitPlayback,
                 tooltip: PlatformDetection.isDesktop
@@ -1344,6 +1824,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   Widget _buildBottomOverlay(BuildContext context) {
+    if (PlatformDetection.isTV) {
+      return _buildTvBottomOverlay(context);
+    }
+    return _buildStandardBottomOverlay(context);
+  }
+
+  Widget _buildStandardBottomOverlay(BuildContext context) {
     final padding = MediaQuery.of(context).padding;
     return Positioned(
       bottom: 0,
@@ -1367,7 +1854,39 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           children: [
             _buildSeekbar(),
             const SizedBox(height: AppSpacing.spaceXs),
-            _buildControlButtons(),
+            _buildSecondaryControlsRow(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTvBottomOverlay(BuildContext context) {
+    final padding = MediaQuery.of(context).padding;
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        padding: EdgeInsets.only(
+          bottom: padding.bottom + AppSpacing.spaceSm,
+          left: AppSpacing.spaceLg,
+          right: AppSpacing.spaceLg,
+        ),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [Colors.black87, Colors.transparent],
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTvTransportRow(),
+            _buildSeekbar(),
+            const SizedBox(height: AppSpacing.spaceXs),
+            _buildSecondaryControlsRow(),
           ],
         ),
       ),
@@ -1383,101 +1902,150 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           stream: _state.durationStream,
           initialData: _state.duration,
           builder: (context, durSnap) {
-            final position = posSnap.data ?? Duration.zero;
-            final duration = durSnap.data ?? Duration.zero;
-            final durationMs = math.max(duration.inMilliseconds, 1).toDouble();
-            final double positionMs = _isSeeking
-                ? _seekValue
-                : position.inMilliseconds
-                      .clamp(0, duration.inMilliseconds)
-                      .toDouble();
-            final seekPosition = Duration(milliseconds: positionMs.round());
-            final trickplayTile = _isSeeking
-                ? _getTrickplayTile(seekPosition)
-                : null;
+            return StreamBuilder<Duration>(
+              stream: _state.bufferStream,
+              initialData: _state.buffer,
+              builder: (context, bufferSnap) {
+                final position = posSnap.data ?? Duration.zero;
+                final duration = durSnap.data ?? Duration.zero;
+                final buffer = bufferSnap.data ?? Duration.zero;
+                final durationMs = math.max(duration.inMilliseconds, 1).toDouble();
+                final double positionMs = _isSeeking
+                    ? _seekValue
+                    : position.inMilliseconds
+                          .clamp(0, duration.inMilliseconds)
+                          .toDouble();
+                final double bufferMs = buffer.inMilliseconds
+                    .clamp(0, duration.inMilliseconds)
+                    .toDouble();
+                final seekPosition = Duration(milliseconds: positionMs.round());
+                final trickplayTile = _isSeeking
+                    ? _getTrickplayTile(seekPosition)
+                    : null;
 
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (trickplayTile != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.spaceSm),
-                    child: _buildSeekPreviewThumbnail(
-                      imageUrl: trickplayTile.url,
-                      headers: trickplayTile.headers,
-                      position: seekPosition,
-                      sourceRect: trickplayTile.sourceRect,
-                      thumbWidth: trickplayTile.thumbWidth,
-                      thumbHeight: trickplayTile.thumbHeight,
-                      tileWidth: trickplayTile.tileWidth,
-                      tileHeight: trickplayTile.tileHeight,
-                    ),
-                  ),
-                SliderTheme(
-                  data: SliderThemeData(
-                    trackHeight: 4,
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 7,
-                    ),
-                    overlayShape: const RoundSliderOverlayShape(
-                      overlayRadius: 14,
-                    ),
-                    activeTrackColor: AppColorScheme.rangeProgress,
-                    inactiveTrackColor: AppColorScheme.rangeTrack,
-                    thumbColor: AppColorScheme.rangeThumb,
-                    overlayColor: AppColorScheme.rangeThumb.withValues(
-                      alpha: 0.2,
-                    ),
-                  ),
-                  child: Slider(
-                    value: positionMs.clamp(0.0, durationMs),
-                    max: durationMs,
-                    onChangeStart: (v) {
-                      setState(() {
-                        _isSeeking = true;
-                        _seekValue = v;
-                      });
-                      _hideTimer?.cancel();
-                    },
-                    onChanged: (v) {
-                      setState(() => _seekValue = v);
-                    },
-                    onChangeEnd: (v) {
-                      _isSeeking = false;
-                      _manager.seekTo(Duration(milliseconds: v.round()));
-                      _scheduleHide();
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.spaceLg,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _formatDuration(
-                          _isSeeking
-                              ? Duration(milliseconds: _seekValue.round())
-                              : position,
-                        ),
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: AppTypography.fontSizeXs,
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (trickplayTile != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.spaceSm),
+                        child: _buildSeekPreviewThumbnail(
+                          imageUrl: trickplayTile.url,
+                          headers: trickplayTile.headers,
+                          position: seekPosition,
+                          sourceRect: trickplayTile.sourceRect,
+                          thumbWidth: trickplayTile.thumbWidth,
+                          thumbHeight: trickplayTile.thumbHeight,
+                          tileWidth: trickplayTile.tileWidth,
+                          tileHeight: trickplayTile.tileHeight,
                         ),
                       ),
-                      Text(
-                        _formatDuration(duration),
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: AppTypography.fontSizeXs,
+                    Focus(
+                      focusNode: _tvSeekbarFocus,
+                      onKeyEvent: (node, event) {
+                        if (!PlatformDetection.isTV ||
+                            (event is! KeyDownEvent && event is! KeyRepeatEvent)) {
+                          return KeyEventResult.ignored;
+                        }
+                        switch (event.logicalKey) {
+                          case LogicalKeyboardKey.arrowLeft:
+                            _seekRelative(-_prefs.get(UserPreferences.skipBackLength));
+                            return KeyEventResult.handled;
+                          case LogicalKeyboardKey.arrowRight:
+                            _seekRelative(_prefs.get(UserPreferences.skipForwardLength));
+                            return KeyEventResult.handled;
+                          case LogicalKeyboardKey.arrowUp:
+                            if (_tvBottomPrimaryFocus.context != null) {
+                              _tvBottomPrimaryFocus.requestFocus();
+                            }
+                            return KeyEventResult.handled;
+                          case LogicalKeyboardKey.arrowDown:
+                            if (_tvSecondaryFocus.context != null) {
+                              _tvSecondaryFocus.requestFocus();
+                            }
+                            return KeyEventResult.handled;
+                          case LogicalKeyboardKey.select:
+                          case LogicalKeyboardKey.enter:
+                            _state.isPlaying ? _manager.pause() : _manager.resume();
+                            _showControls(focusSeekbar: true);
+                            return KeyEventResult.handled;
+                          default:
+                            return KeyEventResult.ignored;
+                        }
+                      },
+                      child: SliderTheme(
+                        data: SliderThemeData(
+                          trackHeight: 4,
+                          thumbShape: const RoundSliderThumbShape(
+                            enabledThumbRadius: 7,
+                          ),
+                          overlayShape: const RoundSliderOverlayShape(
+                            overlayRadius: 14,
+                          ),
+                          activeTrackColor: AppColorScheme.rangeProgress,
+                          secondaryActiveTrackColor:
+                              AppColorScheme.rangeTrack.withValues(alpha: 0.8),
+                          inactiveTrackColor: AppColorScheme.rangeTrack,
+                            thumbColor: (PlatformDetection.isTV && _seekbarFocused)
+                              ? Colors.white
+                              : AppColorScheme.rangeThumb,
+                          overlayColor: AppColorScheme.rangeThumb.withValues(
+                            alpha: 0.2,
+                          ),
+                        ),
+                        child: Slider(
+                          value: positionMs.clamp(0.0, durationMs),
+                          secondaryTrackValue: bufferMs.clamp(0.0, durationMs),
+                          max: durationMs,
+                          onChangeStart: (v) {
+                            setState(() {
+                              _isSeeking = true;
+                              _seekValue = v;
+                            });
+                            _hideTimer?.cancel();
+                          },
+                          onChanged: (v) {
+                            setState(() => _seekValue = v);
+                          },
+                          onChangeEnd: (v) {
+                            _isSeeking = false;
+                            _manager.seekTo(Duration(milliseconds: v.round()));
+                            _scheduleHide();
+                          },
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.spaceLg,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _formatDuration(
+                              _isSeeking
+                                  ? Duration(milliseconds: _seekValue.round())
+                                  : position,
+                            ),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: AppTypography.fontSizeXs,
+                            ),
+                          ),
+                          Text(
+                            _formatDuration(duration),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: AppTypography.fontSizeXs,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
         );
@@ -1618,10 +2186,96 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     );
   }
 
-  Widget _buildControlButtons() {
+  Widget _buildTvTransportRow() {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final buttonExtent = isLandscape ? 56.0 : 48.0;
+    final buttonIconSize = isLandscape ? 28.0 : 24.0;
+    final hasPrevious = _queue.hasPrevious;
+    final hasNext = _queue.hasNext;
+
+    return Focus(
+      skipTraversal: true,
+      canRequestFocus: false,
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+          return KeyEventResult.ignored;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+          _tvSeekbarFocus.requestFocus();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: FocusTraversalGroup(
+        policy: ReadingOrderTraversalPolicy(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (_queue.hasPrevious)
+                _controlButton(
+                  Icons.skip_previous_rounded,
+                  onPressed: _manager.previous,
+                  size: buttonIconSize,
+                  extent: buttonExtent,
+                  focusNode: _tvTransportFirstFocus,
+                ),
+              const SizedBox(width: 4),
+              _controlButton(
+                Icons.replay_10_rounded,
+                onPressed: () =>
+                    _seekRelative(-_prefs.get(UserPreferences.skipBackLength)),
+                size: buttonIconSize,
+                extent: buttonExtent,
+                focusNode: hasPrevious ? null : _tvTransportFirstFocus,
+              ),
+              const SizedBox(width: 8),
+              StreamBuilder<bool>(
+                stream: _state.playingStream,
+                initialData: _state.isPlaying,
+                builder: (context, snap) {
+                  final isPlaying = snap.data ?? false;
+                  return _controlButton(
+                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                    onPressed: () =>
+                        isPlaying ? _manager.pause() : _manager.resume(),
+                    size: buttonIconSize,
+                    extent: buttonExtent,
+                    focusNode: _tvBottomPrimaryFocus,
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+              _controlButton(
+                Icons.forward_30_rounded,
+                onPressed: () =>
+                    _seekRelative(_prefs.get(UserPreferences.skipForwardLength)),
+                size: buttonIconSize,
+                extent: buttonExtent,
+                focusNode: hasNext ? null : _tvTransportLastFocus,
+              ),
+              const SizedBox(width: 4),
+              if (_queue.hasNext)
+                _controlButton(
+                  Icons.skip_next_rounded,
+                  onPressed: _manager.next,
+                  size: buttonIconSize,
+                  extent: buttonExtent,
+                  focusNode: _tvTransportLastFocus,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSecondaryControlsRow() {
     return ValueListenableBuilder<CastTargetKind?>(
       valueListenable: _castService.activeKindNotifier,
-      builder: (context, activeCastKind, _) {
+      builder: (context, _, __) {
         final l10n = AppLocalizations.of(context);
         final item = _queue.currentItem;
         final hasChapters = item is AggregatedItem && item.chapters.isNotEmpty;
@@ -1634,12 +2288,35 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             ? AppTypography.fontSizeMd
             : AppTypography.fontSizeSm;
 
-        final secondaryButtons = <Widget>[
-          _buildSpeedButton(
+        final speedPopupKey = GlobalKey<PopupMenuButtonState<double>>();
+        Widget speedButton = _buildSpeedButton(
+          extent: secondaryExtent,
+          textSize: secondaryTextSize,
+          popupKey: speedPopupKey,
+          tooltip: l10n.playerTooltipPlaybackSpeed,
+        );
+        if (PlatformDetection.isTV) {
+          speedButton = _TvFocusButton(
+            focusNode: _tvSecondaryFocus,
             extent: secondaryExtent,
-            textSize: secondaryTextSize,
-            tooltip: l10n.playerTooltipPlaybackSpeed,
-          ),
+            onKeyEvent: (_, event) {
+              if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+                return KeyEventResult.ignored;
+              }
+              if (event.logicalKey == LogicalKeyboardKey.select ||
+                  event.logicalKey == LogicalKeyboardKey.enter) {
+                speedPopupKey.currentState?.showButtonMenu();
+                _showControls();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: speedButton,
+          );
+        }
+
+        final secondaryButtons = <Widget>[
+          speedButton,
           if (hasChapters)
             _controlButton(
               Icons.bookmark_outline_rounded,
@@ -1684,16 +2361,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               extent: secondaryExtent,
               tooltip: l10n.castAndCrew,
             ),
-          _controlButton(
-            Icons.cast,
-            onPressed: _castToDevice,
-            size: secondaryIconSize,
-            extent: secondaryExtent,
-            tooltip: l10n.cast,
-          ),
-          if (activeCastKind != null)
+          if (!PlatformDetection.isTV)
             _controlButton(
-              switch (activeCastKind) {
+              Icons.cast,
+              onPressed: _castToDevice,
+              size: secondaryIconSize,
+              extent: secondaryExtent,
+              tooltip: l10n.cast,
+            ),
+          if (!PlatformDetection.isTV && _castService.activeKind != null)
+            _controlButton(
+              switch (_castService.activeKind!) {
                 CastTargetKind.googleCast => Icons.cast_connected,
                 CastTargetKind.airPlay => Icons.airplay,
                 _ => Icons.router,
@@ -1720,6 +2398,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             onPressed: _showStreamInfo,
             size: secondaryIconSize,
             extent: secondaryExtent,
+            focusNode: _tvSecondaryLastFocus,
             tooltip: _tooltipMessage(l10n.playbackInformation, shortcut: 'I'),
           ),
           if (PlatformDetection.isDesktop)
@@ -1744,7 +2423,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
         final estimatedWidth = secondaryButtons.length * (secondaryExtent + 8);
 
-        return LayoutBuilder(
+        final layoutBuilder = LayoutBuilder(
           builder: (context, constraints) {
             final canFitLandscapeRow =
                 isLandscape && estimatedWidth <= constraints.maxWidth;
@@ -1753,7 +2432,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               return SizedBox(
                 height: secondaryExtent,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: PlatformDetection.isTV
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.spaceEvenly,
                   children: secondaryButtons,
                 ),
               );
@@ -1764,7 +2445,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     for (final button in secondaryButtons)
                       Padding(
@@ -1777,6 +2458,29 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             );
           },
         );
+
+        if (PlatformDetection.isTV) {
+          return Focus(
+            skipTraversal: true,
+            canRequestFocus: false,
+            onKeyEvent: (node, event) {
+              if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+                return KeyEventResult.ignored;
+              }
+              if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                _tvSeekbarFocus.requestFocus();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: FocusTraversalGroup(
+              policy: ReadingOrderTraversalPolicy(),
+              child: layoutBuilder,
+            ),
+          );
+        }
+
+        return layoutBuilder;
       },
     );
   }
@@ -1981,22 +2685,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       setState(() => _showSkipForward = true);
       _skipForwardTimer?.cancel();
       _skipForwardTimer = Timer(const Duration(milliseconds: 600), () {
-        if (mounted)
+        if (mounted) {
           setState(() {
             _showSkipForward = false;
             _skipForwardAccum = 0;
           });
+        }
       });
     } else {
       _skipBackwardAccum += ms;
       setState(() => _showSkipBackward = true);
       _skipBackwardTimer?.cancel();
       _skipBackwardTimer = Timer(const Duration(milliseconds: 600), () {
-        if (mounted)
+        if (mounted) {
           setState(() {
             _showSkipBackward = false;
             _skipBackwardAccum = 0;
           });
+        }
       });
     }
   }
@@ -2198,44 +2904,43 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           child: Center(
             child: IgnorePointer(
               ignoring: !_controlsVisible,
-              child: AnimatedOpacity(
-                opacity: _controlsVisible ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 180),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onLongPress: () {
-                    setState(() => _isOsdLocked = false);
-                    _showControls();
-                  },
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.58),
-                      borderRadius: BorderRadius.circular(24),
+              child: GestureDetector(
+                onLongPress: () {
+                  setState(() {
+                    _isOsdLocked = false;
+                    _controlsVisible = true;
+                  });
+                  _scheduleHide();
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spaceLg,
+                    vertical: AppSpacing.spaceMd,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.72),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.18),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.lock,
+                        color: Colors.white70,
+                        size: 18,
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.lock_rounded,
-                            color: Colors.white70,
-                            size: 18,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            AppLocalizations.of(context).longPressToUnlock,
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context).longPressToUnlock,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -2318,11 +3023,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     double size = 24,
     double extent = 48,
     String? tooltip,
+    FocusNode? focusNode,
   }) {
+    if (PlatformDetection.isTV) {
+      return _TvFocusButton(
+        focusNode: focusNode,
+        extent: extent,
+        onPressed: () {
+          onPressed();
+          _showControls();
+        },
+        child: Icon(icon, color: Colors.white, size: size),
+      );
+    }
     return SizedBox(
       width: extent,
       height: extent,
       child: IconButton(
+        focusNode: focusNode,
         onPressed: () {
           onPressed();
           _showControls();
@@ -2339,11 +3057,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     double extent = 48,
     double textSize = AppTypography.fontSizeSm,
     String? tooltip,
+    GlobalKey<PopupMenuButtonState<double>>? popupKey,
   }) {
     return SizedBox(
       width: extent,
       height: extent,
       child: PopupMenuButton<double>(
+        key: popupKey,
         tooltip: PlatformDetection.isDesktop ? tooltip : null,
         onSelected: (speed) {
           _manager.setPlaybackSpeed(speed);
@@ -2430,12 +3150,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final l10n = AppLocalizations.of(context);
     final resolution = _manager.currentResolution;
     final streamType = audio ? 'Audio' : 'Subtitle';
+    final item = _queue.currentItem;
     final offlineMeta = _manager.currentOfflineMetadata;
     final allStreams =
         resolution?.mediaStreams ??
         (offlineMeta?['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ??
         const <Map<String, dynamic>>[];
     final streams = allStreams.where((s) => s['Type'] == streamType).toList();
+    final audioStreams = allStreams.where((s) => s['Type'] == 'Audio').toList();
+    final canDownloadRemote =
+      !audio && item is AggregatedItem && _canDownloadRemoteSubtitles(item);
 
     final int? currentStreamIndex;
     if (audio) {
@@ -2452,112 +3176,144 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
     final isSubsOff = !audio && _manager.subtitleStreamIndex == -1;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColorScheme.surface,
-      isScrollControlled: true,
-      builder: (sheetCtx) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        maxChildSize: 0.8,
-        minChildSize: 0.3,
-        expand: false,
-        builder: (_, scrollController) => SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.spaceLg),
-                child: Text(
-                  audio ? l10n.audio : l10n.subtitles,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: AppTypography.fontSizeLg,
-                    fontWeight: FontWeight.w600,
-                  ),
+    Widget sheetBody(
+      ScrollController? scrollController,
+      BuildContext sheetCtx,
+    ) {
+      return SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.spaceLg),
+              child: Text(
+                audio ? l10n.audio : l10n.subtitles,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: AppTypography.fontSizeLg,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  children: [
-                    if (!audio)
-                      ListTile(
-                        title: Text(
-                          l10n.off,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        leading: Icon(
-                          Icons.radio_button_checked,
-                          color:
-                              isSubsOff ||
-                                  (currentStreamIndex == null &&
-                                      streams.isNotEmpty)
-                              ? AppColorScheme.accent
-                              : Colors.white38,
-                        ),
-                        onTap: () {
-                          _manager.disableSubtitles();
-                          Navigator.pop(sheetCtx);
-                        },
+            ),
+            Expanded(
+              child: ListView(
+                controller: scrollController,
+                children: [
+                  if (!audio)
+                    ListTile(
+                      title: Text(
+                        l10n.off,
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    ...streams.asMap().entries.map((e) {
-                      final stream = e.value;
-                      final streamIndex = stream['Index'] as int? ?? e.key;
-                      final displayTitle = stream['DisplayTitle'] as String?;
-                      final title = stream['Title'] as String?;
-                      final language = stream['Language'] as String?;
-                      final codec = stream['Codec'] as String?;
+                      leading: Icon(
+                        Icons.radio_button_checked,
+                        color:
+                            isSubsOff ||
+                                (currentStreamIndex == null && streams.isNotEmpty)
+                            ? AppColorScheme.accent
+                            : Colors.white38,
+                      ),
+                      onTap: () {
+                        _manager.disableSubtitles();
+                        Navigator.pop(sheetCtx);
+                      },
+                    ),
+                  ...streams.asMap().entries.map((e) {
+                    final stream = e.value;
+                    final streamIndex = stream['Index'] as int? ?? e.key;
+                    final displayTitle = stream['DisplayTitle'] as String?;
+                    final title = stream['Title'] as String?;
+                    final language = stream['Language'] as String?;
+                    final codec = stream['Codec'] as String?;
 
-                      final label =
-                          displayTitle ??
-                          title ??
-                          language ??
-                          l10n.streamTypeFallback(streamType, e.key + 1);
-                      final subtitle = [
-                        if (language != null && displayTitle != null) language,
-                        if (codec != null) codec.toUpperCase(),
-                        if (stream['Channels'] != null)
-                          '${stream['Channels']}ch',
-                      ].join(' · ');
+                    final label =
+                        displayTitle ??
+                        title ??
+                        language ??
+                        l10n.streamTypeFallback(streamType, e.key + 1);
+                    final subtitle = [
+                      if (language != null && displayTitle != null) language,
+                      if (codec != null) codec.toUpperCase(),
+                      if (stream['Channels'] != null) '${stream['Channels']}ch',
+                    ].join(' · ');
 
-                      final selected =
-                          !isSubsOff && currentStreamIndex == streamIndex;
+                    final selected =
+                        !isSubsOff && currentStreamIndex == streamIndex;
 
-                      return ListTile(
-                        title: Text(
-                          label,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        subtitle: subtitle.isNotEmpty
-                            ? Text(
-                                subtitle,
-                                style: const TextStyle(color: Colors.white54),
-                              )
-                            : null,
-                        leading: Icon(
-                          Icons.radio_button_checked,
-                          color: selected
-                              ? AppColorScheme.accent
-                              : Colors.white38,
-                        ),
-                        onTap: () {
-                          if (audio) {
-                            _manager.changeAudioTrack(streamIndex);
-                          } else {
-                            _manager.changeSubtitleTrack(streamIndex);
-                          }
-                          Navigator.pop(sheetCtx);
-                        },
-                      );
-                    }),
-                  ],
-                ),
+                    return ListTile(
+                      title: Text(
+                        label,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      subtitle: subtitle.isNotEmpty
+                          ? Text(
+                              subtitle,
+                              style: const TextStyle(color: Colors.white54),
+                            )
+                          : null,
+                      leading: Icon(
+                        Icons.radio_button_checked,
+                        color: selected
+                            ? AppColorScheme.accent
+                            : Colors.white38,
+                      ),
+                      onTap: () {
+                        if (audio) {
+                          _manager.changeAudioTrack(streamIndex);
+                        } else {
+                          _manager.changeSubtitleTrack(streamIndex);
+                        }
+                        Navigator.pop(sheetCtx);
+                      },
+                    );
+                  }),
+                  if (canDownloadRemote)
+                    ListTile(
+                      leading: const Icon(
+                        Icons.download_rounded,
+                        color: Colors.white,
+                      ),
+                      title: Text(
+                        l10n.downloadSubtitlesLabel,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      subtitle: Text(
+                        l10n.searchOpenSubtitlesPlugin,
+                        style: const TextStyle(color: Colors.white54),
+                      ),
+                      onTap: () async {
+                        Navigator.pop(sheetCtx);
+                        await _downloadRemoteSubtitles(item, streams, audioStreams);
+                      },
+                    ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
-    );
+      );
+    }
+
+    if (PlatformDetection.isTV) {
+      unawaited(
+        _showTvDialogBox(
+          child: Builder(builder: (dialogCtx) => sheetBody(null, dialogCtx)),
+        ),
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: AppColorScheme.surface,
+        isScrollControlled: true,
+        builder: (sheetCtx) => DraggableScrollableSheet(
+          initialChildSize: 0.5,
+          maxChildSize: 0.8,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (_, scrollController) => sheetBody(scrollController, sheetCtx),
+        ),
+      );
+    }
     _showControls();
   }
 
@@ -2599,59 +3355,68 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final chapters = item.chapters;
     if (chapters.isEmpty) return;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColorScheme.surface,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        maxChildSize: 0.8,
-        minChildSize: 0.3,
-        expand: false,
-        builder: (ctx, scrollController) => Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.spaceLg),
-              child: Text(
-                l10n.chapters,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: AppTypography.fontSizeLg,
-                  fontWeight: FontWeight.w600,
-                ),
+    Widget body(ScrollController? scrollController, BuildContext dialogCtx) {
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.spaceLg),
+            child: Text(
+              l10n.chapters,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: AppTypography.fontSizeLg,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: chapters.length,
-                itemBuilder: (ctx, i) {
-                  final ch = chapters[i];
-                  final name =
-                      (ch['Name'] as String?) ?? l10n.chapterNumber(i + 1);
-                  final ticks = ch['StartPositionTicks'] as int? ?? 0;
-                  final pos = Duration(microseconds: ticks ~/ 10);
-                  return ListTile(
-                    title: Text(
-                      name,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    trailing: Text(
-                      _formatDuration(pos),
-                      style: const TextStyle(color: Colors.white54),
-                    ),
-                    onTap: () {
-                      _manager.seekTo(pos);
-                      Navigator.pop(ctx);
-                    },
-                  );
-                },
-              ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: chapters.length,
+              itemBuilder: (ctx, i) {
+                final ch = chapters[i];
+                final name = (ch['Name'] as String?) ?? l10n.chapterNumber(i + 1);
+                final ticks = ch['StartPositionTicks'] as int? ?? 0;
+                final pos = Duration(microseconds: ticks ~/ 10);
+                return ListTile(
+                  title: Text(name, style: const TextStyle(color: Colors.white)),
+                  trailing: Text(
+                    _formatDuration(pos),
+                    style: const TextStyle(color: Colors.white54),
+                  ),
+                  onTap: () {
+                    _manager.seekTo(pos);
+                    Navigator.pop(dialogCtx);
+                  },
+                );
+              },
             ),
-          ],
+          ),
+        ],
+      );
+    }
+
+    if (PlatformDetection.isTV) {
+      unawaited(
+        _showTvDialogBox(
+          child: Builder(builder: (dialogCtx) => body(null, dialogCtx)),
+          heightFactor: 0.72,
         ),
-      ),
-    );
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: AppColorScheme.surface,
+        isScrollControlled: true,
+        builder: (ctx) => DraggableScrollableSheet(
+          initialChildSize: 0.5,
+          maxChildSize: 0.8,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (ctx, scrollController) => body(scrollController, ctx),
+        ),
+      );
+    }
     _showControls();
   }
 
@@ -2661,73 +3426,94 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final people = item.people;
     if (people.isEmpty) return;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColorScheme.surface,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        maxChildSize: 0.8,
-        minChildSize: 0.3,
-        expand: false,
-        builder: (ctx, scrollController) => Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.spaceLg),
-              child: Text(
-                AppLocalizations.of(context).castAndCrew,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: AppTypography.fontSizeLg,
-                  fontWeight: FontWeight.w600,
-                ),
+    Widget body(ScrollController? scrollController) {
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.spaceLg),
+            child: Text(
+              AppLocalizations.of(context).castAndCrew,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: AppTypography.fontSizeLg,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: people.length,
-                itemBuilder: (ctx, i) {
-                  final person = people[i];
-                  final name = (person['Name'] as String?) ?? '';
-                  final role = person['Role'] as String?;
-                  final type = person['Type'] as String?;
-                  final subtitle = role ?? type ?? '';
-                  return ListTile(
-                    leading: const CircleAvatar(
-                      backgroundColor: Colors.white12,
-                      child: Icon(Icons.person, color: Colors.white54),
-                    ),
-                    title: Text(
-                      name,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: subtitle.isNotEmpty
-                        ? Text(
-                            subtitle,
-                            style: const TextStyle(color: Colors.white54),
-                          )
-                        : null,
-                  );
-                },
-              ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: people.length,
+              itemBuilder: (ctx, i) {
+                final person = people[i];
+                final name = (person['Name'] as String?) ?? '';
+                final role = person['Role'] as String?;
+                final type = person['Type'] as String?;
+                final subtitle = role ?? type ?? '';
+                return ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: Colors.white12,
+                    child: Icon(Icons.person, color: Colors.white54),
+                  ),
+                  title: Text(name, style: const TextStyle(color: Colors.white)),
+                  subtitle: subtitle.isNotEmpty
+                      ? Text(
+                          subtitle,
+                          style: const TextStyle(color: Colors.white54),
+                        )
+                      : null,
+                );
+              },
             ),
-          ],
+          ),
+        ],
+      );
+    }
+
+    if (PlatformDetection.isTV) {
+      unawaited(
+        _showTvDialogBox(
+          child: Builder(builder: (_) => body(null)),
+          heightFactor: 0.72,
         ),
-      ),
-    );
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: AppColorScheme.surface,
+        isScrollControlled: true,
+        builder: (ctx) => DraggableScrollableSheet(
+          initialChildSize: 0.5,
+          maxChildSize: 0.8,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (ctx, scrollController) => body(scrollController),
+        ),
+      );
+    }
     _showControls();
   }
 
   Future<void> _castToDevice() async {
     final item = _queue.currentItem;
     if (item is! AggregatedItem) return;
+
+    if (_manager.isOfflinePlayback) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.castingUnavailableOffline)),
+      );
+      return;
+    }
+
     final positionTicks = _state.position.inMicroseconds * 10;
     final startIndex = _queue.currentIndex < 0 ? 0 : _queue.currentIndex;
     final queueItems = _queue.items
         .skip(startIndex)
         .whereType<AggregatedItem>()
         .toList(growable: false);
+
     await showRemotePlayToSessionDialog(
       context,
       item: item,
@@ -2736,10 +3522,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       audioStreamIndex: _manager.audioStreamIndex,
       subtitleStreamIndex: _manager.subtitleStreamIndex,
     );
-    if (mounted) {
-      setState(() {});
-    }
-    _showControls();
   }
 
   void _showCastControls() {
@@ -3006,10 +3788,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   String _formatBitrate(int? bitrate) {
-    if (bitrate == null) return AppLocalizations.of(context).unknown;
-    if (bitrate >= 1000000)
+    if (bitrate == null) {
+      return AppLocalizations.of(context).unknown;
+    }
+    if (bitrate >= 1000000) {
       return '${(bitrate / 1000000).toStringAsFixed(1)} Mbps';
-    if (bitrate >= 1000) return '${(bitrate / 1000).toStringAsFixed(0)} Kbps';
+    }
+    if (bitrate >= 1000) {
+      return '${(bitrate / 1000).toStringAsFixed(0)} Kbps';
+    }
     return '$bitrate bps';
   }
 
@@ -3058,15 +3845,22 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   String _getHdrType(Map<String, dynamic> stream) {
     final rangeType = stream['VideoRangeType'] as String? ?? '';
-    if (rangeType.contains('DOVI') || rangeType.contains('DoVi'))
+    if (rangeType.contains('DOVI') || rangeType.contains('DoVi')) {
       return 'Dolby Vision';
-    if (rangeType.contains('HDR10Plus') || rangeType.contains('HDR10+'))
+    }
+    if (rangeType.contains('HDR10Plus') || rangeType.contains('HDR10+')) {
       return 'HDR10+';
-    if (rangeType.contains('HDR10') || rangeType.contains('HDR'))
+    }
+    if (rangeType.contains('HDR10') || rangeType.contains('HDR')) {
       return 'HDR10';
-    if (rangeType.contains('HLG')) return 'HLG';
+    }
+    if (rangeType.contains('HLG')) {
+      return 'HLG';
+    }
     final range = stream['VideoRange'] as String?;
-    if (range == 'HDR') return 'HDR';
+    if (range == 'HDR') {
+      return 'HDR';
+    }
     return 'SDR';
   }
 
@@ -3198,117 +3992,219 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         (mediaSource?['Container'] as String?)?.toUpperCase() ?? l10n.unknown;
     final bitrate = mediaSource?['Bitrate'] as int?;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColorScheme.surface,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.5,
-        minChildSize: 0.3,
-        maxChildSize: 0.85,
-        builder: (ctx, scrollController) => SafeArea(
-          child: ListView(
-            controller: scrollController,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.spaceLg),
-                child: Text(
-                  l10n.playbackInformation,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: AppTypography.fontSizeLg,
-                    fontWeight: FontWeight.w600,
-                  ),
+    Widget body(ScrollController? scrollController) {
+      return SafeArea(
+        child: ListView(
+          controller: scrollController,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.spaceLg),
+              child: Text(
+                l10n.playbackInformation,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: AppTypography.fontSizeLg,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
+            ),
 
-              sectionHeader(l10n.playback),
-              infoRow(l10n.playMethod, methodLabel, highlight: true),
-              if (resolution != null &&
-                  playMethod == StreamPlayMethod.transcode &&
-                  resolution.transcodingReasons.isNotEmpty)
-                infoRow(
-                  l10n.transcodeReasons,
-                  resolution.transcodingReasons
-                      .map(
-                        (r) =>
-                            r.replaceAllMapped(_camelCaseSpaceRe, (_) => ' '),
-                      )
-                      .join(', '),
-                ),
-              infoRow(l10n.player, 'media_kit (libmpv)'),
-              infoRow(l10n.container, container),
-              infoRow(l10n.bitrate, _formatBitrate(bitrate)),
+            sectionHeader(l10n.playback),
+            infoRow(l10n.playMethod, methodLabel, highlight: true),
+            if (resolution != null &&
+                playMethod == StreamPlayMethod.transcode &&
+                resolution.transcodingReasons.isNotEmpty)
+              infoRow(
+                l10n.transcodeReasons,
+                resolution.transcodingReasons
+                    .map((r) => r.replaceAllMapped(_camelCaseSpaceRe, (_) => ' '))
+                    .join(', '),
+              ),
+            infoRow(l10n.player, 'media_kit (libmpv)'),
+            infoRow(l10n.container, container),
+            infoRow(l10n.bitrate, _formatBitrate(bitrate)),
 
-              if (videoStream case final video?) ...[
-                sectionHeader(l10n.video),
-                infoRow(
-                  l10n.resolution,
-                  '${video['Width']}×${video['Height']}'
-                  '${video['RealFrameRate'] != null ? ' @ ${(video['RealFrameRate'] as num).round()}fps' : ''}',
-                ),
-                infoRow(l10n.hdr, _getHdrType(video)),
-                infoRow(l10n.codec, _formatVideoCodec(video)),
-                if (video['BitRate'] != null)
-                  infoRow(
-                    l10n.videoBitrate,
-                    _formatBitrate(video['BitRate'] as int?),
-                  ),
-              ],
-
-              if (audioStream case final audio?) ...[
-                sectionHeader(l10n.audio),
-                infoRow(
-                  l10n.track,
-                  audio['DisplayTitle'] as String? ??
-                      audio['Language'] as String? ??
-                      l10n.unknown,
-                ),
-                infoRow(l10n.codec, _formatAudioCodec(audio)),
-                infoRow(
-                  l10n.channels,
-                  _formatChannels(audio['Channels'] as int?),
-                ),
-                if (audio['BitRate'] != null)
-                  infoRow(
-                    l10n.audioBitrate,
-                    _formatBitrate(audio['BitRate'] as int?),
-                  ),
-                if (audio['SampleRate'] != null)
-                  infoRow(
-                    l10n.sampleRate,
-                    '${((audio['SampleRate'] as num) / 1000).toStringAsFixed(1)} kHz',
-                  ),
-              ],
-
-              if (subtitleStream case final subtitle?) ...[
-                sectionHeader(l10n.subtitles),
-                infoRow(
-                  l10n.track,
-                  subtitle['DisplayTitle'] as String? ??
-                      subtitle['Language'] as String? ??
-                      l10n.unknown,
-                ),
-                infoRow(
-                  l10n.format,
-                  ((subtitle['Codec'] as String?) ?? l10n.unknown)
-                      .toUpperCase(),
-                ),
-                infoRow(
-                  l10n.type,
-                  subtitle['IsExternal'] == true
-                      ? l10n.external
-                      : l10n.embedded,
-                ),
-              ],
-
-              const SizedBox(height: AppSpacing.spaceLg),
+            if (videoStream case final video?) ...[
+              sectionHeader(l10n.video),
+              infoRow(
+                l10n.resolution,
+                '${video['Width']}×${video['Height']}'
+                '${video['RealFrameRate'] != null ? ' @ ${(video['RealFrameRate'] as num).round()}fps' : ''}',
+              ),
+              infoRow(l10n.hdr, _getHdrType(video)),
+              infoRow(l10n.codec, _formatVideoCodec(video)),
+              if (video['BitRate'] != null)
+                infoRow(l10n.videoBitrate, _formatBitrate(video['BitRate'] as int?)),
             ],
-          ),
+
+            if (audioStream case final audio?) ...[
+              sectionHeader(l10n.audio),
+              infoRow(
+                l10n.track,
+                audio['DisplayTitle'] as String? ??
+                    audio['Language'] as String? ??
+                    l10n.unknown,
+              ),
+              infoRow(l10n.codec, _formatAudioCodec(audio)),
+              infoRow(l10n.channels, _formatChannels(audio['Channels'] as int?)),
+              if (audio['BitRate'] != null)
+                infoRow(l10n.audioBitrate, _formatBitrate(audio['BitRate'] as int?)),
+              if (audio['SampleRate'] != null)
+                infoRow(
+                  l10n.sampleRate,
+                  '${((audio['SampleRate'] as num) / 1000).toStringAsFixed(1)} kHz',
+                ),
+            ],
+
+            if (subtitleStream case final subtitle?) ...[
+              sectionHeader(l10n.subtitles),
+              infoRow(
+                l10n.track,
+                subtitle['DisplayTitle'] as String? ??
+                    subtitle['Language'] as String? ??
+                    l10n.unknown,
+              ),
+              infoRow(
+                l10n.format,
+                ((subtitle['Codec'] as String?) ?? l10n.unknown).toUpperCase(),
+              ),
+              infoRow(
+                l10n.type,
+                subtitle['IsExternal'] == true ? l10n.external : l10n.embedded,
+              ),
+            ],
+
+            const SizedBox(height: AppSpacing.spaceLg),
+          ],
         ),
+      );
+    }
+
+    if (PlatformDetection.isTV) {
+      unawaited(
+        _showTvDialogBox(
+          child: Builder(builder: (_) => body(null)),
+          maxWidth: 820,
+          heightFactor: 0.8,
+        ),
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: AppColorScheme.surface,
+        isScrollControlled: true,
+        builder: (ctx) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.5,
+          minChildSize: 0.3,
+          maxChildSize: 0.85,
+          builder: (ctx, scrollController) => body(scrollController),
+        ),
+      );
+    }
+    _showControls();
+  }
+}
+
+class _TvFocusButton extends StatefulWidget {
+  const _TvFocusButton({
+    required this.extent,
+    required this.child,
+    this.focusNode,
+    this.onPressed,
+    this.onKeyEvent,
+  });
+
+  final FocusNode? focusNode;
+  final double extent;
+  final VoidCallback? onPressed;
+  final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
+  final Widget child;
+
+  @override
+  State<_TvFocusButton> createState() => _TvFocusButtonState();
+}
+
+class _TvFocusButtonState extends State<_TvFocusButton> {
+  late FocusNode _effectiveNode;
+  bool _ownsNode = false;
+  bool _focused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.focusNode != null) {
+      _effectiveNode = widget.focusNode!;
+    } else {
+      _effectiveNode = FocusNode();
+      _ownsNode = true;
+    }
+    _effectiveNode.addListener(_onFocusChange);
+  }
+
+  @override
+  void didUpdateWidget(_TvFocusButton old) {
+    super.didUpdateWidget(old);
+    final newNode = widget.focusNode;
+    final oldNode = old.focusNode;
+    if (newNode != oldNode) {
+      _effectiveNode.removeListener(_onFocusChange);
+      if (_ownsNode) {
+        _effectiveNode.dispose();
+        _ownsNode = false;
+      }
+      if (newNode != null) {
+        _effectiveNode = newNode;
+      } else {
+        _effectiveNode = FocusNode();
+        _ownsNode = true;
+      }
+      _effectiveNode.addListener(_onFocusChange);
+    }
+  }
+
+  @override
+  void dispose() {
+    _effectiveNode.removeListener(_onFocusChange);
+    if (_ownsNode) _effectiveNode.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (mounted) setState(() => _focused = _effectiveNode.hasFocus);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final focusWidget = Focus(
+      focusNode: _effectiveNode,
+      onKeyEvent: widget.onKeyEvent ?? (_, event) {
+        if (widget.onPressed != null &&
+            event is KeyDownEvent &&
+            (event.logicalKey == LogicalKeyboardKey.select ||
+                event.logicalKey == LogicalKeyboardKey.enter)) {
+          widget.onPressed!();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: widget.extent,
+        height: widget.extent,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: _focused
+              ? Colors.white.withValues(alpha: 0.22)
+              : Colors.transparent,
+          border: _focused ? Border.all(color: Colors.white, width: 2) : null,
+        ),
+        child: Center(child: widget.child),
       ),
     );
-    _showControls();
+    if (widget.onPressed != null) {
+      return GestureDetector(onTap: widget.onPressed, child: focusWidget);
+    }
+    return focusWidget;
   }
 }

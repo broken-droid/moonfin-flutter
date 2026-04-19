@@ -226,7 +226,7 @@ class _TopToolbarState extends State<TopToolbar> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildAvatar(),
-          if (widget.showBackButton) ...[
+          if (widget.showBackButton && !PlatformDetection.isTV) ...[
             const SizedBox(width: 8),
             MouseRegion(
               cursor: SystemMouseCursors.click,

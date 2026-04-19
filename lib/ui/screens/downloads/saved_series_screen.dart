@@ -10,6 +10,7 @@ import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
 import '../../../data/repositories/offline_repository.dart';
 import '../../../data/services/storage_path_service.dart';
+import '../../../util/platform_detection.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/offline_image.dart';
@@ -112,15 +113,16 @@ class SavedSeriesScreen extends ConsumerWidget {
               ),
             ),
           ),
-        Positioned(
-          top: series.backdropPath != null ? 140 : 16,
-          left: 20,
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => context.pop(),
-            style: IconButton.styleFrom(backgroundColor: Colors.black45),
+        if (!PlatformDetection.isTV)
+          Positioned(
+            top: series.backdropPath != null ? 140 : 16,
+            left: 20,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => context.pop(),
+              style: IconButton.styleFrom(backgroundColor: Colors.black45),
+            ),
           ),
-        ),
         Padding(
           padding: EdgeInsets.only(top: series.backdropPath != null ? 180 : 60, left: 20, right: 20),
           child: Column(

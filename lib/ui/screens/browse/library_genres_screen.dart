@@ -421,11 +421,12 @@ class _GenresHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 22),
-            onPressed: onBack,
-            tooltip: AppLocalizations.of(context).back,
-          ),
+          if (!PlatformDetection.isTV)
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 22),
+              onPressed: onBack,
+              tooltip: AppLocalizations.of(context).back,
+            ),
           const SizedBox(width: 12),
           Text(
             AppLocalizations.of(context).libraryGenresTitle(libraryName),

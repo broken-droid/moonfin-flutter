@@ -5,6 +5,8 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_NAME="Moonfin"
 APK_SOURCE="$REPO_ROOT/build/app/outputs/flutter-apk/app-mobile-release.apk"
 BUNDLE_SOURCE="$REPO_ROOT/build/app/outputs/bundle/mobileRelease/app-mobile-release.aab"
+TV_APK_SOURCE="$REPO_ROOT/build/app/outputs/flutter-apk/app-androidTv-release.apk"
+TV_BUNDLE_SOURCE="$REPO_ROOT/build/app/outputs/bundle/androidTvRelease/app-androidTv-release.aab"
 PAGE_SIZE_CHECKER="$REPO_ROOT/scripts/check-android-16kb-pages.sh"
 
 resolve_flutter() {
@@ -49,7 +51,18 @@ fi
 APK_OUTPUT="$REPO_ROOT/${APP_NAME}_Android_v${APP_VERSION}.apk"
 BUNDLE_OUTPUT="$REPO_ROOT/${APP_NAME}_Android_v${APP_VERSION}.aab"
 
+TV_VERSION=$(grep '^\s*android_tv_version:' "$REPO_ROOT/pubspec.yaml" | sed 's/.*android_tv_version:[[:space:]]*//' | tr -d '[:space:]')
+TV_BUILD_NUMBER=$(grep '^\s*android_tv_build_number:' "$REPO_ROOT/pubspec.yaml" | sed 's/.*android_tv_build_number:[[:space:]]*//' | tr -d '[:space:]')
+if [ -z "$TV_VERSION" ] || [ -z "$TV_BUILD_NUMBER" ]; then
+  echo "Error: could not read android_tv_version / android_tv_build_number from pubspec.yaml" >&2
+  exit 1
+fi
+
+TV_APK_OUTPUT="$REPO_ROOT/${APP_NAME}_AndroidTV_v${TV_VERSION}.apk"
+TV_BUNDLE_OUTPUT="$REPO_ROOT/${APP_NAME}_AndroidTV_v${TV_VERSION}.aab"
+
 echo "${APP_NAME} version: ${APP_VERSION} (${APP_BUILD_NUMBER})"
+echo "${APP_NAME} Android TV version: ${TV_VERSION} (${TV_BUILD_NUMBER})"
 
 cd "$REPO_ROOT"
 
@@ -109,3 +122,51 @@ fi
 
 echo "App Bundle created: $BUNDLE_SOURCE"
 echo "App Bundle copied to root: $BUNDLE_OUTPUT"
+
+echo "Building Android TV release APK..."
+"$FLUTTER" build apk --release \
+  --flavor androidTv \
+  --build-name "$TV_VERSION" \
+  --build-number "$TV_BUILD_NUMBER"
+
+if [ ! -f "$TV_APK_SOURCE" ]; then
+  echo "Error: TV APK not found at $TV_APK_SOURCE" >&2
+  exit 1
+fi
+
+cp "$TV_APK_SOURCE" "$TV_APK_OUTPUT"
+
+if [ -x "$PAGE_SIZE_CHECKER" ]; then
+  echo "Running 16 KB page-size compatibility check on TV APK..."
+  "$PAGE_SIZE_CHECKER" "$TV_APK_SOURCE"
+fi
+
+echo "TV APK created: $TV_APK_SOURCE"
+echo "TV APK copied to root: $TV_APK_OUTPUT"
+
+echo "Building Android TV App Bundle..."
+if ! "$FLUTTER" build appbundle --release \
+  --flavor androidTv \
+  --build-name "$TV_VERSION" \
+  --build-number "$TV_BUILD_NUMBER"; then
+  echo "Flutter appbundle build failed. Retrying with Gradle bundleAndroidTvRelease fallback..."
+  (
+    cd "$REPO_ROOT/android"
+    ./gradlew bundleAndroidTvRelease
+  )
+fi
+
+if [ ! -f "$TV_BUNDLE_SOURCE" ]; then
+  echo "Error: TV App Bundle not found at $TV_BUNDLE_SOURCE" >&2
+  exit 1
+fi
+
+cp "$TV_BUNDLE_SOURCE" "$TV_BUNDLE_OUTPUT"
+
+if [ -x "$PAGE_SIZE_CHECKER" ]; then
+  echo "Running 16 KB page-size compatibility check on TV App Bundle..."
+  "$PAGE_SIZE_CHECKER" "$TV_BUNDLE_SOURCE"
+fi
+
+echo "TV App Bundle created: $TV_BUNDLE_SOURCE"
+echo "TV App Bundle copied to root: $TV_BUNDLE_OUTPUT"

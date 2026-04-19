@@ -99,6 +99,7 @@ class PlaybackManager {
           state.setDuration(dur);
         }
       }),
+      backend.bufferStream.listen(state.setBuffer),
       backend.playingStream.listen(state.setPlaying),
       backend.bufferingStream.listen(state.setBuffering),
       backend.completedStream.listen(_onTrackCompleted),
@@ -293,6 +294,15 @@ class PlaybackManager {
     }
 
     if (!mediaReady) {
+      final backend = _backend!;
+      if (backend.position > Duration.zero ||
+          backend.buffer > Duration.zero ||
+          backend.isPlaying) {
+        mediaReady = true;
+      }
+    }
+
+    if (!mediaReady) {
       _currentResolution = null;
       try {
         await _backend!.stop();
@@ -402,7 +412,14 @@ class PlaybackManager {
   }) async {
     bool isReady() {
       if (_backend!.duration > Duration.zero) return true;
-      if (isTranscode && _backend!.isPlaying) return true;
+
+      // Some Android TV pipelines begin decoding before duration metadata is
+      // available. Consider playback progression as readiness.
+      if (_backend!.position > Duration.zero) return true;
+      if (_backend!.buffer > Duration.zero) return true;
+      if (_backend!.isPlaying) return true;
+
+      if (isTranscode && !_backend!.isBuffering) return true;
       return false;
     }
 

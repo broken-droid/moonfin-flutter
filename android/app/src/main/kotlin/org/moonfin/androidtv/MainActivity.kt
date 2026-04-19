@@ -102,6 +102,16 @@ class MainActivity : AudioServiceActivity() {
                     val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
                     result.success(uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION)
                 }
+                "exitApp" -> {
+                    result.success(true)
+                    handler.post {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            finishAndRemoveTask()
+                        } else {
+                            finishAffinity()
+                        }
+                    }
+                }
                 else -> result.notImplemented()
             }
         }

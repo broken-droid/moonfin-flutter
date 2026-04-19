@@ -34,7 +34,7 @@ class PlatformDetection {
   static bool get isLinuxWayland => linuxSessionType == 'wayland';
   static bool get isLinuxX11 => linuxSessionType == 'x11';
 
-  static bool get isMobile => isAndroid || isIOS;
+  static bool get isMobile => (isAndroid || isIOS) && !_isTv;
   static bool get isDesktop => isMacOS || isWindows || isLinux;
 
   static bool get isTV => _isTv;

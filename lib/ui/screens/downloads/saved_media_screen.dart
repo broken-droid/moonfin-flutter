@@ -11,6 +11,7 @@ import '../../../data/repositories/offline_repository.dart';
 import '../../../data/services/storage_path_service.dart';
 import '../../../di/providers.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../util/platform_detection.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/offline_image.dart';
@@ -56,10 +57,11 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => context.canPop() ? context.pop() : context.go(Destinations.home),
-          ),
+          if (!PlatformDetection.isTV)
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => context.canPop() ? context.pop() : context.go(Destinations.home),
+            ),
           const SizedBox(width: 8),
           Text(
             AppLocalizations.of(context).savedMedia,

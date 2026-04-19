@@ -10,6 +10,7 @@ import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
 import '../../../data/repositories/offline_repository.dart';
 import '../../../data/services/storage_path_service.dart';
+import '../../../util/platform_detection.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../widgets/offline_image.dart';
@@ -56,10 +57,11 @@ class SavedSeasonScreen extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(8, 12, 20, 8),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => context.pop(),
-          ),
+          if (!PlatformDetection.isTV)
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => context.pop(),
+            ),
           const SizedBox(width: 8),
           Text(
             title,

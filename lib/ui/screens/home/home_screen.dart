@@ -17,6 +17,7 @@ import '../../../data/services/media_server_client_factory.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
+import '../../../util/app_exit.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/app_router.dart';
 import '../../navigation/destinations.dart';
@@ -225,7 +226,7 @@ class _HomeShellState extends State<_HomeShell> with WidgetsBindingObserver {
       ),
     );
     if (result == true) {
-      SystemNavigator.pop();
+      await AppExit.closeApp();
     }
   }
 }
@@ -389,7 +390,10 @@ class _ContentRowsState extends State<_ContentRows>
     final path = appRouter.routerDelegate.currentConfiguration.uri.path;
     if (!path.startsWith(Destinations.home)) {
       _finishSharedPreview(releaseResources: true);
+      return;
     }
+
+    _initialFocusResolved = false;
   }
 
   static bool _supportsEpisodePreview(AggregatedItem item) {
