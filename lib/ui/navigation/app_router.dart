@@ -45,25 +45,7 @@ import '../screens/playback/still_watching_screen.dart';
 import '../screens/playback/trailer_player_screen.dart';
 import '../screens/playback/video_player_screen.dart';
 import '../screens/search/search_screen.dart';
-import '../screens/settings/about_screen.dart';
-import '../screens/settings/appearance_settings_screen.dart';
-import '../screens/settings/auth_settings_screen.dart';
-import '../screens/settings/customization_settings_screen.dart';
-import '../screens/settings/download_settings_screen.dart';
-import '../screens/settings/home_sections_screen.dart';
-import '../screens/settings/home_rows_image_type_screen.dart';
-import '../screens/settings/seerr_config_screen.dart';
-import '../screens/settings/library_settings_screen.dart';
-import '../screens/settings/media_bar_settings_screen.dart';
-import '../screens/settings/plugin_settings_screen.dart';
-import '../screens/settings/navigation_settings_screen.dart';
-import '../screens/settings/ratings_config_screen.dart';
-import '../screens/settings/parental_settings_screen.dart';
-import '../screens/settings/pin_code_settings_screen.dart';
-import '../screens/settings/playback_settings_screen.dart';
-import '../screens/settings/screensaver_settings_screen.dart';
-import '../screens/settings/settings_screen.dart';
-import '../screens/settings/subtitle_settings_screen.dart';
+import '../screens/settings/settings_side_panel.dart';
 import '../screens/admin/admin_shell_screen.dart';
 import '../screens/admin/admin_content_analytics_screen.dart';
 import '../screens/admin/admin_dashboard_screen.dart';
@@ -521,89 +503,7 @@ final appRouter = GoRouter(
     // Settings
     GoRoute(
       path: Destinations.settings,
-      builder: (context, state) => const SettingsScreen(),
-      routes: [
-        GoRoute(
-          path: 'customization',
-          builder: (context, state) => const CustomizationSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'playback',
-          builder: (context, state) => const PlaybackSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'appearance',
-          builder: (context, state) => const AppearanceSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'home-sections',
-          builder: (context, state) => const HomeSectionsScreen(),
-          routes: [
-            GoRoute(
-              path: 'image-type',
-              builder: (context, state) => const HomeRowsImageTypeScreen(),
-            ),
-          ],
-        ),
-        GoRoute(
-          path: 'subtitles',
-          builder: (context, state) => const SubtitleSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'auth',
-          builder: (context, state) => const AuthSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'pin-code',
-          builder: (context, state) => const PinCodeSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'screensaver',
-          builder: (context, state) => const ScreensaverSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'parental',
-          builder: (context, state) => const ParentalSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'about',
-          builder: (context, state) => const AboutScreen(),
-        ),
-        GoRoute(
-          path: 'media-bar',
-          builder: (context, state) => const MediaBarSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'library',
-          builder: (context, state) => const LibrarySettingsScreen(),
-        ),
-        GoRoute(
-          path: 'seerr-config',
-          builder: (context, state) => const SeerrConfigScreen(),
-        ),
-        GoRoute(
-          path: 'plugin',
-          builder: (context, state) => const PluginSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'ratings',
-          builder: (context, state) => const RatingsConfigScreen(),
-        ),
-        GoRoute(
-          path: 'navigation',
-          builder: (context, state) => const NavigationSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'downloads',
-          builder: (context, state) => const DownloadSettingsScreen(),
-          routes: [
-            GoRoute(
-              path: 'storage',
-              builder: (context, state) => const StorageManagementScreen(),
-            ),
-          ],
-        ),
-      ],
+      builder: (context, state) => const SettingsSidePanel(),
     ),
 
     // Seerr
@@ -668,6 +568,10 @@ final appRouter = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: Destinations.storageManagement,
+      builder: (context, state) => const StorageManagementScreen(),
     ),
   ],
 );

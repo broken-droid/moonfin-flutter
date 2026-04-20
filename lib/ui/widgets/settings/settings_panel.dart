@@ -8,17 +8,12 @@ class SettingsPanel extends StatelessWidget {
   const SettingsPanel({super.key, required this.child});
 
   static Future<void> open(BuildContext context, Widget content) {
-    if (PlatformDetection.useMobileUi) {
-      return Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => content));
-    }
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Settings',
       barrierColor: Colors.black54,
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const Duration(milliseconds: 220),
       pageBuilder: (_, anim, __) => SettingsPanel(child: content),
       transitionBuilder: (context, anim, secondAnim, child) {
         final slide = Tween<Offset>(
@@ -35,10 +30,10 @@ class SettingsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final panelWidth = (MediaQuery.sizeOf(context).width - 16).clamp(
-      280.0,
-      380.0,
-    );
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final panelWidth = PlatformDetection.useMobileUi
+        ? (screenWidth - 8).clamp(320.0, screenWidth)
+        : (screenWidth - 16).clamp(320.0, 420.0);
     return Align(
       alignment: Alignment.centerRight,
       child: Material(
@@ -76,25 +71,26 @@ class _SettingsNavigatorState extends State<_SettingsNavigator> {
         if (_navKey.currentState?.canPop() ?? false) {
           _navKey.currentState!.pop();
         } else {
-          Navigator.of(context).pop();
+          Navigator.of(context, rootNavigator: true).pop();
         }
       },
       child: Navigator(
         key: _navKey,
-        onGenerateRoute:
-            (_) => MaterialPageRoute(builder: (_) => widget.initial),
+        onGenerateRoute: (_) =>
+            MaterialPageRoute(builder: (_) => widget.initial),
       ),
     );
   }
 }
 
 extension SettingsPush on BuildContext {
-  void pushSettingsScreen(Widget screen) {
+  void pushSettingsScreen(Widget screen, {FocusNode? returnFocus}) {
+    final focusToRestore = returnFocus ?? FocusManager.instance.primaryFocus;
     Navigator.of(this).push(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => screen,
-        transitionDuration: const Duration(milliseconds: 250),
-        reverseTransitionDuration: const Duration(milliseconds: 200),
+        pageBuilder: (_, __, ___) => _AutoFocusWrapper(child: screen),
+        transitionDuration: const Duration(milliseconds: 160),
+        reverseTransitionDuration: const Duration(milliseconds: 130),
         transitionsBuilder: (context, anim, _, child) {
           final slide = Tween<Offset>(
             begin: const Offset(1.0, 0.0),
@@ -103,6 +99,44 @@ extension SettingsPush on BuildContext {
           return SlideTransition(position: slide, child: child);
         },
       ),
-    );
+    ).then((_) {
+      if (focusToRestore != null && focusToRestore.context != null) {
+        focusToRestore.requestFocus();
+      }
+    });
   }
+}
+
+class _AutoFocusWrapper extends StatefulWidget {
+  final Widget child;
+  const _AutoFocusWrapper({required this.child});
+
+  @override
+  State<_AutoFocusWrapper> createState() => _AutoFocusWrapperState();
+}
+
+class _AutoFocusWrapperState extends State<_AutoFocusWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    _scheduleInitialFocus();
+  }
+
+  void _scheduleInitialFocus({int attempt = 0}) {
+    if (!mounted || attempt > 15) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final scope = FocusScope.of(context);
+      if (scope.hasFocus) return;
+      final didFocus = scope.focusInDirection(TraversalDirection.down);
+      if (!didFocus && attempt < 15) {
+        Future<void>.delayed(const Duration(milliseconds: 16), () {
+          _scheduleInitialFocus(attempt: attempt + 1);
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

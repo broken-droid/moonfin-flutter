@@ -11,6 +11,7 @@ import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_binding.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class PlaybackSettingsScreen extends StatelessWidget {
   const PlaybackSettingsScreen({super.key});
@@ -19,7 +20,7 @@ class PlaybackSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.playback)),
+      appBar: buildSettingsAppBar(context, Text(l10n.playback)),
       body: ListView(
         children: [
           _section(context, l10n.video),

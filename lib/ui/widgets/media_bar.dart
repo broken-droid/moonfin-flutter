@@ -31,6 +31,7 @@ class MediaBar extends StatefulWidget {
   final double height;
   final Future<void> Function()? onNavigateDown;
   final VoidCallback? onNavigateUp;
+  final VoidCallback? onNavigateLeft;
   final FocusNode? focusNode;
 
   const MediaBar({
@@ -41,6 +42,7 @@ class MediaBar extends StatefulWidget {
     this.height = 220,
     this.onNavigateDown,
     this.onNavigateUp,
+    this.onNavigateLeft,
     this.focusNode,
   });
 
@@ -179,6 +181,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
               CachedNetworkImageProvider(item.backdropUrl!),
               context,
             );
+            if (!mounted) return;
           }
           if (item.logoUrl != null) {
             await precacheImage(
@@ -755,7 +758,11 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     final key = event.logicalKey;
 
     if (key == LogicalKeyboardKey.arrowLeft) {
-      if (_currentIndex > 0) _goToPage(_currentIndex - 1);
+      if (_currentIndex > 0) {
+        _goToPage(_currentIndex - 1);
+      } else if (widget.onNavigateLeft != null) {
+        widget.onNavigateLeft!();
+      }
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.arrowRight) {

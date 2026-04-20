@@ -17,7 +17,7 @@ import '../../../data/services/media_server_client_factory.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
-import '../../../util/app_exit.dart';
+import '../../widgets/exit_confirmation_dialog.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/app_router.dart';
 import '../../navigation/destinations.dart';
@@ -207,27 +207,8 @@ class _HomeShellState extends State<_HomeShell> with WidgetsBindingObserver {
   }
 
   Future<void> _showExitConfirmation(BuildContext context) async {
-    final l10n = AppLocalizations.of(context);
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.exitApp),
-        content: Text(l10n.exitAppConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(l10n.exit),
-          ),
-        ],
-      ),
-    );
-    if (result == true) {
-      await AppExit.closeApp();
-    }
+    final navContext = appRouter.routerDelegate.navigatorKey.currentContext;
+    await showExitConfirmationDialog(navContext ?? context);
   }
 }
 
@@ -331,6 +312,7 @@ class _ContentRowsState extends State<_ContentRows>
   double _previewStartScrollOffset = 0;
   bool _isScrolledToTop = true;
   bool _infoRevealed = false;
+  bool _mediaBarVisible = true;
   bool _initialFocusResolved = false;
   bool _suppressNextRowPreviewFromMediaBar = false;
   bool _forceRevealOnNextRowFocusFromMediaBar = false;
@@ -339,12 +321,49 @@ class _ContentRowsState extends State<_ContentRows>
   bool _verticalNavInFlight = false;
   String? _activePreviewKey;
   List<double> _rowTopOffsets = [];
+  double _overlayBottom = 0;
   static const _previewScrollThreshold = 150.0;
   static const _pinTransitionDistance = 96.0;
 
   static const _previewStartDelay = Duration(milliseconds: 1200);
-  static const _focusHandoffDuration = Duration(milliseconds: 160);
-  static const _focusHandoffCurve = Curves.easeOut;
+  static const _focusHandoffDuration = Duration(milliseconds: 220);
+  static const _focusHandoffCurve = Curves.easeInOutCubic;
+  static const _mediaBarFadeDuration = Duration(milliseconds: 220);
+
+  int? _focusedRowIndex(FocusNode? node) {
+    if (node == null) return null;
+    for (final entry in _firstItemFocusNodes.entries) {
+      if (identical(entry.value, node)) return entry.key;
+    }
+    for (final entry in _itemFocusNodes.entries) {
+      if (identical(entry.value, node)) {
+        final colonIdx = entry.key.indexOf(':');
+        if (colonIdx > 0) {
+          return int.tryParse(entry.key.substring(0, colonIdx));
+        }
+      }
+    }
+    final label = node.debugLabel;
+    if (label != null) {
+      final match = RegExp(r'home_row_(\d+)_').firstMatch(label);
+      if (match != null) return int.tryParse(match.group(1)!);
+    }
+    return null;
+  }
+
+  void _onGlobalFocusChanged() {
+    if (!mounted) return;
+    final primary = FocusManager.instance.primaryFocus;
+    if (primary == null) return;
+    final onMediaBar = identical(primary, _mediaBarFocusNode);
+    if (onMediaBar && !_mediaBarVisible) {
+      setState(() => _mediaBarVisible = true);
+      return;
+    }
+    if (!onMediaBar && _mediaBarVisible && _focusedRowIndex(primary) != null) {
+      setState(() => _mediaBarVisible = false);
+    }
+  }
 
   @override
   void initState() {
@@ -352,9 +371,7 @@ class _ContentRowsState extends State<_ContentRows>
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addObserver(this);
     appRouter.routerDelegate.addListener(_onRouteChanged);
-    // Without media bar the info placeholder must start revealed so the layout
-    // is stable from the first frame and rows don't shift when the first card
-    // is focused.
+    FocusManager.instance.addListener(_onGlobalFocusChanged);
     if (!widget.prefs.get(UserPreferences.mediaBarEnabled)) {
       _infoRevealed = true;
     }
@@ -364,6 +381,7 @@ class _ContentRowsState extends State<_ContentRows>
   void dispose() {
     appRouter.routerDelegate.removeListener(_onRouteChanged);
     WidgetsBinding.instance.removeObserver(this);
+    FocusManager.instance.removeListener(_onGlobalFocusChanged);
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _mediaBarFocusNode.dispose();
@@ -710,6 +728,9 @@ class _ContentRowsState extends State<_ContentRows>
     if (_infoRevealed) {
       return;
     }
+    if (!widget.prefs.get(UserPreferences.homeRowInfoOverlay)) {
+      return;
+    }
 
     final now = DateTime.now();
     if (!ignoreScrollCooldown &&
@@ -739,16 +760,17 @@ class _ContentRowsState extends State<_ContentRows>
     _finishSharedPreview(releaseResources: true);
     _suppressNextRowPreviewFromMediaBar = true;
     _forceRevealOnNextRowFocusFromMediaBar = true;
-    final targetOffset = _mediaBarHeight();
-    if (_scrollController.hasClients && _scrollController.offset < targetOffset) {
-      await _scrollController.animateTo(
-        targetOffset,
-        duration: _focusHandoffDuration,
-        curve: _focusHandoffCurve,
-      );
+    if (mounted && _mediaBarVisible) {
+      setState(() => _mediaBarVisible = false);
     }
-
-    await _focusAdjacentRowFirstItem(widget.viewModel.rows, -1, 1);
+    if (_scrollController.hasClients) {
+      final target = _mediaBarHeight()
+          .clamp(0.0, _scrollController.position.maxScrollExtent);
+      if (_scrollController.offset < target) {
+        _scrollController.jumpTo(target);
+      }
+    }
+    await _focusAdjacentRowItem(widget.viewModel.rows, -1, 1, itemIndex: 0);
   }
 
   void _onHomeRowTileFocused(AggregatedItem? item) {
@@ -761,23 +783,89 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   Future<void> _moveFocusFromRowsToMediaBar() async {
-    _finishSharedPreview(releaseResources: true);
-    widget.onItemSelected(null);
-    if (mounted) setState(() => _infoRevealed = false);
-    if (!_isMediaBarIncluded()) return;
+    if (_verticalNavInFlight) {
+      return;
+    }
+    _verticalNavInFlight = true;
+    try {
+      _finishSharedPreview(releaseResources: true);
+      widget.onItemSelected(null);
+      if (mounted) {
+        setState(() {
+          _infoRevealed = false;
+          _mediaBarVisible = true;
+        });
+      }
+      if (!_isMediaBarIncluded()) {
+        _navigateFromMediaBarToNavbar();
+        return;
+      }
 
-    if (_scrollController.hasClients && _scrollController.offset > 0) {
-      await _scrollController.animateTo(
-        0,
-        duration: _focusHandoffDuration,
-        curve: _focusHandoffCurve,
+      if (_scrollController.hasClients && _scrollController.offset > 0) {
+        await _scrollController.animateTo(
+          0,
+          duration: _focusHandoffDuration,
+          curve: _focusHandoffCurve,
+        );
+      }
+
+      if (!mounted) return;
+
+      final navComplete = Completer<void>();
+      late final VoidCallback focusListener;
+      focusListener = () {
+        if (_mediaBarFocusNode.hasFocus && !navComplete.isCompleted) {
+          navComplete.complete();
+        }
+      };
+      _mediaBarFocusNode.addListener(focusListener);
+
+      _requestMediaBarFocus(force: true);
+
+      if (_mediaBarFocusNode.hasFocus && !navComplete.isCompleted) {
+        navComplete.complete();
+      }
+
+      await navComplete.future.timeout(
+        const Duration(milliseconds: 450),
+        onTimeout: () {},
       );
+      _mediaBarFocusNode.removeListener(focusListener);
+    } finally {
+      _verticalNavInFlight = false;
+    }
+  }
+
+  void _requestMediaBarFocus({int attempt = 0, bool force = false}) {
+    if (!mounted || (!force && _initialFocusResolved) || !_isMediaBarIncluded()) {
+      return;
     }
 
-    if (!mounted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
+      if (!mounted || !_isMediaBarIncluded()) return;
+
+      if (_mediaBarFocusNode.context == null) {
+        if (attempt < 8) {
+          Future<void>.delayed(const Duration(milliseconds: 50), () {
+            if (!mounted) return;
+            _requestMediaBarFocus(attempt: attempt + 1, force: force);
+          });
+        }
+        return;
+      }
+
       _mediaBarFocusNode.requestFocus();
+      if (_mediaBarFocusNode.hasFocus) {
+        _initialFocusResolved = true;
+        return;
+      }
+
+      if (attempt < 8) {
+        Future<void>.delayed(const Duration(milliseconds: 50), () {
+          if (!mounted) return;
+          _requestMediaBarFocus(attempt: attempt + 1, force: force);
+        });
+      }
     });
   }
 
@@ -826,8 +914,6 @@ class _ContentRowsState extends State<_ContentRows>
     final mediaBarState = widget.mediaBarViewModel.state;
     final firstRowIndex = rows.indexWhere(_rowHasFocusableItems);
 
-    // Wait until all rows before the first focusable row finish loading so we
-    // don't skip over e.g. a still-fetching Continue Watching row.
     if (firstRowIndex > 0 && rows.take(firstRowIndex).any((r) => r.isLoading)) {
       return;
     }
@@ -862,33 +948,42 @@ class _ContentRowsState extends State<_ContentRows>
       }
 
       final current = FocusManager.instance.primaryFocus;
-      if (_isManagedHomeFocus(current)) {
+      final shouldForceMediaBarFocus =
+          identical(targetNode, _mediaBarFocusNode) &&
+          !identical(current, _mediaBarFocusNode);
+      if (_isManagedHomeFocus(current) && !shouldForceMediaBarFocus) {
         _initialFocusResolved = true;
         return;
       }
 
-      // With media bar, jump scroll so the first row is visible below the
-      // pinned overlay. Without media bar the info area is a list item and
-      // scroll=0 already shows rows correctly.
-      if (_isMediaBarIncluded() &&
-          _scrollController.hasClients &&
-          firstRowIndex < _rowTopOffsets.length) {
-        final targetOffset = _rowTopOffsets[firstRowIndex]
-            .clamp(0.0, _scrollController.position.maxScrollExtent);
-        if ((_scrollController.offset - targetOffset).abs() > 10) {
-          _scrollController.jumpTo(targetOffset);
+      if (identical(targetNode, _mediaBarFocusNode)) {
+        if (_scrollController.hasClients && _scrollController.offset > 0) {
+          _scrollController.jumpTo(0);
         }
+        _requestMediaBarFocus();
+      } else if (targetNode != null) {
+        if (_isMediaBarIncluded() &&
+            _scrollController.hasClients &&
+            firstRowIndex >= 0 &&
+            firstRowIndex < _rowTopOffsets.length) {
+          final targetOffset = _rowTopOffsets[firstRowIndex]
+              .clamp(0.0, _scrollController.position.maxScrollExtent);
+          if ((_scrollController.offset - targetOffset).abs() > 10) {
+            _scrollController.jumpTo(targetOffset);
+          }
+        }
+        targetNode.requestFocus();
+        _initialFocusResolved = true;
       }
-      targetNode!.requestFocus();
-      _initialFocusResolved = true;
     });
   }
 
-  Future<void> _focusAdjacentRowFirstItem(
+  Future<void> _focusAdjacentRowItem(
     List<HomeRow> rows,
     int fromRowIndex,
-    int direction,
-  ) async {
+    int direction, {
+    int itemIndex = 0,
+  }) async {
     if (_verticalNavInFlight) return;
     _verticalNavInFlight = true;
     final maxRow = rows.length - 1;
@@ -898,34 +993,105 @@ class _ContentRowsState extends State<_ContentRows>
         final candidate = rows[target];
         final hasItems = _rowHasFocusableItems(candidate);
         if (hasItems) {
-          final node = _firstNodeForRow(target);
-          if (_scrollController.hasClients) {
-            double? targetScrollOffset;
-            if (target < _rowTopOffsets.length) {
-              targetScrollOffset = _rowTopOffsets[target]
-                  .clamp(0.0, _scrollController.position.maxScrollExtent);
-            }
-            if (targetScrollOffset != null &&
-                (_scrollController.offset - targetScrollOffset).abs() > 40) {
-              await _scrollController.animateTo(
-                targetScrollOffset,
-                duration: _focusHandoffDuration,
-                curve: _focusHandoffCurve,
-              );
-            }
-          }
-          if (!mounted) return;
+          final clamped = itemIndex.clamp(0, candidate.items.length - 1);
+          final node = _nodeForRowItem(target, clamped);
+          node.requestFocus();
+
+          final navComplete = Completer<void>();
+          final scrollTargetRow = target;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            node.requestFocus();
+            if (!mounted) {
+              if (!navComplete.isCompleted) navComplete.complete();
+              return;
+            }
+
+            final ctx = node.context;
+            if (ctx == null) {
+              if (!navComplete.isCompleted) navComplete.complete();
+              return;
+            }
+
+            final viewportHeight = _scrollController.hasClients
+                ? _scrollController.position.viewportDimension
+                : 768.0;
+            final overlayEnabled =
+                widget.prefs.get(UserPreferences.homeRowInfoOverlay);
+
+            // On TV with the overlay enabled, position the focused row's TOP
+            // just below the info overlay area. Use ensureVisible with an
+            // alignment computed from the focused card's actual size so the
+            // card lands at the same viewport y regardless of poster height.
+            if (PlatformDetection.isTV &&
+                overlayEnabled &&
+                _scrollController.hasClients) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted || !_scrollController.hasClients) {
+                  if (!navComplete.isCompleted) navComplete.complete();
+                  return;
+                }
+                final focusCtx = node.context;
+                if (focusCtx == null) {
+                  if (!navComplete.isCompleted) navComplete.complete();
+                  return;
+                }
+                final renderObj = focusCtx.findRenderObject();
+                if (renderObj is! RenderBox || !renderObj.hasSize) {
+                  if (!navComplete.isCompleted) navComplete.complete();
+                  return;
+                }
+                final cardHeight = renderObj.size.height;
+                final viewportDim =
+                    _scrollController.position.viewportDimension;
+                // Row title sits ~34px above the card; we want title top just
+                // below overlayBottom + 8.
+                final desiredCardTopInViewport = _overlayBottom + 8 + 34;
+                final denom = viewportDim - cardHeight;
+                final alignment = denom <= 0
+                    ? 0.0
+                    : (desiredCardTopInViewport / denom).clamp(0.0, 1.0);
+                Scrollable.ensureVisible(
+                  focusCtx,
+                  alignment: alignment,
+                  alignmentPolicy:
+                      ScrollPositionAlignmentPolicy.explicit,
+                  duration: _focusHandoffDuration,
+                  curve: _focusHandoffCurve,
+                ).whenComplete(() {
+                  if (!navComplete.isCompleted) navComplete.complete();
+                });
+              });
+              return;
+            }
+
+            final alignment = overlayEnabled
+                ? ((_overlayBottom + 120) / viewportHeight).clamp(0.05, 0.85)
+                : 0.12;
+
+            Scrollable.ensureVisible(
+              ctx,
+              alignment: alignment,
+              duration: _focusHandoffDuration,
+              curve: _focusHandoffCurve,
+            ).whenComplete(() {
+              if (!navComplete.isCompleted) navComplete.complete();
+            });
           });
+          await navComplete.future.timeout(
+            const Duration(milliseconds: 450),
+            onTimeout: () {},
+          );
           return;
         }
         target += direction;
       }
 
       if (direction < 0) {
-        await _moveFocusFromRowsToMediaBar();
+        if (_isMediaBarIncluded()) {
+          _verticalNavInFlight = false;
+          await _moveFocusFromRowsToMediaBar();
+        } else {
+          _navigateFromMediaBarToNavbar();
+        }
       }
     } finally {
       _verticalNavInFlight = false;
@@ -949,17 +1115,35 @@ class _ContentRowsState extends State<_ContentRows>
     required List<HomeRow> rows,
   }) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    if (event.logicalKey == LogicalKeyboardKey.arrowLeft && itemIndex == 0) {
+      final navbarIsLeft = widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
+      if (navbarIsLeft) {
+        final focusNavbar = NavigationLayout.focusNavbarNotifier.value;
+        if (focusNavbar != null) {
+          focusNavbar();
+          return KeyEventResult.handled;
+        }
+      }
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+        itemIndex >= rows[rowIndex].items.length - 1) {
+      return KeyEventResult.handled;
+    }
     if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
       if (!_allowVerticalNavNow()) return KeyEventResult.handled;
-      unawaited(_focusAdjacentRowFirstItem(rows, rowIndex, 1));
+      unawaited(_focusAdjacentRowItem(rows, rowIndex, 1, itemIndex: itemIndex));
       return KeyEventResult.handled;
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
       if (!_allowVerticalNavNow()) return KeyEventResult.handled;
       if (rowIndex == 0) {
-        unawaited(_moveFocusFromRowsToMediaBar());
+        if (_isMediaBarIncluded()) {
+          unawaited(_moveFocusFromRowsToMediaBar());
+        } else {
+          _navigateFromMediaBarToNavbar();
+        }
       } else {
-        unawaited(_focusAdjacentRowFirstItem(rows, rowIndex, -1));
+        unawaited(_focusAdjacentRowItem(rows, rowIndex, -1, itemIndex: itemIndex));
       }
       return KeyEventResult.handled;
     }
@@ -997,7 +1181,9 @@ class _ContentRowsState extends State<_ContentRows>
       }
     }
 
-    if (_infoRevealed && _isMediaBarIncluded()) {
+    if (_infoRevealed &&
+        _isMediaBarIncluded() &&
+        widget.prefs.get(UserPreferences.homeRowInfoOverlay)) {
       final collapseOffset = _pinnedInfoCollapseOffset();
       if (scrollingUp && offset < collapseOffset) {
         setState(() {
@@ -1028,12 +1214,13 @@ class _ContentRowsState extends State<_ContentRows>
     }
 
     final rowImageType = _homeRowImageTypeForRow(row, prefs);
+    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
     var maxCardHeight = 220.0;
     for (final item in row.items) {
       final aspectRatio = _aspectRatioForRowItem(item, row, rowImageType);
-      final imageHeight = aspectRatio > 1
+      final imageHeight = (aspectRatio > 1
           ? posterSize.landscapeHeight.toDouble()
-          : posterSize.portraitHeight.toDouble();
+          : posterSize.portraitHeight.toDouble()) * tvScale;
       final cardHeight = imageHeight + 46;
       if (cardHeight > maxCardHeight) {
         maxCardHeight = cardHeight;
@@ -1048,21 +1235,12 @@ class _ContentRowsState extends State<_ContentRows>
     required double rowExtent,
     required double overlayBottom,
   }) {
-    // Skip rows whose label (top ~48px) is still below the overlay.
-    const rowLabelHeight = 48.0;
-    if (rowViewportTop + rowLabelHeight > overlayBottom) {
-      return 0;
-    }
-
-    const triggerLead = 120.0;
-    final triggerTop = overlayBottom + triggerLead;
-    if (rowViewportTop >= triggerTop) {
-      return 0;
-    }
-
-    final progress = ((triggerTop - rowViewportTop) / 320.0)
-        .clamp(0.0, 1.0);
-    return Curves.easeInCubic.transform(progress) * (rowExtent + 480);
+    if (rowViewportTop >= overlayBottom + 20) return 0;
+    const transitionRange = 40.0;
+    final progress =
+        ((overlayBottom + 20 - rowViewportTop) / transitionRange).clamp(0.0, 1.0);
+    final fullShift = (rowViewportTop + rowExtent + 10).clamp(0.0, double.infinity);
+    return Curves.easeIn.transform(progress) * fullShift * 1.5;
   }
 
   Widget _buildShiftedRow({
@@ -1077,7 +1255,45 @@ class _ContentRowsState extends State<_ContentRows>
       return child;
     }
 
+    if (PlatformDetection.isTV) {
+      final focusedRowIndex = _focusedRowIndex(FocusManager.instance.primaryFocus);
+      final rowViewportTop = rowTopOffsets[rowIndex] - _scrollOffset;
+      final rowBottom = rowViewportTop + rowExtents[rowIndex];
+      if (focusedRowIndex != null &&
+          rowIndex < focusedRowIndex &&
+          rowViewportTop < overlayBottom) {
+        return IgnorePointer(
+          child: Opacity(opacity: 0, child: child),
+        );
+      }
+      if (rowBottom < overlayBottom - 80) {
+        return IgnorePointer(
+          child: Opacity(opacity: 0, child: child),
+        );
+      }
+      return child;
+    }
+
+    final focusedRowIndex = _focusedRowIndex(FocusManager.instance.primaryFocus);
+    if (focusedRowIndex != null && rowIndex >= focusedRowIndex) {
+      return child;
+    }
+
     final rowViewportTop = rowTopOffsets[rowIndex] - _scrollOffset;
+    final rowViewportBottom = rowViewportTop + rowExtents[rowIndex];
+
+    if (rowViewportBottom <= overlayBottom + 8) {
+      return IgnorePointer(
+        child: Opacity(opacity: 0, child: child),
+      );
+    }
+
+    if (focusedRowIndex != null &&
+        focusedRowIndex < rowTopOffsets.length &&
+        (rowTopOffsets[focusedRowIndex] - _scrollOffset) >= overlayBottom + 20) {
+      return child;
+    }
+
     final shift = _overlayRowShift(
       rowViewportTop: rowViewportTop,
       rowExtent: rowExtents[rowIndex],
@@ -1087,10 +1303,18 @@ class _ContentRowsState extends State<_ContentRows>
       return child;
     }
 
+    const transitionRange = 40.0;
+    final progress =
+        ((overlayBottom + 20 - rowViewportTop) / transitionRange).clamp(0.0, 1.0);
+    final opacity = (1.0 - (progress * 1.4)).clamp(0.0, 1.0);
+
     return ClipRect(
       child: Transform.translate(
         offset: Offset(0, -shift),
-        child: child,
+        child: Opacity(
+          opacity: opacity,
+          child: child,
+        ),
       ),
     );
   }
@@ -1141,6 +1365,7 @@ class _ContentRowsState extends State<_ContentRows>
     final safeTop = MediaQuery.of(context).padding.top;
     final listTopPadding = includeMediaBar ? 0.0 : safeTop + 56;
     final navbarIsTop = widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top;
+    final navbarIsLeft = !navbarIsTop;
     final navbarHeight = navbarIsTop
         ? (PlatformDetection.isTV
             ? 95.0
@@ -1149,6 +1374,7 @@ class _ContentRowsState extends State<_ContentRows>
                 : 80.0)
         : 48.0;
     final navbarLeftInset = navbarIsTop ? 16.0 : 56.0;
+    final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
     final infoTopPadding = safeTop + navbarHeight + 8;
     final infoAreaHeight = InfoArea.fixedHeight(isMobile: PlatformDetection.useMobileUi);
     final infoBottomPadding = includeMediaBar ? 20.0 : 8.0;
@@ -1170,18 +1396,17 @@ class _ContentRowsState extends State<_ContentRows>
     }
 
     _rowTopOffsets = rowTopOffsets;
-    final pinThreshold = includeMediaBar ? mediaBarHeight : 0.0;
-    final pinStart = (pinThreshold - (_pinTransitionDistance / 2)).clamp(0.0, double.infinity);
-    final pinProgress = ((
-      _scrollOffset - pinStart
-    ) / _pinTransitionDistance).clamp(0.0, 1.0);
-    final transitionT = Curves.easeInOut.transform(pinProgress);
-    final listOpacity = 1.0 - transitionT;
-    final pinnedInfoOpacity = transitionT;
-    final pinnedPanelOpacity = Curves.easeOutCubic.transform(
-      (pinProgress * 1.6).clamp(0.0, 1.0),
-    );
+    _overlayBottom = overlayBottom;
     final headerCount = (includeMediaBar ? 1 : 0) + 1;
+
+    // Ensure the last row can be scrolled so its top sits just below the info
+    // overlay; otherwise scroll targets clamp to maxScrollExtent and rows drift
+    // higher in the viewport as the user navigates downward.
+    final viewportHeight = MediaQuery.of(context).size.height;
+    final lastRowExtent = rowExtents.isEmpty ? 0.0 : rowExtents.last;
+    final neededBottomPadding =
+        (viewportHeight - (overlayBottom + 8) - lastRowExtent)
+            .clamp(32.0, double.infinity);
 
     _ensureInitialHomeFocus(rows);
 
@@ -1223,35 +1448,34 @@ class _ContentRowsState extends State<_ContentRows>
               controller: _scrollController,
               padding: EdgeInsets.only(
                 top: listTopPadding,
-                bottom: 32,
+                bottom: neededBottomPadding,
               ),
               itemCount: rows.length + headerCount,
+              cacheExtent: mediaBarHeight + 1500,
               itemBuilder: (context, index) {
               if (includeMediaBar && index == 0) {
-                return MediaBar(
-                  viewModel: widget.mediaBarViewModel,
-                  prefs: prefs,
-                  externallyPaused: carouselPaused,
-                  height: mediaBarHeight,
-                  onNavigateDown: _moveFocusFromMediaBarToRows,
-                  onNavigateUp: _navigateFromMediaBarToNavbar,
-                  focusNode: _mediaBarFocusNode,
+                return AnimatedOpacity(
+                  duration: _mediaBarFadeDuration,
+                  curve: Curves.easeInOutCubic,
+                  opacity: _mediaBarVisible ? 1.0 : 0.0,
+                  child: IgnorePointer(
+                    ignoring: !_mediaBarVisible,
+                    child: MediaBar(
+                      viewModel: widget.mediaBarViewModel,
+                      prefs: prefs,
+                      externallyPaused: carouselPaused || !_mediaBarVisible,
+                      height: mediaBarHeight,
+                      onNavigateDown: _moveFocusFromMediaBarToRows,
+                      onNavigateUp: _navigateFromMediaBarToNavbar,
+                      onNavigateLeft: navbarIsLeft ? _navigateFromMediaBarToNavbar : null,
+                      focusNode: _mediaBarFocusNode,
+                    ),
+                  ),
                 );
               }
               final infoIndex = includeMediaBar ? 1 : 0;
               if (index == infoIndex) {
-                if (!_infoRevealed || !showInfoOverlay) {
-                  return SizedBox(height: navbarIsTop ? infoTopPadding : infoBottomPadding);
-                }
-                return IgnorePointer(
-                  child: Opacity(
-                    opacity: listOpacity,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(navbarLeftInset, infoTopPadding, 16, infoBottomPadding),
-                      child: InfoArea(item: widget.selectedItem),
-                    ),
-                  ),
-                );
+                return SizedBox(height: infoPlaceholderHeight);
               }
               final row = rows[index - headerCount];
               final rowIndex = index - headerCount;
@@ -1262,13 +1486,16 @@ class _ContentRowsState extends State<_ContentRows>
                   title: _localizedRowTitle(row, l10n),
                   children: const [],
                 );
-                return _buildShiftedRow(
-                  child: rowChild,
-                  rowIndex: rowIndex,
-                  rowTopOffsets: rowTopOffsets,
-                  rowExtents: rowExtents,
-                  showInfoOverlay: showInfoOverlay,
-                  overlayBottom: overlayBottom,
+                return Padding(
+                  padding: EdgeInsets.only(left: rowLeftInset),
+                  child: _buildShiftedRow(
+                    child: rowChild,
+                    rowIndex: rowIndex,
+                    rowTopOffsets: rowTopOffsets,
+                    rowExtents: rowExtents,
+                    showInfoOverlay: showInfoOverlay,
+                    overlayBottom: overlayBottom,
+                  ),
                 );
               } else if (row.rowType == HomeRowType.liveTv) {
                 rowChild = _buildLiveTvRow(
@@ -1289,13 +1516,14 @@ class _ContentRowsState extends State<_ContentRows>
               } else {
                 double maxCardHeight = 0;
                 final rowImageType = _homeRowImageTypeForRow(row, prefs);
+                final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
                 final cards = row.items.indexed.map((entry) {
                   final itemIndex = entry.$1;
                   final item = entry.$2;
                   final ar = _aspectRatioForRowItem(item, row, rowImageType);
-                  final height = ar > 1
+                  final height = (ar > 1
                       ? posterSize.landscapeHeight.toDouble()
-                      : posterSize.portraitHeight.toDouble();
+                      : posterSize.portraitHeight.toDouble()) * tvScale;
                   final cardHeight = height + 46;
                   if (cardHeight > maxCardHeight) maxCardHeight = cardHeight;
                   final width = height * ar;
@@ -1346,6 +1574,9 @@ class _ContentRowsState extends State<_ContentRows>
                       } else {
                         _finishSharedPreview();
                       }
+                    },
+                    onFocusLost: () {
+                      _stopPreviewFor(item);
                     },
                     onHoverStart: () {
                       unawaited(_revealAndScrollToPinnedInfo());
@@ -1398,38 +1629,35 @@ class _ContentRowsState extends State<_ContentRows>
                   children: cards,
                 );
               }
-              return _buildShiftedRow(
-                child: rowChild,
-                rowIndex: rowIndex,
-                rowTopOffsets: rowTopOffsets,
-                rowExtents: rowExtents,
-                showInfoOverlay: showInfoOverlay,
-                overlayBottom: overlayBottom,
+              return Padding(
+                padding: EdgeInsets.only(left: rowLeftInset),
+                child: _buildShiftedRow(
+                  child: rowChild,
+                  rowIndex: rowIndex,
+                  rowTopOffsets: rowTopOffsets,
+                  rowExtents: rowExtents,
+                  showInfoOverlay: showInfoOverlay,
+                  overlayBottom: overlayBottom,
+                ),
               );
               },
             ),
           ),
         ),
-        if (includeMediaBar && _infoRevealed && pinnedPanelOpacity > 0 && showInfoOverlay)
+        if (_infoRevealed && showInfoOverlay)
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: IgnorePointer(
-              child: Opacity(
-                opacity: pinnedPanelOpacity,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    navbarLeftInset,
-                    infoTopPadding,
-                    16,
-                    8,
-                  ),
-                  child: Opacity(
-                    opacity: pinnedInfoOpacity,
-                    child: InfoArea(item: widget.selectedItem),
-                  ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  navbarLeftInset,
+                  infoTopPadding,
+                  16,
+                  8,
                 ),
+                child: InfoArea(item: widget.selectedItem),
               ),
             ),
           ),
@@ -1950,3 +2178,5 @@ class _PreviewCardShell extends StatelessWidget {
     );
   }
 }
+
+

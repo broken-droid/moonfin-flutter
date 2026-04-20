@@ -6,6 +6,7 @@ import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../preference/user_preferences.dart';
+import 'settings_app_bar.dart';
 
 class HomeRowsImageTypeScreen extends StatefulWidget {
   const HomeRowsImageTypeScreen({super.key});
@@ -83,7 +84,7 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
       ..sort((a, b) => a.order.compareTo(b.order));
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.perRowImageType)),
+      appBar: buildSettingsAppBar(context, Text(l10n.perRowImageType)),
       body: ListView(
         children: [
           ListTile(

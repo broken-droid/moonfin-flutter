@@ -5,6 +5,7 @@ import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/settings/preference_tiles.dart';
+import 'settings_app_bar.dart';
 
 class AuthSettingsScreen extends StatelessWidget {
   const AuthSettingsScreen({super.key});
@@ -13,7 +14,7 @@ class AuthSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.authentication)),
+      appBar: buildSettingsAppBar(context, Text(l10n.authentication)),
       body: ListView(
         children: [
           EnumPreferenceTile<UserSelectBehavior>(

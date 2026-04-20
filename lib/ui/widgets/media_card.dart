@@ -13,6 +13,7 @@ class MediaCard extends StatefulWidget {
   final double aspectRatio;
   final VoidCallback? onTap;
   final VoidCallback? onFocus;
+  final VoidCallback? onFocusLost;
   final VoidCallback? onHoverStart;
   final VoidCallback? onHoverEnd;
   final VoidCallback? onLongPress;
@@ -38,6 +39,7 @@ class MediaCard extends StatefulWidget {
     this.aspectRatio = 2 / 3,
     this.onTap,
     this.onFocus,
+    this.onFocusLost,
     this.onHoverStart,
     this.onHoverEnd,
     this.onLongPress,
@@ -119,7 +121,9 @@ class MediaCard extends StatefulWidget {
 class _MediaCardState extends State<MediaCard> with FocusStateMixin {
   @override
   Widget build(BuildContext context) {
-    final showMarquee = showFocusBorder;
+    final hasNodeFocus = widget.focusNode?.hasFocus ?? false;
+    final effectiveFocused = focused || hasNodeFocus;
+    final showMarquee = hovered || effectiveFocused;
     return SizedBox(
       width: widget.width,
       child: MouseRegion(
@@ -145,7 +149,11 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
           },
           onFocusChange: (hasFocus) {
             setFocused(hasFocus);
-            if (hasFocus) widget.onFocus?.call();
+            if (hasFocus) {
+              widget.onFocus?.call();
+            } else {
+              widget.onFocusLost?.call();
+            }
           },
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
@@ -166,7 +174,7 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
                     unplayedCount: widget.unplayedCount,
                     playedPercentage: widget.playedPercentage,
                     watchedBehavior: widget.watchedBehavior,
-                    focused: focused,
+                    focused: effectiveFocused,
                     hovered: hovered,
                     focusColor: widget.focusColor,
                     isCircular: widget.itemType == 'Person',

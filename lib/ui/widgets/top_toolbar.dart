@@ -21,6 +21,8 @@ import '../navigation/destinations.dart';
 import '../navigation/home_refresh_bus.dart';
 import 'expandable_icon_button.dart';
 import 'navigation_layout.dart';
+import 'settings/settings_panel.dart';
+import '../screens/settings/settings_side_panel.dart';
 import 'seerr_icons.dart';
 import 'shuffle_options_dialog.dart';
 import 'user_menu_dialog.dart';
@@ -36,6 +38,7 @@ const _kAvatarSize = 40.0;
 const _kPillRadius = 36.0;
 const _kButtonSpacing = 12.0;
 const _kButtonSpacingMobile = 8.0;
+const _kButtonSpacingTV = 4.0;
 
 class TopToolbar extends StatefulWidget {
   final String? activeRoute;
@@ -53,7 +56,10 @@ class _TopToolbarState extends State<TopToolbar> {
 
   final _avatarFocus = FocusNode();
   final _homeFocus = FocusNode(debugLabel: 'TopToolbarHome');
+  final _settingsFocus = FocusNode(debugLabel: 'TopToolbarSettings');
+  final _toolbarScopeNode = FocusNode(debugLabel: 'TopToolbarScope', canRequestFocus: false, skipTraversal: true);
   late final VoidCallback _focusNavbarCallback;
+  FocusNode? _previousFocus;
   List<AggregatedLibrary> _libraries = [];
   Timer? _clockTimer;
   String _currentTime = '';
@@ -65,8 +71,12 @@ class _TopToolbarState extends State<TopToolbar> {
     super.initState();
     _focusNavbarCallback = () => _homeFocus.requestFocus();
     NavigationLayout.focusNavbarNotifier.value = _focusNavbarCallback;
+    FocusManager.instance.addListener(_trackPreviousFocus);
     _updateClock();
-    _clockTimer = Timer.periodic(const Duration(seconds: 30), (_) => _updateClock());
+    _clockTimer = Timer.periodic(
+      const Duration(seconds: 30),
+      (_) => _updateClock(),
+    );
     _loadUserImage();
     _userSub = _userRepo.currentUserStream.listen((_) => _loadUserImage());
     _prefs.addListener(_onPrefsChanged);
@@ -75,12 +85,18 @@ class _TopToolbarState extends State<TopToolbar> {
 
   @override
   void dispose() {
-    if (identical(NavigationLayout.focusNavbarNotifier.value, _focusNavbarCallback)) {
+    if (identical(
+      NavigationLayout.focusNavbarNotifier.value,
+      _focusNavbarCallback,
+    )) {
       NavigationLayout.focusNavbarNotifier.value = null;
     }
     _clockTimer?.cancel();
+    FocusManager.instance.removeListener(_trackPreviousFocus);
+    _toolbarScopeNode.dispose();
     _avatarFocus.dispose();
     _homeFocus.dispose();
+    _settingsFocus.dispose();
     _userSub?.cancel();
     _prefs.removeListener(_onPrefsChanged);
     super.dispose();
@@ -127,7 +143,9 @@ class _TopToolbarState extends State<TopToolbar> {
       final hour = now.hour.toString().padLeft(2, '0');
       if (mounted) setState(() => _currentTime = '$hour:$minute');
     } else {
-      final hour = now.hour > 12 ? now.hour - 12 : (now.hour == 0 ? 12 : now.hour);
+      final hour = now.hour > 12
+          ? now.hour - 12
+          : (now.hour == 0 ? 12 : now.hour);
       final period = now.hour >= 12 ? 'PM' : 'AM';
       if (mounted) setState(() => _currentTime = '$hour:$minute $period');
     }
@@ -150,10 +168,38 @@ class _TopToolbarState extends State<TopToolbar> {
   Future<void> _loadLibraries() async {
     try {
       final libs = _prefs.get(UserPreferences.enableMultiServerLibraries)
-          ? await GetIt.instance<MultiServerRepository>().getAggregatedLibraries()
+          ? await GetIt.instance<MultiServerRepository>()
+                .getAggregatedLibraries()
           : await GetIt.instance<UserViewsRepository>().getUserViews();
       if (mounted) setState(() => _libraries = libs);
     } catch (_) {}
+  }
+
+  void _trackPreviousFocus() {
+    final primary = FocusManager.instance.primaryFocus;
+    if (primary == null) return;
+    if (_isInsideToolbar(primary)) return;
+    _previousFocus = primary;
+  }
+
+  bool _isInsideToolbar(FocusNode node) {
+    FocusNode? current = node;
+    while (current != null) {
+      if (identical(current, _toolbarScopeNode)) return true;
+      current = current.parent;
+    }
+    return false;
+  }
+
+  void _restoreFocusBelowToolbar() {
+    final previous = _previousFocus;
+    if (previous != null &&
+        previous.canRequestFocus &&
+        previous.context != null) {
+      previous.requestFocus();
+      return;
+    }
+    if (mounted) FocusScope.of(context).nextFocus();
   }
 
   bool _isActive(String route) => widget.activeRoute == route;
@@ -164,13 +210,21 @@ class _TopToolbarState extends State<TopToolbar> {
     final isMobile = PlatformDetection.useMobileUi;
     final size = MediaQuery.sizeOf(context);
     final isLandscape = size.width > size.height;
-    final hPad = isTV ? _kOverscanH : isMobile ? 12.0 : 32.0;
-    final vPad = isTV ? _kOverscanV : isMobile ? 8.0 : 10.0;
+    final hPad = isTV
+        ? _kOverscanH
+        : isMobile
+        ? 12.0
+        : 32.0;
+    final vPad = isTV
+        ? _kOverscanV
+        : isMobile
+        ? 8.0
+        : 10.0;
     final toolbarHeight = isTV
         ? _kToolbarHeightTV
         : isMobile
-            ? _kToolbarHeightMobile
-            : _kToolbarHeightDesktop;
+        ? _kToolbarHeightMobile
+        : _kToolbarHeightDesktop;
 
     return SafeArea(
       bottom: false,
@@ -178,7 +232,17 @@ class _TopToolbarState extends State<TopToolbar> {
         height: toolbarHeight,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
-          child: FocusTraversalGroup(
+          child: Focus(
+            focusNode: _toolbarScopeNode,
+            onKeyEvent: (_, event) {
+              if (event is KeyDownEvent &&
+                  event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                _restoreFocusBelowToolbar();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: FocusTraversalGroup(
             policy: OrderedTraversalPolicy(),
             child: isLandscape
                 ? Stack(
@@ -213,6 +277,7 @@ class _TopToolbarState extends State<TopToolbar> {
                       ],
                     ],
                   ),
+          ),
           ),
         ),
       ),
@@ -260,10 +325,15 @@ class _TopToolbarState extends State<TopToolbar> {
     return Focus(
       focusNode: _avatarFocus,
       onKeyEvent: (node, event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
+        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event.logicalKey == LogicalKeyboardKey.select ||
+            event.logicalKey == LogicalKeyboardKey.enter) {
           _showUserMenu();
+          return KeyEventResult.handled;
+        }
+        if (PlatformDetection.isTV &&
+            event.logicalKey == LogicalKeyboardKey.arrowRight) {
+          _homeFocus.requestFocus();
           return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
@@ -278,8 +348,11 @@ class _TopToolbarState extends State<TopToolbar> {
             height: avatarSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: _avatarFocus.hasFocus
+              border: (_avatarFocus.hasFocus && !PlatformDetection.isTV)
                   ? Border.all(color: _kAccent, width: 2)
+                  : null,
+              color: (_avatarFocus.hasFocus && PlatformDetection.isTV)
+                  ? Colors.white
                   : null,
             ),
             child: ClipOval(
@@ -301,7 +374,9 @@ class _TopToolbarState extends State<TopToolbar> {
 
   Widget _avatarFallback() {
     final user = _userRepo.currentUser;
-    final initial = (user?.name.isNotEmpty == true) ? user!.name[0].toUpperCase() : '?';
+    final initial = (user?.name.isNotEmpty == true)
+        ? user!.name[0].toUpperCase()
+        : '?';
     final isMobile = PlatformDetection.useMobileUi;
     return Container(
       decoration: const BoxDecoration(
@@ -337,24 +412,36 @@ class _TopToolbarState extends State<TopToolbar> {
     int order = 1;
 
     return Center(
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: _toolbarSurfaceColor(),
-          borderRadius: BorderRadius.circular(_kPillRadius),
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(_kPillRadius),
+        child: Container(
+          padding: EdgeInsets.zero,
+          decoration: BoxDecoration(
+            color: _toolbarSurfaceColor(),
+            borderRadius: BorderRadius.circular(_kPillRadius),
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
               _orderButton(
                 order: (order++).toDouble(),
                 child: ExpandableIconButton(
                   icon: Icons.home_rounded,
                   label: l10n.home,
                   focusNode: _homeFocus,
-                  isActive: _isActive(Destinations.home),
+                  isActive: false,
+                  onKeyEvent: (node, event) {
+                    if (event is KeyDownEvent &&
+                        PlatformDetection.isTV &&
+                        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+                      _avatarFocus.requestFocus();
+                      return KeyEventResult.handled;
+                    }
+                    return KeyEventResult.ignored;
+                  },
                   onPressed: () {
                     if (_isActive(Destinations.home)) {
                       requestHomeRefresh();
@@ -446,21 +533,24 @@ class _TopToolbarState extends State<TopToolbar> {
                 _gap(),
                 _orderButton(
                   order: (order++).toDouble(),
-                  child: Builder(builder: (context) {
-                    final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                    final isSeerr = seerrPrefs.isSeerrVariant;
-                    final label = seerrPrefs.moonfinDisplayName.isNotEmpty
-                        ? seerrPrefs.moonfinDisplayName
-                        : (isSeerr ? l10n.seerr : l10n.jellyseerr);
-                    return ExpandableIconButton(
-                      iconBuilder: (size, color) => isSeerr
-                          ? SeerrIcon(size: size, color: color)
-                          : JellyseerrIcon(size: size, color: color),
-                      label: label,
-                      isActive: _isActive(Destinations.seerrDiscover),
-                      onPressed: () => context.push(Destinations.seerrDiscover),
-                    );
-                  }),
+                  child: Builder(
+                    builder: (context) {
+                      final seerrPrefs = GetIt.instance<SeerrPreferences>();
+                      final isSeerr = seerrPrefs.isSeerrVariant;
+                      final label = seerrPrefs.moonfinDisplayName.isNotEmpty
+                          ? seerrPrefs.moonfinDisplayName
+                          : (isSeerr ? l10n.seerr : l10n.jellyseerr);
+                      return ExpandableIconButton(
+                        iconBuilder: (size, color) => isSeerr
+                            ? SeerrIcon(size: size, color: color)
+                            : JellyseerrIcon(size: size, color: color),
+                        label: label,
+                        isActive: _isActive(Destinations.seerrDiscover),
+                        onPressed: () =>
+                            context.push(Destinations.seerrDiscover),
+                      );
+                    },
+                  ),
                 ),
               ],
               if (showLibraries && _libraries.isNotEmpty) ...[
@@ -476,12 +566,20 @@ class _TopToolbarState extends State<TopToolbar> {
                 child: ExpandableIconButton(
                   icon: Icons.settings_rounded,
                   label: l10n.settings,
+                  focusNode: _settingsFocus,
                   isActive: _isActive(Destinations.settings),
-                  onPressed: () => context.push(Destinations.settings),
+                  onPressed: () async {
+                    await SettingsPanel.open(
+                      context,
+                      const SettingsSidePanel(),
+                    );
+                    if (mounted) _settingsFocus.requestFocus();
+                  },
                 ),
               ),
             ],
           ),
+        ),
         ),
       ),
     );
@@ -511,7 +609,8 @@ class _TopToolbarState extends State<TopToolbar> {
 
   Widget _buildEnd() {
     final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
-    final showClock = clockBehavior == ClockBehavior.always ||
+    final showClock =
+        clockBehavior == ClockBehavior.always ||
         clockBehavior == ClockBehavior.inMenus;
 
     if (!showClock) return const SizedBox.shrink();
@@ -527,14 +626,15 @@ class _TopToolbarState extends State<TopToolbar> {
   }
 
   Widget _gap() => SizedBox(
-    width: PlatformDetection.useMobileUi ? _kButtonSpacingMobile : _kButtonSpacing,
+    width: PlatformDetection.useLeanbackUi
+        ? _kButtonSpacingTV
+        : PlatformDetection.useMobileUi
+            ? _kButtonSpacingMobile
+            : _kButtonSpacing,
   );
 
   Widget _orderButton({required double order, required Widget child}) {
-    return FocusTraversalOrder(
-      order: NumericFocusOrder(order),
-      child: child,
-    );
+    return FocusTraversalOrder(order: NumericFocusOrder(order), child: child);
   }
 }
 
@@ -596,7 +696,9 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
   void _syncItemFocusNodes() {
     while (_itemFocusNodes.length < widget.libraries.length) {
       _itemFocusNodes.add(
-        FocusNode(debugLabel: 'TopToolbarLibraryItem_${_itemFocusNodes.length}'),
+        FocusNode(
+          debugLabel: 'TopToolbarLibraryItem_${_itemFocusNodes.length}',
+        ),
       );
     }
     while (_itemFocusNodes.length > widget.libraries.length) {
@@ -632,7 +734,8 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
     final screenWidth = MediaQuery.of(context).size.width;
     _menuWidth = (screenWidth - 16).clamp(180.0, 280.0);
 
-    final targetBox = _targetKey.currentContext?.findRenderObject() as RenderBox?;
+    final targetBox =
+        _targetKey.currentContext?.findRenderObject() as RenderBox?;
     if (targetBox != null) {
       final targetLeft = targetBox.localToGlobal(Offset.zero).dx;
       final wouldOverflowRight = targetLeft + _menuWidth > screenWidth - 8;
@@ -730,24 +833,30 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
                       children: widget.libraries.indexed
-                          .map((entry) => _LibraryDropdownItem(
-                                focusNode: _itemFocusNodes[entry.$1],
-                                isFirst: entry.$1 == 0,
-                                isLast: entry.$1 == widget.libraries.length - 1,
-                            name: entry.$2.name,
-                                onFocusChanged: (_) => _handleManagedFocusChange(),
-                                onMoveUpFromFirst: () => _hideDropdown(focusButton: true),
-                                onMoveDown: entry.$1 < widget.libraries.length - 1
-                                    ? () => _itemFocusNodes[entry.$1 + 1].requestFocus()
-                                    : null,
-                                onMoveUp: entry.$1 > 0
-                                    ? () => _itemFocusNodes[entry.$1 - 1].requestFocus()
-                                    : null,
-                                onTap: () {
-                                  _hideDropdown();
-                                  widget.onLibraryTap(entry.$2);
-                                },
-                              ))
+                          .map(
+                            (entry) => _LibraryDropdownItem(
+                              focusNode: _itemFocusNodes[entry.$1],
+                              isFirst: entry.$1 == 0,
+                              isLast: entry.$1 == widget.libraries.length - 1,
+                              name: entry.$2.name,
+                              onFocusChanged: (_) =>
+                                  _handleManagedFocusChange(),
+                              onMoveUpFromFirst: () =>
+                                  _hideDropdown(focusButton: true),
+                              onMoveDown: entry.$1 < widget.libraries.length - 1
+                                  ? () => _itemFocusNodes[entry.$1 + 1]
+                                        .requestFocus()
+                                  : null,
+                              onMoveUp: entry.$1 > 0
+                                  ? () => _itemFocusNodes[entry.$1 - 1]
+                                        .requestFocus()
+                                  : null,
+                              onTap: () {
+                                _hideDropdown();
+                                widget.onLibraryTap(entry.$2);
+                              },
+                            ),
+                          )
                           .toList(),
                     ),
                   ),
@@ -779,7 +888,8 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
           onFocusChanged: (_) => _handleManagedFocusChange(),
           onKeyEvent: (_, event) {
             if (event is! KeyDownEvent) return KeyEventResult.ignored;
-            if (event.logicalKey == LogicalKeyboardKey.arrowDown && _itemFocusNodes.isNotEmpty) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowDown &&
+                _itemFocusNodes.isNotEmpty) {
               _showDropdown(focusFirstItem: true);
               return KeyEventResult.handled;
             }
@@ -870,7 +980,8 @@ class _LibraryDropdownItemState extends State<_LibraryDropdownItem> {
             }
             return KeyEventResult.handled;
           }
-          if (event.logicalKey == LogicalKeyboardKey.arrowDown && !widget.isLast) {
+          if (event.logicalKey == LogicalKeyboardKey.arrowDown &&
+              !widget.isLast) {
             widget.onMoveDown?.call();
             return KeyEventResult.handled;
           }

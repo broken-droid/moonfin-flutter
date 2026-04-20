@@ -88,21 +88,33 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformDetection.useMobileUi;
-    final isTV = PlatformDetection.useLeanbackUi;
-    final btnSize = isMobile ? 40.0 : 48.0;
-    final iconSize = isMobile ? 22.0 : 28.0;
-    final borderRadius = btnSize / 2;
+    final isTV = PlatformDetection.isTV;
+    final btnSize = isMobile ? 40.0 : (isTV ? 64.0 : 56.0);
+    final iconSize = isMobile ? 22.0 : (isTV ? 34.0 : 30.0);
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
 
-    final bgColor = widget.isActive
-        ? focusColor.withValues(alpha: 0.22)
-        : (_isFocused || _isHovered)
-            ? focusColor.withValues(alpha: 0.12)
-            : Colors.transparent;
+    final tvFocused = _isFocused && isTV;
+    final leanbackFocused = _isFocused && !isMobile;
+    final isExpanded = _expanded || leanbackFocused;
 
-    final fgColor = (widget.isActive || _isFocused || _isHovered)
-        ? focusColor
-        : Colors.white.withValues(alpha: 0.6);
+    // Full-height pill: radius matches the outer pill container
+    final effectiveBorderRadius = !isMobile ? 36.0 : (btnSize / 2);
+
+    final bgColor = leanbackFocused
+        ? Colors.white
+        : widget.isActive
+            ? widget.activeColor.withValues(alpha: 0.22)
+            : (_isFocused || _isHovered)
+                ? focusColor.withValues(alpha: 0.18)
+                : Colors.transparent;
+
+    final fgColor = leanbackFocused
+        ? Colors.black
+        : widget.isActive
+            ? widget.activeColor
+            : (_isFocused || _isHovered)
+                ? focusColor
+                : Colors.white.withValues(alpha: 0.6);
 
     return MouseRegion(
       onEnter: (_) {
@@ -124,34 +136,34 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
           child: AnimatedContainer(
             duration: _kExpandDuration,
             curve: Curves.easeOut,
-            height: btnSize,
+            height: isMobile ? btnSize : null,
             constraints: BoxConstraints(
               minWidth: btnSize,
-              maxWidth: _expanded ? 200 : btnSize,
+              maxWidth: isExpanded ? 200 : btnSize,
             ),
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: isTV && _isFocused
-                  ? Border.all(color: widget.activeColor, width: 2)
+              borderRadius: BorderRadius.circular(effectiveBorderRadius),
+                border: (_isFocused && isMobile)
+                  ? Border.all(color: focusColor, width: 2)
                   : null,
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: _expanded ? 18 : 0,
+              horizontal: isExpanded ? (isMobile ? 18 : 24) : 0,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 widget.iconBuilder?.call(iconSize, fgColor) ?? Icon(widget.icon, size: iconSize, color: fgColor),
-                if (_expanded) ...[
+                if (isExpanded) ...[
                   const SizedBox(width: _kSpacing),
                   Flexible(
                     child: Text(
                       widget.label,
                       style: TextStyle(
                         color: fgColor,
-                        fontSize: isMobile ? 14 : 16,
+                        fontSize: isMobile ? 14 : (isTV ? 18 : 16),
                         fontWeight: FontWeight.w600,
                       ),
                       overflow: TextOverflow.ellipsis,

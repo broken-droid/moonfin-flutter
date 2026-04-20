@@ -94,26 +94,58 @@ class HomeViewModel extends ChangeNotifier {
         ? effectiveSections.where((s) => s != HomeSectionType.resume).toList()
         : effectiveSections;
 
-    final sectionTasks = nonResumeEffectiveSections.map((section) async {
-      try {
-        final sectionRows = await _loadSection(section);
-        return sectionRows;
-      } catch (_) {
-        return const <HomeRow>[];
-      }
-    }).toList();
+    // Load sections incrementally: replace placeholders as each completes
+    // so the UI shows rows as soon as they're ready.
+    final completers = <Future<void>>[];
+    for (final section in nonResumeEffectiveSections) {
+      completers.add(() async {
+        List<HomeRow> sectionRows;
+        try {
+          sectionRows = await _loadSection(section);
+        } catch (_) {
+          sectionRows = const <HomeRow>[];
+        }
+        final loadedRows = sectionRows
+            .where((r) => r.items.isNotEmpty || r.rowType == HomeRowType.liveTv)
+            .toList();
+        final placeholder = _placeholderForSection(section);
+        _rows = List.of(_rows);
+        if (placeholder != null) {
+          final idx = _rows.indexWhere((r) => r.id == placeholder.id);
+          if (loadedRows.isEmpty) {
+            if (idx >= 0) _rows.removeAt(idx);
+          } else if (loadedRows.length == 1) {
+            if (idx >= 0) {
+              _rows[idx] = loadedRows.first;
+            } else {
+              _rows.addAll(loadedRows);
+            }
+          } else {
+            // latestMedia returns multiple rows
+            if (idx >= 0) {
+              _rows.removeAt(idx);
+              _rows.insertAll(idx, loadedRows);
+            } else {
+              _rows.addAll(loadedRows);
+            }
+          }
+        } else if (loadedRows.isNotEmpty) {
+          _rows.addAll(loadedRows);
+        }
+        notifyListeners();
+      }());
+    }
 
-    final sectionResults = await Future.wait(sectionTasks);
-    final loaded = sectionResults.expand((rows) => rows).toList();
+    await Future.wait(completers);
 
-    _rows = loaded.where((r) => r.items.isNotEmpty || r.rowType == HomeRowType.liveTv).toList();
-    
     if (merge) {
       final resumePlaceholder = _placeholderForSection(HomeSectionType.resume);
       if (resumePlaceholder != null && !_rows.any((r) => r.id == 'resume')) {
+        _rows = List.of(_rows);
         _rows.insert(0, resumePlaceholder.copyWith(
           title: 'Continue Watching & Next Up',
         ));
+        notifyListeners();
       }
     }
     

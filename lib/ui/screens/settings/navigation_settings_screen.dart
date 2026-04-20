@@ -8,6 +8,7 @@ import '../../../preference/user_preferences.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class NavigationSettingsScreen extends StatefulWidget {
   const NavigationSettingsScreen({super.key});
@@ -34,7 +35,7 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.navigation)),
+      appBar: buildSettingsAppBar(context, Text(l10n.navigation)),
       body: ListView(
         children: [
           ListTile(

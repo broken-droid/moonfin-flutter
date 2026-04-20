@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
@@ -158,15 +159,32 @@ class SliderPreferenceTile extends StatefulWidget {
 
 class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
   late final PreferenceBinding<int> _binding;
+  late final FocusNode _sliderFocusNode;
 
   @override
   void initState() {
     super.initState();
     _binding = PreferenceBinding(GetIt.instance<PreferenceStore>(), widget.preference);
+    _sliderFocusNode = FocusNode(
+      debugLabel: 'SliderPrefTile',
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          node.previousFocus();
+          return KeyEventResult.skipRemainingHandlers;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+          node.nextFocus();
+          return KeyEventResult.skipRemainingHandlers;
+        }
+        return KeyEventResult.ignored;
+      },
+    );
   }
 
   @override
   void dispose() {
+    _sliderFocusNode.dispose();
     _binding.dispose();
     super.dispose();
   }
@@ -176,24 +194,25 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
     return ValueListenableBuilder<int>(
       valueListenable: _binding,
       builder: (context, value, _) => ListTile(
-        leading: widget.icon != null ? Icon(widget.icon) : null,
-        title: Text(widget.title),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.labelOf != null) Text(widget.labelOf!(value)),
-            Slider(
-              value: value.toDouble().clamp(widget.min, widget.max),
-              min: widget.min,
-              max: widget.max,
-              divisions: widget.divisions,
-              label: widget.labelOf?.call(value) ?? value.toString(),
-              onChanged: (v) => _binding.value = v.round(),
-              onChangeEnd: (_) => widget.onChangeEnd?.call(),
-            ),
-          ],
+          leading: widget.icon != null ? Icon(widget.icon) : null,
+          title: Text(widget.title),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.labelOf != null) Text(widget.labelOf!(value)),
+              Slider(
+                focusNode: _sliderFocusNode,
+                value: value.toDouble().clamp(widget.min, widget.max),
+                min: widget.min,
+                max: widget.max,
+                divisions: widget.divisions,
+                label: widget.labelOf?.call(value) ?? value.toString(),
+                onChanged: (v) => _binding.value = v.round(),
+                onChangeEnd: (_) => widget.onChangeEnd?.call(),
+              ),
+            ],
+          ),
         ),
-      ),
     );
   }
 }

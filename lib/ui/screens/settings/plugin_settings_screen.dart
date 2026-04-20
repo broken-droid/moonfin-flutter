@@ -6,6 +6,7 @@ import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class PluginSettingsScreen extends StatefulWidget {
   const PluginSettingsScreen({super.key});
@@ -64,7 +65,7 @@ class _PluginSettingsScreenState extends State<PluginSettingsScreen> {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.pluginLabel)),
+      appBar: buildSettingsAppBar(context, Text(l10n.pluginLabel)),
       body: ListView(
         children: [
           ListTile(

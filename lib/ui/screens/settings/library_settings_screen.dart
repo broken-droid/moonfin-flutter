@@ -8,6 +8,7 @@ import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class LibrarySettingsScreen extends StatefulWidget {
   const LibrarySettingsScreen({super.key});
@@ -76,7 +77,7 @@ class _LibrarySettingsScreenState extends State<LibrarySettingsScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.libraryDisplay)),
+      appBar: buildSettingsAppBar(context, Text(l10n.libraryDisplay)),
       body: ListView(
         children: [
           EnumPreferenceTile<PosterSize>(

@@ -5,6 +5,7 @@ import 'package:server_core/server_core.dart';
 
 import '../../widgets/settings/preference_binding.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class ParentalSettingsScreen extends StatefulWidget {
   const ParentalSettingsScreen({super.key});
@@ -136,7 +137,7 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
     final ratings = _effectiveRatings;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.parentalControls)),
+      appBar: buildSettingsAppBar(context, Text(l10n.parentalControls)),
       body: ListView(
         children: [
           Padding(

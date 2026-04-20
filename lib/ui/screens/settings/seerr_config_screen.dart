@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:server_core/server_core.dart';
 
@@ -8,8 +9,10 @@ import '../../../preference/preference_constants.dart';
 import '../../../preference/seerr_preferences.dart';
 import '../../../preference/seerr_row_config.dart';
 import '../../../preference/user_preferences.dart';
+import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class SeerrConfigScreen extends StatefulWidget {
   const SeerrConfigScreen({super.key});
@@ -24,6 +27,7 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
 
   String? _seerrUsername;
   late List<SeerrRowConfig> _rows;
+  final _focusNodes = <FocusNode>[];
 
   @override
   void initState() {
@@ -31,6 +35,7 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
     _syncService = GetIt.instance<PluginSyncService>();
     _seerrPrefs = GetIt.instance<SeerrPreferences>();
     _rows = List.of(_seerrPrefs.rowsConfig);
+    _rebuildFocusNodes();
     _syncService.addListener(_onSyncStateChanged);
     _loadSeerrUsername();
   }
@@ -38,6 +43,9 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
   @override
   void dispose() {
     _syncService.removeListener(_onSyncStateChanged);
+    for (final n in _focusNodes) {
+      n.dispose();
+    }
     super.dispose();
   }
 
@@ -45,6 +53,7 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
     if (!mounted) return;
     setState(() {
       _rows = List.of(_seerrPrefs.rowsConfig);
+      _rebuildFocusNodes();
     });
     _loadSeerrUsername();
   }
@@ -92,8 +101,36 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
   Future<void> _resetRows() async {
     setState(() {
       _rows = SeerrRowConfig.defaults();
+      _rebuildFocusNodes();
     });
     await _saveRows();
+  }
+
+  void _rebuildFocusNodes() {
+    for (final n in _focusNodes) {
+      n.dispose();
+    }
+    _focusNodes.clear();
+    for (var i = 0; i < _rows.length; i++) {
+      _focusNodes.add(FocusNode(debugLabel: 'seerr_row_$i'));
+    }
+  }
+
+  void _moveSeerrRow(int index, int direction) {
+    final newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= _rows.length) return;
+    setState(() {
+      final item = _rows.removeAt(index);
+      _rows.insert(newIndex, item);
+      final node = _focusNodes.removeAt(index);
+      _focusNodes.insert(newIndex, node);
+    });
+    _saveRows();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (newIndex < _focusNodes.length) {
+        _focusNodes[newIndex].requestFocus();
+      }
+    });
   }
 
   String _rowLabel(SeerrRowType type, AppLocalizations l10n) => switch (type) {
@@ -117,8 +154,9 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
         _syncService.pluginAvailable && _syncService.seerrEnabled;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.seerr),
+      appBar: buildSettingsAppBar(
+        context,
+        Text(l10n.seerr),
         actions: [
           IconButton(
             icon: const Icon(Icons.restore),
@@ -127,80 +165,153 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
           ),
         ],
       ),
-      body: ReorderableListView.builder(
-        buildDefaultDragHandles: false,
-        header: Column(
-          children: [
-            if (canEnableSeerr)
-              SwitchPreferenceTile(
-                preference: UserPreferences.seerrEnabled,
-                title: l10n.enableSeerr,
-                subtitle: l10n.showSeerrInNavigation,
-                icon: Icons.movie_filter,
-                onChanged: () => _pushSync(),
-              )
-            else
-              ListTile(
-                leading: const Icon(Icons.movie_filter_outlined),
-                title: Text(l10n.enableSeerr),
-                subtitle: Text(
-                  l10n.seerrUnavailable,
-                ),
-              ),
-            SwitchListTile(
-              secondary: const Icon(Icons.visibility_off),
-              title: Text(l10n.nsfwFilter),
-              subtitle: Text(l10n.hideAdultContent),
-              value: _seerrPrefs.blockNsfw,
-              onChanged: _setBlockNsfw,
-            ),
-            if (canEnableSeerr && _seerrUsername != null)
-              ListTile(
-                leading: const Icon(Icons.account_circle_outlined),
-                title: Text(l10n.loggedInAs(_seerrUsername!)),
-              ),
-            ListTile(
-              leading: const Icon(Icons.view_carousel_outlined),
-              title: Text(l10n.discoverRows),
-              subtitle: Text(
-                _syncService.pluginAvailable
-                    ? l10n.discoverRowsDescriptionPlugin
-                    : l10n.discoverRowsDescription,
-              ),
-            ),
-            const Divider(height: 1),
-          ],
-        ),
-        itemCount: _rows.length,
-        onReorder: (oldIndex, newIndex) {
-          setState(() {
-            if (newIndex > oldIndex) newIndex--;
-            final item = _rows.removeAt(oldIndex);
-            _rows.insert(newIndex, item);
-          });
-          _saveRows();
-        },
+      body: ListView.builder(
+        itemCount: _rows.length + 1,
         itemBuilder: (context, index) {
-          final row = _rows[index];
-          return ListTile(
+          if (index == 0) {
+            return Column(
+              children: [
+                if (canEnableSeerr)
+                  SwitchPreferenceTile(
+                    preference: UserPreferences.seerrEnabled,
+                    title: l10n.enableSeerr,
+                    subtitle: l10n.showSeerrInNavigation,
+                    icon: Icons.movie_filter,
+                    onChanged: () => _pushSync(),
+                  )
+                else
+                  ListTile(
+                    leading: const Icon(Icons.movie_filter_outlined),
+                    title: Text(l10n.enableSeerr),
+                    subtitle: Text(l10n.seerrUnavailable),
+                  ),
+                SwitchListTile(
+                  secondary: const Icon(Icons.visibility_off),
+                  title: Text(l10n.nsfwFilter),
+                  subtitle: Text(l10n.hideAdultContent),
+                  value: _seerrPrefs.blockNsfw,
+                  onChanged: _setBlockNsfw,
+                ),
+                if (canEnableSeerr && _seerrUsername != null)
+                  ListTile(
+                    leading: const Icon(Icons.account_circle_outlined),
+                    title: Text(l10n.loggedInAs(_seerrUsername!)),
+                  ),
+                ListTile(
+                  leading: const Icon(Icons.view_carousel_outlined),
+                  title: Text(l10n.discoverRows),
+                  subtitle: Text(
+                    _syncService.pluginAvailable
+                        ? l10n.discoverRowsDescriptionPlugin
+                        : l10n.discoverRowsDescription,
+                  ),
+                ),
+                const Divider(height: 1),
+              ],
+            );
+          }
+          final rowIndex = index - 1;
+          final row = _rows[rowIndex];
+          return _SeerrReorderableTile(
             key: ValueKey(row.type),
-            leading: Checkbox(
-              value: row.enabled,
-              onChanged: (enabled) {
-                setState(() {
-                  _rows[index] = row.copyWith(enabled: enabled ?? false);
-                });
-                _saveRows();
-              },
-            ),
-            title: Text(_rowLabel(row.type, l10n)),
-            subtitle: Text(row.enabled ? l10n.enabled : l10n.hidden),
-            trailing: ReorderableDragStartListener(
-              index: index,
-              child: const Icon(Icons.drag_handle),
-            ),
+            focusNode: _focusNodes[rowIndex],
+            label: _rowLabel(row.type, l10n),
+            enabled: row.enabled,
+            isFirst: rowIndex == 0,
+            isLast: rowIndex == _rows.length - 1,
+            onToggle: (enabled) {
+              setState(() {
+                _rows[rowIndex] = row.copyWith(enabled: enabled);
+              });
+              _saveRows();
+            },
+            onMoveUp: () => _moveSeerrRow(rowIndex, -1),
+            onMoveDown: () => _moveSeerrRow(rowIndex, 1),
           );
         },
+      ),
+    );
+  }
+}
+
+class _SeerrReorderableTile extends StatefulWidget {
+  final FocusNode focusNode;
+  final String label;
+  final bool enabled;
+  final bool isFirst;
+  final bool isLast;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onMoveUp;
+  final VoidCallback onMoveDown;
+
+  const _SeerrReorderableTile({
+    super.key,
+    required this.focusNode,
+    required this.label,
+    required this.enabled,
+    required this.isFirst,
+    required this.isLast,
+    required this.onToggle,
+    required this.onMoveUp,
+    required this.onMoveDown,
+  });
+
+  @override
+  State<_SeerrReorderableTile> createState() => _SeerrReorderableTileState();
+}
+
+class _SeerrReorderableTileState extends State<_SeerrReorderableTile> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bg = _focused
+        ? colorScheme.primary.withValues(alpha: 0.18)
+        : Colors.transparent;
+
+    return Focus(
+      focusNode: widget.focusNode,
+      onFocusChange: (f) => setState(() => _focused = f),
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event.logicalKey == LogicalKeyboardKey.arrowLeft && !widget.isFirst) {
+          widget.onMoveUp();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowRight && !widget.isLast) {
+          widget.onMoveDown();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.select ||
+            event.logicalKey == LogicalKeyboardKey.enter) {
+          widget.onToggle(!widget.enabled);
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 90),
+        color: bg,
+        child: ListTile(
+          leading: Icon(
+            widget.enabled ? Icons.check_box : Icons.check_box_outline_blank,
+            color: widget.enabled ? colorScheme.primary : null,
+          ),
+          title: Text(widget.label),
+          subtitle: Text(widget.enabled ? 'Enabled' : 'Hidden'),
+          trailing: PlatformDetection.isTV
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (!widget.isFirst)
+                      const Icon(Icons.arrow_left, size: 18),
+                    if (!widget.isLast)
+                      const Icon(Icons.arrow_right, size: 18),
+                  ],
+                )
+              : null,
+        ),
       ),
     );
   }

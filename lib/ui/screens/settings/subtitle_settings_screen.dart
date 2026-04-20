@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
@@ -6,6 +7,7 @@ import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_binding.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class SubtitleSettingsScreen extends StatefulWidget {
   const SubtitleSettingsScreen({super.key});
@@ -17,6 +19,8 @@ class SubtitleSettingsScreen extends StatefulWidget {
 class _SubtitleSettingsScreenState extends State<SubtitleSettingsScreen> {
   late final PreferenceBinding<double> _sizeBind;
   late final PreferenceBinding<double> _offsetBind;
+  late final FocusNode _sizeFocusNode;
+  late final FocusNode _offsetFocusNode;
 
   @override
   void initState() {
@@ -24,10 +28,33 @@ class _SubtitleSettingsScreenState extends State<SubtitleSettingsScreen> {
     final store = GetIt.instance<PreferenceStore>();
     _sizeBind = PreferenceBinding(store, UserPreferences.subtitlesTextSize);
     _offsetBind = PreferenceBinding(store, UserPreferences.subtitlesOffsetPosition);
+    _sizeFocusNode = FocusNode(
+      debugLabel: 'SubtitleSizeSlider',
+      onKeyEvent: _sliderNavKeyHandler,
+    );
+    _offsetFocusNode = FocusNode(
+      debugLabel: 'SubtitleOffsetSlider',
+      onKeyEvent: _sliderNavKeyHandler,
+    );
+  }
+
+  KeyEventResult _sliderNavKeyHandler(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      node.previousFocus();
+      return KeyEventResult.skipRemainingHandlers;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      node.nextFocus();
+      return KeyEventResult.skipRemainingHandlers;
+    }
+    return KeyEventResult.ignored;
   }
 
   @override
   void dispose() {
+    _sizeFocusNode.dispose();
+    _offsetFocusNode.dispose();
     _sizeBind.dispose();
     _offsetBind.dispose();
     super.dispose();
@@ -37,7 +64,7 @@ class _SubtitleSettingsScreenState extends State<SubtitleSettingsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.subtitles)),
+      appBar: buildSettingsAppBar(context, Text(l10n.subtitles)),
       body: ListView(
         children: [
           Padding(
@@ -88,6 +115,7 @@ class _SubtitleSettingsScreenState extends State<SubtitleSettingsScreen> {
               leading: const Icon(Icons.format_size),
               title: Text(l10n.subtitleSize),
               subtitle: Slider(
+                focusNode: _sizeFocusNode,
                 value: value.clamp(12.0, 48.0),
                 min: 12,
                 max: 48,
@@ -118,6 +146,7 @@ class _SubtitleSettingsScreenState extends State<SubtitleSettingsScreen> {
               leading: const Icon(Icons.vertical_align_bottom),
               title: Text(l10n.verticalOffset),
               subtitle: Slider(
+                focusNode: _offsetFocusNode,
                 value: value.clamp(0.0, 0.5),
                 min: 0.0,
                 max: 0.5,

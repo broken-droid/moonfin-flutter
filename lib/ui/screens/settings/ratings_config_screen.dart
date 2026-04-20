@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/user_preferences.dart';
+import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 const _allSources = [
   'tomatoes',
@@ -56,6 +59,7 @@ class _RatingsConfigScreenState extends State<RatingsConfigScreen> {
   final _prefs = GetIt.instance<UserPreferences>();
   String _lastEnabledRatingsCsv = '';
   late List<_RatingItem> _items;
+  final _focusNodes = <FocusNode>[];
 
   @override
   void initState() {
@@ -67,6 +71,9 @@ class _RatingsConfigScreenState extends State<RatingsConfigScreen> {
   @override
   void dispose() {
     _prefs.removeListener(_onPrefsChanged);
+    for (final n in _focusNodes) {
+      n.dispose();
+    }
     super.dispose();
   }
 
@@ -98,6 +105,34 @@ class _RatingsConfigScreenState extends State<RatingsConfigScreen> {
       }
     }
     _items = items;
+    _rebuildFocusNodes();
+  }
+
+  void _rebuildFocusNodes() {
+    for (final n in _focusNodes) {
+      n.dispose();
+    }
+    _focusNodes.clear();
+    for (var i = 0; i < _items.length; i++) {
+      _focusNodes.add(FocusNode(debugLabel: 'rating_$i'));
+    }
+  }
+
+  void _moveItem(int index, int direction) {
+    final newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= _items.length) return;
+    setState(() {
+      final item = _items.removeAt(index);
+      _items.insert(newIndex, item);
+      final node = _focusNodes.removeAt(index);
+      _focusNodes.insert(newIndex, node);
+    });
+    _save();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (newIndex < _focusNodes.length) {
+        _focusNodes[newIndex].requestFocus();
+      }
+    });
   }
 
   void _save() {
@@ -118,8 +153,9 @@ class _RatingsConfigScreenState extends State<RatingsConfigScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.ratings),
+      appBar: buildSettingsAppBar(
+        context,
+        Text(l10n.ratings),
         actions: [
           IconButton(
             icon: const Icon(Icons.restore),
@@ -136,75 +172,151 @@ class _RatingsConfigScreenState extends State<RatingsConfigScreen> {
           ),
         ],
       ),
-      body: ReorderableListView.builder(
+      body: ListView.builder(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).padding.bottom + 16,
         ),
-        header: Column(
-          children: [
-            SwitchPreferenceTile(
-              preference: UserPreferences.enableAdditionalRatings,
-              title: l10n.additionalRatings,
-              subtitle: l10n.showMdbListAndTmdbRatings,
-              icon: Icons.star,
-              onChanged: _save,
-            ),
-            SwitchPreferenceTile(
-              preference: UserPreferences.showRatingLabels,
-              title: l10n.ratingLabels,
-              subtitle: l10n.showLabelsNextToIcons,
-              icon: Icons.label,
-              onChanged: _save,
-            ),
-            SwitchPreferenceTile(
-              preference: UserPreferences.showRatingBadges,
-              title: l10n.ratingBadges,
-              subtitle: l10n.showDecorativeBadges,
-              icon: Icons.style,
-              onChanged: _save,
-            ),
-            SwitchPreferenceTile(
-              preference: UserPreferences.enableEpisodeRatings,
-              title: l10n.episodeRatings,
-              subtitle: l10n.showRatingsOnEpisodes,
-              icon: Icons.stars,
-              onChanged: _save,
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.reorder),
-              title: Text(l10n.ratingSources),
-              subtitle: Text(l10n.ratingSourcesDescription),
-            ),
-          ],
-        ),
-        itemCount: _items.length,
-        onReorder: (oldIndex, newIndex) {
-          setState(() {
-            if (newIndex > oldIndex) newIndex--;
-            final item = _items.removeAt(oldIndex);
-            _items.insert(newIndex, item);
-          });
-          _save();
-        },
+        itemCount: _items.length + 1,
         itemBuilder: (context, index) {
-          final item = _items[index];
-          return ListTile(
+          if (index == 0) {
+            return Column(
+              children: [
+                SwitchPreferenceTile(
+                  preference: UserPreferences.enableAdditionalRatings,
+                  title: l10n.additionalRatings,
+                  subtitle: l10n.showMdbListAndTmdbRatings,
+                  icon: Icons.star,
+                  onChanged: _save,
+                ),
+                SwitchPreferenceTile(
+                  preference: UserPreferences.showRatingLabels,
+                  title: l10n.ratingLabels,
+                  subtitle: l10n.showLabelsNextToIcons,
+                  icon: Icons.label,
+                  onChanged: _save,
+                ),
+                SwitchPreferenceTile(
+                  preference: UserPreferences.showRatingBadges,
+                  title: l10n.ratingBadges,
+                  subtitle: l10n.showDecorativeBadges,
+                  icon: Icons.style,
+                  onChanged: _save,
+                ),
+                SwitchPreferenceTile(
+                  preference: UserPreferences.enableEpisodeRatings,
+                  title: l10n.episodeRatings,
+                  subtitle: l10n.showRatingsOnEpisodes,
+                  icon: Icons.stars,
+                  onChanged: _save,
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.reorder),
+                  title: Text(l10n.ratingSources),
+                  subtitle: Text(l10n.ratingSourcesDescription),
+                ),
+              ],
+            );
+          }
+          final itemIndex = index - 1;
+          final item = _items[itemIndex];
+          return _ReorderableTile(
             key: ValueKey(item.key),
-            leading: Checkbox(
-              value: item.enabled,
-              onChanged: (enabled) {
-                setState(() => item.enabled = enabled ?? false);
-                _save();
-              },
-            ),
-            title: Text(_sourceLabel(item.key, l10n)),
-            trailing: ReorderableDragStartListener(
-              index: index,
-              child: const Icon(Icons.drag_handle),
-            ),
+            focusNode: _focusNodes[itemIndex],
+            label: _sourceLabel(item.key, l10n),
+            enabled: item.enabled,
+            isFirst: itemIndex == 0,
+            isLast: itemIndex == _items.length - 1,
+            onToggle: (enabled) {
+              setState(() => item.enabled = enabled);
+              _save();
+            },
+            onMoveUp: () => _moveItem(itemIndex, -1),
+            onMoveDown: () => _moveItem(itemIndex, 1),
           );
         },
+      ),
+    );
+  }
+}
+
+class _ReorderableTile extends StatefulWidget {
+  final FocusNode focusNode;
+  final String label;
+  final bool enabled;
+  final bool isFirst;
+  final bool isLast;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onMoveUp;
+  final VoidCallback onMoveDown;
+
+  const _ReorderableTile({
+    super.key,
+    required this.focusNode,
+    required this.label,
+    required this.enabled,
+    required this.isFirst,
+    required this.isLast,
+    required this.onToggle,
+    required this.onMoveUp,
+    required this.onMoveDown,
+  });
+
+  @override
+  State<_ReorderableTile> createState() => _ReorderableTileState();
+}
+
+class _ReorderableTileState extends State<_ReorderableTile> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bg = _focused
+        ? colorScheme.primary.withValues(alpha: 0.18)
+        : Colors.transparent;
+
+    return Focus(
+      focusNode: widget.focusNode,
+      onFocusChange: (f) => setState(() => _focused = f),
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event.logicalKey == LogicalKeyboardKey.arrowLeft && !widget.isFirst) {
+          widget.onMoveUp();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowRight && !widget.isLast) {
+          widget.onMoveDown();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.select ||
+            event.logicalKey == LogicalKeyboardKey.enter) {
+          widget.onToggle(!widget.enabled);
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 90),
+        color: bg,
+        child: ListTile(
+          leading: Icon(
+            widget.enabled ? Icons.check_box : Icons.check_box_outline_blank,
+            color: widget.enabled ? colorScheme.primary : null,
+          ),
+          title: Text(widget.label),
+          trailing: PlatformDetection.isTV
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (!widget.isFirst)
+                      const Icon(Icons.arrow_left, size: 18),
+                    if (!widget.isLast)
+                      const Icon(Icons.arrow_right, size: 18),
+                  ],
+                )
+              : null,
+        ),
       ),
     );
   }

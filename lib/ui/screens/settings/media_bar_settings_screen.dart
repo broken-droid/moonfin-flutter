@@ -7,6 +7,7 @@ import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class MediaBarSettingsScreen extends StatefulWidget {
   const MediaBarSettingsScreen({super.key});
@@ -222,7 +223,7 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.mediaBar)),
+      appBar: buildSettingsAppBar(context, Text(l10n.mediaBar)),
       body: ListView(
         children: [
           SwitchPreferenceTile(

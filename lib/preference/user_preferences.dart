@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
+import '../util/platform_detection.dart';
 import 'home_section_config.dart';
 import 'preference_constants.dart';
 
@@ -43,7 +44,7 @@ class UserPreferences extends ChangeNotifier {
 
   static final homeRowInfoOverlay = Preference(
     key: 'pref_home_row_info_overlay',
-    defaultValue: false,
+    defaultValue: PlatformDetection.isTV,
   );
 
   static final watchedIndicatorBehavior = EnumPreference(

@@ -37,18 +37,20 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final hasNodeFocus = widget.focusNode?.hasFocus ?? false;
+    final effectiveFocused = hovered || focused || hasNodeFocus;
     final focusedBackground = widget.focusColor ?? AppColorScheme.buttonFocused;
     final focusedForeground =
       ThemeData.estimateBrightnessForColor(focusedBackground) == Brightness.dark
         ? Colors.white
         : Colors.black;
-    final color = showFocusBorder
+    final color = effectiveFocused
       ? focusedBackground
       : AppColorScheme.buttonNormal;
-    final foregroundColor = showFocusBorder
+    final foregroundColor = effectiveFocused
       ? focusedForeground
       : AppColorScheme.onButtonNormal;
-    final scale = widget.cardFocusExpansion && showFocusBorder ? 1.05 : 1.0;
+    final scale = widget.cardFocusExpansion && effectiveFocused ? 1.05 : 1.0;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -81,7 +83,7 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(AppSpacing.spaceSm),
-                border: showFocusBorder
+                  border: effectiveFocused
                     ? Border.all(
                         color: foregroundColor.withValues(alpha: 0.85),
                         width: 2,

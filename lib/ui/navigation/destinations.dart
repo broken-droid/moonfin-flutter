@@ -93,23 +93,6 @@ class Destinations {
 
   // Settings
   static const settings = '/settings';
-  static const settingsCustomization = '/settings/customization';
-  static const settingsPlayback = '/settings/playback';
-  static const settingsAppearance = '/settings/appearance';
-  static const settingsHomeSections = '/settings/home-sections';
-  static const settingsHomeRowsImageType = '/settings/home-sections/image-type';
-  static const settingsSubtitles = '/settings/subtitles';
-  static const settingsAuth = '/settings/auth';
-  static const settingsPinCode = '/settings/pin-code';
-  static const settingsScreensaver = '/settings/screensaver';
-  static const settingsParental = '/settings/parental';
-  static const settingsAbout = '/settings/about';
-  static const settingsMediaBar = '/settings/media-bar';
-  static const settingsLibrary = '/settings/library';
-  static const settingsSeerr = '/settings/seerr-config';
-  static const settingsPlugin = '/settings/plugin';
-  static const settingsRatings = '/settings/ratings';
-  static const settingsNavigation = '/settings/navigation';
 
   // Seerr
   static const seerrDiscover = '/seerr/discover';
@@ -120,11 +103,10 @@ class Destinations {
 
   // Downloads / Saved Media
   static const downloads = '/downloads';
+  static const storageManagement = '/downloads/storage';
   static const downloadsSeries = '/downloads/series/:seriesId';
   static const downloadsSeason = '/downloads/series/:seriesId/season/:seasonId';
   static const downloadsAlbum = '/downloads/music/:albumId';
-  static const settingsDownloads = '/settings/downloads';
-  static const storageManagement = '/settings/downloads/storage';
 
   static String library(
     String libraryId, {

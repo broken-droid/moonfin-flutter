@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class ScreensaverSettingsScreen extends StatelessWidget {
   const ScreensaverSettingsScreen({super.key});
@@ -11,7 +12,7 @@ class ScreensaverSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.screensaver)),
+      appBar: buildSettingsAppBar(context, Text(l10n.screensaver)),
       body: ListView(
         children: [
           SwitchPreferenceTile(

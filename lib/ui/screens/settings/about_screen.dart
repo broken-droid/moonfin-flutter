@@ -8,6 +8,7 @@ import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -18,7 +19,7 @@ class AboutScreen extends StatelessWidget {
     final appVersion = GetIt.instance<DeviceInfo>().appVersion;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.aboutTitle)),
+      appBar: buildSettingsAppBar(context, Text(l10n.aboutTitle)),
       body: ListView(
         children: [
           const SizedBox(height: 32),

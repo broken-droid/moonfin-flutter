@@ -17,6 +17,7 @@ import 'ui/theme/app_theme.dart';
 import 'ui/widgets/cast_mini_player.dart';
 import 'ui/widgets/mini_audio_player.dart';
 import 'ui/widgets/offline_banner.dart';
+import 'ui/widgets/exit_confirmation_dialog.dart';
 import 'util/app_exit.dart';
 import 'util/platform_detection.dart';
 
@@ -160,28 +161,12 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
   Future<void> _showExitConfirmation() async {
     try {
       final navContext = appRouter.routerDelegate.navigatorKey.currentContext;
-      if (navContext == null || !navContext.mounted) return;
-      final l10n = AppLocalizations.of(navContext);
-      final result = await showDialog<bool>(
-        context: navContext,
-        builder: (dialogCtx) => AlertDialog(
-          title: Text(l10n.exitApp),
-          content: Text(l10n.exitAppConfirmation),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogCtx).pop(false),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(dialogCtx).pop(true),
-              child: Text(l10n.exit),
-            ),
-          ],
-        ),
-      );
-      if (result == true) {
-        await AppExit.closeApp();
+      if (navContext == null || !navContext.mounted) {
+        return;
       }
+      await showExitConfirmationDialog(navContext);
+    } catch (e, st) {
+      debugPrint('[AppExit] _showExitConfirmation error: $e\n$st');
     } finally {
       _exitDialogShowing = false;
     }

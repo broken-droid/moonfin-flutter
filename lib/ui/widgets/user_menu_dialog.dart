@@ -9,6 +9,7 @@ import '../../auth/repositories/session_repository.dart';
 import '../../preference/user_preferences.dart';
 import '../../auth/repositories/user_repository.dart';
 import '../../l10n/app_localizations.dart';
+import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
 import 'remote_control_dialog.dart';
 
@@ -75,29 +76,31 @@ void showUserMenu(BuildContext context) {
                 context.push(Destinations.settings);
               },
             ),
-            _MenuRow(
-              icon: Icons.phonelink_lock_rounded,
-              label: l10n.quickConnect,
-              onTap: () {
-                Navigator.pop(ctx, _UserMenuAction.quickConnect);
-              },
-            ),
-            _MenuRow(
-              icon: Icons.download_done_rounded,
-              label: l10n.savedMedia,
-              onTap: () {
-                Navigator.pop(ctx);
-                context.push(Destinations.downloads);
-              },
-            ),
-            _MenuRow(
-              icon: Icons.settings_remote_rounded,
-              label: l10n.remoteControl,
-              onTap: () {
-                Navigator.pop(ctx);
-                showRemoteControlDialog(context);
-              },
-            ),
+            if (!PlatformDetection.isTV) ...[
+              _MenuRow(
+                icon: Icons.phonelink_lock_rounded,
+                label: l10n.quickConnect,
+                onTap: () {
+                  Navigator.pop(ctx, _UserMenuAction.quickConnect);
+                },
+              ),
+              _MenuRow(
+                icon: Icons.download_done_rounded,
+                label: l10n.savedMedia,
+                onTap: () {
+                  Navigator.pop(ctx);
+                  context.push(Destinations.downloads);
+                },
+              ),
+              _MenuRow(
+                icon: Icons.settings_remote_rounded,
+                label: l10n.remoteControl,
+                onTap: () {
+                  Navigator.pop(ctx);
+                  showRemoteControlDialog(context);
+                },
+              ),
+            ],
             const SizedBox(height: 4),
             Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
             const SizedBox(height: 4),

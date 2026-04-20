@@ -104,12 +104,10 @@ class MainActivity : AudioServiceActivity() {
                 }
                 "exitApp" -> {
                     result.success(true)
-                    handler.post {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            finishAndRemoveTask()
-                        } else {
-                            finishAffinity()
-                        }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        finishAndRemoveTask()
+                    } else {
+                        finishAffinity()
                     }
                 }
                 else -> result.notImplemented()

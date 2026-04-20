@@ -21,6 +21,8 @@ import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
 import '../navigation/home_refresh_bus.dart';
 import 'navigation_layout.dart';
+import 'settings/settings_panel.dart';
+import '../screens/settings/settings_side_panel.dart';
 import 'seerr_icons.dart';
 import 'shuffle_options_dialog.dart';
 import 'user_menu_dialog.dart';
@@ -37,7 +39,12 @@ class LeftSidebar extends StatefulWidget {
   final FocusNode? contentFocusNode;
   final bool showBackButton;
 
-  const LeftSidebar({super.key, this.activeRoute, this.contentFocusNode, this.showBackButton = false});
+  const LeftSidebar({
+    super.key,
+    this.activeRoute,
+    this.contentFocusNode,
+    this.showBackButton = false,
+  });
 
   @override
   State<LeftSidebar> createState() => _LeftSidebarState();
@@ -48,6 +55,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   final _prefs = GetIt.instance<UserPreferences>();
   final _sidebarFocus = FocusScopeNode(debugLabel: 'LeftSidebar');
   final _homeFocusNode = FocusNode(debugLabel: 'LeftSidebarHome');
+  final _settingsFocusNode = FocusNode(debugLabel: 'LeftSidebarSettings');
   final _profileFocusNode = FocusNode(debugLabel: 'LeftSidebarProfile');
   late final VoidCallback _focusNavbarCallback;
   final _scrollController = ScrollController();
@@ -63,6 +71,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   String _currentTime = '';
   StreamSubscription? _userSub;
   String? _userImageUrl;
+  FocusNode? _previousFocus;
 
   bool get _isMobile => PlatformDetection.useMobileUi;
 
@@ -72,26 +81,37 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _focusNavbarCallback = () => _homeFocusNode.requestFocus();
     NavigationLayout.focusNavbarNotifier.value = _focusNavbarCallback;
     _updateClock();
-    _clockTimer = Timer.periodic(const Duration(seconds: 30), (_) => _updateClock());
+    _clockTimer = Timer.periodic(
+      const Duration(seconds: 30),
+      (_) => _updateClock(),
+    );
     _loadUserImage();
     _userSub = _userRepo.currentUserStream.listen((_) => _loadUserImage());
     _prefs.addListener(_onPrefsChanged);
     _loadLibraries();
+    FocusManager.instance.addListener(_trackPreviousFocus);
     if (PlatformDetection.isTV) {
       _armTvFocusGate();
-      _profileFocusNode.addListener(() { if (mounted) setState(() {}); });
+      _profileFocusNode.addListener(() {
+        if (mounted) setState(() {});
+      });
     }
   }
 
   @override
   void dispose() {
-    if (identical(NavigationLayout.focusNavbarNotifier.value, _focusNavbarCallback)) {
+    if (identical(
+      NavigationLayout.focusNavbarNotifier.value,
+      _focusNavbarCallback,
+    )) {
       NavigationLayout.focusNavbarNotifier.value = null;
     }
+    FocusManager.instance.removeListener(_trackPreviousFocus);
     _clockTimer?.cancel();
     _labelTimer?.cancel();
     _focusExpandGateTimer?.cancel();
     _homeFocusNode.dispose();
+    _settingsFocusNode.dispose();
     _profileFocusNode.dispose();
     _sidebarFocus.dispose();
     _scrollController.dispose();
@@ -114,7 +134,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
       final hour = now.hour.toString().padLeft(2, '0');
       if (mounted) setState(() => _currentTime = '$hour:$minute');
     } else {
-      final hour = now.hour > 12 ? now.hour - 12 : (now.hour == 0 ? 12 : now.hour);
+      final hour = now.hour > 12
+          ? now.hour - 12
+          : (now.hour == 0 ? 12 : now.hour);
       final period = now.hour >= 12 ? 'PM' : 'AM';
       if (mounted) setState(() => _currentTime = '$hour:$minute $period');
     }
@@ -137,7 +159,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
   Future<void> _loadLibraries() async {
     try {
       final libs = _prefs.get(UserPreferences.enableMultiServerLibraries)
-          ? await GetIt.instance<MultiServerRepository>().getAggregatedLibraries()
+          ? await GetIt.instance<MultiServerRepository>()
+                .getAggregatedLibraries()
           : await GetIt.instance<UserViewsRepository>().getUserViews();
       if (mounted) setState(() => _libraries = libs);
     } catch (_) {}
@@ -224,14 +247,53 @@ class _LeftSidebarState extends State<LeftSidebar> {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         _collapse();
-        widget.contentFocusNode?.requestFocus();
+        _restoreFocusOutsideSidebar();
         return KeyEventResult.handled;
       }
-      if (PlatformDetection.isTV && event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      if (PlatformDetection.isTV &&
+          event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        return KeyEventResult.handled;
+      }
+      if (PlatformDetection.isTV &&
+          event.logicalKey == LogicalKeyboardKey.arrowUp &&
+          _homeFocusNode.hasFocus) {
+        _profileFocusNode.requestFocus();
         return KeyEventResult.handled;
       }
     }
     return KeyEventResult.ignored;
+  }
+
+  void _trackPreviousFocus() {
+    final primary = FocusManager.instance.primaryFocus;
+    if (primary == null) return;
+    if (_isInsideSidebarScope(primary)) return;
+    _previousFocus = primary;
+  }
+
+  bool _isInsideSidebarScope(FocusNode node) {
+    FocusNode? current = node;
+    while (current != null) {
+      if (identical(current, _sidebarFocus)) return true;
+      current = current.parent;
+    }
+    return false;
+  }
+
+  void _restoreFocusOutsideSidebar() {
+    final previous = _previousFocus;
+    if (previous != null &&
+        previous.canRequestFocus &&
+        previous.context != null) {
+      previous.requestFocus();
+      return;
+    }
+    final fallback = widget.contentFocusNode;
+    if (fallback != null && fallback.canRequestFocus) {
+      fallback.requestFocus();
+      return;
+    }
+    if (mounted) FocusScope.of(context).nextFocus();
   }
 
   bool _isActive(String route) => widget.activeRoute == route;
@@ -243,7 +305,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   Widget _buildDrawerLayout() {
     if (PlatformDetection.isTV) return _buildTvLayout();
-    final expandedWidth = _isMobile ? _kExpandedWidthMobile : _kExpandedWidthDesktop;
+    final expandedWidth = _isMobile
+        ? _kExpandedWidthMobile
+        : _kExpandedWidthDesktop;
     return Stack(
       children: [
         if (_isExpanded)
@@ -273,14 +337,24 @@ class _LeftSidebarState extends State<LeftSidebar> {
                         end: Alignment.centerRight,
                         colors: [
                           _overlayColor().withValues(alpha: _overlayOpacity()),
-                          _overlayColor().withValues(alpha: _overlayOpacity() * 0.75),
+                          _overlayColor().withValues(
+                            alpha: _overlayOpacity() * 0.75,
+                          ),
                           Colors.transparent,
                         ],
                         stops: [0.0, 0.7, 1.0],
                       ),
-                color: _isMobile ? _overlayColor().withValues(alpha: _overlayOpacity()) : null,
+                color: _isMobile
+                    ? _overlayColor().withValues(alpha: _overlayOpacity())
+                    : null,
                 boxShadow: _isExpanded
-                    ? [BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 20, offset: const Offset(4, 0))]
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.6),
+                          blurRadius: 20,
+                          offset: const Offset(4, 0),
+                        ),
+                      ]
                     : null,
               ),
               child: _isMobile
@@ -392,7 +466,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
     final showSyncPlay = _prefs.get(UserPreferences.syncPlayEnabled);
     final pluginSync = GetIt.instance<PluginSyncService>();
     final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
-    final showClock = clockBehavior == ClockBehavior.always ||
+    final showClock =
+        clockBehavior == ClockBehavior.always ||
         clockBehavior == ClockBehavior.inMenus;
 
     return Column(
@@ -409,7 +484,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 label: l10n.home,
                 focusNode: _homeFocusNode,
                 showLabel: _showLabels,
-                isActive: _isActive(Destinations.home),
+                isActive: false,
                 onPressed: () {
                   _onNavigate();
                   if (_isActive(Destinations.home)) {
@@ -425,7 +500,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 label: l10n.search,
                 showLabel: _showLabels,
                 isActive: _isActive(Destinations.search),
-                onPressed: () { _onNavigate(); context.push(Destinations.search); },
+                onPressed: () {
+                  _onNavigate();
+                  context.push(Destinations.search);
+                },
               ),
               if (showShuffle)
                 _SidebarItem(
@@ -452,7 +530,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   label: l10n.genres,
                   showLabel: _showLabels,
                   isActive: _isActive(Destinations.allGenres),
-                  onPressed: () { _onNavigate(); context.push(Destinations.allGenres); },
+                  onPressed: () {
+                    _onNavigate();
+                    context.push(Destinations.allGenres);
+                  },
                 ),
               if (showFavorites)
                 _SidebarItem(
@@ -460,7 +541,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   label: l10n.favorites,
                   showLabel: _showLabels,
                   isActive: _isActive(Destinations.allFavorites),
-                  onPressed: () { _onNavigate(); context.push(Destinations.allFavorites); },
+                  onPressed: () {
+                    _onNavigate();
+                    context.push(Destinations.allFavorites);
+                  },
                 ),
               if (showFolders)
                 _SidebarItem(
@@ -468,7 +552,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   label: l10n.folders,
                   showLabel: _showLabels,
                   isActive: _isActive(Destinations.folderView),
-                  onPressed: () { _onNavigate(); context.push(Destinations.folderView); },
+                  onPressed: () {
+                    _onNavigate();
+                    context.push(Destinations.folderView);
+                  },
                 ),
               if (showSyncPlay)
                 _SidebarItem(
@@ -480,22 +567,27 @@ class _LeftSidebarState extends State<LeftSidebar> {
               if (pluginSync.pluginAvailable &&
                   pluginSync.seerrInfoAvailable &&
                   _prefs.get(UserPreferences.seerrEnabled))
-                Builder(builder: (context) {
-                  final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                  final isSeerr = seerrPrefs.isSeerrVariant;
-                  final label = seerrPrefs.moonfinDisplayName.isNotEmpty
-                      ? seerrPrefs.moonfinDisplayName
-                      : (isSeerr ? l10n.seerr : l10n.jellyseerr);
-                  return _SidebarItem(
-                    iconBuilder: (size, color) => isSeerr
-                        ? SeerrIcon(size: size, color: color)
-                        : JellyseerrIcon(size: size, color: color),
-                    label: label,
-                    showLabel: _showLabels,
-                    isActive: _isActive(Destinations.seerrDiscover),
-                    onPressed: () { _onNavigate(); context.push(Destinations.seerrDiscover); },
-                  );
-                }),
+                Builder(
+                  builder: (context) {
+                    final seerrPrefs = GetIt.instance<SeerrPreferences>();
+                    final isSeerr = seerrPrefs.isSeerrVariant;
+                    final label = seerrPrefs.moonfinDisplayName.isNotEmpty
+                        ? seerrPrefs.moonfinDisplayName
+                        : (isSeerr ? l10n.seerr : l10n.jellyseerr);
+                    return _SidebarItem(
+                      iconBuilder: (size, color) => isSeerr
+                          ? SeerrIcon(size: size, color: color)
+                          : JellyseerrIcon(size: size, color: color),
+                      label: label,
+                      showLabel: _showLabels,
+                      isActive: _isActive(Destinations.seerrDiscover),
+                      onPressed: () {
+                        _onNavigate();
+                        context.push(Destinations.seerrDiscover);
+                      },
+                    );
+                  },
+                ),
               if (showLibraries && _libraries.isNotEmpty) ...[
                 _buildSeparator(),
                 _SidebarItem(
@@ -513,11 +605,15 @@ class _LeftSidebarState extends State<LeftSidebar> {
                       ? AnimatedRotation(
                           turns: _librariesExpanded ? 0.5 : 0,
                           duration: _kExpandDuration,
-                          child: Icon(Icons.expand_more, size: 16,
-                              color: Colors.white.withValues(alpha: 0.5)),
+                          child: Icon(
+                            Icons.expand_more,
+                            size: 16,
+                            color: Colors.white.withValues(alpha: 0.5),
+                          ),
                         )
                       : null,
-                  onPressed: () => setState(() => _librariesExpanded = !_librariesExpanded),
+                  onPressed: () =>
+                      setState(() => _librariesExpanded = !_librariesExpanded),
                 ),
                 AnimatedSize(
                   duration: const Duration(milliseconds: 250),
@@ -525,20 +621,22 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   child: _librariesExpanded
                       ? Column(
                           children: _libraries
-                              .map((lib) => _SidebarLibraryItem(
-                                    label: lib.name,
-                                    showLabel: _showLabels,
-                                    onPressed: () {
-                                      _onNavigate();
-                                      if (lib.collectionType == 'music') {
-                                        context.push('/music/${lib.id}');
-                                      } else if (lib.collectionType == 'livetv') {
-                                        context.push(Destinations.liveTvGuide);
-                                      } else {
-                                        context.push('/library/${lib.id}');
-                                      }
-                                    },
-                                  ))
+                              .map(
+                                (lib) => _SidebarLibraryItem(
+                                  label: lib.name,
+                                  showLabel: _showLabels,
+                                  onPressed: () {
+                                    _onNavigate();
+                                    if (lib.collectionType == 'music') {
+                                      context.push('/music/${lib.id}');
+                                    } else if (lib.collectionType == 'livetv') {
+                                      context.push(Destinations.liveTvGuide);
+                                    } else {
+                                      context.push('/library/${lib.id}');
+                                    }
+                                  },
+                                ),
+                              )
                               .toList(),
                         )
                       : const SizedBox.shrink(),
@@ -553,9 +651,14 @@ class _LeftSidebarState extends State<LeftSidebar> {
           child: _SidebarItem(
             icon: Icons.settings_rounded,
             label: l10n.settings,
+            focusNode: _settingsFocusNode,
             showLabel: _showLabels,
             isActive: _isActive(Destinations.settings),
-            onPressed: () { _onNavigate(); context.push(Destinations.settings); },
+            onPressed: () async {
+              _onNavigate();
+              await SettingsPanel.open(context, const SettingsSidePanel());
+              if (mounted) _settingsFocusNode.requestFocus();
+            },
           ),
         ),
         if (showClock && _showLabels)
@@ -587,11 +690,18 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   Widget _buildUserSection() {
     final user = _userRepo.currentUser;
-    final initial = (user?.name.isNotEmpty == true) ? user!.name[0].toUpperCase() : '?';
+    final initial = (user?.name.isNotEmpty == true)
+        ? user!.name[0].toUpperCase()
+        : '?';
     final fallback = Center(
-      child: Text(initial,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18)),
+      child: Text(
+        initial,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+        ),
+      ),
     );
 
     final tvCompact = PlatformDetection.isTV && !_showLabels;
@@ -628,11 +738,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
       padding: EdgeInsets.all(innerPad),
       decoration: BoxDecoration(
         color: (PlatformDetection.isTV && isFocused && _showLabels)
-            ? focusColor.withValues(alpha: 0.12)
+            ? Colors.white
             : Colors.transparent,
-        border: (PlatformDetection.isTV && isFocused && _showLabels)
-            ? Border.all(color: focusColor, width: 2)
-            : null,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -644,7 +751,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
               child: Text(
                 user?.name ?? '',
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: (PlatformDetection.isTV && isFocused)
+                      ? Colors.black
+                      : Colors.white.withValues(alpha: 0.9),
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -662,22 +771,33 @@ class _LeftSidebarState extends State<LeftSidebar> {
           ? Focus(
               focusNode: _profileFocusNode,
               onKeyEvent: (_, event) {
-                if (event is KeyDownEvent &&
-                    (event.logicalKey == LogicalKeyboardKey.select ||
-                        event.logicalKey == LogicalKeyboardKey.enter)) {
-                  _onNavigate();
-                  showUserMenu(context);
-                  return KeyEventResult.handled;
+                if (event is KeyDownEvent) {
+                  if (event.logicalKey == LogicalKeyboardKey.select ||
+                      event.logicalKey == LogicalKeyboardKey.enter) {
+                    _onNavigate();
+                    showUserMenu(context);
+                    return KeyEventResult.handled;
+                  }
+                  if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                    _homeFocusNode.requestFocus();
+                    return KeyEventResult.handled;
+                  }
                 }
                 return KeyEventResult.ignored;
               },
               child: GestureDetector(
-                onTap: () { _onNavigate(); showUserMenu(context); },
+                onTap: () {
+                  _onNavigate();
+                  showUserMenu(context);
+                },
                 child: content,
               ),
             )
           : GestureDetector(
-              onTap: () { _onNavigate(); showUserMenu(context); },
+              onTap: () {
+                _onNavigate();
+                showUserMenu(context);
+              },
               child: content,
             ),
     );
@@ -686,10 +806,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   Widget _buildSeparator() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Container(
-        height: 1,
-        color: Colors.white.withValues(alpha: 0.1),
-      ),
+      child: Container(height: 1, color: Colors.white.withValues(alpha: 0.1)),
     );
   }
 }
@@ -733,7 +850,9 @@ class _SidebarItemState extends State<_SidebarItem> {
   void initState() {
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
-    _focusNode.addListener(() => setState(() => _isFocused = _focusNode.hasFocus));
+    _focusNode.addListener(
+      () => setState(() => _isFocused = _focusNode.hasFocus),
+    );
   }
 
   @override
@@ -748,11 +867,14 @@ class _SidebarItemState extends State<_SidebarItem> {
   Widget build(BuildContext context) {
     final highlighted = _isFocused || _isHovered;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
+    final tvFocused = PlatformDetection.isTV && _isFocused;
     final fgColor = widget.isActive
         ? _kAccent
+        : tvFocused
+        ? Colors.black
         : highlighted
-            ? focusColor
-            : Colors.white.withValues(alpha: 0.6);
+        ? focusColor
+        : Colors.white.withValues(alpha: 0.6);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1),
@@ -778,21 +900,24 @@ class _SidebarItemState extends State<_SidebarItem> {
               height: 40,
               padding: EdgeInsets.symmetric(horizontal: _tvCompact ? 4 : 10),
               decoration: BoxDecoration(
-                color: highlighted
+                color: tvFocused
+                    ? Colors.white
+                    : highlighted
                     ? focusColor.withValues(alpha: 0.12)
                     : widget.isActive
-                        ? _kAccent.withValues(alpha: 0.15)
-                        : Colors.transparent,
-                border: (PlatformDetection.isTV && _isFocused && !_tvCompact)
-                    ? Border.all(color: focusColor, width: 2)
-                    : null,
-                borderRadius: BorderRadius.circular(PlatformDetection.isTV ? 24 : 8),
+                    ? _kAccent.withValues(alpha: 0.15)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(
+                  PlatformDetection.isTV ? 24 : 8,
+                ),
               ),
               child: Row(
                 children: [
                   SizedBox(
                     width: 32,
-                    child: widget.iconBuilder?.call(24, fgColor) ?? Icon(widget.icon, size: 24, color: fgColor),
+                    child:
+                        widget.iconBuilder?.call(24, fgColor) ??
+                        Icon(widget.icon, size: 24, color: fgColor),
                   ),
                   if (widget.showLabel) ...[
                     const SizedBox(width: 12),
@@ -858,6 +983,7 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
   Widget build(BuildContext context) {
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
     final highlighted = _isHovered || _isFocused;
+    final tvFocused = PlatformDetection.isTV && _isFocused;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1),
       child: MouseRegion(
@@ -881,20 +1007,23 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
               height: 36,
               padding: const EdgeInsets.only(left: 50, right: 10),
               decoration: BoxDecoration(
-                color: highlighted
+                color: tvFocused
+                    ? Colors.white
+                    : highlighted
                     ? focusColor.withValues(alpha: 0.1)
                     : Colors.transparent,
-                border: (PlatformDetection.isTV && _isFocused)
-                    ? Border.all(color: focusColor, width: 2)
-                    : null,
-                borderRadius: BorderRadius.circular(PlatformDetection.isTV ? 24 : 8),
+                borderRadius: BorderRadius.circular(
+                  PlatformDetection.isTV ? 24 : 8,
+                ),
               ),
               alignment: Alignment.centerLeft,
               child: widget.showLabel
                   ? Text(
                       widget.label,
                       style: TextStyle(
-                        color: highlighted
+                      color: tvFocused
+                            ? Colors.black
+                            : highlighted
                             ? focusColor
                             : Colors.white.withValues(alpha: 0.5),
                         fontSize: 13,

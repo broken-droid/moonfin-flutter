@@ -6,6 +6,7 @@ import '../../../auth/repositories/session_repository.dart';
 import '../../../util/pin_code_util.dart';
 import '../../widgets/pin_entry_dialog.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 /// Settings screen for managing PIN code protection.
 class PinCodeSettingsScreen extends StatefulWidget {
@@ -99,7 +100,7 @@ class _PinCodeSettingsScreenState extends State<PinCodeSettingsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.pinCode)),
+      appBar: buildSettingsAppBar(context, Text(l10n.pinCode)),
       body: ListView(
         children: [
           SwitchListTile(

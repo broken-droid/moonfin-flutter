@@ -8,6 +8,7 @@ import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import 'settings_app_bar.dart';
 
 class AppearanceSettingsScreen extends StatefulWidget {
   const AppearanceSettingsScreen({super.key});
@@ -34,7 +35,7 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.themeAndAppearance)),
+      appBar: buildSettingsAppBar(context, Text(l10n.themeAndAppearance)),
       body: ListView(
         children: [
           if (!isMobile)
