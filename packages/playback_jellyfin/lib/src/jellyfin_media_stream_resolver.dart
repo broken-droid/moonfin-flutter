@@ -53,14 +53,8 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
 
     if (playMethod == StreamPlayMethod.transcode) {
       url = MediaStreamResolver.applyStreamIndices(url, audioStreamIndex, subtitleStreamIndex);
-      if (startTimeTicks != null) {
-        final sttRegex = RegExp(r'StartTimeTicks=\d+');
-        if (sttRegex.hasMatch(url)) {
-          url = url.replaceFirst(sttRegex, 'StartTimeTicks=$startTimeTicks');
-        } else {
-          url = '$url&StartTimeTicks=$startTimeTicks';
-        }
-      }
+      // Avoid StartTimeTicks on segment requests generated from HLS playlists.
+      url = _stripQueryParam(url, 'StartTimeTicks');
       // Force burn-in when direct play was disabled for subtitle encoding.
       if (!enableDirectPlay && subtitleStreamIndex != null && subtitleStreamIndex >= 0) {
         final smRegex = RegExp(r'SubtitleMethod=\w+');
@@ -115,10 +109,30 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
     return directStream ?? transcode ?? sources.first;
   }
 
+  String _stripQueryParam(String url, String name) {
+    final qIndex = url.indexOf('?');
+    if (qIndex < 0) return url;
+    final base = url.substring(0, qIndex);
+    final query = url.substring(qIndex + 1);
+    if (query.isEmpty) return url;
+    final lowerName = name.toLowerCase();
+    final kept = query
+        .split('&')
+        .where((p) => p.isNotEmpty)
+        .where((p) {
+          final eq = p.indexOf('=');
+          final key = eq < 0 ? p : p.substring(0, eq);
+          return key.toLowerCase() != lowerName;
+        })
+        .toList();
+    return kept.isEmpty ? base : '$base?${kept.join('&')}';
+  }
+
   String _appendAuth(String url) {
     final token = _client.accessToken;
     if (token == null || token.isEmpty) return url;
-    if (url.toLowerCase().contains('api_key=') || url.toLowerCase().contains('apikey=')) return url;
+    final lowerUrl = url.toLowerCase();
+    if (lowerUrl.contains('api_key=') || lowerUrl.contains('apikey=')) return url;
     final separator = url.contains('?') ? '&' : '?';
     return '$url${separator}api_key=${Uri.encodeComponent(token)}';
   }
