@@ -47,6 +47,20 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     with WidgetsBindingObserver {
   static final _camelCaseSpaceRe = RegExp(r'(?<=[a-z])(?=[A-Z])');
+  static const List<DeviceOrientation> _allMobileOrientations = [
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ];
+  static const List<DeviceOrientation> _landscapeOrientations = [
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ];
+  static const List<DeviceOrientation> _portraitOrientations = [
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ];
 
   final _manager = GetIt.instance<PlaybackManager>();
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
@@ -142,6 +156,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   Timer? _skipBackwardTimer;
   int _skipForwardAccum = 0;
   int _skipBackwardAccum = 0;
+  bool? _pendingOrientationSnapLandscape;
 
   PlayerState get _state => _manager.state;
   QueueService get _queue => _manager.queueService;
@@ -496,11 +511,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _applySubtitleStyle();
     _scheduleHide();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitUp,
-    ]);
+    _applyPlayerOrientation();
     WidgetsBinding.instance.addObserver(this);
     _loadSegmentsForCurrentItem();
     _positionSub = _state.positionStream.listen(_onPositionUpdate);
@@ -534,6 +545,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
     _queueSub = _queue.queueChangedStream.listen((_) {
       _loadSegmentsForCurrentItem();
+      _applyPlayerOrientation();
       _manager.suppressAutoNext = false;
       _consecutiveEpisodes++;
       setState(() {
@@ -779,6 +791,60 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
   }
 
+  @override
+  void didChangeMetrics() {
+    final pendingLandscape = _pendingOrientationSnapLandscape;
+    if (pendingLandscape == null) {
+      return;
+    }
+    if (PlatformDetection.isTV || !PlatformDetection.isAndroid) {
+      _pendingOrientationSnapLandscape = null;
+      return;
+    }
+    final isLandscape = _isCurrentViewLandscape();
+    if (isLandscape == pendingLandscape) {
+      _pendingOrientationSnapLandscape = null;
+      unawaited(_unlockOrientationIfAllowed());
+    }
+  }
+
+  Future<bool?> _readSystemAutoRotateSetting() async {
+    if (!PlatformDetection.isAndroid || PlatformDetection.isTV) {
+      return null;
+    }
+    try {
+      const channel = MethodChannel('org.moonfin.androidtv/platform');
+      return await channel.invokeMethod<bool>('isAutoRotateEnabled');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _unlockOrientationIfAllowed() async {
+    if (!mounted || PlatformDetection.isTV || !PlatformDetection.isAndroid) {
+      return;
+    }
+    final autoRotateEnabled = await _readSystemAutoRotateSetting();
+    if (autoRotateEnabled == false) {
+      return;
+    }
+    await SystemChrome.setPreferredOrientations(_allMobileOrientations);
+  }
+
+  bool _isCurrentViewLandscape() {
+    final dispatcher = WidgetsBinding.instance.platformDispatcher;
+    final view = dispatcher.implicitView;
+    if (view != null) {
+      return view.physicalSize.width >= view.physicalSize.height;
+    }
+    final views = dispatcher.views;
+    if (views.isEmpty) {
+      return true;
+    }
+    final first = views.first;
+    return first.physicalSize.width >= first.physicalSize.height;
+  }
+
   void _tryStartIosPiPForBackground() {
     if (_didRequestIosPiPForBackground) return;
     if (_isStartingIosPiPForBackground) return;
@@ -859,6 +925,37 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       await _segmentService.loadSegments(item.id);
     }
     _loadTrickplayInfo(item);
+  }
+
+  void _applyPlayerOrientation() {
+    if (PlatformDetection.isTV || !PlatformDetection.isAndroid) {
+      return;
+    }
+    var orientations = _landscapeOrientations;
+    var prefersLandscape = true;
+    final item = _queue.currentItem;
+    if (item is AggregatedItem) {
+      for (final stream in item.mediaStreams) {
+        if (stream['Type'] != 'Video') continue;
+        final width = stream['Width'];
+        final height = stream['Height'];
+        if (width is int && height is int && width > 0 && height > 0) {
+          if (height > width) {
+            orientations = _portraitOrientations;
+            prefersLandscape = false;
+          }
+          break;
+        }
+      }
+    }
+    final isLandscape = _isCurrentViewLandscape();
+    if (isLandscape == prefersLandscape) {
+      _pendingOrientationSnapLandscape = null;
+      unawaited(_unlockOrientationIfAllowed());
+      return;
+    }
+    _pendingOrientationSnapLandscape = prefersLandscape;
+    unawaited(SystemChrome.setPreferredOrientations(orientations));
   }
 
   void _loadTrickplayInfo(dynamic item) {
