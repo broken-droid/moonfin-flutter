@@ -38,7 +38,11 @@ min_align_dec=$((MIN_ALIGN_HEX))
 failed=0
 
 for so in "${libs[@]}"; do
-  # Collect alignments from PT_LOAD headers.
+  # 16 KB page-size requirement only applies to 64-bit ABIs.
+  case "$so" in
+    */armeabi-v7a/*|*/x86/*) continue ;;
+  esac
+
   mapfile -t aligns < <(readelf -lW "$so" | awk '/LOAD/{print $NF}' | sort -u)
 
   if [[ "${#aligns[@]}" -eq 0 ]]; then
