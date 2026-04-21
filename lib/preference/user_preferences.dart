@@ -740,4 +740,9 @@ class UserPreferences extends ChangeNotifier {
     key: 'window_y',
     defaultValue: 0.0,
   );
+
+  static final syncPlayAdvancedCorrectionEnabled = Preference(
+    key: 'syncplay_advanced_correction_enabled',
+    defaultValue: true,
+  );
 }

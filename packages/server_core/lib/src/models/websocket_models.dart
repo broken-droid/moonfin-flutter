@@ -1,3 +1,5 @@
+import 'syncplay_models.dart';
+
 sealed class ServerWebSocketMessage {
   const ServerWebSocketMessage();
 }
@@ -89,4 +91,14 @@ class ServerEventMessage extends ServerWebSocketMessage {
     required this.type,
     this.data = const {},
   });
+}
+
+class SyncPlayCommandMessage extends ServerWebSocketMessage {
+  final SyncPlayCommand command;
+  const SyncPlayCommandMessage(this.command);
+}
+
+class SyncPlayGroupUpdateMessage extends ServerWebSocketMessage {
+  final SyncPlayGroupUpdate update;
+  const SyncPlayGroupUpdateMessage(this.update);
 }

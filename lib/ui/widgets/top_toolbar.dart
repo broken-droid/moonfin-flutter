@@ -23,6 +23,7 @@ import 'expandable_icon_button.dart';
 import 'navigation_layout.dart';
 import 'settings/settings_panel.dart';
 import '../screens/settings/settings_side_panel.dart';
+import '../screens/syncplay/syncplay_screen.dart';
 import 'seerr_icons.dart';
 import 'shuffle_options_dialog.dart';
 import 'user_menu_dialog.dart';
@@ -523,7 +524,11 @@ class _TopToolbarState extends State<TopToolbar> {
                   child: ExpandableIconButton(
                     icon: Icons.groups_rounded,
                     label: l10n.syncPlay,
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SyncPlayScreen(),
+                      ),
+                    ),
                   ),
                 ),
               ],

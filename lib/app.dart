@@ -12,6 +12,7 @@ import 'data/services/app_update_service.dart';
 import 'di/providers.dart';
 import 'l10n/app_localizations.dart';
 import 'preference/user_preferences.dart';
+import 'syncplay/syncplay_manager.dart';
 import 'ui/navigation/app_router.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/widgets/cast_mini_player.dart';
@@ -251,14 +252,38 @@ class _ConnectivityListener extends ConsumerStatefulWidget {
 }
 
 class _ConnectivityListenerState
-    extends ConsumerState<_ConnectivityListener> {
+    extends ConsumerState<_ConnectivityListener>
+    with WidgetsBindingObserver {
   bool? _wasOnline;
   bool _didScheduleUpdateCheck = false;
+  StreamSubscription<SyncPlayUiEvent>? _syncPlayEventsSub;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scheduleDesktopUpdateCheck();
+    ref.read(syncPlayRuntimeCoordinatorProvider);
+    final manager = ref.read(syncPlayManagerProvider);
+    _syncPlayEventsSub = manager.uiEvents.listen(_handleSyncPlayEvent);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _syncPlayEventsSub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final coordinator = ref.read(syncPlayRuntimeCoordinatorProvider);
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
+      coordinator.appDidEnterBackground();
+    } else if (state == AppLifecycleState.resumed) {
+      coordinator.appDidBecomeActive();
+    }
   }
 
   void _scheduleDesktopUpdateCheck() {
@@ -273,6 +298,47 @@ class _ConnectivityListenerState
       }
       unawaited(_runDesktopUpdateCheck());
     });
+  }
+
+  void _handleSyncPlayEvent(SyncPlayUiEvent event) {
+    if (!mounted) return;
+    switch (event) {
+      case SyncPlayUserJoinedEvent(:final userName):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$userName joined SyncPlay group'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      case SyncPlayUserLeftEvent(:final userName):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$userName left SyncPlay group'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      case SyncPlayLibraryAccessDeniedEvent():
+        final navContext =
+            appRouter.routerDelegate.navigatorKey.currentContext ?? context;
+        showDialog<void>(
+          context: navContext,
+          builder: (ctx) => AlertDialog(
+            icon: const Icon(Icons.lock_outline_rounded),
+            title: const Text('SyncPlay access denied'),
+            content: const Text(
+              'You do not have access to one or more items in this SyncPlay '
+              'group. Ask the group owner to verify library permissions or '
+              'choose a different queue.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+    }
   }
 
   Future<void> _runDesktopUpdateCheck() async {

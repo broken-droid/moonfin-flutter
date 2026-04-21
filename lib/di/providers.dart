@@ -9,6 +9,8 @@ import '../data/services/media_server_client_factory.dart';
 import '../data/services/socket_handler.dart';
 import '../data/services/sync_service.dart';
 import '../preference/user_preferences.dart';
+import '../syncplay/syncplay_manager.dart';
+import '../syncplay/syncplay_runtime_coordinator.dart';
 import 'injection.dart';
 
 final deviceInfoProvider = Provider<DeviceInfo>(
@@ -66,4 +68,19 @@ final syncServiceProvider =
 
 final syncStateProvider = Provider<SyncState>((ref) {
   return ref.watch(syncServiceProvider).state;
+});
+
+final syncPlayManagerProvider = ChangeNotifierProvider<SyncPlayManager>(
+  (_) => getIt<SyncPlayManager>(),
+);
+
+final syncPlayRuntimeCoordinatorProvider =
+    Provider<SyncPlayRuntimeCoordinator>((ref) {
+  final coordinator = SyncPlayRuntimeCoordinator(
+    ref.read(syncPlayManagerProvider),
+    ref.read(socketHandlerProvider),
+  );
+  coordinator.start(ref, activeServerClientProvider);
+  ref.onDispose(coordinator.stop);
+  return coordinator;
 });

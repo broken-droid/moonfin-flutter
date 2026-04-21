@@ -84,6 +84,28 @@ class PlaybackManager {
     _resolverConfigurator = configurator;
   }
 
+  /// Optional interceptor invoked before transport actions (resume/pause/seek/stop).
+  /// Returning `true` indicates the action was handled and the backend call should
+  /// be skipped. Used by SyncPlay to redirect local transport into a group request.
+  Future<bool> Function(TransportAction action, {Duration? position})?
+      _transportInterceptor;
+
+  void setTransportInterceptor(
+      Future<bool> Function(TransportAction action, {Duration? position})?
+          interceptor) {
+    _transportInterceptor = interceptor;
+  }
+
+  Future<bool> _maybeIntercept(TransportAction action, {Duration? position}) async {
+    final interceptor = _transportInterceptor;
+    if (interceptor == null) return false;
+    try {
+      return await interceptor(action, position: position);
+    } catch (_) {
+      return false;
+    }
+  }
+
   void _bindStreams(PlayerBackend backend) {
     _streamSubs.addAll([
       backend.positionStream.listen((pos) {
@@ -174,6 +196,7 @@ class PlaybackManager {
   }
 
   Future<void> _autoNext() async {
+    if (await _maybeIntercept(TransportAction.next)) return;
     _mediaSourceId = null;
     if (_isOfflinePlayback) {
       await _stopAndReportCurrent(skipQueueChange: true);
@@ -396,10 +419,12 @@ class PlaybackManager {
   }
 
   Future<void> resume() async {
+    if (await _maybeIntercept(TransportAction.resume)) return;
     await _backend?.resume();
   }
 
   Future<void> pause() async {
+    if (await _maybeIntercept(TransportAction.pause)) return;
     await _backend?.pause();
   }
 
@@ -445,11 +470,13 @@ class PlaybackManager {
     await _backend!.resume();
   }
 
-  Future<void> stop() async {
+  Future<void> stop({bool userInitiated = true}) async {
+    if (userInitiated && await _maybeIntercept(TransportAction.stop)) return;
     await _stopAndReportCurrent();
   }
 
   Future<void> seekTo(Duration position) async {
+    if (await _maybeIntercept(TransportAction.seek, position: position)) return;
     _lastKnownPosition = position;
     await _backend?.seekTo(position);
   }
@@ -460,6 +487,7 @@ class PlaybackManager {
   }
 
   Future<void> next() async {
+    if (await _maybeIntercept(TransportAction.next)) return;
     if (_isManualNexting || _isAutoNexting) return;
     _isManualNexting = true;
     _mediaSourceId = null;
@@ -475,6 +503,7 @@ class PlaybackManager {
   }
 
   Future<void> previous() async {
+    if (await _maybeIntercept(TransportAction.previous)) return;
     if (state.position.inSeconds > 3) {
       await seekTo(Duration.zero);
       return;
@@ -817,3 +846,6 @@ class PlaybackManager {
     state.dispose();
   }
 }
+
+/// Transport actions that may be intercepted before reaching the backend.
+enum TransportAction { resume, pause, seek, stop, next, previous }

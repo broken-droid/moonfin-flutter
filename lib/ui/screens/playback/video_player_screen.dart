@@ -35,6 +35,7 @@ import '../../widgets/track_selector_dialog.dart';
 import '../../widgets/playback/skip_segment_overlay.dart';
 import '../../widgets/playback/next_up_overlay.dart';
 import '../../widgets/playback/still_watching_dialog.dart';
+import '../../widgets/syncplay/syncplay_player_button.dart';
 import '../../../l10n/app_localizations.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -626,7 +627,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _tvTransportLastFocus.dispose();
     _tvSecondaryLastFocus.dispose();
     _pipService.enableAutoPiP(false);
-    if (!_isStopping) _manager.stop();
+    if (!_isStopping) _manager.stop(userInitiated: false);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([]);
     super.dispose();
@@ -1126,7 +1127,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (_isStopping) return;
     _isStopping = true;
     _pipService.enableAutoPiP(false);
-    await _manager.stop();
+    await _manager.stop(userInitiated: false);
     if (PlatformDetection.isDesktop && _wasDesktopFullscreenOnEntry == false) {
       final isFullscreen = await windowManager.isFullScreen();
       if (isFullscreen) {
@@ -2413,6 +2414,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         }
 
         final secondaryButtons = <Widget>[
+          SyncPlayPlayerButton(
+            size: secondaryIconSize,
+            extent: secondaryExtent,
+          ),
           speedButton,
           if (hasChapters)
             _controlButton(

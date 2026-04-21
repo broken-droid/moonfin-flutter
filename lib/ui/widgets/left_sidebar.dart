@@ -22,6 +22,7 @@ import '../navigation/destinations.dart';
 import '../navigation/home_refresh_bus.dart';
 import 'navigation_layout.dart';
 import 'settings/settings_panel.dart';
+import '../screens/syncplay/syncplay_screen.dart';
 import '../screens/settings/settings_side_panel.dart';
 import 'seerr_icons.dart';
 import 'shuffle_options_dialog.dart';
@@ -562,7 +563,14 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   icon: Icons.groups_rounded,
                   label: l10n.syncPlay,
                   showLabel: _showLabels,
-                  onPressed: () {},
+                  onPressed: () {
+                    _onNavigate();
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SyncPlayScreen(),
+                      ),
+                    );
+                  },
                 ),
               if (pluginSync.pluginAvailable &&
                   pluginSync.seerrInfoAvailable &&

@@ -96,7 +96,7 @@ class _MiniAudioPlayerState extends State<MiniAudioPlayer> {
       direction: DismissDirection.horizontal,
       onDismissed: (_) {
         setState(() => _dismissedItemId = item.id);
-        unawaited(_manager.stop());
+        unawaited(_manager.stop(userInitiated: false));
       },
       child: GestureDetector(
         onTap: () => appRouter.push(Destinations.audioPlayer),

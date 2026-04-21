@@ -10,6 +10,8 @@ class MediaServerClientFactory {
 
   MediaServerClientFactory({required this.deviceInfo});
 
+  Map<String, MediaServerClient> get clients => Map.unmodifiable(_clients);
+
   MediaServerClient getClient({
     required String serverId,
     required ServerType serverType,

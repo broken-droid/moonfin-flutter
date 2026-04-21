@@ -1378,9 +1378,14 @@ class _ContentRowsState extends State<_ContentRows>
     final infoTopPadding = safeTop + navbarHeight + 8;
     final infoAreaHeight = InfoArea.fixedHeight(isMobile: PlatformDetection.useMobileUi);
     final infoBottomPadding = includeMediaBar ? 20.0 : 8.0;
-    final infoPlaceholderHeight = (!_infoRevealed || !showInfoOverlay)
-        ? (navbarIsTop ? infoTopPadding : infoBottomPadding)
-        : infoTopPadding + infoAreaHeight + infoBottomPadding;
+    final double infoPlaceholderHeight;
+    if (!showInfoOverlay) {
+      infoPlaceholderHeight = 0.0;
+    } else if (!_infoRevealed) {
+      infoPlaceholderHeight = navbarIsTop ? infoTopPadding : infoBottomPadding;
+    } else {
+      infoPlaceholderHeight = infoTopPadding + infoAreaHeight + infoBottomPadding;
+    }
     final overlayBottom = infoTopPadding + infoAreaHeight;
     final rowExtents = rows
         .map((row) => _estimatedRowExtent(row, posterSize, prefs))

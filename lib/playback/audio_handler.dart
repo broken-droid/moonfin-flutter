@@ -127,7 +127,7 @@ class MoonfinAudioHandler extends BaseAudioHandler
       sub.cancel();
     }
     _subs.clear();
-    await _manager.stop();
+    await _manager.stop(userInitiated: false);
     await super.stop();
   }
 

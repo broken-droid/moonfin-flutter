@@ -12,6 +12,7 @@ import '../../playback/media_kit_player_backend.dart';
 import '../../playback/offline_stream_resolver.dart';
 import '../../platform/pip_service.dart';
 import '../../preference/user_preferences.dart';
+import '../../syncplay/syncplay_manager.dart';
 
 final _getIt = GetIt.instance;
 
@@ -36,6 +37,13 @@ void registerPlaybackModule() {
   );
   _getIt.registerLazySingleton<OfflinePlaybackTracker>(
     () => OfflinePlaybackTracker(_getIt<OfflineRepository>()),
+  );
+
+  _getIt.registerLazySingleton<SyncPlayManager>(
+    () => SyncPlayManager(
+      _getIt<PlaybackManager>(),
+      _getIt<UserPreferences>(),
+    ),
   );
 }
 

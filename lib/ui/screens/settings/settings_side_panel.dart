@@ -8,6 +8,7 @@ import '../../../data/services/plugin_sync_service.dart';
 import '../../../util/platform_detection.dart';
 
 import '../../../auth/store/authentication_preferences.dart';
+import '../../../data/services/media_server_client_factory.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_binding.dart';
@@ -30,6 +31,7 @@ import 'screensaver_settings_screen.dart';
 import 'seerr_config_screen.dart';
 import 'settings_app_bar.dart';
 import 'subtitle_settings_screen.dart';
+import '../syncplay/syncplay_screen.dart';
 
 class SettingsSidePanel extends StatefulWidget {
   const SettingsSidePanel({super.key});
@@ -69,8 +71,18 @@ class _SettingsSidePanelState extends State<SettingsSidePanel> {
     super.dispose();
   }
 
+  bool _isActiveServerJellyfin() {
+    try {
+      final factory = GetIt.instance<MediaServerClientFactory>();
+      return factory.getActiveClient().serverType == ServerType.jellyfin;
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isJellyfinActive = _isActiveServerJellyfin();
     final entries = <_PanelEntry>[
       _PanelEntry(
         icon: Icons.people,
@@ -113,13 +125,14 @@ class _SettingsSidePanelState extends State<SettingsSidePanel> {
         onTap: () =>
             context.pushSettingsScreen(const _PlaybackCategoryScreen()),
       ),
-      _PanelEntry(
-        icon: Icons.groups,
-        title: 'SyncPlay',
-        subtitle: 'Synchronized playback settings',
-        onTap: () =>
-            context.pushSettingsScreen(const _SyncPlaySettingsScreen()),
-      ),
+      if (isJellyfinActive)
+        _PanelEntry(
+          icon: Icons.groups,
+          title: 'SyncPlay',
+          subtitle: 'Synchronized playback settings',
+          onTap: () =>
+              context.pushSettingsScreen(const _SyncPlaySettingsScreen()),
+        ),
       _PanelEntry(
         icon: Icons.lock,
         title: 'Parental Controls',
@@ -1020,11 +1033,29 @@ class _SyncPlaySettingsScreenState extends State<_SyncPlaySettingsScreen> {
       appBar: buildSettingsAppBar(context, const Text('SyncPlay')),
       body: ListView(
         children: [
+          ListTile(
+            leading: const Icon(Icons.group_work),
+            title: const Text('Open Groups'),
+            subtitle: const Text('Create, join, or manage SyncPlay groups'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const SyncPlayScreen(),
+              ),
+            ),
+          ),
+          const Divider(),
           SwitchPreferenceTile(
             preference: UserPreferences.syncPlayEnabled,
             title: 'Enabled',
             subtitle: 'Enable SyncPlay synchronized playback',
             icon: Icons.groups,
+          ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.syncPlayAdvancedCorrectionEnabled,
+            title: 'Advanced Correction',
+            subtitle: 'Use lead/late tolerances and drift correction',
+            icon: Icons.tune,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.syncPlayEnableSyncCorrection,

@@ -23,6 +23,7 @@ import 'api/admin_api_keys_api.dart';
 import 'api/admin_backup_api.dart';
 import 'api/admin_live_tv_api.dart';
 import 'api/admin_items_api.dart';
+import 'api/syncplay_api.dart';
 
 abstract class MediaServerClient {
   ServerType get serverType;
@@ -60,6 +61,8 @@ abstract class MediaServerClient {
   AdminBackupApi get adminBackupApi;
   AdminLiveTvApi get adminLiveTvApi;
   AdminItemsApi get adminItemsApi;
+
+  SyncPlayApi? get syncPlayApi => null;
 
   void dispose();
 }

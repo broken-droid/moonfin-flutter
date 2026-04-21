@@ -37,6 +37,7 @@ import '../../widgets/track_action_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../../playback/offline_playback_launcher.dart';
+import '../../../syncplay/syncplay_manager.dart';
 import '../../../util/audio_labels.dart';
 import '../../../util/download_utils.dart';
 import '../../../util/platform_detection.dart';
@@ -2938,6 +2939,14 @@ class _ActionButtonsState extends State<_ActionButtons> {
           icon: Icons.movie_outlined,
           onPressed: () => _playTrailer(context, item),
         ),
+      if (!isBook && !isPhoto && _isInSyncPlayGroup())
+        _DetailActionButton(
+          label: 'Watch with group',
+          icon: Icons.groups_rounded,
+          onPressed: () => _watchWithGroup(context, item),
+          isActive: true,
+          activeColor: const Color(0xFF00A4DC),
+        ),
       _DetailActionButton(
           label: isBook
               ? (item.isPlayed ? l10n.finished : l10n.unread)
@@ -3145,6 +3154,25 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
 
     return null;
+  }
+
+  bool _isInSyncPlayGroup() {
+    try {
+      return GetIt.instance<SyncPlayManager>().state.enabled;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _watchWithGroup(BuildContext context, AggregatedItem item) {
+    _play(context, item);
+    final syncPlay = GetIt.instance<SyncPlayManager>();
+    final groupName = syncPlay.state.groupName ?? 'group';
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Syncing playback to $groupName')),
+      );
+    }
   }
 
   void _play(

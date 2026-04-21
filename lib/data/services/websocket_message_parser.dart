@@ -26,6 +26,8 @@ class WebSocketMessageParser {
       'Play' => _parsePlay(data),
       'Playstate' => _parsePlaystate(data),
       'GeneralCommand' => _parseGeneralCommand(data),
+      'SyncPlayCommand' => _parseSyncPlayCommand(data),
+      'SyncPlayGroupUpdate' => _parseSyncPlayGroupUpdate(data),
       'ServerRestarting' => const ServerRestartingMessage(),
       'ServerShuttingDown' => const ServerShuttingDownMessage(),
       'SessionEnded' => _parseSessionEnded(data),
@@ -126,4 +128,18 @@ class WebSocketMessageParser {
           ?.map((e) => e.toString())
           .toList() ??
       const [];
+
+  static SyncPlayCommandMessage? _parseSyncPlayCommand(dynamic data) {
+    if (data is! Map<String, dynamic>) return null;
+    final command = SyncPlayCommand.fromJson(data);
+    if (command == null) return null;
+    return SyncPlayCommandMessage(command);
+  }
+
+  static SyncPlayGroupUpdateMessage? _parseSyncPlayGroupUpdate(dynamic data) {
+    if (data is! Map<String, dynamic>) return null;
+    final update = SyncPlayGroupUpdate.fromJson(data);
+    if (update == null) return null;
+    return SyncPlayGroupUpdateMessage(update);
+  }
 }
