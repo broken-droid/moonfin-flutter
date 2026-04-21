@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/services/plugin_sync_service.dart';
+import '../../../di/providers.dart';
 import '../../../util/platform_detection.dart';
 
 import '../../../auth/store/authentication_preferences.dart';
 import '../../../data/services/media_server_client_factory.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
+import '../../navigation/destinations.dart';
 import '../../widgets/settings/preference_binding.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../widgets/settings/settings_panel.dart';
@@ -33,14 +37,14 @@ import 'settings_app_bar.dart';
 import 'subtitle_settings_screen.dart';
 import '../syncplay/syncplay_screen.dart';
 
-class SettingsSidePanel extends StatefulWidget {
+class SettingsSidePanel extends ConsumerStatefulWidget {
   const SettingsSidePanel({super.key});
 
   @override
-  State<SettingsSidePanel> createState() => _SettingsSidePanelState();
+  ConsumerState<SettingsSidePanel> createState() => _SettingsSidePanelState();
 }
 
-class _SettingsSidePanelState extends State<SettingsSidePanel> {
+class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
   final _firstFocusNode = FocusNode(debugLabel: 'TvSettingsPanelFirstItem');
 
   void _requestInitialFocus({int attempt = 0}) {
@@ -83,6 +87,7 @@ class _SettingsSidePanelState extends State<SettingsSidePanel> {
   @override
   Widget build(BuildContext context) {
     final isJellyfinActive = _isActiveServerJellyfin();
+    final showAdmin = !PlatformDetection.isTV && ref.watch(isAdminProvider);
     final entries = <_PanelEntry>[
       _PanelEntry(
         icon: Icons.people,
@@ -92,6 +97,16 @@ class _SettingsSidePanelState extends State<SettingsSidePanel> {
         onTap: () =>
             context.pushSettingsScreen(const _AuthenticationCategoryScreen()),
       ),
+      if (showAdmin)
+        _PanelEntry(
+          icon: Icons.admin_panel_settings,
+          title: 'Administration',
+          subtitle: 'Server settings, users, libraries',
+          onTap: () {
+            Navigator.of(context, rootNavigator: true).pop();
+            GoRouter.of(context).push(Destinations.admin);
+          },
+        ),
       _PanelEntry(
         icon: Icons.brush,
         title: 'Customization',
