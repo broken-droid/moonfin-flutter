@@ -3732,7 +3732,9 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                 bookOrganizeMode: _bookOrganizeMode,
                 playedFilter: _vm.playedFilter,
                 favoriteFilter: _vm.favoriteFilter,
-                onBack: () => context.pop(),
+                onBack: () => PlatformDetection.isWeb
+                  ? context.popOrHome()
+                  : context.pop(),
                 onSort: () => _showFilterSortDialog(context),
                 onSettings: () => _showSettingsDialog(context),
                 onBookTabChanged: (tab) => setState(() => _bookMediaTab = tab),

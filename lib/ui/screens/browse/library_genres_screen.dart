@@ -308,7 +308,8 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
             children: [
               _GenresHeader(
                 libraryName: _libraryName,
-                onBack: () => context.pop(),
+                onBack: () =>
+                    PlatformDetection.isWeb ? context.popOrHome() : context.pop(),
               ),
               Expanded(child: _buildBody()),
             ],

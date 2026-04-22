@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -460,7 +461,10 @@ class _TopToolbarState extends State<TopToolbar> {
                   icon: Icons.search_rounded,
                   label: l10n.search,
                   isActive: _isActive(Destinations.search),
-                  onPressed: () => context.push(Destinations.search),
+                  onPressed: () {
+                    if (_isActive(Destinations.search)) return;
+                    context.navigateTopLevel(Destinations.search);
+                  },
                 ),
               ),
               if (showShuffle) ...[
@@ -489,7 +493,10 @@ class _TopToolbarState extends State<TopToolbar> {
                     ),
                     label: l10n.genres,
                     isActive: _isActive(Destinations.allGenres),
-                    onPressed: () => context.push(Destinations.allGenres),
+                    onPressed: () {
+                      if (_isActive(Destinations.allGenres)) return;
+                      context.navigateTopLevel(Destinations.allGenres);
+                    },
                   ),
                 ),
               ],
@@ -501,7 +508,10 @@ class _TopToolbarState extends State<TopToolbar> {
                     icon: Icons.favorite_rounded,
                     label: l10n.favorites,
                     isActive: _isActive(Destinations.allFavorites),
-                    onPressed: () => context.push(Destinations.allFavorites),
+                    onPressed: () {
+                      if (_isActive(Destinations.allFavorites)) return;
+                      context.navigateTopLevel(Destinations.allFavorites);
+                    },
                   ),
                 ),
               ],
@@ -513,7 +523,10 @@ class _TopToolbarState extends State<TopToolbar> {
                     icon: Icons.folder_rounded,
                     label: l10n.folders,
                     isActive: _isActive(Destinations.folderView),
-                    onPressed: () => context.push(Destinations.folderView),
+                    onPressed: () {
+                      if (_isActive(Destinations.folderView)) return;
+                      context.navigateTopLevel(Destinations.folderView);
+                    },
                   ),
                 ),
               ],
@@ -551,8 +564,10 @@ class _TopToolbarState extends State<TopToolbar> {
                             : JellyseerrIcon(size: size, color: color),
                         label: label,
                         isActive: _isActive(Destinations.seerrDiscover),
-                        onPressed: () =>
-                            context.push(Destinations.seerrDiscover),
+                        onPressed: () {
+                          if (_isActive(Destinations.seerrDiscover)) return;
+                          context.navigateTopLevel(Destinations.seerrDiscover);
+                        },
                       );
                     },
                   ),
@@ -597,11 +612,11 @@ class _TopToolbarState extends State<TopToolbar> {
       surfaceColor: _toolbarSurfaceColor(),
       onLibraryTap: (lib) {
         if (lib.collectionType == 'music') {
-          context.push('/music/${lib.id}');
+          context.navigateTopLevel('/music/${lib.id}');
         } else if (lib.collectionType == 'livetv') {
-          context.push(Destinations.liveTvGuide);
+          context.navigateTopLevel(Destinations.liveTvGuide);
         } else {
-          context.push('/library/${lib.id}');
+          context.navigateTopLevel('/library/${lib.id}');
         }
       },
     );
@@ -790,85 +805,89 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
     final screenHeight = MediaQuery.of(context).size.height;
     final maxMenuHeight = (screenHeight - 120).clamp(220.0, 520.0);
 
+    final content = Align(
+      alignment: _openToLeft ? Alignment.topRight : Alignment.topLeft,
+      child: MouseRegion(
+        onEnter: (_) {
+          _dropdownHovered = true;
+          _hideTimer?.cancel();
+        },
+        onExit: (_) {
+          _dropdownHovered = false;
+          _scheduleHide();
+        },
+        child: Material(
+          color: Colors.transparent,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: kIsWeb
+                ? _dropdownContent(maxMenuHeight)
+                : BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: _dropdownContent(maxMenuHeight),
+                  ),
+          ),
+        ),
+      ),
+    );
+
     return CompositedTransformFollower(
       link: _layerLink,
       targetAnchor: _openToLeft ? Alignment.bottomRight : Alignment.bottomLeft,
       followerAnchor: _openToLeft ? Alignment.topRight : Alignment.topLeft,
       offset: Offset.zero,
-      child: Align(
-        alignment: _openToLeft ? Alignment.topRight : Alignment.topLeft,
-        child: MouseRegion(
-          onEnter: (_) {
-            _dropdownHovered = true;
-            _hideTimer?.cancel();
-          },
-          onExit: (_) {
-            _dropdownHovered = false;
-            _scheduleHide();
-          },
-          child: Material(
-            color: Colors.transparent,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(
-                  constraints: BoxConstraints(
-                    minWidth: 180,
-                    maxWidth: _menuWidth,
-                    maxHeight: maxMenuHeight,
-                  ),
-                  decoration: BoxDecoration(
-                    color: widget.surfaceColor,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        blurRadius: 24,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: ScrollConfiguration(
-                    behavior: const MaterialScrollBehavior().copyWith(
-                      scrollbars: false,
-                    ),
-                    child: ListView(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      children: widget.libraries.indexed
-                          .map(
-                            (entry) => _LibraryDropdownItem(
-                              focusNode: _itemFocusNodes[entry.$1],
-                              isFirst: entry.$1 == 0,
-                              isLast: entry.$1 == widget.libraries.length - 1,
-                              name: entry.$2.name,
-                              onFocusChanged: (_) =>
-                                  _handleManagedFocusChange(),
-                              onMoveUpFromFirst: () =>
-                                  _hideDropdown(focusButton: true),
-                              onMoveDown: entry.$1 < widget.libraries.length - 1
-                                  ? () => _itemFocusNodes[entry.$1 + 1]
-                                        .requestFocus()
-                                  : null,
-                              onMoveUp: entry.$1 > 0
-                                  ? () => _itemFocusNodes[entry.$1 - 1]
-                                        .requestFocus()
-                                  : null,
-                              onTap: () {
-                                _hideDropdown();
-                                widget.onLibraryTap(entry.$2);
-                              },
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+      child: content,
+    );
+  }
+
+  Widget _dropdownContent(double maxMenuHeight) {
+    return Container(
+      constraints: BoxConstraints(
+        minWidth: 180,
+        maxWidth: _menuWidth,
+        maxHeight: maxMenuHeight,
+      ),
+      decoration: BoxDecoration(
+        color: widget.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
           ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: ScrollConfiguration(
+        behavior: const MaterialScrollBehavior().copyWith(
+          scrollbars: false,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          children: widget.libraries.indexed
+              .map(
+                (entry) => _LibraryDropdownItem(
+                  focusNode: _itemFocusNodes[entry.$1],
+                  isFirst: entry.$1 == 0,
+                  isLast: entry.$1 == widget.libraries.length - 1,
+                  name: entry.$2.name,
+                  onFocusChanged: (_) => _handleManagedFocusChange(),
+                  onMoveUpFromFirst: () => _hideDropdown(focusButton: true),
+                  onMoveDown: entry.$1 < widget.libraries.length - 1
+                      ? () => _itemFocusNodes[entry.$1 + 1].requestFocus()
+                      : null,
+                  onMoveUp: entry.$1 > 0
+                      ? () => _itemFocusNodes[entry.$1 - 1].requestFocus()
+                      : null,
+                  onTap: () {
+                    _hideDropdown();
+                    widget.onLibraryTap(entry.$2);
+                  },
+                ),
+              )
+              .toList(),
         ),
       ),
     );

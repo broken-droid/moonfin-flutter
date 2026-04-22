@@ -485,7 +485,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 label: l10n.home,
                 focusNode: _homeFocusNode,
                 showLabel: _showLabels,
-                isActive: false,
+                isActive: _isActive(Destinations.home),
                 onPressed: () {
                   _onNavigate();
                   if (_isActive(Destinations.home)) {
@@ -503,7 +503,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 isActive: _isActive(Destinations.search),
                 onPressed: () {
                   _onNavigate();
-                  context.push(Destinations.search);
+                  if (_isActive(Destinations.search)) return;
+                  context.navigateTopLevel(Destinations.search);
                 },
               ),
               if (showShuffle)
@@ -533,7 +534,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   isActive: _isActive(Destinations.allGenres),
                   onPressed: () {
                     _onNavigate();
-                    context.push(Destinations.allGenres);
+                    if (_isActive(Destinations.allGenres)) return;
+                    context.navigateTopLevel(Destinations.allGenres);
                   },
                 ),
               if (showFavorites)
@@ -544,7 +546,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   isActive: _isActive(Destinations.allFavorites),
                   onPressed: () {
                     _onNavigate();
-                    context.push(Destinations.allFavorites);
+                    if (_isActive(Destinations.allFavorites)) return;
+                    context.navigateTopLevel(Destinations.allFavorites);
                   },
                 ),
               if (showFolders)
@@ -555,7 +558,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   isActive: _isActive(Destinations.folderView),
                   onPressed: () {
                     _onNavigate();
-                    context.push(Destinations.folderView);
+                    if (_isActive(Destinations.folderView)) return;
+                    context.navigateTopLevel(Destinations.folderView);
                   },
                 ),
               if (showSyncPlay)
@@ -591,7 +595,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
                       isActive: _isActive(Destinations.seerrDiscover),
                       onPressed: () {
                         _onNavigate();
-                        context.push(Destinations.seerrDiscover);
+                        if (_isActive(Destinations.seerrDiscover)) return;
+                        context.navigateTopLevel(Destinations.seerrDiscover);
                       },
                     );
                   },
@@ -636,11 +641,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                                   onPressed: () {
                                     _onNavigate();
                                     if (lib.collectionType == 'music') {
-                                      context.push('/music/${lib.id}');
+                                      context.navigateTopLevel('/music/${lib.id}');
                                     } else if (lib.collectionType == 'livetv') {
-                                      context.push(Destinations.liveTvGuide);
+                                      context.navigateTopLevel(Destinations.liveTvGuide);
                                     } else {
-                                      context.push('/library/${lib.id}');
+                                      context.navigateTopLevel('/library/${lib.id}');
                                     }
                                   },
                                 ),

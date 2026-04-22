@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import '../../util/platform_detection.dart';
 
 extension NavigationX on BuildContext {
   void popOrHome() {
@@ -8,10 +9,24 @@ extension NavigationX on BuildContext {
     if (!mounted) return;
 
     if (router.canPop()) {
-      router.pop();
-    } else {
-      router.go(Destinations.home);
+      try {
+        router.pop();
+        return;
+      } catch (_) {
+      }
     }
+    router.go(Destinations.home);
+  }
+
+  void navigateTopLevel(String route) {
+    final router = GoRouter.of(this);
+    if (!mounted) return;
+
+    if (PlatformDetection.isWeb) {
+      router.go(route);
+      return;
+    }
+    router.push(route);
   }
 }
 

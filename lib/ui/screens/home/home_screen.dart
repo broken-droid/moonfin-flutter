@@ -20,6 +20,7 @@ import '../../../preference/user_preferences.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
+import '../../../util/server_url.dart';
 import '../../navigation/app_router.dart';
 import '../../navigation/destinations.dart';
 import '../../../data/models/media_bar_state.dart';
@@ -356,6 +357,14 @@ class _ContentRowsState extends State<_ContentRows>
   static const _focusHandoffCurve = Curves.easeInOutCubic;
   static const _mediaBarFadeDuration = Duration(milliseconds: 220);
 
+  void _markUserGesture() {
+    if (!kIsWeb) return;
+    if (!widget.prefs.get(UserPreferences.previewAudioEnabled)) return;
+    final player = _previewPlayer;
+    if (player == null || _activePreviewKey == null) return;
+    unawaited(player.setVolume(100.0));
+  }
+
   int? _focusedRowIndex(FocusNode? node) {
     if (node == null) return null;
     for (final entry in _firstItemFocusNodes.entries) {
@@ -453,14 +462,23 @@ class _ContentRowsState extends State<_ContentRows>
     return '${item.serverId}:${item.id}';
   }
 
-  MediaServerClient _clientForItem(AggregatedItem item) {
+  MediaServerClient? _clientForItem(AggregatedItem item) {
+    final factory = GetIt.instance<MediaServerClientFactory>();
+    final fromFactory = factory.getClientIfExists(item.serverId);
+    if (fromFactory != null) {
+      return fromFactory;
+    }
+
     final active = GetIt.instance<MediaServerClient>();
-    if (active.baseUrl == item.serverId) {
+    final normalizedActive = normalizeServerBaseUrl(active.baseUrl);
+    final normalizedServerId = normalizeServerBaseUrl(item.serverId);
+    if (normalizedActive.isNotEmpty &&
+        normalizedServerId.isNotEmpty &&
+        normalizedActive == normalizedServerId) {
       return active;
     }
 
-    final factory = GetIt.instance<MediaServerClientFactory>();
-    return factory.getClientIfExists(item.serverId) ?? active;
+    return null;
   }
 
   void _schedulePreview(AggregatedItem item, {required Duration delay}) {
@@ -501,8 +519,10 @@ class _ContentRowsState extends State<_ContentRows>
     _previewDelayTimer?.cancel();
     _previewStopTimer?.cancel();
     _previewRequestId++;
-    _previewPlayer?.stop();
-    if (releaseResources) {
+    if (!kIsWeb) {
+      _previewPlayer?.stop();
+    }
+    if (releaseResources || kIsWeb) {
       _previewPlayer?.dispose();
       _previewPlayer = null;
       _previewController = null;
@@ -529,10 +549,20 @@ class _ContentRowsState extends State<_ContentRows>
     final requestId = ++_previewRequestId;
 
     _previewStopTimer?.cancel();
-    _previewPlayer?.stop();
+    if (kIsWeb) {
+      _previewPlayer?.dispose();
+      _previewPlayer = null;
+      _previewController = null;
+    } else {
+      _previewPlayer?.stop();
+    }
 
     try {
       final client = _clientForItem(item);
+      if (client == null) {
+        _finishSharedPreview();
+        return;
+      }
       final target = await _resolvePreviewTargetItem(client, item);
       if (!mounted || target == null || requestId != _previewRequestId || _activePreviewKey != previewKey) {
         return;
@@ -541,14 +571,36 @@ class _ContentRowsState extends State<_ContentRows>
       final player = _ensureSharedPreviewPlayer();
       final seekPosition = _previewSeekPosition(target);
 
-      await player.setVolume(widget.prefs.get(UserPreferences.previewAudioEnabled) ? 100 : 0);
+      final previewAudioEnabled = widget.prefs.get(
+        UserPreferences.previewAudioEnabled,
+      );
+      final previewVolume = kIsWeb
+          ? 0.0
+          : (previewAudioEnabled ? 100.0 : 0.0);
+      await player.setVolume(previewVolume);
       if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
         return;
       }
 
-      await player.open(Media(_buildPreviewUrl(client, target, seekPosition)));
+      final previewUrl = _buildPreviewUrl(client, target, seekPosition);
+      final previewUri = Uri.tryParse(previewUrl);
+      if (previewUri == null ||
+          !previewUri.hasScheme ||
+          previewUri.host.isEmpty) {
+        _finishSharedPreview();
+        return;
+      }
+
+      await player.open(Media(previewUrl));
       if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
         return;
+      }
+
+      if (previewAudioEnabled) {
+        await player.setVolume(100.0);
+        if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
+          return;
+        }
       }
 
       await player.setPlaylistMode(PlaylistMode.loop);
@@ -701,6 +753,13 @@ class _ContentRowsState extends State<_ContentRows>
     AggregatedItem item,
     Duration startPosition,
   ) {
+    if (item.id.isEmpty) return '';
+
+    final baseUri = Uri.tryParse(client.baseUrl.trim());
+    if (baseUri == null || !baseUri.hasScheme || baseUri.host.isEmpty) {
+      return '';
+    }
+
     final mediaSourceId = item.mediaSources.isNotEmpty
         ? item.mediaSources.first['Id'] as String?
         : null;
@@ -720,11 +779,16 @@ class _ContentRowsState extends State<_ContentRows>
       if (client.accessToken != null) 'ApiKey': client.accessToken!,
     };
 
-    final path = kIsWeb
-        ? '${client.baseUrl}/Videos/${item.id}/stream.mp4'
-        : '${client.baseUrl}/Videos/${item.id}/stream';
+      final normalizedBasePath = baseUri.path.endsWith('/')
+        ? baseUri.path.substring(0, baseUri.path.length - 1)
+        : baseUri.path;
+      final streamPath = kIsWeb ? 'stream.mp4' : 'stream';
+      final fullPath =
+        '$normalizedBasePath/Videos/${item.id}/$streamPath';
 
-    return Uri.parse(path).replace(queryParameters: params).toString();
+      return baseUri
+        .replace(path: fullPath, queryParameters: params)
+        .toString();
   }
 
   bool _isMediaBarIncluded() {
@@ -1149,6 +1213,7 @@ class _ContentRowsState extends State<_ContentRows>
     required List<HomeRow> rows,
   }) {
     if (!event.isActionable) return KeyEventResult.ignored;
+    _markUserGesture();
     final key = event.logicalKey;
     if (key.isLeftKey && itemIndex == 0) {
       final navbarIsLeft = widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
@@ -1490,8 +1555,11 @@ class _ContentRowsState extends State<_ContentRows>
       );
     }
 
-    return Stack(
-      children: [
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_) => _markUserGesture(),
+      child: Stack(
+        children: [
         Positioned.fill(
           child: Focus(
             canRequestFocus: false,
@@ -1644,6 +1712,7 @@ class _ContentRowsState extends State<_ContentRows>
                       _stopPreviewFor(item);
                     },
                     onLongPress: () {
+                      _markUserGesture();
                       unawaited(_revealAndScrollToPinnedInfo());
                       widget.onItemSelected(item);
                       if (canPreview) {
@@ -1653,6 +1722,7 @@ class _ContentRowsState extends State<_ContentRows>
                       }
                     },
                     onTap: () {
+                      _markUserGesture();
                       _finishSharedPreview(releaseResources: true);
                       if (row.rowType == HomeRowType.libraryTiles) {
                         _navigateToLibrary(context, item);
@@ -1697,24 +1767,25 @@ class _ContentRowsState extends State<_ContentRows>
             ),
           ),
         ),
-        if (_infoRevealed && showInfoOverlay)
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: IgnorePointer(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  navbarLeftInset,
-                  infoTopPadding,
-                  16,
-                  8,
+          if (_infoRevealed && showInfoOverlay)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    navbarLeftInset,
+                    infoTopPadding,
+                    16,
+                    8,
+                  ),
+                  child: InfoArea(item: widget.selectedItem),
                 ),
-                child: InfoArea(item: widget.selectedItem),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

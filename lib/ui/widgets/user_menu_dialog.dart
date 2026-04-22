@@ -73,7 +73,7 @@ void showUserMenu(BuildContext context) {
               label: l10n.settings,
               onTap: () {
                 Navigator.pop(ctx);
-                context.push(Destinations.settings);
+                context.navigateTopLevel(Destinations.settings);
               },
             ),
             if (!PlatformDetection.isTV) ...[
@@ -89,7 +89,7 @@ void showUserMenu(BuildContext context) {
                 label: l10n.savedMedia,
                 onTap: () {
                   Navigator.pop(ctx);
-                  context.push(Destinations.downloads);
+                  context.navigateTopLevel(Destinations.downloads);
                 },
               ),
               _MenuRow(

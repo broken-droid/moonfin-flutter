@@ -701,8 +701,13 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
                                 maxWidth: w,
                                 maxHeight: h,
                                 child: WebYouTubeTrailer(
-                                  key: ValueKey(_activeYouTubeVideoId),
+                                  key: ValueKey(
+                                    '${_activeYouTubeVideoId}_${widget.prefs.get(UserPreferences.previewAudioEnabled)}',
+                                  ),
                                   videoId: _activeYouTubeVideoId!,
+                                  muted: !widget.prefs.get(
+                                    UserPreferences.previewAudioEnabled,
+                                  ),
                                 ),
                               );
                             },
