@@ -1,11 +1,11 @@
 {
-    "name": "moonfin",
-    "short_name": "moonfin",
+    "name": "Moonfin",
+    "short_name": "Moonfin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A premium client for Jellyfin",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
