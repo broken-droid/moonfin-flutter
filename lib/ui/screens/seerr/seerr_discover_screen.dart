@@ -15,6 +15,7 @@ import '../../navigation/destinations.dart';
 import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../../l10n/app_localizations.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w300';
@@ -323,19 +324,10 @@ class _Backdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    return FullscreenBackdropSwitcher(
+      imageUrl: url,
       duration: const Duration(milliseconds: 600),
-      child: url != null
-          ? SizedBox.expand(
-              key: ValueKey(url),
-              child: CachedNetworkImage(
-                imageUrl: url!,
-                fit: BoxFit.cover,
-                fadeInDuration: Duration.zero,
-                errorWidget: (_, __, ___) => const SizedBox.shrink(),
-              ),
-            )
-          : const SizedBox.expand(key: ValueKey('empty')),
+      fadeInDuration: Duration.zero,
     );
   }
 }

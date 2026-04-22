@@ -36,6 +36,7 @@ import '../../widgets/rating_display.dart';
 import '../../widgets/track_action_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
+import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../../syncplay/syncplay_manager.dart';
 import '../../../util/audio_labels.dart';
@@ -1303,15 +1304,10 @@ class _Backdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    return FullscreenBackdropSwitcher(
+      imageUrl: url,
       duration: BackgroundService.transitionDuration,
-      child:
-          url != null
-              ? SizedBox.expand(
-                key: ValueKey(url),
-                child: _blurredImage(url!, blurAmount),
-              )
-              : const SizedBox.expand(key: ValueKey('empty')),
+      imageBuilder: (imageUrl) => _blurredImage(imageUrl, blurAmount),
     );
   }
 

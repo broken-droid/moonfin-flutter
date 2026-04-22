@@ -12,6 +12,7 @@ import '../../../data/services/row_data_source.dart';
 import '../../../data/viewmodels/library_view_view_model.dart';
 import '../../../preference/user_preferences.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
 import '../../../l10n/app_localizations.dart';
@@ -80,15 +81,9 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
         children: [
           if (hasBackdrop)
             Positioned.fill(
-              child: AnimatedSwitcher(
+              child: FullscreenBackdropSwitcher(
+                imageUrl: _backdropUrl!,
                 duration: BackgroundService.transitionDuration,
-                child: CachedNetworkImage(
-                  key: ValueKey(_backdropUrl),
-                  imageUrl: _backdropUrl!,
-                  fit: BoxFit.cover,
-                  fadeInDuration: const Duration(milliseconds: 300),
-                  errorWidget: (_, __, ___) => const SizedBox.shrink(),
-                ),
               ),
             ),
           Positioned.fill(

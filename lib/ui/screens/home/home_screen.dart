@@ -35,6 +35,7 @@ import '../../widgets/responsive_layout.dart';
 import '../../widgets/seasonal_effects.dart';
 import '../../navigation/home_refresh_bus.dart';
 import '../../widgets/bounded_network_image.dart';
+import '../../widgets/fullscreen_backdrop_switcher.dart';
 import 'home_view_model.dart';
 
 const _homeBackground = Color(0xFF101528);
@@ -244,14 +245,10 @@ class _Backdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
+    return FullscreenBackdropSwitcher(
+      imageUrl: url,
       duration: BackgroundService.transitionDuration,
-      child: url != null
-          ? SizedBox.expand(
-              key: ValueKey(url),
-              child: _blurredImage(url!, blurAmount),
-            )
-          : const SizedBox.expand(key: ValueKey('empty')),
+      imageBuilder: (imageUrl) => _blurredImage(imageUrl, blurAmount),
     );
   }
 

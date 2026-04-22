@@ -11,6 +11,7 @@ import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/genre_grid_card.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -287,16 +288,9 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
         children: [
           if (hasBackdrop)
             Positioned.fill(
-              child: AnimatedSwitcher(
+              child: FullscreenBackdropSwitcher(
+                imageUrl: _backdropUrl!,
                 duration: BackgroundService.transitionDuration,
-                child: CachedNetworkImage(
-                  key: ValueKey(_backdropUrl),
-                  imageUrl: _backdropUrl!,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
-                  fadeInDuration: const Duration(milliseconds: 300),
-                  errorWidget: (_, __, ___) => const SizedBox.shrink(),
-                ),
               ),
             ),
           Positioned.fill(

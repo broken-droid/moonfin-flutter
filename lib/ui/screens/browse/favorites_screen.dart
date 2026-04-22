@@ -15,6 +15,7 @@ import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/rating_display.dart';
 import '../../../l10n/app_localizations.dart';
@@ -125,16 +126,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         children: [
           if (hasBackdrop)
             Positioned.fill(
-              child: AnimatedSwitcher(
+              child: FullscreenBackdropSwitcher(
+                imageUrl: _backdropUrl!,
                 duration: BackgroundService.transitionDuration,
-                child: CachedNetworkImage(
-                  key: ValueKey(_backdropUrl),
-                  imageUrl: _backdropUrl!,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
-                  fadeInDuration: const Duration(milliseconds: 300),
-                  errorWidget: (_, __, ___) => const SizedBox.shrink(),
-                ),
               ),
             ),
           Positioned.fill(
