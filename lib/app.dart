@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'data/services/app_update_service.dart';
+import 'data/services/download_service.dart';
 import 'di/providers.dart';
 import 'l10n/app_localizations.dart';
 import 'preference/user_preferences.dart';
@@ -259,6 +260,7 @@ class _ConnectivityListenerState
   bool? _wasOnline;
   bool _didScheduleUpdateCheck = false;
   StreamSubscription<SyncPlayUiEvent>? _syncPlayEventsSub;
+  StreamSubscription<String>? _downloadErrorSub;
 
   @override
   void initState() {
@@ -268,12 +270,18 @@ class _ConnectivityListenerState
     ref.read(syncPlayRuntimeCoordinatorProvider);
     final manager = ref.read(syncPlayManagerProvider);
     _syncPlayEventsSub = manager.uiEvents.listen(_handleSyncPlayEvent);
+    if (GetIt.instance.isRegistered<DownloadService>()) {
+      _downloadErrorSub = GetIt.instance<DownloadService>()
+          .errors
+          .listen(_handleDownloadError);
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _syncPlayEventsSub?.cancel();
+    _downloadErrorSub?.cancel();
     super.dispose();
   }
 
@@ -302,8 +310,7 @@ class _ConnectivityListenerState
     });
   }
 
-  void _handleSyncPlayEvent(SyncPlayUiEvent event) {
-    if (!mounted) return;
+  void _handleSyncPlayEvent(SyncPlayUiEvent event) {    if (!mounted) return;
     switch (event) {
       case SyncPlayUserJoinedEvent(:final userName):
         ScaffoldMessenger.of(context).showSnackBar(
@@ -341,6 +348,18 @@ class _ConnectivityListenerState
           ),
         );
     }
+  }
+
+  void _handleDownloadError(String message) {
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 5),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _runDesktopUpdateCheck() async {

@@ -13,7 +13,7 @@ import '../../data/services/plugin_sync_service.dart';
 final _getIt = GetIt.instance;
 
 void registerAuthModule() {
-  _getIt.registerLazySingleton(() => CredentialStore());
+  _getIt.registerLazySingleton(() => createCredentialStore());
   _getIt.registerLazySingleton(() => AuthenticationStore());
   _getIt.registerLazySingleton(() => AuthenticationPreferences(_getIt()));
   _getIt.registerLazySingleton(() => UserRepository());

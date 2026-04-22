@@ -22,6 +22,7 @@ import 'book_reader_service.dart';
 import 'download_notification_service.dart';
 import 'media_store_service.dart';
 import 'storage_path_service.dart';
+import 'web_download_helper.dart';
 
 class DownloadProgress {
   final String itemId;
@@ -148,6 +149,16 @@ class DownloadService extends ChangeNotifier {
   int get totalQueued => _totalQueued;
   int get completedCount => _completedCount;
   bool get isBatchDownloading => _totalQueued > 0 && _completedCount < _totalQueued;
+
+  final StreamController<String> _errorController =
+      StreamController<String>.broadcast();
+  Stream<String> get errors => _errorController.stream;
+
+  void _emitError(String message) {
+    if (!_errorController.isClosed) {
+      _errorController.add(message);
+    }
+  }
 
   DownloadService(this._client, this._notificationService) {
     _downloadDio = Dio(BaseOptions(
@@ -1082,6 +1093,17 @@ class DownloadService extends ChangeNotifier {
   }
 
   Future<void> downloadItem(AggregatedItem item, {DownloadQuality quality = DownloadQuality.original}) async {
+    if (PlatformDetection.isWeb) {
+      try {
+        final fullItem = await _ensureFullItem(item);
+        final url = _buildDownloadUrl(item.id, fullItem, quality);
+        final fileName = _buildFileName(fullItem, quality);
+        triggerBrowserDownload(url, fileName);
+      } catch (e) {
+        _emitError('Download failed: ${item.name} (${e.toString()})');
+      }
+      return;
+    }
     if (_cancelAllRequested) {
       if (_canClearCancelAllGate()) {
         _cancelAllRequested = false;
@@ -1106,6 +1128,7 @@ class DownloadService extends ChangeNotifier {
         fileName: item.name,
         error: 'WiFi-only mode enabled. Connect to WiFi to download.',
       );
+      _emitError('${item.name}: WiFi-only mode enabled. Connect to WiFi to download.');
       notifyListeners();
       return;
     }
@@ -1119,6 +1142,7 @@ class DownloadService extends ChangeNotifier {
           fileName: item.name,
           error: 'Storage limit reached. Free up space or increase the limit.',
         );
+        _emitError('${item.name}: Storage limit reached. Free up space or increase the limit.');
         notifyListeners();
         return;
       }
@@ -1355,6 +1379,7 @@ class DownloadService extends ChangeNotifier {
           itemName: item.name,
           error: friendlyError,
         );
+        _emitError('${item.name}: $friendlyError');
       }
     } on TimeoutException catch (e) {
       final friendlyError = _friendlyGenericError(e);
@@ -1371,6 +1396,7 @@ class DownloadService extends ChangeNotifier {
         itemName: item.name,
         error: friendlyError,
       );
+      _emitError('${item.name}: $friendlyError');
     } catch (e) {
       final friendlyError = e is PathAccessException
           ? 'Cannot write to download folder. '
@@ -1390,6 +1416,7 @@ class DownloadService extends ChangeNotifier {
         itemName: item.name,
         error: friendlyError,
       );
+      _emitError('${item.name}: $friendlyError');
     } finally {
       _downloadStartTimes.remove(item.id);
       _cancelTokens.remove(item.id);
@@ -1786,6 +1813,7 @@ class DownloadService extends ChangeNotifier {
   void dispose() {
     cancelAll();
     _downloadDio.close();
+    _errorController.close();
     super.dispose();
   }
 }

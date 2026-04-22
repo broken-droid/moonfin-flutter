@@ -98,3 +98,4 @@ app.*.map.json
 
 # Local vcpkg checkout (toolchain cache)
 /vcpkg/
+web/drift_worker.js.map

@@ -31,6 +31,17 @@
 
   <title>moonfin</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace') {
+        var tag = document.activeElement && document.activeElement.tagName;
+        var editable = document.activeElement && document.activeElement.isContentEditable;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && !editable) {
+          e.preventDefault();
+        }
+      }
+    });
+  </script>
 </head>
 <body>
   <!--
