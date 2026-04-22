@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -20,6 +21,7 @@ import '../../preference/user_preferences.dart';
 import '../navigation/destinations.dart';
 import '../../util/platform_detection.dart';
 import '../../l10n/app_localizations.dart';
+import 'bounded_network_image.dart';
 import 'rating_display.dart';
 import 'web_youtube_trailer.dart';
 
@@ -76,6 +78,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
   bool _trailerRevealArmed = false;
   bool _isTrailerPlaying = false;
   String? _activeYouTubeVideoId;
+  String? _pendingYouTubeVideoId;
 
   @override
   void initState() {
@@ -267,34 +270,34 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
 
   void _onPageChanged(int index) {
     setState(() => _currentIndex = index);
-    _prefetchAround(widget.viewModel.items, index);
     _startAutoAdvance();
     _cancelTrailerPreview();
     final items = widget.viewModel.items;
-    if (index < items.length) {
-      _scheduleTrailerPreview(items[index]);
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _prefetchAround(items, index);
+      if (index < items.length) {
+        _scheduleTrailerPreview(items[index]);
+      }
+    });
   }
 
   void _prefetchAround(List<MediaBarSlideItem> items, int centerIndex) {
     if (!mounted || items.isEmpty) return;
 
-    final cacheIndices = <int>{
-      centerIndex,
-      if (centerIndex + 1 < items.length) centerIndex + 1,
-      if (centerIndex + 2 < items.length) centerIndex + 2,
-      if (centerIndex + 3 < items.length) centerIndex + 3,
-      if (centerIndex - 1 >= 0) centerIndex - 1,
-    };
-
-    for (final i in cacheIndices) {
-      final item = items[i];
-      if (item.backdropUrl != null) {
-        precacheImage(CachedNetworkImageProvider(item.backdropUrl!), context);
-      }
-      if (item.logoUrl != null) {
-        precacheImage(CachedNetworkImageProvider(item.logoUrl!), context);
-      }
+    final next = centerIndex + 1;
+    if (next >= items.length) return;
+    final item = items[next];
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final cacheW = (widget.height * 16 / 9 * dpr).round();
+    if (item.backdropUrl != null) {
+      precacheImage(
+        ResizeImage(
+          CachedNetworkImageProvider(item.backdropUrl!),
+          width: cacheW,
+        ),
+        context,
+      );
     }
   }
 
@@ -333,6 +336,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     _isTrailerPlaying = false;
     _trailerPlayer?.stop();
     _activeTrailerItemId = null;
+    _pendingYouTubeVideoId = null;
     if (_activeYouTubeVideoId != null || _trailerVideoOpacity != 0.0) {
       setState(() {
         _activeYouTubeVideoId = null;
@@ -350,16 +354,19 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     String? streamUrl;
     bool useYouTubeHeaders = false;
     String? youTubeVideoId;
+    final webOnly = PlatformDetection.isWeb;
 
-    try {
-      final trailers = await client.itemsApi.getLocalTrailers(item.itemId);
-      if (!mounted || resolveId != _trailerResolveId) return;
+    if (!webOnly) {
+      try {
+        final trailers = await client.itemsApi.getLocalTrailers(item.itemId);
+        if (!mounted || resolveId != _trailerResolveId) return;
 
-      final trailerId = _firstItemId(trailers);
-      if (trailerId != null) {
-        streamUrl = _buildLocalTrailerUrl(client, trailerId);
-      }
-    } catch (_) {}
+        final trailerId = _firstItemId(trailers);
+        if (trailerId != null) {
+          streamUrl = _buildLocalTrailerUrl(client, trailerId);
+        }
+      } catch (_) {}
+    }
 
     List<Map<String, dynamic>> remoteTrailers = item.remoteTrailers;
     if (remoteTrailers.isEmpty) {
@@ -378,7 +385,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
         if (url == null) continue;
         final videoId = YouTubeStreamResolver.extractVideoId(url);
         if (videoId != null) {
-          if (PlatformDetection.isWeb) {
+          if (webOnly) {
             youTubeVideoId = videoId;
             break;
           }
@@ -386,7 +393,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
           if (streamUrl != null) {
             useYouTubeHeaders = true;
           }
-        } else {
+        } else if (!webOnly) {
           streamUrl = url;
         }
         if (!mounted || resolveId != _trailerResolveId) return;
@@ -397,11 +404,8 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     if (!mounted || resolveId != _trailerResolveId) return;
 
     if (youTubeVideoId != null) {
-      setState(() {
-        _activeTrailerItemId = item.itemId;
-        _activeYouTubeVideoId = youTubeVideoId;
-        _trailerVideoOpacity = 0;
-      });
+      _activeTrailerItemId = item.itemId;
+      _pendingYouTubeVideoId = youTubeVideoId;
       await _tryRevealPreparedTrailer(item, resolveId);
       return;
     }
@@ -436,6 +440,17 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     if (_activeTrailerItemId != item.itemId) return;
     if (widget.externallyPaused) return;
     if (!_isHomeRouteActive) return;
+
+    if (_pendingYouTubeVideoId != null) {
+      _isTrailerPlaying = true;
+      _autoAdvanceTimer?.cancel();
+      setState(() {
+        _activeYouTubeVideoId = _pendingYouTubeVideoId;
+        _trailerVideoOpacity = 1;
+      });
+      _pendingYouTubeVideoId = null;
+      return;
+    }
 
     if (_activeYouTubeVideoId != null) {
       _isTrailerPlaying = true;
@@ -626,7 +641,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       onExit: (_) => _setPaused(false),
       child: Focus(
         focusNode: widget.focusNode,
-        autofocus: widget.focusNode == null,
+        autofocus: widget.focusNode == null && PlatformDetection.useLeanbackUi,
         skipTraversal: true,
         onFocusChange: (focused) => _setPaused(focused),
         onKeyEvent: (node, event) => _handleKeyEvent(event, items),
@@ -675,19 +690,22 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
                         opacity: _trailerVideoOpacity,
                         duration: const Duration(milliseconds: 800),
                         child: ClipRect(
-                          child: OverflowBox(
-                            minWidth: 0,
-                            minHeight: 0,
-                            maxWidth: double.infinity,
-                            maxHeight: double.infinity,
-                            child: FractionallySizedBox(
-                              widthFactor: 1.15,
-                              heightFactor: 1.15,
-                              child: WebYouTubeTrailer(
-                                key: ValueKey(_activeYouTubeVideoId),
-                                videoId: _activeYouTubeVideoId!,
-                              ),
-                            ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              const overscan = 1.15;
+                              final w = constraints.maxWidth * overscan;
+                              final h = constraints.maxHeight * overscan;
+                              return OverflowBox(
+                                minWidth: w,
+                                minHeight: h,
+                                maxWidth: w,
+                                maxHeight: h,
+                                child: WebYouTubeTrailer(
+                                  key: ValueKey(_activeYouTubeVideoId),
+                                  videoId: _activeYouTubeVideoId!,
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -900,23 +918,26 @@ class _BackdropLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: pageController,
-      onPageChanged: onPageChanged,
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        if (item.backdropUrl == null) {
-          return const ColoredBox(color: Colors.black);
-        }
-        return CachedNetworkImage(
-          imageUrl: item.backdropUrl!,
-          fit: BoxFit.cover,
-          fadeInDuration: Duration.zero,
-          errorWidget: (_, __, ___) =>
-              const ColoredBox(color: Colors.black),
-        );
-      },
+    return RepaintBoundary(
+      child: PageView.builder(
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        itemCount: items.length,
+        allowImplicitScrolling: false,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          if (item.backdropUrl == null) {
+            return const ColoredBox(color: Colors.black);
+          }
+          return BoundedNetworkImage(
+            imageUrl: item.backdropUrl!,
+            minWidth: 640,
+            maxWidth: 1280,
+            errorBuilder: (_, __, ___) =>
+                const ColoredBox(color: Colors.black),
+          );
+        },
+      ),
     );
   }
 }
@@ -1015,68 +1036,73 @@ class _SlideInfo extends StatelessWidget {
     final theme = Theme.of(context);
     final isMobile = PlatformDetection.useMobileUi;
 
+    final infoCard = Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      decoration: BoxDecoration(
+        // Higher opacity on web compensates for the missing blur.
+        color: Colors.black.withValues(alpha: kIsWeb ? 0.6 : 0.35),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _MetadataRow(item: item),
+          if (ratings.isNotEmpty || item.communityRating != null) ...[
+            const SizedBox(height: 6),
+            RatingsRow(
+              ratings: ratings,
+              communityRating: item.communityRating,
+              criticRating: item.criticRating,
+              enableAdditionalRatings: enableAdditionalRatings,
+              enabledRatings: enabledRatings,
+              blockedRatings: blockedRatings,
+              showLabels: showLabels,
+              showBadges: showBadges,
+            ),
+          ],
+          const SizedBox(height: 8),
+          SizedBox(
+            height: ((isMobile
+                        ? theme.textTheme.bodySmall?.fontSize
+                        : theme.textTheme.bodyMedium?.fontSize) ??
+                    14) *
+                1.4 *
+                (isMobile ? 2 : 3),
+            child: Text(
+              item.overview ?? '',
+              style: (isMobile
+                      ? theme.textTheme.bodySmall
+                      : theme.textTheme.bodyMedium)
+                  ?.copyWith(
+                color: Colors.white.withValues(alpha: 0.9),
+                shadows: _textShadows,
+              ),
+              maxLines: isMobile ? 2 : 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Padding(
       padding: EdgeInsets.only(left: 8, right: 8, bottom: isMobile ? 24 : 36),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.1),
+        child: kIsWeb
+            ? infoCard
+            : BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: infoCard,
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _MetadataRow(item: item),
-                if (ratings.isNotEmpty || item.communityRating != null) ...[
-                  const SizedBox(height: 6),
-                  RatingsRow(
-                    ratings: ratings,
-                    communityRating: item.communityRating,
-                    criticRating: item.criticRating,
-                    enableAdditionalRatings: enableAdditionalRatings,
-                    enabledRatings: enabledRatings,
-                    blockedRatings: blockedRatings,
-                    showLabels: showLabels,
-                    showBadges: showBadges,
-                  ),
-                ],
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: ((isMobile
-                          ? theme.textTheme.bodySmall?.fontSize
-                          : theme.textTheme.bodyMedium?.fontSize) ??
-                      14) *
-                      1.4 *
-                      (isMobile ? 2 : 3),
-                  child: Text(
-                    item.overview ?? '',
-                    style: (isMobile
-                            ? theme.textTheme.bodySmall
-                            : theme.textTheme.bodyMedium)
-                        ?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      shadows: _textShadows,
-                    ),
-                    maxLines: isMobile ? 2 : 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

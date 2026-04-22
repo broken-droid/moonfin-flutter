@@ -14,13 +14,14 @@ import 'di/injection.dart';
 import 'playback/audio_handler.dart';
 import 'playback/playback_lifecycle_handler.dart';
 import 'preference/user_preferences.dart';
+import 'util/perf_logger.dart';
 import 'util/platform_detection.dart';
 
 void _configureImageCache() {
   final imageCache = PaintingBinding.instance.imageCache;
   if (PlatformDetection.isWeb) {
-    imageCache.maximumSize = 60;
-    imageCache.maximumSizeBytes = 48 << 20;
+    imageCache.maximumSize = 200;
+    imageCache.maximumSizeBytes = 96 << 20;
     return;
   }
   if (PlatformDetection.isMobile) {
@@ -77,6 +78,7 @@ void main() async {
   }
 
   _configureImageCache();
+  PerfLogger.start();
   MediaKit.ensureInitialized();
 
   await _detectAndSetTvMode();

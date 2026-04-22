@@ -10,8 +10,8 @@ import '../models/media_bar_slide_item.dart';
 import '../models/media_bar_state.dart';
 
 class MediaBarRepository {
-  static const _precacheBackdropCount = 4;
-  static const _precacheLogoCount = 2;
+  static const _precacheBackdropCount = 1;
+  static const _precacheLogoCount = 1;
 
   final MediaServerClient _client;
   final UserPreferences _prefs;
@@ -217,7 +217,7 @@ class MediaBarRepository {
 
     final backdropTags = data['BackdropImageTags'] as List?;
     final backdropUrl = (backdropTags != null && backdropTags.isNotEmpty)
-      ? _client.imageApi.getBackdropImageUrl(itemId, tag: backdropTags[0] as String)
+      ? _client.imageApi.getBackdropImageUrl(itemId, tag: backdropTags[0] as String, maxWidth: 1280)
         : null;
 
     final logoTag = (data['ImageTags'] as Map?)?['Logo'] as String?;

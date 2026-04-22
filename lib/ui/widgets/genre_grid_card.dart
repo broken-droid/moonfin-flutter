@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'bounded_network_image.dart';
 import '../mixins/focus_state_mixin.dart';
 
 class GenreCardData {
@@ -76,11 +76,10 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                   fit: StackFit.expand,
                   children: [
                     if (imageUrl != null)
-                      CachedNetworkImage(
+                      BoundedNetworkImage(
                         imageUrl: imageUrl,
-                        fit: BoxFit.cover,
                         fadeInDuration: const Duration(milliseconds: 200),
-                        errorWidget: (_, __, ___) =>
+                        errorBuilder: (_, __, ___) =>
                             Container(color: Colors.white.withAlpha(20)),
                       )
                     else

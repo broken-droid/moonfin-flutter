@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 import '../../../data/services/youtube_stream_resolver.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/web_youtube_trailer.dart';
 
 class TrailerPlayerScreen extends StatefulWidget {
   final String? videoId;
@@ -20,25 +22,44 @@ class TrailerPlayerScreen extends StatefulWidget {
 class _TrailerPlayerScreenState extends State<TrailerPlayerScreen> {
   static const _openTimeout = Duration(seconds: 12);
 
-  late final Player _player;
-  late final VideoController _controller;
+  Player? _player;
+  VideoController? _controller;
   bool _loading = true;
   String? _error;
+  String? _webVideoId;
 
   @override
   void initState() {
     super.initState();
-    _player = Player(
-      configuration: const PlayerConfiguration(libass: false),
-    );
-    _controller = VideoController(_player);
-    _openTrailer();
+    if (kIsWeb) {
+      _initWeb();
+    } else {
+      _player = Player(
+        configuration: const PlayerConfiguration(libass: false),
+      );
+      _controller = VideoController(_player!);
+      _openTrailer();
+    }
+  }
+
+  void _initWeb() {
+    String? id = widget.videoId;
+    if ((id == null || id.isEmpty) && widget.trailerUrl != null) {
+      id = YouTubeStreamResolver.extractVideoId(widget.trailerUrl!);
+    }
+    if (id == null || id.isEmpty) {
+      _error = AppLocalizations.of(context).unableToLoadTrailerStream;
+      _loading = false;
+      return;
+    }
+    _webVideoId = id;
+    _loading = false;
   }
 
   @override
   void dispose() {
-    _player.stop();
-    _player.dispose();
+    _player?.stop();
+    _player?.dispose();
     super.dispose();
   }
 
@@ -70,7 +91,7 @@ class _TrailerPlayerScreenState extends State<TrailerPlayerScreen> {
       final media = useYouTubeHeaders
           ? Media(streamUrl, httpHeaders: YouTubeStreamResolver.youtubeHeaders)
           : Media(streamUrl);
-      await _player.open(media).timeout(_openTimeout);
+      await _player!.open(media).timeout(_openTimeout);
       if (!mounted) return;
       setState(() {
         _loading = false;
@@ -101,13 +122,25 @@ class _TrailerPlayerScreenState extends State<TrailerPlayerScreen> {
           Positioned.fill(
             child: ColoredBox(
               color: Colors.black,
-              child: Video(
-                controller: _controller,
-                controls: AdaptiveVideoControls,
-                fit: BoxFit.contain,
-                pauseUponEnteringBackgroundMode: false,
-                fill: Colors.black,
-              ),
+              child: kIsWeb
+                  ? (_webVideoId != null
+                      ? Center(
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: WebYouTubeTrailer(
+                              videoId: _webVideoId!,
+                              muted: false,
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink())
+                  : Video(
+                      controller: _controller!,
+                      controls: AdaptiveVideoControls,
+                      fit: BoxFit.contain,
+                      pauseUponEnteringBackgroundMode: false,
+                      fill: Colors.black,
+                    ),
             ),
           ),
           if (_loading)
@@ -131,7 +164,7 @@ class _TrailerPlayerScreenState extends State<TrailerPlayerScreen> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    _player.stop();
+                    _player?.stop();
                     Navigator.of(context).pop();
                   },
                 ),

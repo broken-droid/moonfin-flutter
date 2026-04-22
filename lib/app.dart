@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -247,7 +248,7 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
   @override
   Widget build(BuildContext context) {
     return Focus(
-      autofocus: true,
+      autofocus: !kIsWeb,
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
       child: widget.child,

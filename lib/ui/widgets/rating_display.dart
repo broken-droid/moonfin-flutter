@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../data/services/rating_icon_provider.dart';
@@ -178,6 +179,24 @@ class _SingleRating extends StatelessWidget {
       return ratingContent;
     }
 
+    final badge = Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isLargeLayout ? 8 : 6,
+        vertical: isLargeLayout ? 4 : 3,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: kIsWeb ? 0.45 : 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+      ),
+      child: ratingContent,
+    );
+    if (kIsWeb) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: badge,
+      );
+    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: BackdropFilter(

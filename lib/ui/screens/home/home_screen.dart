@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -33,6 +33,7 @@ import '../../widgets/navigation_layout.dart';
 import '../../widgets/responsive_layout.dart';
 import '../../widgets/seasonal_effects.dart';
 import '../../navigation/home_refresh_bus.dart';
+import '../../widgets/bounded_network_image.dart';
 import 'home_view_model.dart';
 
 const _homeBackground = Color(0xFF101528);
@@ -70,6 +71,8 @@ class _HomeShellState extends State<_HomeShell> with WidgetsBindingObserver {
   bool _isHoverPaused = false;
   bool _isScrolledToTop = true;
   String _lastSectionsJson = '';
+  Type? _lastMediaBarStateRuntime;
+  int _lastMediaBarItemCount = 0;
   bool _lastMultiServer = false;
 
   static const _selectionDelay = Duration(milliseconds: 150);
@@ -90,7 +93,12 @@ class _HomeShellState extends State<_HomeShell> with WidgetsBindingObserver {
 
     _viewModel = GetIt.instance<HomeViewModel>();
     _viewModel.addListener(_onViewModelChanged);
-    _viewModel.mediaBarViewModel.addListener(_onViewModelChanged);
+    _viewModel.mediaBarViewModel.addListener(_onMediaBarStateChanged);
+    _lastMediaBarStateRuntime = _viewModel.mediaBarViewModel.state.runtimeType;
+    _lastMediaBarItemCount =
+        _viewModel.mediaBarViewModel.state is MediaBarReady
+            ? (_viewModel.mediaBarViewModel.state as MediaBarReady).items.length
+            : 0;
     _lastSectionsJson = _userPrefs.get(UserPreferences.homeSectionsJson);
     _lastMultiServer = _userPrefs.get(UserPreferences.enableMultiServerLibraries);
     _userPrefs.addListener(_onPrefsChanged);
@@ -105,7 +113,7 @@ class _HomeShellState extends State<_HomeShell> with WidgetsBindingObserver {
     _backdropDebounce?.cancel();
     _hoverPauseTimer?.cancel();
     _backgroundSub?.cancel();
-    _viewModel.mediaBarViewModel.removeListener(_onViewModelChanged);
+    _viewModel.mediaBarViewModel.removeListener(_onMediaBarStateChanged);
     _viewModel.removeListener(_onViewModelChanged);
     _userPrefs.removeListener(_onPrefsChanged);
     super.dispose();
@@ -113,6 +121,20 @@ class _HomeShellState extends State<_HomeShell> with WidgetsBindingObserver {
 
   void _onViewModelChanged() {
     if (mounted) setState(() {});
+  }
+
+  void _onMediaBarStateChanged() {
+    if (!mounted) return;
+    final state = _viewModel.mediaBarViewModel.state;
+    final runtime = state.runtimeType;
+    final itemCount = state is MediaBarReady ? state.items.length : 0;
+    if (runtime == _lastMediaBarStateRuntime &&
+        itemCount == _lastMediaBarItemCount) {
+      return;
+    }
+    _lastMediaBarStateRuntime = runtime;
+    _lastMediaBarItemCount = itemCount;
+    setState(() {});
   }
 
   @override
@@ -233,11 +255,12 @@ class _Backdrop extends StatelessWidget {
   }
 
   Widget _blurredImage(String imageUrl, double blur) {
-    final image = CachedNetworkImage(
+    final image = BoundedNetworkImage(
       imageUrl: imageUrl,
-      fit: BoxFit.cover,
-      fadeInDuration: Duration.zero,
-      errorWidget: (_, __, ___) => const SizedBox.shrink(),
+      scale: blur > 0 ? 0.3 : 1.0,
+      minWidth: 320,
+      maxWidth: blur > 0 ? 640 : 1280,
+      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
     );
     if (blur <= 0) return image;
     return ImageFiltered(
@@ -312,6 +335,8 @@ class _ContentRowsState extends State<_ContentRows>
   double _scrollOffset = 0;
   double _previewStartScrollOffset = 0;
   bool _isScrolledToTop = true;
+  bool _isActivelyScrolling = false;
+  Timer? _scrollIdleTimer;
   bool _infoRevealed = false;
   bool _mediaBarVisible = true;
   bool _initialFocusResolved = false;
@@ -385,6 +410,7 @@ class _ContentRowsState extends State<_ContentRows>
     FocusManager.instance.removeListener(_onGlobalFocusChanged);
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _scrollIdleTimer?.cancel();
     _mediaBarFocusNode.dispose();
     for (final node in _firstItemFocusNodes.values) {
       node.dispose();
@@ -687,14 +713,18 @@ class _ContentRowsState extends State<_ContentRows>
       'audioBitRate': '128000',
       'audioChannels': '2',
       'subtitleMethod': 'Drop',
+      if (kIsWeb) 'container': 'mp4',
+      if (kIsWeb) 'TranscodingContainer': 'mp4',
       if (startTicks > 0) 'StartTimeTicks': '$startTicks',
       if (mediaSourceId != null) 'MediaSourceId': mediaSourceId,
       if (client.accessToken != null) 'ApiKey': client.accessToken!,
     };
 
-    return Uri.parse('${client.baseUrl}/Videos/${item.id}/stream')
-        .replace(queryParameters: params)
-        .toString();
+    final path = kIsWeb
+        ? '${client.baseUrl}/Videos/${item.id}/stream.mp4'
+        : '${client.baseUrl}/Videos/${item.id}/stream';
+
+    return Uri.parse(path).replace(queryParameters: params).toString();
   }
 
   bool _isMediaBarIncluded() {
@@ -1177,6 +1207,16 @@ class _ContentRowsState extends State<_ContentRows>
       widget.onScrolledToTopChanged?.call(atTop);
     }
 
+    if (!_isActivelyScrolling) {
+      _isActivelyScrolling = true;
+      if (mounted) setState(() {});
+    }
+    _scrollIdleTimer?.cancel();
+    _scrollIdleTimer = Timer(const Duration(milliseconds: 250), () {
+      if (!mounted) return;
+      _isActivelyScrolling = false;
+      setState(() {});
+    });
     if (_activePreviewKey != null) {
       final scrollDelta = (offset - _previewStartScrollOffset).abs();
       if (scrollDelta > _previewScrollThreshold) {
@@ -1198,7 +1238,11 @@ class _ContentRowsState extends State<_ContentRows>
       }
     }
 
-    setState(() => _scrollOffset = offset);
+    if (_infoRevealed && _isMediaBarIncluded()) {
+      setState(() => _scrollOffset = offset);
+    } else {
+      _scrollOffset = offset;
+    }
   }
 
   double _libraryRowExtent(double rowHeight) => rowHeight + 34;
@@ -1364,7 +1408,7 @@ class _ContentRowsState extends State<_ContentRows>
 
     final includeMediaBar = _isMediaBarIncluded();
     final mediaBarHeight = _mediaBarHeight();
-    final carouselPaused = widget.isHoverPaused || !_isScrolledToTop;
+    final carouselPaused = widget.isHoverPaused || !_isScrolledToTop || _isActivelyScrolling;
     final showInfoOverlay = prefs.get(UserPreferences.homeRowInfoOverlay);
     final safeTop = MediaQuery.of(context).padding.top;
     final listTopPadding = includeMediaBar ? 0.0 : safeTop + 56;
