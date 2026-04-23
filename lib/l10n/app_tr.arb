@@ -6187,5 +6187,10 @@
   "playerTooltipSeekForward": "Seek forward",
   "@playerTooltipSeekForward": {
     "description": "Tooltip label for seek forward control in player"
-  }
+  },
+  "contextMenuMarkWatched": "İzlendi olarak işaretle",
+  "contextMenuMarkUnwatched": "İzlenmedi olarak işaretle",
+  "contextMenuAddToFavorites": "Favorilere ekle",
+  "contextMenuRemoveFromFavorites": "Favorilerden kaldır",
+  "contextMenuGoToSeries": "Diziye git"
 }

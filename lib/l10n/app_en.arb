@@ -6056,5 +6056,25 @@
   "playerTooltipSeekForward": "Seek forward",
   "@playerTooltipSeekForward": {
     "description": "Tooltip label for seek forward control in player"
+  },
+  "contextMenuMarkWatched": "Mark as Watched",
+  "@contextMenuMarkWatched": {
+    "description": "Context menu action to mark an item as watched"
+  },
+  "contextMenuMarkUnwatched": "Mark as Unwatched",
+  "@contextMenuMarkUnwatched": {
+    "description": "Context menu action to mark an item as unwatched"
+  },
+  "contextMenuAddToFavorites": "Add to Favorites",
+  "@contextMenuAddToFavorites": {
+    "description": "Context menu action to add an item to favorites"
+  },
+  "contextMenuRemoveFromFavorites": "Remove from Favorites",
+  "@contextMenuRemoveFromFavorites": {
+    "description": "Context menu action to remove an item from favorites"
+  },
+  "contextMenuGoToSeries": "Go to Series",
+  "@contextMenuGoToSeries": {
+    "description": "Context menu action to navigate to the parent series of an episode"
   }
 }

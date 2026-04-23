@@ -127,6 +127,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   bool _isDesktopFullscreen = false;
   bool? _wasDesktopFullscreenOnEntry;
 
+  LogicalKeyboardKey? _seekDirection;
+  int _seekRepeatCount = 0;
+
   double _brightnessValue = 0.5;
   double _systemVolume = 1.0;
   bool _showVolumeOverlay = false;
@@ -1135,6 +1138,33 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
   }
 
+  int _accelerateSeekStep(int baseMs, KeyEvent event) {
+    final key = event.logicalKey;
+    if (event is KeyDownEvent) {
+      _seekDirection = key;
+      _seekRepeatCount = 0;
+      return baseMs;
+    }
+    if (event is KeyRepeatEvent) {
+      if (_seekDirection != key) {
+        _seekDirection = key;
+        _seekRepeatCount = 0;
+        return baseMs;
+      }
+      _seekRepeatCount++;
+      if (_seekRepeatCount > 18) return baseMs * 12;
+      if (_seekRepeatCount > 10) return baseMs * 6;
+      if (_seekRepeatCount > 4) return baseMs * 2;
+      return baseMs;
+    }
+    return baseMs;
+  }
+
+  void _resetSeekAcceleration() {
+    _seekDirection = null;
+    _seekRepeatCount = 0;
+  }
+
   String _formatDuration(Duration d) {
     final h = d.inHours;
     final m = d.inMinutes.remainder(60);
@@ -1204,6 +1234,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
+          event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _resetSeekAcceleration();
+      }
+      return KeyEventResult.ignored;
+    }
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
     }
@@ -1246,10 +1283,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return KeyEventResult.handled;
         case LogicalKeyboardKey.arrowLeft:
           if (!_controlsVisible) {
-            _seekRelative(
-              -_prefs.get(UserPreferences.skipBackLength),
-              showControls: false,
+            final step = _accelerateSeekStep(
+              _prefs.get(UserPreferences.skipBackLength),
+              event,
             );
+            _seekRelative(-step, showControls: false);
             _showControls(focusSeekbar: true);
             return KeyEventResult.handled;
           }
@@ -1257,10 +1295,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return KeyEventResult.ignored;
         case LogicalKeyboardKey.arrowRight:
           if (!_controlsVisible) {
-            _seekRelative(
+            final step = _accelerateSeekStep(
               _prefs.get(UserPreferences.skipForwardLength),
-              showControls: false,
+              event,
             );
+            _seekRelative(step, showControls: false);
             _showControls(focusSeekbar: true);
             return KeyEventResult.handled;
           }
@@ -1292,10 +1331,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _showControls();
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowLeft:
-        _seekRelative(-_prefs.get(UserPreferences.skipBackLength));
+        _seekRelative(
+          -_accelerateSeekStep(_prefs.get(UserPreferences.skipBackLength), event),
+        );
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowRight:
-        _seekRelative(_prefs.get(UserPreferences.skipForwardLength));
+        _seekRelative(
+          _accelerateSeekStep(_prefs.get(UserPreferences.skipForwardLength), event),
+        );
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowUp:
         _changeVolumeBy(0.05);

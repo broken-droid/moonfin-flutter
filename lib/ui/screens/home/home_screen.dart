@@ -18,6 +18,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
+import '../../widgets/focus/context_menu_sheet.dart';
 import '../../widgets/focus/hub_focus_memory.dart';
 import '../../widgets/focus/locked_focus_row.dart';
 import '../../../util/focus/dpad_keys.dart';
@@ -1868,15 +1869,11 @@ class _ContentRowsState extends State<_ContentRows>
             onHoverEnd: () {
               _stopPreviewFor(item);
             },
-            onLongPress: () {
-              unawaited(_revealAndScrollToPinnedInfo());
-              widget.onItemSelected(item);
-              if (canPreview) {
-                _schedulePreview(item, delay: Duration.zero);
-              } else {
-                _finishSharedPreview();
-              }
-            },
+            onLongPress: () => showContextMenu(
+              context,
+              item,
+              onChanged: () => setState(() {}),
+            ),
             onTap: () {
               _finishSharedPreview(releaseResources: true);
               if (row.rowType == HomeRowType.libraryTiles) {

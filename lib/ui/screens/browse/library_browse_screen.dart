@@ -19,9 +19,11 @@ import '../../../data/viewmodels/library_browse_view_model.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
+import '../../../util/focus/grid_focus_node_mixin.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
+import '../../widgets/focus/context_menu_sheet.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/rating_display.dart';
 import '../../../l10n/app_localizations.dart';
@@ -361,6 +363,11 @@ class _BookCollectionPickerDialog extends StatelessWidget {
                                             onHoverEnd:
                                                 isMobile ? null : onItemFocusCleared,
                                             onTap: () => onItemTap(item),
+                                            onLongPress: () => showContextMenu(
+                                              context,
+                                              item,
+                                              onChanged: () => onItemFocused(item),
+                                            ),
                                           );
                                         },
                                       ),
@@ -725,7 +732,8 @@ class LibraryBrowseScreen extends StatefulWidget {
   State<LibraryBrowseScreen> createState() => _LibraryBrowseScreenState();
 }
 
-class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
+class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
+    with GridFocusNodeMixin<LibraryBrowseScreen> {
   late final LibraryBrowseViewModel _vm;
   final _scrollController = ScrollController();
   final _prefs = GetIt.instance<UserPreferences>();
@@ -880,11 +888,30 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
     _prefs.removeListener(_onChanged);
     _discoverDio.close(force: true);
     _vm.dispose();
+    disposeGridFocusNodes();
     super.dispose();
+  }
+
+  int _lastGridItemsLength = -1;
+  Object? _lastGridFirstItemId;
+
+  void _maybeBumpGridVersion() {
+    final length = _vm.items.length;
+    final firstId = length == 0 ? null : _vm.items.first.id;
+    if (length != _lastGridItemsLength || firstId != _lastGridFirstItemId) {
+      _lastGridItemsLength = length;
+      _lastGridFirstItemId = firstId;
+      gridContentVersion++;
+      cleanupGridFocusNodes(length);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) restoreGridFocusIfNeeded();
+      });
+    }
   }
 
   void _onChanged() {
     if (mounted) setState(() {});
+    _maybeBumpGridVersion();
     if (_isBookExperience && _vm.state == LibraryBrowseState.ready) {
       unawaited(_refreshLocalBookProgress());
     }
@@ -3212,6 +3239,11 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
               onHoverStart: isMobile ? null : () => _onItemFocused(item),
               onHoverEnd: isMobile ? null : () => _vm.setFocusedItem(null),
               onTap: () => _showBookBookmarksDialog(item),
+              onLongPress: () => showContextMenu(
+                context,
+                item,
+                onChanged: () => setState(() {}),
+              ),
             );
           },
         );
@@ -3837,6 +3869,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                     width: double.infinity,
                     aspectRatio: itemAspectRatio,
                     focusColor: focusColor,
+                    focusNode: getGridItemFocusNode(index),
                     cardFocusExpansion: _prefs.get(
                       UserPreferences.cardFocusExpansion,
                     ),
@@ -3851,7 +3884,11 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                     onHoverEnd: isMobile
                         ? null
                         : () => _vm.setFocusedItem(null),
-                    onLongPress: isMobile ? null : () => _onItemFocused(item),
+                    onLongPress: () => showContextMenu(
+                      context,
+                      item,
+                      onChanged: () => setState(() {}),
+                    ),
                     onTap: () => _onItemTap(item),
                   );
                   return card;
@@ -3998,6 +4035,11 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen> {
                             onHoverEnd:
                                 isMobile ? null : () => _vm.setFocusedItem(null),
                             onTap: () => _onItemTap(item),
+                            onLongPress: () => showContextMenu(
+                              context,
+                              item,
+                              onChanged: () => setState(() {}),
+                            ),
                           );
                         },
                       ),

@@ -6133,4 +6133,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get playerTooltipSeekForward => 'Avançar';
+
+  @override
+  String get contextMenuMarkWatched => 'Marcar como assistido';
+
+  @override
+  String get contextMenuMarkUnwatched => 'Marcar como não assistido';
+
+  @override
+  String get contextMenuAddToFavorites => 'Adicionar aos favoritos';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Remover dos favoritos';
+
+  @override
+  String get contextMenuGoToSeries => 'Ir para a série';
 }

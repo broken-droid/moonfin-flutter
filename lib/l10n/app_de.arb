@@ -6187,5 +6187,10 @@
   "playerTooltipSeekForward": "Vorspulen",
   "@playerTooltipSeekForward": {
     "description": "Tooltip label for seek forward control in player"
-  }
+  },
+  "contextMenuMarkWatched": "Als gesehen markieren",
+  "contextMenuMarkUnwatched": "Als ungesehen markieren",
+  "contextMenuAddToFavorites": "Zu Favoriten hinzufügen",
+  "contextMenuRemoveFromFavorites": "Aus Favoriten entfernen",
+  "contextMenuGoToSeries": "Zur Serie gehen"
 }

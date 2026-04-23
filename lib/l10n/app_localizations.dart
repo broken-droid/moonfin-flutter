@@ -10795,6 +10795,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Seek forward'**
   String get playerTooltipSeekForward;
+
+  /// Context menu action to mark an item as watched
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Watched'**
+  String get contextMenuMarkWatched;
+
+  /// Context menu action to mark an item as unwatched
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Unwatched'**
+  String get contextMenuMarkUnwatched;
+
+  /// Context menu action to add an item to favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Favorites'**
+  String get contextMenuAddToFavorites;
+
+  /// Context menu action to remove an item from favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Favorites'**
+  String get contextMenuRemoveFromFavorites;
+
+  /// Context menu action to navigate to the parent series of an episode
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Series'**
+  String get contextMenuGoToSeries;
 }
 
 class _AppLocalizationsDelegate

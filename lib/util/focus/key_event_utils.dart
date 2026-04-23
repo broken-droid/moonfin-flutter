@@ -74,3 +74,19 @@ FocusOnKeyEventCallback dpadKeyHandler({
     return KeyEventResult.ignored;
   };
 }
+
+KeyEventResult consumeIfEdge(
+  KeyEvent event, {
+  bool atLeftEdge = false,
+  bool atRightEdge = false,
+  bool atTopEdge = false,
+  bool atBottomEdge = false,
+}) {
+  if (!event.isActionable) return KeyEventResult.ignored;
+  final k = event.logicalKey;
+  if (atLeftEdge && k.isLeftKey) return KeyEventResult.handled;
+  if (atRightEdge && k.isRightKey) return KeyEventResult.handled;
+  if (atTopEdge && k.isUpKey) return KeyEventResult.handled;
+  if (atBottomEdge && k.isDownKey) return KeyEventResult.handled;
+  return KeyEventResult.ignored;
+}

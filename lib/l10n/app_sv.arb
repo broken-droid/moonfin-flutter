@@ -6187,5 +6187,10 @@
   "playerTooltipSeekForward": "Seek forward",
   "@playerTooltipSeekForward": {
     "description": "Tooltip label for seek forward control in player"
-  }
+  },
+  "contextMenuMarkWatched": "Markera som sedd",
+  "contextMenuMarkUnwatched": "Markera som ej sedd",
+  "contextMenuAddToFavorites": "Lägg till i favoriter",
+  "contextMenuRemoveFromFavorites": "Ta bort från favoriter",
+  "contextMenuGoToSeries": "Gå till serien"
 }

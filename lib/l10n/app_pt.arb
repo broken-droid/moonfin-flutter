@@ -6187,5 +6187,10 @@
     "playerTooltipSeekForward": "Avançar",
     "@playerTooltipSeekForward": {
         "description": "Tooltip label for seek forward control in player"
-    }
+  },
+  "contextMenuMarkWatched": "Marcar como assistido",
+  "contextMenuMarkUnwatched": "Marcar como não assistido",
+  "contextMenuAddToFavorites": "Adicionar aos favoritos",
+  "contextMenuRemoveFromFavorites": "Remover dos favoritos",
+  "contextMenuGoToSeries": "Ir para a série"
 }

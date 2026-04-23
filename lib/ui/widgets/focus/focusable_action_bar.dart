@@ -137,12 +137,12 @@ class FocusableActionBarState extends State<FocusableActionBar> {
       }
       return KeyEventResult.handled;
     }
-    if (k.isUpKey && widget.onNavigateUp != null) {
-      widget.onNavigateUp!();
+    if (k.isUpKey) {
+      if (widget.onNavigateUp != null) widget.onNavigateUp!();
       return KeyEventResult.handled;
     }
-    if (k.isDownKey && widget.onNavigateDown != null) {
-      widget.onNavigateDown!();
+    if (k.isDownKey) {
+      if (widget.onNavigateDown != null) widget.onNavigateDown!();
       return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;

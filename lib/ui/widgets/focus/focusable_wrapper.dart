@@ -238,6 +238,7 @@ class _FocusableWrapperState extends State<FocusableWrapper>
         behavior: HitTestBehavior.opaque,
         onTap: widget.onSelect != null ? _handleTap : null,
         onLongPress: widget.onLongPress != null ? _handleLongPress : null,
+        onSecondaryTap: widget.onLongPress != null ? _handleLongPress : null,
         child: content,
       ),
     );

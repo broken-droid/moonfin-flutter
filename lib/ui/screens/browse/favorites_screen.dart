@@ -15,6 +15,7 @@ import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/focus/context_menu_sheet.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/rating_display.dart';
@@ -263,7 +264,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     onHoverEnd: isMobile
                         ? null
                         : () => _vm.setFocusedItem(null),
-                    onLongPress: isMobile ? null : () => _onItemFocused(item),
+                    onLongPress: () => showContextMenu(
+                      context,
+                      item,
+                      onChanged: () => setState(() {}),
+                    ),
                     onTap: () => context.push(
                       Destinations.itemOrPhoto(
                         item.id,

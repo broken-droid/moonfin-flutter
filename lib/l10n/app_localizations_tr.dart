@@ -6041,4 +6041,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get playerTooltipSeekForward => 'Seek forward';
+
+  @override
+  String get contextMenuMarkWatched => 'İzlendi olarak işaretle';
+
+  @override
+  String get contextMenuMarkUnwatched => 'İzlenmedi olarak işaretle';
+
+  @override
+  String get contextMenuAddToFavorites => 'Favorilere ekle';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Favorilerden kaldır';
+
+  @override
+  String get contextMenuGoToSeries => 'Diziye git';
 }

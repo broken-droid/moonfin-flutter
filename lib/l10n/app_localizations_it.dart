@@ -6124,4 +6124,19 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get playerTooltipSeekForward => 'Avanti veloce';
+
+  @override
+  String get contextMenuMarkWatched => 'Segna come visto';
+
+  @override
+  String get contextMenuMarkUnwatched => 'Segna come non visto';
+
+  @override
+  String get contextMenuAddToFavorites => 'Aggiungi ai preferiti';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Rimuovi dai preferiti';
+
+  @override
+  String get contextMenuGoToSeries => 'Vai alla serie';
 }

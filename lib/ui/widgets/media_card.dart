@@ -133,6 +133,9 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
       behavior: HitTestBehavior.opaque,
       onTap: widget.onTap,
       onLongPressStart: (_) => widget.onLongPress?.call(),
+      onSecondaryTap: widget.onLongPress == null
+          ? null
+          : () => widget.onLongPress!(),
       child: AnimatedScale(
         scale: widget.cardFocusExpansion &&
                 (externallyDriven ? effectiveFocused : showFocusBorder)

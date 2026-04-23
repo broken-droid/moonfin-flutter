@@ -6041,4 +6041,19 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get playerTooltipSeekForward => 'Seek forward';
+
+  @override
+  String get contextMenuMarkWatched => 'Markera som sedd';
+
+  @override
+  String get contextMenuMarkUnwatched => 'Markera som ej sedd';
+
+  @override
+  String get contextMenuAddToFavorites => 'Lägg till i favoriter';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Ta bort från favoriter';
+
+  @override
+  String get contextMenuGoToSeries => 'Gå till serien';
 }
