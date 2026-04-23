@@ -14,6 +14,7 @@ class GridButtonCard extends StatefulWidget {
   final FocusNode? focusNode;
   final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
   final ValueChanged<bool>? onFocusChanged;
+  final bool? externalIsFocused;
 
   const GridButtonCard({
     super.key,
@@ -27,6 +28,7 @@ class GridButtonCard extends StatefulWidget {
     this.focusNode,
     this.onKeyEvent,
     this.onFocusChanged,
+    this.externalIsFocused,
   });
 
   @override
@@ -37,8 +39,11 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final externallyDriven = widget.externalIsFocused != null;
     final hasNodeFocus = widget.focusNode?.hasFocus ?? false;
-    final effectiveFocused = hovered || focused || hasNodeFocus;
+    final effectiveFocused = externallyDriven
+        ? (widget.externalIsFocused! || hovered)
+        : (hovered || focused || hasNodeFocus);
     final focusedBackground = widget.focusColor ?? AppColorScheme.buttonFocused;
     final focusedForeground =
       ThemeData.estimateBrightnessForColor(focusedBackground) == Brightness.dark
@@ -52,68 +57,73 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
       : AppColorScheme.onButtonNormal;
     final scale = widget.cardFocusExpansion && effectiveFocused ? 1.05 : 1.0;
 
+    final inner = GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        scale: scale,
+        duration: const Duration(milliseconds: 150),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(AppSpacing.spaceSm),
+              border: effectiveFocused
+                ? Border.all(
+                    color: foregroundColor.withValues(alpha: 0.85),
+                    width: 2,
+                  )
+                : null,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                widget.icon,
+                size: 36,
+                color: foregroundColor,
+              ),
+              const SizedBox(height: AppSpacing.spaceSm),
+              Text(
+                widget.label,
+                style: TextStyle(
+                  color: foregroundColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
-      child: Focus(
-        focusNode: widget.focusNode,
-        onKeyEvent: (node, event) {
-          if (event is KeyDownEvent &&
-              (event.logicalKey == LogicalKeyboardKey.select ||
-                  event.logicalKey == LogicalKeyboardKey.enter)) {
-            widget.onTap();
-            return KeyEventResult.handled;
-          }
-          return widget.onKeyEvent?.call(node, event) ?? KeyEventResult.ignored;
-        },
-        onFocusChange: (f) {
-          setFocused(f);
-          widget.onFocusChanged?.call(f);
-        },
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedScale(
-            scale: scale,
-            duration: const Duration(milliseconds: 150),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: widget.width,
-              height: widget.height,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(AppSpacing.spaceSm),
-                  border: effectiveFocused
-                    ? Border.all(
-                        color: foregroundColor.withValues(alpha: 0.85),
-                        width: 2,
-                      )
-                    : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    widget.icon,
-                    size: 36,
-                    color: foregroundColor,
-                  ),
-                  const SizedBox(height: AppSpacing.spaceSm),
-                  Text(
-                    widget.label,
-                    style: TextStyle(
-                      color: foregroundColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+      child: externallyDriven
+          ? inner
+          : Focus(
+              focusNode: widget.focusNode,
+              onKeyEvent: (node, event) {
+                if (event is KeyDownEvent &&
+                    (event.logicalKey == LogicalKeyboardKey.select ||
+                        event.logicalKey == LogicalKeyboardKey.enter)) {
+                  widget.onTap();
+                  return KeyEventResult.handled;
+                }
+                return widget.onKeyEvent?.call(node, event) ??
+                    KeyEventResult.ignored;
+              },
+              onFocusChange: (f) {
+                setFocused(f);
+                widget.onFocusChanged?.call(f);
+              },
+              child: inner,
             ),
-          ),
-        ),
-      ),
     );
   }
 }

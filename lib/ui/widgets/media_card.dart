@@ -29,6 +29,7 @@ class MediaCard extends StatefulWidget {
   final bool cardFocusExpansion;
   final FocusNode? focusNode;
   final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
+  final bool? externalIsFocused;
 
   const MediaCard({
     super.key,
@@ -55,6 +56,7 @@ class MediaCard extends StatefulWidget {
     this.cardFocusExpansion = true,
     this.focusNode,
     this.onKeyEvent,
+    this.externalIsFocused,
   });
 
   static IconData iconForType(String? type) {
@@ -121,104 +123,117 @@ class MediaCard extends StatefulWidget {
 class _MediaCardState extends State<MediaCard> with FocusStateMixin {
   @override
   Widget build(BuildContext context) {
+    final externallyDriven = widget.externalIsFocused != null;
     final hasNodeFocus = widget.focusNode?.hasFocus ?? false;
-    final effectiveFocused = focused || hasNodeFocus;
+    final effectiveFocused = externallyDriven
+        ? (widget.externalIsFocused! || hovered)
+        : (focused || hasNodeFocus);
     final showMarquee = hovered || effectiveFocused;
-    return SizedBox(
-      width: widget.width,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) {
-          setHovered(true);
-          widget.onHoverStart?.call();
-        },
-        onExit: (_) {
-          setHovered(false);
-          widget.onHoverEnd?.call();
-        },
-        child: Focus(
-          focusNode: widget.focusNode,
-          onKeyEvent: (node, event) {
-            if (event is KeyDownEvent &&
-                (event.logicalKey == LogicalKeyboardKey.select ||
-                    event.logicalKey == LogicalKeyboardKey.enter)) {
-              widget.onTap?.call();
-              return KeyEventResult.handled;
-            }
-            return widget.onKeyEvent?.call(node, event) ?? KeyEventResult.ignored;
-          },
-          onFocusChange: (hasFocus) {
-            setFocused(hasFocus);
-            if (hasFocus) {
-              widget.onFocus?.call();
-            } else {
-              widget.onFocusLost?.call();
-            }
-          },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: widget.onTap,
-            onLongPressStart: (_) => widget.onLongPress?.call(),
-            child: AnimatedScale(
-              scale: widget.cardFocusExpansion && showFocusBorder ? 1.05 : 1.0,
-              duration: const Duration(milliseconds: 150),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _CardImage(
-                    imageUrl: widget.imageUrl,
-                    aspectRatio: widget.aspectRatio,
-                    isFavorite: widget.isFavorite,
-                    isPlayed: widget.isPlayed,
-                    unplayedCount: widget.unplayedCount,
-                    playedPercentage: widget.playedPercentage,
-                    watchedBehavior: widget.watchedBehavior,
-                    focused: effectiveFocused,
-                    hovered: hovered,
-                    focusColor: widget.focusColor,
-                    isCircular: widget.itemType == 'Person',
-                    itemType: widget.itemType,
-                    seerrMediaType: widget.seerrMediaType,
-                    seerrStatus: widget.seerrStatus,
-                  ),
-                  if (widget.title != null) ...[
-                    const SizedBox(height: 6),
-                    SizedBox(
-                      height: 16,
-                      child: showMarquee
-                          ? _MarqueeText(
-                              text: widget.title!,
-                              style: Theme.of(context).textTheme.bodySmall!,
-                            )
-                          : Text(
-                              widget.title!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                    ),
-                  ],
-                  if (widget.subtitle != null)
-                    SizedBox(
-                      height: 16,
-                      child: Text(
-                        widget.subtitle!,
+    final inner = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      onLongPressStart: (_) => widget.onLongPress?.call(),
+      child: AnimatedScale(
+        scale: widget.cardFocusExpansion &&
+                (externallyDriven ? effectiveFocused : showFocusBorder)
+            ? 1.05
+            : 1.0,
+        duration: const Duration(milliseconds: 150),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _CardImage(
+              imageUrl: widget.imageUrl,
+              aspectRatio: widget.aspectRatio,
+              isFavorite: widget.isFavorite,
+              isPlayed: widget.isPlayed,
+              unplayedCount: widget.unplayedCount,
+              playedPercentage: widget.playedPercentage,
+              watchedBehavior: widget.watchedBehavior,
+              focused: effectiveFocused,
+              hovered: hovered,
+              focusColor: widget.focusColor,
+              isCircular: widget.itemType == 'Person',
+              itemType: widget.itemType,
+              seerrMediaType: widget.seerrMediaType,
+              seerrStatus: widget.seerrStatus,
+            ),
+            if (widget.title != null) ...[
+              const SizedBox(height: 6),
+              SizedBox(
+                height: 16,
+                child: showMarquee
+                    ? _MarqueeText(
+                        text: widget.title!,
+                        style: Theme.of(context).textTheme.bodySmall!,
+                      )
+                    : Text(
+                        widget.title!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withAlpha(153),
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
-                    ),
-                ],
               ),
-            ),
-          ),
+            ],
+            if (widget.subtitle != null)
+              SizedBox(
+                height: 16,
+                child: Text(
+                  widget.subtitle!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(153),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
+    );
+
+    final mouseRegion = MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) {
+        setHovered(true);
+        widget.onHoverStart?.call();
+      },
+      onExit: (_) {
+        setHovered(false);
+        widget.onHoverEnd?.call();
+      },
+      child: externallyDriven
+          ? inner
+          : Focus(
+              focusNode: widget.focusNode,
+              onKeyEvent: (node, event) {
+                if (event is KeyDownEvent &&
+                    (event.logicalKey == LogicalKeyboardKey.select ||
+                        event.logicalKey == LogicalKeyboardKey.enter)) {
+                  widget.onTap?.call();
+                  return KeyEventResult.handled;
+                }
+                return widget.onKeyEvent?.call(node, event) ??
+                    KeyEventResult.ignored;
+              },
+              onFocusChange: (hasFocus) {
+                setFocused(hasFocus);
+                if (hasFocus) {
+                  widget.onFocus?.call();
+                } else {
+                  widget.onFocusLost?.call();
+                }
+              },
+              child: inner,
+            ),
+    );
+
+    return SizedBox(
+      width: widget.width,
+      child: mouseRegion,
     );
   }
 }

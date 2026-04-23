@@ -25,6 +25,7 @@ import 'util/app_exit.dart';
 import 'util/focus/back_key_coordinator.dart';
 import 'util/focus/dpad_keys.dart';
 import 'util/fullscreen_helper.dart';
+import 'util/focus/input_mode_tracker.dart';
 import 'util/platform_detection.dart';
 
 class MoonfinApp extends StatelessWidget {
@@ -64,22 +65,24 @@ class MoonfinApp extends StatelessWidget {
           return Overlay(
             initialEntries: [
               OverlayEntry(
-                builder: (context) => _GlobalShortcutScope(
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Column(
-                      children: [
-                        const OfflineBanner(),
-                        Expanded(
-                          child: _ConnectivityListener(
-                            child: child ?? const SizedBox.shrink(),
+                builder: (context) => InputModeTracker(
+                  child: _GlobalShortcutScope(
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Column(
+                        children: [
+                          const OfflineBanner(),
+                          Expanded(
+                            child: _ConnectivityListener(
+                              child: child ?? const SizedBox.shrink(),
+                            ),
                           ),
-                        ),
-                        if (!hidePlayer)
-                          const RepaintBoundary(child: MiniAudioPlayer()),
-                        if (!hidePlayer)
-                          const RepaintBoundary(child: CastMiniPlayer()),
-                      ],
+                          if (!hidePlayer)
+                            const RepaintBoundary(child: MiniAudioPlayer()),
+                          if (!hidePlayer)
+                            const RepaintBoundary(child: CastMiniPlayer()),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -180,8 +183,8 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
         return;
       }
       await showExitConfirmationDialog(navContext);
-    } catch (e, st) {
-      debugPrint('[AppExit] _showExitConfirmation error: $e\n$st');
+    } catch (_) {
+      // ignore
     } finally {
       _exitDialogShowing = false;
     }

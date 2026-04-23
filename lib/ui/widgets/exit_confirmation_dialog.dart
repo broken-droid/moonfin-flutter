@@ -1,154 +1,128 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../util/app_exit.dart';
 import '../../util/focus/key_event_utils.dart';
+import 'overlay_sheet.dart';
 
 Future<void> showExitConfirmationDialog(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
-  final result = await showGeneralDialog<bool>(
-    context: context,
-    useRootNavigator: true,
-    requestFocus: true,
-    barrierDismissible: true,
-    barrierLabel: l10n.cancel,
-    barrierColor: Colors.black.withValues(alpha: 0.7),
-    transitionDuration: const Duration(milliseconds: 200),
-    pageBuilder: (context, animation, secondaryAnimation) {
-      return ExitConfirmationDialog(
+  final cancelFocus = FocusNode(debugLabel: 'ExitDialogCancel');
+  try {
+    final result = await OverlaySheetController.show<bool>(
+      context,
+      initialFocusNode: cancelFocus,
+      builder: (sheetContext) => _ExitConfirmationContent(
         title: l10n.exitApp,
         message: l10n.exitAppConfirmation,
         cancelLabel: l10n.cancel,
         exitLabel: l10n.exit,
-      );
-    },
-    transitionBuilder: (context, animation, secondaryAnimation, child) {
-      return FadeTransition(
-        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-        child: ScaleTransition(
-          scale: Tween<double>(begin: 0.92, end: 1.0).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-          ),
-          child: child,
-        ),
-      );
-    },
-  );
-  if (result == true) {
-    await AppExit.closeApp();
+        cancelFocus: cancelFocus,
+        onCancel: () =>
+            OverlaySheetController.closeAdaptive(sheetContext, false),
+        onExit: () =>
+            OverlaySheetController.closeAdaptive(sheetContext, true),
+      ),
+    );
+    if (result == true) {
+      await AppExit.closeApp();
+    }
+  } finally {
+    cancelFocus.dispose();
   }
 }
 
-class ExitConfirmationDialog extends StatefulWidget {
+class _ExitConfirmationContent extends StatefulWidget {
   final String title;
   final String message;
   final String cancelLabel;
   final String exitLabel;
+  final FocusNode cancelFocus;
+  final VoidCallback onCancel;
+  final VoidCallback onExit;
 
-  const ExitConfirmationDialog({
-    super.key,
+  const _ExitConfirmationContent({
     required this.title,
     required this.message,
     required this.cancelLabel,
     required this.exitLabel,
+    required this.cancelFocus,
+    required this.onCancel,
+    required this.onExit,
   });
 
   @override
-  State<ExitConfirmationDialog> createState() => _ExitConfirmationDialogState();
+  State<_ExitConfirmationContent> createState() =>
+      _ExitConfirmationContentState();
 }
 
-class _ExitConfirmationDialogState extends State<ExitConfirmationDialog> {
-  final _cancelFocus = FocusNode(debugLabel: 'ExitDialogCancel');
+class _ExitConfirmationContentState extends State<_ExitConfirmationContent> {
   final _exitFocus = FocusNode(debugLabel: 'ExitDialogExit');
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _cancelFocus.requestFocus();
-    });
-  }
-
-  @override
   void dispose() {
-    _cancelFocus.dispose();
     _exitFocus.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) Navigator.of(context).pop(false);
-      },
-      child: FocusScope(
-        autofocus: true,
-        onKeyEvent: (node, event) {
-          return handleBackKeyAction(event, () => Navigator.of(context).pop(false));
-        },
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Container(
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E1E1E),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.exit_to_app_rounded,
-                    size: 40,
-                    color: Color(0xFF00A4DC),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    widget.message,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _ExitDialogButton(
-                        label: widget.cancelLabel,
-                        focusNode: _cancelFocus,
-                        autofocus: true,
-                        onPressed: () => Navigator.of(context).pop(false),
-                      ),
-                      const SizedBox(width: 16),
-                      _ExitDialogButton(
-                        label: widget.exitLabel,
-                        focusNode: _exitFocus,
-                        onPressed: () => Navigator.of(context).pop(true),
-                      ),
-                    ],
-                  ),
-                ],
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 500),
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E1E),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.exit_to_app_rounded,
+              size: 40,
+              color: Color(0xFF00A4DC),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              widget.title,
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                decoration: TextDecoration.none,
               ),
             ),
-          ),
+            const SizedBox(height: 12),
+            Text(
+              widget.message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                color: Colors.white.withValues(alpha: 0.7),
+                decoration: TextDecoration.none,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _ExitDialogButton(
+                  label: widget.cancelLabel,
+                  focusNode: widget.cancelFocus,
+                  autofocus: true,
+                  onPressed: widget.onCancel,
+                ),
+                const SizedBox(width: 16),
+                _ExitDialogButton(
+                  label: widget.exitLabel,
+                  focusNode: _exitFocus,
+                  onPressed: widget.onExit,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

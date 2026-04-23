@@ -4,8 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'back_key_coordinator.dart';
 import 'dpad_keys.dart';
 
-typedef FocusOnKeyEventCallback = KeyEventResult Function(FocusNode node, KeyEvent event);
-
 class _SelectKeyUpSuppressor {
   static int _suppressCount = 0;
 

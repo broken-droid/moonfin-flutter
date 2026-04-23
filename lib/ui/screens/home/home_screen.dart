@@ -18,7 +18,10 @@ import '../../../l10n/app_localizations.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
+import '../../widgets/focus/hub_focus_memory.dart';
+import '../../widgets/focus/locked_focus_row.dart';
 import '../../../util/focus/dpad_keys.dart';
+import '../../../util/focus/scroll_utils.dart';
 import '../../../util/platform_detection.dart';
 import '../../../util/server_url.dart';
 import '../../navigation/app_router.dart';
@@ -322,8 +325,8 @@ class _ContentRowsState extends State<_ContentRows>
     with WidgetsBindingObserver {
   final _scrollController = ScrollController();
   final _mediaBarFocusNode = FocusNode(debugLabel: 'home_media_bar_focus');
-  final Map<int, FocusNode> _firstItemFocusNodes = {};
-  final Map<String, FocusNode> _itemFocusNodes = {};
+  final Map<int, GlobalKey> _rowKeys = {};
+  int? _activeFocusedRowIndex;
   Timer? _previewDelayTimer;
   Timer? _previewStopTimer;
   Player? _previewPlayer;
@@ -347,9 +350,7 @@ class _ContentRowsState extends State<_ContentRows>
   List<double> _rowTopOffsets = [];
   double _overlayBottom = 0;
   static const _previewScrollThreshold = 150.0;
-  static const _pinTransitionDistance = 96.0;
-
-  static const _previewStartDelay = Duration(milliseconds: 1200);
+  static const _pinTransitionDistance = 96.0;  static const _previewStartDelay = Duration(milliseconds: 1200);
   static const _focusHandoffDuration = Duration(milliseconds: 220);
   static const _focusHandoffCurve = Curves.easeInOutCubic;
   static const _mediaBarFadeDuration = Duration(milliseconds: 220);
@@ -364,23 +365,8 @@ class _ContentRowsState extends State<_ContentRows>
 
   int? _focusedRowIndex(FocusNode? node) {
     if (node == null) return null;
-    for (final entry in _firstItemFocusNodes.entries) {
-      if (identical(entry.value, node)) return entry.key;
-    }
-    for (final entry in _itemFocusNodes.entries) {
-      if (identical(entry.value, node)) {
-        final colonIdx = entry.key.indexOf(':');
-        if (colonIdx > 0) {
-          return int.tryParse(entry.key.substring(0, colonIdx));
-        }
-      }
-    }
-    final label = node.debugLabel;
-    if (label != null) {
-      final match = RegExp(r'home_row_(\d+)_').firstMatch(label);
-      if (match != null) return int.tryParse(match.group(1)!);
-    }
-    return null;
+    if (identical(node, _mediaBarFocusNode)) return null;
+    return _activeFocusedRowIndex;
   }
 
   void _onGlobalFocusChanged() {
@@ -392,7 +378,7 @@ class _ContentRowsState extends State<_ContentRows>
       setState(() => _mediaBarVisible = true);
       return;
     }
-    if (!onMediaBar && _mediaBarVisible && _focusedRowIndex(primary) != null) {
+    if (!onMediaBar && _mediaBarVisible && _activeFocusedRowIndex != null) {
       setState(() => _mediaBarVisible = false);
     }
   }
@@ -418,14 +404,7 @@ class _ContentRowsState extends State<_ContentRows>
     _scrollController.dispose();
     _scrollIdleTimer?.cancel();
     _mediaBarFocusNode.dispose();
-    for (final node in _firstItemFocusNodes.values) {
-      node.dispose();
-    }
-    _firstItemFocusNodes.clear();
-    for (final node in _itemFocusNodes.values) {
-      node.dispose();
-    }
-    _itemFocusNodes.clear();
+    _rowKeys.clear();
     _disposeSharedPreview();
     super.dispose();
   }
@@ -820,12 +799,8 @@ class _ContentRowsState extends State<_ContentRows>
   Future<void> _revealAndScrollToPinnedInfo({
     bool ignoreScrollCooldown = false,
   }) async {
-    if (_infoRevealed) {
-      return;
-    }
-    if (!widget.prefs.get(UserPreferences.homeRowInfoOverlay)) {
-      return;
-    }
+    if (_infoRevealed) return;
+    if (!widget.prefs.get(UserPreferences.homeRowInfoOverlay)) return;
 
     final now = DateTime.now();
     if (!ignoreScrollCooldown &&
@@ -964,22 +939,22 @@ class _ContentRowsState extends State<_ContentRows>
     });
   }
 
-  FocusNode _firstNodeForRow(int rowIndex) {
-    return _firstItemFocusNodes.putIfAbsent(
-      rowIndex,
-      () => FocusNode(debugLabel: 'home_row_${rowIndex}_first_item'),
-    );
+  GlobalKey _rowKey(int rowIndex) {
+    return _rowKeys.putIfAbsent(rowIndex, () => GlobalKey());
   }
 
-  FocusNode _nodeForRowItem(int rowIndex, int itemIndex) {
-    if (itemIndex == 0) {
-      return _firstNodeForRow(rowIndex);
+  LockedFocusRowState? _rowStateOf(int rowIndex) {
+    return _rowKeys[rowIndex]?.currentState as LockedFocusRowState?;
+  }
+
+  void _requestRowFocusFromMemory(int rowIndex, {int? preferredIndex}) {
+    final state = _rowStateOf(rowIndex);
+    if (state == null) return;
+    if (preferredIndex != null) {
+      state.requestFocusAt(preferredIndex);
+    } else {
+      state.requestFocusFromMemory();
     }
-    final key = '$rowIndex:$itemIndex';
-    return _itemFocusNodes.putIfAbsent(
-      key,
-      () => FocusNode(debugLabel: 'home_row_${rowIndex}_item_$itemIndex'),
-    );
   }
 
   bool _rowHasFocusableItems(HomeRow row) {
@@ -991,13 +966,6 @@ class _ContentRowsState extends State<_ContentRows>
       HomeRowType.liveTv => true,
       _ => row.items.isNotEmpty,
     };
-  }
-
-  bool _isManagedHomeFocus(FocusNode? node) {
-    if (node == null) return false;
-    return identical(node, _mediaBarFocusNode) ||
-        _firstItemFocusNodes.values.any((n) => identical(n, node)) ||
-        _itemFocusNodes.values.any((n) => identical(n, node));
   }
 
   void _ensureInitialHomeFocus(List<HomeRow> rows) {
@@ -1013,27 +981,28 @@ class _ContentRowsState extends State<_ContentRows>
       return;
     }
 
-    FocusNode? targetNode;
+    bool focusMediaBar = false;
+    int? focusRowIndex;
 
     if (mediaBarEnabled) {
       if (mediaBarState is MediaBarReady) {
         if (mediaBarState.items.isNotEmpty) {
-          targetNode = _mediaBarFocusNode;
+          focusMediaBar = true;
         } else if (firstRowIndex != -1) {
-          targetNode = _firstNodeForRow(firstRowIndex);
+          focusRowIndex = firstRowIndex;
         }
       } else if (mediaBarState is MediaBarDisabled || mediaBarState is MediaBarError) {
         if (firstRowIndex != -1) {
-          targetNode = _firstNodeForRow(firstRowIndex);
+          focusRowIndex = firstRowIndex;
         }
       } else {
         return;
       }
     } else if (firstRowIndex != -1) {
-      targetNode = _firstNodeForRow(firstRowIndex);
+      focusRowIndex = firstRowIndex;
     }
 
-    if (targetNode == null) {
+    if (!focusMediaBar && focusRowIndex == null) {
       return;
     }
 
@@ -1042,36 +1011,31 @@ class _ContentRowsState extends State<_ContentRows>
         return;
       }
 
-      final current = FocusManager.instance.primaryFocus;
-      final shouldForceMediaBarFocus =
-          identical(targetNode, _mediaBarFocusNode) &&
-          !identical(current, _mediaBarFocusNode);
-      if (_isManagedHomeFocus(current) && !shouldForceMediaBarFocus) {
-        _initialFocusResolved = true;
-        return;
-      }
-
-      if (identical(targetNode, _mediaBarFocusNode)) {
+      if (focusMediaBar) {
         if (_scrollController.hasClients && _scrollController.offset > 0) {
           _scrollController.jumpTo(0);
         }
         _requestMediaBarFocus();
-      } else if (targetNode != null) {
-        if (_isMediaBarIncluded() &&
-            _scrollController.hasClients &&
-            firstRowIndex >= 0 &&
-            firstRowIndex < _rowTopOffsets.length) {
-          final targetOffset = _rowTopOffsets[firstRowIndex]
-              .clamp(0.0, _scrollController.position.maxScrollExtent);
-          if ((_scrollController.offset - targetOffset).abs() > 10) {
-            _scrollController.jumpTo(targetOffset);
-          }
-        }
-        targetNode.requestFocus();
-        _initialFocusResolved = true;
+        return;
       }
+
+      final rowIndex = focusRowIndex!;
+      if (_isMediaBarIncluded() &&
+          _scrollController.hasClients &&
+          rowIndex >= 0 &&
+          rowIndex < _rowTopOffsets.length) {
+        final targetOffset = _rowTopOffsets[rowIndex]
+            .clamp(0.0, _scrollController.position.maxScrollExtent);
+        if ((_scrollController.offset - targetOffset).abs() > 10) {
+          _scrollController.jumpTo(targetOffset);
+        }
+      }
+      _requestRowFocusFromMemory(rowIndex);
+      _initialFocusResolved = true;
     });
   }
+
+  String _hubKeyForRow(HomeRow row) => 'home_${row.id}';
 
   Future<void> _focusAdjacentRowItem(
     List<HomeRow> rows,
@@ -1088,20 +1052,21 @@ class _ContentRowsState extends State<_ContentRows>
         final candidate = rows[target];
         final hasItems = _rowHasFocusableItems(candidate);
         if (hasItems) {
-          final clamped = itemIndex.clamp(0, candidate.items.length - 1);
-          final node = _nodeForRowItem(target, clamped);
-          node.requestFocus();
+          final itemCount = candidate.rowType == HomeRowType.liveTv
+              ? 4
+              : candidate.items.length;
+          final remembered = HubFocusMemory.peek(_hubKeyForRow(candidate));
+          final preferred = (remembered ?? itemIndex).clamp(0, itemCount - 1);
+          _requestRowFocusFromMemory(target, preferredIndex: preferred);
 
           final navComplete = Completer<void>();
-          final scrollTargetRow = target;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) {
               if (!navComplete.isCompleted) navComplete.complete();
               return;
             }
-
-            final ctx = node.context;
-            if (ctx == null) {
+            final rowCtx = _rowKeys[target]?.currentContext;
+            if (rowCtx == null) {
               if (!navComplete.isCompleted) navComplete.complete();
               return;
             }
@@ -1112,10 +1077,6 @@ class _ContentRowsState extends State<_ContentRows>
             final overlayEnabled =
                 widget.prefs.get(UserPreferences.homeRowInfoOverlay);
 
-            // On TV with the overlay enabled, position the focused row's TOP
-            // just below the info overlay area. Use ensureVisible with an
-            // alignment computed from the focused card's actual size so the
-            // card lands at the same viewport y regardless of poster height.
             if (PlatformDetection.isTV &&
                 overlayEnabled &&
                 _scrollController.hasClients) {
@@ -1124,28 +1085,31 @@ class _ContentRowsState extends State<_ContentRows>
                   if (!navComplete.isCompleted) navComplete.complete();
                   return;
                 }
-                final focusCtx = node.context;
-                if (focusCtx == null) {
+                final innerCtx = _rowKeys[target]?.currentContext;
+                if (innerCtx == null) {
                   if (!navComplete.isCompleted) navComplete.complete();
                   return;
                 }
-                final renderObj = focusCtx.findRenderObject();
+                final renderObj = innerCtx.findRenderObject();
                 if (renderObj is! RenderBox || !renderObj.hasSize) {
                   if (!navComplete.isCompleted) navComplete.complete();
                   return;
                 }
-                final cardHeight = renderObj.size.height;
+                final rowHeight = renderObj.size.height;
                 final viewportDim =
                     _scrollController.position.viewportDimension;
-                // Row title sits ~34px above the card; we want title top just
-                // below overlayBottom + 8.
-                final desiredCardTopInViewport = _overlayBottom + 8 + 34;
-                final denom = viewportDim - cardHeight;
-                final alignment = denom <= 0
-                    ? 0.0
-                    : (desiredCardTopInViewport / denom).clamp(0.0, 1.0);
+                // Row title sits ~34px above the LockedFocusRow; we want the
+                // title top to land just below the info overlay band.
+                const titleAllowance = 34.0;
+                final desiredRowTopInViewport =
+                    _overlayBottom + 8 + titleAllowance;
+                final alignment = computeAlignmentForBand(
+                  desiredItemTop: desiredRowTopInViewport,
+                  viewportDim: viewportDim,
+                  itemExtent: rowHeight,
+                );
                 Scrollable.ensureVisible(
-                  focusCtx,
+                  innerCtx,
                   alignment: alignment,
                   alignmentPolicy:
                       ScrollPositionAlignmentPolicy.explicit,
@@ -1163,7 +1127,7 @@ class _ContentRowsState extends State<_ContentRows>
                 : 0.12;
 
             Scrollable.ensureVisible(
-              ctx,
+              rowCtx,
               alignment: alignment,
               duration: _focusHandoffDuration,
               curve: _focusHandoffCurve,
@@ -1203,35 +1167,16 @@ class _ContentRowsState extends State<_ContentRows>
     return true;
   }
 
-  KeyEventResult _handleRowItemKeyEvent(
-    KeyEvent event, {
+  bool _onRowVerticalNavigation({
     required int rowIndex,
-    required int itemIndex,
     required List<HomeRow> rows,
+    required bool isUp,
   }) {
-    if (!event.isActionable) return KeyEventResult.ignored;
     _markUserGesture();
-    final key = event.logicalKey;
-    if (key.isLeftKey && itemIndex == 0) {
-      final navbarIsLeft = widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
-      if (navbarIsLeft) {
-        final focusNavbar = NavigationLayout.focusNavbarNotifier.value;
-        if (focusNavbar != null) {
-          focusNavbar();
-          return KeyEventResult.handled;
-        }
-      }
-    }
-    if (key.isRightKey && itemIndex >= rows[rowIndex].items.length - 1) {
-      return KeyEventResult.handled;
-    }
-    if (key.isDownKey) {
-      if (!_allowVerticalNavNow()) return KeyEventResult.handled;
-      unawaited(_focusAdjacentRowItem(rows, rowIndex, 1, itemIndex: itemIndex));
-      return KeyEventResult.handled;
-    }
-    if (key.isUpKey) {
-      if (!_allowVerticalNavNow()) return KeyEventResult.handled;
+    if (!_allowVerticalNavNow()) return true;
+    final state = _rowStateOf(rowIndex);
+    final currentIndex = state?.focusedIndex ?? 0;
+    if (isUp) {
       if (rowIndex == 0) {
         if (_isMediaBarIncluded()) {
           unawaited(_moveFocusFromRowsToMediaBar());
@@ -1239,11 +1184,32 @@ class _ContentRowsState extends State<_ContentRows>
           _navigateFromMediaBarToNavbar();
         }
       } else {
-        unawaited(_focusAdjacentRowItem(rows, rowIndex, -1, itemIndex: itemIndex));
+        unawaited(_focusAdjacentRowItem(rows, rowIndex, -1, itemIndex: currentIndex));
       }
-      return KeyEventResult.handled;
+    } else {
+      unawaited(_focusAdjacentRowItem(rows, rowIndex, 1, itemIndex: currentIndex));
     }
-    return KeyEventResult.ignored;
+    return true;
+  }
+
+  void _onRowLeftEdge() {
+    final navbarIsLeft =
+        widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
+    if (!navbarIsLeft) return;
+    final focusNavbar = NavigationLayout.focusNavbarNotifier.value;
+    if (focusNavbar != null) focusNavbar();
+  }
+
+  void _onRowFocusTracked(int rowIndex, bool focused) {
+    if (!mounted) return;
+    if (focused) {
+      _activeFocusedRowIndex = rowIndex;
+      if (_mediaBarVisible) {
+        setState(() => _mediaBarVisible = false);
+      }
+    } else if (_activeFocusedRowIndex == rowIndex) {
+      _activeFocusedRowIndex = null;
+    }
   }
 
   KeyEventResult _handleRowsKeyEvent(KeyEvent event) {
@@ -1488,14 +1454,11 @@ class _ContentRowsState extends State<_ContentRows>
     final infoTopPadding = safeTop + navbarHeight + 8;
     final infoAreaHeight = InfoArea.fixedHeight(isMobile: PlatformDetection.useMobileUi);
     final infoBottomPadding = includeMediaBar ? 20.0 : 8.0;
-    final double infoPlaceholderHeight;
-    if (!showInfoOverlay) {
-      infoPlaceholderHeight = 0.0;
-    } else if (!_infoRevealed) {
-      infoPlaceholderHeight = navbarIsTop ? infoTopPadding : infoBottomPadding;
-    } else {
-      infoPlaceholderHeight = infoTopPadding + infoAreaHeight + infoBottomPadding;
-    }
+    // Reserve the info band height up-front so revealing/hiding the InfoArea
+    // overlay (a Stack child) does not shift row positions in the ListView.
+    final infoPlaceholderHeight = showInfoOverlay
+        ? infoTopPadding + infoAreaHeight + infoBottomPadding
+        : 0.0;
     final overlayBottom = infoTopPadding + infoAreaHeight;
     final rowExtents = rows
         .map((row) => _estimatedRowExtent(row, posterSize, prefs))
@@ -1569,7 +1532,7 @@ class _ContentRowsState extends State<_ContentRows>
                 bottom: neededBottomPadding,
               ),
               itemCount: rows.length + headerCount,
-              cacheExtent: mediaBarHeight + 1500,
+              cacheExtent: 600,
               itemBuilder: (context, index) {
               if (includeMediaBar && index == 0) {
                 return AnimatedOpacity(
@@ -1632,121 +1595,17 @@ class _ContentRowsState extends State<_ContentRows>
                   rows: rows,
                 );
               } else {
-                double maxCardHeight = 0;
-                final rowImageType = _homeRowImageTypeForRow(row, prefs);
-                final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
-                final cards = row.items.indexed.map((entry) {
-                  final itemIndex = entry.$1;
-                  final item = entry.$2;
-                  final ar = _aspectRatioForRowItem(item, row, rowImageType);
-                  final height = (ar > 1
-                      ? posterSize.landscapeHeight.toDouble()
-                      : posterSize.portraitHeight.toDouble()) * tvScale;
-                  final cardHeight = height + 46;
-                  if (cardHeight > maxCardHeight) maxCardHeight = cardHeight;
-                  final width = height * ar;
-                  final imageUrl = _resolveRowImageUrl(
-                    item,
-                    widget.viewModel.imageApiForServer(item.serverId),
-                    height,
-                    rowImageType,
-                    useSeriesThumbs,
-                    isMyMediaRow: row.rowType == HomeRowType.libraryTiles,
-                  );
-                  final previewKey = _previewKeyFor(item);
-                  final canPreview = _supportsEpisodePreview(item);
-
-                  final card = MediaCard(
-                    title: item.name,
-                    subtitle: item.subtitle,
-                    imageUrl: imageUrl,
-                    width: width,
-                    aspectRatio: ar,
-                    isFavorite: item.isFavorite,
-                    isPlayed: item.isPlayed,
-                    unplayedCount: item.unplayedItemCount,
-                    playedPercentage: item.playedPercentage,
-                    watchedBehavior: watchedBehavior,
-                    itemType: item.type,
-                    focusColor: focusColor,
-                    cardFocusExpansion: cardExpansion,
-                    focusNode: _nodeForRowItem(rowIndex, itemIndex),
-                    onKeyEvent: (node, event) => _handleRowItemKeyEvent(
-                      event,
-                      rowIndex: rowIndex,
-                      itemIndex: itemIndex,
-                      rows: rows,
-                    ),
-                    onFocus: () {
-                      final forceReveal = _forceRevealOnNextRowFocusFromMediaBar;
-                      _forceRevealOnNextRowFocusFromMediaBar = false;
-                      widget.onItemSelected(item);
-                      unawaited(_revealAndScrollToPinnedInfo(ignoreScrollCooldown: forceReveal));
-                      if (_suppressNextRowPreviewFromMediaBar) {
-                        _suppressNextRowPreviewFromMediaBar = false;
-                        _finishSharedPreview();
-                        return;
-                      }
-                      if (!PlatformDetection.useMobileUi && canPreview) {
-                        _schedulePreview(item, delay: _previewStartDelay);
-                      } else {
-                        _finishSharedPreview();
-                      }
-                    },
-                    onFocusLost: () {
-                      _stopPreviewFor(item);
-                    },
-                    onHoverStart: () {
-                      unawaited(_revealAndScrollToPinnedInfo());
-                      widget.onItemSelected(item);
-                      if (!PlatformDetection.useMobileUi && canPreview) {
-                        _schedulePreview(item, delay: _previewStartDelay);
-                      } else {
-                        _finishSharedPreview();
-                      }
-                    },
-                    onHoverEnd: () {
-                      _stopPreviewFor(item);
-                    },
-                    onLongPress: () {
-                      _markUserGesture();
-                      unawaited(_revealAndScrollToPinnedInfo());
-                      widget.onItemSelected(item);
-                      if (canPreview) {
-                        _schedulePreview(item, delay: Duration.zero);
-                      } else {
-                        _finishSharedPreview();
-                      }
-                    },
-                    onTap: () {
-                      _markUserGesture();
-                      _finishSharedPreview(releaseResources: true);
-                      if (row.rowType == HomeRowType.libraryTiles) {
-                        _navigateToLibrary(context, item);
-                      } else {
-                        context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type));
-                      }
-                    },
-                  );
-
-                  if (!canPreview) {
-                    return card;
-                  }
-
-                  return _PreviewCardShell(
-                    card: card,
-                    width: width,
-                    aspectRatio: ar,
-                    showVideo: _activePreviewKey == previewKey && _previewReady,
-                    controller: _previewController,
-                    focusNode: _nodeForRowItem(rowIndex, itemIndex),
-                    focusColor: focusColor,
-                  );
-                }).toList();
-                rowChild = LibraryRow(
-                  title: _localizedRowTitle(row, l10n),
-                  rowHeight: maxCardHeight,
-                  children: cards,
+                rowChild = _buildMediaRow(
+                  row: row,
+                  rowIndex: rowIndex,
+                  rows: rows,
+                  prefs: prefs,
+                  posterSize: posterSize,
+                  watchedBehavior: watchedBehavior,
+                  focusColor: focusColor,
+                  cardExpansion: cardExpansion,
+                  useSeriesThumbs: useSeriesThumbs,
+                  l10n: l10n,
                 );
               }
               return Padding(
@@ -1794,83 +1653,49 @@ class _ContentRowsState extends State<_ContentRows>
     required List<HomeRow> rows,
   }) {
     final l10n = AppLocalizations.of(context);
-    return LibraryRow(
+    final actions = <_LiveTvAction>[
+      _LiveTvAction(Icons.tv_rounded, l10n.guide, Destinations.liveTvGuide),
+      _LiveTvAction(Icons.fiber_manual_record_rounded, l10n.recordings,
+          Destinations.liveTvRecordings),
+      _LiveTvAction(Icons.schedule_rounded, l10n.schedule,
+          Destinations.liveTvSchedule),
+      _LiveTvAction(Icons.movie_creation, l10n.series,
+          Destinations.liveTvSeriesRecordings),
+    ];
+    return _buildTitledRow(
       title: _localizedRowTitle(row, l10n),
-      rowHeight: 140,
-      children: [
-        GridButtonCard(
-          icon: Icons.tv_rounded,
-          label: l10n.guide,
-          focusColor: focusColor,
-          cardFocusExpansion: cardExpansion,
-          focusNode: _nodeForRowItem(rowIndex, 0),
-          onFocusChanged: (focused) {
-            if (!focused) return;
-            _onHomeRowTileFocused(null);
-          },
-          onKeyEvent: (node, event) => _handleRowItemKeyEvent(
-            event,
-            rowIndex: rowIndex,
-            itemIndex: 0,
-            rows: rows,
-          ),
-          onTap: () => context.push(Destinations.liveTvGuide),
+      height: 140,
+      child: LockedFocusRow<_LiveTvAction>(
+        key: _rowKey(rowIndex),
+        items: actions,
+        hubKey: _hubKeyForRow(row),
+        height: 140,
+        itemExtent: 160,
+        itemSpacing: 12,
+        leadingPadding: 0,
+        padding: const EdgeInsets.fromLTRB(16, 5, 20, 5),
+        onIndexChanged: (_, __) {
+          _onHomeRowTileFocused(null);
+        },
+        onFocusChange: (has) => _onRowFocusTracked(rowIndex, has),
+        onVerticalNavigation: (isUp) => _onRowVerticalNavigation(
+          rowIndex: rowIndex,
+          rows: rows,
+          isUp: isUp,
         ),
-        GridButtonCard(
-          icon: Icons.fiber_manual_record_rounded,
-          label: l10n.recordings,
-          focusColor: focusColor,
-          cardFocusExpansion: cardExpansion,
-          focusNode: _nodeForRowItem(rowIndex, 1),
-          onFocusChanged: (focused) {
-            if (!focused) return;
-            _onHomeRowTileFocused(null);
-          },
-          onKeyEvent: (node, event) => _handleRowItemKeyEvent(
-            event,
-            rowIndex: rowIndex,
-            itemIndex: 1,
-            rows: rows,
-          ),
-          onTap: () => context.push(Destinations.liveTvRecordings),
-        ),
-        GridButtonCard(
-          icon: Icons.schedule_rounded,
-          label: l10n.schedule,
-          focusColor: focusColor,
-          cardFocusExpansion: cardExpansion,
-          focusNode: _nodeForRowItem(rowIndex, 2),
-          onFocusChanged: (focused) {
-            if (!focused) return;
-            _onHomeRowTileFocused(null);
-          },
-          onKeyEvent: (node, event) => _handleRowItemKeyEvent(
-            event,
-            rowIndex: rowIndex,
-            itemIndex: 2,
-            rows: rows,
-          ),
-          onTap: () => context.push(Destinations.liveTvSchedule),
-        ),
-        GridButtonCard(
-          icon: Icons.movie_creation,
-          label: l10n.series,
-          focusColor: focusColor,
-          cardFocusExpansion: cardExpansion,
-          focusNode: _nodeForRowItem(rowIndex, 3),
-          onFocusChanged: (focused) {
-            if (!focused) return;
-            _onHomeRowTileFocused(null);
-          },
-          onKeyEvent: (node, event) => _handleRowItemKeyEvent(
-            event,
-            rowIndex: rowIndex,
-            itemIndex: 3,
-            rows: rows,
-          ),
-          onTap: () => context.push(Destinations.liveTvSeriesRecordings),
-        ),
-      ],
+        onLeftEdge: _onRowLeftEdge,
+        onTap: (_, action) => context.push(action.destination),
+        itemBuilder: (ctx, action, idx, isFocused) {
+          return GridButtonCard(
+            icon: action.icon,
+            label: action.label,
+            focusColor: focusColor,
+            cardFocusExpansion: cardExpansion,
+            externalIsFocused: isFocused,
+            onTap: () => context.push(action.destination),
+          );
+        },
+      ),
     );
   }
 
@@ -1882,33 +1707,225 @@ class _ContentRowsState extends State<_ContentRows>
     required List<HomeRow> rows,
   }) {
     final l10n = AppLocalizations.of(context);
-    return LibraryRow(
+    return _buildTitledRow(
       title: _localizedRowTitle(row, l10n),
-      rowHeight: 140,
-      children: row.items.indexed.map((entry) {
-        final itemIndex = entry.$1;
-        final item = entry.$2;
-        final collectionType = (item.rawData['CollectionType'] as String? ?? '').toLowerCase();
-        final icon = _iconForCollectionType(collectionType);
-        return GridButtonCard(
-          icon: icon,
-          label: item.name,
-          focusColor: focusColor,
-          cardFocusExpansion: cardExpansion,
-          focusNode: _nodeForRowItem(rowIndex, itemIndex),
-          onFocusChanged: (focused) {
-            if (!focused) return;
-            _onHomeRowTileFocused(item);
-          },
-          onKeyEvent: (node, event) => _handleRowItemKeyEvent(
-            event,
-            rowIndex: rowIndex,
-            itemIndex: itemIndex,
-            rows: rows,
+      height: 140,
+      child: LockedFocusRow<AggregatedItem>(
+        key: _rowKey(rowIndex),
+        items: row.items,
+        hubKey: _hubKeyForRow(row),
+        height: 140,
+        itemExtent: 160,
+        itemSpacing: 12,
+        leadingPadding: 0,
+        padding: const EdgeInsets.fromLTRB(16, 5, 20, 5),
+        onIndexChanged: (_, item) {
+          _onHomeRowTileFocused(item);
+        },
+        onFocusChange: (has) => _onRowFocusTracked(rowIndex, has),
+        onVerticalNavigation: (isUp) => _onRowVerticalNavigation(
+          rowIndex: rowIndex,
+          rows: rows,
+          isUp: isUp,
+        ),
+        onLeftEdge: _onRowLeftEdge,
+        onTap: (_, item) => _navigateToLibrary(context, item),
+        itemBuilder: (ctx, item, idx, isFocused) {
+          final collectionType =
+              (item.rawData['CollectionType'] as String? ?? '').toLowerCase();
+          final icon = _iconForCollectionType(collectionType);
+          return GridButtonCard(
+            icon: icon,
+            label: item.name,
+            focusColor: focusColor,
+            cardFocusExpansion: cardExpansion,
+            externalIsFocused: isFocused,
+            onTap: () => _navigateToLibrary(context, item),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMediaRow({
+    required HomeRow row,
+    required int rowIndex,
+    required List<HomeRow> rows,
+    required UserPreferences prefs,
+    required PosterSize posterSize,
+    required WatchedIndicatorBehavior watchedBehavior,
+    required Color focusColor,
+    required bool cardExpansion,
+    required bool useSeriesThumbs,
+    required AppLocalizations l10n,
+  }) {
+    final rowImageType = _homeRowImageTypeForRow(row, prefs);
+    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
+
+    double maxCardHeight = 0;
+    double firstCardWidth = 0;
+    for (final item in row.items) {
+      final ar = _aspectRatioForRowItem(item, row, rowImageType);
+      final height = (ar > 1
+              ? posterSize.landscapeHeight.toDouble()
+              : posterSize.portraitHeight.toDouble()) *
+          tvScale;
+      final cardHeight = height + 46;
+      if (cardHeight > maxCardHeight) maxCardHeight = cardHeight;
+      if (firstCardWidth == 0) firstCardWidth = height * ar;
+    }
+
+    return _buildTitledRow(
+      title: _localizedRowTitle(row, l10n),
+      height: maxCardHeight + 10,
+      child: LockedFocusRow<AggregatedItem>(
+        key: _rowKey(rowIndex),
+        items: row.items,
+        hubKey: _hubKeyForRow(row),
+        height: maxCardHeight + 10,
+        itemExtent: firstCardWidth,
+        itemSpacing: 12,
+        leadingPadding: 0,
+        padding: const EdgeInsets.fromLTRB(16, 5, 20, 5),
+        onFocusChange: (has) => _onRowFocusTracked(rowIndex, has),
+        onVerticalNavigation: (isUp) => _onRowVerticalNavigation(
+          rowIndex: rowIndex,
+          rows: rows,
+          isUp: isUp,
+        ),
+        onLeftEdge: _onRowLeftEdge,
+        onIndexChanged: (_, item) {
+          final forceReveal = _forceRevealOnNextRowFocusFromMediaBar;
+          _forceRevealOnNextRowFocusFromMediaBar = false;
+          widget.onItemSelected(item);
+          unawaited(_revealAndScrollToPinnedInfo(ignoreScrollCooldown: forceReveal));
+          if (_suppressNextRowPreviewFromMediaBar) {
+            _suppressNextRowPreviewFromMediaBar = false;
+            _finishSharedPreview();
+            return;
+          }
+          final canPreview = _supportsEpisodePreview(item);
+          if (!PlatformDetection.useMobileUi && canPreview) {
+            _schedulePreview(item, delay: _previewStartDelay);
+          } else {
+            _finishSharedPreview();
+          }
+        },
+        onTap: (_, item) {
+          _finishSharedPreview(releaseResources: true);
+          if (row.rowType == HomeRowType.libraryTiles) {
+            _navigateToLibrary(context, item);
+          } else {
+            context.push(Destinations.itemOrPhoto(
+              item.id,
+              serverId: item.serverId,
+              type: item.type,
+            ));
+          }
+        },
+        itemBuilder: (ctx, item, idx, isFocused) {
+          final ar = _aspectRatioForRowItem(item, row, rowImageType);
+          final height = (ar > 1
+                  ? posterSize.landscapeHeight.toDouble()
+                  : posterSize.portraitHeight.toDouble()) *
+              tvScale;
+          final width = height * ar;
+          final imageUrl = _resolveRowImageUrl(
+            item,
+            widget.viewModel.imageApiForServer(item.serverId),
+            height,
+            rowImageType,
+            useSeriesThumbs,
+            isMyMediaRow: row.rowType == HomeRowType.libraryTiles,
+          );
+          final previewKey = _previewKeyFor(item);
+          final canPreview = _supportsEpisodePreview(item);
+
+          final card = MediaCard(
+            title: item.name,
+            subtitle: item.subtitle,
+            imageUrl: imageUrl,
+            width: width,
+            aspectRatio: ar,
+            isFavorite: item.isFavorite,
+            isPlayed: item.isPlayed,
+            unplayedCount: item.unplayedItemCount,
+            playedPercentage: item.playedPercentage,
+            watchedBehavior: watchedBehavior,
+            itemType: item.type,
+            focusColor: focusColor,
+            cardFocusExpansion: cardExpansion,
+            externalIsFocused: isFocused,
+            onHoverStart: () {
+              unawaited(_revealAndScrollToPinnedInfo());
+              widget.onItemSelected(item);
+              if (!PlatformDetection.useMobileUi && canPreview) {
+                _schedulePreview(item, delay: _previewStartDelay);
+              } else {
+                _finishSharedPreview();
+              }
+            },
+            onHoverEnd: () {
+              _stopPreviewFor(item);
+            },
+            onLongPress: () {
+              unawaited(_revealAndScrollToPinnedInfo());
+              widget.onItemSelected(item);
+              if (canPreview) {
+                _schedulePreview(item, delay: Duration.zero);
+              } else {
+                _finishSharedPreview();
+              }
+            },
+            onTap: () {
+              _finishSharedPreview(releaseResources: true);
+              if (row.rowType == HomeRowType.libraryTiles) {
+                _navigateToLibrary(context, item);
+              } else {
+                context.push(Destinations.itemOrPhoto(
+                  item.id,
+                  serverId: item.serverId,
+                  type: item.type,
+                ));
+              }
+            },
+          );
+
+          if (!canPreview) return card;
+          return _PreviewCardShell(
+            card: card,
+            width: width,
+            aspectRatio: ar,
+            showVideo: _activePreviewKey == previewKey && _previewReady,
+            controller: _previewController,
+            isFocused: isFocused,
+            focusColor: focusColor,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildTitledRow({
+    required String title,
+    required double height,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
           ),
-          onTap: () => _navigateToLibrary(context, item),
-        );
-      }).toList(),
+        ),
+        child,
+      ],
     );
   }
 
@@ -2217,13 +2234,21 @@ class _ContentRowsState extends State<_ContentRows>
   }
 }
 
+class _LiveTvAction {
+  final IconData icon;
+  final String label;
+  final String destination;
+
+  const _LiveTvAction(this.icon, this.label, this.destination);
+}
+
 class _PreviewCardShell extends StatelessWidget {
   final Widget card;
   final double width;
   final double aspectRatio;
   final bool showVideo;
   final VideoController? controller;
-  final FocusNode focusNode;
+  final bool isFocused;
   final Color focusColor;
 
   const _PreviewCardShell({
@@ -2232,7 +2257,7 @@ class _PreviewCardShell extends StatelessWidget {
     required this.aspectRatio,
     required this.showVideo,
     required this.controller,
-    required this.focusNode,
+    required this.isFocused,
     required this.focusColor,
   });
 
@@ -2244,57 +2269,51 @@ class _PreviewCardShell extends StatelessWidget {
 
     return SizedBox(
       width: width,
-      child: AnimatedBuilder(
-        animation: focusNode,
-        builder: (context, _) {
-          final hasFocus = focusNode.hasFocus;
-          return Stack(
-            children: [
-              card,
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                child: SizedBox(
-                  height: width / aspectRatio,
-                  child: IgnorePointer(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: ColoredBox(
-                        color: Colors.black,
-                        child: Video(
-                          controller: controller!,
-                          controls: NoVideoControls,
-                          fit: BoxFit.cover,
-                          pauseUponEnteringBackgroundMode: false,
-                          fill: Colors.black,
-                        ),
-                      ),
+      child: Stack(
+        children: [
+          card,
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: SizedBox(
+              height: width / aspectRatio,
+              child: IgnorePointer(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: ColoredBox(
+                    color: Colors.black,
+                    child: Video(
+                      controller: controller!,
+                      controls: NoVideoControls,
+                      fit: BoxFit.cover,
+                      pauseUponEnteringBackgroundMode: false,
+                      fill: Colors.black,
                     ),
                   ),
                 ),
               ),
-              if (hasFocus)
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  child: IgnorePointer(
-                    child: Container(
-                      height: width / aspectRatio,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: focusColor,
-                          width: 2,
-                        ),
-                      ),
+            ),
+          ),
+          if (isFocused)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              child: IgnorePointer(
+                child: Container(
+                  height: width / aspectRatio,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: focusColor,
+                      width: 2,
                     ),
                   ),
                 ),
-            ],
-          );
-        },
+              ),
+            ),
+        ],
       ),
     );
   }
