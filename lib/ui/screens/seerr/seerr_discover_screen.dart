@@ -17,6 +17,7 @@ import '../../widgets/media_card.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w300';
 const _tmdbBackdropBase = 'https://image.tmdb.org/t/p/w1280';
@@ -99,7 +100,10 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildScreenContent(context));
+
+  Widget _buildScreenContent(BuildContext context) {
     final topPad = MediaQuery.of(context).padding.top;
     final navbarPosition = GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition);
     final navbarHeight = navbarPosition == NavbarPosition.top

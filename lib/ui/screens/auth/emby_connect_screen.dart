@@ -12,6 +12,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
 import '../../widgets/server_type_icon.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 enum _EmbyConnectPhase {
   credentials,
@@ -198,7 +199,10 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return LoginScaffold(
       maxWidth: 700,

@@ -11,6 +11,7 @@ import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/genre_grid_card.dart';
 import '../../../l10n/app_localizations.dart';
@@ -279,7 +280,12 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(
+        child: _buildContent(context),
+      );
+
+  Widget _buildContent(BuildContext context) {
     final isMobile = _isCompact(context);
     final hasBackdrop = !isMobile && _backdropUrl != null;
     return Scaffold(
@@ -416,7 +422,13 @@ class _GenresHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (!PlatformDetection.isTV)
+          if (PlatformDetection.isTV)
+            IconButton(
+              icon: const Icon(Icons.home, color: Colors.white70, size: 22),
+              onPressed: () => context.go(Destinations.home),
+              tooltip: AppLocalizations.of(context).home,
+            )
+          else
             IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 22),
               onPressed: onBack,

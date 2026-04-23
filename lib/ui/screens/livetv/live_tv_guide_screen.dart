@@ -12,6 +12,8 @@ import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/horizontal_scroll_section.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 const _kChannelColumnWidth = 160.0;
 const _kRowHeight = 74.0;
@@ -173,7 +175,10 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
   int _lastComputedHours = _kMinGuideHours;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(
@@ -591,7 +596,7 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
     final isFavoriteChannel = channel?.isFavorite ?? false;
     final l10n = AppLocalizations.of(context);
 
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1A1A1A),

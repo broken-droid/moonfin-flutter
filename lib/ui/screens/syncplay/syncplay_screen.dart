@@ -4,6 +4,8 @@ import 'package:server_core/server_core.dart';
 
 import '../../../di/providers.dart';
 import '../../../syncplay/syncplay_manager.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class SyncPlayScreen extends ConsumerStatefulWidget {
   const SyncPlayScreen({super.key});
@@ -30,7 +32,10 @@ class _SyncPlayScreenState extends ConsumerState<SyncPlayScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final manager = ref.watch(syncPlayManagerProvider);
     return Scaffold(
       appBar: AppBar(
@@ -429,7 +434,7 @@ Future<void> _confirmIfNeeded(
     await action();
     return;
   }
-  final proceed = await showDialog<bool>(
+  final proceed = await showFocusRestoringDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
       title: const Text('Join SyncPlay group?'),

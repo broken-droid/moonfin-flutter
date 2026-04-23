@@ -15,6 +15,7 @@ import '../../../data/services/media_server_client_factory.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/settings/preference_binding.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../widgets/settings/settings_panel.dart';
@@ -1145,7 +1146,7 @@ class _FocusColorPreferenceTileState extends State<_FocusColorPreferenceTile> {
   }
 
   void _showPicker(BuildContext context) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) => SimpleDialog(
         title: const Text('Focus Border Color'),

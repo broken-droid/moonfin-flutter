@@ -13,6 +13,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../di/providers.dart';
 import '../../../util/download_utils.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class StorageManagementScreen extends ConsumerStatefulWidget {
   const StorageManagementScreen({super.key});
@@ -86,7 +88,10 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final storage = ref.watch(storageUsedProvider);
     final prefs = ref.watch(userPreferencesProvider);
     final storageLimitMb = prefs.get(UserPreferences.downloadStorageLimitMb);
@@ -255,7 +260,7 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
 
   Future<void> _bulkDelete() async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteSelected),
@@ -297,7 +302,7 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
 
   Future<void> _confirmDeleteAll() async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteAllDownloads),

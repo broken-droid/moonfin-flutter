@@ -1,11 +1,89 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../util/focus/back_key_coordinator.dart';
 import '../../util/focus/dpad_keys.dart';
 import 'focus/focus_theme.dart';
+
+/// Drop-in replacement for [showDialog] that captures the currently focused
+/// node before opening and restores focus to it after the dialog closes.
+/// Use this everywhere [showDialog] is called from a TV-facing screen so
+/// keyboard/dpad focus returns to the originating widget instead of being
+/// lost to the route's default focus traversal.
+Future<T?> showFocusRestoringDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+  Color? barrierColor,
+  bool useRootNavigator = true,
+  bool useSafeArea = true,
+  RouteSettings? routeSettings,
+  String? barrierLabel,
+}) {
+  final previousFocus = FocusManager.instance.primaryFocus;
+  return showDialog<T>(
+    context: context,
+    builder: builder,
+    barrierDismissible: barrierDismissible,
+    barrierColor: barrierColor,
+    useRootNavigator: useRootNavigator,
+    useSafeArea: useSafeArea,
+    routeSettings: routeSettings,
+    barrierLabel: barrierLabel,
+  ).whenComplete(() {
+    if (previousFocus != null && previousFocus.canRequestFocus) {
+      previousFocus.requestFocus();
+    }
+  });
+}
+
+/// Drop-in replacement for [showModalBottomSheet] with focus restoration.
+Future<T?> showFocusRestoringModalBottomSheet<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  Color? backgroundColor,
+  double? elevation,
+  ShapeBorder? shape,
+  Clip? clipBehavior,
+  BoxConstraints? constraints,
+  Color? barrierColor,
+  bool isScrollControlled = false,
+  bool useRootNavigator = false,
+  bool isDismissible = true,
+  bool enableDrag = true,
+  bool? showDragHandle,
+  bool useSafeArea = false,
+  RouteSettings? routeSettings,
+  AnimationController? transitionAnimationController,
+  Offset? anchorPoint,
+}) {
+  final previousFocus = FocusManager.instance.primaryFocus;
+  return showModalBottomSheet<T>(
+    context: context,
+    builder: builder,
+    backgroundColor: backgroundColor,
+    elevation: elevation,
+    shape: shape,
+    clipBehavior: clipBehavior,
+    constraints: constraints,
+    barrierColor: barrierColor,
+    isScrollControlled: isScrollControlled,
+    useRootNavigator: useRootNavigator,
+    isDismissible: isDismissible,
+    enableDrag: enableDrag,
+    showDragHandle: showDragHandle,
+    useSafeArea: useSafeArea,
+    routeSettings: routeSettings,
+    transitionAnimationController: transitionAnimationController,
+    anchorPoint: anchorPoint,
+  ).whenComplete(() {
+    if (previousFocus != null && previousFocus.canRequestFocus) {
+      previousFocus.requestFocus();
+    }
+  });
+}
 
 class OverlaySheetController {
   static Future<T?> show<T>(
@@ -130,7 +208,6 @@ class _OverlaySheetState<T> extends State<_OverlaySheet<T>>
   KeyEventResult _onKey(FocusNode node, KeyEvent event) {
     if (event.logicalKey.isBackKey) {
       if (event is KeyDownEvent) {
-        BackKeyCoordinator.markHandled();
         _close();
         return KeyEventResult.handled;
       }

@@ -7,6 +7,7 @@ import '../../../util/pin_code_util.dart';
 import '../../widgets/pin_entry_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 /// Settings screen for managing PIN code protection.
 class PinCodeSettingsScreen extends StatefulWidget {
@@ -97,7 +98,10 @@ class _PinCodeSettingsScreenState extends State<PinCodeSettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: buildSettingsAppBar(context, Text(l10n.pinCode)),

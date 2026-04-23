@@ -16,12 +16,17 @@ import '../../../util/download_utils.dart';
 import '../../../util/platform_detection.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class DownloadSettingsScreen extends ConsumerWidget {
   const DownloadSettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) =>
+      RequestInitialFocus(child: _buildContent(context, ref));
+
+  Widget _buildContent(BuildContext context, WidgetRef ref) {
     final prefs = ref.watch(userPreferencesProvider);
     final qualityName = prefs.get(UserPreferences.defaultDownloadQuality);
     final wifiOnly = prefs.get(UserPreferences.downloadWifiOnly);
@@ -110,7 +115,7 @@ class DownloadSettingsScreen extends ConsumerWidget {
   }
 
   void _pickQuality(BuildContext context, UserPreferences prefs, String current) {
-    showModalBottomSheet(
+    showFocusRestoringModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
         child: Column(
@@ -133,7 +138,7 @@ class DownloadSettingsScreen extends ConsumerWidget {
   void _pickStorageLimit(BuildContext context, UserPreferences prefs, int current) {
     final l10n = AppLocalizations.of(context);
     final values = [0, 1024, 2048, 5120, 10240, 20480, 51200, 102400];
-    showModalBottomSheet(
+    showFocusRestoringModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
         child: Column(
@@ -161,7 +166,7 @@ class DownloadSettingsScreen extends ConsumerWidget {
     if (!context.mounted) return;
 
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.changeDownloadLocation),
@@ -209,7 +214,7 @@ class DownloadSettingsScreen extends ConsumerWidget {
 
     if (!context.mounted) return;
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.saveToDownloadsFolderQuestion),
@@ -234,7 +239,7 @@ class DownloadSettingsScreen extends ConsumerWidget {
 
   Future<void> _confirmClearAll(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.clearAllDownloads),

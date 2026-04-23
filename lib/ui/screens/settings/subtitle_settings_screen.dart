@@ -4,10 +4,12 @@ import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import '../../../preference/user_preferences.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/settings/preference_binding.dart';
 import '../../widgets/settings/preference_tiles.dart';
-import '../../../l10n/app_localizations.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class SubtitleSettingsScreen extends StatefulWidget {
   const SubtitleSettingsScreen({super.key});
@@ -61,7 +63,10 @@ class _SubtitleSettingsScreenState extends State<SubtitleSettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: buildSettingsAppBar(context, Text(l10n.subtitles)),
@@ -237,7 +242,7 @@ class _ColorPickerTileState extends State<_ColorPickerTile> {
   }
 
   void _showPicker(BuildContext context) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) => SimpleDialog(
         title: Text(widget.title),

@@ -6,6 +6,7 @@ import 'package:server_core/server_core.dart';
 import '../../widgets/settings/preference_binding.dart';
 import '../../../l10n/app_localizations.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class ParentalSettingsScreen extends StatefulWidget {
   const ParentalSettingsScreen({super.key});
@@ -131,7 +132,10 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final blocked = _blocked;
     final ratings = _effectiveRatings;

@@ -6,6 +6,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../data/models/aggregated_library.dart';
 import '../../../data/repositories/user_views_repository.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/navigation_layout.dart';
 
 class FolderViewScreen extends StatefulWidget {
@@ -50,7 +51,10 @@ class _FolderViewScreenState extends State<FolderViewScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(

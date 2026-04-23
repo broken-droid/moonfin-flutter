@@ -17,6 +17,7 @@ import '../../../data/services/cast/cast_service.dart';
 import '../../../data/services/cast/cast_target.dart';
 import '../../../data/services/media_server_client_factory.dart';
 import '../../../util/platform_detection.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/playback/lyrics_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -557,7 +558,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       CastTargetKind.jellyfinSession => l10n.remotePlayback,
     };
 
-    showModalBottomSheet<void>(
+    showFocusRestoringModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColorScheme.surface,
       builder: (ctx) => SafeArea(

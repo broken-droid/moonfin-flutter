@@ -6,6 +6,7 @@ import '../../data/repositories/offline_repository.dart';
 import '../../data/services/download_service.dart';
 import '../../l10n/app_localizations.dart';
 import 'focusable_dialog_row.dart';
+import 'overlay_sheet.dart';
 
 class TrackActionDialog extends StatelessWidget {
   final AggregatedItem track;
@@ -49,7 +50,7 @@ class TrackActionDialog extends StatelessWidget {
     VoidCallback? onGoToAlbum,
     VoidCallback? onGoToArtist,
   }) {
-    return showDialog(
+    return showFocusRestoringDialog(
       context: context,
       builder: (_) => TrackActionDialog(
         track: track,

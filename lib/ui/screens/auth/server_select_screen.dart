@@ -12,6 +12,7 @@ import '../../../auth/services/server_discovery_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/server_type_icon.dart';
 
 class ServerSelectScreen extends StatefulWidget {
@@ -107,7 +108,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
 
   Future<void> _deleteServer(Server server) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.removeServer),
@@ -393,7 +394,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
   Future<void> _showAddServerDialog() async {
     final l10n = AppLocalizations.of(context);
     _addressController.clear();
-    final address = await showDialog<String>(
+    final address = await showFocusRestoringDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.connectToServer),

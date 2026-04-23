@@ -11,6 +11,8 @@ import '../../../data/viewmodels/music_browse_view_model.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/focus/focusable_toolbar_button.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 import '../../../l10n/app_localizations.dart';
 
 const _navyBackground = Color(0xFF101528);
@@ -83,7 +85,10 @@ class _MusicBrowseScreenState extends State<MusicBrowseScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     return Scaffold(
       backgroundColor: _navyBackground,
       body: Stack(
@@ -192,72 +197,21 @@ class _MusicHeader extends StatelessWidget {
           const SizedBox(height: 6),
           Row(
             children: [
-              _ToolbarButton(
+              FocusableToolbarButton(
                 icon: Icons.home,
                 size: 52,
                 iconSize: 28,
+                variant: ToolbarButtonVariant.translucent,
+                scaleOnFocus:
+                    GetIt.instance<UserPreferences>()
+                            .get(UserPreferences.cardFocusExpansion)
+                        ? 1.05
+                        : 1.0,
                 onTap: () => context.go(Destinations.home),
               ),
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ToolbarButton extends StatefulWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  final double size;
-  final double iconSize;
-
-  const _ToolbarButton({
-    required this.icon,
-    required this.onTap,
-    this.size = 34,
-    this.iconSize = 18,
-  });
-
-  @override
-  State<_ToolbarButton> createState() => _ToolbarButtonState();
-}
-
-class _ToolbarButtonState extends State<_ToolbarButton> with FocusStateMixin {
-
-  @override
-  Widget build(BuildContext context) {
-    final cardExpansion =
-        GetIt.instance<UserPreferences>().get(UserPreferences.cardFocusExpansion);
-    final focusColor =
-        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
-    return Material(
-      color: Colors.transparent,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setHovered(true),
-        onExit: (_) => setHovered(false),
-        child: Focus(
-          onFocusChange: (hasFocus) => setFocused(hasFocus),
-          child: InkWell(
-            onTap: widget.onTap,
-            borderRadius: BorderRadius.circular(6),
-            child: AnimatedScale(
-              scale: cardExpansion && showFocusBorder ? 1.05 : 1.0,
-              duration: const Duration(milliseconds: 120),
-              child: Container(
-                width: widget.size,
-                height: widget.size,
-                decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(focused ? 36 : 20),
-                  borderRadius: BorderRadius.circular(6),
-                  border: showFocusBorder ? Border.all(color: focusColor, width: 1.5) : null,
-                ),
-                child: Icon(widget.icon, color: Colors.white, size: widget.iconSize),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

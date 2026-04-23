@@ -12,6 +12,7 @@ import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 const _tmdbProfileLarge = 'https://image.tmdb.org/t/p/w500';
@@ -75,7 +76,10 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildScreenContent(context));
+
+  Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(

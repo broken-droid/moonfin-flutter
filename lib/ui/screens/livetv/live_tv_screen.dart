@@ -4,12 +4,16 @@ import 'package:go_router/go_router.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class LiveTvScreen extends StatelessWidget {
   const LiveTvScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.black,

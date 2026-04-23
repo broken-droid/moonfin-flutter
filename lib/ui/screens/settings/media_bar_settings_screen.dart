@@ -5,9 +5,11 @@ import 'package:server_core/server_core.dart';
 
 import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/user_preferences.dart';
-import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/settings/preference_tiles.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class MediaBarSettingsScreen extends StatefulWidget {
   const MediaBarSettingsScreen({super.key});
@@ -148,7 +150,7 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   }) {
     final l10n = AppLocalizations.of(context);
     final working = Set<String>.from(selected);
-    return showDialog<Set<String>>(
+    return showFocusRestoringDialog<Set<String>>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
@@ -220,7 +222,10 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: buildSettingsAppBar(context, Text(l10n.mediaBar)),

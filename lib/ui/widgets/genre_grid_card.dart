@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'bounded_network_image.dart';
+import '../../util/focus/dpad_keys.dart';
 import '../mixins/focus_state_mixin.dart';
 
 class GenreCardData {
@@ -58,12 +59,20 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
       },
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
+        onKeyEvent: (_, event) {
+          if (isActivateKey(event)) {
+            widget.onTap();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap: widget.onTap,
           child: AnimatedScale(
             scale: widget.cardFocusExpansion && showFocusBorder ? 1.03 : 1.0,
             duration: const Duration(milliseconds: 150),
             child: DecoratedBox(
+              position: DecorationPosition.foreground,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: showFocusBorder

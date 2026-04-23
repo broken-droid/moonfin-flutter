@@ -6,9 +6,10 @@ import 'package:server_core/server_core.dart';
 
 import '../../data/services/socket_handler.dart';
 import '../../l10n/app_localizations.dart';
+import 'overlay_sheet.dart';
 
 void showRemoteControlDialog(BuildContext context) {
-  showModalBottomSheet<void>(
+  showFocusRestoringModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,

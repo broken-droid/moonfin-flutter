@@ -11,7 +11,9 @@ import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/media_card.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 const _navyBackground = Color(0xFF101528);
@@ -102,7 +104,10 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: _navyBackground,
@@ -280,11 +285,11 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
   }
 
   void _showSortDialog(BuildContext context) {
-    showDialog(context: context, builder: (_) => _SeerrSortDialog(vm: _vm!));
+    showFocusRestoringDialog(context: context, builder: (_) => _SeerrSortDialog(vm: _vm!));
   }
 
   void _showSettingsDialog(BuildContext context) {
-    showDialog(context: context, builder: (_) => _SeerrSettingsDialog(prefs: _prefs));
+    showFocusRestoringDialog(context: context, builder: (_) => _SeerrSettingsDialog(prefs: _prefs));
   }
 }
 

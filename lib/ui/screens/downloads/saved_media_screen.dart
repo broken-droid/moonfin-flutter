@@ -15,7 +15,9 @@ import '../../../util/platform_detection.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/offline_image.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/sync_indicator.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class SavedMediaScreen extends ConsumerStatefulWidget {
   const SavedMediaScreen({super.key});
@@ -30,7 +32,10 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
   _Filter _filter = _Filter.all;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildScreenContent(context));
+
+  Widget _buildScreenContent(BuildContext context) {
     final movies = ref.watch(downloadedMoviesProvider);
     final series = ref.watch(downloadedSeriesProvider);
     final audio = ref.watch(downloadedAudioProvider);
@@ -329,7 +334,7 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
 
   void _showDeleteDialog(DownloadedItem item) {
     final l10n = AppLocalizations.of(context);
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteDownload),

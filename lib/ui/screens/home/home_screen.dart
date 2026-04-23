@@ -342,6 +342,7 @@ class _ContentRowsState extends State<_ContentRows>
   bool _infoRevealed = false;
   bool _mediaBarVisible = true;
   bool _initialFocusResolved = false;
+  String? _lastObservedPath;
   bool _suppressNextRowPreviewFromMediaBar = false;
   bool _forceRevealOnNextRowFocusFromMediaBar = false;
   DateTime? _lastScrollTime;
@@ -419,12 +420,20 @@ class _ContentRowsState extends State<_ContentRows>
 
   void _onRouteChanged() {
     final path = appRouter.routerDelegate.currentConfiguration.uri.path;
+    final wasOnHome = _lastObservedPath?.startsWith(Destinations.home) ?? false;
+    _lastObservedPath = path;
+
     if (!path.startsWith(Destinations.home)) {
       _finishSharedPreview(releaseResources: true);
       return;
     }
 
-    _initialFocusResolved = false;
+    // Only reset initial focus when entering home from a non-home route
+    // (e.g. login, server select). Pop-back from /item should keep the
+    // user's previous focus in place.
+    if (!wasOnHome) {
+      _initialFocusResolved = false;
+    }
   }
 
   static bool _supportsEpisodePreview(AggregatedItem item) {
@@ -779,6 +788,12 @@ class _ContentRowsState extends State<_ContentRows>
         (mediaBarState is MediaBarReady && mediaBarState.items.isNotEmpty);
   }
 
+  bool _isHomeRouteActive() {
+    if (!mounted) return false;
+    final route = ModalRoute.of(context);
+    return route?.isCurrent ?? true;
+  }
+
   double _mediaBarHeight() {
     final size = MediaQuery.sizeOf(context);
     final screenHeight = size.height;
@@ -911,9 +926,11 @@ class _ContentRowsState extends State<_ContentRows>
     if (!mounted || (!force && _initialFocusResolved) || !_isMediaBarIncluded()) {
       return;
     }
+    if (!_isHomeRouteActive()) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_isMediaBarIncluded()) return;
+      if (!_isHomeRouteActive()) return;
 
       if (_mediaBarFocusNode.context == null) {
         if (attempt < 8) {
@@ -973,6 +990,7 @@ class _ContentRowsState extends State<_ContentRows>
     if (_initialFocusResolved || !mounted) {
       return;
     }
+    if (!_isHomeRouteActive()) return;
 
     final mediaBarEnabled = widget.prefs.get(UserPreferences.mediaBarEnabled);
     final mediaBarState = widget.mediaBarViewModel.state;
@@ -1011,6 +1029,7 @@ class _ContentRowsState extends State<_ContentRows>
       if (!mounted || _initialFocusResolved) {
         return;
       }
+      if (!_isHomeRouteActive()) return;
 
       if (focusMediaBar) {
         if (_scrollController.hasClients && _scrollController.offset > 0) {

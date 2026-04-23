@@ -9,6 +9,7 @@ import '../../../preference/user_preferences.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class LibrarySettingsScreen extends StatefulWidget {
   const LibrarySettingsScreen({super.key});
@@ -73,7 +74,10 @@ class _LibrarySettingsScreenState extends State<LibrarySettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(

@@ -7,6 +7,7 @@ import 'package:server_core/server_core.dart';
 import '../../../data/models/aggregated_item.dart';
 import '../../../data/viewmodels/folder_browse_view_model.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../../l10n/app_localizations.dart';
@@ -104,7 +105,10 @@ class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(

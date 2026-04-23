@@ -6,7 +6,9 @@ import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../preference/user_preferences.dart';
+import '../../widgets/overlay_sheet.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class HomeRowsImageTypeScreen extends StatefulWidget {
   const HomeRowsImageTypeScreen({super.key});
@@ -71,7 +73,10 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final enabledSections = _prefs.homeSectionsConfig
         .where((c) =>
@@ -113,7 +118,7 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
     required Future<void> Function(ImageType value) onSelected,
   }) async {
     final l10n = AppLocalizations.of(context);
-    await showDialog<void>(
+    await showFocusRestoringDialog<void>(
       context: context,
       builder: (ctx) {
         return SimpleDialog(

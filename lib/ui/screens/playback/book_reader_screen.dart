@@ -23,6 +23,7 @@ import '../../../data/services/book_reader_service.dart';
 import '../../../data/services/media_server_client_factory.dart';
 import '../../../util/platform_detection.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/overlay_sheet.dart';
 
 class BookReaderScreen extends StatefulWidget {
   final String itemId;
@@ -1013,7 +1014,7 @@ class _BookReaderScreenState extends State<BookReaderScreen>
   }
 
   void _showBookmarksSheet() {
-    showModalBottomSheet<void>(
+    showFocusRestoringModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: const Color(0xFF1A2740),

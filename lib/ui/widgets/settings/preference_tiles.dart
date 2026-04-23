@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
+import '../overlay_sheet.dart';
 import 'preference_binding.dart';
 
 class SwitchPreferenceTile extends StatefulWidget {
@@ -111,7 +112,7 @@ class _EnumPreferenceTileState<T extends Enum> extends State<EnumPreferenceTile<
   }
 
   void _showPicker(BuildContext context, T current) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) => SimpleDialog(
         title: Text(widget.title),
@@ -266,7 +267,7 @@ class _StringPickerPreferenceTileState extends State<StringPickerPreferenceTile>
   }
 
   void _showPicker(BuildContext context, String current) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) => SimpleDialog(
         title: Text(widget.title),

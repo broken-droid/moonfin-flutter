@@ -10,6 +10,7 @@ import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class LiveTvRecordingsScreen extends StatefulWidget {
   const LiveTvRecordingsScreen({super.key});
@@ -41,7 +42,10 @@ class _LiveTvRecordingsScreenState extends State<LiveTvRecordingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildScreenContent(context));
+
+  Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(

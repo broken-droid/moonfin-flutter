@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playback_core/playback_core.dart';
@@ -37,10 +36,13 @@ import '../../widgets/track_action_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
+import '../../widgets/focus/request_initial_focus.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../../syncplay/syncplay_manager.dart';
 import '../../../util/audio_labels.dart';
 import '../../../util/download_utils.dart';
+import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 
 const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
@@ -57,18 +59,12 @@ bool _useDesktopDetailLayout(BuildContext context) {
       (PlatformDetection.useMobileUi && isLandscape && size.width >= 700);
 }
 
-bool _isActivateKey(KeyEvent event) {
-  return event is KeyDownEvent &&
-      (event.logicalKey == LogicalKeyboardKey.select ||
-          event.logicalKey == LogicalKeyboardKey.enter);
-}
-
 Future<bool> _showDeleteConfirmationDialog(
   BuildContext context, {
   required String title,
   required String message,
 }) async {
-  final confirmed = await showDialog<bool>(
+  final confirmed = await showFocusRestoringDialog<bool>(
     context: context,
     builder:
         (ctx) => AlertDialog(
@@ -201,12 +197,15 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: NavigationLayout(showBackButton: true, child: _buildBody(context)),
-    );
-  }
+  Widget build(BuildContext context) => RequestInitialFocus(
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          body: NavigationLayout(
+            showBackButton: true,
+            child: _buildBody(context),
+          ),
+        ),
+      );
 
   Widget _buildBody(BuildContext context) {
     return switch (_viewModel.state) {
@@ -1097,7 +1096,7 @@ class _DetailContent extends StatelessWidget {
       return;
     }
 
-    final ok = await showDialog<bool>(
+    final ok = await showFocusRestoringDialog<bool>(
       context: context,
       builder:
           (ctx) => AlertDialog(
@@ -1185,7 +1184,7 @@ class _DetailContent extends StatelessWidget {
   ) async {
     final l10n = AppLocalizations.of(context);
     final controller = TextEditingController(text: item.name);
-    final newName = await showDialog<String>(
+    final newName = await showFocusRestoringDialog<String>(
       context: context,
       builder:
           (ctx) => AlertDialog(
@@ -2768,12 +2767,25 @@ class _ActionButtonsState extends State<_ActionButtons> {
   void _ensureTvPlayFocus(String itemId) {
     if (!PlatformDetection.isTV) return;
     if (_tvPlayFocusAppliedForItemId == itemId) return;
-    _tvPlayFocusAppliedForItemId = itemId;
+    _tryRequestPlayFocus(itemId, 0);
+  }
+
+  void _tryRequestPlayFocus(String itemId, int attempt) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (_tvPlayFocusNode.context != null) {
-        _tvPlayFocusNode.requestFocus();
+      final node = _tvPlayFocusNode;
+      if (node.context != null && node.canRequestFocus) {
+        node.requestFocus();
+        if (node.hasFocus) {
+          _tvPlayFocusAppliedForItemId = itemId;
+          return;
+        }
       }
+      if (attempt + 1 >= 8) return;
+      Future<void>.delayed(const Duration(milliseconds: 50), () {
+        if (!mounted) return;
+        _tryRequestPlayFocus(itemId, attempt + 1);
+      });
     });
   }
 
@@ -2865,6 +2877,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
                 ? Icons.menu_book
                 : Icons.play_arrow,
               focusNode: PlatformDetection.isTV ? _tvPlayFocusNode : null,
+              autofocus: PlatformDetection.isTV,
         onPressed: () => _play(context, item, resume: !isPhoto && hasProgress),
       ),
       if (hasProgress && !isPhoto)
@@ -4278,7 +4291,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
     final multiEstimateSubtitles = isMulti
         ? _multiTranscodedEstimateSubtitles(episodes, availableQualities)
         : const <DownloadQuality, String>{};
-    showModalBottomSheet(
+    showFocusRestoringModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1E1E1E),
       shape: const RoundedRectangleBorder(
@@ -4437,7 +4450,7 @@ class _DeleteDownloadButtonState extends State<_DeleteDownloadButton> {
       _ => '"${item.name}"',
     };
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder:
           (ctx) => AlertDialog(
@@ -4493,6 +4506,7 @@ class _DetailActionButton extends StatefulWidget {
   final bool isActive;
   final Color? activeColor;
   final FocusNode? focusNode;
+  final bool autofocus;
 
   const _DetailActionButton({
     required this.label,
@@ -4501,6 +4515,7 @@ class _DetailActionButton extends StatefulWidget {
     this.isActive = false,
     this.activeColor,
     this.focusNode,
+    this.autofocus = false,
   });
 
   @override
@@ -4527,9 +4542,10 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
       onExit: (_) => setHovered(false),
       child: Focus(
         focusNode: widget.focusNode,
+        autofocus: widget.autofocus,
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
-          if (_isActivateKey(event)) {
+          if (isActivateKey(event)) {
             widget.onPressed();
             return KeyEventResult.handled;
           }
@@ -4700,7 +4716,7 @@ class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
-          if (widget.onTap != null && _isActivateKey(event)) {
+          if (widget.onTap != null && isActivateKey(event)) {
             widget.onTap!();
             return KeyEventResult.handled;
           }
@@ -5001,7 +5017,7 @@ class _ChapterListCardState extends State<_ChapterListCard> with FocusStateMixin
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
-          if (_isActivateKey(event)) {
+          if (isActivateKey(event)) {
             widget.onTap();
             return KeyEventResult.handled;
           }
@@ -5016,34 +5032,40 @@ class _ChapterListCardState extends State<_ChapterListCard> with FocusStateMixin
                 AspectRatio(
                   aspectRatio: 16 / 9,
                   child: DecoratedBox(
+                    position: DecorationPosition.foreground,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(10),
                       border:
                           showFocusBorder
-                              ? Border.all(color: focusColor, width: 1.5)
+                              ? Border.all(color: focusColor, width: 2)
                               : Border.all(
                                 color: Colors.white.withValues(alpha: 0.1),
                               ),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(9),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Image.network(
-                          widget.chapterImageUrl,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.high,
-                          errorBuilder:
-                              (_, __, ___) => Container(
-                                color: Colors.white.withValues(alpha: 0.08),
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  Icons.movie,
-                                  size: widget.isMobile ? 22 : 26,
-                                  color: Colors.white.withValues(alpha: 0.4),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(9),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Image.network(
+                            widget.chapterImageUrl,
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.high,
+                            errorBuilder:
+                                (_, __, ___) => Container(
+                                  color: Colors.white.withValues(alpha: 0.08),
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.movie,
+                                    size: widget.isMobile ? 22 : 26,
+                                    color: Colors.white.withValues(alpha: 0.4),
+                                  ),
                                 ),
-                              ),
+                          ),
                         ),
                       ),
                     ),
@@ -5439,7 +5461,7 @@ class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
-          if (_isActivateKey(event)) {
+          if (isActivateKey(event)) {
             context.push(Destinations.item(ep.id, serverId: ep.serverId));
             return KeyEventResult.handled;
           }
@@ -5593,7 +5615,7 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
-          if (_isActivateKey(event)) {
+          if (isActivateKey(event)) {
             context.push(Destinations.item(episode.id, serverId: episode.serverId));
             return KeyEventResult.handled;
           }
@@ -5722,7 +5744,7 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
       child: Focus(
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
-          if (_isActivateKey(event)) {
+          if (isActivateKey(event)) {
             context.push(Destinations.item(episode.id, serverId: episode.serverId));
             return KeyEventResult.handled;
           }
@@ -6043,7 +6065,7 @@ class _ExpandableBiographyState extends State<_ExpandableBiography> {
         Focus(
           onFocusChange: (focused) => setState(() => _toggleFocused = focused),
           onKeyEvent: (_, event) {
-            if (_isActivateKey(event)) {
+            if (isActivateKey(event)) {
               setState(() => _expanded = !_expanded);
               return KeyEventResult.handled;
             }
@@ -6654,7 +6676,7 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
       child: Focus(
         onFocusChange: (hasFocus) => setFocused(hasFocus),
         onKeyEvent: (_, event) {
-          if (_isActivateKey(event)) {
+          if (isActivateKey(event)) {
             widget.onTap();
             return KeyEventResult.handled;
           }

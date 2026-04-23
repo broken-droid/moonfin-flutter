@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'overlay_sheet.dart';
 
 enum PinEntryMode { set, verify }
 
@@ -34,7 +35,7 @@ class PinEntryDialog extends StatefulWidget {
     VoidCallback? onForgotPin,
     int pinLength = 4,
   }) async {
-    final result = await showDialog<bool>(
+    final result = await showFocusRestoringDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (_) => PinEntryDialog(

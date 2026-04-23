@@ -4,6 +4,9 @@ extension KeyEventActionable on KeyEvent {
   bool get isActionable => this is KeyDownEvent || this is KeyRepeatEvent;
 }
 
+bool isActivateKey(KeyEvent event) =>
+    event is KeyDownEvent && _selectKeys.contains(event.logicalKey);
+
 final Set<LogicalKeyboardKey> _selectKeys = <LogicalKeyboardKey>{
   LogicalKeyboardKey.select,
   LogicalKeyboardKey.enter,

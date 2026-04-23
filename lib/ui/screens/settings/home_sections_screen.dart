@@ -8,6 +8,7 @@ import '../../../preference/home_section_config.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/poster_size_settings_dialog.dart';
 import '../../widgets/settings/settings_panel.dart';
 import '../../../l10n/app_localizations.dart';
@@ -125,7 +126,7 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
   };
 
   Future<void> _showPosterSizeDialog() async {
-    await showDialog<void>(
+    await showFocusRestoringDialog<void>(
       context: context,
       builder: (_) => PosterSizeSettingsDialog(
         prefs: _prefs,

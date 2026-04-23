@@ -10,7 +10,9 @@ import '../../../auth/store/credential_store.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../util/pin_code_util.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/pin_entry_dialog.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 const _kGradientColors = [
   Color(0xFF0a0a0a),
@@ -98,7 +100,7 @@ class _StartupScreenState extends State<StartupScreen>
 
   Future<void> _showSecureStorageWarning() async {
     final l10n = AppLocalizations.of(context);
-    await showDialog<void>(
+    await showFocusRestoringDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (context) => AlertDialog(
@@ -124,7 +126,10 @@ class _StartupScreenState extends State<StartupScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(

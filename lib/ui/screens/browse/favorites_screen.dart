@@ -12,12 +12,14 @@ import '../../../data/services/background_service.dart';
 import '../../../data/viewmodels/favorites_view_model.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
-import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/focus/context_menu_sheet.dart';
+import '../../widgets/focus/focusable_toolbar_button.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/media_card.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/rating_display.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -118,7 +120,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final isMobile = _isCompact(context);
     final hasBackdrop = !isMobile && _backdropUrl != null;
     return Scaffold(
@@ -316,14 +321,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   void _showSortDialog(BuildContext context) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (_) => _SortDialog(vm: _vm),
     );
   }
 
   void _showSettingsDialog(BuildContext context) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (_) => _DisplaySettingsDialog(vm: _vm),
     );
@@ -410,12 +415,30 @@ class _FavoritesHeader extends StatelessWidget {
                 ? MainAxisAlignment.center
                 : MainAxisAlignment.start,
             children: [
-              _ToolbarButton(icon: Icons.home, onTap: onHome),
+              FocusableToolbarButton(
+                icon: Icons.home,
+                size: 34,
+                iconSize: 22,
+                unfocusedIconAlpha: 128,
+                onTap: onHome,
+              ),
               const SizedBox(width: 4),
-              _ToolbarButton(icon: Icons.sort, onTap: onSort),
+              FocusableToolbarButton(
+                icon: Icons.sort,
+                size: 34,
+                iconSize: 22,
+                unfocusedIconAlpha: 128,
+                onTap: onSort,
+              ),
               if (!isMobile) ...[
                 const SizedBox(width: 4),
-                _ToolbarButton(icon: Icons.settings, onTap: onSettings),
+                FocusableToolbarButton(
+                  icon: Icons.settings,
+                  size: 34,
+                  iconSize: 22,
+                  unfocusedIconAlpha: 128,
+                  onTap: onSettings,
+                ),
               ],
             ],
           ),
@@ -568,55 +591,6 @@ class _MetadataRow extends StatelessWidget {
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: Colors.white.withAlpha(179),
-      ),
-    );
-  }
-}
-
-class _ToolbarButton extends StatefulWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _ToolbarButton({required this.icon, required this.onTap});
-
-  @override
-  State<_ToolbarButton> createState() => _ToolbarButtonState();
-}
-
-class _ToolbarButtonState extends State<_ToolbarButton> with FocusStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    final focusColor = Color(
-      GetIt.instance<UserPreferences>()
-          .get(UserPreferences.focusColor)
-          .colorValue,
-    );
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setHovered(true),
-      onExit: (_) => setHovered(false),
-      child: Focus(
-        onFocusChange: (f) => setFocused(f),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: focused ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.circular(6),
-              border: showFocusBorder
-                  ? Border.all(color: focusColor, width: 1.5)
-                  : null,
-            ),
-            child: Icon(
-              widget.icon,
-              size: 22,
-              color: focused ? Colors.black : Colors.white.withAlpha(128),
-            ),
-          ),
-        ),
       ),
     );
   }

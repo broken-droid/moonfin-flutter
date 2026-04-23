@@ -21,8 +21,7 @@ import 'ui/widgets/cast_mini_player.dart';
 import 'ui/widgets/mini_audio_player.dart';
 import 'ui/widgets/offline_banner.dart';
 import 'ui/widgets/exit_confirmation_dialog.dart';
-import 'util/app_exit.dart';
-import 'util/focus/back_key_coordinator.dart';
+import 'util/focus/dpad_keys.dart';
 import 'util/focus/dpad_keys.dart';
 import 'util/fullscreen_helper.dart';
 import 'util/focus/input_mode_tracker.dart';
@@ -150,8 +149,13 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
       if (isBackspace && _isEditingText()) {
         return false;
       }
-      BackKeyCoordinator.markHandled();
       if (appRouter.canPop()) {
+        // On Android the system also delivers popRoute via MethodChannel,
+        // which would cause a double pop if we also popped here. Let the
+        // platform handle the pop; just consume the KeyEvent.
+        if (PlatformDetection.isAndroid) {
+          return true;
+        }
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           appRouter.pop();

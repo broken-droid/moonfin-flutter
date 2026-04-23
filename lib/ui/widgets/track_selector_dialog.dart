@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../preference/user_preferences.dart';
+import 'overlay_sheet.dart';
 
 const _kAccent = Color(0xFF00A4DC);
 
@@ -32,7 +33,7 @@ class TrackSelectorDialog extends StatelessWidget {
     required List<TrackOption> options,
     int? selectedIndex,
   }) {
-    return showDialog<int>(
+    return showFocusRestoringDialog<int>(
       context: context,
       builder: (_) => TrackSelectorDialog(
         title: title,

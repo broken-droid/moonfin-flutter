@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../overlay_sheet.dart';
 
 class StillWatchingDialog extends StatelessWidget {
   final VoidCallback onContinue;
@@ -14,7 +15,7 @@ class StillWatchingDialog extends StatelessWidget {
   });
 
   static Future<bool?> show(BuildContext context) {
-    return showDialog<bool>(
+    return showFocusRestoringDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (_) => StillWatchingDialog(

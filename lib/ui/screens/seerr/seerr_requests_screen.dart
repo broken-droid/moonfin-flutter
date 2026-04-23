@@ -9,6 +9,7 @@ import '../../../data/viewmodels/seerr_requests_view_model.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w200';
 
@@ -59,7 +60,10 @@ class _SeerrRequestsScreenState extends State<SeerrRequestsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(

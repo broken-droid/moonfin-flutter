@@ -6,9 +6,11 @@ import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
-import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/settings/preference_tiles.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class AppearanceSettingsScreen extends StatefulWidget {
   const AppearanceSettingsScreen({super.key});
@@ -29,7 +31,10 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final isMobile = PlatformDetection.useMobileUi;
     final focusColor = _prefs.get(UserPreferences.focusColor);
     final l10n = AppLocalizations.of(context);
@@ -168,7 +173,7 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
   }
 
   void _showFocusColorPicker(BuildContext context) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) => SimpleDialog(
         title: const Text('Focus Border Color'),

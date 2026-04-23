@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 
 import '../../../syncplay/syncplay_manager.dart';
+import '../overlay_sheet.dart';
 
 /// Compact in-player overlay control surfacing core SyncPlay actions
 /// (leave group, toggle ignore-wait, view participants) without forcing
@@ -42,7 +43,7 @@ class SyncPlayPlayerButton extends StatelessWidget {
   }
 
   void _showSheet(BuildContext context) {
-    showModalBottomSheet<void>(
+    showFocusRestoringModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColorScheme.surface,
       builder: (ctx) {

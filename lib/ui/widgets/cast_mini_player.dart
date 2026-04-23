@@ -9,6 +9,7 @@ import '../../data/services/cast/cast_target.dart';
 import '../../data/services/media_server_client_factory.dart';
 import '../../l10n/app_localizations.dart';
 import '../../util/audio_labels.dart';
+import 'overlay_sheet.dart';
 
 class CastMiniPlayer extends StatelessWidget {
   const CastMiniPlayer({super.key});
@@ -103,7 +104,7 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
     final positionTicks = _castService.remotePositionNotifier.value;
     final volume = _castService.remoteVolumeNotifier.value;
 
-    showModalBottomSheet<void>(
+    showFocusRestoringModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColorScheme.surface,
       builder: (ctx) => StatefulBuilder(
@@ -210,7 +211,7 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
         clientFactory.getClientIfExists(item.serverId) ??
             GetIt.instance<MediaServerClient>();
 
-    showModalBottomSheet<void>(
+    showFocusRestoringModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColorScheme.surface,
       isScrollControlled: true,

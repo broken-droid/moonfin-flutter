@@ -32,6 +32,7 @@ import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/audio_labels.dart';
 import '../../../util/platform_detection.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
 import '../../widgets/playback/skip_segment_overlay.dart';
@@ -200,7 +201,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       math.max(280.0, size.height * heightFactor),
     );
 
-    await showDialog<void>(
+    await showFocusRestoringDialog<void>(
       context: context,
       builder: (dialogContext) => Dialog(
         backgroundColor: AppColorScheme.surface,
@@ -3351,7 +3352,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         ),
       );
     } else {
-      showModalBottomSheet(
+      showFocusRestoringModalBottomSheet(
         context: context,
         backgroundColor: AppColorScheme.surface,
         isScrollControlled: true,
@@ -3454,7 +3455,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         ),
       );
     } else {
-      showModalBottomSheet(
+      showFocusRestoringModalBottomSheet(
         context: context,
         backgroundColor: AppColorScheme.surface,
         isScrollControlled: true,
@@ -3528,7 +3529,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         ),
       );
     } else {
-      showModalBottomSheet(
+      showFocusRestoringModalBottomSheet(
         context: context,
         backgroundColor: AppColorScheme.surface,
         isScrollControlled: true,
@@ -3588,7 +3589,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _ => l10n.cast,
     };
 
-    showModalBottomSheet(
+    showFocusRestoringModalBottomSheet(
       context: context,
       backgroundColor: AppColorScheme.surface,
       builder: (ctx) => SafeArea(
@@ -3728,7 +3729,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   void _showDelayAdjuster({required bool audio}) {
     final l10n = AppLocalizations.of(context);
     double delay = audio ? _audioDelay : _subtitleDelay;
-    showModalBottomSheet(
+    showFocusRestoringModalBottomSheet(
       context: context,
       backgroundColor: AppColorScheme.surface,
       builder: (ctx) => StatefulBuilder(
@@ -4139,7 +4140,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         ),
       );
     } else {
-      showModalBottomSheet(
+      showFocusRestoringModalBottomSheet(
         context: context,
         backgroundColor: AppColorScheme.surface,
         isScrollControlled: true,

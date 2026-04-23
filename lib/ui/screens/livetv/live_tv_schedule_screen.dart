@@ -9,6 +9,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class LiveTvScheduleScreen extends StatefulWidget {
   const LiveTvScheduleScreen({super.key});
@@ -40,7 +42,10 @@ class _LiveTvScheduleScreenState extends State<LiveTvScheduleScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildScreenContent(context));
+
+  Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(
@@ -127,7 +132,7 @@ class _LiveTvScheduleScreenState extends State<LiveTvScheduleScreen> {
 
   Future<void> _cancelTimer(RecordingItem item) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1A1A2E),

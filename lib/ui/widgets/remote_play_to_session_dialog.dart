@@ -8,6 +8,7 @@ import '../../data/models/aggregated_item.dart';
 import '../../data/services/cast/cast_service.dart';
 import '../../data/services/cast/cast_target.dart';
 import '../../l10n/app_localizations.dart';
+import 'overlay_sheet.dart';
 
 Future<void> showRemotePlayToSessionDialog(
   BuildContext context, {
@@ -21,7 +22,7 @@ Future<void> showRemotePlayToSessionDialog(
   final messenger = ScaffoldMessenger.of(context);
   final castService = GetIt.instance<CastService>();
 
-  final picked = await showModalBottomSheet<CastTarget>(
+  final picked = await showFocusRestoringModalBottomSheet<CastTarget>(
     context: context,
     useRootNavigator: true,
     showDragHandle: true,

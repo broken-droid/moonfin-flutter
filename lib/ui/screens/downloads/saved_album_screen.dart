@@ -11,6 +11,7 @@ import '../../../preference/user_preferences.dart';
 import '../../mixins/focus_state_mixin.dart';
 import '../../../util/platform_detection.dart';
 import '../../widgets/offline_image.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class SavedAlbumScreen extends ConsumerWidget {
   final String albumId;
@@ -23,7 +24,10 @@ class SavedAlbumScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) =>
+      RequestInitialFocus(child: _buildContent(context, ref));
+
+  Widget _buildContent(BuildContext context, WidgetRef ref) {
     final audio = ref.watch(downloadedAudioProvider);
 
     return Scaffold(

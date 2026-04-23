@@ -14,6 +14,8 @@ import '../../../util/platform_detection.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../widgets/offline_image.dart';
+import '../../widgets/overlay_sheet.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class SavedSeasonScreen extends ConsumerWidget {
   final String seasonId;
@@ -24,7 +26,10 @@ class SavedSeasonScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) =>
+      RequestInitialFocus(child: _buildContent(context, ref));
+
+  Widget _buildContent(BuildContext context, WidgetRef ref) {
     final seasonAsync = ref.watch(downloadedItemProvider(seasonId));
     final episodesAsync = ref.watch(downloadedSeasonEpisodesProvider(seasonId));
 
@@ -95,7 +100,7 @@ class SavedSeasonScreen extends ConsumerWidget {
 
   Future<void> _deleteEpisode(BuildContext context, DownloadedItem episode) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteEpisode),

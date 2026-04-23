@@ -81,6 +81,7 @@ import '../screens/downloads/saved_season_screen.dart';
 import '../screens/downloads/saved_series_screen.dart';
 import '../screens/downloads/storage_management_screen.dart';
 import 'destinations.dart';
+import 'focus_route_observer.dart';
 
 const _authRoutes = {
   Destinations.startup,
@@ -100,6 +101,7 @@ bool _isOfflineAllowed(String path) {
 
 final appRouter = GoRouter(
   initialLocation: Destinations.startup,
+  observers: [FocusRouteObserver()],
   redirect: (context, state) {
     final path = state.uri.path;
     if (_authRoutes.contains(path)) return null;

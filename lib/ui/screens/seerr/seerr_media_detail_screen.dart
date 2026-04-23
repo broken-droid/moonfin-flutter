@@ -16,7 +16,9 @@ import '../../navigation/destinations.dart';
 import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 const _tmdbBackdropBase = 'https://image.tmdb.org/t/p/w1280';
@@ -115,7 +117,10 @@ class _SeerrMediaDetailScreenState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildScreenContent(context));
+
+  Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: NavigationLayout(
@@ -592,7 +597,7 @@ class _SeerrMediaDetailScreenState
   void _showRequestSheet() {
     final vm = _vm!;
     final s = vm.state;
-    showModalBottomSheet(
+    showFocusRestoringModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: const Color(0xFF1A1A2E),
@@ -619,7 +624,7 @@ class _SeerrMediaDetailScreenState
         ? l10n.cancelRequestForTitle(title)
         : l10n.cancelCountRequestsForTitle(count, title);
 
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1A1A2E),

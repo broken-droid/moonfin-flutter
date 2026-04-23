@@ -9,6 +9,7 @@ import '../../widgets/navigation_layout.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
 import 'settings_app_bar.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class NavigationSettingsScreen extends StatefulWidget {
   const NavigationSettingsScreen({super.key});
@@ -30,7 +31,10 @@ class _NavigationSettingsScreenState extends State<NavigationSettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final navbarPosition = _prefs.get(UserPreferences.navbarPosition);
     final l10n = AppLocalizations.of(context);
 

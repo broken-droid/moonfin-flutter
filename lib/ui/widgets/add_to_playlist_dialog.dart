@@ -4,6 +4,7 @@ import 'package:server_core/server_core.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'focusable_dialog_row.dart';
+import 'overlay_sheet.dart';
 
 const _kAccent = Color(0xFF00A4DC);
 
@@ -13,7 +14,7 @@ class AddToPlaylistDialog extends StatefulWidget {
   const AddToPlaylistDialog({super.key, required this.itemIds});
 
   static Future<bool?> show(BuildContext context, {required List<String> itemIds}) {
-    return showDialog<bool>(
+    return showFocusRestoringDialog<bool>(
       context: context,
       builder: (_) => AddToPlaylistDialog(itemIds: itemIds),
     );
@@ -92,7 +93,7 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
 
   void _showCreateNew() {
     _nameController.clear();
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (ctx) {
         final insets = MediaQuery.of(ctx).viewInsets;

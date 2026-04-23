@@ -11,8 +11,11 @@ import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
+import '../../widgets/focus/focusable_toolbar_button.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/genre_grid_card.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/poster_size_settings_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -209,7 +212,7 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
   Future<void> _showSettingsDialog() async {
     final previousPosterSize = _prefs.get(UserPreferences.posterSize);
     final previousImageType = _imageType;
-    await showDialog(
+    await showFocusRestoringDialog(
       context: context,
       builder: (_) => PosterSizeSettingsDialog(
         prefs: _prefs,
@@ -235,7 +238,12 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(
+        child: _buildContent(context),
+      );
+
+  Widget _buildContent(BuildContext context) {
     final isMobile = _isCompact(context);
     final hasBackdrop = !isMobile && _backdropUrl != null;
     return Scaffold(
@@ -266,24 +274,16 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.home,
-                        color: Colors.white70,
-                        size: 22,
-                      ),
-                      onPressed: () => context.go(Destinations.home),
+                    FocusableToolbarButton(
+                      icon: Icons.home,
                       tooltip: AppLocalizations.of(context).home,
+                      onTap: () => context.go(Destinations.home),
                     ),
                     const SizedBox(width: 4),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.settings,
-                        color: Colors.white70,
-                        size: 22,
-                      ),
-                      onPressed: () => _showSettingsDialog(),
+                    FocusableToolbarButton(
+                      icon: Icons.settings,
                       tooltip: AppLocalizations.of(context).displaySettings,
+                      onTap: _showSettingsDialog,
                     ),
                     const SizedBox(width: 12),
                     Text(
@@ -368,3 +368,5 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
     );
   }
 }
+
+

@@ -19,12 +19,16 @@ import '../../../data/viewmodels/library_browse_view_model.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
+import '../../../util/focus/dpad_keys.dart';
 import '../../../util/focus/grid_focus_node_mixin.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/focus/context_menu_sheet.dart';
+import '../../widgets/focus/focusable_toolbar_button.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/media_card.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/rating_display.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -2870,7 +2874,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
   }) {
     if (items.isEmpty) return;
 
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (_) => _BookCollectionPickerDialog(
         title: title,
@@ -2893,7 +2897,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
 
   void _showBookBookmarksDialog(AggregatedItem item) {
     final bookmarksFuture = _loadBookmarksForItem(item);
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       builder: (_) => _BookBookmarksDialog(
         item: item,
@@ -3700,7 +3704,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final isMobile = _isCompact(context);
     final isBookBrowse = _isBookExperience;
     if (isBookBrowse) {
@@ -4092,7 +4099,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
   }
 
   void _showFilterSortDialog(BuildContext context) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       useRootNavigator: false,
       builder: (_) => _FilterSortDialog(vm: _vm),
@@ -4100,7 +4107,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
   }
 
   void _showSettingsDialog(BuildContext context) {
-    showDialog(
+    showFocusRestoringDialog(
       context: context,
       useRootNavigator: false,
       builder: (_) => _SettingsDialog(vm: _vm),
@@ -4226,22 +4233,36 @@ class _LibraryHeader extends StatelessWidget {
                 ? MainAxisAlignment.center
                 : MainAxisAlignment.start,
             children: [
-              if (!PlatformDetection.isTV)
-                _ToolbarButton(icon: Icons.arrow_back, onTap: onBack),
+              if (PlatformDetection.isTV)
+                FocusableToolbarButton(
+                  icon: Icons.home,
+                  iconSize: 28,
+                  unfocusedIconAlpha: 128,
+                  onTap: () => context.go(Destinations.home),
+                )
+              else
+                FocusableToolbarButton(
+                  icon: Icons.arrow_back,
+                  iconSize: 28,
+                  unfocusedIconAlpha: 128,
+                  onTap: onBack,
+                ),
               if (!isBookBrowse) ...[
                 const SizedBox(width: 4),
-                _ToolbarButton(
+                FocusableToolbarButton(
                   icon: Icons.sort,
+                  iconSize: 28,
+                  unfocusedIconAlpha: 128,
                   onTap: onSort,
-                  accentColor: _jellyfinBlue,
                 ),
               ],
               if (!isMusicBrowse && !isBookBrowse) ...[
                 const SizedBox(width: 4),
-                _ToolbarButton(
+                FocusableToolbarButton(
                   icon: Icons.settings,
+                  iconSize: 28,
+                  unfocusedIconAlpha: 128,
                   onTap: onSettings,
-                  accentColor: _jellyfinBlue,
                 ),
               ],
               if (showInlineAlpha) ...[
@@ -4433,63 +4454,6 @@ class _MetadataRow extends StatelessWidget {
   }
 }
 
-class _ToolbarButton extends StatefulWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  final Color accentColor;
-
-  const _ToolbarButton({
-    required this.icon,
-    required this.onTap,
-    this.accentColor = _jellyfinBlue,
-  });
-
-  @override
-  State<_ToolbarButton> createState() => _ToolbarButtonState();
-}
-
-class _ToolbarButtonState extends State<_ToolbarButton> with FocusStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    final prefFocusColor = Color(
-      GetIt.instance<UserPreferences>()
-          .get(UserPreferences.focusColor)
-          .colorValue,
-    );
-    final focusColor = widget.accentColor == _jellyfinBlue
-        ? prefFocusColor
-        : widget.accentColor;
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setHovered(true),
-      onExit: (_) => setHovered(false),
-      child: Focus(
-        onFocusChange: (f) => setFocused(f),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: focused ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.circular(6),
-              border: showFocusBorder
-                  ? Border.all(color: focusColor, width: 1.5)
-                  : null,
-            ),
-            child: Icon(
-              widget.icon,
-              size: 28,
-              color: focused ? Colors.black : Colors.white.withAlpha(128),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _AlphaPickerBar extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
@@ -4575,6 +4539,13 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
       onExit: (_) => setHovered(false),
       child: Focus(
         onFocusChange: (f) => setFocused(f),
+        onKeyEvent: (_, event) {
+          if (isActivateKey(event)) {
+            widget.onTap();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap: widget.onTap,
           child: AnimatedContainer(

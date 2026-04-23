@@ -11,6 +11,7 @@ import '../../auth/repositories/user_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
+import 'overlay_sheet.dart';
 import 'remote_control_dialog.dart';
 
 const _kAccent = Color(0xFF00A4DC);
@@ -22,7 +23,7 @@ void showUserMenu(BuildContext context) {
   final user = userRepo.currentUser;
   final l10n = AppLocalizations.of(context);
 
-  showDialog<_UserMenuAction>(
+  showFocusRestoringDialog<_UserMenuAction>(
     context: context,
     builder: (ctx) => Dialog(
       backgroundColor: Colors.transparent,
@@ -199,7 +200,7 @@ Future<String?> _promptQuickConnectCode(BuildContext context) async {
 
   String normalizedCode() => controller.text.replaceAll(RegExp(r'\D'), '');
 
-  final code = await showDialog<String>(
+  final code = await showFocusRestoringDialog<String>(
     context: context,
     useRootNavigator: true,
     builder: (ctx) => AlertDialog(

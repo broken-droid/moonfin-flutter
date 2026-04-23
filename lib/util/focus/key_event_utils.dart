@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import 'back_key_coordinator.dart';
 import 'dpad_keys.dart';
 
 class _SelectKeyUpSuppressor {
@@ -33,7 +32,6 @@ KeyEventResult handleOneShotSelect(KeyEvent event, VoidCallback onSelect) {
 KeyEventResult handleBackKeyAction(KeyEvent event, VoidCallback onBack) {
   if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
   if (event is KeyDownEvent) {
-    BackKeyCoordinator.markHandled();
     onBack();
     return KeyEventResult.handled;
   }

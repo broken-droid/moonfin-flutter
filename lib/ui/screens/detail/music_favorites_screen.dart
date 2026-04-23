@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/focus/request_initial_focus.dart';
 
 class MusicFavoritesScreen extends StatelessWidget {
   final String parentId;
@@ -9,7 +10,10 @@ class MusicFavoritesScreen extends StatelessWidget {
   const MusicFavoritesScreen({super.key, required this.parentId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      RequestInitialFocus(child: _buildContent(context));
+
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.black,

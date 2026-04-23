@@ -8,6 +8,7 @@ import 'package:jellyfin_preference/jellyfin_preference.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
+import '../../widgets/overlay_sheet.dart';
 import '../../widgets/settings/preference_binding.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
@@ -333,7 +334,7 @@ class _MpvConfPathTileState extends State<_MpvConfPathTile> {
   Future<void> _showPathDialog(BuildContext context, String current) async {
     final l10n = AppLocalizations.of(context);
     final controller = TextEditingController(text: current);
-    final result = await showDialog<String>(
+    final result = await showFocusRestoringDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.customMpvConfPath),

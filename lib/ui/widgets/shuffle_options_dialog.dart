@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../../preference/user_preferences.dart';
 import '../navigation/destinations.dart';
 import 'focusable_dialog_row.dart';
+import 'overlay_sheet.dart';
 
 const _kAccent = Color(0xFF00A4DC);
 
@@ -365,7 +366,7 @@ void showShuffleDialog(BuildContext context) {
   final prefs = GetIt.instance<UserPreferences>();
   final contentType = prefs.get(UserPreferences.shuffleContentType);
 
-  showDialog(
+  showFocusRestoringDialog(
     context: context,
     builder: (_) => ShuffleOptionsDialog(
       shuffleContentType: contentType,
