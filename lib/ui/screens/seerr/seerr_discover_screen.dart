@@ -110,7 +110,9 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
 
   Widget _buildScreenContent(BuildContext context) {
     final topPad = MediaQuery.of(context).padding.top;
-    final navbarPosition = GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition);
+    final prefs = GetIt.instance<UserPreferences>();
+    final navbarPosition = prefs.get(UserPreferences.navbarPosition);
+    final backdropEnabled = prefs.get(UserPreferences.backdropEnabled);
     final navbarHeight = navbarPosition == NavbarPosition.top
         ? (PlatformDetection.isTV ? 95.0 : PlatformDetection.useMobileUi ? 60.0 : 80.0)
         : 40.0;
@@ -121,7 +123,7 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            _Backdrop(url: _backdropUrl),
+            if (backdropEnabled) _Backdrop(url: _backdropUrl),
             const _GradientScrim(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
