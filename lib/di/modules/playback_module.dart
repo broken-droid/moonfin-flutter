@@ -29,6 +29,15 @@ void registerPlaybackModule() {
 
   final manager = PlaybackManager();
   manager.setBackend(backend);
+  manager.setStartPositionAdjuster((_, startPosition) {
+    final prefs = _getIt<UserPreferences>();
+    final raw = prefs.get(UserPreferences.resumeSubtractDuration);
+    final secs = int.tryParse(raw) ?? 0;
+    if (secs <= 0) return startPosition;
+    final rewind = Duration(seconds: secs);
+    if (startPosition <= rewind) return Duration.zero;
+    return startPosition - rewind;
+  });
   manager.setResolverConfigurator(_ensureResolverForItem);
   _getIt.registerSingleton<PlaybackManager>(manager);
 

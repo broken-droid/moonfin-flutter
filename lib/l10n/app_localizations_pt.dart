@@ -2165,6 +2165,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get resumeRewind => 'Retroceder ao Retomar';
 
   @override
+  String get unpauseRewind => 'Unpause Rewind';
+
+  @override
   String get fiveSeconds => '5 segundos';
 
   @override

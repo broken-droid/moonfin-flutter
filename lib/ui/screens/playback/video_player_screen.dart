@@ -1139,6 +1139,27 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
   }
 
+  Future<void> _resumeWithConfiguredRewind() async {
+    final rewindMs = _prefs.get(UserPreferences.unpauseRewindDuration);
+    if (rewindMs > 0) {
+      final rewind = Duration(milliseconds: rewindMs);
+      final current = _state.position;
+      final target = current > rewind ? current - rewind : Duration.zero;
+      try {
+        await _manager.seekTo(target);
+      } catch (_) {}
+    }
+    await _manager.resume();
+  }
+
+  void _togglePlayPause() {
+    if (_state.isPlaying) {
+      _manager.pause();
+      return;
+    }
+    _resumeWithConfiguredRewind();
+  }
+
   int _accelerateSeekStep(int baseMs, KeyEvent event) {
     final key = event.logicalKey;
     if (event is KeyDownEvent) {
@@ -1328,7 +1349,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
     switch (event.logicalKey) {
       case LogicalKeyboardKey.space:
-        _state.isPlaying ? _manager.pause() : _manager.resume();
+        _togglePlayPause();
         _showControls();
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowLeft:
@@ -1363,7 +1384,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       case LogicalKeyboardKey.select:
       case LogicalKeyboardKey.enter:
         if (_controlsVisible) {
-          _state.isPlaying ? _manager.pause() : _manager.resume();
+          _togglePlayPause();
         } else {
           _showControls();
         }
@@ -2013,7 +2034,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                             return KeyEventResult.handled;
                           case LogicalKeyboardKey.select:
                           case LogicalKeyboardKey.enter:
-                            _state.isPlaying ? _manager.pause() : _manager.resume();
+                            _togglePlayPause();
                             _showControls(focusSeekbar: true);
                             return KeyEventResult.handled;
                           default:
@@ -2287,7 +2308,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   return _controlButton(
                     isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                     onPressed: () =>
-                        isPlaying ? _manager.pause() : _manager.resume(),
+                        isPlaying ? _manager.pause() : _resumeWithConfiguredRewind(),
                     size: buttonIconSize,
                     extent: buttonExtent,
                     focusNode: _tvBottomPrimaryFocus,
@@ -3035,7 +3056,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             ),
             _controlButton(
               isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-              onPressed: () => isPlaying ? _manager.pause() : _manager.resume(),
+              onPressed: () => isPlaying ? _manager.pause() : _resumeWithConfiguredRewind(),
               size: 64,
               extent: 92,
               tooltip: _tooltipMessage(

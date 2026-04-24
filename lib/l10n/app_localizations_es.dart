@@ -2171,6 +2171,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resumeRewind => 'Retroceso al reanudar';
 
   @override
+  String get unpauseRewind => 'Unpause Rewind';
+
+  @override
   String get fiveSeconds => '5 segundos';
 
   @override

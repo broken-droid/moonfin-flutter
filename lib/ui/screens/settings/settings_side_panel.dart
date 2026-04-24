@@ -492,13 +492,6 @@ class _CustomizationCategoryScreen extends StatelessWidget {
             },
           ),
           _TvSettingsListTile(
-            leading: const Icon(Icons.subtitles),
-            title: const Text('Subtitles'),
-            subtitle: const Text('Appearance and defaults'),
-            onTap: () =>
-                context.pushSettingsScreen(const SubtitleSettingsScreen()),
-          ),
-          _TvSettingsListTile(
             leading: const Icon(Icons.library_books),
             title: const Text('Libraries'),
             subtitle: const Text('Per-library display settings'),
@@ -932,27 +925,6 @@ class _PlaybackExtrasScreen extends StatelessWidget {
             max: 5000,
             divisions: 20,
             labelOf: (v) => '$v ms',
-          ),
-          StringPickerPreferenceTile(
-            preference: UserPreferences.resumeSubtractDuration,
-            title: 'Resume Pre-roll',
-            icon: Icons.replay,
-            options: const {
-              '0': 'None',
-              '5': '5 seconds',
-              '10': '10 seconds',
-              '15': '15 seconds',
-              '30': '30 seconds',
-            },
-          ),
-          SliderPreferenceTile(
-            preference: UserPreferences.unpauseRewindDuration,
-            title: 'Unpause Rewind',
-            icon: Icons.fast_rewind,
-            min: 0,
-            max: 10000,
-            divisions: 20,
-            labelOf: (v) => '${(v / 1000).toStringAsFixed(1)} s',
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.liveTvDirectPlayEnabled,

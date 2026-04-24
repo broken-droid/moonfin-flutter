@@ -3043,6 +3043,10 @@
   "@resumeRewind": {
     "description": "Setting for resume rewind"
   },
+  "unpauseRewind": "Unpause Rewind",
+  "@unpauseRewind": {
+    "description": "Setting for rewinding a little when resuming from pause"
+  },
   "fiveSeconds": "5 seconds",
   "@fiveSeconds": {
     "description": "Duration: 5 seconds"

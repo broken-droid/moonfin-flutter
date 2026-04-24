@@ -3824,6 +3824,12 @@ abstract class AppLocalizations {
   /// **'Resume Rewind'**
   String get resumeRewind;
 
+  /// Setting for rewinding a little when resuming from pause
+  ///
+  /// In en, this message translates to:
+  /// **'Unpause Rewind'**
+  String get unpauseRewind;
+
   /// Duration: 5 seconds
   ///
   /// In en, this message translates to:

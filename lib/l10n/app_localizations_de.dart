@@ -2170,6 +2170,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get resumeRewind => 'Zurückspulen beim Fortsetzen';
 
   @override
+  String get unpauseRewind => 'Unpause Rewind';
+
+  @override
   String get fiveSeconds => '5 Sekunden';
 
   @override

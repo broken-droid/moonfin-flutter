@@ -2144,6 +2144,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get resumeRewind => 'Resume Rewind';
 
   @override
+  String get unpauseRewind => 'Unpause Rewind';
+
+  @override
   String get fiveSeconds => '5 seconds';
 
   @override

@@ -16,6 +16,7 @@ class PlaybackManager {
   MediaStreamResolver? _resolver;
   PlayerService? _service;
   Future<void> Function(dynamic item)? _resolverConfigurator;
+  Duration Function(dynamic item, Duration startPosition)? _startPositionAdjuster;
   final QueueService queueService = QueueService();
   final PlayerState state = PlayerState();
   final List<StreamSubscription> _streamSubs = [];
@@ -82,6 +83,12 @@ class PlaybackManager {
 
   void setResolverConfigurator(Future<void> Function(dynamic item) configurator) {
     _resolverConfigurator = configurator;
+  }
+
+  void setStartPositionAdjuster(
+    Duration Function(dynamic item, Duration startPosition)? adjuster,
+  ) {
+    _startPositionAdjuster = adjuster;
   }
 
   /// Optional interceptor invoked before transport actions (resume/pause/seek/stop).
@@ -229,6 +236,12 @@ class PlaybackManager {
     _audioStreamIndex = audioStreamIndex;
     _subtitleStreamIndex = subtitleStreamIndex;
     _mediaSourceId = mediaSourceId;
+    final adjuster = _startPositionAdjuster;
+    if (adjuster != null && startPosition > Duration.zero && items.isNotEmpty) {
+      final currentItem = items[startIndex.clamp(0, items.length - 1)];
+      final adjusted = adjuster(currentItem, startPosition);
+      startPosition = adjusted < Duration.zero ? Duration.zero : adjusted;
+    }
     queueService.setQueue(items, startIndex: startIndex);
     await _playCurrentItem(startPosition: startPosition);
   }

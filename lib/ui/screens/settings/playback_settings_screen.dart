@@ -247,6 +247,15 @@ class PlaybackSettingsScreen extends StatelessWidget {
             divisions: 11,
             labelOf: (v) => l10n.secondsValue((v / 1000).round()),
           ),
+          SliderPreferenceTile(
+            preference: UserPreferences.unpauseRewindDuration,
+            title: l10n.unpauseRewind,
+            icon: Icons.fast_rewind,
+            min: 0,
+            max: 10000,
+            divisions: 20,
+            labelOf: (v) => '${(v / 1000).toStringAsFixed(1)} s',
+          ),
         ],
       ),
     );
