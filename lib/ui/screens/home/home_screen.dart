@@ -22,7 +22,6 @@ import '../../widgets/focus/context_menu_sheet.dart';
 import '../../widgets/focus/hub_focus_memory.dart';
 import '../../widgets/focus/locked_focus_row.dart';
 import '../../../util/focus/dpad_keys.dart';
-import '../../../util/focus/scroll_utils.dart';
 import '../../../util/platform_detection.dart';
 import '../../../util/server_url.dart';
 import '../../navigation/app_router.dart';
@@ -327,6 +326,7 @@ class _ContentRowsState extends State<_ContentRows>
   final _scrollController = ScrollController();
   final _mediaBarFocusNode = FocusNode(debugLabel: 'home_media_bar_focus');
   final Map<int, GlobalKey> _rowKeys = {};
+  final Map<int, GlobalKey> _rowContainerKeys = {};
   int? _activeFocusedRowIndex;
   Timer? _previewDelayTimer;
   Timer? _previewStopTimer;
@@ -831,6 +831,13 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   void _navigateFromMediaBarToNavbar() {
+    if (_scrollController.hasClients && _scrollController.offset > 0) {
+      unawaited(_scrollController.animateTo(
+        0,
+        duration: _focusHandoffDuration,
+        curve: _focusHandoffCurve,
+      ));
+    }
     final focusNavbar = NavigationLayout.focusNavbarNotifier.value;
     if (focusNavbar != null) {
       focusNavbar();
@@ -961,8 +968,49 @@ class _ContentRowsState extends State<_ContentRows>
     return _rowKeys.putIfAbsent(rowIndex, () => GlobalKey());
   }
 
+  GlobalKey _rowContainerKey(int rowIndex) {
+    return _rowContainerKeys.putIfAbsent(rowIndex, () => GlobalKey());
+  }
+
   LockedFocusRowState? _rowStateOf(int rowIndex) {
     return _rowKeys[rowIndex]?.currentState as LockedFocusRowState?;
+  }
+
+  Future<void> _scrollTvRowIntoOverlayBand(int rowIndex) async {
+    if (!mounted || !_scrollController.hasClients) return;
+
+    final containerCtx = _rowContainerKeys[rowIndex]?.currentContext;
+    final stackRender = context.findRenderObject();
+    if (containerCtx == null || stackRender is! RenderBox) {
+      return;
+    }
+
+    final containerRender = containerCtx.findRenderObject();
+    if (containerRender is! RenderBox ||
+        !stackRender.hasSize ||
+        !containerRender.hasSize) {
+      return;
+    }
+
+    final stackTopGlobal = stackRender.localToGlobal(Offset.zero).dy;
+    final containerTopGlobal = containerRender.localToGlobal(Offset.zero).dy;
+    final desiredContainerTopGlobal = stackTopGlobal + _overlayBottom + 8;
+    final scrollDelta = containerTopGlobal - desiredContainerTopGlobal;
+    final currentOffset = _scrollController.offset;
+    final targetOffset = (currentOffset + scrollDelta).clamp(
+      0.0,
+      _scrollController.position.maxScrollExtent,
+    );
+
+    if ((targetOffset - currentOffset).abs() <= 1.0) {
+      return;
+    }
+
+    await _scrollController.animateTo(
+      targetOffset,
+      duration: _focusHandoffDuration,
+      curve: _focusHandoffCurve,
+    );
   }
 
   void _requestRowFocusFromMemory(int rowIndex, {int? preferredIndex}) {
@@ -1115,27 +1163,7 @@ class _ContentRowsState extends State<_ContentRows>
                   if (!navComplete.isCompleted) navComplete.complete();
                   return;
                 }
-                final rowHeight = renderObj.size.height;
-                final viewportDim =
-                    _scrollController.position.viewportDimension;
-                // Row title sits ~34px above the LockedFocusRow; we want the
-                // title top to land just below the info overlay band.
-                const titleAllowance = 34.0;
-                final desiredRowTopInViewport =
-                    _overlayBottom + 8 + titleAllowance;
-                final alignment = computeAlignmentForBand(
-                  desiredItemTop: desiredRowTopInViewport,
-                  viewportDim: viewportDim,
-                  itemExtent: rowHeight,
-                );
-                Scrollable.ensureVisible(
-                  innerCtx,
-                  alignment: alignment,
-                  alignmentPolicy:
-                      ScrollPositionAlignmentPolicy.explicit,
-                  duration: _focusHandoffDuration,
-                  curve: _focusHandoffCurve,
-                ).whenComplete(() {
+                _scrollTvRowIntoOverlayBand(target).whenComplete(() {
                   if (!navComplete.isCompleted) navComplete.complete();
                 });
               });
@@ -1347,7 +1375,11 @@ class _ContentRowsState extends State<_ContentRows>
     required bool showInfoOverlay,
     required double overlayBottom,
   }) {
-    if (!showInfoOverlay || !_infoRevealed || !_isMediaBarIncluded()) {
+    if (!showInfoOverlay || !_infoRevealed) {
+      return child;
+    }
+
+    if (!PlatformDetection.isTV && !_isMediaBarIncluded()) {
       return child;
     }
 
@@ -1355,9 +1387,7 @@ class _ContentRowsState extends State<_ContentRows>
       final focusedRowIndex = _focusedRowIndex(FocusManager.instance.primaryFocus);
       final rowViewportTop = rowTopOffsets[rowIndex] - _scrollOffset;
       final rowBottom = rowViewportTop + rowExtents[rowIndex];
-      if (focusedRowIndex != null &&
-          rowIndex < focusedRowIndex &&
-          rowViewportTop < overlayBottom) {
+      if (focusedRowIndex != null && rowIndex < focusedRowIndex) {
         return IgnorePointer(
           child: Opacity(opacity: 0, child: child),
         );
@@ -1459,16 +1489,16 @@ class _ContentRowsState extends State<_ContentRows>
     final carouselPaused = widget.isHoverPaused || !_isScrolledToTop || _isActivelyScrolling;
     final showInfoOverlay = prefs.get(UserPreferences.homeRowInfoOverlay);
     final safeTop = MediaQuery.of(context).padding.top;
-    final listTopPadding = includeMediaBar ? 0.0 : safeTop + 56;
+    final listTopPadding = includeMediaBar || showInfoOverlay ? 0.0 : safeTop + 56;
     final navbarIsTop = widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top;
     final navbarIsLeft = !navbarIsTop;
-    final navbarHeight = navbarIsTop
+    final navbarHeight = navbarIsTop && !(PlatformDetection.isTV && includeMediaBar)
         ? (PlatformDetection.isTV
             ? 95.0
             : PlatformDetection.useMobileUi
                 ? 60.0
                 : 80.0)
-        : 48.0;
+        : 0.0;
     final navbarLeftInset = navbarIsTop ? 16.0 : 56.0;
     final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
     final infoTopPadding = safeTop + navbarHeight + 8;
@@ -1683,6 +1713,7 @@ class _ContentRowsState extends State<_ContentRows>
           Destinations.liveTvSeriesRecordings),
     ];
     return _buildTitledRow(
+      key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
       height: 140,
       child: LockedFocusRow<_LiveTvAction>(
@@ -1728,6 +1759,7 @@ class _ContentRowsState extends State<_ContentRows>
   }) {
     final l10n = AppLocalizations.of(context);
     return _buildTitledRow(
+      key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
       height: 140,
       child: LockedFocusRow<AggregatedItem>(
@@ -1796,6 +1828,7 @@ class _ContentRowsState extends State<_ContentRows>
     }
 
     return _buildTitledRow(
+      key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
       height: maxCardHeight + 10,
       child: LockedFocusRow<AggregatedItem>(
@@ -1923,11 +1956,13 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   Widget _buildTitledRow({
+    Key? key,
     required String title,
     required double height,
     required Widget child,
   }) {
     return Column(
+      key: key,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [

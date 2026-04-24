@@ -84,6 +84,7 @@ class _TopToolbarState extends State<TopToolbar> {
     super.initState();
     _focusNavbarCallback = () => _homeFocus.requestFocus();
     NavigationLayout.focusNavbarNotifier.value = _focusNavbarCallback;
+    _avatarFocus.addListener(_onAvatarFocusChanged);
     FocusManager.instance.addListener(_trackPreviousFocus);
     _updateClock();
     _clockTimer = Timer.periodic(
@@ -105,6 +106,7 @@ class _TopToolbarState extends State<TopToolbar> {
       NavigationLayout.focusNavbarNotifier.value = null;
     }
     _clockTimer?.cancel();
+    _avatarFocus.removeListener(_onAvatarFocusChanged);
     FocusManager.instance.removeListener(_trackPreviousFocus);
     _toolbarScopeNode.dispose();
     _avatarFocus.dispose();
@@ -145,6 +147,11 @@ class _TopToolbarState extends State<TopToolbar> {
   void _onPrefsChanged() {
     if (!mounted) return;
     _loadLibraries();
+    setState(() {});
+  }
+
+  void _onAvatarFocusChanged() {
+    if (!mounted) return;
     setState(() {});
   }
 

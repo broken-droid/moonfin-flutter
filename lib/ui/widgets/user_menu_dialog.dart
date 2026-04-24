@@ -13,6 +13,8 @@ import '../../util/platform_detection.dart';
 import '../navigation/destinations.dart';
 import 'overlay_sheet.dart';
 import 'remote_control_dialog.dart';
+import 'settings/settings_panel.dart';
+import '../screens/settings/settings_side_panel.dart';
 
 const _kAccent = Color(0xFF00A4DC);
 
@@ -72,9 +74,10 @@ void showUserMenu(BuildContext context) {
             _MenuRow(
               icon: Icons.settings_rounded,
               label: l10n.settings,
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(ctx);
-                context.navigateTopLevel(Destinations.settings);
+                if (!context.mounted) return;
+                await SettingsPanel.open(context, const SettingsSidePanel());
               },
             ),
             if (!PlatformDetection.isTV) ...[
