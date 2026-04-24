@@ -465,6 +465,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
     final showFolders = _prefs.get(UserPreferences.enableFolderView);
     final showSyncPlay = _prefs.get(UserPreferences.syncPlayEnabled);
     final pluginSync = GetIt.instance<PluginSyncService>();
+    final seerrPrefs = GetIt.instance<SeerrPreferences>();
     final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
     final showClock =
         clockBehavior == ClockBehavior.always ||
@@ -571,26 +572,19 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   ),
                 if (pluginSync.pluginAvailable &&
                     pluginSync.seerrInfoAvailable &&
-                    _prefs.get(UserPreferences.seerrEnabled))
-                  Builder(
-                    builder: (context) {
-                      final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                      final isSeerr = seerrPrefs.isSeerrVariant;
-                      final label = seerrPrefs.moonfinDisplayName.isNotEmpty
-                          ? seerrPrefs.moonfinDisplayName
-                          : (isSeerr ? l10n.seerr : l10n.jellyseerr);
-                      return _SidebarItem(
-                        iconBuilder: (size, color) => isSeerr
-                            ? SeerrIcon(size: size, color: color)
-                            : JellyseerrIcon(size: size, color: color),
-                        label: label,
-                        showLabel: _showLabels,
-                        onPressed: () {
-                          _onNavigate();
-                          if (_isActive(Destinations.seerrDiscover)) return;
-                          context.navigateTopLevel(Destinations.seerrDiscover);
-                        },
-                      );
+                    seerrPrefs.enabled)
+                  _SidebarItem(
+                    iconBuilder: (size, color) => seerrPrefs.isSeerrVariant
+                        ? SeerrIcon(size: size, color: color)
+                        : JellyseerrIcon(size: size, color: color),
+                    label: seerrPrefs.moonfinDisplayName.isNotEmpty
+                        ? seerrPrefs.moonfinDisplayName
+                        : (seerrPrefs.isSeerrVariant ? l10n.seerr : l10n.jellyseerr),
+                    showLabel: _showLabels,
+                    onPressed: () {
+                      _onNavigate();
+                      if (_isActive(Destinations.seerrDiscover)) return;
+                      context.navigateTopLevel(Destinations.seerrDiscover);
                     },
                   ),
                 if (showLibraries && _libraries.isNotEmpty) ...[

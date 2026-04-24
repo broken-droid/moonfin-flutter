@@ -271,13 +271,14 @@ class SeerrRepository {
     );
 
     final status = await _httpClient!.getMoonfinStatus();
+    final effectiveEnabled = status.enabled && status.authenticated;
 
     await _store.setBool(_moonfinModeKey, true);
-    await _store.setBool(_enabledKey, true);
+    await _store.setBool(_enabledKey, effectiveEnabled);
     await _store.setString(_authMethodKey, 'moonfin');
     _isMoonfinMode = true;
 
-    if (status.authenticated) {
+    if (effectiveEnabled) {
       if (status.jellyseerrUserId != null) {
         await _store.setString(_moonfinUserIdKey, status.jellyseerrUserId.toString());
       }

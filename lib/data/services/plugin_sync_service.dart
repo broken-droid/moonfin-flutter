@@ -228,8 +228,6 @@ class PluginSyncService extends ChangeNotifier {
     if (token == null || token.isEmpty) return;
 
     try {
-      await _prefs.set(UserPreferences.seerrEnabled, true);
-
       final seerrRepo = await GetIt.instance.getAsync<SeerrRepository>();
       final status = await seerrRepo.configureWithMoonfin(
         jellyfinBaseUrl: client.baseUrl,

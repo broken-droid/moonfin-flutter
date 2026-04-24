@@ -10,7 +10,6 @@ import '../../../preference/seerr_preferences.dart';
 import '../../../preference/seerr_row_config.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
-import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
 import 'settings_app_bar.dart';
 
@@ -98,6 +97,14 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
     setState(() {});
   }
 
+  Future<void> _setSeerrEnabled(bool value) async {
+    await _seerrPrefs.setEnabled(value);
+    await GetIt.instance<UserPreferences>().set(UserPreferences.seerrEnabled, value);
+    await _pushSync();
+    if (!mounted) return;
+    setState(() {});
+  }
+
   Future<void> _resetRows() async {
     setState(() {
       _rows = SeerrRowConfig.defaults();
@@ -172,12 +179,12 @@ class _SeerrConfigScreenState extends State<SeerrConfigScreen> {
             return Column(
               children: [
                 if (canEnableSeerr)
-                  SwitchPreferenceTile(
-                    preference: UserPreferences.seerrEnabled,
-                    title: l10n.enableSeerr,
-                    subtitle: l10n.showSeerrInNavigation,
-                    icon: Icons.movie_filter,
-                    onChanged: () => _pushSync(),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.movie_filter),
+                    title: Text(l10n.enableSeerr),
+                    subtitle: Text(l10n.showSeerrInNavigation),
+                    value: _seerrPrefs.enabled,
+                    onChanged: _setSeerrEnabled,
                   )
                 else
                   ListTile(

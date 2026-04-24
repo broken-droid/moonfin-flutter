@@ -427,6 +427,7 @@ class _TopToolbarState extends State<TopToolbar> {
     final showFolders = _prefs.get(UserPreferences.enableFolderView);
     final showSyncPlay = _prefs.get(UserPreferences.syncPlayEnabled);
     final pluginSync = GetIt.instance<PluginSyncService>();
+    final seerrPrefs = GetIt.instance<SeerrPreferences>();
 
     final l10n = AppLocalizations.of(context);
     int order = 1;
@@ -560,28 +561,21 @@ class _TopToolbarState extends State<TopToolbar> {
                 ],
                 if (pluginSync.pluginAvailable &&
                     pluginSync.seerrInfoAvailable &&
-                    _prefs.get(UserPreferences.seerrEnabled)) ...[
+                    seerrPrefs.enabled) ...[
                   _gap(),
                   _orderButton(
                     order: (order++).toDouble(),
-                    child: Builder(
-                      builder: (context) {
-                        final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                        final isSeerr = seerrPrefs.isSeerrVariant;
-                        final label = seerrPrefs.moonfinDisplayName.isNotEmpty
-                            ? seerrPrefs.moonfinDisplayName
-                            : (isSeerr ? l10n.seerr : l10n.jellyseerr);
-                        return ExpandableIconButton(
-                          iconBuilder: (size, color) => isSeerr
-                              ? SeerrIcon(size: size, color: color)
-                              : JellyseerrIcon(size: size, color: color),
-                          label: label,
-                          onPressed: () {
-                            if (_isActive(Destinations.seerrDiscover)) return;
-                            context.navigateTopLevel(
-                              Destinations.seerrDiscover,
-                            );
-                          },
+                    child: ExpandableIconButton(
+                      iconBuilder: (size, color) => seerrPrefs.isSeerrVariant
+                          ? SeerrIcon(size: size, color: color)
+                          : JellyseerrIcon(size: size, color: color),
+                      label: seerrPrefs.moonfinDisplayName.isNotEmpty
+                          ? seerrPrefs.moonfinDisplayName
+                          : (seerrPrefs.isSeerrVariant ? l10n.seerr : l10n.jellyseerr),
+                      onPressed: () {
+                        if (_isActive(Destinations.seerrDiscover)) return;
+                        context.navigateTopLevel(
+                          Destinations.seerrDiscover,
                         );
                       },
                     ),
