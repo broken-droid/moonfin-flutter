@@ -325,6 +325,7 @@ class SeerrMovieDetails {
   final SeerrExternalIds? externalIds;
   final SeerrMediaInfo? mediaInfo;
   final List<SeerrKeyword> keywords;
+  final List<SeerrVideo> relatedVideos;
 
   const SeerrMovieDetails({
     required this.id,
@@ -346,6 +347,7 @@ class SeerrMovieDetails {
     this.externalIds,
     this.mediaInfo,
     this.keywords = const [],
+    this.relatedVideos = const [],
   });
 
   factory SeerrMovieDetails.fromJson(Map<String, dynamic> json) =>
@@ -377,6 +379,7 @@ class SeerrTvDetails {
   final SeerrExternalIds? externalIds;
   final SeerrMediaInfo? mediaInfo;
   final List<SeerrKeyword> keywords;
+  final List<SeerrVideo> relatedVideos;
 
   const SeerrTvDetails({
     required this.id,
@@ -400,6 +403,7 @@ class SeerrTvDetails {
     this.externalIds,
     this.mediaInfo,
     this.keywords = const [],
+    this.relatedVideos = const [],
   });
 
   String get displayTitle => name ?? title ?? '';
@@ -473,6 +477,30 @@ class SeerrKeyword {
       _$SeerrKeywordFromJson(json);
 
   Map<String, dynamic> toJson() => _$SeerrKeywordToJson(this);
+}
+
+@JsonSerializable()
+class SeerrVideo {
+  final String? url;
+  final String? key;
+  final String? name;
+  final int? size;
+  final String? type;
+  final String? site;
+
+  const SeerrVideo({
+    this.url,
+    this.key,
+    this.name,
+    this.size,
+    this.type,
+    this.site,
+  });
+
+  factory SeerrVideo.fromJson(Map<String, dynamic> json) =>
+      _$SeerrVideoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SeerrVideoToJson(this);
 }
 
 @JsonSerializable()

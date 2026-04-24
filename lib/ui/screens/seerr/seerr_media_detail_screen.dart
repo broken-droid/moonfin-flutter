@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
@@ -39,6 +40,10 @@ class _SeerrMediaDetailScreenState
   SeerrMediaDetailViewModel? _vm;
   bool _initializing = true;
   final _userPrefs = GetIt.instance<UserPreferences>();
+  final FocusNode _firstActionFocusNode = FocusNode(debugLabel: 'seerr-first-action');
+  final FocusNode _overviewFocusNode = FocusNode(debugLabel: 'seerr-overview');
+  final FocusNode _titleFocusNode = FocusNode(debugLabel: 'seerr-title-hidden');
+  final ScrollController _wideScrollController = ScrollController();
 
   @override
   void initState() {
@@ -106,6 +111,10 @@ class _SeerrMediaDetailScreenState
   void dispose() {
     _vm?.removeListener(_onChanged);
     _vm?.dispose();
+    _firstActionFocusNode.dispose();
+    _overviewFocusNode.dispose();
+    _titleFocusNode.dispose();
+    _wideScrollController.dispose();
     super.dispose();
   }
 
@@ -117,8 +126,16 @@ class _SeerrMediaDetailScreenState
   }
 
   @override
-  Widget build(BuildContext context) =>
-      RequestInitialFocus(child: _buildScreenContent(context));
+  Widget build(BuildContext context) {
+    final ready = !_initializing &&
+        _vm != null &&
+        !_vm!.state.isLoading &&
+        _vm!.state.error == null;
+    return RequestInitialFocus(
+      targetNode: (PlatformDetection.isTV && ready) ? _titleFocusNode : null,
+      child: _buildScreenContent(context),
+    );
+  }
 
   Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
@@ -164,6 +181,11 @@ class _SeerrMediaDetailScreenState
 
   Widget _buildContent(SeerrMediaDetailState s) {
     final l10n = AppLocalizations.of(context);
+    final size = MediaQuery.of(context).size;
+    final isLandscape = size.width > size.height;
+    final useWideLayout = PlatformDetection.useDesktopUi ||
+        PlatformDetection.isTV ||
+        (PlatformDetection.useMobileUi && isLandscape);
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -182,36 +204,635 @@ class _SeerrMediaDetailScreenState
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withValues(alpha: 0.7),
+                  Colors.black.withValues(alpha: useWideLayout ? 0.35 : 0.7),
                   Colors.black.withValues(alpha: 0.95),
                 ],
-                stops: const [0.0, 0.5],
+                stops: const [0.0, 0.6],
               ),
             ),
           ),
         ),
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: _buildHeader(s)),
-            SliverToBoxAdapter(child: _buildMetadata(s)),
-            SliverToBoxAdapter(child: _buildRequestSection(s)),
-            if (s.overview != null && s.overview!.isNotEmpty)
-              SliverToBoxAdapter(child: _buildOverview(s.overview!)),
-            if (s.credits != null && s.credits!.cast.isNotEmpty)
-              SliverToBoxAdapter(child: _buildCastRow(s.credits!.cast, l10n)),
-            if (s.similar.isNotEmpty)
-              SliverToBoxAdapter(
-                child: _buildRelatedRow(l10n.similar, s.similar),
-              ),
-            if (s.recommendations.isNotEmpty)
-              SliverToBoxAdapter(
-                child: _buildRelatedRow(l10n.recommendations, s.recommendations),
-              ),
-            const SliverToBoxAdapter(child: SizedBox(height: 80)),
-          ],
-        ),
+        if (useWideLayout)
+          _buildWideScroll(s, l10n)
+        else
+          CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _buildHeader(s)),
+              SliverToBoxAdapter(child: _buildMetadata(s)),
+              SliverToBoxAdapter(child: _buildRequestSection(s)),
+              if (s.overview != null && s.overview!.isNotEmpty)
+                SliverToBoxAdapter(child: _buildOverview(s.overview!)),
+              if (s.credits != null && s.credits!.cast.isNotEmpty)
+                SliverToBoxAdapter(child: _buildCastRow(s.credits!.cast, l10n)),
+              if (s.similar.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: _buildRelatedRow(l10n.similar, s.similar),
+                ),
+              if (s.recommendations.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: _buildRelatedRow(l10n.recommendations, s.recommendations),
+                ),
+              const SliverToBoxAdapter(child: SizedBox(height: 80)),
+            ],
+          ),
       ],
     );
+  }
+
+  Widget _buildWideScroll(SeerrMediaDetailState s, AppLocalizations l10n) {
+    final size = MediaQuery.of(context).size;
+    final topPad = MediaQuery.of(context).padding.top;
+    final navbarIsTop =
+        _userPrefs.get(UserPreferences.navbarPosition) == NavbarPosition.top;
+    final navbarHeight = navbarIsTop
+        ? (PlatformDetection.isTV
+            ? 95.0
+            : PlatformDetection.useMobileUi
+                ? 60.0
+                : 80.0)
+        : 0.0;
+    final hSidePad = PlatformDetection.isTV
+        ? 56.0
+        : PlatformDetection.useDesktopUi
+            ? 64.0
+            : 32.0;
+    final heroHeight = (size.height * 0.62).clamp(360.0, 720.0);
+    return CustomScrollView(
+      controller: _wideScrollController,
+      slivers: [
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: heroHeight,
+            child: _buildWideHero(s, hSidePad, topPad + navbarHeight),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(hSidePad, 24, hSidePad, 12),
+            child: _buildWideOverviewAndStats(s, l10n),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(hSidePad, 8, hSidePad, 16),
+            child: _buildWideActions(s, l10n),
+          ),
+        ),
+        if (s.credits != null && s.credits!.cast.isNotEmpty)
+          SliverToBoxAdapter(child: _buildCastRow(s.credits!.cast, l10n)),
+        if (s.similar.isNotEmpty)
+          SliverToBoxAdapter(
+            child: _buildRelatedRow(l10n.similar, s.similar),
+          ),
+        if (s.recommendations.isNotEmpty)
+          SliverToBoxAdapter(
+            child: _buildRelatedRow(l10n.recommendations, s.recommendations),
+          ),
+        const SliverToBoxAdapter(child: SizedBox(height: 60)),
+      ],
+    );
+  }
+
+  Widget _buildWideHero(SeerrMediaDetailState s, double hSidePad, double topInset) {
+    final theme = Theme.of(context);
+    final posterWidth = PlatformDetection.useDesktopUi ? 240.0 : 220.0;
+    final posterHeight = posterWidth * 1.5;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(hSidePad, topInset + 8, hSidePad, 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (s.posterPath != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: CachedNetworkImage(
+                imageUrl: '$_tmdbPosterBase${s.posterPath}',
+                width: posterWidth,
+                height: posterHeight,
+                fit: BoxFit.cover,
+                errorWidget: (_, __, ___) => Container(
+                  width: posterWidth,
+                  height: posterHeight,
+                  color: Colors.white12,
+                ),
+              ),
+            ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildWideStatusPill(s, l10n: AppLocalizations.of(context)),
+                const SizedBox(height: 10),
+                Focus(
+                  focusNode: _titleFocusNode,
+                  onFocusChange: (focused) {
+                    if (focused) _scrollToTop();
+                  },
+                  onKeyEvent: _handleNavbarUpKey,
+                  child: Text(
+                    _titleWithYear(s),
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      height: 1.1,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _wideMetaLine(s),
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (s.tagline != null && s.tagline!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    '"${s.tagline!}"',
+                    style: const TextStyle(
+                      color: Colors.white60,
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWideStatusPill(SeerrMediaDetailState s, {required AppLocalizations l10n}) {
+    final label = _localizedStatusText(s, l10n);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label.toUpperCase(),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.6,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWideOverviewAndStats(SeerrMediaDetailState s, AppLocalizations l10n) {
+    final mediaType = s.isTv ? 'tv' : 'movie';
+    final overviewText = (s.overview != null && s.overview!.isNotEmpty)
+        ? Text(
+            s.overview!,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              height: 1.5,
+            ),
+          )
+        : null;
+    final overviewCol = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.overview,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (overviewText != null)
+          PlatformDetection.isTV
+              ? Focus(
+                  focusNode: _overviewFocusNode,
+                  onFocusChange: (focused) {
+                    if (focused) _scrollToTop();
+                  },
+                  onKeyEvent: _handleNavbarUpKey,
+                  child: Builder(
+                    builder: (ctx) {
+                      final focused = Focus.of(ctx).hasFocus;
+                      final focusColor = Color(GetIt.instance<UserPreferences>()
+                          .get(UserPreferences.focusColor)
+                          .colorValue);
+                      return Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: focused ? focusColor : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: overviewText,
+                      );
+                    },
+                  ),
+                )
+              : overviewText,
+        if (s.genres.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: s.genres
+                .map((g) => _browseChip(
+                      label: g.name,
+                      color: Colors.white12,
+                      onTap: () => context.push(
+                        Destinations.seerrBrowseWith(
+                          filterId: g.id.toString(),
+                          filterName: g.name,
+                          mediaType: mediaType,
+                          filterType: 'genre',
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+        ],
+        if (s.networks.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: s.networks
+                .map((n) => _browseChip(
+                      label: n.name,
+                      color: Colors.transparent,
+                      borderColor: Colors.white24,
+                      labelColor: Colors.white70,
+                      onTap: () => context.push(
+                        Destinations.seerrBrowseWith(
+                          filterId: n.id.toString(),
+                          filterName: n.name,
+                          mediaType: mediaType,
+                          filterType: 'network',
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+        ],
+        if (s.keywords.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: s.keywords
+                .map((k) => _browseChip(
+                      label: k.name,
+                      color: Colors.white.withValues(alpha: 0.05),
+                      labelColor: Colors.white60,
+                      dense: true,
+                      onTap: () => context.push(
+                        Destinations.seerrBrowseWith(
+                          filterId: k.id.toString(),
+                          filterName: k.name,
+                          mediaType: mediaType,
+                          filterType: 'keyword',
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+        ],
+      ],
+    );
+    final stats = _buildStatsCard(s, l10n);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 720) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              overviewCol,
+              const SizedBox(height: 16),
+              stats,
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 3, child: overviewCol),
+            const SizedBox(width: 32),
+            Expanded(flex: 2, child: stats),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildStatsCard(SeerrMediaDetailState s, AppLocalizations l10n) {
+    final rows = <_StatRow>[];
+    if (s.voteAverage != null && s.voteAverage! > 0) {
+      rows.add(_StatRow(l10n.tmdbScore, '${(s.voteAverage! * 10).round()}%'));
+    }
+    final statusText = _productionStatusText(s);
+    if (statusText != null) {
+      rows.add(_StatRow(l10n.status, statusText));
+    }
+    if (s.isMovie) {
+      final dateLabel = _formatDate(s.releaseDate);
+      if (dateLabel != null) {
+        rows.add(_StatRow(l10n.releaseDateLabel, dateLabel));
+      }
+    } else {
+      final dateLabel = _formatDate(s.firstAirDate);
+      if (dateLabel != null) {
+        rows.add(_StatRow(l10n.firstAirDateLabel, dateLabel));
+      }
+    }
+    if (s.isTv) {
+      if (s.numberOfSeasons != null && s.numberOfSeasons! > 0) {
+        rows.add(_StatRow(l10n.seasonsLabel, s.numberOfSeasons.toString()));
+      }
+      if (s.numberOfEpisodes != null && s.numberOfEpisodes! > 0) {
+        rows.add(_StatRow(l10n.episodesLabel, s.numberOfEpisodes.toString()));
+      }
+    }
+    if (s.revenue != null && s.revenue! > 0) {
+      rows.add(_StatRow(l10n.revenueLabel, _formatMoneyFull(s.revenue!)));
+    }
+    if (s.runtime != null && s.runtime! > 0) {
+      rows.add(_StatRow(l10n.runtimeLabel, _formatRuntime(s.runtime!)));
+    }
+    if (s.budget != null && s.budget! > 0) {
+      rows.add(_StatRow(l10n.budgetLabel, _formatMoneyFull(s.budget!)));
+    }
+    if (rows.isEmpty) return const SizedBox.shrink();
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        children: [
+          for (var i = 0; i < rows.length; i++) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      rows[i].label,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    rows[i].value,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (i < rows.length - 1)
+              const Divider(height: 1, thickness: 1, color: Colors.white10),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWideActions(SeerrMediaDetailState s, AppLocalizations l10n) {
+    final vm = _vm!;
+    final canShowRequest = vm.canRequest &&
+        !s.isFullyAvailable &&
+        (!s.hasExistingRequest || s.isPartiallyAvailable);
+    final requestLabel = s.isPartiallyAvailable ? l10n.requestMore : l10n.request;
+    final canManage = vm.canManageRequests;
+    final trailer = s.bestTrailer;
+    final showTrailer = trailer != null;
+    final showCancel = s.activeRequests.isNotEmpty && !s.isFullyAvailable;
+
+    final tiles = <Widget>[];
+    FocusNode? nextFirstNode = _firstActionFocusNode;
+    FocusNode? takeFirst() {
+      final n = nextFirstNode;
+      nextFirstNode = null;
+      return n;
+    }
+
+    if (showCancel) {
+      tiles.add(_ActionTile(
+        icon: Icons.close,
+        label: l10n.cancelRequest,
+        onTap: s.isRequesting ? null : () => _showCancelDialog(s),
+        primary: !(s.isFullyAvailable || s.isPartiallyAvailable),
+        focusNode: takeFirst(),
+        onFocused: _scrollToTop,
+      ));
+    } else if (canShowRequest) {
+      tiles.add(_ActionTile(
+        icon: Icons.add,
+        label: requestLabel,
+        onTap: s.isRequesting ? null : _showRequestSheet,
+        primary: !(s.isFullyAvailable || s.isPartiallyAvailable),
+        focusNode: takeFirst(),
+        onFocused: _scrollToTop,
+      ));
+    }
+    if (s.isFullyAvailable || s.isPartiallyAvailable) {
+      tiles.add(_ActionTile(
+        icon: Icons.play_arrow,
+        label: l10n.playInMoonfin,
+        onTap: () => _playInMoonfin(s),
+        primary: tiles.isEmpty,
+        focusNode: takeFirst(),
+        onFocused: _scrollToTop,
+      ));
+    }
+    if (showTrailer) {
+      tiles.add(_ActionTile(
+        icon: Icons.movie_outlined,
+        label: l10n.trailer,
+        onTap: () => _openTrailer(trailer),
+        focusNode: takeFirst(),
+        onFocused: _scrollToTop,
+      ));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (s.activeRequests.isNotEmpty) ...[
+          for (final req in s.activeRequests)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.person_outline, size: 16, color: Colors.white54),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      l10n.requestedByName(req.requestedBy?.bestName ?? l10n.unknown),
+                      style: const TextStyle(color: Colors.white54, fontSize: 13),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (canManage && req.status == SeerrRequest.statusPending) ...[
+                    const SizedBox(width: 8),
+                    _ApproveDeclineButtons(
+                      isLoading: s.isRequesting,
+                      onApprove: () => vm.approveRequest(req.id),
+                      onDecline: () => vm.declineRequest(req.id),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          const SizedBox(height: 8),
+        ],
+        if (tiles.isNotEmpty)
+          Wrap(spacing: 16, runSpacing: 16, children: tiles),
+      ],
+    );
+  }
+
+  Widget _browseChip({
+    required String label,
+    required VoidCallback onTap,
+    Color color = Colors.white12,
+    Color? borderColor,
+    Color labelColor = Colors.white,
+    bool dense = false,
+  }) =>
+      _BrowseChip(
+        label: label,
+        onTap: onTap,
+        color: color,
+        borderColor: borderColor,
+        labelColor: labelColor,
+        dense: dense,
+      );
+
+  KeyEventResult _handleNavbarUpKey(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      final cb = NavigationLayout.focusNavbarNotifier.value;
+      if (cb != null) {
+        cb();
+        return KeyEventResult.handled;
+      }
+    }
+    return KeyEventResult.ignored;
+  }
+
+  void _scrollToTop() {
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_wideScrollController.hasClients) return;
+      final position = _wideScrollController.position;
+      if (position.pixels <= position.minScrollExtent) return;
+      position.animateTo(
+        position.minScrollExtent,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  String _titleWithYear(SeerrMediaDetailState s) {
+    final year = _extractYear(s);
+    if (year == null) return s.displayTitle;
+    return '${s.displayTitle} ($year)';
+  }
+
+  String _wideMetaLine(SeerrMediaDetailState s) {
+    final parts = <String>[];
+    if (s.runtime != null && s.runtime! > 0) {
+      parts.add('${s.runtime} min');
+    }
+    if (s.genres.isNotEmpty) {
+      parts.addAll(s.genres.take(3).map((g) => g.name));
+    } else if (s.isTv && s.tvStatus != null) {
+      parts.add(s.tvStatus!);
+    }
+    return parts.join(' \u2022 ');
+  }
+
+  String _localizedStatusText(SeerrMediaDetailState s, AppLocalizations l10n) {
+    if (s.isFullyAvailable) return l10n.seerrAvailableStatus;
+    if (s.isPartiallyAvailable) return l10n.partiallyAvailable;
+    if (s.isProcessing) return l10n.seerrRequestedStatus;
+    if (s.isPending) return l10n.pendingStatus;
+    if (s.isBlacklisted) return l10n.blocklistedStatus;
+    if (s.isDeleted) return l10n.deletedStatus;
+    if (s.hasExistingRequest) return l10n.seerrRequestedStatus;
+    return l10n.notRequestedStatus;
+  }
+
+  String? _productionStatusText(SeerrMediaDetailState s) {
+    if (s.isMovie) return s.movie?.status;
+    return s.tv?.status;
+  }
+
+  String? _formatDate(String? iso) {
+    if (iso == null || iso.length < 10) return null;
+    try {
+      final d = DateTime.parse(iso);
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      return '${months[d.month - 1]} ${d.day}, ${d.year}';
+    } catch (_) {
+      return iso;
+    }
+  }
+
+  static String _formatMoneyFull(int amount) {
+    final s = amount.toString();
+    final buf = StringBuffer(r'$');
+    final start = s.length % 3;
+    for (var i = 0; i < s.length; i++) {
+      if (i != 0 && (i - start) % 3 == 0) buf.write(',');
+      buf.write(s[i]);
+    }
+    buf.write('.00');
+    return buf.toString();
+  }
+
+  Future<void> _openTrailer(SeerrVideo video) async {
+    final isYouTube = (video.site ?? '').toLowerCase() == 'youtube';
+    final key = video.key;
+    if (isYouTube && key != null && key.isNotEmpty) {
+      await context.push(Destinations.trailer(videoId: key));
+      return;
+    }
+    String? url = video.url;
+    if ((url == null || url.isEmpty) && key != null && key.isNotEmpty) {
+      url = 'https://www.youtube.com/watch?v=$key';
+    }
+    if (url == null || url.isEmpty) return;
+    await context.push(Destinations.trailer(url: url));
   }
 
   Widget _buildHeader(SeerrMediaDetailState s) {
@@ -832,6 +1453,83 @@ class _ApproveDeclineButtons extends StatelessWidget {
   }
 }
 
+class _BrowseChip extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+  final Color color;
+  final Color? borderColor;
+  final Color labelColor;
+  final bool dense;
+
+  const _BrowseChip({
+    required this.label,
+    required this.onTap,
+    required this.color,
+    required this.borderColor,
+    required this.labelColor,
+    required this.dense,
+  });
+
+  @override
+  State<_BrowseChip> createState() => _BrowseChipState();
+}
+
+class _BrowseChipState extends State<_BrowseChip> with FocusStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    final hPad = widget.dense ? 8.0 : 10.0;
+    final vPad = widget.dense ? 4.0 : 6.0;
+    final borderRadius = BorderRadius.circular(999);
+    return Focus(
+      onFocusChange: setFocused,
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+          return KeyEventResult.ignored;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.select ||
+            event.logicalKey == LogicalKeyboardKey.enter ||
+            event.logicalKey == LogicalKeyboardKey.gameButtonA) {
+          widget.onTap();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setHovered(true),
+        onExit: (_) => setHovered(false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedScale(
+            scale: showFocusBorder ? 1.05 : 1.0,
+            duration: const Duration(milliseconds: 120),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
+              decoration: BoxDecoration(
+                color: widget.color,
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: showFocusBorder
+                      ? focusColor
+                      : (widget.borderColor ?? Colors.transparent),
+                  width: showFocusBorder ? 2 : 1,
+                ),
+              ),
+              child: Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: widget.dense ? 11 : 12,
+                  color: widget.labelColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _CastCard extends StatefulWidget {
   final SeerrCastMember member;
   final VoidCallback? onTap;
@@ -907,6 +1605,120 @@ class _CastCardState extends State<_CastCard> with FocusStateMixin {
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatRow {
+  final String label;
+  final String value;
+  const _StatRow(this.label, this.value);
+}
+
+class _ActionTile extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  final bool primary;
+  final FocusNode? focusNode;
+  final VoidCallback? onFocused;
+
+  const _ActionTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.primary = false,
+    this.focusNode,
+    this.onFocused,
+  });
+
+  @override
+  State<_ActionTile> createState() => _ActionTileState();
+}
+
+class _ActionTileState extends State<_ActionTile> with FocusStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    final focusColor = Color(GetIt.instance<UserPreferences>()
+        .get(UserPreferences.focusColor)
+        .colorValue);
+    final disabled = widget.onTap == null;
+    final bg = widget.primary
+        ? Colors.white
+        : Colors.white.withValues(alpha: 0.10);
+    final fg = widget.primary ? Colors.black : Colors.white;
+    return Focus(
+      focusNode: widget.focusNode,
+      onFocusChange: (f) {
+        setFocused(f);
+        if (f && widget.onFocused != null) widget.onFocused!();
+      },
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+          return KeyEventResult.ignored;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          final cb = NavigationLayout.focusNavbarNotifier.value;
+          if (cb != null) {
+            cb();
+            return KeyEventResult.handled;
+          }
+        }
+        if (!disabled &&
+            (event.logicalKey == LogicalKeyboardKey.select ||
+                event.logicalKey == LogicalKeyboardKey.enter ||
+                event.logicalKey == LogicalKeyboardKey.gameButtonA)) {
+          widget.onTap?.call();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: MouseRegion(
+          cursor: disabled
+              ? SystemMouseCursors.basic
+              : SystemMouseCursors.click,
+          onEnter: (_) => setHovered(true),
+          onExit: (_) => setHovered(false),
+          child: AnimatedScale(
+            scale: showFocusBorder ? 1.05 : 1.0,
+            duration: const Duration(milliseconds: 150),
+            child: SizedBox(
+              width: 96,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      color: bg,
+                      borderRadius: BorderRadius.circular(14),
+                      border: showFocusBorder
+                          ? Border.all(color: focusColor, width: 3)
+                          : null,
+                    ),
+                    child: Icon(widget.icon, color: fg, size: 38),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),

@@ -517,35 +517,30 @@ class $DownloadedItemsTable extends DownloadedItems
   DownloadedItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return DownloadedItem(
-      itemId:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}item_id'],
-          )!,
-      serverId:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}server_id'],
-          )!,
-      type:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}type'],
-          )!,
-      name:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}name'],
-          )!,
+      itemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_id'],
+      )!,
+      serverId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}server_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
       localFilePath: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}local_file_path'],
       ),
-      metadataJson:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}metadata_json'],
-          )!,
+      metadataJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metadata_json'],
+      )!,
       posterPath: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}poster_path'],
@@ -562,44 +557,38 @@ class $DownloadedItemsTable extends DownloadedItems
         DriftSqlType.string,
         data['${effectivePrefix}thumb_path'],
       ),
-      downloadStatus:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}download_status'],
-          )!,
-      downloadProgress:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.double,
-            data['${effectivePrefix}download_progress'],
-          )!,
+      downloadStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}download_status'],
+      )!,
+      downloadProgress: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}download_progress'],
+      )!,
       errorMessage: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}error_message'],
       ),
-      fileSizeBytes:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}file_size_bytes'],
-          )!,
-      playbackPositionTicks:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}playback_position_ticks'],
-          )!,
-      progressSynced:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.bool,
-            data['${effectivePrefix}progress_synced'],
-          )!,
+      fileSizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}file_size_bytes'],
+      )!,
+      playbackPositionTicks: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}playback_position_ticks'],
+      )!,
+      progressSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}progress_synced'],
+      )!,
       downloadedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}downloaded_at'],
       ),
-      qualityPreset:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}quality_preset'],
-          )!,
+      qualityPreset: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}quality_preset'],
+      )!,
       seriesId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}series_id'],
@@ -746,65 +735,52 @@ class DownloadedItem extends DataClass implements Insertable<DownloadedItem> {
       serverId: Value(serverId),
       type: Value(type),
       name: Value(name),
-      localFilePath:
-          localFilePath == null && nullToAbsent
-              ? const Value.absent()
-              : Value(localFilePath),
+      localFilePath: localFilePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localFilePath),
       metadataJson: Value(metadataJson),
-      posterPath:
-          posterPath == null && nullToAbsent
-              ? const Value.absent()
-              : Value(posterPath),
-      backdropPath:
-          backdropPath == null && nullToAbsent
-              ? const Value.absent()
-              : Value(backdropPath),
-      logoPath:
-          logoPath == null && nullToAbsent
-              ? const Value.absent()
-              : Value(logoPath),
-      thumbPath:
-          thumbPath == null && nullToAbsent
-              ? const Value.absent()
-              : Value(thumbPath),
+      posterPath: posterPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(posterPath),
+      backdropPath: backdropPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(backdropPath),
+      logoPath: logoPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(logoPath),
+      thumbPath: thumbPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbPath),
       downloadStatus: Value(downloadStatus),
       downloadProgress: Value(downloadProgress),
-      errorMessage:
-          errorMessage == null && nullToAbsent
-              ? const Value.absent()
-              : Value(errorMessage),
+      errorMessage: errorMessage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(errorMessage),
       fileSizeBytes: Value(fileSizeBytes),
       playbackPositionTicks: Value(playbackPositionTicks),
       progressSynced: Value(progressSynced),
-      downloadedAt:
-          downloadedAt == null && nullToAbsent
-              ? const Value.absent()
-              : Value(downloadedAt),
+      downloadedAt: downloadedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(downloadedAt),
       qualityPreset: Value(qualityPreset),
-      seriesId:
-          seriesId == null && nullToAbsent
-              ? const Value.absent()
-              : Value(seriesId),
-      seasonId:
-          seasonId == null && nullToAbsent
-              ? const Value.absent()
-              : Value(seasonId),
-      seriesName:
-          seriesName == null && nullToAbsent
-              ? const Value.absent()
-              : Value(seriesName),
-      seasonName:
-          seasonName == null && nullToAbsent
-              ? const Value.absent()
-              : Value(seasonName),
-      indexNumber:
-          indexNumber == null && nullToAbsent
-              ? const Value.absent()
-              : Value(indexNumber),
-      parentIndexNumber:
-          parentIndexNumber == null && nullToAbsent
-              ? const Value.absent()
-              : Value(parentIndexNumber),
+      seriesId: seriesId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(seriesId),
+      seasonId: seasonId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(seasonId),
+      seriesName: seriesName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(seriesName),
+      seasonName: seasonName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(seasonName),
+      indexNumber: indexNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(indexNumber),
+      parentIndexNumber: parentIndexNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentIndexNumber),
     );
   }
 
@@ -903,8 +879,9 @@ class DownloadedItem extends DataClass implements Insertable<DownloadedItem> {
     serverId: serverId ?? this.serverId,
     type: type ?? this.type,
     name: name ?? this.name,
-    localFilePath:
-        localFilePath.present ? localFilePath.value : this.localFilePath,
+    localFilePath: localFilePath.present
+        ? localFilePath.value
+        : this.localFilePath,
     metadataJson: metadataJson ?? this.metadataJson,
     posterPath: posterPath.present ? posterPath.value : this.posterPath,
     backdropPath: backdropPath.present ? backdropPath.value : this.backdropPath,
@@ -923,10 +900,9 @@ class DownloadedItem extends DataClass implements Insertable<DownloadedItem> {
     seriesName: seriesName.present ? seriesName.value : this.seriesName,
     seasonName: seasonName.present ? seasonName.value : this.seasonName,
     indexNumber: indexNumber.present ? indexNumber.value : this.indexNumber,
-    parentIndexNumber:
-        parentIndexNumber.present
-            ? parentIndexNumber.value
-            : this.parentIndexNumber,
+    parentIndexNumber: parentIndexNumber.present
+        ? parentIndexNumber.value
+        : this.parentIndexNumber,
   );
   DownloadedItem copyWithCompanion(DownloadedItemsCompanion data) {
     return DownloadedItem(
@@ -934,66 +910,58 @@ class DownloadedItem extends DataClass implements Insertable<DownloadedItem> {
       serverId: data.serverId.present ? data.serverId.value : this.serverId,
       type: data.type.present ? data.type.value : this.type,
       name: data.name.present ? data.name.value : this.name,
-      localFilePath:
-          data.localFilePath.present
-              ? data.localFilePath.value
-              : this.localFilePath,
-      metadataJson:
-          data.metadataJson.present
-              ? data.metadataJson.value
-              : this.metadataJson,
-      posterPath:
-          data.posterPath.present ? data.posterPath.value : this.posterPath,
-      backdropPath:
-          data.backdropPath.present
-              ? data.backdropPath.value
-              : this.backdropPath,
+      localFilePath: data.localFilePath.present
+          ? data.localFilePath.value
+          : this.localFilePath,
+      metadataJson: data.metadataJson.present
+          ? data.metadataJson.value
+          : this.metadataJson,
+      posterPath: data.posterPath.present
+          ? data.posterPath.value
+          : this.posterPath,
+      backdropPath: data.backdropPath.present
+          ? data.backdropPath.value
+          : this.backdropPath,
       logoPath: data.logoPath.present ? data.logoPath.value : this.logoPath,
       thumbPath: data.thumbPath.present ? data.thumbPath.value : this.thumbPath,
-      downloadStatus:
-          data.downloadStatus.present
-              ? data.downloadStatus.value
-              : this.downloadStatus,
-      downloadProgress:
-          data.downloadProgress.present
-              ? data.downloadProgress.value
-              : this.downloadProgress,
-      errorMessage:
-          data.errorMessage.present
-              ? data.errorMessage.value
-              : this.errorMessage,
-      fileSizeBytes:
-          data.fileSizeBytes.present
-              ? data.fileSizeBytes.value
-              : this.fileSizeBytes,
-      playbackPositionTicks:
-          data.playbackPositionTicks.present
-              ? data.playbackPositionTicks.value
-              : this.playbackPositionTicks,
-      progressSynced:
-          data.progressSynced.present
-              ? data.progressSynced.value
-              : this.progressSynced,
-      downloadedAt:
-          data.downloadedAt.present
-              ? data.downloadedAt.value
-              : this.downloadedAt,
-      qualityPreset:
-          data.qualityPreset.present
-              ? data.qualityPreset.value
-              : this.qualityPreset,
+      downloadStatus: data.downloadStatus.present
+          ? data.downloadStatus.value
+          : this.downloadStatus,
+      downloadProgress: data.downloadProgress.present
+          ? data.downloadProgress.value
+          : this.downloadProgress,
+      errorMessage: data.errorMessage.present
+          ? data.errorMessage.value
+          : this.errorMessage,
+      fileSizeBytes: data.fileSizeBytes.present
+          ? data.fileSizeBytes.value
+          : this.fileSizeBytes,
+      playbackPositionTicks: data.playbackPositionTicks.present
+          ? data.playbackPositionTicks.value
+          : this.playbackPositionTicks,
+      progressSynced: data.progressSynced.present
+          ? data.progressSynced.value
+          : this.progressSynced,
+      downloadedAt: data.downloadedAt.present
+          ? data.downloadedAt.value
+          : this.downloadedAt,
+      qualityPreset: data.qualityPreset.present
+          ? data.qualityPreset.value
+          : this.qualityPreset,
       seriesId: data.seriesId.present ? data.seriesId.value : this.seriesId,
       seasonId: data.seasonId.present ? data.seasonId.value : this.seasonId,
-      seriesName:
-          data.seriesName.present ? data.seriesName.value : this.seriesName,
-      seasonName:
-          data.seasonName.present ? data.seasonName.value : this.seasonName,
-      indexNumber:
-          data.indexNumber.present ? data.indexNumber.value : this.indexNumber,
-      parentIndexNumber:
-          data.parentIndexNumber.present
-              ? data.parentIndexNumber.value
-              : this.parentIndexNumber,
+      seriesName: data.seriesName.present
+          ? data.seriesName.value
+          : this.seriesName,
+      seasonName: data.seasonName.present
+          ? data.seasonName.value
+          : this.seasonName,
+      indexNumber: data.indexNumber.present
+          ? data.indexNumber.value
+          : this.indexNumber,
+      parentIndexNumber: data.parentIndexNumber.present
+          ? data.parentIndexNumber.value
+          : this.parentIndexNumber,
     );
   }
 
@@ -1873,19 +1841,12 @@ class $$DownloadedItemsTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer:
-              () =>
-                  $$DownloadedItemsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer:
-              () => $$DownloadedItemsTableOrderingComposer(
-                $db: db,
-                $table: table,
-              ),
-          createComputedFieldComposer:
-              () => $$DownloadedItemsTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
+          createFilteringComposer: () =>
+              $$DownloadedItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DownloadedItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DownloadedItemsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> itemId = const Value.absent(),
@@ -1994,16 +1955,9 @@ class $$DownloadedItemsTableTableManager
                 parentIndexNumber: parentIndexNumber,
                 rowid: rowid,
               ),
-          withReferenceMapper:
-              (p0) =>
-                  p0
-                      .map(
-                        (e) => (
-                          e.readTable(table),
-                          BaseReferences(db, table, e),
-                        ),
-                      )
-                      .toList(),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );

@@ -48,6 +48,13 @@ class TopToolbar extends StatefulWidget {
 
   const TopToolbar({super.key, this.activeRoute, this.showBackButton = false});
 
+  /// Total laid-out height of the toolbar for the current platform.
+  static double heightFor(BuildContext context) {
+    if (PlatformDetection.useLeanbackUi) return _kToolbarHeightTV;
+    if (PlatformDetection.useMobileUi) return _kToolbarHeightMobile;
+    return _kToolbarHeightDesktop;
+  }
+
   @override
   State<TopToolbar> createState() => _TopToolbarState();
 }

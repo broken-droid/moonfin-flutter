@@ -4409,6 +4409,54 @@
   "@approvedStatus": {
     "description": "Request status label"
   },
+  "notRequestedStatus": "Not Requested",
+  "@notRequestedStatus": {
+    "description": "Request status label when no request exists"
+  },
+  "blocklistedStatus": "Blocklisted",
+  "@blocklistedStatus": {
+    "description": "Request status label for blocklisted media"
+  },
+  "deletedStatus": "Deleted",
+  "@deletedStatus": {
+    "description": "Request status label for deleted media"
+  },
+  "tmdbScore": "TMDB Score",
+  "@tmdbScore": {
+    "description": "Stat label for TMDB user score"
+  },
+  "releaseDateLabel": "Release Date",
+  "@releaseDateLabel": {
+    "description": "Stat label for release date"
+  },
+  "firstAirDateLabel": "First Air Date",
+  "@firstAirDateLabel": {
+    "description": "Stat label for first air date"
+  },
+  "revenueLabel": "Revenue",
+  "@revenueLabel": {
+    "description": "Stat label for revenue"
+  },
+  "runtimeLabel": "Runtime",
+  "@runtimeLabel": {
+    "description": "Stat label for runtime"
+  },
+  "budgetLabel": "Budget",
+  "@budgetLabel": {
+    "description": "Stat label for budget"
+  },
+  "originalLanguageLabel": "Original Language",
+  "@originalLanguageLabel": {
+    "description": "Stat label for original language"
+  },
+  "seasonsLabel": "Seasons",
+  "@seasonsLabel": {
+    "description": "Stat label for number of seasons"
+  },
+  "episodesLabel": "Episodes",
+  "@episodesLabel": {
+    "description": "Stat label for number of episodes"
+  },
 
   "access": "Access",
   "add": "Add",

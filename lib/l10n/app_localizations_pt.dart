@@ -3177,6 +3177,42 @@ class AppLocalizationsPt extends AppLocalizations {
   String get approvedStatus => 'Aprovado';
 
   @override
+  String get notRequestedStatus => 'Not Requested';
+
+  @override
+  String get blocklistedStatus => 'Blocklisted';
+
+  @override
+  String get deletedStatus => 'Deleted';
+
+  @override
+  String get tmdbScore => 'TMDB Score';
+
+  @override
+  String get releaseDateLabel => 'Release Date';
+
+  @override
+  String get firstAirDateLabel => 'First Air Date';
+
+  @override
+  String get revenueLabel => 'Revenue';
+
+  @override
+  String get runtimeLabel => 'Runtime';
+
+  @override
+  String get budgetLabel => 'Budget';
+
+  @override
+  String get originalLanguageLabel => 'Original Language';
+
+  @override
+  String get seasonsLabel => 'Seasons';
+
+  @override
+  String get episodesLabel => 'Episodes';
+
+  @override
   String get access => 'Acesso';
 
   @override

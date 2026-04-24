@@ -5654,6 +5654,78 @@ abstract class AppLocalizations {
   /// **'Approved'**
   String get approvedStatus;
 
+  /// Request status label when no request exists
+  ///
+  /// In en, this message translates to:
+  /// **'Not Requested'**
+  String get notRequestedStatus;
+
+  /// Request status label for blocklisted media
+  ///
+  /// In en, this message translates to:
+  /// **'Blocklisted'**
+  String get blocklistedStatus;
+
+  /// Request status label for deleted media
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get deletedStatus;
+
+  /// Stat label for TMDB user score
+  ///
+  /// In en, this message translates to:
+  /// **'TMDB Score'**
+  String get tmdbScore;
+
+  /// Stat label for release date
+  ///
+  /// In en, this message translates to:
+  /// **'Release Date'**
+  String get releaseDateLabel;
+
+  /// Stat label for first air date
+  ///
+  /// In en, this message translates to:
+  /// **'First Air Date'**
+  String get firstAirDateLabel;
+
+  /// Stat label for revenue
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue'**
+  String get revenueLabel;
+
+  /// Stat label for runtime
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime'**
+  String get runtimeLabel;
+
+  /// Stat label for budget
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budgetLabel;
+
+  /// Stat label for original language
+  ///
+  /// In en, this message translates to:
+  /// **'Original Language'**
+  String get originalLanguageLabel;
+
+  /// Stat label for number of seasons
+  ///
+  /// In en, this message translates to:
+  /// **'Seasons'**
+  String get seasonsLabel;
+
+  /// Stat label for number of episodes
+  ///
+  /// In en, this message translates to:
+  /// **'Episodes'**
+  String get episodesLabel;
+
   /// No description provided for @access.
   ///
   /// In en, this message translates to:

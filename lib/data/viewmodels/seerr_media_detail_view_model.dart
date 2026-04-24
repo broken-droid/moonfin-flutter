@@ -61,6 +61,28 @@ class SeerrMediaDetailState {
   List<SeerrNetwork> get networks => tv?.networks ?? [];
   List<SeerrKeyword> get keywords =>
       movie?.keywords ?? tv?.keywords ?? [];
+  List<SeerrVideo> get relatedVideos =>
+      movie?.relatedVideos ?? tv?.relatedVideos ?? const [];
+
+  SeerrVideo? get bestTrailer {
+    final videos = relatedVideos;
+    if (videos.isEmpty) return null;
+    SeerrVideo? youtubeTrailer;
+    SeerrVideo? anyTrailer;
+    SeerrVideo? anyYoutube;
+    for (final v in videos) {
+      final isYouTube = (v.site ?? '').toLowerCase() == 'youtube';
+      final isTrailer = (v.type ?? '').toLowerCase() == 'trailer';
+      if (isYouTube && isTrailer) {
+        youtubeTrailer ??= v;
+      } else if (isTrailer) {
+        anyTrailer ??= v;
+      } else if (isYouTube) {
+        anyYoutube ??= v;
+      }
+    }
+    return youtubeTrailer ?? anyTrailer ?? anyYoutube ?? videos.first;
+  }
 
   int get mediaStatus => mediaInfo?.status ?? 0;
   bool get isFullyAvailable => mediaStatus == 5;

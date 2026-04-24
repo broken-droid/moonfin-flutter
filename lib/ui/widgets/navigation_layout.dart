@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import '../../preference/preference_constants.dart';
 import '../../preference/user_preferences.dart';
+import '../../util/platform_detection.dart';
 import 'download_progress_bar.dart';
 import 'left_sidebar.dart';
 import 'top_toolbar.dart';
@@ -33,6 +34,7 @@ class NavigationLayout extends StatefulWidget {
 class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBindingObserver {
   final _prefs = GetIt.instance<UserPreferences>();
   final _contentFocusNode = FocusNode(debugLabel: 'NavigationContent');
+  final ValueNotifier<double> _toolbarScrollOffset = ValueNotifier<double>(0.0);
   late NavbarPosition _position;
 
   @override
@@ -48,6 +50,7 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
     NavigationLayout.positionNotifier.removeListener(_onPositionNotified);
     WidgetsBinding.instance.removeObserver(this);
     _contentFocusNode.dispose();
+    _toolbarScrollOffset.dispose();
     super.dispose();
   }
 
@@ -77,21 +80,55 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
   }
 
   Widget _buildToolbar() {
+    final translateWithScroll = PlatformDetection.isTV;
+    final toolbar = TopToolbar(
+      activeRoute: widget.activeRoute,
+      showBackButton: widget.showBackButton,
+    );
+    final maxTranslate = TopToolbar.heightFor(context);
+    final body = translateWithScroll
+        ? NotificationListener<ScrollNotification>(
+            onNotification: (n) {
+              if (n.metrics.axis != Axis.vertical) return false;
+              final px = n.metrics.pixels.clamp(0.0, double.infinity);
+              if ((px - _toolbarScrollOffset.value).abs() > 0.5) {
+                _toolbarScrollOffset.value = px;
+              }
+              return false;
+            },
+            child: widget.child,
+          )
+        : widget.child;
     return Column(
       children: [
         Expanded(
           child: Stack(
             children: [
-              Positioned.fill(child: widget.child),
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                child: TopToolbar(
-                  activeRoute: widget.activeRoute,
-                  showBackButton: widget.showBackButton,
+              Positioned.fill(child: body),
+              if (translateWithScroll)
+                ValueListenableBuilder<double>(
+                  valueListenable: _toolbarScrollOffset,
+                  builder: (_, offset, child) {
+                    final translate = offset.clamp(0.0, maxTranslate);
+                    return Positioned(
+                      left: 0,
+                      right: 0,
+                      top: -translate,
+                      child: IgnorePointer(
+                        ignoring: translate >= maxTranslate,
+                        child: child!,
+                      ),
+                    );
+                  },
+                  child: toolbar,
+                )
+              else
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: toolbar,
                 ),
-              ),
             ],
           ),
         ),
