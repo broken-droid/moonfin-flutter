@@ -11,6 +11,7 @@ import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/repositories/server_user_repository.dart';
 import '../../../auth/repositories/session_repository.dart';
 import '../../../auth/models/login_state.dart';
+import '../../../auth/store/authentication_preferences.dart';
 import '../../../data/services/media_server_client_factory.dart';
 import '../../../util/pin_code_util.dart';
 import '../../../util/platform_detection.dart';
@@ -107,7 +108,10 @@ class _ServerScreenState extends State<ServerScreen> {
       if (!verified) return;
     }
 
-    if (user.hasToken) {
+    final alwaysAuthenticate =
+        GetIt.instance<AuthenticationPreferences>().shouldAlwaysAuthenticate;
+
+    if (user.hasToken && !alwaysAuthenticate) {
       final success = await _sessionRepo.switchCurrentSession(
         serverId: server.id,
         userId: user.id,
@@ -118,7 +122,7 @@ class _ServerScreenState extends State<ServerScreen> {
       }
     }
 
-    if (!user.hasPassword) {
+    if (!user.hasPassword && !alwaysAuthenticate) {
       final client = _clientFactory.getClient(
         serverId: server.id,
         serverType: server.serverType,

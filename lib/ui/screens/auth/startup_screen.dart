@@ -6,6 +6,7 @@ import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/repositories/session_repository.dart';
+import '../../../auth/store/authentication_preferences.dart';
 import '../../../auth/store/credential_store.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../util/pin_code_util.dart';
@@ -57,13 +58,16 @@ class _StartupScreenState extends State<StartupScreen>
     final session = GetIt.instance<SessionRepository>();
     final serverRepo = GetIt.instance<ServerRepository>();
     final credentialStore = GetIt.instance<CredentialStore>();
+    final authPrefs = GetIt.instance<AuthenticationPreferences>();
 
     if (session.state != SessionState.ready) {
       await session.stateStream.firstWhere((s) => s == SessionState.ready);
     }
 
     await serverRepo.loadStoredServers();
-    final restored = await session.restoreSession();
+    final restored = authPrefs.shouldAlwaysAuthenticate
+        ? false
+        : await session.restoreSession();
 
     if (!mounted) return;
 
