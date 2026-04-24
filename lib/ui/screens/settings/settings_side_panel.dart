@@ -491,6 +491,25 @@ class _CustomizationCategoryScreen extends StatelessWidget {
               WatchedIndicatorBehavior.never => 'Never',
             },
           ),
+          if (!PlatformDetection.useMobileUi)
+            SwitchPreferenceTile(
+              preference: UserPreferences.cardFocusExpansion,
+              title: 'Focus Expansion Animation',
+              subtitle: 'Scale focused cards',
+              icon: Icons.zoom_in,
+            ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.seriesThumbnailsEnabled,
+            title: 'Series Thumbnails',
+            subtitle: 'Use thumbnails for series cards',
+            icon: Icons.image_aspect_ratio,
+          ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.homeRowInfoOverlay,
+            title: 'Home Row Info Overlay',
+            subtitle: 'Show title and metadata over home row cards',
+            icon: Icons.info_outline,
+          ),
           _TvSettingsListTile(
             leading: const Icon(Icons.library_books),
             title: const Text('Libraries'),
