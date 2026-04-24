@@ -40,7 +40,7 @@ const _kAvatarSize = 40.0;
 const _kPillRadius = 36.0;
 const _kButtonSpacing = 12.0;
 const _kButtonSpacingMobile = 8.0;
-const _kButtonSpacingTV = 4.0;
+const _kButtonSpacingTV = 2.0;
 
 class TopToolbar extends StatefulWidget {
   final String? activeRoute;
@@ -66,7 +66,11 @@ class _TopToolbarState extends State<TopToolbar> {
   final _avatarFocus = FocusNode();
   final _homeFocus = FocusNode(debugLabel: 'TopToolbarHome');
   final _settingsFocus = FocusNode(debugLabel: 'TopToolbarSettings');
-  final _toolbarScopeNode = FocusNode(debugLabel: 'TopToolbarScope', canRequestFocus: false, skipTraversal: true);
+  final _toolbarScopeNode = FocusNode(
+    debugLabel: 'TopToolbarScope',
+    canRequestFocus: false,
+    skipTraversal: true,
+  );
   late final VoidCallback _focusNavbarCallback;
   FocusNode? _previousFocus;
   List<AggregatedLibrary> _libraries = [];
@@ -252,41 +256,41 @@ class _TopToolbarState extends State<TopToolbar> {
               return KeyEventResult.ignored;
             },
             child: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(),
-            child: isLandscape
-                ? Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: _buildCenter(),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: _buildStart(),
-                      ),
-                      if (!isMobile)
+              policy: OrderedTraversalPolicy(),
+              child: isLandscape
+                  ? Stack(
+                      alignment: Alignment.center,
+                      children: [
                         Align(
-                          alignment: Alignment.centerRight,
-                          child: _buildEnd(),
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: _buildCenter(),
+                          ),
                         ),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      _buildStart(),
-                      const SizedBox(width: 12),
-                      Expanded(child: _buildCenter()),
-                      if (!isMobile) ...[
-                        const SizedBox(width: 12),
-                        _buildEnd(),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: _buildStart(),
+                        ),
+                        if (!isMobile)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: _buildEnd(),
+                          ),
                       ],
-                    ],
-                  ),
-          ),
+                    )
+                  : Row(
+                      children: [
+                        _buildStart(),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildCenter()),
+                        if (!isMobile) ...[
+                          const SizedBox(width: 12),
+                          _buildEnd(),
+                        ],
+                      ],
+                    ),
+            ),
           ),
         ),
       ),
@@ -435,178 +439,173 @@ class _TopToolbarState extends State<TopToolbar> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-              _orderButton(
-                order: (order++).toDouble(),
-                child: ExpandableIconButton(
-                  icon: Icons.home_rounded,
-                  label: l10n.home,
-                  focusNode: _homeFocus,
-                  isActive: false,
-                  onKeyEvent: (node, event) {
-                    if (event is KeyDownEvent &&
-                        PlatformDetection.isTV &&
-                        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-                      _avatarFocus.requestFocus();
-                      return KeyEventResult.handled;
-                    }
-                    return KeyEventResult.ignored;
-                  },
-                  onPressed: () {
-                    if (_isActive(Destinations.home)) {
-                      requestHomeRefresh();
-                      return;
-                    }
-                    requestHomeRefreshAfterNavigation();
-                    context.go(Destinations.home);
-                  },
-                ),
-              ),
-              _gap(),
-              _orderButton(
-                order: (order++).toDouble(),
-                child: ExpandableIconButton(
-                  icon: Icons.search_rounded,
-                  label: l10n.search,
-                  isActive: _isActive(Destinations.search),
-                  onPressed: () {
-                    if (_isActive(Destinations.search)) return;
-                    context.navigateTopLevel(Destinations.search);
-                  },
-                ),
-              ),
-              if (showShuffle) ...[
-                _gap(),
                 _orderButton(
                   order: (order++).toDouble(),
                   child: ExpandableIconButton(
-                    icon: Icons.shuffle_rounded,
-                    label: l10n.shuffle,
-                    onPressed: () => _shuffleRandom(context),
-                    onLongPress: () => showShuffleDialog(context),
+                    icon: Icons.home_rounded,
+                    label: l10n.home,
+                    focusNode: _homeFocus,
+                    onKeyEvent: (node, event) {
+                      if (event is KeyDownEvent &&
+                          PlatformDetection.isTV &&
+                          event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+                        _avatarFocus.requestFocus();
+                        return KeyEventResult.handled;
+                      }
+                      return KeyEventResult.ignored;
+                    },
+                    onPressed: () {
+                      if (_isActive(Destinations.home)) {
+                        requestHomeRefresh();
+                        return;
+                      }
+                      requestHomeRefreshAfterNavigation();
+                      context.go(Destinations.home);
+                    },
                   ),
                 ),
-              ],
-              if (showGenres) ...[
                 _gap(),
                 _orderButton(
                   order: (order++).toDouble(),
                   child: ExpandableIconButton(
-                    iconBuilder: (size, color) => Image.asset(
-                      'assets/icons/genres.png',
-                      width: size,
-                      height: size,
-                      color: color,
-                      fit: BoxFit.contain,
+                    icon: Icons.search_rounded,
+                    label: l10n.search,
+                    onPressed: () {
+                      if (_isActive(Destinations.search)) return;
+                      context.navigateTopLevel(Destinations.search);
+                    },
+                  ),
+                ),
+                if (showShuffle) ...[
+                  _gap(),
+                  _orderButton(
+                    order: (order++).toDouble(),
+                    child: ExpandableIconButton(
+                      icon: Icons.shuffle_rounded,
+                      label: l10n.shuffle,
+                      onPressed: () => _shuffleRandom(context),
+                      onLongPress: () => showShuffleDialog(context),
                     ),
-                    label: l10n.genres,
-                    isActive: _isActive(Destinations.allGenres),
-                    onPressed: () {
-                      if (_isActive(Destinations.allGenres)) return;
-                      context.navigateTopLevel(Destinations.allGenres);
-                    },
                   ),
-                ),
-              ],
-              if (showFavorites) ...[
-                _gap(),
-                _orderButton(
-                  order: (order++).toDouble(),
-                  child: ExpandableIconButton(
-                    icon: Icons.favorite_rounded,
-                    label: l10n.favorites,
-                    isActive: _isActive(Destinations.allFavorites),
-                    onPressed: () {
-                      if (_isActive(Destinations.allFavorites)) return;
-                      context.navigateTopLevel(Destinations.allFavorites);
-                    },
+                ],
+                if (showGenres) ...[
+                  _gap(),
+                  _orderButton(
+                    order: (order++).toDouble(),
+                    child: ExpandableIconButton(
+                      iconBuilder: (size, color) => Image.asset(
+                        'assets/icons/genres.png',
+                        width: size,
+                        height: size,
+                        color: color,
+                        fit: BoxFit.contain,
+                      ),
+                      label: l10n.genres,
+                      onPressed: () {
+                        if (_isActive(Destinations.allGenres)) return;
+                        context.navigateTopLevel(Destinations.allGenres);
+                      },
+                    ),
                   ),
-                ),
-              ],
-              if (showFolders) ...[
-                _gap(),
-                _orderButton(
-                  order: (order++).toDouble(),
-                  child: ExpandableIconButton(
-                    icon: Icons.folder_rounded,
-                    label: l10n.folders,
-                    isActive: _isActive(Destinations.folderView),
-                    onPressed: () {
-                      if (_isActive(Destinations.folderView)) return;
-                      context.navigateTopLevel(Destinations.folderView);
-                    },
+                ],
+                if (showFavorites) ...[
+                  _gap(),
+                  _orderButton(
+                    order: (order++).toDouble(),
+                    child: ExpandableIconButton(
+                      icon: Icons.favorite_rounded,
+                      label: l10n.favorites,
+                      onPressed: () {
+                        if (_isActive(Destinations.allFavorites)) return;
+                        context.navigateTopLevel(Destinations.allFavorites);
+                      },
+                    ),
                   ),
-                ),
-              ],
-              if (showSyncPlay) ...[
-                _gap(),
-                _orderButton(
-                  order: (order++).toDouble(),
-                  child: ExpandableIconButton(
-                    icon: Icons.groups_rounded,
-                    label: l10n.syncPlay,
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const SyncPlayScreen(),
+                ],
+                if (showFolders) ...[
+                  _gap(),
+                  _orderButton(
+                    order: (order++).toDouble(),
+                    child: ExpandableIconButton(
+                      icon: Icons.folder_rounded,
+                      label: l10n.folders,
+                      onPressed: () {
+                        if (_isActive(Destinations.folderView)) return;
+                        context.navigateTopLevel(Destinations.folderView);
+                      },
+                    ),
+                  ),
+                ],
+                if (showSyncPlay) ...[
+                  _gap(),
+                  _orderButton(
+                    order: (order++).toDouble(),
+                    child: ExpandableIconButton(
+                      icon: Icons.groups_rounded,
+                      label: l10n.syncPlay,
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const SyncPlayScreen(),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-              if (pluginSync.pluginAvailable &&
-                  pluginSync.seerrInfoAvailable &&
-                  _prefs.get(UserPreferences.seerrEnabled)) ...[
+                ],
+                if (pluginSync.pluginAvailable &&
+                    pluginSync.seerrInfoAvailable &&
+                    _prefs.get(UserPreferences.seerrEnabled)) ...[
+                  _gap(),
+                  _orderButton(
+                    order: (order++).toDouble(),
+                    child: Builder(
+                      builder: (context) {
+                        final seerrPrefs = GetIt.instance<SeerrPreferences>();
+                        final isSeerr = seerrPrefs.isSeerrVariant;
+                        final label = seerrPrefs.moonfinDisplayName.isNotEmpty
+                            ? seerrPrefs.moonfinDisplayName
+                            : (isSeerr ? l10n.seerr : l10n.jellyseerr);
+                        return ExpandableIconButton(
+                          iconBuilder: (size, color) => isSeerr
+                              ? SeerrIcon(size: size, color: color)
+                              : JellyseerrIcon(size: size, color: color),
+                          label: label,
+                          onPressed: () {
+                            if (_isActive(Destinations.seerrDiscover)) return;
+                            context.navigateTopLevel(
+                              Destinations.seerrDiscover,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+                if (showLibraries && _libraries.isNotEmpty) ...[
+                  _gap(),
+                  _orderButton(
+                    order: (order++).toDouble(),
+                    child: _buildLibrariesButton(),
+                  ),
+                ],
                 _gap(),
                 _orderButton(
-                  order: (order++).toDouble(),
-                  child: Builder(
-                    builder: (context) {
-                      final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                      final isSeerr = seerrPrefs.isSeerrVariant;
-                      final label = seerrPrefs.moonfinDisplayName.isNotEmpty
-                          ? seerrPrefs.moonfinDisplayName
-                          : (isSeerr ? l10n.seerr : l10n.jellyseerr);
-                      return ExpandableIconButton(
-                        iconBuilder: (size, color) => isSeerr
-                            ? SeerrIcon(size: size, color: color)
-                            : JellyseerrIcon(size: size, color: color),
-                        label: label,
-                        isActive: _isActive(Destinations.seerrDiscover),
-                        onPressed: () {
-                          if (_isActive(Destinations.seerrDiscover)) return;
-                          context.navigateTopLevel(Destinations.seerrDiscover);
-                        },
+                  order: 99,
+                  child: ExpandableIconButton(
+                    icon: Icons.settings_rounded,
+                    label: l10n.settings,
+                    focusNode: _settingsFocus,
+                    onPressed: () async {
+                      await SettingsPanel.open(
+                        context,
+                        const SettingsSidePanel(),
                       );
+                      if (mounted) _settingsFocus.requestFocus();
                     },
                   ),
                 ),
               ],
-              if (showLibraries && _libraries.isNotEmpty) ...[
-                _gap(),
-                _orderButton(
-                  order: (order++).toDouble(),
-                  child: _buildLibrariesButton(),
-                ),
-              ],
-              _gap(),
-              _orderButton(
-                order: 99,
-                child: ExpandableIconButton(
-                  icon: Icons.settings_rounded,
-                  label: l10n.settings,
-                  focusNode: _settingsFocus,
-                  isActive: _isActive(Destinations.settings),
-                  onPressed: () async {
-                    await SettingsPanel.open(
-                      context,
-                      const SettingsSidePanel(),
-                    );
-                    if (mounted) _settingsFocus.requestFocus();
-                  },
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
         ),
       ),
     );
@@ -656,8 +655,8 @@ class _TopToolbarState extends State<TopToolbar> {
     width: PlatformDetection.useLeanbackUi
         ? _kButtonSpacingTV
         : PlatformDetection.useMobileUi
-            ? _kButtonSpacingMobile
-            : _kButtonSpacing,
+        ? _kButtonSpacingMobile
+        : _kButtonSpacing,
   );
 
   Widget _orderButton({required double order, required Widget child}) {
@@ -867,9 +866,7 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
       ),
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: ScrollConfiguration(
-        behavior: const MaterialScrollBehavior().copyWith(
-          scrollbars: false,
-        ),
+        behavior: const MaterialScrollBehavior().copyWith(scrollbars: false),
         child: ListView(
           shrinkWrap: true,
           padding: EdgeInsets.zero,
@@ -943,7 +940,6 @@ class _LibrariesDropdownState extends State<_LibrariesDropdown> {
             fit: BoxFit.contain,
           ),
           label: AppLocalizations.of(context).libraries,
-          isActive: _overlayEntry != null,
           onPressed: () {
             if (_overlayEntry != null) {
               _hideDropdown();

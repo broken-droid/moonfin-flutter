@@ -21,8 +21,6 @@ class ExpandableIconButton extends StatefulWidget {
   final FocusNode? focusNode;
   final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
   final ValueChanged<bool>? onFocusChanged;
-  final bool isActive;
-  final Color activeColor;
 
   const ExpandableIconButton({
     super.key,
@@ -34,8 +32,6 @@ class ExpandableIconButton extends StatefulWidget {
     this.focusNode,
     this.onKeyEvent,
     this.onFocusChanged,
-    this.isActive = false,
-    this.activeColor = const Color(0xFF00A4DC),
   });
 
   @override
@@ -124,31 +120,25 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
   Widget build(BuildContext context) {
     final isMobile = PlatformDetection.useMobileUi;
     final isTV = PlatformDetection.isTV;
-    final btnSize = isMobile ? 40.0 : (isTV ? 64.0 : 56.0);
-    final iconSize = isMobile ? 22.0 : (isTV ? 34.0 : 30.0);
+    final btnSize = isMobile ? 40.0 : (isTV ? 44.0 : 56.0);
+    final iconSize = isMobile ? 22.0 : (isTV ? 24.0 : 30.0);
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
 
     final leanbackFocused = _isFocused && !isMobile;
     final isExpanded = _expanded || leanbackFocused;
-
-    // Full-height pill: radius matches the outer pill container
     final effectiveBorderRadius = !isMobile ? 36.0 : (btnSize / 2);
 
     final bgColor = leanbackFocused
         ? Colors.white
-        : widget.isActive
-            ? widget.activeColor.withValues(alpha: 0.22)
-            : (_isFocused || _isHovered)
-                ? focusColor.withValues(alpha: 0.18)
-                : Colors.transparent;
+        : (_isFocused || _isHovered)
+        ? focusColor.withValues(alpha: 0.18)
+        : Colors.transparent;
 
     final fgColor = leanbackFocused
         ? Colors.black
-        : widget.isActive
-            ? widget.activeColor
-            : (_isFocused || _isHovered)
-                ? focusColor
-                : Colors.white.withValues(alpha: 0.6);
+        : (_isFocused || _isHovered)
+        ? focusColor
+        : Colors.white.withValues(alpha: 0.6);
 
     return MouseRegion(
       onEnter: (_) {
@@ -178,7 +168,7 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: BorderRadius.circular(effectiveBorderRadius),
-                border: (_isFocused && isMobile)
+              border: (_isFocused && isMobile)
                   ? Border.all(color: focusColor, width: 2)
                   : null,
             ),
@@ -189,7 +179,8 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                widget.iconBuilder?.call(iconSize, fgColor) ?? Icon(widget.icon, size: iconSize, color: fgColor),
+                widget.iconBuilder?.call(iconSize, fgColor) ??
+                    Icon(widget.icon, size: iconSize, color: fgColor),
                 if (isExpanded) ...[
                   const SizedBox(width: _kSpacing),
                   Flexible(
@@ -197,7 +188,7 @@ class _ExpandableIconButtonState extends State<ExpandableIconButton> {
                       widget.label,
                       style: TextStyle(
                         color: fgColor,
-                        fontSize: isMobile ? 14 : (isTV ? 18 : 16),
+                        fontSize: isMobile ? 14 : (isTV ? 14 : 16),
                         fontWeight: FontWeight.w600,
                       ),
                       overflow: TextOverflow.ellipsis,

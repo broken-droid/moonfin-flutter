@@ -31,7 +31,6 @@ import 'user_menu_dialog.dart';
 const _kExpandedWidthDesktop = 240.0;
 const _kExpandedWidthMobile = 260.0;
 const _kExpandDuration = Duration(milliseconds: 200);
-const _kAccent = Color(0xFF00A4DC);
 const _kCollapsedWidthTV = 56.0;
 const _kExpandedWidthTV = 280.0;
 
@@ -476,186 +475,203 @@ class _LeftSidebarState extends State<LeftSidebar> {
         _buildUserSection(),
         _buildSeparator(),
         Expanded(
-          child: ListView(
-            controller: _scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            children: [
-              _SidebarItem(
-                icon: Icons.home_rounded,
-                label: l10n.home,
-                focusNode: _homeFocusNode,
-                showLabel: _showLabels,
-                isActive: _isActive(Destinations.home),
-                onPressed: () {
-                  _onNavigate();
-                  if (_isActive(Destinations.home)) {
-                    requestHomeRefresh();
-                    return;
-                  }
-                  requestHomeRefreshAfterNavigation();
-                  context.go(Destinations.home);
-                },
-              ),
-              _SidebarItem(
-                icon: Icons.search_rounded,
-                label: l10n.search,
-                showLabel: _showLabels,
-                isActive: _isActive(Destinations.search),
-                onPressed: () {
-                  _onNavigate();
-                  if (_isActive(Destinations.search)) return;
-                  context.navigateTopLevel(Destinations.search);
-                },
-              ),
-              if (showShuffle)
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final items = <Widget>[
                 _SidebarItem(
-                  icon: Icons.shuffle_rounded,
-                  label: l10n.shuffle,
+                  icon: Icons.home_rounded,
+                  label: l10n.home,
+                  focusNode: _homeFocusNode,
                   showLabel: _showLabels,
                   onPressed: () {
                     _onNavigate();
-                    _shuffleRandom(context);
-                  },
-                  onLongPress: () {
-                    _onNavigate();
-                    showShuffleDialog(context);
+                    if (_isActive(Destinations.home)) {
+                      requestHomeRefresh();
+                      return;
+                    }
+                    requestHomeRefreshAfterNavigation();
+                    context.go(Destinations.home);
                   },
                 ),
-              if (showGenres)
                 _SidebarItem(
-                  iconBuilder: (size, color) => Image.asset(
-                    'assets/icons/genres.png',
-                    width: size,
-                    height: size,
-                    color: color,
+                  icon: Icons.search_rounded,
+                  label: l10n.search,
+                  showLabel: _showLabels,
+                  onPressed: () {
+                    _onNavigate();
+                    if (_isActive(Destinations.search)) return;
+                    context.navigateTopLevel(Destinations.search);
+                  },
+                ),
+                if (showShuffle)
+                  _SidebarItem(
+                    icon: Icons.shuffle_rounded,
+                    label: l10n.shuffle,
+                    showLabel: _showLabels,
+                    onPressed: () {
+                      _onNavigate();
+                      _shuffleRandom(context);
+                    },
+                    onLongPress: () {
+                      _onNavigate();
+                      showShuffleDialog(context);
+                    },
                   ),
-                  label: l10n.genres,
-                  showLabel: _showLabels,
-                  isActive: _isActive(Destinations.allGenres),
-                  onPressed: () {
-                    _onNavigate();
-                    if (_isActive(Destinations.allGenres)) return;
-                    context.navigateTopLevel(Destinations.allGenres);
-                  },
-                ),
-              if (showFavorites)
-                _SidebarItem(
-                  icon: Icons.favorite_rounded,
-                  label: l10n.favorites,
-                  showLabel: _showLabels,
-                  isActive: _isActive(Destinations.allFavorites),
-                  onPressed: () {
-                    _onNavigate();
-                    if (_isActive(Destinations.allFavorites)) return;
-                    context.navigateTopLevel(Destinations.allFavorites);
-                  },
-                ),
-              if (showFolders)
-                _SidebarItem(
-                  icon: Icons.folder_rounded,
-                  label: l10n.folders,
-                  showLabel: _showLabels,
-                  isActive: _isActive(Destinations.folderView),
-                  onPressed: () {
-                    _onNavigate();
-                    if (_isActive(Destinations.folderView)) return;
-                    context.navigateTopLevel(Destinations.folderView);
-                  },
-                ),
-              if (showSyncPlay)
-                _SidebarItem(
-                  icon: Icons.groups_rounded,
-                  label: l10n.syncPlay,
-                  showLabel: _showLabels,
-                  onPressed: () {
-                    _onNavigate();
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const SyncPlayScreen(),
-                      ),
-                    );
-                  },
-                ),
-              if (pluginSync.pluginAvailable &&
-                  pluginSync.seerrInfoAvailable &&
-                  _prefs.get(UserPreferences.seerrEnabled))
-                Builder(
-                  builder: (context) {
-                    final seerrPrefs = GetIt.instance<SeerrPreferences>();
-                    final isSeerr = seerrPrefs.isSeerrVariant;
-                    final label = seerrPrefs.moonfinDisplayName.isNotEmpty
-                        ? seerrPrefs.moonfinDisplayName
-                        : (isSeerr ? l10n.seerr : l10n.jellyseerr);
-                    return _SidebarItem(
-                      iconBuilder: (size, color) => isSeerr
-                          ? SeerrIcon(size: size, color: color)
-                          : JellyseerrIcon(size: size, color: color),
-                      label: label,
-                      showLabel: _showLabels,
-                      isActive: _isActive(Destinations.seerrDiscover),
-                      onPressed: () {
-                        _onNavigate();
-                        if (_isActive(Destinations.seerrDiscover)) return;
-                        context.navigateTopLevel(Destinations.seerrDiscover);
-                      },
-                    );
-                  },
-                ),
-              if (showLibraries && _libraries.isNotEmpty) ...[
-                _buildSeparator(),
-                _SidebarItem(
-                  iconBuilder: (size, color) => Image.asset(
-                    'assets/icons/clapperboard.png',
-                    width: size,
-                    height: size,
-                    color: color,
-                    fit: BoxFit.contain,
+                if (showGenres)
+                  _SidebarItem(
+                    iconBuilder: (size, color) => Image.asset(
+                      'assets/icons/genres.png',
+                      width: size,
+                      height: size,
+                      color: color,
+                    ),
+                    label: l10n.genres,
+                    showLabel: _showLabels,
+                    onPressed: () {
+                      _onNavigate();
+                      if (_isActive(Destinations.allGenres)) return;
+                      context.navigateTopLevel(Destinations.allGenres);
+                    },
                   ),
-                  label: l10n.libraries,
-                  showLabel: _showLabels,
-                  isActive: _librariesExpanded,
-                  trailing: _showLabels
-                      ? AnimatedRotation(
-                          turns: _librariesExpanded ? 0.5 : 0,
-                          duration: _kExpandDuration,
-                          child: Icon(
-                            Icons.expand_more,
-                            size: 16,
-                            color: Colors.white.withValues(alpha: 0.5),
-                          ),
-                        )
-                      : null,
-                  onPressed: () =>
-                      setState(() => _librariesExpanded = !_librariesExpanded),
+                if (showFavorites)
+                  _SidebarItem(
+                    icon: Icons.favorite_rounded,
+                    label: l10n.favorites,
+                    showLabel: _showLabels,
+                    onPressed: () {
+                      _onNavigate();
+                      if (_isActive(Destinations.allFavorites)) return;
+                      context.navigateTopLevel(Destinations.allFavorites);
+                    },
+                  ),
+                if (showFolders)
+                  _SidebarItem(
+                    icon: Icons.folder_rounded,
+                    label: l10n.folders,
+                    showLabel: _showLabels,
+                    onPressed: () {
+                      _onNavigate();
+                      if (_isActive(Destinations.folderView)) return;
+                      context.navigateTopLevel(Destinations.folderView);
+                    },
+                  ),
+                if (showSyncPlay)
+                  _SidebarItem(
+                    icon: Icons.groups_rounded,
+                    label: l10n.syncPlay,
+                    showLabel: _showLabels,
+                    onPressed: () {
+                      _onNavigate();
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const SyncPlayScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                if (pluginSync.pluginAvailable &&
+                    pluginSync.seerrInfoAvailable &&
+                    _prefs.get(UserPreferences.seerrEnabled))
+                  Builder(
+                    builder: (context) {
+                      final seerrPrefs = GetIt.instance<SeerrPreferences>();
+                      final isSeerr = seerrPrefs.isSeerrVariant;
+                      final label = seerrPrefs.moonfinDisplayName.isNotEmpty
+                          ? seerrPrefs.moonfinDisplayName
+                          : (isSeerr ? l10n.seerr : l10n.jellyseerr);
+                      return _SidebarItem(
+                        iconBuilder: (size, color) => isSeerr
+                            ? SeerrIcon(size: size, color: color)
+                            : JellyseerrIcon(size: size, color: color),
+                        label: label,
+                        showLabel: _showLabels,
+                        onPressed: () {
+                          _onNavigate();
+                          if (_isActive(Destinations.seerrDiscover)) return;
+                          context.navigateTopLevel(Destinations.seerrDiscover);
+                        },
+                      );
+                    },
+                  ),
+                if (showLibraries && _libraries.isNotEmpty) ...[
+                  _buildSeparator(),
+                  _SidebarItem(
+                    iconBuilder: (size, color) => Image.asset(
+                      'assets/icons/clapperboard.png',
+                      width: size,
+                      height: size,
+                      color: color,
+                      fit: BoxFit.contain,
+                    ),
+                    label: l10n.libraries,
+                    showLabel: _showLabels,
+                    trailing: _showLabels
+                        ? AnimatedRotation(
+                            turns: _librariesExpanded ? 0.5 : 0,
+                            duration: _kExpandDuration,
+                            child: Icon(
+                              Icons.expand_more,
+                              size: 16,
+                              color: Colors.white.withValues(alpha: 0.5),
+                            ),
+                          )
+                        : null,
+                    onPressed: () => setState(
+                      () => _librariesExpanded = !_librariesExpanded,
+                    ),
+                  ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                    child: _librariesExpanded
+                        ? Column(
+                            children: _libraries
+                                .map(
+                                  (lib) => _SidebarLibraryItem(
+                                    label: lib.name,
+                                    showLabel: _showLabels,
+                                    onPressed: () {
+                                      _onNavigate();
+                                      if (lib.collectionType == 'music') {
+                                        context.navigateTopLevel(
+                                          '/music/${lib.id}',
+                                        );
+                                      } else if (lib.collectionType ==
+                                          'livetv') {
+                                        context.navigateTopLevel(
+                                          Destinations.liveTvGuide,
+                                        );
+                                      } else {
+                                        context.navigateTopLevel(
+                                          '/library/${lib.id}',
+                                        );
+                                      }
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ];
+
+              return SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: math.max(0, constraints.maxHeight - 8),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: _showLabels
+                        ? MainAxisAlignment.start
+                        : MainAxisAlignment.center,
+                    children: items,
+                  ),
                 ),
-                AnimatedSize(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  child: _librariesExpanded
-                      ? Column(
-                          children: _libraries
-                              .map(
-                                (lib) => _SidebarLibraryItem(
-                                  label: lib.name,
-                                  showLabel: _showLabels,
-                                  onPressed: () {
-                                    _onNavigate();
-                                    if (lib.collectionType == 'music') {
-                                      context.navigateTopLevel('/music/${lib.id}');
-                                    } else if (lib.collectionType == 'livetv') {
-                                      context.navigateTopLevel(Destinations.liveTvGuide);
-                                    } else {
-                                      context.navigateTopLevel('/library/${lib.id}');
-                                    }
-                                  },
-                                ),
-                              )
-                              .toList(),
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              ],
-            ],
+              );
+            },
           ),
         ),
         _buildSeparator(),
@@ -666,7 +682,6 @@ class _LeftSidebarState extends State<LeftSidebar> {
             label: l10n.settings,
             focusNode: _settingsFocusNode,
             showLabel: _showLabels,
-            isActive: _isActive(Destinations.settings),
             onPressed: () async {
               _onNavigate();
               await SettingsPanel.open(context, const SettingsSidePanel());
@@ -829,7 +844,6 @@ class _SidebarItem extends StatefulWidget {
   final Widget Function(double size, Color color)? iconBuilder;
   final String label;
   final bool showLabel;
-  final bool isActive;
   final VoidCallback onPressed;
   final VoidCallback? onLongPress;
   final Widget? trailing;
@@ -840,7 +854,6 @@ class _SidebarItem extends StatefulWidget {
     this.iconBuilder,
     required this.label,
     required this.showLabel,
-    this.isActive = false,
     required this.onPressed,
     this.onLongPress,
     this.trailing,
@@ -881,9 +894,7 @@ class _SidebarItemState extends State<_SidebarItem> {
     final highlighted = _isFocused || _isHovered;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
     final tvFocused = PlatformDetection.isTV && _isFocused;
-    final fgColor = widget.isActive
-        ? _kAccent
-        : tvFocused
+    final fgColor = tvFocused
         ? Colors.black
         : highlighted
         ? focusColor
@@ -917,8 +928,6 @@ class _SidebarItemState extends State<_SidebarItem> {
                     ? Colors.white
                     : highlighted
                     ? focusColor.withValues(alpha: 0.12)
-                    : widget.isActive
-                    ? _kAccent.withValues(alpha: 0.15)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(
                   PlatformDetection.isTV ? 24 : 8,
@@ -1034,7 +1043,7 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
                   ? Text(
                       widget.label,
                       style: TextStyle(
-                      color: tvFocused
+                        color: tvFocused
                             ? Colors.black
                             : highlighted
                             ? focusColor
