@@ -1,3 +1,4 @@
+import '../preference/preference_constants.dart';
 import '../util/platform_detection.dart';
 
 class DeviceProfileBuilder {
@@ -12,6 +13,7 @@ class DeviceProfileBuilder {
     bool subtitlesInManifest = true,
     bool pgsDirectPlay = false,
     bool assDirectPlay = true,
+    MaxVideoResolution maxResolution = MaxVideoResolution.auto,
   }) {
     final bitrate = maxBitrateMbps == null ? null : maxBitrateMbps * 1000000;
     final streamingBitrate = bitrate == null
@@ -34,7 +36,10 @@ class DeviceProfileBuilder {
         subtitlesInManifest: subtitlesInManifest,
       ),
       'ContainerProfiles': <Map<String, dynamic>>[],
-      'CodecProfiles': _codecProfiles(stereoDownmix: stereoDownmix),
+      'CodecProfiles': _codecProfiles(
+        stereoDownmix: stereoDownmix,
+        maxResolution: maxResolution,
+      ),
       'SubtitleProfiles': _subtitleProfiles(
         pgsDirectPlay: pgsDirectPlay,
         assDirectPlay: assDirectPlay,
@@ -179,8 +184,31 @@ class DeviceProfileBuilder {
 
   static List<Map<String, dynamic>> _codecProfiles({
     required bool stereoDownmix,
+    MaxVideoResolution maxResolution = MaxVideoResolution.auto,
   }) {
+    final resolutionConditions = maxResolution == MaxVideoResolution.auto
+        ? const <Map<String, dynamic>>[]
+        : <Map<String, dynamic>>[
+            {
+              'Condition': 'LessThanEqual',
+              'Property': 'Width',
+              'Value': '${maxResolution.width}',
+              'IsRequired': true,
+            },
+            {
+              'Condition': 'LessThanEqual',
+              'Property': 'Height',
+              'Value': '${maxResolution.height}',
+              'IsRequired': true,
+            },
+          ];
     return [
+      if (resolutionConditions.isNotEmpty)
+        {
+          'Type': 'Video',
+          'Codec': _videoCodecs,
+          'Conditions': resolutionConditions,
+        },
       {
         'Type': 'Video',
         'Codec': 'h264',

@@ -124,6 +124,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
     final assDirectPlay = _prefs.get(UserPreferences.assDirectPlay);
     final stereoDownmix =
         _prefs.get(UserPreferences.audioBehavior) == AudioBehavior.downmixToStereo;
+    final maxResolution = _prefs.get(UserPreferences.maxVideoResolution);
 
     return DeviceProfileBuilder.build(
       maxBitrateMbps: maxBitrate,
@@ -133,6 +134,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
       useProgressiveTranscode: useProgressiveTranscode,
       pgsDirectPlay: pgsDirectPlay,
       assDirectPlay: assDirectPlay,
+      maxResolution: maxResolution,
     );
   }
 
