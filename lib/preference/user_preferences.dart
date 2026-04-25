@@ -585,6 +585,12 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: false,
   );
 
+  static Preference<bool> pluginSyncInitializedForServer(String serverKey) =>
+      Preference(
+        key: 'pref_plugin_sync_initialized_$serverKey',
+        defaultValue: false,
+      );
+
   static final confirmExit = Preference(
     key: 'confirm_exit',
     defaultValue: true,

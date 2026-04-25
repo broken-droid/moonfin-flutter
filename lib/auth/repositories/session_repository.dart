@@ -152,7 +152,7 @@ class SessionRepository {
 
     // Server-side sync runs in the background so startup isn't blocked
     // when the server is unreachable (e.g. on mobile data away from home).
-    unawaited(_postLoginSync(client, user, username, password));
+    unawaited(_postLoginSync(client, user, serverId, username, password));
 
     return true;
   }
@@ -160,6 +160,7 @@ class SessionRepository {
   Future<void> _postLoginSync(
     MediaServerClient client,
     PrivateUser user,
+    String serverId,
     String? username,
     String? password,
   ) async {
@@ -186,7 +187,7 @@ class SessionRepository {
     } catch (_) {
     }
 
-    await _pluginSyncService.syncOnLogin(client);
+    await _pluginSyncService.syncOnLogin(client, serverId: serverId);
 
     await _pluginSyncService.configureSeerr(
       client,

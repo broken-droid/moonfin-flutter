@@ -12,6 +12,12 @@ import '../../preference/seerr_row_config.dart';
 import '../../preference/user_preferences.dart';
 import '../../util/platform_detection.dart';
 
+enum _PluginAvailabilityStatus {
+  available,
+  unavailable,
+  unknown,
+}
+
 class PluginSyncService extends ChangeNotifier {
   static const List<String> supportedProfiles = <String>[
     'global',
@@ -49,6 +55,17 @@ class PluginSyncService extends ChangeNotifier {
   PluginSyncService(this._prefs, this._store) : _dio = Dio() {
     configureServerDio(_dio);
     _dio.interceptors.add(redirectInterceptor(_dio));
+  }
+
+  String _serverSyncKey(
+    MediaServerClient client, {
+    String? serverId,
+  }) {
+    if (serverId != null && serverId.trim().isNotEmpty) {
+      return serverId.trim();
+    }
+    final normalized = client.baseUrl.toLowerCase().trim();
+    return normalized.replaceAll(RegExp(r'[^a-z0-9]+'), '_');
   }
 
   Map<String, String>? _authHeaders(MediaServerClient client) {
@@ -113,7 +130,9 @@ class PluginSyncService extends ChangeNotifier {
     _prefs.notifyPreferenceChanged();
   }
 
-  Future<bool> refreshAvailability(MediaServerClient client) async {
+  Future<_PluginAvailabilityStatus> _refreshAvailabilityStatus(
+    MediaServerClient client,
+  ) async {
     resetState(notify: false);
 
     try {
@@ -121,21 +140,21 @@ class PluginSyncService extends ChangeNotifier {
       if (pingResult == null) {
         _setLocalSeerrEnabled(false);
         notifyListeners();
-        return false;
+        return _PluginAvailabilityStatus.unknown;
       }
 
       final installed = _readBool(pingResult, 'installed');
       if (installed != null && !installed) {
         _setLocalSeerrEnabled(false);
         notifyListeners();
-        return false;
+        return _PluginAvailabilityStatus.unavailable;
       }
 
       final syncEnabled = _readBool(pingResult, 'settingsSyncEnabled');
       if (syncEnabled != null && !syncEnabled) {
         _setLocalSeerrEnabled(false);
         notifyListeners();
-        return false;
+        return _PluginAvailabilityStatus.unavailable;
       }
 
       _pluginAvailable = true;
@@ -168,11 +187,16 @@ class PluginSyncService extends ChangeNotifier {
       _setLocalSeerrEnabled(_seerrEnabled);
 
       notifyListeners();
-      return true;
+      return _PluginAvailabilityStatus.available;
     } catch (_) {
       resetState();
-      return false;
+      return _PluginAvailabilityStatus.unknown;
     }
+  }
+
+  Future<bool> refreshAvailability(MediaServerClient client) async {
+    final status = await _refreshAvailabilityStatus(client);
+    return status == _PluginAvailabilityStatus.available;
   }
 
   String get _profileName {
@@ -192,24 +216,34 @@ class PluginSyncService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> syncOnLogin(MediaServerClient client) async {
+  Future<void> syncOnLogin(
+    MediaServerClient client, {
+    String? serverId,
+  }) async {
     try {
-      final available = await refreshAvailability(client);
-      if (!available) {
+      final availability = await _refreshAvailabilityStatus(client);
+
+      final syncInitializedPref = UserPreferences.pluginSyncInitializedForServer(
+        _serverSyncKey(client, serverId: serverId),
+      );
+      if (_prefs.get(syncInitializedPref)) {
         return;
       }
 
-      final neverConfigured = !_store.containsKey(UserPreferences.pluginSyncEnabled.key);
-      final syncEnabled = _prefs.get(UserPreferences.pluginSyncEnabled);
+      if (availability == _PluginAvailabilityStatus.unknown) {
+        return;
+      }
 
-      if (!syncEnabled && !neverConfigured) return;
+      await _prefs.set(syncInitializedPref, true);
+
+      if (availability != _PluginAvailabilityStatus.available) {
+        return;
+      }
 
       final resolved = await _fetchResolvedProfile(client, _profileName);
       if (resolved == null) return;
 
-      if (neverConfigured) {
-        await _prefs.set(UserPreferences.pluginSyncEnabled, true);
-      }
+      await _prefs.set(UserPreferences.pluginSyncEnabled, true);
 
       await _applyServerSettings(resolved);
     } catch (_) {
