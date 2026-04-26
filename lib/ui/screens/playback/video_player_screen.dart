@@ -14,6 +14,7 @@ import 'package:volume_controller/volume_controller.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../../util/fullscreen_helper.dart';
+import '../../widgets/playback/seek_icons.dart';
 
 import '../../../playback/media_kit_player_backend.dart';
 import '../../../auth/repositories/user_repository.dart';
@@ -2292,7 +2293,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                 ),
               const SizedBox(width: 4),
               _controlButton(
-                Icons.replay_10_rounded,
+                seekBackIcon(_prefs.get(UserPreferences.skipBackLength)),
                 onPressed: () =>
                     _seekRelative(-_prefs.get(UserPreferences.skipBackLength)),
                 size: buttonIconSize,
@@ -2317,7 +2318,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               ),
               const SizedBox(width: 8),
               _controlButton(
-                Icons.forward_30_rounded,
+                seekForwardIcon(_prefs.get(UserPreferences.skipForwardLength)),
                 onPressed: () =>
                     _seekRelative(_prefs.get(UserPreferences.skipForwardLength)),
                 size: buttonIconSize,
@@ -3044,7 +3045,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                 tooltip: l10n.playerTooltipPrevious,
               ),
             _controlButton(
-              Icons.replay_10_rounded,
+              seekBackIcon(_prefs.get(UserPreferences.skipBackLength)),
               onPressed: () =>
                   _seekRelative(-_prefs.get(UserPreferences.skipBackLength)),
               size: 46,
@@ -3065,7 +3066,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               ),
             ),
             _controlButton(
-              Icons.forward_30_rounded,
+              seekForwardIcon(_prefs.get(UserPreferences.skipForwardLength)),
               onPressed: () =>
                   _seekRelative(_prefs.get(UserPreferences.skipForwardLength)),
               size: 46,
