@@ -32,10 +32,16 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-# windows generated code
-windows/flutter/
-# linux generated code
-linux/flutter/
+# windows generated code (CMakeLists.txt is a static project file and must stay tracked)
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugins.cmake
+windows/flutter/ephemeral/
+# linux generated code (CMakeLists.txt is a static project file and must stay tracked)
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugins.cmake
+linux/flutter/ephemeral/
 # macos - needs some things tracked but not these
 macos/Flutter/GeneratedPluginRegistrant.swift
 macos/Flutter/ephemeral
