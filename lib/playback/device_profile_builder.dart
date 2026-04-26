@@ -23,8 +23,8 @@ class DeviceProfileBuilder {
         : bitrate;
     return {
       'Name': _profileName(),
-      if (bitrate != null) 'MaxStaticBitrate': bitrate,
-      if (streamingBitrate != null) 'MaxStreamingBitrate': streamingBitrate,
+      'MaxStaticBitrate': ?bitrate,
+      'MaxStreamingBitrate': ?streamingBitrate,
       'MusicStreamingTranscodingBitrate': 384000,
       'DirectPlayProfiles': _directPlayProfiles(
         ac3Enabled: ac3Enabled,

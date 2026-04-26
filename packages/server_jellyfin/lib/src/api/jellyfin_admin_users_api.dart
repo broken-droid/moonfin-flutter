@@ -29,7 +29,7 @@ class JellyfinAdminUsersApi implements AdminUsersApi {
       '/Users/New',
       data: {
         'Name': name,
-        if (password != null) 'Password': password,
+        'Password': ?password,
       },
     );
     return ServerUser.fromJson(response.data as Map<String, dynamic>);
@@ -80,7 +80,7 @@ class JellyfinAdminUsersApi implements AdminUsersApi {
     await _dio.post(
       '/Users/$userId/Password',
       data: {
-        if (newPassword != null) 'NewPw': newPassword,
+        'NewPw': ?newPassword,
         'ResetPassword': resetPassword,
       },
     );

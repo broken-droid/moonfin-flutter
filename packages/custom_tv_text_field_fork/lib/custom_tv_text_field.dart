@@ -1,4 +1,4 @@
-library custom_tv_text_field;
+library;
 
 export 'src/custom_tv_text_field.dart'
     show CustomTVTextField, CustomTVTextFieldState, TextFieldType;

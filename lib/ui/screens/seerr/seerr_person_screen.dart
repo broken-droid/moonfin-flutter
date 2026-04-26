@@ -144,7 +144,7 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
                           width: 120,
                           height: 120,
                           fit: BoxFit.cover,
-                          errorWidget: (_, __, ___) => _profilePlaceholder(),
+                          errorWidget: (_, _, _) => _profilePlaceholder(),
                         )
                       : _profilePlaceholder(),
                 ),

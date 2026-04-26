@@ -1129,7 +1129,7 @@ class _BookReaderScreenState extends State<BookReaderScreen>
       barrierLabel: 'Table of Contents',
       barrierColor: const Color(0xB3000000),
       transitionDuration: const Duration(milliseconds: 220),
-      pageBuilder: (dialogContext, _, __) {
+      pageBuilder: (dialogContext, _, _) {
         final l10n = AppLocalizations.of(dialogContext);
         final media = MediaQuery.of(dialogContext);
         final panelWidth = (media.size.width * 0.38).clamp(280.0, 420.0);

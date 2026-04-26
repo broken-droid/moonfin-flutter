@@ -18,7 +18,7 @@ class SettingsPanel extends StatelessWidget {
       barrierLabel: 'Settings',
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 220),
-      pageBuilder: (_, anim, __) => SettingsPanel(child: content),
+      pageBuilder: (_, anim, _) => SettingsPanel(child: content),
       transitionBuilder: (context, anim, secondAnim, child) {
         final slide = Tween<Offset>(
           begin: const Offset(1.0, 0.0),
@@ -111,7 +111,7 @@ extension SettingsPush on BuildContext {
     final focusToRestore = returnFocus ?? FocusManager.instance.primaryFocus;
     Navigator.of(this).push(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => _AutoFocusWrapper(child: screen),
+        pageBuilder: (_, _, _) => _AutoFocusWrapper(child: screen),
         transitionDuration: const Duration(milliseconds: 160),
         reverseTransitionDuration: const Duration(milliseconds: 130),
         transitionsBuilder: (context, anim, _, child) {

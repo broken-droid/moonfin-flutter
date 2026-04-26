@@ -14,7 +14,7 @@ class JellyfinSessionApi implements SessionApi {
   @override
   Future<List<Map<String, dynamic>>> getSessions({String? controllableByUserId}) async {
     final response = await _dio.get('/Sessions', queryParameters: {
-      if (controllableByUserId != null) 'controllableByUserId': controllableByUserId,
+      'controllableByUserId': ?controllableByUserId,
     });
     return (response.data as List).cast<Map<String, dynamic>>();
   }
@@ -35,13 +35,11 @@ class JellyfinSessionApi implements SessionApi {
       queryParameters: {
         'playCommand': playCommand,
         'itemIds': itemIds.join(','),
-        if (startPositionTicks != null)
-          'startPositionTicks': startPositionTicks,
-        if (mediaSourceId != null) 'mediaSourceId': mediaSourceId,
-        if (audioStreamIndex != null) 'audioStreamIndex': audioStreamIndex,
-        if (subtitleStreamIndex != null)
-          'subtitleStreamIndex': subtitleStreamIndex,
-        if (startIndex != null) 'startIndex': startIndex,
+        'startPositionTicks': ?startPositionTicks,
+        'mediaSourceId': ?mediaSourceId,
+        'audioStreamIndex': ?audioStreamIndex,
+        'subtitleStreamIndex': ?subtitleStreamIndex,
+        'startIndex': ?startIndex,
       },
     );
   }
@@ -55,7 +53,7 @@ class JellyfinSessionApi implements SessionApi {
     await _dio.post(
       '/Sessions/$sessionId/Playing/$command',
       queryParameters: {
-        if (seekPositionTicks != null) 'seekPositionTicks': seekPositionTicks,
+        'seekPositionTicks': ?seekPositionTicks,
       },
     );
   }
@@ -71,8 +69,8 @@ class JellyfinSessionApi implements SessionApi {
       '/Sessions/$sessionId/Message',
       data: {
         'Text': text,
-        if (header != null) 'Header': header,
-        if (timeoutMs != null) 'TimeoutMs': timeoutMs,
+        'Header': ?header,
+        'TimeoutMs': ?timeoutMs,
       },
     );
   }
@@ -87,7 +85,7 @@ class JellyfinSessionApi implements SessionApi {
       '/Sessions/$sessionId/Command',
       data: {
         'Name': commandName,
-        if (arguments != null) 'Arguments': arguments,
+        'Arguments': ?arguments,
       },
     );
   }

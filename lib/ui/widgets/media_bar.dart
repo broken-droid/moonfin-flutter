@@ -931,7 +931,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       fit: BoxFit.contain,
       alignment: Alignment.centerLeft,
       fadeInDuration: Duration.zero,
-      errorWidget: (_, __, ___) => const SizedBox.shrink(),
+      errorWidget: (_, _, _) => const SizedBox.shrink(),
     );
     return Stack(
       fit: StackFit.expand,
@@ -987,7 +987,7 @@ class _BackdropLayer extends StatelessWidget {
             imageUrl: item.backdropUrl!,
             minWidth: 640,
             maxWidth: 1280,
-            errorBuilder: (_, __, ___) =>
+            errorBuilder: (_, _, _) =>
                 const ColoredBox(color: Colors.black),
           );
         },

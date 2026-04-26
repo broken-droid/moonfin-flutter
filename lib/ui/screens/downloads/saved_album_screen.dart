@@ -82,7 +82,7 @@ class SavedAlbumScreen extends ConsumerWidget {
                         ),
                       );
                     },
-                    separatorBuilder: (_, __) => Divider(
+                    separatorBuilder: (_, _) => Divider(
                       color: Colors.white.withValues(alpha: 0.06),
                       height: 1,
                     ),

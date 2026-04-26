@@ -40,7 +40,7 @@ class _AdminTasksScreenState extends ConsumerState<AdminTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final tasksAsync = ref.watch(adminTasksProvider);
 
     return tasksAsync.when(
@@ -136,7 +136,7 @@ class _AdminTasksScreenState extends ConsumerState<AdminTasksScreen> {
       ref.invalidate(adminTasksProvider);
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.adminTaskStartFailed(e.toString()))));
       }
@@ -149,7 +149,7 @@ class _AdminTasksScreenState extends ConsumerState<AdminTasksScreen> {
       ref.invalidate(adminTasksProvider);
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.adminTaskStopFailed(e.toString()))));
       }
@@ -229,7 +229,7 @@ class _TaskRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final isRunning = task.state == 'Running';
     final isCancelling = task.state == 'Cancelling';

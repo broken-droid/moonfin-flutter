@@ -377,9 +377,9 @@ class _DetailContent extends StatelessWidget {
 
     final exifEntries = <String>[
       if (width != null && height != null) '$width×$height',
-      if (cameraMake != null) cameraMake,
-      if (cameraModel != null) cameraModel,
-      if (software != null) software,
+      ?cameraMake,
+      ?cameraModel,
+      ?software,
       if (dateTaken != null) dateTaken.split('T').first,
     ];
 
@@ -518,7 +518,7 @@ class _DetailContent extends StatelessWidget {
                     : CachedNetworkImage(
                         imageUrl: coverUrl,
                         fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                           color: const Color(0xFF2C77B7),
                           alignment: Alignment.center,
                           child: const Icon(
@@ -1366,7 +1366,7 @@ class _Backdrop extends StatelessWidget {
       imageUrl: imageUrl,
       fit: BoxFit.cover,
       fadeInDuration: Duration.zero,
-      errorWidget: (_, __, ___) => const SizedBox.shrink(),
+      errorWidget: (_, _, _) => const SizedBox.shrink(),
     );
     if (blur <= 0) return image;
     return ImageFiltered(
@@ -1756,7 +1756,7 @@ class _PosterImage extends StatelessWidget {
               width: w,
               height: h,
               fit: BoxFit.cover,
-              errorWidget: (_, __, ___) => SizedBox(width: w, height: h),
+              errorWidget: (_, _, _) => SizedBox(width: w, height: h),
             ),
           ),
           if (item.isFavorite)
@@ -1848,7 +1848,7 @@ class _EpisodeThumbnail extends StatelessWidget {
               width: w,
               height: h,
               fit: BoxFit.cover,
-              errorWidget: (_, __, ___) => SizedBox(width: w, height: h),
+              errorWidget: (_, _, _) => SizedBox(width: w, height: h),
             ),
           ),
           if (item.isFavorite)
@@ -2503,7 +2503,7 @@ class _AuthorHeader extends StatelessWidget {
                   : CachedNetworkImage(
                       imageUrl: photoUrl!,
                       fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => const Icon(
+                      errorWidget: (_, _, _) => const Icon(
                         Icons.person,
                         size: 36,
                         color: Color(0xFFE4F0FA),
@@ -2562,7 +2562,7 @@ class _AuthorBookTile extends StatelessWidget {
                           imageUrl: book.coverUrl!,
                           fit: BoxFit.contain,
                           alignment: Alignment.center,
-                          errorWidget: (_, __, ___) => Container(
+                          errorWidget: (_, _, _) => Container(
                             color: const Color(0xFF2C77B7),
                             alignment: Alignment.center,
                             child: const Icon(
@@ -4717,7 +4717,7 @@ class _CastRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
         itemCount: people.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 12 : 16),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 12 : 16),
         itemBuilder: (context, index) {
           final person = people[index];
           final name = person['Name'] as String? ?? '';
@@ -4892,7 +4892,7 @@ class _SimilarRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(6, 10, 6, 4),
         itemCount: items.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final item = items[index];
           final ar = MediaCard.aspectRatioForType(item.type);
@@ -4953,7 +4953,7 @@ class _FeaturesRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
         itemCount: items.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final item = items[index];
           return MediaCard(
@@ -5015,7 +5015,7 @@ class _ChaptersRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
         itemCount: chapters.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final chapter = chapters[index];
           final ticks = chapter['StartPositionTicks'] as int? ?? 0;
@@ -5132,7 +5132,7 @@ class _ChapterListCardState extends State<_ChapterListCard> with FocusStateMixin
                             fit: BoxFit.cover,
                             filterQuality: FilterQuality.high,
                             errorBuilder:
-                                (_, __, ___) => Container(
+                                (_, _, _) => Container(
                                   color: Colors.white.withValues(alpha: 0.08),
                                   alignment: Alignment.center,
                                   child: Icon(
@@ -5389,7 +5389,7 @@ class _SeasonsRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
         itemCount: seasons.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final season = seasons[index];
           return MediaCard(
@@ -5482,7 +5482,7 @@ class _EpisodesRow extends StatelessWidget {
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: episodes.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final ep = episodes[index];
           final isCurrent = ep.id == currentEpisodeId;
@@ -5574,7 +5574,7 @@ class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin
                           ),
                           fit: BoxFit.cover,
                           errorWidget:
-                              (_, __, ___) => Container(
+                              (_, _, _) => Container(
                                 color: Colors.white.withValues(alpha: 0.05),
                                 child: const Icon(
                                   Icons.movie,
@@ -5676,7 +5676,7 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
     final s = episode.parentIndexNumber;
     final e = episode.indexNumber;
     final label = s != null && e != null ? 'S${s}E$e' : null;
-    final subtitle = [if (label != null) label, episode.name].join(' - ');
+    final subtitle = [?label, episode.name].join(' - ');
 
     final isMobile = _isCompact(context);
     final focusColor =
@@ -5730,7 +5730,7 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
                               tag: episode.primaryImageTag,
                             ),
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                            errorWidget: (_, _, _) => const SizedBox.shrink(),
                           ),
                         if ((episode.playedPercentage ?? 0) > 0)
                           _EpisodeProgressBar(percentage: episode.playedPercentage!),
@@ -5861,7 +5861,7 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                             ),
                             fit: BoxFit.cover,
                             errorWidget:
-                                (_, __, ___) => Container(
+                                (_, _, _) => Container(
                                   color: Colors.white.withValues(alpha: 0.05),
                                   child: const Icon(
                                     Icons.movie,
@@ -6255,7 +6255,7 @@ class _FilmographyRow extends StatelessWidget {
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final item = items[index];
           final year = item.productionYear;
@@ -6409,7 +6409,7 @@ class _AlbumHeader extends StatelessWidget {
                 width: albumSize,
                 height: albumSize,
                 fit: BoxFit.cover,
-                errorWidget: (_, __, ___) => _albumPlaceholder(albumSize),
+                errorWidget: (_, _, _) => _albumPlaceholder(albumSize),
               )
               : _albumPlaceholder(albumSize),
     );
@@ -6665,7 +6665,7 @@ class _AlbumsRow extends StatelessWidget {
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: albums.length,
-        separatorBuilder: (_, __) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
         itemBuilder: (context, index) {
           final album = albums[index];
           return MediaCard(

@@ -399,7 +399,7 @@ class _MusicItemRow extends StatelessWidget {
             padding:
                 const EdgeInsets.only(left: _horizontalPadding, right: 24),
             itemCount: items.length,
-            separatorBuilder: (_, __) => const SizedBox(width: _cardSpacing),
+            separatorBuilder: (_, _) => const SizedBox(width: _cardSpacing),
             itemBuilder: (_, i) {
               final item = items[i];
               return _MusicSquareCard(
@@ -486,7 +486,7 @@ class _MusicSquareCardState extends State<_MusicSquareCard> with FocusStateMixin
                                   fit: BoxFit.cover,
                                   fadeInDuration:
                                       const Duration(milliseconds: 200),
-                                  errorWidget: (_, __, ___) =>
+                                  errorWidget: (_, _, _) =>
                                       _albumPlaceholder(),
                                 )
                               : _albumPlaceholder(),

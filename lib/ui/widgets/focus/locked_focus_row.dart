@@ -241,7 +241,7 @@ class LockedFocusRowState<T> extends State<LockedFocusRow<T>> {
           scrollDirection: Axis.horizontal,
           padding: widget.padding,
           itemCount: widget.items.length,
-          separatorBuilder: (_, __) => SizedBox(width: widget.itemSpacing),
+          separatorBuilder: (_, _) => SizedBox(width: widget.itemSpacing),
           itemBuilder: (context, index) {
             final isFocused = _hasRowFocus && index == _focusedIndex;
             return KeyedSubtree(

@@ -14,7 +14,7 @@ class EmbyInstantMixApi implements InstantMixApi {
     final response = await _dio.get(
       '/Items/$itemId/InstantMix',
       queryParameters: {
-        if (limit != null) 'Limit': limit,
+        'Limit': ?limit,
       },
     );
     return response.data as Map<String, dynamic>;

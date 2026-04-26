@@ -11,7 +11,7 @@ class JellyfinAdminTasksApi implements AdminTasksApi {
     final response = await _dio.get(
       '/ScheduledTasks',
       queryParameters: {
-        if (isHidden != null) 'isHidden': isHidden,
+        'isHidden': ?isHidden,
       },
     );
     return (response.data as List<dynamic>).cast<Map<String, dynamic>>();

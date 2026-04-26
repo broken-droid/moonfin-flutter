@@ -668,7 +668,7 @@ class _GenreCardState extends State<_GenreCard> with FocusStateMixin {
                       CachedNetworkImage(
                         imageUrl: widget.imageUrl!,
                         fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                           color: Colors.grey[800],
                         ),
                       )
@@ -785,7 +785,7 @@ class _LogoCardState extends State<_LogoCard> with FocusStateMixin {
                         child: CachedNetworkImage(
                           imageUrl: widget.logoUrl!,
                           fit: BoxFit.contain,
-                          errorWidget: (_, __, ___) => Center(
+                          errorWidget: (_, _, _) => Center(
                             child: Text(
                               widget.name,
                               style: const TextStyle(

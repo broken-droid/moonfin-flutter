@@ -461,7 +461,7 @@ class _MediaBarContentTypePickerTileState
                 final e = entry.value;
                 final selected = e.key == normalizedCurrent;
                 return TvFocusHighlight(
-                  builder: (_, __) => ListTile(
+                  builder: (_, _) => ListTile(
                     autofocus: i == autofocusIndex,
                     title: Text(e.value),
                     trailing: selected ? const Icon(Icons.check) : null,
@@ -570,7 +570,7 @@ class _MediaBarItemCountPickerTileState
                 final e = entry.value;
                 final selected = e.key == current;
                 return TvFocusHighlight(
-                  builder: (_, __) => ListTile(
+                  builder: (_, _) => ListTile(
                     autofocus: i == autofocusIndex,
                     title: Text(e.value),
                     trailing: selected ? const Icon(Icons.check) : null,

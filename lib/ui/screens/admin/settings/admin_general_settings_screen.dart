@@ -57,13 +57,13 @@ class _AdminGeneralSettingsScreenState
       await _api.updateServerConfiguration(_config!);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.adminSettingsSaved)),
+          SnackBar(content: Text(AppLocalizations.of(context).adminSettingsSaved)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.adminSettingsSaveFailed(e.toString()))),
+          SnackBar(content: Text(AppLocalizations.of(context).adminSettingsSaveFailed(e.toString()))),
         );
       }
     } finally {
@@ -76,7 +76,7 @@ class _AdminGeneralSettingsScreenState
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (_error != null || _config == null) {
       return Center(
         child: Column(
@@ -181,7 +181,7 @@ class _AdminGeneralSettingsScreenState
             const SizedBox(width: 8),
             IconButton(
               icon: Icon(isBrowsing ? Icons.close : Icons.folder_open),
-              tooltip: isBrowsing ? AppLocalizations.of(context)!.adminCloseBrowser : AppLocalizations.of(context)!.adminBrowse,
+              tooltip: isBrowsing ? AppLocalizations.of(context).adminCloseBrowser : AppLocalizations.of(context).adminBrowse,
               onPressed: () => setState(() {
                 _browsingField = isBrowsing ? null : key;
               }),

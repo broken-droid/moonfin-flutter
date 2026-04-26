@@ -54,10 +54,10 @@ class NativeCastChannel {
       'targetId': targetId,
       'streamUrl': streamUrl,
       'title': title,
-      if (subtitle != null) 'subtitle': subtitle,
-      if (posterUrl != null) 'posterUrl': posterUrl,
-      if (queueItems != null) 'queueItems': queueItems,
-      if (startPositionTicks != null) 'startPositionTicks': startPositionTicks,
+      'subtitle': ?subtitle,
+      'posterUrl': ?posterUrl,
+      'queueItems': ?queueItems,
+      'startPositionTicks': ?startPositionTicks,
     });
   }
 

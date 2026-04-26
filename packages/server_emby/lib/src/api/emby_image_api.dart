@@ -23,7 +23,7 @@ class EmbyImageApi implements ImageApi {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
       if (maxHeight != null) 'maxHeight': maxHeight.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '${_getBaseUrl()}/Items/$itemId/Images/Primary$query';
   }
@@ -38,7 +38,7 @@ class EmbyImageApi implements ImageApi {
     final idx = index ?? 0;
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '${_getBaseUrl()}/Items/$itemId/Images/Backdrop/$idx$query';
   }
@@ -51,7 +51,7 @@ class EmbyImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '${_getBaseUrl()}/Items/$itemId/Images/Logo$query';
   }
@@ -64,7 +64,7 @@ class EmbyImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '${_getBaseUrl()}/Items/$itemId/Images/Banner$query';
   }
@@ -77,7 +77,7 @@ class EmbyImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '${_getBaseUrl()}/Items/$itemId/Images/Thumb$query';
   }
@@ -91,7 +91,7 @@ class EmbyImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '${_getBaseUrl()}/Items/$itemId/Images/Chapter/$index$query';
   }
@@ -110,7 +110,7 @@ class EmbyImageApi implements ImageApi {
     String? mediaSourceId,
   }) {
     final query = _buildQuery({
-      if (mediaSourceId != null) 'mediaSourceId': mediaSourceId,
+      'mediaSourceId': ?mediaSourceId,
     });
     return '${_getBaseUrl()}/Videos/$itemId/Trickplay/$width/$index.jpg$query';
   }

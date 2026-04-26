@@ -90,7 +90,7 @@ class _NextUpOverlayState extends State<NextUpOverlay>
                 child: CachedNetworkImage(
                   imageUrl: widget.imageUrl!,
                   fit: BoxFit.cover,
-                  errorWidget: (_, __, ___) =>
+                  errorWidget: (_, _, _) =>
                       Container(color: AppColorScheme.surfaceVariant),
                 ),
               ),
@@ -110,7 +110,7 @@ class _NextUpOverlayState extends State<NextUpOverlay>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    [if (epInfo != null) epInfo, item.name]
+                    [?epInfo, item.name]
                         .where((s) => s.isNotEmpty)
                         .join(' — '),
                     style: const TextStyle(

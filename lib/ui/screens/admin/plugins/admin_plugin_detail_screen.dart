@@ -526,7 +526,7 @@ class _PluginImage extends StatelessWidget {
         width: size,
         height: size,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _fallback(context),
+        errorBuilder: (_, _, _) => _fallback(context),
       ),
     );
   }

@@ -266,7 +266,7 @@ class _AdminApiKeysScreenState extends State<AdminApiKeysScreen> {
               ? Center(child: Text(l10n.adminNoApiKeys))
               : ListView.separated(
                   itemCount: _keys.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final item = _keys[index];
                     final token = _keyToken(item);

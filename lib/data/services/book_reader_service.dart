@@ -70,7 +70,7 @@ class BookReaderService {
     final sourceId = _firstMediaSourceId(item);
     final token = client.accessToken;
     final query = <String, String>{
-      if (sourceId != null) 'MediaSourceId': sourceId,
+      'MediaSourceId': ?sourceId,
       if (token != null && token.isNotEmpty) 'api_key': token,
     };
     final videoQuery = <String, String>{

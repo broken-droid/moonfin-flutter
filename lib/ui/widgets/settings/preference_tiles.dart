@@ -245,7 +245,7 @@ class _EnumPreferenceTileState<T extends Enum> extends State<EnumPreferenceTile<
             final v = entry.value;
             final selected = v == current;
             return TvFocusHighlight(
-              builder: (_, __) => ListTile(
+              builder: (_, _) => ListTile(
                 autofocus: i == autofocusIndex,
                 title: Text(widget.labelOf(v), style: _kSettingsTitleTextStyle),
                 trailing: selected ? const Icon(Icons.check) : null,
@@ -491,7 +491,7 @@ class _StringPickerPreferenceTileState extends State<StringPickerPreferenceTile>
             final e = entry.value;
             final selected = e.key == current;
             return TvFocusHighlight(
-              builder: (_, __) => ListTile(
+              builder: (_, _) => ListTile(
                 autofocus: i == autofocusIndex,
                 title: Text(e.value, style: _kSettingsTitleTextStyle),
                 trailing: selected ? const Icon(Icons.check) : null,
@@ -592,7 +592,7 @@ class _IntPickerPreferenceTileState extends State<IntPickerPreferenceTile> {
             final e = entry.value;
             final selected = e.key == current;
             return TvFocusHighlight(
-              builder: (_, __) => ListTile(
+              builder: (_, _) => ListTile(
                 autofocus: i == autofocusIndex,
                 title: Text(e.value, style: _kSettingsTitleTextStyle),
                 trailing: selected ? const Icon(Icons.check) : null,

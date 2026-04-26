@@ -732,7 +732,7 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
                 (ctx, setStateDialog) => AlertDialog(
                   title: Text(l10n.adminUpdateContentType),
                   content: DropdownButtonFormField<String>(
-                    value: selectedValue,
+                    initialValue: selectedValue,
                     decoration: InputDecoration(
                       labelText: l10n.adminContentType,
                       border: const OutlineInputBorder(),
@@ -1158,7 +1158,7 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
                   url,
                   fit: BoxFit.contain,
                   errorBuilder:
-                      (_, __, ___) => Container(
+                      (_, _, _) => Container(
                         decoration: BoxDecoration(
                           color:
                               Theme.of(
@@ -1593,7 +1593,7 @@ class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
                     return Column(
                       children: [
                         DropdownButtonFormField<String>(
-                          value: _providerName,
+                          initialValue: _providerName,
                           decoration: InputDecoration(
                             labelText: l10n.adminMetadataProvider,
                             border: const OutlineInputBorder(),
@@ -1628,7 +1628,7 @@ class _RemoteImagePickerDialogState extends State<_RemoteImagePickerDialog> {
                     children: [
                       Expanded(
                         child: DropdownButtonFormField<String>(
-                          value: _providerName,
+                          initialValue: _providerName,
                           decoration: InputDecoration(
                             labelText: l10n.adminMetadataProvider,
                             border: const OutlineInputBorder(),

@@ -344,7 +344,7 @@ class _ColorPickerTileState extends State<_ColorPickerTile> {
         children: _presetColors.entries.map((e) {
           final selected = e.value == current;
           return TvFocusHighlight(
-            builder: (_, __) => ListTile(
+            builder: (_, _) => ListTile(
               autofocus: isTV && selected,
               leading: Container(
                 width: 24,

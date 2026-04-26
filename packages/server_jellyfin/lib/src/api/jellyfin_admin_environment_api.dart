@@ -16,9 +16,8 @@ class JellyfinAdminEnvironmentApi implements AdminEnvironmentApi {
       '/Environment/DirectoryContents',
       queryParameters: {
         'path': path,
-        if (includeFiles != null) 'includeFiles': includeFiles,
-        if (includeDirectories != null)
-          'includeDirectories': includeDirectories,
+        'includeFiles': ?includeFiles,
+        'includeDirectories': ?includeDirectories,
       },
     );
     return (response.data as List<dynamic>).cast<Map<String, dynamic>>();

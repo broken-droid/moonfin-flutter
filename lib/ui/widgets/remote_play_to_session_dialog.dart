@@ -144,7 +144,7 @@ class _CastTargetSheetState extends State<_CastTargetSheet> {
               child: ListView.separated(
                 controller: widget.scrollController,
                 itemCount: _targets.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
+                separatorBuilder: (_, _) => const Divider(height: 1),
                 itemBuilder: (_, index) {
                   final target = _targets[index];
                   return ListTile(

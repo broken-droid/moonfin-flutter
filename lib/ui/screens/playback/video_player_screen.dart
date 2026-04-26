@@ -12,7 +12,6 @@ import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:volume_controller/volume_controller.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../../../util/fullscreen_helper.dart';
 import '../../widgets/playback/seek_icons.dart';
@@ -1918,7 +1917,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           ),
         Text(
           [
-            if (episodeInfo != null) episodeInfo,
+            ?episodeInfo,
             title,
           ].where((s) => s.isNotEmpty).join(' — '),
           style: const TextStyle(
@@ -2297,7 +2296,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                     headers: headers.isEmpty ? null : headers,
                     fit: BoxFit.fill,
                     filterQuality: FilterQuality.medium,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (_, _, _) => Container(
                       color: Colors.white.withValues(alpha: 0.08),
                       alignment: Alignment.center,
                       child: Icon(
@@ -2472,7 +2471,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   Widget _buildSecondaryControlsRow() {
     return ValueListenableBuilder<CastTargetKind?>(
       valueListenable: _castService.activeKindNotifier,
-      builder: (context, _, __) {
+      builder: (context, _, _) {
         final l10n = AppLocalizations.of(context);
         final item = _queue.currentItem;
         final hasChapters = item is AggregatedItem && item.chapters.isNotEmpty;

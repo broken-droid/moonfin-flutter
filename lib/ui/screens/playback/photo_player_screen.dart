@@ -193,10 +193,10 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
           child: CachedNetworkImage(
             imageUrl: url,
             fit: BoxFit.contain,
-            placeholder: (_, __) => const Center(
+            placeholder: (_, _) => const Center(
               child: CircularProgressIndicator(color: AppColorScheme.accent),
             ),
-            errorWidget: (_, __, ___) => const Icon(
+            errorWidget: (_, _, _) => const Icon(
               Icons.broken_image,
               color: Colors.white38,
               size: 64,

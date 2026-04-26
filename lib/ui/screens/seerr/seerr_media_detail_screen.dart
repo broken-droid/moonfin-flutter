@@ -194,7 +194,7 @@ class _SeerrMediaDetailScreenState
             child: CachedNetworkImage(
               imageUrl: '$_tmdbBackdropBase${s.backdropPath}',
               fit: BoxFit.cover,
-              errorWidget: (_, __, ___) => const SizedBox.shrink(),
+              errorWidget: (_, _, _) => const SizedBox.shrink(),
             ),
           ),
         Positioned.fill(
@@ -310,7 +310,7 @@ class _SeerrMediaDetailScreenState
                 width: posterWidth,
                 height: posterHeight,
                 fit: BoxFit.cover,
-                errorWidget: (_, __, ___) => Container(
+                errorWidget: (_, _, _) => Container(
                   width: posterWidth,
                   height: posterHeight,
                   color: Colors.white12,
@@ -860,7 +860,7 @@ class _SeerrMediaDetailScreenState
                   imageUrl: '$_tmdbPosterBase${s.posterPath}',
                   width: 180,
                   fit: BoxFit.cover,
-                  errorWidget: (_, __, ___) =>
+                  errorWidget: (_, _, _) =>
                       const SizedBox(width: 180, height: 270),
                 ),
               ),

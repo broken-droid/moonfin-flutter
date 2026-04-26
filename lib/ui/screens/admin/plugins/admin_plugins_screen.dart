@@ -527,7 +527,7 @@ class _InstalledPluginTile extends StatelessWidget {
                   child: Image.network(
                     imageUrl!,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => Icon(
+                    errorBuilder: (_, _, _) => Icon(
                       Icons.extension,
                       size: 18,
                       color: theme.colorScheme.onSurfaceVariant,

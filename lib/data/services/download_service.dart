@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
@@ -58,7 +59,7 @@ Future<void> _downloadIsolateMain(Map<String, Object?> args) async {
   RandomAccessFile? raf;
   try {
     client = HttpClient();
-    client.badCertificateCallback = (_, __, ___) => true;
+    client.badCertificateCallback = (_, _, _) => true;
     client.idleTimeout = const Duration(seconds: 120);
 
     final request = await client.getUrl(Uri.parse(url));
@@ -97,7 +98,7 @@ Future<void> _downloadIsolateMain(Map<String, Object?> args) async {
       if (cancelled) break;
       buf.add(chunk);
       received += chunk.length;
-      if (buf.length >= flushAt) await raf!.writeFrom(buf.takeBytes());
+      if (buf.length >= flushAt) await raf.writeFrom(buf.takeBytes());
 
       if (contentLength > 0) {
         final pct = received * 100 ~/ contentLength;
@@ -111,8 +112,8 @@ Future<void> _downloadIsolateMain(Map<String, Object?> args) async {
       }
     }
 
-    if (buf.length > 0) await raf!.writeFrom(buf.takeBytes());
-    await raf!.close();
+    if (buf.length > 0) await raf.writeFrom(buf.takeBytes());
+    await raf.close();
     raf = null;
     client.close();
     client = null;

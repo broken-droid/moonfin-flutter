@@ -175,7 +175,7 @@ class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
       case FolderBrowseState.error:
         return Center(
           child: Text(
-            AppLocalizations.of(context).failedToLoadFolderError(_vm.errorMessage ?? ''),
+            AppLocalizations.of(context).failedToLoadFolderError(_vm.errorMessage),
             style: TextStyle(color: Colors.white.withAlpha(179)),
           ),
         );
@@ -302,7 +302,7 @@ class _FolderGridCard extends StatelessWidget {
                       CachedNetworkImage(
                         imageUrl: imageUrl!,
                         fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) =>
+                        errorWidget: (_, _, _) =>
                             Center(child: Icon(icon, color: Colors.white70, size: 30)),
                       )
                     else

@@ -18,13 +18,13 @@ class JellyfinLiveTvApi implements LiveTvApi {
     String? userId,
   }) async {
     final response = await _dio.get('/LiveTv/Channels', queryParameters: {
-      if (startIndex != null) 'StartIndex': startIndex,
-      if (limit != null) 'Limit': limit,
-      if (sortBy != null) 'SortBy': sortBy,
-      if (sortOrder != null) 'SortOrder': sortOrder,
-      if (fields != null) 'Fields': fields,
-      if (enableTotalRecordCount != null) 'EnableTotalRecordCount': enableTotalRecordCount,
-      if (userId != null) 'UserId': userId,
+      'StartIndex': ?startIndex,
+      'Limit': ?limit,
+      'SortBy': ?sortBy,
+      'SortOrder': ?sortOrder,
+      'Fields': ?fields,
+      'EnableTotalRecordCount': ?enableTotalRecordCount,
+      'UserId': ?userId,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -45,11 +45,10 @@ class JellyfinLiveTvApi implements LiveTvApi {
     final params = {
       if (startDate != null) 'MinEndDate': startDate.toUtc().toIso8601String(),
       if (endDate != null) 'MaxStartDate': endDate.toUtc().toIso8601String(),
-      if (channelIdsParam != null) 'ChannelIds': channelIdsParam,
-      if (fields != null) 'Fields': fields,
-      if (enableTotalRecordCount != null)
-        'EnableTotalRecordCount': enableTotalRecordCount,
-      if (userId != null) 'UserId': userId,
+      'ChannelIds': ?channelIdsParam,
+      'Fields': ?fields,
+      'EnableTotalRecordCount': ?enableTotalRecordCount,
+      'UserId': ?userId,
     };
 
     final response =
@@ -64,7 +63,7 @@ class JellyfinLiveTvApi implements LiveTvApi {
   Future<Map<String, dynamic>> getRecommendedPrograms({int? limit}) async {
     final response = await _dio.get(
       '/LiveTv/Programs/Recommended',
-      queryParameters: {if (limit != null) 'Limit': limit},
+      queryParameters: {'Limit': ?limit},
     );
     return response.data as Map<String, dynamic>;
   }
@@ -80,13 +79,13 @@ class JellyfinLiveTvApi implements LiveTvApi {
     bool? isKids,
   }) async {
     final response = await _dio.get('/LiveTv/Recordings', queryParameters: {
-      if (limit != null) 'Limit': limit,
-      if (fields != null) 'Fields': fields,
-      if (enableImages != null) 'EnableImages': enableImages,
-      if (isSeries != null) 'IsSeries': isSeries,
-      if (isMovie != null) 'IsMovie': isMovie,
-      if (isSports != null) 'IsSports': isSports,
-      if (isKids != null) 'IsKids': isKids,
+      'Limit': ?limit,
+      'Fields': ?fields,
+      'EnableImages': ?enableImages,
+      'IsSeries': ?isSeries,
+      'IsMovie': ?isMovie,
+      'IsSports': ?isSports,
+      'IsKids': ?isKids,
     });
     return response.data as Map<String, dynamic>;
   }

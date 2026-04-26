@@ -20,7 +20,7 @@ class JellyfinImageApi implements ImageApi {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
       if (maxHeight != null) 'maxHeight': maxHeight.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '$_baseUrl/Items/$itemId/Images/Primary$query';
   }
@@ -35,7 +35,7 @@ class JellyfinImageApi implements ImageApi {
     final idx = index ?? 0;
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '$_baseUrl/Items/$itemId/Images/Backdrop/$idx$query';
   }
@@ -48,7 +48,7 @@ class JellyfinImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '$_baseUrl/Items/$itemId/Images/Logo$query';
   }
@@ -61,7 +61,7 @@ class JellyfinImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '$_baseUrl/Items/$itemId/Images/Banner$query';
   }
@@ -74,7 +74,7 @@ class JellyfinImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '$_baseUrl/Items/$itemId/Images/Thumb$query';
   }
@@ -88,7 +88,7 @@ class JellyfinImageApi implements ImageApi {
   }) {
     final query = _buildQuery({
       if (maxWidth != null) 'maxWidth': maxWidth.toString(),
-      if (tag != null) 'tag': tag,
+      'tag': ?tag,
     });
     return '$_baseUrl/Items/$itemId/Images/Chapter/$index$query';
   }
@@ -106,7 +106,7 @@ class JellyfinImageApi implements ImageApi {
     String? mediaSourceId,
   }) {
     final query = _buildQuery({
-      if (mediaSourceId != null) 'mediaSourceId': mediaSourceId,
+      'mediaSourceId': ?mediaSourceId,
     });
     return '$_baseUrl/Videos/$itemId/Trickplay/$width/$index.jpg$query';
   }

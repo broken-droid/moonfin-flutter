@@ -254,7 +254,7 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
                           displayTitle ?? title ?? language ?? '$streamType ${e.key + 1}';
                       final subtitle = [
                         if (language != null && displayTitle != null) language,
-                        if (codecLabel != null) codecLabel,
+                        ?codecLabel,
                         if (stream['Channels'] != null) '${stream['Channels']}ch',
                       ].join(' · ');
 

@@ -47,7 +47,7 @@ class _LibraryRowState extends State<LibraryRow> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                 itemCount: widget.children.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, _) => const SizedBox(width: 12),
                 itemBuilder: (_, i) => widget.children[i],
               )
             : Center(

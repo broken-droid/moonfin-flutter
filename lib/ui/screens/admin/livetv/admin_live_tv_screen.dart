@@ -275,7 +275,7 @@ class _AdminLiveTvScreenState extends State<AdminLiveTvScreen> {
                 if (urlController.text.trim().isNotEmpty) 'Url': urlController.text.trim(),
                 if (usernameController.text.trim().isNotEmpty) 'Username': usernameController.text.trim(),
                 if (passwordController.text.trim().isNotEmpty) 'Password': passwordController.text.trim(),
-                if (refresh != null) 'RefreshIntervalHours': refresh,
+                'RefreshIntervalHours': ?refresh,
               };
               Navigator.pop(ctx, payload);
             },
@@ -729,7 +729,7 @@ class _AdminLiveTvScreenState extends State<AdminLiveTvScreen> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
-                  if (action != null) action,
+                  ?action,
                 ],
               )
             else ...[

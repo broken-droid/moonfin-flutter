@@ -53,14 +53,14 @@ class _AdminResumeSettingsScreenState extends State<AdminResumeSettingsScreen> {
     try {
       await _api.updateServerConfiguration(_config!);
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminResumeSaved)),
         );
       }
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminSettingsSaveFailed(e.toString()))),
         );
@@ -75,7 +75,7 @@ class _AdminResumeSettingsScreenState extends State<AdminResumeSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_error != null || _config == null) {
       return Center(

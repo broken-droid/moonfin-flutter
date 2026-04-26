@@ -46,7 +46,7 @@ class SavedSeasonScreen extends ConsumerWidget {
               child: episodesAsync.when(
                 data: (episodes) => _buildEpisodeList(context, episodes),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, __) => Center(
+                error: (_, _) => Center(
                   child: Text(AppLocalizations.of(context).errorLoadingEpisodes, style: const TextStyle(color: Colors.redAccent)),
                 ),
               ),

@@ -27,7 +27,7 @@ class OfflineImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        errorBuilder: (_, __, ___) => _placeholder(),
+        errorBuilder: (_, _, _) => _placeholder(),
       );
     }
 
@@ -37,7 +37,7 @@ class OfflineImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        errorWidget: (_, __, ___) => _placeholder(),
+        errorWidget: (_, _, _) => _placeholder(),
       );
     }
 

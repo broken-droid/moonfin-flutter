@@ -85,7 +85,7 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
               style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13),
             ),
             loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(width: 4),
           IconButton(

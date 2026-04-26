@@ -118,7 +118,7 @@ class JellyfinAdminPluginsApi implements AdminPluginsApi {
     final response = await _dio.get(
       '/Packages/${Uri.encodeComponent(name)}',
       queryParameters: {
-        if (assemblyGuid != null) 'assemblyGuid': assemblyGuid,
+        'assemblyGuid': ?assemblyGuid,
       },
     );
     if (response.statusCode == 404) return null;
@@ -135,9 +135,9 @@ class JellyfinAdminPluginsApi implements AdminPluginsApi {
     await _dio.post(
       '/Packages/Installed/${Uri.encodeComponent(name)}',
       queryParameters: {
-        if (assemblyGuid != null) 'assemblyGuid': assemblyGuid,
-        if (version != null) 'version': version,
-        if (repositoryUrl != null) 'repositoryUrl': repositoryUrl,
+        'assemblyGuid': ?assemblyGuid,
+        'version': ?version,
+        'repositoryUrl': ?repositoryUrl,
       },
     );
   }

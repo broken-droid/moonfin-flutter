@@ -51,10 +51,9 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
       methods: const ['POST'],
       paths: ['/Items/$itemId/Refresh'],
       queryParameters: {
-        if (recursive != null) 'Recursive': recursive,
-        if (replaceAllMetadata != null)
-          'ReplaceAllMetadata': replaceAllMetadata,
-        if (replaceAllImages != null) 'ReplaceAllImages': replaceAllImages,
+        'Recursive': ?recursive,
+        'ReplaceAllMetadata': ?replaceAllMetadata,
+        'ReplaceAllImages': ?replaceAllImages,
       },
       convert: _ignoreResponse,
     );
@@ -114,12 +113,11 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
       paths: ['/Items/$itemId/RemoteImages'],
       queryParameters: {
         'Type': imageType.toServerString(),
-        if (startIndex != null) 'StartIndex': startIndex,
-        if (limit != null) 'Limit': limit,
+        'StartIndex': ?startIndex,
+        'Limit': ?limit,
         if (providerName != null && providerName.isNotEmpty)
           'ProviderName': providerName,
-        if (includeAllLanguages != null)
-          'IncludeAllLanguages': includeAllLanguages,
+        'IncludeAllLanguages': ?includeAllLanguages,
       },
       convert: (data) {
         if (data is Map<String, dynamic>) {
@@ -183,7 +181,7 @@ class JellyfinAdminItemsApi implements AdminItemsApi {
     await _dio.delete(
       '/Items/$itemId/Images/${imageType.toServerString()}',
       queryParameters: {
-        if (imageIndex != null) 'ImageIndex': imageIndex,
+        'ImageIndex': ?imageIndex,
       },
     );
   }

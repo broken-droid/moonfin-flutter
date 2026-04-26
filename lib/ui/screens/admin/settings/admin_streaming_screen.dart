@@ -52,14 +52,14 @@ class _AdminStreamingScreenState extends State<AdminStreamingScreen> {
     try {
       await _api.updateServerConfiguration(_config!);
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminStreamingSaved)),
         );
       }
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminSettingsSaveFailed(e.toString()))),
         );
@@ -76,7 +76,7 @@ class _AdminStreamingScreenState extends State<AdminStreamingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_error != null || _config == null) {
       return Center(

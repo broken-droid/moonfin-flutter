@@ -40,7 +40,7 @@ class _AdminTaskDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final taskAsync = ref.watch(adminTaskProvider(widget.taskId));
 
     return taskAsync.when(
@@ -64,7 +64,7 @@ class _AdminTaskDetailScreenState
   }
 
   Widget _buildContent(BuildContext context, TaskInfo task) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final isRunning = task.state == 'Running';
     final isCancelling = task.state == 'Cancelling';
@@ -161,7 +161,7 @@ class _AdminTaskDetailScreenState
       ref.invalidate(adminTaskProvider(widget.taskId));
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.adminTaskStartFailed(e.toString()))));
       }
@@ -174,7 +174,7 @@ class _AdminTaskDetailScreenState
       ref.invalidate(adminTaskProvider(widget.taskId));
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.adminTaskStopFailed(e.toString()))));
       }
@@ -192,7 +192,7 @@ class _AdminTaskDetailScreenState
       ref.invalidate(adminTaskProvider(widget.taskId));
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n.adminTriggerRemoveFailed(e.toString()))));
       }
@@ -215,7 +215,7 @@ class _AdminTaskDetailScreenState
       ref.invalidate(adminTaskProvider(widget.taskId));
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n.adminTriggerAddFailed(e.toString()))));
       }
@@ -229,7 +229,7 @@ class _LastExecutionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final duration = result.endTime.difference(result.startTime);
 
@@ -327,7 +327,7 @@ class _TriggersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     return Card(
       child: Padding(
@@ -452,7 +452,7 @@ class _AddTriggerDialogState extends State<_AddTriggerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final triggerTypes = {
       'DailyTrigger': l10n.adminTaskTriggerTypeDaily,
       'WeeklyTrigger': l10n.adminTaskTriggerTypeWeekly,
@@ -468,7 +468,7 @@ class _AddTriggerDialogState extends State<_AddTriggerDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DropdownButtonFormField<String>(
-              value: _type,
+              initialValue: _type,
               decoration: InputDecoration(labelText: l10n.adminTriggerType),
               items: triggerTypes.entries
                   .map((e) =>
@@ -480,7 +480,7 @@ class _AddTriggerDialogState extends State<_AddTriggerDialog> {
             ..._buildTypeFields(),
             const SizedBox(height: 16),
             DropdownButtonFormField<int?>(
-              value: _maxRuntimeHours,
+              initialValue: _maxRuntimeHours,
               decoration: InputDecoration(
                   labelText: l10n.adminTimeLimit),
               items: [
@@ -508,14 +508,14 @@ class _AddTriggerDialogState extends State<_AddTriggerDialog> {
   }
 
   List<Widget> _buildTypeFields() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (_type) {
       case 'DailyTrigger':
         return [_buildTimePicker()];
       case 'WeeklyTrigger':
         return [
           DropdownButtonFormField<String>(
-            value: _dayOfWeek,
+            initialValue: _dayOfWeek,
             decoration: InputDecoration(labelText: l10n.adminDayOfWeek),
             items: _daysOfWeek
                 .map((d) => DropdownMenuItem(value: d, child: Text(d)))
@@ -535,7 +535,7 @@ class _AddTriggerDialogState extends State<_AddTriggerDialog> {
         };
         return [
           DropdownButtonFormField<int>(
-            value: _intervalHours,
+            initialValue: _intervalHours,
             decoration: InputDecoration(labelText: l10n.adminTaskTriggerIntervalLabel),
             items: intervalOptions.entries
                 .map((e) =>
@@ -554,7 +554,7 @@ class _AddTriggerDialogState extends State<_AddTriggerDialog> {
   Widget _buildTimePicker() {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text(AppLocalizations.of(context)!.adminTaskTriggerTime),
+      title: Text(AppLocalizations.of(context).adminTaskTriggerTime),
       trailing: TextButton(
         onPressed: () async {
           final picked = await showTimePicker(

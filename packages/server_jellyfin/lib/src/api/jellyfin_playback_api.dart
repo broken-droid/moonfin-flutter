@@ -29,14 +29,14 @@ class JellyfinPlaybackApi implements PlaybackApi {
     String? userId,
   }) async {
     final body = <String, dynamic>{
-      if (userId != null) 'UserId': userId,
+      'UserId': ?userId,
       ...?requestBody,
     };
     final response = await _dio.post(
       '/Items/$itemId/PlaybackInfo',
       data: body,
       queryParameters: {
-        if (userId != null) 'userId': userId,
+        'userId': ?userId,
       },
     );
     return response.data as Map<String, dynamic>;
@@ -51,11 +51,10 @@ class JellyfinPlaybackApi implements PlaybackApi {
     String? liveStreamId,
   }) {
     final params = <String, String>{
-      if (mediaSourceId != null) 'MediaSourceId': mediaSourceId,
-      if (audioStreamIndex != null) 'AudioStreamIndex': audioStreamIndex,
-      if (subtitleStreamIndex != null)
-        'SubtitleStreamIndex': subtitleStreamIndex,
-      if (liveStreamId != null) 'LiveStreamId': liveStreamId,
+      'MediaSourceId': ?mediaSourceId,
+      'AudioStreamIndex': ?audioStreamIndex,
+      'SubtitleStreamIndex': ?subtitleStreamIndex,
+      'LiveStreamId': ?liveStreamId,
       'Static': 'true',
     };
     final query = params.entries.map((e) => '${e.key}=${e.value}').join('&');

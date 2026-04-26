@@ -88,7 +88,7 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                       BoundedNetworkImage(
                         imageUrl: imageUrl,
                         fadeInDuration: const Duration(milliseconds: 200),
-                        errorBuilder: (_, __, ___) =>
+                        errorBuilder: (_, _, _) =>
                             Container(color: Colors.white.withAlpha(20)),
                       )
                     else

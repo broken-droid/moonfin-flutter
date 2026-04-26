@@ -49,7 +49,7 @@ class NativeDlnaChannel {
       'targetId': targetId,
       'streamUrl': streamUrl,
       'title': title,
-      if (startPositionTicks != null) 'startPositionTicks': startPositionTicks,
+      'startPositionTicks': ?startPositionTicks,
     });
   }
 

@@ -34,7 +34,7 @@ class LogoView extends StatelessWidget {
     final image = Image(
       image: provider,
       fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      errorBuilder: (_, _, _) => const SizedBox.shrink(),
     );
 
     return ConstrainedBox(
@@ -56,7 +56,7 @@ class LogoView extends StatelessWidget {
               fit: BoxFit.contain,
               color: Colors.black.withValues(alpha: 0.6),
               colorBlendMode: BlendMode.srcATop,
-              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              errorBuilder: (_, _, _) => const SizedBox.shrink(),
             ),
           ),
           image,

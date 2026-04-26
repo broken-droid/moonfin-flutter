@@ -48,7 +48,7 @@ class NativeAirPlayChannel {
     }
     await _channel.invokeMethod<void>('loadAirPlay', {
       'url': url,
-      if (title != null) 'title': title,
+      'title': ?title,
       'positionTicks': positionTicks,
     });
   }

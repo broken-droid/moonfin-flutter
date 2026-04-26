@@ -306,7 +306,7 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
       case GuideState.error:
         return Center(
           child: Text(
-            AppLocalizations.of(context).failedToLoadGuide(_vm.errorMessage ?? ''),
+            AppLocalizations.of(context).failedToLoadGuide(_vm.errorMessage),
             style: TextStyle(color: Colors.white.withAlpha(179)),
           ),
         );
@@ -443,7 +443,7 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
                     width: 32,
                     height: 32,
                     fit: BoxFit.contain,
-                    errorWidget: (_, __, ___) =>
+                    errorWidget: (_, _, _) =>
                         const Icon(Icons.tv, color: Colors.white38, size: 24),
                   ),
                 )

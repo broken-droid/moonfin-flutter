@@ -503,7 +503,7 @@ class _BookBookmarksDialog extends StatelessWidget {
                                 : CachedNetworkImage(
                                     imageUrl: imageUrl!,
                                     fit: BoxFit.cover,
-                                    errorWidget: (_, __, ___) => Container(
+                                    errorWidget: (_, _, _) => Container(
                                       color: const Color(0xFF2C77B7),
                                     ),
                                   ),
@@ -592,7 +592,7 @@ class _BookBookmarksDialog extends StatelessWidget {
                                 16,
                               ),
                               itemCount: bookmarks.length,
-                              separatorBuilder: (_, __) => const SizedBox(height: 10),
+                              separatorBuilder: (_, _) => const SizedBox(height: 10),
                               itemBuilder: (context, index) {
                                 final bookmark = bookmarks[index];
                                 return Material(
@@ -1054,8 +1054,8 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
       barrierLabel: 'Close subject panel',
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 260),
-      pageBuilder: (context, _, __) => const SizedBox.shrink(),
-      transitionBuilder: (context, animation, _, __) {
+      pageBuilder: (context, _, _) => const SizedBox.shrink(),
+      transitionBuilder: (context, animation, _, _) {
         final width = MediaQuery.of(context).size.width.clamp(320.0, 420.0).toDouble();
         final sortedSubjects = _discoverGenrePool.toList()
           ..sort((a, b) => _displayGenre(a).compareTo(_displayGenre(b)));
@@ -1353,8 +1353,8 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
       barrierLabel: 'Close genre panel',
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 260),
-      pageBuilder: (context, _, __) => const SizedBox.shrink(),
-      transitionBuilder: (context, animation, _, __) {
+      pageBuilder: (context, _, _) => const SizedBox.shrink(),
+      transitionBuilder: (context, animation, _, _) {
         final width =
             MediaQuery.of(context).size.width.clamp(320.0, 420.0).toDouble();
         final sortedGenres = _librivoxGenrePool.toList()..sort();
@@ -1694,7 +1694,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                 controller: rowController,
                 scrollDirection: Axis.horizontal,
                 itemCount: items.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, _) => const SizedBox(width: 12),
                 itemBuilder: (context, index) => SizedBox(
                   width: 150,
                   child: _buildLibrivoxBookCard(items[index]),
@@ -1795,7 +1795,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                   ? CachedNetworkImage(
                       imageUrl: resolvedCover ?? '',
                       fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => _buildAudiobookCoverPlaceholder(
+                      errorWidget: (_, _, _) => _buildAudiobookCoverPlaceholder(
                         placeholderColor, book.formattedDuration),
                     )
                   : _buildAudiobookCoverPlaceholder(
@@ -2123,7 +2123,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
                   fadeInDuration: const Duration(milliseconds: 300),
-                  errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                  errorWidget: (_, _, _) => const SizedBox.shrink(),
                 ),
               ),
             ),
@@ -2736,7 +2736,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
               : CachedNetworkImage(
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  errorWidget: (_, __, ___) => Container(color: const Color(0xFF2C77B7)),
+                  errorWidget: (_, _, _) => Container(color: const Color(0xFF2C77B7)),
                 ),
         ),
       ),
@@ -3099,7 +3099,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                 controller: rowController,
                 scrollDirection: Axis.horizontal,
                 itemCount: items.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, _) => const SizedBox(width: 12),
                 itemBuilder: (context, index) => SizedBox(
                   width: 140,
                   child: _buildDiscoverBookCard(items[index]),
@@ -3147,7 +3147,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                   : CachedNetworkImage(
                       imageUrl: item.coverUrl!,
                       fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => Container(
+                      errorWidget: (_, _, _) => Container(
                         color: const Color(0xFF2C77B7),
                         alignment: Alignment.center,
                         child: const Icon(Icons.auto_stories_rounded, color: Colors.white),
@@ -3293,7 +3293,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, _) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final item = items[index];
                 return SizedBox(
@@ -3365,7 +3365,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                         : CachedNetworkImage(
                             imageUrl: imageUrl,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => Container(
+                            errorWidget: (_, _, _) => Container(
                               color: const Color(0xFF2C77B7),
                             ),
                           ),
@@ -4829,7 +4829,7 @@ class _FilterSortDialogState extends State<_FilterSortDialog> {
                 ),
               ),
             ),
-            if (trailing != null) trailing,
+            ?trailing,
           ],
         ),
       ),
@@ -5460,7 +5460,7 @@ class _LibrivoxBookDetailScreen extends StatelessWidget {
                           ? CachedNetworkImage(
                               imageUrl: coverUrl!,
                               fit: BoxFit.cover,
-                              errorWidget: (_, __, ___) => _buildCoverFallback(accent),
+                              errorWidget: (_, _, _) => _buildCoverFallback(accent),
                             )
                           : _buildCoverFallback(accent),
                     ),
@@ -5788,7 +5788,7 @@ class _LibrivoxAuthorBooksScreen extends StatelessWidget {
           24,
         ),
         itemCount: books.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, _) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           final book = books[index];
           final coverUrl = coverCache[book.id];
@@ -5824,7 +5824,7 @@ class _LibrivoxAuthorBooksScreen extends StatelessWidget {
                           ? CachedNetworkImage(
                               imageUrl: coverUrl,
                               fit: BoxFit.cover,
-                              errorWidget: (_, __, ___) => Container(
+                              errorWidget: (_, _, _) => Container(
                                 color: placeholderColor,
                                 alignment: Alignment.center,
                                 child: const Icon(Icons.headphones_rounded,
@@ -6227,7 +6227,7 @@ class _DiscoverBookDetailScreenState extends State<_DiscoverBookDetailScreen> {
                                 : CachedNetworkImage(
                                     imageUrl: book.coverUrl!,
                                     fit: BoxFit.cover,
-                                    errorWidget: (_, __, ___) => Container(
+                                    errorWidget: (_, _, _) => Container(
                                       color: const Color(0xFF2C77B7),
                                       alignment: Alignment.center,
                                       child: const Icon(

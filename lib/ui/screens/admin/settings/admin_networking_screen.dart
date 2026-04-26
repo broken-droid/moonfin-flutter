@@ -65,7 +65,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.adminNetworkingSaved),
+            content: Text(AppLocalizations.of(context).adminNetworkingSaved),
             duration: Duration(seconds: 5),
           ),
         );
@@ -73,7 +73,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.adminSettingsSaveFailed(e.toString()))),
+          SnackBar(content: Text(AppLocalizations.of(context).adminSettingsSaveFailed(e.toString()))),
         );
       }
     } finally {
@@ -87,7 +87,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (_error != null || _config == null) {
       return Center(
         child: Column(
@@ -229,7 +229,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
   }
 
   Widget _certPathField() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -276,7 +276,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
   }
 
   Widget _filterModeSelector() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isBlacklist =
         _config!['IsRemoteIPFilterBlacklist'] as bool? ?? false;
     return Row(
@@ -360,7 +360,7 @@ class _AdminNetworkingScreenState extends State<AdminNetworkingScreen> {
               child: TextField(
                 controller: controller,
                 decoration: InputDecoration(
-                  hintText: hint ?? AppLocalizations.of(context)!.adminNetworkingAddEntry,
+                  hintText: hint ?? AppLocalizations.of(context).adminNetworkingAddEntry,
                   border: const OutlineInputBorder(),
                   isDense: true,
                 ),

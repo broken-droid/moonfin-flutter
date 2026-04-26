@@ -383,14 +383,14 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                         ? Image.file(
                             File(localPoster),
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _artPlaceholder(),
+                            errorBuilder: (_, _, _) => _artPlaceholder(),
                           )
                         : artUrl != null
                             ? CachedNetworkImage(
                                 imageUrl: artUrl,
                                 fit: BoxFit.cover,
-                                placeholder: (_, __) => _artPlaceholder(),
-                                errorWidget: (_, __, ___) => _artPlaceholder(),
+                                placeholder: (_, _) => _artPlaceholder(),
+                                errorWidget: (_, _, _) => _artPlaceholder(),
                               )
                             : _artPlaceholder(),
                   ),
@@ -824,8 +824,8 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                   ? CachedNetworkImage(
                       imageUrl: artUrl,
                       fit: BoxFit.cover,
-                      placeholder: (_, __) => _queueArtPlaceholder(),
-                      errorWidget: (_, __, ___) => _queueArtPlaceholder(),
+                      placeholder: (_, _) => _queueArtPlaceholder(),
+                      errorWidget: (_, _, _) => _queueArtPlaceholder(),
                     )
                   : _queueArtPlaceholder(),
             ),

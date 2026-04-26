@@ -303,7 +303,7 @@ class _CardImage extends StatelessWidget {
                       ? BoundedNetworkImage(
                           imageUrl: imageUrl!,
                           fadeInDuration: const Duration(milliseconds: 200),
-                          errorBuilder: (_, __, ___) =>
+                          errorBuilder: (_, _, _) =>
                               _PlaceholderIcon(itemType: itemType),
                         )
                       : _PlaceholderIcon(itemType: itemType),

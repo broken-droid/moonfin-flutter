@@ -348,7 +348,7 @@ class _Backdrop extends StatelessWidget {
       scale: blur > 0 ? 0.3 : 1.0,
       minWidth: 320,
       maxWidth: blur > 0 ? 640 : 1280,
-      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      errorBuilder: (_, _, _) => const SizedBox.shrink(),
     );
     if (blur <= 0) return image;
     return ImageFiltered(
@@ -893,7 +893,7 @@ class _ContentRowsState extends State<_ContentRows>
       if (kIsWeb) 'container': 'mp4',
       if (kIsWeb) 'TranscodingContainer': 'mp4',
       if (startTicks > 0) 'StartTimeTicks': '$startTicks',
-      if (mediaSourceId != null) 'MediaSourceId': mediaSourceId,
+      'MediaSourceId': ?mediaSourceId,
       if (client.accessToken != null) 'ApiKey': client.accessToken!,
     };
 
@@ -1907,7 +1907,7 @@ class _ContentRowsState extends State<_ContentRows>
         itemSpacing: 12,
         leadingPadding: 0,
         padding: const EdgeInsets.fromLTRB(16, 5, 20, 5),
-        onIndexChanged: (_, __) {
+        onIndexChanged: (_, _) {
           _onHomeRowTileFocused(null);
         },
         onFocusChange: (has) => _onRowFocusTracked(rowIndex, has),

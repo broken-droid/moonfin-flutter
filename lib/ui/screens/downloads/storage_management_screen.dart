@@ -126,7 +126,7 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
               limitMb: storageLimitMb,
             ),
             loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(height: 24),
           if (_breakdown != null) _buildBreakdownSection(),

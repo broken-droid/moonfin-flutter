@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +71,7 @@ class DownloadSettingsScreen extends ConsumerWidget {
               title: Text(l10n.storageUsed),
               subtitle: Text(l10n.calculating),
             ),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           ListTile(
             leading: const Icon(Icons.data_usage),
@@ -118,18 +117,20 @@ class DownloadSettingsScreen extends ConsumerWidget {
     showFocusRestoringModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: DownloadQuality.values.map((q) => RadioListTile<String>(
-            title: Text(q.label),
-            subtitle: Text(q.isTranscoded ? '${q.estimatedSizePerHour} • ${q.encodingInfo}' : q.estimatedSizePerHour),
-            value: q.name,
-            groupValue: current,
-            onChanged: (v) {
-              if (v != null) prefs.set(UserPreferences.defaultDownloadQuality, v);
-              Navigator.pop(ctx);
-            },
-          )).toList(),
+        child: RadioGroup<String>(
+          groupValue: current,
+          onChanged: (v) {
+            if (v != null) prefs.set(UserPreferences.defaultDownloadQuality, v);
+            Navigator.pop(ctx);
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: DownloadQuality.values.map((q) => RadioListTile<String>(
+              title: Text(q.label),
+              subtitle: Text(q.isTranscoded ? '${q.estimatedSizePerHour} • ${q.encodingInfo}' : q.estimatedSizePerHour),
+              value: q.name,
+            )).toList(),
+          ),
         ),
       ),
     );
@@ -141,17 +142,19 @@ class DownloadSettingsScreen extends ConsumerWidget {
     showFocusRestoringModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: values.map((mb) => RadioListTile<int>(
-            title: Text(mb == 0 ? l10n.noLimit : l10n.gbValue((mb / 1024).toStringAsFixed(0))),
-            value: mb,
-            groupValue: current,
-            onChanged: (v) {
-              if (v != null) prefs.set(UserPreferences.downloadStorageLimitMb, v);
-              Navigator.pop(ctx);
-            },
-          )).toList(),
+        child: RadioGroup<int>(
+          groupValue: current,
+          onChanged: (v) {
+            if (v != null) prefs.set(UserPreferences.downloadStorageLimitMb, v);
+            Navigator.pop(ctx);
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: values.map((mb) => RadioListTile<int>(
+              title: Text(mb == 0 ? l10n.noLimit : l10n.gbValue((mb / 1024).toStringAsFixed(0))),
+              value: mb,
+            )).toList(),
+          ),
         ),
       ),
     );

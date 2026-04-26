@@ -2148,7 +2148,7 @@ class _EditableStringPreferenceTileState extends State<_EditableStringPreference
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
       valueListenable: _binding,
-      builder: (_, value, __) => _TvSettingsListTile(
+      builder: (_, value, _) => _TvSettingsListTile(
         leading: Icon(widget.icon),
         title: Text(widget.title),
         subtitle: Text(_displaySubtitle(value)),
@@ -2296,7 +2296,7 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
           subtitleTextStyle: const TextStyle(fontSize: 12),
           child: ValueListenableBuilder<double>(
             valueListenable: widget.binding,
-            builder: (_, value, __) => ListTile(
+            builder: (_, value, _) => ListTile(
               focusColor: Colors.transparent,
               hoverColor: Colors.transparent,
               leading: Icon(widget.icon),
@@ -2443,7 +2443,7 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
             final selected = e.key == current;
             final swatch = _swatchColor(e.key);
             return TvFocusHighlight(
-              builder: (_, __) => ListTile(
+              builder: (_, _) => ListTile(
                 autofocus: i == autofocusIndex,
                 leading: Container(
                   width: 24,
@@ -2568,7 +2568,7 @@ class _ShuffleContentTypePickerTileState
                 final e = entry.value;
                 final selected = e.key == normalizedCurrent;
                 return TvFocusHighlight(
-                  builder: (_, __) => ListTile(
+                  builder: (_, _) => ListTile(
                     autofocus: i == autofocusIndex,
                     title: Text(e.value),
                     trailing: selected ? const Icon(Icons.check) : null,

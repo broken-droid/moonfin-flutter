@@ -46,7 +46,7 @@ class LoginScaffold extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (header != null) header!,
+                    ?header,
                     Container(
                       decoration: BoxDecoration(
                         color: _kCardColor,
@@ -56,7 +56,7 @@ class LoginScaffold extends StatelessWidget {
                       padding: const EdgeInsets.all(32),
                       child: child,
                     ),
-                    if (footer != null) footer!,
+                    ?footer,
                   ],
                 ),
               ),

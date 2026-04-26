@@ -36,30 +36,30 @@ class EmbyItemsApi implements ItemsApi {
     final response = await _dio.get(
       '/Users/$userId/Items',
       queryParameters: {
-        if (parentId != null) 'ParentId': parentId,
+        'ParentId': ?parentId,
         if (ids != null) 'Ids': ids.join(','),
         if (includeItemTypes != null)
           'IncludeItemTypes': includeItemTypes.join(','),
         if (excludeItemTypes != null)
           'ExcludeItemTypes': excludeItemTypes.join(','),
-        if (sortBy != null) 'SortBy': sortBy,
-        if (sortOrder != null) 'SortOrder': sortOrder,
-        if (startIndex != null) 'StartIndex': startIndex,
-        if (limit != null) 'Limit': limit,
-        if (recursive != null) 'Recursive': recursive,
-        if (searchTerm != null) 'SearchTerm': searchTerm,
-        if (fields != null) 'Fields': fields,
+        'SortBy': ?sortBy,
+        'SortOrder': ?sortOrder,
+        'StartIndex': ?startIndex,
+        'Limit': ?limit,
+        'Recursive': ?recursive,
+        'SearchTerm': ?searchTerm,
+        'Fields': ?fields,
         if (personIds != null) 'PersonIds': personIds.join(','),
         if (artistIds != null) 'ArtistIds': artistIds.join(','),
         if (filters != null) 'Filters': filters.join(','),
         if (seriesStatus != null) 'SeriesStatus': seriesStatus.join(','),
-        if (nameStartsWith != null) 'NameStartsWith': nameStartsWith,
+        'NameStartsWith': ?nameStartsWith,
         if (genreIds != null) 'GenreIds': genreIds.join(','),
         if (genres != null) 'Genres': genres.join(','),
-        if (isFavorite != null) 'IsFavorite': isFavorite,
-      if (collapseBoxSetItems != null) 'CollapseBoxSetItems': collapseBoxSetItems,
-      if (enableTotalRecordCount != null) 'EnableTotalRecordCount': enableTotalRecordCount,
-      if (enableImageTypes != null) 'EnableImageTypes': enableImageTypes,
+        'IsFavorite': ?isFavorite,
+      'CollapseBoxSetItems': ?collapseBoxSetItems,
+      'EnableTotalRecordCount': ?enableTotalRecordCount,
+      'EnableImageTypes': ?enableImageTypes,
       },
     );
     return response.data as Map<String, dynamic>;
@@ -93,7 +93,7 @@ class EmbyItemsApi implements ItemsApi {
     final response = await _dio.get(
       '/Items/$itemId/Similar',
       queryParameters: {
-        if (limit != null) 'Limit': limit,
+        'Limit': ?limit,
       },
     );
     return response.data as Map<String, dynamic>;
@@ -108,11 +108,11 @@ class EmbyItemsApi implements ItemsApi {
     bool? enableResumable,
   }) async {
     final response = await _dio.get('/Shows/NextUp', queryParameters: {
-      if (seriesId != null) 'SeriesId': seriesId,
-      if (parentId != null) 'ParentId': parentId,
-      if (limit != null) 'Limit': limit,
-      if (fields != null) 'Fields': fields,
-      if (enableResumable != null) 'EnableResumable': enableResumable,
+      'SeriesId': ?seriesId,
+      'ParentId': ?parentId,
+      'Limit': ?limit,
+      'Fields': ?fields,
+      'EnableResumable': ?enableResumable,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -128,11 +128,11 @@ class EmbyItemsApi implements ItemsApi {
     final response = await _dio.get(
       '/Users/$userId/Items/Resume',
       queryParameters: {
-        if (parentId != null) 'ParentId': parentId,
+        'ParentId': ?parentId,
         if (includeItemTypes != null)
           'IncludeItemTypes': includeItemTypes.join(','),
-        if (limit != null) 'Limit': limit,
-        if (fields != null) 'Fields': fields,
+        'Limit': ?limit,
+        'Fields': ?fields,
       },
     );
     return response.data as Map<String, dynamic>;
@@ -149,11 +149,11 @@ class EmbyItemsApi implements ItemsApi {
     final response = await _dio.get(
       '/Users/$userId/Items/Latest',
       queryParameters: {
-        if (parentId != null) 'ParentId': parentId,
+        'ParentId': ?parentId,
         if (includeItemTypes != null)
           'IncludeItemTypes': includeItemTypes.join(','),
-        if (limit != null) 'Limit': limit,
-        if (fields != null) 'Fields': fields,
+        'Limit': ?limit,
+        'Fields': ?fields,
       },
     );
     return response.data as Map<String, dynamic>;
@@ -174,8 +174,8 @@ class EmbyItemsApi implements ItemsApi {
     final response = await _dio.get(
       '/Shows/$seriesId/Episodes',
       queryParameters: {
-        if (seasonId != null) 'SeasonId': seasonId,
-        if (fields != null) 'Fields': fields,
+        'SeasonId': ?seasonId,
+        'Fields': ?fields,
       },
     );
     return response.data as Map<String, dynamic>;
@@ -223,16 +223,16 @@ class EmbyItemsApi implements ItemsApi {
     bool? isFavorite,
   }) async {
     final response = await _dio.get('/Artists', queryParameters: {
-      if (parentId != null) 'ParentId': parentId,
-      if (userId != null) 'UserId': userId,
-      if (sortBy != null) 'SortBy': sortBy,
-      if (sortOrder != null) 'SortOrder': sortOrder,
-      if (startIndex != null) 'StartIndex': startIndex,
-      if (limit != null) 'Limit': limit,
-      if (recursive != null) 'Recursive': recursive,
-      if (fields != null) 'Fields': fields,
-      if (nameStartsWith != null) 'NameStartsWith': nameStartsWith,
-      if (isFavorite != null) 'IsFavorite': isFavorite,
+      'ParentId': ?parentId,
+      'UserId': ?userId,
+      'SortBy': ?sortBy,
+      'SortOrder': ?sortOrder,
+      'StartIndex': ?startIndex,
+      'Limit': ?limit,
+      'Recursive': ?recursive,
+      'Fields': ?fields,
+      'NameStartsWith': ?nameStartsWith,
+      'IsFavorite': ?isFavorite,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -251,16 +251,16 @@ class EmbyItemsApi implements ItemsApi {
     bool? isFavorite,
   }) async {
     final response = await _dio.get('/Artists/AlbumArtists', queryParameters: {
-      if (parentId != null) 'ParentId': parentId,
-      if (userId != null) 'UserId': userId,
-      if (sortBy != null) 'SortBy': sortBy,
-      if (sortOrder != null) 'SortOrder': sortOrder,
-      if (startIndex != null) 'StartIndex': startIndex,
-      if (limit != null) 'Limit': limit,
-      if (recursive != null) 'Recursive': recursive,
-      if (fields != null) 'Fields': fields,
-      if (nameStartsWith != null) 'NameStartsWith': nameStartsWith,
-      if (isFavorite != null) 'IsFavorite': isFavorite,
+      'ParentId': ?parentId,
+      'UserId': ?userId,
+      'SortBy': ?sortBy,
+      'SortOrder': ?sortOrder,
+      'StartIndex': ?startIndex,
+      'Limit': ?limit,
+      'Recursive': ?recursive,
+      'Fields': ?fields,
+      'NameStartsWith': ?nameStartsWith,
+      'IsFavorite': ?isFavorite,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -278,7 +278,7 @@ class EmbyItemsApi implements ItemsApi {
   }) async {
     final response = await _dio.post('/Playlists', data: {
       'Name': name,
-      if (itemIds != null) 'Ids': itemIds,
+      'Ids': ?itemIds,
     });
     return response.data as Map<String, dynamic>;
   }
@@ -336,14 +336,14 @@ class EmbyItemsApi implements ItemsApi {
     List<String>? includeItemTypes,
   }) async {
     final response = await _dio.get('/Genres', queryParameters: {
-      if (parentId != null) 'ParentId': parentId,
-      if (userId != null) 'UserId': userId,
-      if (sortBy != null) 'SortBy': sortBy,
-      if (sortOrder != null) 'SortOrder': sortOrder,
-      if (startIndex != null) 'StartIndex': startIndex,
-      if (limit != null) 'Limit': limit,
-      if (recursive != null) 'Recursive': recursive,
-      if (fields != null) 'Fields': fields,
+      'ParentId': ?parentId,
+      'UserId': ?userId,
+      'SortBy': ?sortBy,
+      'SortOrder': ?sortOrder,
+      'StartIndex': ?startIndex,
+      'Limit': ?limit,
+      'Recursive': ?recursive,
+      'Fields': ?fields,
       if (includeItemTypes != null && includeItemTypes.isNotEmpty)
         'IncludeItemTypes': includeItemTypes.join(','),
     });

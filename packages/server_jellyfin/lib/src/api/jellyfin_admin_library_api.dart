@@ -25,11 +25,11 @@ class JellyfinAdminLibraryApi implements AdminLibraryApi {
       '/Library/VirtualFolders',
       queryParameters: {
         'name': name,
-        if (collectionType != null) 'collectionType': collectionType,
+        'collectionType': ?collectionType,
         'refreshLibrary': refreshLibrary,
       },
       data: {
-        if (paths != null) 'Paths': paths,
+        'Paths': ?paths,
       },
     );
   }

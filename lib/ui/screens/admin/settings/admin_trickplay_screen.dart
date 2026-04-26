@@ -69,14 +69,14 @@ class _AdminTrickplayScreenState extends State<AdminTrickplayScreen> {
     try {
       await _api.updateServerConfiguration(_config!);
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminTrickplaySaved)),
         );
       }
     } catch (e) {
       if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.adminSettingsSaveFailed(e.toString()))),
         );
@@ -105,7 +105,7 @@ class _AdminTrickplayScreenState extends State<AdminTrickplayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final bottomSafe = MediaQuery.of(context).padding.bottom;
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_error != null || _config == null) {
@@ -158,7 +158,7 @@ class _AdminTrickplayScreenState extends State<AdminTrickplayScreen> {
         ),
         const SizedBox(height: 16),
         DropdownButtonFormField<String>(
-          value: _scanBehaviorKeys.contains(_strOpt('ScanBehavior', 'NonBlocking'))
+          initialValue: _scanBehaviorKeys.contains(_strOpt('ScanBehavior', 'NonBlocking'))
               ? _strOpt('ScanBehavior', 'NonBlocking')
               : 'NonBlocking',
           decoration: InputDecoration(
@@ -172,7 +172,7 @@ class _AdminTrickplayScreenState extends State<AdminTrickplayScreen> {
         ),
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
-          value: _priorityKeys.contains(_strOpt('ProcessPriority', 'BelowNormal'))
+          initialValue: _priorityKeys.contains(_strOpt('ProcessPriority', 'BelowNormal'))
               ? _strOpt('ProcessPriority', 'BelowNormal')
               : 'BelowNormal',
           decoration: InputDecoration(

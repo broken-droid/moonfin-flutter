@@ -8,7 +8,7 @@ void configureServerDio(Dio dio) {
     createHttpClient: () {
       final client = HttpClient();
 
-      client.badCertificateCallback = (_, __, ___) => true;
+      client.badCertificateCallback = (_, _, _) => true;
 
       client.connectionTimeout = const Duration(seconds: 30);
       client.idleTimeout = const Duration(seconds: 120);

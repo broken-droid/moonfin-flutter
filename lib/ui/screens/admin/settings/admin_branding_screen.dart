@@ -52,13 +52,13 @@ class _AdminBrandingScreenState extends State<AdminBrandingScreen> {
       await _api.updateNamedConfiguration('branding', _config!);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.adminBrandingSaved)),
+          SnackBar(content: Text(AppLocalizations.of(context).adminBrandingSaved)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.adminSettingsSaveFailed(e.toString()))),
+          SnackBar(content: Text(AppLocalizations.of(context).adminSettingsSaveFailed(e.toString()))),
         );
       }
     } finally {
@@ -68,7 +68,7 @@ class _AdminBrandingScreenState extends State<AdminBrandingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }

@@ -433,7 +433,7 @@ class _TopToolbarState extends State<TopToolbar> {
                       fit: BoxFit.cover,
                       width: avatarSize,
                       height: avatarSize,
-                      errorBuilder: (_, __, ___) => _avatarFallback(),
+                      errorBuilder: (_, _, _) => _avatarFallback(),
                     )
                   : _avatarFallback(),
             ),

@@ -217,8 +217,8 @@ class SeerrHttpClient {
       queryParameters: {
         'skip': offset,
         'take': limit,
-        if (filter != null) 'filter': filter,
-        if (requestedBy != null) 'requestedBy': requestedBy,
+        'filter': ?filter,
+        'requestedBy': ?requestedBy,
       },
       options: _authOptions(),
     );
@@ -251,9 +251,9 @@ class SeerrHttpClient {
       'mediaId': mediaId,
       'mediaType': mediaType,
       'is4k': is4k,
-      if (profileId != null) 'profileId': profileId,
-      if (rootFolder != null) 'rootFolder': rootFolder,
-      if (serverId != null) 'serverId': serverId,
+      'profileId': ?profileId,
+      'rootFolder': ?rootFolder,
+      'serverId': ?serverId,
     };
 
     if (mediaType == 'tv') {
@@ -407,9 +407,9 @@ class SeerrHttpClient {
         'page': page,
         'sortBy': sortBy,
         'language': language,
-        if (genre != null) 'genre': genre,
-        if (studio != null) 'studio': studio,
-        if (keywords != null) 'keywords': keywords,
+        'genre': ?genre,
+        'studio': ?studio,
+        'keywords': ?keywords,
       },
       options: _authOptions(),
     );
@@ -431,9 +431,9 @@ class SeerrHttpClient {
         'page': page,
         'sortBy': sortBy,
         'language': language,
-        if (genre != null) 'genre': genre,
-        if (network != null) 'network': network,
-        if (keywords != null) 'keywords': keywords,
+        'genre': ?genre,
+        'network': ?network,
+        'keywords': ?keywords,
       },
       options: _authOptions(),
     );

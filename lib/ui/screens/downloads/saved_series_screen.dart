@@ -43,7 +43,7 @@ class SavedSeriesScreen extends ConsumerWidget {
             return _buildContent(context, ref, series, episodesAsync);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => Center(
+          error: (_, _) => Center(
             child: Text(AppLocalizations.of(context).errorLoadingSeries, style: const TextStyle(color: Colors.redAccent)),
           ),
         ),
@@ -83,7 +83,7 @@ class SavedSeriesScreen extends ConsumerWidget {
           loading: () => const SliverToBoxAdapter(
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (_, __) => SliverToBoxAdapter(
+          error: (_, _) => SliverToBoxAdapter(
             child: Center(child: Text(AppLocalizations.of(context).errorLoadingSeries, style: const TextStyle(color: Colors.redAccent))),
           ),
         ),

@@ -27,7 +27,7 @@ class FullscreenBackdropSwitcher extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             ...previousChildren,
-            if (currentChild != null) currentChild,
+            ?currentChild,
           ],
         );
       },
@@ -42,7 +42,7 @@ class FullscreenBackdropSwitcher extends StatelessWidget {
                     fit: BoxFit.cover,
                     alignment: alignment,
                     fadeInDuration: fadeInDuration,
-                    errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                    errorWidget: (_, _, _) => const SizedBox.shrink(),
                   ),
             ),
     );

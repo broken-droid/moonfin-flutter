@@ -140,7 +140,7 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
         Expanded(
           child: ListView.separated(
             itemCount: logs.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final item = logs[index];
               final isActive = index == 0 && _newestFirst;

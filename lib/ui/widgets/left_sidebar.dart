@@ -761,7 +761,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                 fit: BoxFit.cover,
                 width: 40,
                 height: 40,
-                errorBuilder: (_, __, ___) => fallback,
+                errorBuilder: (_, _, _) => fallback,
               )
             : fallback,
       ),

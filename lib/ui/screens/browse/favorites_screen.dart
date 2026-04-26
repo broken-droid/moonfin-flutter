@@ -779,7 +779,7 @@ class _SortDialogState extends State<_SortDialog> {
                 ),
               ),
             ),
-            if (trailing != null) trailing,
+            ?trailing,
           ],
         ),
       ),

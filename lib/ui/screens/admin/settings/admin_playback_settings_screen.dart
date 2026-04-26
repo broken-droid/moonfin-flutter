@@ -77,13 +77,13 @@ class _AdminPlaybackSettingsScreenState
       await _api.updateNamedConfiguration('encoding', _config!);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.adminPlaybackSaved)),
+          SnackBar(content: Text(AppLocalizations.of(context).adminPlaybackSaved)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.adminSettingsSaveFailed(e.toString()))),
+          SnackBar(content: Text(AppLocalizations.of(context).adminSettingsSaveFailed(e.toString()))),
         );
       }
     } finally {
@@ -99,7 +99,7 @@ class _AdminPlaybackSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final bottomSafe = MediaQuery.of(context).padding.bottom;
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
@@ -132,7 +132,7 @@ class _AdminPlaybackSettingsScreenState
         const SizedBox(height: 24),
         _sectionHeader(l10n.adminPlaybackHwAccel),
         DropdownButtonFormField<String>(
-          value: _hwAccelOptions.any((o) => o.$1 == currentAccel)
+          initialValue: _hwAccelOptions.any((o) => o.$1 == currentAccel)
               ? currentAccel
               : 'none',
           decoration: InputDecoration(
@@ -257,7 +257,7 @@ class _AdminPlaybackSettingsScreenState
   }
 
   Widget _pathField(String key, String label) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isBrowsing = _browsingField == key;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

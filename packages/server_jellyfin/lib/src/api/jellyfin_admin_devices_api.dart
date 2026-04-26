@@ -11,7 +11,7 @@ class JellyfinAdminDevicesApi implements AdminDevicesApi {
     final response = await _dio.get(
       '/Devices',
       queryParameters: {
-        if (userId != null) 'userId': userId,
+        'userId': ?userId,
       },
     );
     final items = (response.data as Map<String, dynamic>)['Items'] as List<dynamic>;

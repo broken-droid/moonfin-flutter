@@ -96,7 +96,7 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
       body: ListView(
         children: [
           TvFocusHighlight(
-            builder: (_, __) => ListTile(
+            builder: (_, _) => ListTile(
               focusColor: Colors.transparent,
               hoverColor: Colors.transparent,
               leading: const Icon(Icons.view_stream),
@@ -105,7 +105,7 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
           ),
           for (final section in enabledSections)
             TvFocusHighlight(
-              builder: (_, __) => ListTile(
+              builder: (_, _) => ListTile(
                 focusColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 leading: const Icon(Icons.image_outlined),
@@ -162,7 +162,7 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
                 final v = entry.value;
                 final selected = v == current;
                 return TvFocusHighlight(
-                  builder: (_, __) => ListTile(
+                  builder: (_, _) => ListTile(
                     autofocus: i == autofocusIndex,
                     title: Text(_imageTypeLabel(v, l10n)),
                     trailing: selected ? const Icon(Icons.check) : null,
