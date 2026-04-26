@@ -136,11 +136,18 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
+    final isBackground = state == AppLifecycleState.paused ||
         state == AppLifecycleState.hidden ||
-        state == AppLifecycleState.detached) {
+        state == AppLifecycleState.detached ||
+        (state == AppLifecycleState.inactive &&
+            !PlatformDetection.isDesktop &&
+            !PlatformDetection.isWeb);
+
+    if (isBackground) {
       _cancelTrailerPreview();
+      _autoAdvanceTimer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _startAutoAdvance();
     }
   }
 

@@ -754,7 +754,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _tryStartIosPiPForBackground();
           return;
         }
-        if (PlatformDetection.isTV) {
+        if (PlatformDetection.isTV || PlatformDetection.isDesktop || PlatformDetection.isWeb) {
           return;
         }
         if (_isInPiP || _isStopping || _pipService.isScreenLocked) return;

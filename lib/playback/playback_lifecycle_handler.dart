@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:playback_core/playback_core.dart';
 
+import '../util/platform_detection.dart';
+
 class PlaybackLifecycleHandler with WidgetsBindingObserver {
   final PlaybackManager _manager;
   Duration? _savedPosition;
@@ -18,6 +20,8 @@ class PlaybackLifecycleHandler with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.inactive:
+        if (PlatformDetection.isMobile) _saveState();
+        break;
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
         _saveState();
