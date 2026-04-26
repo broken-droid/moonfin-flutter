@@ -109,11 +109,17 @@ resolve_shared_lib() {
 
   if command -v ldconfig >/dev/null 2>&1; then
     local resolved
-    resolved="$(ldconfig -p 2>/dev/null | awk -v name="$soname" '$1 == name {print $NF; exit}')"
-    if [ -n "$resolved" ] && [ -f "$resolved" ]; then
+    while IFS= read -r resolved; do
+      [ -z "$resolved" ] && continue
+      [ ! -f "$resolved" ] && continue
+      case "$resolved" in
+        /usr/local/*)
+          continue
+          ;;
+      esac
       printf '%s\n' "$resolved"
       return 0
-    fi
+    done < <(ldconfig -p 2>/dev/null | awk -v name="$soname" '$1 == name {print $NF}')
   fi
 
   local candidate
@@ -176,9 +182,9 @@ runtime_skip_pattern() {
   skip="$skip"'|libwayland|libffi|libpcre'
   skip="$skip"'|libGL|libEGL|libGLX|libGLdispatch|libOpenGL|libdrm|libgbm'
   skip="$skip"'|libglib|libgobject|libgio|libgmodule|libgthread'
-  skip="$skip"'|libpulse|libdbus|libasound|libsndfile'
+  skip="$skip"'|libpulse|libdbus|libasound|libsndfile|libpipewire|libspa|libjack|libsndio'
   skip="$skip"'|libfontconfig|libfreetype|libharfbuzz|libcairo|libpango|libpixman'
-  skip="$skip"'|libatk|libgdk|libgtk|libepoxy'
+  skip="$skip"'|libatk|libgdk|libgtk|libepoxy|libgdk_pixbuf|librsvg'
   skip="$skip"'|libmount|libblkid|libselinux|libuuid|libresolv|libnss|libnsl|libcrypt'
   skip="$skip"'|libsystemd'
   printf '%s\n' "$skip"
