@@ -1,4 +1,6 @@
+import 'package:custom_tv_text_field/custom_tv_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
@@ -8,6 +10,7 @@ import '../../../data/repositories/search_repository.dart';
 import '../../../data/repositories/seerr_repository.dart';
 import '../../../data/viewmodels/search_view_model.dart';
 import '../../navigation/destinations.dart';
+import '../../../util/platform_detection.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
@@ -25,8 +28,9 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final _searchController = TextEditingController();
+  final _searchFocus = FocusNode();
+  final _searchTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   late final SearchViewModel _vm;
-
   static const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 
   @override
@@ -44,6 +48,14 @@ class _SearchScreenState extends State<SearchScreen> {
     if (widget.initialQuery != null && widget.initialQuery!.isNotEmpty) {
       _searchController.text = widget.initialQuery!;
       _vm.searchImmediate(widget.initialQuery!);
+    }
+
+    _searchController.addListener(_onSearchTextChanged);
+
+    if (PlatformDetection.isTV) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _searchFocus.requestFocus();
+      });
     }
   }
 
@@ -64,12 +76,33 @@ class _SearchScreenState extends State<SearchScreen> {
     if (mounted) setState(() {});
   }
 
+  void _onSearchTextChanged() {
+    _vm.searchDebounced(_searchController.text);
+    if (mounted) setState(() {});
+  }
+
   @override
   void dispose() {
     _vm.removeListener(_onViewModelChanged);
+    _searchController.removeListener(_onSearchTextChanged);
+    _searchFocus.dispose();
     _vm.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  KeyEventResult _onSearchKey(FocusNode node, KeyEvent event) {
+    if (!PlatformDetection.isTV) return KeyEventResult.ignored;
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.select) {
+      if (!_searchFocus.hasFocus) _searchFocus.requestFocus();
+      _searchTvFieldKey.currentState?.openKeyboard();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
   }
 
   String? _imageUrl(AggregatedItem item) {
@@ -109,31 +142,63 @@ class _SearchScreenState extends State<SearchScreen> {
               const SizedBox(height: 80),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 48),
-                child: TextField(
-                  controller: _searchController,
-                  autofocus: true,
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
-                  decoration: InputDecoration(
-                    hintText:
-                      widget.scopedLibraryId != null &&
-                        widget.scopedLibraryId!.isNotEmpty
-                      ? l10n.searchThisLibrary
-                      : l10n.searchEllipsis,
-                    hintStyle: TextStyle(color: Colors.white.withAlpha(128)),
-                    border: InputBorder.none,
-                    prefixIcon: const Icon(Icons.search, color: Colors.white70),
-                    suffixIcon: _searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear, color: Colors.white70),
-                            onPressed: () {
-                              _searchController.clear();
-                              _vm.searchDebounced('');
-                            },
-                          )
-                        : null,
-                  ),
-                  onChanged: (query) => _vm.searchDebounced(query),
-                ),
+                child: PlatformDetection.isTV
+                    ? Focus(
+                        focusNode: _searchFocus,
+                        onKeyEvent: _onSearchKey,
+                        child: CustomTVTextField(
+                          key: _searchTvFieldKey,
+                          controller: _searchController,
+                          isFocused: _searchFocus.hasFocus,
+                          hint: widget.scopedLibraryId != null &&
+                                  widget.scopedLibraryId!.isNotEmpty
+                              ? l10n.searchThisLibrary
+                              : l10n.searchEllipsis,
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                          hintStyle: TextStyle(
+                            color: Colors.white.withAlpha(128),
+                            fontSize: 20,
+                          ),
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.white70),
+                          filled: false,
+                          borderColor: Colors.transparent,
+                          focusedBorderColor: Colors.white70,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 0,
+                            vertical: 10,
+                          ),
+                        ),
+                      )
+                    : TextField(
+                        controller: _searchController,
+                        autofocus: true,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                        decoration: InputDecoration(
+                          hintText: widget.scopedLibraryId != null &&
+                                  widget.scopedLibraryId!.isNotEmpty
+                              ? l10n.searchThisLibrary
+                              : l10n.searchEllipsis,
+                          hintStyle:
+                              TextStyle(color: Colors.white.withAlpha(128)),
+                          border: InputBorder.none,
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.white70),
+                          suffixIcon: _searchController.text.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.clear,
+                                    color: Colors.white70,
+                                  ),
+                                  onPressed: _searchController.clear,
+                                )
+                              : null,
+                        ),
+                      ),
               ),
               const Divider(color: Colors.white24, height: 1),
               Expanded(child: _buildBody()),

@@ -1,5 +1,7 @@
+import 'package:custom_tv_text_field/custom_tv_text_field.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
@@ -9,6 +11,7 @@ import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/store/authentication_store.dart';
 import '../../../data/services/emby_connect_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
 import '../../widgets/server_type_icon.dart';
@@ -32,6 +35,10 @@ class EmbyConnectScreen extends StatefulWidget {
 class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _usernameFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+  final _usernameTvFieldKey = GlobalKey<CustomTVTextFieldState>();
+  final _passwordTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _serverRepo = GetIt.instance<ServerRepository>();
   final _authStore = GetIt.instance<AuthenticationStore>();
   final _connectService = EmbyConnectService(
@@ -42,11 +49,14 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   List<EmbyConnectServer> _servers = const [];
   String? _errorMessage;
   String? _connectUserId;
+  bool _tvKeyboardVisible = false;
 
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _usernameFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -198,6 +208,29 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
     });
   }
 
+  void _handleTvKeyboardVisibility(
+    bool visible,
+    GlobalKey<CustomTVTextFieldState> fieldKey,
+  ) {
+    if (_tvKeyboardVisible != visible) {
+      setState(() {
+        _tvKeyboardVisible = visible;
+      });
+    }
+    if (!visible) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final fieldContext = fieldKey.currentContext;
+      if (fieldContext == null || !mounted) return;
+      Scrollable.ensureVisible(
+        fieldContext,
+        alignment: 0.12,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) =>
       RequestInitialFocus(child: _buildContent(context));
@@ -209,6 +242,10 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
       header: Padding(
         padding: const EdgeInsets.only(bottom: 24),
         child: Image.asset('assets/images/logo_and_text.png', height: 80),
+      ),
+      footer: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        height: PlatformDetection.isTV && _tvKeyboardVisible ? 280 : 0,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -259,21 +296,21 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextField(
+        _buildCredentialsInput(
           controller: _usernameController,
-          enabled: !isBusy,
-          textInputAction: TextInputAction.next,
-          style: const TextStyle(color: Colors.white),
-          decoration: _inputDecoration(l10n.emailOrUsername),
+          focusNode: _usernameFocus,
+          label: l10n.emailOrUsername,
+          isBusy: isBusy,
+          down: _passwordFocus,
         ),
         const SizedBox(height: 16),
-        TextField(
+        _buildCredentialsInput(
           controller: _passwordController,
-          enabled: !isBusy,
-          obscureText: true,
-          onSubmitted: (_) => _signIn(),
-          style: const TextStyle(color: Colors.white),
-          decoration: _inputDecoration(l10n.password),
+          focusNode: _passwordFocus,
+          label: l10n.password,
+          isBusy: isBusy,
+          isPassword: true,
+          up: _usernameFocus,
         ),
         if (_errorMessage != null) ...[
           const SizedBox(height: 12),
@@ -320,6 +357,82 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildCredentialsInput({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String label,
+    required bool isBusy,
+    bool isPassword = false,
+    FocusNode? up,
+    FocusNode? down,
+  }) {
+    return Focus(
+      focusNode: focusNode,
+      onKeyEvent: (node, event) {
+        if (!PlatformDetection.isTV) return KeyEventResult.ignored;
+        if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+          return KeyEventResult.ignored;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowUp && up != null) {
+          up.requestFocus();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowDown && down != null) {
+          down.requestFocus();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.enter ||
+            event.logicalKey == LogicalKeyboardKey.select) {
+          if (!focusNode.hasFocus) focusNode.requestFocus();
+          if (identical(controller, _usernameController)) {
+            _usernameTvFieldKey.currentState?.openKeyboard();
+          } else {
+            _passwordTvFieldKey.currentState?.openKeyboard();
+          }
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: PlatformDetection.isTV
+          ? CustomTVTextField(
+              key: identical(controller, _usernameController)
+                  ? _usernameTvFieldKey
+                  : _passwordTvFieldKey,
+              controller: controller,
+              isFocused: focusNode.hasFocus,
+              hint: label,
+              filled: true,
+              fillColor: Colors.white.withValues(alpha: 0.08),
+              borderRadius: 12,
+              borderColor: Colors.white.withValues(alpha: 0.1),
+              focusedBorderColor: Colors.white,
+              hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+              textStyle: const TextStyle(color: Colors.white),
+              textFieldType: isPassword
+                  ? TextFieldType.password
+                  : TextFieldType.other,
+              onFieldSubmitted: isPassword ? (_) => _signIn() : null,
+              onVisibilityChanged: (visible) => _handleTvKeyboardVisibility(
+                visible,
+                identical(controller, _usernameController)
+                    ? _usernameTvFieldKey
+                    : _passwordTvFieldKey,
+              ),
+            )
+          : TextField(
+              controller: controller,
+              focusNode: focusNode,
+              enabled: !isBusy,
+              obscureText: isPassword,
+              textInputAction:
+                  isPassword ? TextInputAction.done : TextInputAction.next,
+              onSubmitted: isPassword ? (_) => _signIn() : null,
+              style: const TextStyle(color: Colors.white),
+              decoration: _inputDecoration(label),
+            ),
     );
   }
 

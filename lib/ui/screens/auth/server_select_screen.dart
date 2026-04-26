@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:custom_tv_text_field/custom_tv_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
@@ -10,6 +12,7 @@ import '../../../auth/models/server_addition_state.dart';
 import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/services/server_discovery_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
 import '../../widgets/overlay_sheet.dart';
@@ -394,34 +397,76 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
   Future<void> _showAddServerDialog() async {
     final l10n = AppLocalizations.of(context);
     _addressController.clear();
+    final addressFocus = FocusNode();
+    final addressTvFieldKey = GlobalKey<CustomTVTextFieldState>();
     final address = await showFocusRestoringDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.connectToServer),
-        content: TextField(
-          controller: _addressController,
-          decoration: InputDecoration(
-            labelText: l10n.serverAddress,
-            hintText: l10n.serverAddressHint,
-            border: const OutlineInputBorder(),
-            prefixIcon: const Icon(Icons.dns),
+      builder: (ctx) {
+        if (PlatformDetection.isTV) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!ctx.mounted) return;
+            addressFocus.requestFocus();
+          });
+        }
+        return AlertDialog(
+          title: Text(l10n.connectToServer),
+          content: Focus(
+            focusNode: addressFocus,
+            onKeyEvent: (node, event) {
+              if (!PlatformDetection.isTV) return KeyEventResult.ignored;
+              if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+                return KeyEventResult.ignored;
+              }
+              if (event.logicalKey == LogicalKeyboardKey.enter ||
+                  event.logicalKey == LogicalKeyboardKey.select) {
+                if (!addressFocus.hasFocus) addressFocus.requestFocus();
+                addressTvFieldKey.currentState?.openKeyboard();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: PlatformDetection.isTV
+                ? CustomTVTextField(
+                    key: addressTvFieldKey,
+                    controller: _addressController,
+                    isFocused: addressFocus.hasFocus,
+                    hint: l10n.serverAddressHint,
+                    textFieldType: TextFieldType.url,
+                    keyboardType: KeyboardType.alphabetic,
+                    filled: false,
+                    borderColor: Theme.of(ctx).colorScheme.outline,
+                    focusedBorderColor: Theme.of(ctx).colorScheme.primary,
+                    prefixIcon: const Icon(Icons.dns),
+                    onFieldSubmitted: (value) => Navigator.of(ctx).pop(value),
+                  )
+                : TextField(
+                    controller: _addressController,
+                    focusNode: addressFocus,
+                    decoration: InputDecoration(
+                      labelText: l10n.serverAddress,
+                      hintText: l10n.serverAddressHint,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.dns),
+                    ),
+                    keyboardType: TextInputType.url,
+                    autofocus: true,
+                    onSubmitted: (value) => Navigator.of(ctx).pop(value),
+                  ),
           ),
-          keyboardType: TextInputType.url,
-          autofocus: true,
-          onSubmitted: (value) => Navigator.of(ctx).pop(value),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(_addressController.text),
-            child: Text(l10n.connect),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(_addressController.text),
+              child: Text(l10n.connect),
+            ),
+          ],
+        );
+      },
     );
+    addressFocus.dispose();
     if (address != null && address.trim().isNotEmpty) {
       await _serverRepo.addServer(address.trim());
     }

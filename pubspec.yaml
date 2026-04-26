@@ -102,6 +102,8 @@ dependencies:
   screen_brightness_ios: ^2.1.2
   volume_controller: ^3.4.2
   web: ^1.1.1
+  custom_tv_text_field:
+    path: packages/custom_tv_text_field_fork
 
 dev_dependencies:
   flutter_test:

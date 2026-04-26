@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:custom_tv_text_field/custom_tv_text_field.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import '../../../auth/repositories/auth_repository.dart';
 import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/repositories/session_repository.dart';
 import '../../../data/services/media_server_client_factory.dart';
+import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
 
@@ -39,6 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
+  final _usernameTvFieldKey = GlobalKey<CustomTVTextFieldState>();
+  final _passwordTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _signInFocus = FocusNode();
   final _backFocus = FocusNode();
   final _qcBtnFocus = FocusNode();
@@ -51,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _supportsQuickConnect = false;
   bool _showQuickConnect = true;
+  bool _tvKeyboardVisible = false;
 
   Timer? _quickConnectTimer;
   String? _quickConnectCode;
@@ -84,20 +89,72 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _setupFocusHandlers() {
     _usernameFocus.onKeyEvent =
-        (node, event) => _verticalNav(
-          event,
-          up: _supportsQuickConnect ? _pwBtnFocus : null,
-          down: _passwordFocus,
-        );
+        (node, event) {
+          if (_handleTvFieldOpen(event, _usernameFocus)) {
+            return KeyEventResult.handled;
+          }
+          return _verticalNav(
+            event,
+            up: _supportsQuickConnect ? _pwBtnFocus : null,
+            down: _passwordFocus,
+          );
+        };
     _passwordFocus.onKeyEvent =
-        (node, event) => _verticalNav(
-          event,
-          up:
-              _hasUsername
-                  ? (_supportsQuickConnect ? _pwBtnFocus : null)
-                  : _usernameFocus,
-          down: _signInFocus,
-        );
+        (node, event) {
+          if (_handleTvFieldOpen(event, _passwordFocus)) {
+            return KeyEventResult.handled;
+          }
+          return _verticalNav(
+            event,
+            up:
+                _hasUsername
+                    ? (_supportsQuickConnect ? _pwBtnFocus : null)
+                    : _usernameFocus,
+            down: _signInFocus,
+          );
+        };
+  }
+
+  bool _handleTvFieldOpen(
+    KeyEvent event,
+    FocusNode focusNode,
+  ) {
+    if (!PlatformDetection.isTV || _isLoading) return false;
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
+    if (event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.select) {
+      if (!focusNode.hasFocus) focusNode.requestFocus();
+      if (focusNode == _usernameFocus) {
+        _usernameTvFieldKey.currentState?.openKeyboard();
+      } else if (focusNode == _passwordFocus) {
+        _passwordTvFieldKey.currentState?.openKeyboard();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  void _handleTvKeyboardVisibility(
+    bool visible,
+    GlobalKey<CustomTVTextFieldState> fieldKey,
+  ) {
+    if (_tvKeyboardVisible != visible) {
+      setState(() {
+        _tvKeyboardVisible = visible;
+      });
+    }
+    if (!visible) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final fieldContext = fieldKey.currentContext;
+      if (fieldContext == null || !mounted) return;
+      Scrollable.ensureVisible(
+        fieldContext,
+        alignment: 0.12,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   KeyEventResult _verticalNav(
@@ -320,6 +377,10 @@ class _LoginScreenState extends State<LoginScreen> {
       header: Padding(
         padding: const EdgeInsets.only(bottom: 24),
         child: Image.asset('assets/images/logo_and_text.png', height: 64),
+      ),
+      footer: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        height: PlatformDetection.isTV && _tvKeyboardVisible ? 280 : 0,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -559,6 +620,33 @@ class _LoginScreenState extends State<LoginScreen> {
     TextInputAction? textInputAction,
     ValueChanged<String>? onSubmitted,
   }) {
+    if (PlatformDetection.isTV) {
+      final tvFieldKey =
+          identical(controller, _usernameController)
+              ? _usernameTvFieldKey
+              : _passwordTvFieldKey;
+      return Focus(
+        focusNode: focusNode,
+        child: CustomTVTextField(
+          key: tvFieldKey,
+          controller: controller,
+          isFocused: focusNode.hasFocus,
+          hint: label,
+          filled: true,
+          fillColor: Colors.white.withValues(alpha: 0.08),
+          borderRadius: 12,
+          borderColor: Colors.white.withValues(alpha: 0.1),
+          focusedBorderColor: _kAccent,
+          hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+          textStyle: const TextStyle(color: Colors.white),
+          textFieldType: obscureText ? TextFieldType.password : TextFieldType.other,
+          onFieldSubmitted: onSubmitted,
+          onVisibilityChanged: (visible) =>
+              _handleTvKeyboardVisibility(visible, tvFieldKey),
+        ),
+      );
+    }
+
     return TextField(
       controller: controller,
       focusNode: focusNode,
