@@ -89,6 +89,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   bool _didRequestIosPiPForBackground = false;
   bool _isStartingIosPiPForBackground = false;
   bool _didHandleBackgroundSuspend = false;
+  bool _videoWasDisabledByLifecycle = false;
   Timer? _tvBackgroundExitTimer;
   DateTime? _suppressBackNavigationUntil;
   bool _isPlayerMutationInFlight = false;
@@ -771,6 +772,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   void _suppressTvLifecycleExit({Duration duration = const Duration(seconds: 8)}) {
     if (!PlatformDetection.isTV) return;
     _suppressTvLifecycleExitUntil = DateTime.now().add(duration);
+    _cancelTvBackgroundExit();
   }
 
   bool _isTvLifecycleExitSuppressed() {
@@ -785,6 +787,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _debugNavLog('scheduleTvBackgroundExit armed (2s)');
     _tvBackgroundExitTimer = Timer(const Duration(seconds: 2), () {
       if (!mounted || _isStopping) return;
+      if (_isTvLifecycleExitSuppressed()) return;
       if (_isInPiP || _pipService.isScreenLocked) return;
       final lifecycle = WidgetsBinding.instance.lifecycleState;
       if (lifecycle == AppLifecycleState.resumed ||
@@ -814,14 +817,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     return DateTime.now().isBefore(until);
   }
 
-  Future<void> _runSinglePlayerMutation(
+  Future<bool> _runSinglePlayerMutation(
     String label,
     FutureOr<void> Function() action,
     {Duration suppressBackFor = const Duration(seconds: 1)}
   ) async {
     if (_isPlayerMutationInFlight) {
       _debugNavLog('player mutation ignored in-flight label=$label');
-      return;
+      return false;
     }
     _isPlayerMutationInFlight = true;
     _suppressBackNavigation(duration: suppressBackFor);
@@ -835,6 +838,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     } finally {
       _isPlayerMutationInFlight = false;
     }
+    return true;
   }
 
   @override
@@ -850,6 +854,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return;
         }
         if (_isInPiP || _isStopping || _pipService.isScreenLocked) return;
+        _videoWasDisabledByLifecycle = true;
         _backend.setVideoEnabled(false);
       case AppLifecycleState.paused:
       case AppLifecycleState.hidden:
@@ -865,6 +870,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return;
         }
         if (_isInPiP || _isStopping || _pipService.isScreenLocked) return;
+        _videoWasDisabledByLifecycle = true;
         _backend.setVideoEnabled(false);
       case AppLifecycleState.resumed:
         _didHandleBackgroundSuspend = false;
@@ -873,8 +879,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         if (PlatformDetection.isIOS && _isInPiP) {
           _pipService.enableAutoPiP(false);
         }
-        _backend.setVideoEnabled(true);
-        _restorePositionAfterScreenLock();
+        if (_videoWasDisabledByLifecycle) {
+          _videoWasDisabledByLifecycle = false;
+          _backend.setVideoEnabled(true);
+          _restorePositionAfterScreenLock();
+        }
         if (PlatformDetection.isMobile) _syncBrightnessFromSystem();
       case AppLifecycleState.detached:
         break;
@@ -2502,30 +2511,27 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             ? AppTypography.fontSizeMd
             : AppTypography.fontSizeSm;
 
-        final speedPopupKey = GlobalKey<PopupMenuButtonState<double>>();
-        Widget speedButton = _buildSpeedButton(
-          extent: secondaryExtent,
-          textSize: secondaryTextSize,
-          popupKey: speedPopupKey,
-          tooltip: l10n.playerTooltipPlaybackSpeed,
-        );
+        final Widget speedButton;
         if (PlatformDetection.isTV) {
           speedButton = _TvFocusButton(
             focusNode: _tvSecondaryFocus,
             extent: secondaryExtent,
-            onKeyEvent: (_, event) {
-              if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
-                return KeyEventResult.ignored;
-              }
-              if (event.logicalKey == LogicalKeyboardKey.select ||
-                  event.logicalKey == LogicalKeyboardKey.enter) {
-                speedPopupKey.currentState?.showButtonMenu();
-                _showControls();
-                return KeyEventResult.handled;
-              }
-              return KeyEventResult.ignored;
+            onPressed: () {
+              _showControls();
+              unawaited(_showTvSpeedSelector());
             },
-            child: speedButton,
+            child: Text(
+              '${_state.playbackSpeed}x',
+              style: TextStyle(color: Colors.white, fontSize: secondaryTextSize),
+            ),
+          );
+        } else {
+          final speedPopupKey = GlobalKey<PopupMenuButtonState<double>>();
+          speedButton = _buildSpeedButton(
+            extent: secondaryExtent,
+            textSize: secondaryTextSize,
+            popupKey: speedPopupKey,
+            tooltip: l10n.playerTooltipPlaybackSpeed,
           );
         }
 
@@ -3305,9 +3311,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               'speed_$speed',
               () => _manager.setPlaybackSpeed(speed),
               suppressBackFor: const Duration(seconds: 3),
-            ),
+            ).then((started) {
+              if (started) {
+                _showControls();
+              }
+            }),
           );
-          _showControls();
         },
         offset: const Offset(0, -200),
         color: AppColorScheme.surface,
@@ -3592,6 +3601,76 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _debugNavLog('trackSelector bottom sheet closed');
       });
     }
+    _showControls();
+  }
+
+  Future<void> _showTvSpeedSelector() async {
+    const speedOptions = <double>[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+    final l10n = AppLocalizations.of(context);
+    var didHandleSelection = false;
+
+    bool markSelectionHandled() {
+      if (didHandleSelection) return false;
+      didHandleSelection = true;
+      return true;
+    }
+
+    await _showTvDialogBox(
+      child: Builder(
+        builder: (dialogCtx) => SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(AppSpacing.spaceLg),
+                child: Text(
+                  l10n.playerTooltipPlaybackSpeed,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: AppTypography.fontSizeLg,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  children: speedOptions.map((speed) {
+                    final selected = (_state.playbackSpeed - speed).abs() < 0.001;
+                    return ListTile(
+                      leading: Icon(
+                        Icons.radio_button_checked,
+                        color: selected ? AppColorScheme.accent : Colors.white38,
+                      ),
+                      title: Text(
+                        '${speed}x',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        if (!markSelectionHandled()) return;
+                        Navigator.pop(dialogCtx);
+                        unawaited(
+                          _runSinglePlayerMutation(
+                            'speed_$speed',
+                            () async {
+                              _debugNavLog('[SPEED] Starting setPlaybackSpeed($speed)');
+                              await _manager.setPlaybackSpeed(speed);
+                              _debugNavLog('[SPEED] Completed setPlaybackSpeed($speed)');
+                            },
+                            suppressBackFor: const Duration(seconds: 3),
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      maxWidth: 560,
+      heightFactor: 0.7,
+    );
     _showControls();
   }
 

@@ -121,10 +121,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
     if (platform is NativePlayer) {
       _nativeSetProperty(platform, 'network-timeout', '120');
       if (PlatformDetection.isAndroid && PlatformDetection.isTV) {
-        // Keep this disabled from startup so speed changes do not trigger
-        // tempo/pitch filter graph reconfiguration on Android TV.
-        _nativeSetProperty(platform, 'audio-pitch-correction', 'no');
-        _nativeSetProperty(platform, 'pitch-correction', 'no');
+        // Prefer AudioTrack + preloaded scaletempo2 for stable TV speed changes.
+        _nativeSetProperty(platform, 'ao', 'audiotrack');
+        _nativeSetProperty(platform, 'af', 'scaletempo2');
       }
       if (PlatformDetection.isIOS) {
         _nativeSetProperty(platform, 'tone-mapping', 'auto');
@@ -628,35 +627,12 @@ class MediaKitPlayerBackend implements PlayerBackend {
   @override
   Future<void> setPlaybackSpeed(double speed) async {
     if (PlatformDetection.isAndroid && PlatformDetection.isTV) {
-      // On some Android TV builds, Player.setRate can destabilize playback.
-      // Use native mpv APIs only and never fall back to setRate on TV.
       try {
         final native = _player.platform as NativePlayer;
-        final wasPlaying = _player.state.playing;
-        if (wasPlaying) {
-          await _player.pause();
-        }
         final speedValue = speed.toString();
-        await _tryNativeSetProperty(native, 'audio-pitch-correction', 'no');
-
         final setOk = await _tryNativeSetProperty(native, 'speed', speedValue);
-        if (setOk) {
-          if (wasPlaying) await _player.play();
-          return;
-        }
-
-        final cmdOk = await _tryNativeCommand(native, [
-          'set_property',
-          'speed',
-          speedValue,
-        ]);
-        if (cmdOk) {
-          if (wasPlaying) await _player.play();
-          return;
-        }
-
-        if (wasPlaying) {
-          await _player.play();
+        if (!setOk) {
+          await _tryNativeCommand(native, ['set_property', 'speed', speedValue]);
         }
         return;
       } catch (_) {}
