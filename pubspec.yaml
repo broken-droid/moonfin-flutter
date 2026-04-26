@@ -116,7 +116,7 @@ dev_dependencies:
   injectable_generator: ^2.7.0
   riverpod_generator: ^2.6.4
   drift_dev: ^2.28.0
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
   msix: ^3.16.12
 
 dependency_overrides:
