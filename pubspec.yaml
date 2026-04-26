@@ -35,9 +35,9 @@ dependencies:
   shared_preferences: ^2.5.5
   flutter_secure_storage: ^10.0.0
   path_provider: ^2.1.5
-  permission_handler: ^11.4.0
+  permission_handler: ^12.0.1
   drift: ^2.28.2
-  sqlite3_flutter_libs: ^0.5.42
+  sqlite3_flutter_libs: ^0.6.0
 
   # Media Playback
   media_kit: 1.2.6
@@ -51,10 +51,10 @@ dependencies:
   crypto: ^3.0.6
 
   # Connectivity
-  connectivity_plus: ^6.1.5
+  connectivity_plus: ^7.1.1
 
   # Notifications
-  flutter_local_notifications: ^19.5.0
+  flutter_local_notifications: ^21.0.0
   audio_service: ^0.18.18
   audio_session: ^0.2.3
 
@@ -68,7 +68,7 @@ dependencies:
   package_info_plus: ^8.3.1
   uuid: ^4.5.3
   cupertino_icons: ^1.0.9
-  window_manager: ^0.4.3
+  window_manager: ^0.5.1
 
   # Local packages
   server_core:
@@ -88,7 +88,7 @@ dependencies:
   jellyfin_preference:
     path: packages/preference
   url_launcher: ^6.3.2
-  file_picker: ^10.3.10
+  file_picker: ^11.0.2
   webview_flutter: ^4.13.1
   pdfrx: ^2.2.24
   flutter_widget_from_html_core: ^0.16.1

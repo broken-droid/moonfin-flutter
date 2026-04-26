@@ -3378,6 +3378,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         );
     }
 
+    if (!context.mounted) return;
     await context.push(
       isAudio ? Destinations.audioPlayer : Destinations.videoPlayer,
     );
@@ -3519,6 +3520,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
 
     if (localTrailer != null) {
       await manager.playItems([localTrailer]);
+      if (!context.mounted) return;
       await context.push(Destinations.videoPlayer);
       viewModel.load();
       return;

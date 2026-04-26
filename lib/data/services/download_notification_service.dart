@@ -42,7 +42,7 @@ class DownloadNotificationService {
       linux: linuxSettings,
     );
 
-    await _plugin.initialize(initSettings);
+    await _plugin.initialize(settings: initSettings);
     _initialized = true;
 
     if (PlatformDetection.isAndroid) {
@@ -138,7 +138,7 @@ class DownloadNotificationService {
     if (!_initialized) return;
     _lastProgressSignature = null;
     await _stopForegroundService();
-    await _plugin.cancel(_progressNotificationId);
+    await _plugin.cancel(id: _progressNotificationId);
   }
 
   Future<void> _showAndroidForegroundProgress(
@@ -165,9 +165,9 @@ class DownloadNotificationService {
         final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>();
         await androidPlugin?.startForegroundService(
-          _progressNotificationId,
-          title,
-          body,
+          id: _progressNotificationId,
+          title: title,
+          body: body,
           notificationDetails: androidDetails,
           foregroundServiceTypes: {
             AndroidServiceForegroundType.foregroundServiceTypeDataSync,
@@ -175,20 +175,20 @@ class DownloadNotificationService {
         );
         _foregroundServiceRunning = true;
       } catch (_) {
-        await _plugin.show(_progressNotificationId, title, body, details);
+        await _plugin.show(id: _progressNotificationId, title: title, body: body, notificationDetails: details);
       }
     } else {
-      await _plugin.show(_progressNotificationId, title, body, details);
+      await _plugin.show(id: _progressNotificationId, title: title, body: body, notificationDetails: details);
     }
   }
 
   Future<void> _showStandardProgress(
       String title, String body, int percent) async {
     await _plugin.show(
-      _progressNotificationId,
-      title,
-      body,
-      const NotificationDetails(
+      id: _progressNotificationId,
+      title: title,
+      body: body,
+      notificationDetails: const NotificationDetails(
         iOS: DarwinNotificationDetails(),
         macOS: DarwinNotificationDetails(),
         linux: LinuxNotificationDetails(),
@@ -198,10 +198,10 @@ class DownloadNotificationService {
 
   Future<void> _showSimple(int id, String title, String body) async {
     await _plugin.show(
-      id,
-      title,
-      body,
-      NotificationDetails(
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _channelId,
           _channelName,
@@ -229,7 +229,7 @@ class DownloadNotificationService {
     }
     _foregroundServiceRunning = false;
     try {
-      await _plugin.cancel(_progressNotificationId)
+      await _plugin.cancel(id: _progressNotificationId)
           .timeout(const Duration(seconds: 5));
     } catch (_) {
     }

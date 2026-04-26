@@ -161,7 +161,7 @@ class DownloadSettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _pickFolder(BuildContext context, UserPreferences prefs) async {
-    final result = await FilePicker.platform.getDirectoryPath();
+    final result = await FilePicker.getDirectoryPath();
     if (result == null) return;
 
     final oldPath = prefs.get(UserPreferences.customDownloadPath);

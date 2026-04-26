@@ -87,7 +87,7 @@ class _AdminLogViewerScreenState extends State<AdminLogViewerScreen> {
   }
 
   Future<void> _saveToFile() async {
-    final path = await FilePicker.platform.saveFile(
+    final path = await FilePicker.saveFile(
       dialogTitle: AppLocalizations.of(context).adminSaveLogFile,
       fileName: widget.fileName,
     );

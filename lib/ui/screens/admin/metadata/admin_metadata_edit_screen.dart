@@ -1251,7 +1251,7 @@ class _AdminMetadataEditScreenState extends State<AdminMetadataEditScreen>
 
   Future<void> _uploadImage(ImageType imageType) async {
     final l10n = AppLocalizations.of(context);
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: const ['png', 'jpg', 'jpeg', 'webp', 'gif', 'bmp'],
