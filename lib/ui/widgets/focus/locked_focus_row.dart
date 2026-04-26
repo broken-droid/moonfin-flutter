@@ -119,39 +119,6 @@ class LockedFocusRowState<T> extends State<LockedFocusRow<T>> {
     _itemKeys = List<GlobalKey>.generate(widget.items.length, (_) => GlobalKey());
   }
 
-  double? focusedItemGlobalCenterX() {
-    if (_focusedIndex < 0 || _focusedIndex >= _itemKeys.length) return null;
-    final context = _itemKeys[_focusedIndex].currentContext;
-    if (context == null) return null;
-    final renderObj = context.findRenderObject();
-    if (renderObj is! RenderBox || !renderObj.hasSize) return null;
-    final origin = renderObj.localToGlobal(Offset.zero);
-    return origin.dx + (renderObj.size.width / 2);
-  }
-
-  void requestFocusNearestToGlobalX(double globalX) {
-    if (widget.items.isEmpty) return;
-    var bestIndex = -1;
-    var bestDistance = double.infinity;
-    for (var i = 0; i < _itemKeys.length; i++) {
-      final context = _itemKeys[i].currentContext;
-      if (context == null) continue;
-      final renderObj = context.findRenderObject();
-      if (renderObj is! RenderBox || !renderObj.hasSize) continue;
-      final origin = renderObj.localToGlobal(Offset.zero);
-      final centerX = origin.dx + (renderObj.size.width / 2);
-      final distance = (centerX - globalX).abs();
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestIndex = i;
-      }
-    }
-
-    if (bestIndex >= 0) {
-      requestFocusAt(bestIndex);
-    }
-  }
-
   void requestFocusAt(int index) {
     if (widget.items.isEmpty) return;
     final clamped = index.clamp(0, widget.items.length - 1);

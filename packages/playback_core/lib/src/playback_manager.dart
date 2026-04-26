@@ -553,6 +553,8 @@ class PlaybackManager {
       final mpvId = _mpvTrackIdForStream(streamIndex, 'Audio');
       if (mpvId != null) {
         await _backend?.setAudioTrack(mpvId);
+      } else {
+        _waitAndApplyTrackSelections(_playbackSessionToken);
       }
     } else {
       await _reResolveAtCurrentPosition();
@@ -587,6 +589,8 @@ class PlaybackManager {
       final mpvId = _mpvTrackIdForStream(streamIndex, 'Subtitle');
       if (mpvId != null) {
         await _backend?.setSubtitleTrack(mpvId, isBitmapSubtitle: isBitmap);
+      } else {
+        _waitAndApplyTrackSelections(_playbackSessionToken);
       }
     } else if (_currentResolution?.playMethod == StreamPlayMethod.transcode) {
       // For transcoded streams, select the matching external subtitle track.

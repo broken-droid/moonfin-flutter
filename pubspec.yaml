@@ -41,8 +41,7 @@ dependencies:
 
   # Media Playback
   media_kit: 1.2.6
-  media_kit_video:
-    path: packages/media_kit_video_fork
+  media_kit_video: ^2.0.1
   media_kit_libs_video: 1.0.7
 
   # Image Loading

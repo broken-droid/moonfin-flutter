@@ -49,6 +49,33 @@ class MediaKitPlayerBackend implements PlayerBackend {
     } catch (_) {}
   }
 
+  static Future<bool> _tryNativeSetProperty(
+    Object native,
+    String key,
+    String value,
+  ) async {
+    try {
+      final dynamic dyn = native;
+      await Future<void>.value(dyn.setProperty(key, value));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<bool> _tryNativeCommand(
+    Object native,
+    List<String> command,
+  ) async {
+    try {
+      final dynamic dyn = native;
+      await Future<void>.value(dyn.command(command));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   static Future<void> _nativeCommand(
     Object native,
     List<String> command,
@@ -93,6 +120,12 @@ class MediaKitPlayerBackend implements PlayerBackend {
     final platform = player.platform;
     if (platform is NativePlayer) {
       _nativeSetProperty(platform, 'network-timeout', '120');
+      if (PlatformDetection.isAndroid && PlatformDetection.isTV) {
+        // Keep this disabled from startup so speed changes do not trigger
+        // tempo/pitch filter graph reconfiguration on Android TV.
+        _nativeSetProperty(platform, 'audio-pitch-correction', 'no');
+        _nativeSetProperty(platform, 'pitch-correction', 'no');
+      }
       if (PlatformDetection.isIOS) {
         _nativeSetProperty(platform, 'tone-mapping', 'auto');
       }
@@ -594,6 +627,40 @@ class MediaKitPlayerBackend implements PlayerBackend {
 
   @override
   Future<void> setPlaybackSpeed(double speed) async {
+    if (PlatformDetection.isAndroid && PlatformDetection.isTV) {
+      // On some Android TV builds, Player.setRate can destabilize playback.
+      // Use native mpv APIs only and never fall back to setRate on TV.
+      try {
+        final native = _player.platform as NativePlayer;
+        final wasPlaying = _player.state.playing;
+        if (wasPlaying) {
+          await _player.pause();
+        }
+        final speedValue = speed.toString();
+        await _tryNativeSetProperty(native, 'audio-pitch-correction', 'no');
+
+        final setOk = await _tryNativeSetProperty(native, 'speed', speedValue);
+        if (setOk) {
+          if (wasPlaying) await _player.play();
+          return;
+        }
+
+        final cmdOk = await _tryNativeCommand(native, [
+          'set_property',
+          'speed',
+          speedValue,
+        ]);
+        if (cmdOk) {
+          if (wasPlaying) await _player.play();
+          return;
+        }
+
+        if (wasPlaying) {
+          await _player.play();
+        }
+        return;
+      } catch (_) {}
+    }
     await _player.setRate(speed);
   }
 

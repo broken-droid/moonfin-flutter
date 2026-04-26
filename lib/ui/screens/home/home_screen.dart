@@ -1280,8 +1280,6 @@ class _ContentRowsState extends State<_ContentRows>
     _verticalNavInFlight = true;
     final maxRow = rows.length - 1;
     var target = fromRowIndex + direction;
-    final fromState = _rowStateOf(fromRowIndex);
-    final anchorGlobalX = fromState?.focusedItemGlobalCenterX();
     try {
       while (target >= 0 && target <= maxRow) {
         final candidate = rows[target];
@@ -1289,16 +1287,9 @@ class _ContentRowsState extends State<_ContentRows>
         if (hasItems) {
           final targetState = _rowStateOf(target);
           if (targetState != null) {
-            if (anchorGlobalX != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted) return;
-                targetState.requestFocusNearestToGlobalX(anchorGlobalX);
-              });
-            } else {
-              _requestRowFocusFromMemory(target);
-            }
+            targetState.requestFocusAt(0);
           } else {
-            _requestRowFocusFromMemory(target);
+            _requestRowFocusFromMemory(target, preferredIndex: 0);
           }
 
           final navComplete = Completer<void>();

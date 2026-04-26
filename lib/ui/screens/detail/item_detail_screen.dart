@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -856,18 +857,19 @@ class _DetailContent extends StatelessWidget {
     ];
   }
 
-  void _playFromChapter(
+  Future<void> _playFromChapter(
     BuildContext context,
     AggregatedItem item,
     Duration startPosition,
     String? mediaSourceId,
-  ) {
+  ) async {
     final manager = GetIt.instance<PlaybackManager>();
-    manager.playItems(
+    await manager.playItems(
       [item],
       startPosition: startPosition,
       mediaSourceId: mediaSourceId,
     );
+    if (!context.mounted) return;
     context.push(Destinations.videoPlayer);
   }
 
@@ -886,11 +888,13 @@ class _DetailContent extends StatelessWidget {
             item: item,
             imageApi: viewModel.imageApi,
             onPlayFromChapter:
-                (position) => _playFromChapter(
-                  context,
-                  item,
-                  position,
-                  selectedMediaSourceId,
+                (position) => unawaited(
+                  _playFromChapter(
+                    context,
+                    item,
+                    position,
+                    selectedMediaSourceId,
+                  ),
                 ),
             scrollController: ctrl,
           ),
@@ -1048,8 +1052,11 @@ class _DetailContent extends StatelessWidget {
           reorderable: canManagePlaylistTracks,
           onPlayTrack: (index) {
             final manager = GetIt.instance<PlaybackManager>();
-            manager.playItems(viewModel.tracks, startIndex: index);
-            context.push(Destinations.audioPlayer);
+            unawaited(() async {
+              await manager.playItems(viewModel.tracks, startIndex: index);
+              if (!context.mounted) return;
+              context.push(Destinations.audioPlayer);
+            }());
           },
           onReorder:
               canManagePlaylistTracks
@@ -3303,7 +3310,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         if (nextUp == null) return;
         final startPosition =
             resume ? (nextUp.playbackPosition ?? Duration.zero) : Duration.zero;
-        manager.playItems(
+        await manager.playItems(
           [nextUp],
           startPosition: startPosition,
           audioStreamIndex: audioStreamIndex,
@@ -3324,7 +3331,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
             resume
                 ? (episodes[idx].playbackPosition ?? Duration.zero)
                 : Duration.zero;
-        manager.playItems(
+        await manager.playItems(
           episodes,
           startIndex: idx,
           startPosition: startPosition,
@@ -3341,7 +3348,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
               resume
                   ? (episodes[idx].playbackPosition ?? Duration.zero)
                   : Duration.zero;
-          manager.playItems(
+          await manager.playItems(
             episodes,
             startIndex: idx,
             startPosition: startPosition,
@@ -3356,13 +3363,13 @@ class _ActionButtonsState extends State<_ActionButtons> {
       case 'MusicAlbum':
         final tracks = viewModel.tracks;
         if (tracks.isEmpty) return;
-        manager.playItems(tracks);
+        await manager.playItems(tracks);
 
       defaultCase:
       default:
         final startPosition =
             resume ? (item.playbackPosition ?? Duration.zero) : Duration.zero;
-        manager.playItems(
+        await manager.playItems(
           [item],
           startPosition: startPosition,
           audioStreamIndex: audioStreamIndex,
@@ -3511,7 +3518,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
     if (!context.mounted) return;
 
     if (localTrailer != null) {
-      manager.playItems([localTrailer]);
+      await manager.playItems([localTrailer]);
       await context.push(Destinations.videoPlayer);
       viewModel.load();
       return;
@@ -6531,6 +6538,22 @@ class _AlbumActions extends StatelessWidget {
     this.onDeletePlaylist,
   });
 
+  void _playAndOpenAudio(
+    BuildContext context,
+    PlaybackManager manager,
+    List<AggregatedItem> queue,
+  ) {
+    unawaited(() async {
+      try {
+        await manager.playItems(queue);
+      } catch (_) {
+        return;
+      }
+      if (!context.mounted) return;
+      context.push(Destinations.audioPlayer);
+    }());
+  }
+
   @override
   Widget build(BuildContext context) {
     final manager = GetIt.instance<PlaybackManager>();
@@ -6573,8 +6596,7 @@ class _AlbumActions extends StatelessWidget {
             icon: Icons.play_arrow,
             onPressed: () {
               if (tracks.isEmpty) return;
-              manager.playItems(tracks);
-              context.push(Destinations.audioPlayer);
+              _playAndOpenAudio(context, manager, tracks);
             },
           ),
           _DetailActionButton(
@@ -6583,8 +6605,7 @@ class _AlbumActions extends StatelessWidget {
             onPressed: () {
               if (tracks.isEmpty) return;
               final shuffled = List<AggregatedItem>.from(tracks)..shuffle();
-              manager.playItems(shuffled);
-              context.push(Destinations.audioPlayer);
+              _playAndOpenAudio(context, manager, shuffled);
             },
           ),
           if (onDownloadAll != null)

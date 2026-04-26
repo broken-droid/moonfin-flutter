@@ -76,6 +76,7 @@ class ItemDetailViewModel extends ChangeNotifier {
       _tracks.every(hasPlaylistEntryId);
 
   final String? _serverId;
+  bool _isDisposed = false;
 
   ItemDetailViewModel({
     required this.itemId,
@@ -663,4 +664,16 @@ class ItemDetailViewModel extends ChangeNotifier {
 
   List<AggregatedItem> get filmographySeries =>
       _filmography.where((i) => i.type == 'Series').toList();
+
+  @override
+  void notifyListeners() {
+    if (_isDisposed) return;
+    super.notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
 }

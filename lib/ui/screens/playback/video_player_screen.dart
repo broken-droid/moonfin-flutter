@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -28,6 +29,7 @@ import '../../../data/services/cast/native_cast_channel.dart';
 import '../../../data/services/cast/native_dlna_channel.dart';
 import '../../../data/services/media_segment_service.dart';
 import '../../../data/services/media_server_client_factory.dart';
+import '../../../data/services/theme_music_service.dart';
 import '../../../platform/pip_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
@@ -62,6 +64,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _nativeDlna = GetIt.instance<NativeDlnaChannel>();
   final _nativeAirPlay = GetIt.instance<NativeAirPlayChannel>();
   final _pipService = GetIt.instance<PipService>();
+  final _themeMusicService = GetIt.instance<ThemeMusicService>();
   late MediaSegmentService _segmentService;
 
   bool _controlsVisible = true;
@@ -72,6 +75,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   double _audioDelay = 0.0;
   double _subtitleDelay = 0.0;
   bool _isStopping = false;
+  DateTime? _suppressTvLifecycleExitUntil;
   bool _isOsdLocked = false;
   String? _remotePlaybackState;
   int _remotePositionTicks = 0;
@@ -83,6 +87,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   bool _didRequestIosPiPForBackground = false;
   bool _isStartingIosPiPForBackground = false;
   bool _didHandleBackgroundSuspend = false;
+  Timer? _tvBackgroundExitTimer;
+  DateTime? _suppressBackNavigationUntil;
+  bool _isPlayerMutationInFlight = false;
   Duration? _positionBeforeScreenLock;
   StreamSubscription? _screenLockSub;
   bool _isRestoringPosition = false;
@@ -150,6 +157,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   Timer? _skipBackwardTimer;
   int _skipForwardAccum = 0;
   int _skipBackwardAccum = 0;
+
+  void _debugNavLog(String message) {
+    if (!kDebugMode) return;
+    debugPrint('[PlaybackNav] $message');
+  }
 
   PlayerState get _state => _manager.state;
   QueueService get _queue => _manager.queueService;
@@ -457,7 +469,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       if (newStream != null) {
         final streamIndex = newStream['Index'] as int?;
         if (streamIndex != null) {
-          _manager.changeSubtitleTrack(streamIndex);
+          unawaited(
+            _runSinglePlayerMutation(
+              'downloaded_subtitle_$streamIndex',
+              () => _manager.changeSubtitleTrack(streamIndex),
+            ),
+          );
         }
         messenger.showSnackBar(
           SnackBar(
@@ -499,6 +516,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   @override
   void initState() {
     super.initState();
+    _themeMusicService.setExternalAudioActive(true);
     _segmentService = _createSegmentService();
     _zoomMode = _prefs.get(UserPreferences.playerZoomMode);
     _applySubtitleStyle();
@@ -613,6 +631,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _dlnaEventsSub?.cancel();
     _airPlayEventsSub?.cancel();
     _screenLockSub?.cancel();
+    _tvBackgroundExitTimer?.cancel();
     _overlayFocus.dispose();
     _tvSeekbarFocus.dispose();
     _tvSkipSegmentFocus.dispose();
@@ -621,6 +640,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _tvSecondaryFocus.dispose();
     _tvTransportLastFocus.dispose();
     _tvSecondaryLastFocus.dispose();
+    _themeMusicService.setExternalAudioActive(false);
     _pipService.enableAutoPiP(false);
     if (!_isStopping) _manager.stop(userInitiated: false);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -746,8 +766,78 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
   }
 
+  void _suppressTvLifecycleExit({Duration duration = const Duration(seconds: 8)}) {
+    if (!PlatformDetection.isTV) return;
+    _suppressTvLifecycleExitUntil = DateTime.now().add(duration);
+  }
+
+  bool _isTvLifecycleExitSuppressed() {
+    if (!PlatformDetection.isTV) return false;
+    final until = _suppressTvLifecycleExitUntil;
+    if (until == null) return false;
+    return DateTime.now().isBefore(until);
+  }
+
+  void _scheduleTvBackgroundExit() {
+    _tvBackgroundExitTimer?.cancel();
+    _debugNavLog('scheduleTvBackgroundExit armed (2s)');
+    _tvBackgroundExitTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted || _isStopping) return;
+      if (_isInPiP || _pipService.isScreenLocked) return;
+      final lifecycle = WidgetsBinding.instance.lifecycleState;
+      if (lifecycle == AppLifecycleState.resumed ||
+          lifecycle == AppLifecycleState.inactive) {
+        _debugNavLog('scheduleTvBackgroundExit aborted lifecycle=$lifecycle');
+        return;
+      }
+      _debugNavLog('scheduleTvBackgroundExit firing _exitPlayback lifecycle=$lifecycle');
+      unawaited(_exitPlayback());
+    });
+  }
+
+  void _cancelTvBackgroundExit() {
+    _tvBackgroundExitTimer?.cancel();
+    _tvBackgroundExitTimer = null;
+    _debugNavLog('cancelTvBackgroundExit');
+  }
+
+  void _suppressBackNavigation({Duration duration = const Duration(seconds: 1)}) {
+    _suppressBackNavigationUntil = DateTime.now().add(duration);
+    _debugNavLog('suppressBackNavigation armed (${duration.inMilliseconds}ms)');
+  }
+
+  bool _isBackNavigationSuppressed() {
+    final until = _suppressBackNavigationUntil;
+    if (until == null) return false;
+    return DateTime.now().isBefore(until);
+  }
+
+  Future<void> _runSinglePlayerMutation(
+    String label,
+    FutureOr<void> Function() action,
+    {Duration suppressBackFor = const Duration(seconds: 1)}
+  ) async {
+    if (_isPlayerMutationInFlight) {
+      _debugNavLog('player mutation ignored in-flight label=$label');
+      return;
+    }
+    _isPlayerMutationInFlight = true;
+    _suppressBackNavigation(duration: suppressBackFor);
+    _suppressTvLifecycleExit();
+    _debugNavLog('player mutation start label=$label');
+    try {
+      await Future<void>.sync(action);
+      _debugNavLog('player mutation success label=$label');
+    } catch (error) {
+      _debugNavLog('player mutation error label=$label error=$error');
+    } finally {
+      _isPlayerMutationInFlight = false;
+    }
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState lifecycleState) {
+    _debugNavLog('lifecycle=$lifecycleState inPiP=$_isInPiP stopping=$_isStopping');
     switch (lifecycleState) {
       case AppLifecycleState.inactive:
         if (PlatformDetection.isIOS) {
@@ -762,9 +852,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       case AppLifecycleState.paused:
       case AppLifecycleState.hidden:
         if (PlatformDetection.isTV) {
+          if (_isTvLifecycleExitSuppressed()) return;
           if (_didHandleBackgroundSuspend) return;
           _didHandleBackgroundSuspend = true;
-          unawaited(_exitPlayback());
+          _scheduleTvBackgroundExit();
           return;
         }
         if (PlatformDetection.isIOS) {
@@ -775,6 +866,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _backend.setVideoEnabled(false);
       case AppLifecycleState.resumed:
         _didHandleBackgroundSuspend = false;
+        _cancelTvBackgroundExit();
         _didRequestIosPiPForBackground = false;
         if (PlatformDetection.isIOS && _isInPiP) {
           _pipService.enableAutoPiP(false);
@@ -1035,6 +1127,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   Future<void> _exitPlayback() async {
     if (_isStopping) return;
+    _debugNavLog('exitPlayback start route=${ModalRoute.of(context)?.settings.name ?? 'unnamed'}');
     _isStopping = true;
     _pipService.enableAutoPiP(false);
     await _manager.stop(userInitiated: false);
@@ -1044,7 +1137,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         await _setDesktopFullscreen(false);
       }
     }
-    if (mounted) Navigator.of(context).pop();
+    if (mounted) {
+      _debugNavLog('exitPlayback pop current route');
+      Navigator.of(context).pop();
+    }
   }
 
   void _scheduleHide() {
@@ -1124,6 +1220,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     } else {
       _showControls();
     }
+  }
+
+  bool _dismissTopOverlayRouteIfAny() {
+    final currentRoute = ModalRoute.of(context);
+    if (currentRoute == null) return false;
+
+    final navigator = Navigator.of(context);
+    var dismissed = false;
+    navigator.popUntil((route) {
+      if (route == currentRoute) return true;
+      dismissed = true;
+      return false;
+    });
+    _debugNavLog('dismissTopOverlayRouteIfAny dismissed=$dismissed');
+    return dismissed;
   }
 
   void _seekRelative(int ms, {bool showControls = true}) {
@@ -1302,6 +1413,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         case LogicalKeyboardKey.escape:
         case LogicalKeyboardKey.browserBack:
         case LogicalKeyboardKey.backspace:
+          if (_isBackNavigationSuppressed()) {
+            _debugNavLog('back key ignored due to suppression window');
+            return KeyEventResult.handled;
+          }
+          if (_dismissTopOverlayRouteIfAny()) {
+            return KeyEventResult.handled;
+          }
+          if (_controlsVisible) {
+            _hideTimer?.cancel();
+            setState(() => _controlsVisible = false);
+            return KeyEventResult.handled;
+          }
           _exitPlayback();
           return KeyEventResult.handled;
         case LogicalKeyboardKey.arrowLeft:
@@ -1408,6 +1531,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
+        if (_isBackNavigationSuppressed()) {
+          _debugNavLog('PopScope back ignored due to suppression window');
+          return;
+        }
+        _debugNavLog('PopScope intercepted back -> _exitPlayback');
         _exitPlayback();
       },
       child: Scaffold(
@@ -3132,6 +3260,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     String? tooltip,
     GlobalKey<PopupMenuButtonState<double>>? popupKey,
   }) {
+    final speedOptions = const <double>[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
     return SizedBox(
       width: extent,
       height: extent,
@@ -3139,12 +3268,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         key: popupKey,
         tooltip: PlatformDetection.useDesktopUi ? tooltip : null,
         onSelected: (speed) {
-          _manager.setPlaybackSpeed(speed);
+          unawaited(
+            _runSinglePlayerMutation(
+              'speed_$speed',
+              () => _manager.setPlaybackSpeed(speed),
+              suppressBackFor: const Duration(seconds: 3),
+            ),
+          );
           _showControls();
         },
         offset: const Offset(0, -200),
         color: AppColorScheme.surface,
-        itemBuilder: (_) => [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
+        itemBuilder: (_) => speedOptions
             .map(
               (s) => PopupMenuItem(
                 value: s,
@@ -3220,6 +3355,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _showTrackSelector({required bool audio}) {
+    _debugNavLog('showTrackSelector audio=$audio tv=${PlatformDetection.isTV}');
     final l10n = AppLocalizations.of(context);
     final resolution = _manager.currentResolution;
     final streamType = audio ? 'Audio' : 'Subtitle';
@@ -3243,11 +3379,31 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     } else {
       final subIdx = _manager.subtitleStreamIndex;
       currentStreamIndex =
-          subIdx ?? // null = server default
+          subIdx ??
           streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index']
               as int?;
     }
     final isSubsOff = !audio && _manager.subtitleStreamIndex == -1;
+    var didHandleSelection = false;
+
+    void runTrackSelectionAction(
+      FutureOr<void> Function() action, {
+      required String label,
+    }) {
+      unawaited(() async {
+        _debugNavLog('trackSelector action request label=$label audio=$audio');
+        await _runSinglePlayerMutation(label, action);
+      }());
+    }
+
+    bool markSelectionHandled(String reason) {
+      if (didHandleSelection) {
+        _debugNavLog('trackSelector duplicate tap ignored reason=$reason');
+        return false;
+      }
+      didHandleSelection = true;
+      return true;
+    }
 
     Widget sheetBody(
       ScrollController? scrollController,
@@ -3287,8 +3443,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                             : Colors.white38,
                       ),
                       onTap: () {
-                        _manager.disableSubtitles();
+                        if (!markSelectionHandled('subtitles_off')) return;
+                        _debugNavLog('trackSelector tap subtitles off');
+                        _suppressBackNavigation();
                         Navigator.pop(sheetCtx);
+                        runTrackSelectionAction(
+                          _manager.disableSubtitles,
+                          label: 'subtitles_off',
+                        );
                       },
                     ),
                   ...streams.asMap().entries.map((e) {
@@ -3331,12 +3493,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                             : Colors.white38,
                       ),
                       onTap: () {
-                        if (audio) {
-                          _manager.changeAudioTrack(streamIndex);
-                        } else {
-                          _manager.changeSubtitleTrack(streamIndex);
-                        }
+                        if (!markSelectionHandled('stream_$streamIndex')) return;
+                        _debugNavLog('trackSelector tap streamType=$streamType index=$streamIndex');
+                        _suppressBackNavigation();
                         Navigator.pop(sheetCtx);
+                        runTrackSelectionAction(() async {
+                          if (audio) {
+                            await _manager.changeAudioTrack(streamIndex);
+                          } else {
+                            await _manager.changeSubtitleTrack(streamIndex);
+                          }
+                        }, label: '${audio ? 'audio' : 'subtitle'}_$streamIndex');
                       },
                     );
                   }),
@@ -3355,6 +3522,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                         style: const TextStyle(color: Colors.white54),
                       ),
                       onTap: () async {
+                        if (!markSelectionHandled('download_remote_subtitles')) return;
+                        _suppressBackNavigation();
                         Navigator.pop(sheetCtx);
                         await _downloadRemoteSubtitles(item, streams, audioStreams);
                       },
@@ -3368,11 +3537,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
 
     if (PlatformDetection.isTV) {
-      unawaited(
-        _showTvDialogBox(
+      unawaited(() async {
+        _debugNavLog('trackSelector opening tv dialog');
+        await _showTvDialogBox(
           child: Builder(builder: (dialogCtx) => sheetBody(null, dialogCtx)),
-        ),
-      );
+        );
+        _debugNavLog('trackSelector tv dialog closed');
+      }());
     } else {
       showFocusRestoringModalBottomSheet(
         context: context,
@@ -3385,7 +3556,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           expand: false,
           builder: (_, scrollController) => sheetBody(scrollController, sheetCtx),
         ),
-      );
+      ).whenComplete(() {
+        _debugNavLog('trackSelector bottom sheet closed');
+      });
     }
     _showControls();
   }
@@ -4244,7 +4417,23 @@ class _TvFocusButtonState extends State<_TvFocusButton> {
   }
 
   void _onFocusChange() {
-    if (mounted) setState(() => _focused = _effectiveNode.hasFocus);
+    if (!mounted) return;
+    final hasFocus = _effectiveNode.hasFocus;
+    if (_focused != hasFocus) {
+      setState(() => _focused = hasFocus);
+    }
+
+    if (hasFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_effectiveNode.hasFocus) return;
+        Scrollable.ensureVisible(
+          context,
+          alignment: 0.5,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   @override
