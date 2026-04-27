@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:playback_core/playback_core.dart';
@@ -33,7 +34,9 @@ import '../../../platform/pip_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/audio_labels.dart';
+import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
+import '../../navigation/destinations.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
@@ -2475,7 +2478,22 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         final l10n = AppLocalizations.of(context);
         final item = _queue.currentItem;
         final hasChapters = item is AggregatedItem && item.chapters.isNotEmpty;
-        final hasCast = item is AggregatedItem && item.people.isNotEmpty;
+        final hasCast = _hasCastCrew(item);
+        final resolution = _manager.currentResolution;
+        final offlineMeta = _manager.currentOfflineMetadata;
+        final allStreams =
+          resolution?.mediaStreams ??
+          (offlineMeta?['MediaStreams'] as List?)
+            ?.cast<Map<String, dynamic>>() ??
+          (item is AggregatedItem ? item.mediaStreams : const <Map<String, dynamic>>[]);
+        final subtitleTrackCount = allStreams
+          .where((s) => s['Type'] == 'Subtitle')
+          .length;
+        final audioTrackCount = allStreams
+          .where((s) => s['Type'] == 'Audio')
+          .length;
+        final showSubtitleButton = subtitleTrackCount > 0;
+        final showAudioButton = audioTrackCount > 1;
         final isLandscape =
             MediaQuery.of(context).orientation == Orientation.landscape;
         final secondaryIconSize = isLandscape ? 28.0 : 24.0;
@@ -2525,20 +2543,22 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               extent: secondaryExtent,
               tooltip: l10n.chapters,
             ),
-          _controlButton(
-            Icons.subtitles_outlined,
-            onPressed: () => _showTrackSelector(audio: false),
-            size: secondaryIconSize,
-            extent: secondaryExtent,
-            tooltip: l10n.subtitles,
-          ),
-          _controlButton(
-            Icons.audiotrack_outlined,
-            onPressed: () => _showTrackSelector(audio: true),
-            size: secondaryIconSize,
-            extent: secondaryExtent,
-            tooltip: l10n.audio,
-          ),
+          if (showSubtitleButton)
+            _controlButton(
+              Icons.subtitles_outlined,
+              onPressed: () => _showTrackSelector(audio: false),
+              size: secondaryIconSize,
+              extent: secondaryExtent,
+              tooltip: l10n.subtitles,
+            ),
+          if (showAudioButton)
+            _controlButton(
+              Icons.audiotrack_outlined,
+              onPressed: () => _showTrackSelector(audio: true),
+              size: secondaryIconSize,
+              extent: secondaryExtent,
+              tooltip: l10n.audio,
+            ),
           _controlButton(
             Icons.timer_outlined,
             onPressed: () => _showDelayAdjuster(audio: false),
@@ -2556,7 +2576,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           if (hasCast)
             _controlButton(
               Icons.people_outline_rounded,
-              onPressed: _showCast,
+              onPressed: () {
+                unawaited(_showCast());
+              },
               size: secondaryIconSize,
               extent: secondaryExtent,
               tooltip: l10n.castAndCrew,
@@ -2621,7 +2643,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             ),
         ];
 
-        final estimatedWidth = secondaryButtons.length * (secondaryExtent + 8);
+        final orderedSecondaryButtons = PlatformDetection.isTV
+            ? List<Widget>.generate(
+                secondaryButtons.length,
+                (index) => FocusTraversalOrder(
+                  order: NumericFocusOrder(index.toDouble()),
+                  child: secondaryButtons[index],
+                ),
+              )
+            : secondaryButtons;
+
+        final estimatedWidth =
+            orderedSecondaryButtons.length * (secondaryExtent + 8);
 
         final layoutBuilder = LayoutBuilder(
           builder: (context, constraints) {
@@ -2635,7 +2668,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   mainAxisAlignment: PlatformDetection.isTV
                       ? MainAxisAlignment.start
                       : MainAxisAlignment.spaceEvenly,
-                  children: secondaryButtons,
+                  children: orderedSecondaryButtons,
                 ),
               );
             }
@@ -2647,7 +2680,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    for (final button in secondaryButtons)
+                    for (final button in orderedSecondaryButtons)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2),
                         child: button,
@@ -2674,7 +2707,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               return KeyEventResult.ignored;
             },
             child: FocusTraversalGroup(
-              policy: ReadingOrderTraversalPolicy(),
+              policy: OrderedTraversalPolicy(),
               child: layoutBuilder,
             ),
           );
@@ -3665,17 +3698,97 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _showControls();
   }
 
-  void _showCast() {
+  bool _hasCastCrew(dynamic item) {
+    if (item is! AggregatedItem) return false;
+    if (item.people.isNotEmpty) return true;
+    return item.type == 'Episode' &&
+        item.seriesId != null &&
+        item.seriesId!.isNotEmpty;
+  }
+
+  Future<List<Map<String, dynamic>>> _resolveCastPeople(
+    AggregatedItem item,
+  ) async {
+    if (item.people.isNotEmpty) {
+      return item.people;
+    }
+
+    if (item.type != 'Episode' || item.seriesId == null || item.seriesId!.isEmpty) {
+      return const <Map<String, dynamic>>[];
+    }
+
+    try {
+      final client = _clientForItem(item);
+      final seriesData = await client.itemsApi.getItem(item.seriesId!);
+      final people = (seriesData['People'] as List?)
+          ?.cast<Map<String, dynamic>>()
+          .toList(growable: false);
+      return people ?? const <Map<String, dynamic>>[];
+    } catch (_) {
+      return const <Map<String, dynamic>>[];
+    }
+  }
+
+  Future<void> _showCast() async {
     final item = _queue.currentItem;
     if (item is! AggregatedItem) return;
-    final people = item.people;
+    final people = await _resolveCastPeople(item);
     if (people.isEmpty) return;
 
-    Widget body(ScrollController? scrollController) {
+    final imageApi = _clientForItem(item).imageApi;
+
+    void openPersonDetails(BuildContext routeContext, String personId) {
+      Navigator.of(routeContext).pop();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.push(Destinations.item(personId, serverId: item.serverId));
+      });
+    }
+
+    Widget personCard(
+      BuildContext routeContext,
+      Map<String, dynamic> person, {
+      bool autofocus = false,
+    }) {
+      final name = (person['Name'] as String?) ?? '';
+      final role = person['Role'] as String?;
+      final type = person['Type'] as String?;
+      final subtitle = (role != null && role.isNotEmpty) ? role : (type ?? '');
+      final personId = person['Id'] as String?;
+      final tag = person['PrimaryImageTag'] as String?;
+
+      String? imageUrl;
+      if (personId != null && tag != null && tag.isNotEmpty) {
+        imageUrl = imageApi.getPrimaryImageUrl(
+          personId,
+          maxHeight: 200,
+          tag: tag,
+        );
+      }
+
+      return _CastPersonTile(
+        name: name,
+        subtitle: subtitle,
+        imageUrl: imageUrl,
+        autofocus: autofocus,
+        onPressed: personId == null
+            ? null
+            : () => openPersonDetails(routeContext, personId),
+      );
+    }
+
+    Widget body(BuildContext routeContext) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.spaceLg),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.spaceLg,
+              AppSpacing.spaceLg,
+              AppSpacing.spaceLg,
+              AppSpacing.spaceMd,
+            ),
             child: Text(
               AppLocalizations.of(context).castAndCrew,
               style: const TextStyle(
@@ -3685,30 +3798,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              controller: scrollController,
+          SizedBox(
+            height: 210,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.spaceLg,
+                vertical: AppSpacing.spaceSm,
+              ),
               itemCount: people.length,
-              itemBuilder: (ctx, i) {
-                final person = people[i];
-                final name = (person['Name'] as String?) ?? '';
-                final role = person['Role'] as String?;
-                final type = person['Type'] as String?;
-                final subtitle = role ?? type ?? '';
-                return ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.white12,
-                    child: Icon(Icons.person, color: Colors.white54),
-                  ),
-                  title: Text(name, style: const TextStyle(color: Colors.white)),
-                  subtitle: subtitle.isNotEmpty
-                      ? Text(
-                          subtitle,
-                          style: const TextStyle(color: Colors.white54),
-                        )
-                      : null,
-                );
-              },
+              separatorBuilder: (_, _) => const SizedBox(width: 16),
+              itemBuilder: (ctx, i) => personCard(
+                routeContext,
+                people[i],
+                autofocus: i == 0,
+              ),
             ),
           ),
         ],
@@ -3717,9 +3821,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
     if (PlatformDetection.isTV) {
       unawaited(
-        _showTvDialogBox(
-          child: Builder(builder: (_) => body(null)),
-          heightFactor: 0.72,
+        showFocusRestoringDialog<void>(
+          context: context,
+          barrierColor: Colors.transparent,
+          builder: (dialogContext) => Dialog(
+            backgroundColor: AppColorScheme.surface,
+            alignment: Alignment.bottomCenter,
+            insetPadding: EdgeInsets.zero,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: body(dialogContext),
+            ),
+          ),
         ),
       );
     } else {
@@ -3727,13 +3843,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         context: context,
         backgroundColor: AppColorScheme.surface,
         isScrollControlled: true,
-        builder: (ctx) => DraggableScrollableSheet(
-          initialChildSize: 0.5,
-          maxChildSize: 0.8,
-          minChildSize: 0.3,
-          expand: false,
-          builder: (ctx, scrollController) => body(scrollController),
-        ),
+        builder: (ctx) => SafeArea(child: body(ctx)),
       );
     }
     _showControls();
@@ -4467,5 +4577,104 @@ class _TvFocusButtonState extends State<_TvFocusButton> {
       return GestureDetector(onTap: widget.onPressed, child: focusWidget);
     }
     return focusWidget;
+  }
+}
+
+class _CastPersonTile extends StatefulWidget {
+  final String name;
+  final String subtitle;
+  final String? imageUrl;
+  final bool autofocus;
+  final VoidCallback? onPressed;
+
+  const _CastPersonTile({
+    required this.name,
+    required this.subtitle,
+    required this.imageUrl,
+    required this.autofocus,
+    this.onPressed,
+  });
+
+  @override
+  State<_CastPersonTile> createState() => _CastPersonTileState();
+}
+
+class _CastPersonTileState extends State<_CastPersonTile> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      canRequestFocus: widget.onPressed != null,
+      autofocus: widget.autofocus,
+      onFocusChange: (f) => setState(() => _focused = f),
+      onKeyEvent: (_, event) {
+        if (widget.onPressed != null && isActivateKey(event)) {
+          widget.onPressed!();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: GestureDetector(
+        onTap: widget.onPressed,
+        child: AnimatedScale(
+          scale: _focused ? 1.06 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: 110,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 120),
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: _focused
+                        ? Border.all(color: Colors.white, width: 2)
+                        : null,
+                  ),
+                  child: CircleAvatar(
+                    radius: 48,
+                    backgroundColor: Colors.white.withValues(alpha: 0.1),
+                    backgroundImage: widget.imageUrl != null
+                        ? NetworkImage(widget.imageUrl!)
+                        : null,
+                    child: widget.imageUrl == null
+                        ? const Icon(Icons.person,
+                            color: Colors.white54, size: 32)
+                        : null,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  widget.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (widget.subtitle.isNotEmpty)
+                  Text(
+                    widget.subtitle,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 11,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
