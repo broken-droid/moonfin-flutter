@@ -15,6 +15,7 @@ import '../../../playback/media_kit_player_backend.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
+import '../../widgets/subtitle_preview.dart';
 
 class LiveTvPlayerScreen extends StatefulWidget {
   final List<GuideChannel> channels;
@@ -228,15 +229,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
     final bottomPadding =
         basePadding + (offset * MediaQuery.sizeOf(context).height * 0.5);
 
-    final hasStroke = strokeColor.a > 0;
-    final strokeShadows = hasStroke
-        ? <Shadow>[
-            Shadow(offset: const Offset(-1, -1), color: strokeColor),
-            Shadow(offset: const Offset(1, -1), color: strokeColor),
-            Shadow(offset: const Offset(-1, 1), color: strokeColor),
-            Shadow(offset: const Offset(1, 1), color: strokeColor),
-          ]
-        : null;
+    final strokeShadows = subtitleStrokeShadows(strokeColor, fontSize);
 
     return SubtitleViewConfiguration(
       visible: true,

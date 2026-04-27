@@ -3107,17 +3107,29 @@
   "@subtitleSize": {
     "description": "Setting for subtitle size"
   },
-  "textColor": "Text Color",
-  "@textColor": {
-    "description": "Setting for text color"
+  "textFillColor": "Text Fill Color",
+  "@textFillColor": {
+    "description": "Setting for subtitle text fill color"
   },
   "backgroundColor": "Background Color",
   "@backgroundColor": {
     "description": "Setting for background color"
   },
-  "strokeColor": "Stroke Color",
-  "@strokeColor": {
-    "description": "Setting for stroke color"
+  "textStrokeColor": "Text Stroke Color",
+  "@textStrokeColor": {
+    "description": "Setting for subtitle text stroke color"
+  },
+  "subtitleCustomization": "Subtitle Customization",
+  "@subtitleCustomization": {
+    "description": "Title of the subtitle customization screen"
+  },
+  "subtitleCustomizationDescription": "Customize subtitle appearance",
+  "@subtitleCustomizationDescription": {
+    "description": "Subtitle for the subtitle customization tile"
+  },
+  "subtitlePreviewText": "The quick brown fox jumps over the lazy dog",
+  "@subtitlePreviewText": {
+    "description": "Sample text shown in the subtitle live preview"
   },
   "verticalOffset": "Vertical Offset",
   "@verticalOffset": {

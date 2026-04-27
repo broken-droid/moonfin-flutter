@@ -2221,13 +2221,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get subtitleSize => 'Tamaño de subtítulos';
 
   @override
-  String get textColor => 'Color del texto';
+  String get textFillColor => 'Text Fill Color';
 
   @override
   String get backgroundColor => 'Color de fondo';
 
   @override
-  String get strokeColor => 'Color del contorno';
+  String get textStrokeColor => 'Text Stroke Color';
+
+  @override
+  String get subtitleCustomization => 'Subtitle Customization';
+
+  @override
+  String get subtitleCustomizationDescription =>
+      'Customize subtitle appearance';
+
+  @override
+  String get subtitlePreviewText =>
+      'The quick brown fox jumps over the lazy dog';
 
   @override
   String get verticalOffset => 'Desplazamiento vertical';

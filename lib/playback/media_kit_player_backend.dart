@@ -799,14 +799,16 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   static String _argbToMpvColor(int argb) {
+    // mpv expects #AARRGGBB (alpha first). Emitting #RRGGBBAA causes channels
+    // to be reinterpreted (e.g. solid red -> blue).
     final a = (argb >> 24) & 0xFF;
     final r = (argb >> 16) & 0xFF;
     final g = (argb >> 8) & 0xFF;
     final b = argb & 0xFF;
-    return '#${r.toRadixString(16).padLeft(2, '0')}'
+    return '#${a.toRadixString(16).padLeft(2, '0')}'
+        '${r.toRadixString(16).padLeft(2, '0')}'
         '${g.toRadixString(16).padLeft(2, '0')}'
-        '${b.toRadixString(16).padLeft(2, '0')}'
-        '${a.toRadixString(16).padLeft(2, '0')}';
+        '${b.toRadixString(16).padLeft(2, '0')}';
   }
 
   @override

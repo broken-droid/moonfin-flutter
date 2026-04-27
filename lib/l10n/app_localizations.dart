@@ -3920,11 +3920,11 @@ abstract class AppLocalizations {
   /// **'Subtitle Size'**
   String get subtitleSize;
 
-  /// Setting for text color
+  /// Setting for subtitle text fill color
   ///
   /// In en, this message translates to:
-  /// **'Text Color'**
-  String get textColor;
+  /// **'Text Fill Color'**
+  String get textFillColor;
 
   /// Setting for background color
   ///
@@ -3932,11 +3932,29 @@ abstract class AppLocalizations {
   /// **'Background Color'**
   String get backgroundColor;
 
-  /// Setting for stroke color
+  /// Setting for subtitle text stroke color
   ///
   /// In en, this message translates to:
-  /// **'Stroke Color'**
-  String get strokeColor;
+  /// **'Text Stroke Color'**
+  String get textStrokeColor;
+
+  /// Title of the subtitle customization screen
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle Customization'**
+  String get subtitleCustomization;
+
+  /// Subtitle for the subtitle customization tile
+  ///
+  /// In en, this message translates to:
+  /// **'Customize subtitle appearance'**
+  String get subtitleCustomizationDescription;
+
+  /// Sample text shown in the subtitle live preview
+  ///
+  /// In en, this message translates to:
+  /// **'The quick brown fox jumps over the lazy dog'**
+  String get subtitlePreviewText;
 
   /// Setting for vertical offset
   ///

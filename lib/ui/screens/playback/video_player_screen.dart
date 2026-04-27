@@ -38,6 +38,7 @@ import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/overlay_sheet.dart';
+import '../../widgets/subtitle_preview.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
 import '../../widgets/playback/skip_segment_overlay.dart';
@@ -1342,15 +1343,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final bottomPadding =
         basePadding + (offset * MediaQuery.sizeOf(context).height * 0.5);
 
-    final hasStroke = strokeColor.a > 0;
-    final strokeShadows = hasStroke
-        ? <Shadow>[
-            Shadow(offset: const Offset(-1, -1), color: strokeColor),
-            Shadow(offset: const Offset(1, -1), color: strokeColor),
-            Shadow(offset: const Offset(-1, 1), color: strokeColor),
-            Shadow(offset: const Offset(1, 1), color: strokeColor),
-          ]
-        : null;
+    final strokeShadows = subtitleStrokeShadows(strokeColor, fontSize);
 
     return SubtitleViewConfiguration(
       visible: true,
