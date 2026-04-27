@@ -4091,6 +4091,8 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
         parts.add('${m}m');
       }
     }
+    final resolution = item.videoResolution;
+    if (resolution != null) parts.add('• $resolution');
     if (item.communityRating != null) {
       parts.add('★ ${item.communityRating!.toStringAsFixed(1)}');
     }

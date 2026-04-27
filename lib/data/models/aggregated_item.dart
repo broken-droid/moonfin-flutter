@@ -116,7 +116,13 @@ class AggregatedItem {
         return series;
       }
     }
-    return productionYear?.toString();
+
+    final year = productionYear;
+    final resolution = videoResolution;
+    if (year == null && resolution == null) return null;
+    if (year != null && resolution != null) return '$year  • $resolution';
+    if (year != null) return '$year';
+    return resolution;
   }
 
   String? get seriesId => rawData['SeriesId'] as String?;

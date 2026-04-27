@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../data/models/aggregated_item.dart';
 import '../../data/repositories/mdblist_repository.dart';
+import '../../data/services/media_server_client_factory.dart';
 import '../../preference/user_preferences.dart';
 import '../../util/platform_detection.dart';
 import 'rating_display.dart';
@@ -16,7 +18,7 @@ class InfoArea extends StatelessWidget {
   const InfoArea({super.key, this.item});
 
   static double fixedHeight({required bool isMobile}) {
-    return isMobile ? 168.0 : 192.0;
+    return isMobile ? 184.0 : 212.0;
   }
 
   @override
@@ -120,6 +122,22 @@ class _InfoAreaContentState extends State<_InfoAreaContent> {
     final spacing = isMobile ? 6.0 : 8.0;
     final overviewTopSpacing = showRatings ? (isMobile ? 12.0 : 14.0) : spacing;
     final titleToMetaSpacing = isMobile ? 4.0 : 6.0;
+    final logoHeight = isMobile ? 40.0 : 50.0;
+
+    final clientFactory = GetIt.instance<MediaServerClientFactory>();
+    final imageApi = clientFactory.getClientIfExists(item.serverId)?.imageApi
+        ?? clientFactory.getActiveClient().imageApi;
+
+    final String? logoItemId;
+    final String? logoTag;
+    if (item.type == 'Episode') {
+      logoItemId = item.rawData['ParentLogoItemId'] as String? ?? item.seriesId;
+      logoTag = item.rawData['ParentLogoImageTag'] as String?;
+    } else {
+      logoItemId = item.logoImageTag != null ? item.id : null;
+      logoTag = item.logoImageTag;
+    }
+    final hasLogo = logoItemId != null && logoTag != null;
 
     return SizedBox(
       width: double.infinity,
@@ -127,11 +145,35 @@ class _InfoAreaContentState extends State<_InfoAreaContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Text(
-            title,
-            style: titleStyle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          SizedBox(
+            height: logoHeight,
+            child: hasLogo
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: CachedNetworkImage(
+                      imageUrl: imageApi.getLogoImageUrl(
+                        logoItemId,
+                        maxWidth: isMobile ? 300 : 400,
+                        tag: logoTag,
+                      ),
+                      fit: BoxFit.contain,
+                      height: logoHeight,
+                      alignment: Alignment.centerLeft,
+                      fadeInDuration: const Duration(milliseconds: 150),
+                      errorWidget: (_, _, _) => Text(
+                        title,
+                        style: titleStyle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                : Text(
+                    title,
+                    style: titleStyle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
           ),
           SizedBox(height: titleToMetaSpacing),
           SizedBox(

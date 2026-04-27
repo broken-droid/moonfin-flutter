@@ -568,6 +568,27 @@ class _MetadataRow extends StatelessWidget {
       );
     }
 
+    final resolution = item.videoResolution;
+    if (resolution != null) {
+      children.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(38),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            resolution,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Wrap(
       spacing: 8,
       runSpacing: 4,

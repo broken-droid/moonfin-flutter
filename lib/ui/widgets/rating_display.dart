@@ -78,8 +78,8 @@ class RatingsRow extends StatelessWidget {
     if (filtered.isEmpty) return const SizedBox.shrink();
 
     return Wrap(
-      spacing: 10,
-      runSpacing: 6,
+      spacing: 6,
+      runSpacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         for (final item in filtered)
@@ -178,19 +178,18 @@ class _SingleRating extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: kIsWeb ? 0.45 : 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: ratingContent,
     );
     if (kIsWeb) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         child: badge,
       );
     }
     return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(4),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
@@ -200,8 +199,7 @@ class _SingleRating extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: ratingContent,
         ),

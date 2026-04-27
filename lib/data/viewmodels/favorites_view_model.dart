@@ -17,7 +17,7 @@ class FavoritesViewModel extends ChangeNotifier {
   static const _pageSize = 100;
   static const _prefKey = 'favorites';
   static const _browseFields =
-      'Type,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,CriticRating';
+      'Type,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,CriticRating,MediaStreams';
 
   FavoritesState _state = FavoritesState.loading;
   FavoritesState get state => _state;

@@ -3812,6 +3812,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final item = _queue.currentItem;
     if (item is! AggregatedItem) return;
     final people = await _resolveCastPeople(item);
+    if (!mounted) return;
     if (people.isEmpty) return;
 
     final imageApi = _clientForItem(item).imageApi;
@@ -4546,13 +4547,11 @@ class _TvFocusButton extends StatefulWidget {
     required this.child,
     this.focusNode,
     this.onPressed,
-    this.onKeyEvent,
   });
 
   final FocusNode? focusNode;
   final double extent;
   final VoidCallback? onPressed;
-  final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
   final Widget child;
 
   @override
@@ -4628,7 +4627,7 @@ class _TvFocusButtonState extends State<_TvFocusButton> {
   Widget build(BuildContext context) {
     final focusWidget = Focus(
       focusNode: _effectiveNode,
-      onKeyEvent: widget.onKeyEvent ?? (_, event) {
+      onKeyEvent: (_, event) {
         if (widget.onPressed != null &&
             event is KeyDownEvent &&
             (event.logicalKey == LogicalKeyboardKey.select ||

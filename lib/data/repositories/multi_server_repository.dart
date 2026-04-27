@@ -40,7 +40,8 @@ class MultiServerRepository {
       'OfficialRating,RunTimeTicks,ProductionYear,SeriesName,'
       'ParentIndexNumber,IndexNumber,Status,ImageTags,BackdropImageTags,'
       'ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,'
-      'ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,ProviderIds';
+      'ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,ProviderIds,'
+      'ParentLogoItemId,ParentLogoImageTag,MediaStreams';
   static const _defaultLimit = 15;
 
   List<ServerUserSession>? _cachedSessions;

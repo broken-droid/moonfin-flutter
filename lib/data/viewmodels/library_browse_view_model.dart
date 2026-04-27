@@ -21,7 +21,7 @@ class LibraryBrowseViewModel extends ChangeNotifier {
 
   static const _pageSize = 100;
   static const _browseFields =
-      'PrimaryImageAspectRatio,SortName,Type,IsFolder,ChildCount,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,CriticRating,Author,Authors,AlbumArtist,Artists,People';
+      'PrimaryImageAspectRatio,SortName,Type,IsFolder,ChildCount,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,CriticRating,Author,Authors,AlbumArtist,Artists,People,MediaStreams';
 
   LibraryBrowseState _state = LibraryBrowseState.loading;
   LibraryBrowseState get state => _state;

@@ -1501,6 +1501,11 @@ class _ContentRowsState extends State<_ContentRows>
 
   double _libraryRowExtent(double rowHeight) => rowHeight + 34;
 
+  double _squarePosterSide(PosterSize posterSize) {
+    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
+    return posterSize.portraitHeight.toDouble() * tvScale;
+  }
+
   double _estimatedRowExtent(
     HomeRow row,
     PosterSize posterSize,
@@ -1512,7 +1517,9 @@ class _ContentRowsState extends State<_ContentRows>
 
     if (row.rowType == HomeRowType.liveTv ||
         row.rowType == HomeRowType.libraryTilesSmall) {
-      return _libraryRowExtent(140);
+      final squarePosterSide = _squarePosterSide(posterSize);
+      final rowHeight = squarePosterSide + 56;
+      return _libraryRowExtent(rowHeight);
     }
 
     final rowImageType = _homeRowImageTypeForRow(row, prefs);
@@ -1815,6 +1822,7 @@ class _ContentRowsState extends State<_ContentRows>
                   row,
                   focusColor,
                   cardExpansion,
+                  posterSize: posterSize,
                   rowIndex: rowIndex,
                   rows: rows,
                 );
@@ -1823,6 +1831,7 @@ class _ContentRowsState extends State<_ContentRows>
                   row,
                   focusColor,
                   cardExpansion,
+                  posterSize: posterSize,
                   rowIndex: rowIndex,
                   rows: rows,
                 );
@@ -1881,10 +1890,13 @@ class _ContentRowsState extends State<_ContentRows>
     HomeRow row,
     Color focusColor,
     bool cardExpansion, {
+    required PosterSize posterSize,
     required int rowIndex,
     required List<HomeRow> rows,
   }) {
     final l10n = AppLocalizations.of(context);
+    final squarePosterSide = _squarePosterSide(posterSize);
+    final rowHeight = squarePosterSide + 56;
     final actions = <_LiveTvAction>[
       _LiveTvAction(Icons.tv_rounded, l10n.guide, Destinations.liveTvGuide),
       _LiveTvAction(Icons.fiber_manual_record_rounded, l10n.recordings,
@@ -1897,13 +1909,13 @@ class _ContentRowsState extends State<_ContentRows>
     return _buildTitledRow(
       key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
-      height: 140,
+      height: rowHeight,
       child: LockedFocusRow<_LiveTvAction>(
         key: _rowKey(rowIndex),
         items: actions,
         hubKey: _hubKeyForRow(row),
-        height: 140,
-        itemExtent: 160,
+        height: rowHeight,
+        itemExtent: squarePosterSide,
         itemSpacing: 12,
         leadingPadding: 0,
         padding: const EdgeInsets.fromLTRB(16, 5, 20, 5),
@@ -1919,13 +1931,21 @@ class _ContentRowsState extends State<_ContentRows>
         onLeftEdge: _onRowLeftEdge,
         onTap: (_, action) => context.push(action.destination),
         itemBuilder: (ctx, action, idx, isFocused) {
-          return GridButtonCard(
-            icon: action.icon,
-            label: action.label,
-            focusColor: focusColor,
-            cardFocusExpansion: cardExpansion,
-            externalIsFocused: isFocused,
-            onTap: () => context.push(action.destination),
+          return Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox.square(
+              dimension: squarePosterSide,
+              child: GridButtonCard(
+                icon: action.icon,
+                label: action.label,
+                width: squarePosterSide,
+                height: squarePosterSide,
+                focusColor: focusColor,
+                cardFocusExpansion: cardExpansion,
+                externalIsFocused: isFocused,
+                onTap: () => context.push(action.destination),
+              ),
+            ),
           );
         },
       ),
@@ -1936,20 +1956,23 @@ class _ContentRowsState extends State<_ContentRows>
     HomeRow row,
     Color focusColor,
     bool cardExpansion, {
+    required PosterSize posterSize,
     required int rowIndex,
     required List<HomeRow> rows,
   }) {
     final l10n = AppLocalizations.of(context);
+    final squarePosterSide = _squarePosterSide(posterSize);
+    final rowHeight = squarePosterSide + 56;
     return _buildTitledRow(
       key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
-      height: 140,
+      height: rowHeight,
       child: LockedFocusRow<AggregatedItem>(
         key: _rowKey(rowIndex),
         items: row.items,
         hubKey: _hubKeyForRow(row),
-        height: 140,
-        itemExtent: 160,
+        height: rowHeight,
+        itemExtent: squarePosterSide,
         itemSpacing: 12,
         leadingPadding: 0,
         padding: const EdgeInsets.fromLTRB(16, 5, 20, 5),
@@ -1968,13 +1991,21 @@ class _ContentRowsState extends State<_ContentRows>
           final collectionType =
               (item.rawData['CollectionType'] as String? ?? '').toLowerCase();
           final icon = _iconForCollectionType(collectionType);
-          return GridButtonCard(
-            icon: icon,
-            label: item.name,
-            focusColor: focusColor,
-            cardFocusExpansion: cardExpansion,
-            externalIsFocused: isFocused,
-            onTap: () => _navigateToLibrary(context, item),
+          return Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox.square(
+              dimension: squarePosterSide,
+              child: GridButtonCard(
+                icon: icon,
+                label: item.name,
+                width: squarePosterSide,
+                height: squarePosterSide,
+                focusColor: focusColor,
+                cardFocusExpansion: cardExpansion,
+                externalIsFocused: isFocused,
+                onTap: () => _navigateToLibrary(context, item),
+              ),
+            ),
           );
         },
       ),

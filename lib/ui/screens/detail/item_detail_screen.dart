@@ -256,7 +256,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
   }
 }
 
-class _DetailContent extends StatelessWidget {
+class _DetailContent extends StatefulWidget {
   final ItemDetailViewModel viewModel;
   final UserPreferences prefs;
   final String? backdropUrl;
@@ -274,79 +274,124 @@ class _DetailContent extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final item = viewModel.item!;
-    final isReadableBook = _isReadableBookItem(item);
-    final selectedMediaSource = _selectedMediaSourceForItem(item, selectedMediaSourceId);
-    final blurAmount =
-        prefs.get(UserPreferences.detailsBackgroundBlurAmount).toDouble();
-    final backdropEnabled = prefs.get(UserPreferences.backdropEnabled);
+  State<_DetailContent> createState() => _DetailContentState();
+}
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        if (isReadableBook)
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Color(0xFF0F182A),
+class _DetailContentState extends State<_DetailContent> {
+  late ScrollController _scrollController;
+  late FocusNode _contentFocusNode;
+
+  ItemDetailViewModel get viewModel => widget.viewModel;
+  UserPreferences get prefs => widget.prefs;
+  String? get selectedMediaSourceId => widget.selectedMediaSourceId;
+  ValueChanged<String?> get onSelectedMediaSourceChanged =>
+      widget.onSelectedMediaSourceChanged;
+  FocusNode? get initialFocusNode => widget.initialFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _contentFocusNode = FocusNode(debugLabel: 'detailContent');
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _contentFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.viewModel.item!;
+    final isReadableBook = _isReadableBookItem(item);
+    final selectedMediaSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
+    final blurAmount =
+        widget.prefs.get(UserPreferences.detailsBackgroundBlurAmount).toDouble();
+    final backdropEnabled = widget.prefs.get(UserPreferences.backdropEnabled);
+    final navbarEnabled =
+      PlatformDetection.isTV && NavigationLayout.focusNavbarNotifier.value != null;
+
+    return Focus(
+      focusNode: _contentFocusNode,
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          final isAtTop = _scrollController.offset <= 0;
+          if (isAtTop && navbarEnabled) {
+            NavigationLayout.focusNavbarNotifier.value?.call();
+            return KeyEventResult.handled;
+          }
+        }
+        return KeyEventResult.ignored;
+      },
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (isReadableBook)
+            const Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Color(0xFF0F182A),
+                ),
               ),
             ),
+          if (backdropEnabled && !isReadableBook)
+            _Backdrop(url: widget.backdropUrl, blurAmount: blurAmount),
+          if (isReadableBook)
+            const Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0x000F182A),
+                      Color(0x440A1324),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else
+            const _GradientScrim(),
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              if (item.type != 'Person' &&
+                  item.type != 'MusicArtist' &&
+                  item.type != 'MusicAlbum' &&
+                  item.type != 'Playlist' &&
+                  !_isReadableBookItem(item))
+                SliverToBoxAdapter(
+                  child: _HeaderSection(
+                    viewModel: widget.viewModel,
+                    prefs: widget.prefs,
+                    selectedMediaSource: selectedMediaSource,
+                  ),
+                ),
+              SliverPadding(
+                padding: isReadableBook
+                    ? EdgeInsets.fromLTRB(
+                        _isCompact(context) ? 16 : 48,
+                        MediaQuery.of(context).padding.top +
+                            (_isCompact(context) ? 60 : 80),
+                        _isCompact(context) ? 16 : 48,
+                        0,
+                      )
+                    : EdgeInsets.symmetric(
+                        horizontal: _isCompact(context) ? 16 : 48,
+                      ),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(
+                    _buildContentForType(context, item),
+                  ),
+                ),
+              ),
+            ],
           ),
-        if (backdropEnabled && !isReadableBook)
-          _Backdrop(url: backdropUrl, blurAmount: blurAmount),
-        if (isReadableBook)
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x000F182A),
-                    Color(0x440A1324),
-                  ],
-                ),
-              ),
-            ),
-          )
-        else
-          const _GradientScrim(),
-        CustomScrollView(
-          slivers: [
-            if (item.type != 'Person' &&
-                item.type != 'MusicArtist' &&
-                item.type != 'MusicAlbum' &&
-                item.type != 'Playlist' &&
-                !_isReadableBookItem(item))
-              SliverToBoxAdapter(
-                child: _HeaderSection(
-                  viewModel: viewModel,
-                  prefs: prefs,
-                  selectedMediaSource: selectedMediaSource,
-                ),
-              ),
-            SliverPadding(
-              padding: isReadableBook
-                  ? EdgeInsets.fromLTRB(
-                      _isCompact(context) ? 16 : 48,
-                      MediaQuery.of(context).padding.top +
-                          (_isCompact(context) ? 60 : 80),
-                      _isCompact(context) ? 16 : 48,
-                      0,
-                    )
-                  : EdgeInsets.symmetric(
-                      horizontal: _isCompact(context) ? 16 : 48,
-                    ),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  _buildContentForType(context, item),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -1793,18 +1838,15 @@ class _PosterImage extends StatelessWidget {
             ),
           if ((item.playedPercentage ?? 0) > 0)
             Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
+              left: 6,
+              right: 6,
+              bottom: 6,
               child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
+                borderRadius: BorderRadius.circular(3),
                 child: LinearProgressIndicator(
                   value: item.playedPercentage! / 100.0,
-                  minHeight: 4,
-                  backgroundColor: Colors.black38,
+                  minHeight: 6,
+                  backgroundColor: Colors.black54,
                   valueColor: const AlwaysStoppedAnimation<Color>(
                     Color(0xFF00A4DC),
                   ),
@@ -1885,18 +1927,15 @@ class _EpisodeThumbnail extends StatelessWidget {
             ),
           if ((item.playedPercentage ?? 0) > 0)
             Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
+              left: 6,
+              right: 6,
+              bottom: 6,
               child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
+                borderRadius: BorderRadius.circular(3),
                 child: LinearProgressIndicator(
                   value: item.playedPercentage! / 100.0,
-                  minHeight: 3,
-                  backgroundColor: Colors.black38,
+                  minHeight: 6,
+                  backgroundColor: Colors.black54,
                   valueColor: const AlwaysStoppedAnimation<Color>(
                     Color(0xFF00A4DC),
                   ),

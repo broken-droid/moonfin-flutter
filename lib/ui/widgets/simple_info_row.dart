@@ -38,6 +38,11 @@ class SimpleInfoRow extends StatelessWidget {
       children.add(_text(context, label));
     }
 
+    final resolution = item.videoResolution;
+    if (resolution != null) {
+      children.add(_badge(context, resolution));
+    }
+
     if (showRating && item.communityRating != null) {
       children.add(_ratingChip(context, item.communityRating!));
     }
