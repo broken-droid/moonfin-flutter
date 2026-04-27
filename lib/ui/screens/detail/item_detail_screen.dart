@@ -4662,6 +4662,17 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
         autofocus: widget.autofocus,
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
+          final isNavigationEvent = event is KeyDownEvent || event is KeyRepeatEvent;
+          if (isNavigationEvent &&
+              event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            FocusScope.of(context).nextFocus();
+            return KeyEventResult.handled;
+          }
+          if (isNavigationEvent &&
+              event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            FocusScope.of(context).previousFocus();
+            return KeyEventResult.handled;
+          }
           if (isActivateKey(event)) {
             widget.onPressed();
             return KeyEventResult.handled;
