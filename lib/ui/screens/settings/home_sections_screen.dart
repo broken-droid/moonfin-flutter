@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/services/home_screen_sections_service.dart';
+import '../../../data/services/kefin_tweaks_service.dart';
 import '../../../data/services/plugin_sync_service.dart';
 import '../../../preference/home_section_config.dart';
 import '../../../preference/preference_constants.dart';
@@ -48,27 +49,47 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
   /// Probes for newly discovered plugin sections in the background and
   /// re-merges the result into the visible list.
   Future<void> _refreshPluginSections() async {
-    if (!GetIt.instance.isRegistered<HomeScreenSectionsService>()) return;
-    final service = GetIt.instance<HomeScreenSectionsService>();
-    await service.refreshAll();
+    final futures = <Future<void>>[];
+    if (GetIt.instance.isRegistered<HomeScreenSectionsService>()) {
+      futures.add(GetIt.instance<HomeScreenSectionsService>().refreshAll());
+    }
+    if (GetIt.instance.isRegistered<KefinTweaksService>()) {
+      futures.add(GetIt.instance<KefinTweaksService>().refreshAll());
+    }
+    if (futures.isEmpty) return;
+    await Future.wait(futures);
     if (!mounted) return;
+    var changed = false;
     setState(() {
-      _mergeDiscoveredPluginSections();
+      changed = _mergeDiscoveredPluginSections();
       _rebuildFocusNodes();
     });
+    if (changed) {
+      _persistSections(pushSync: false);
+    }
   }
 
   /// Adds plugin-dynamic sections discovered by the Home Screen Sections
-  /// plugin into the in-memory list (disabled by default) and prunes stale
-  /// entries whose section is no longer reported by the server.
-  void _mergeDiscoveredPluginSections() {
-    if (!GetIt.instance.isRegistered<HomeScreenSectionsService>()) return;
+  /// plugin and KefinTweaks into the in-memory list (disabled by default)
+  /// and prunes stale entries whose section is no longer reported.
+  bool _mergeDiscoveredPluginSections() {
+    final hssChanged = _mergeHssSections();
+    final kefinChanged = _mergeKefinSections();
+    return hssChanged || kefinChanged;
+  }
+
+  bool _mergeHssSections() {
+    if (!GetIt.instance.isRegistered<HomeScreenSectionsService>()) return false;
     final service = GetIt.instance<HomeScreenSectionsService>();
     final discovered = service.availableServers.toList();
-    if (discovered.isEmpty) return;
+    final allProbed = service.allCapabilities.toList();
+    if (allProbed.isEmpty) return false;
+    var changed = false;
 
     final existing = <String, HomeSectionConfig>{
-      for (final cfg in _sections.where((c) => c.isPluginDynamic))
+      for (final cfg in _sections.where((c) =>
+          c.isPluginDynamic &&
+          c.pluginSource == HomeSectionPluginSource.hss))
         cfg.stableId: cfg,
     };
 
@@ -76,34 +97,104 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
     var nextOrder = _sections.length;
     for (final cap in discovered) {
       for (final section in cap.sections) {
-        final stableId =
-            'pluginDynamic:${cap.serverId}:${section.section}:${section.additionalData ?? ''}';
         final cfg = HomeSectionConfig.pluginDynamic(
           serverId: cap.serverId,
           pluginSection: section.section,
           pluginAdditionalData: section.additionalData,
           pluginDisplayText: section.displayText,
-          enabled: existing[stableId]?.enabled ?? false,
+          pluginSource: HomeSectionPluginSource.hss,
+          enabled: existing[
+                  'pluginDynamic:hss:${cap.serverId}:${section.section}:${section.additionalData ?? ''}']
+                  ?.enabled ??
+              false,
           order: nextOrder++,
         );
         freshIds.add(cfg.stableId);
         final idx = _sections.indexWhere((s) => s.stableId == cfg.stableId);
         if (idx >= 0) {
-          _sections[idx] = _sections[idx].copyWith(
+          final updated = _sections[idx].copyWith(
             pluginDisplayText: cfg.pluginDisplayText,
           );
+          if (_sections[idx].pluginDisplayText != updated.pluginDisplayText) {
+            _sections[idx] = updated;
+            changed = true;
+          }
         } else {
           _sections.add(cfg);
+          changed = true;
         }
       }
     }
 
-    final probedServers = discovered.map((c) => c.serverId).toSet();
+    final probedServers = allProbed.map((c) => c.serverId).toSet();
+    final before = _sections.length;
     _sections.removeWhere((s) =>
         s.isPluginDynamic &&
+        s.pluginSource == HomeSectionPluginSource.hss &&
         s.serverId != null &&
         probedServers.contains(s.serverId) &&
         !freshIds.contains(s.stableId));
+    if (_sections.length != before) changed = true;
+    return changed;
+  }
+
+  bool _mergeKefinSections() {
+    if (!GetIt.instance.isRegistered<KefinTweaksService>()) return false;
+    final service = GetIt.instance<KefinTweaksService>();
+    final discovered = service.availableServers.toList();
+    final allProbed = service.allCapabilities.toList();
+    if (allProbed.isEmpty) return false;
+    var changed = false;
+
+    final existing = <String, HomeSectionConfig>{
+      for (final cfg in _sections.where((c) =>
+          c.isPluginDynamic &&
+          c.pluginSource == HomeSectionPluginSource.kefinTweaks))
+        cfg.stableId: cfg,
+    };
+
+    final freshIds = <String>{};
+    var nextOrder = _sections.length;
+    for (final cap in discovered) {
+      for (final section in cap.sections) {
+        final base = kefinSectionToConfig(
+          section,
+          cap.serverId,
+          enabled: false,
+          order: nextOrder++,
+        );
+        final cfg = base.copyWith(
+          enabled: existing[base.stableId]?.enabled ?? false,
+        );
+        freshIds.add(cfg.stableId);
+        final idx = _sections.indexWhere((s) => s.stableId == cfg.stableId);
+        if (idx >= 0) {
+          final updated = _sections[idx].copyWith(
+            pluginDisplayText: cfg.pluginDisplayText,
+            pluginAdditionalData: cfg.pluginAdditionalData,
+          );
+          if (_sections[idx].pluginDisplayText != updated.pluginDisplayText ||
+              _sections[idx].pluginAdditionalData != updated.pluginAdditionalData) {
+            _sections[idx] = updated;
+            changed = true;
+          }
+        } else {
+          _sections.add(cfg);
+          changed = true;
+        }
+      }
+    }
+
+    final probedServers = allProbed.map((c) => c.serverId).toSet();
+    final before = _sections.length;
+    _sections.removeWhere((s) =>
+        s.isPluginDynamic &&
+        s.pluginSource == HomeSectionPluginSource.kefinTweaks &&
+        s.serverId != null &&
+        probedServers.contains(s.serverId) &&
+        !freshIds.contains(s.stableId));
+    if (_sections.length != before) changed = true;
+    return changed;
   }
 
   void _rebuildFocusNodes() {
@@ -139,14 +230,20 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
     }
   }
 
-  void _save() {
+  void _persistSections({required bool pushSync}) {
     for (var i = 0; i < _sections.length; i++) {
       _sections[i] = _sections[i].copyWith(order: i);
     }
     final toSave = [..._sections];
     if (_mediaBarConfig != null) toSave.add(_mediaBarConfig!);
     _prefs.setHomeSectionsConfig(toSave);
-    _pushSyncSettings();
+    if (pushSync) {
+      _pushSyncSettings();
+    }
+  }
+
+  void _save() {
+    _persistSections(pushSync: true);
   }
 
   void _moveSection(int index, int direction) {

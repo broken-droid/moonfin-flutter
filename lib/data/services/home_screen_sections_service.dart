@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:server_core/server_core.dart';
@@ -102,6 +103,10 @@ class HomeScreenSectionsService extends ChangeNotifier {
       metaError = e;
     }
 
+    if (installedVersion == null && _isNotInstalledResponse(metaError)) {
+      metaError = null;
+    }
+
     final installed = installedVersion != null || meta != null;
     final enabled = meta?.enabled ?? false;
 
@@ -122,6 +127,10 @@ class HomeScreenSectionsService extends ChangeNotifier {
       sections: sections,
       lastError: metaError,
     );
+  }
+
+  static bool _isNotInstalledResponse(Object? error) {
+    return error is DioException && error.response?.statusCode == 404;
   }
 
   @override

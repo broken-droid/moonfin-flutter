@@ -25,6 +25,7 @@ import 'api/jellyfin_admin_backup_api.dart';
 import 'api/jellyfin_admin_live_tv_api.dart';
 import 'api/jellyfin_admin_items_api.dart';
 import 'api/jellyfin_home_screen_sections_api.dart';
+import 'api/jellyfin_kefin_tweaks_api.dart';
 import 'api/jellyfin_syncplay_api.dart';
 
 class JellyfinMediaServerClient extends MediaServerClient {
@@ -172,6 +173,9 @@ class JellyfinMediaServerClient extends MediaServerClient {
   @override
   late final HomeScreenSectionsApi homeScreenSectionsApi =
       JellyfinHomeScreenSectionsApi(_dio, () => _userId);
+
+  @override
+  late final KefinTweaksApi kefinTweaksApi = JellyfinKefinTweaksApi(_dio);
 
   @override
   void dispose() {

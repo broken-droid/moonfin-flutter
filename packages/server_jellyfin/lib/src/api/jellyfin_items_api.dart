@@ -32,6 +32,9 @@ class JellyfinItemsApi implements ItemsApi {
     bool? collapseBoxSetItems,
     bool? enableTotalRecordCount,
     String? enableImageTypes,
+    List<String>? tags,
+    List<String>? studios,
+    DateTime? minPremiereDate,
   }) async {
     final response = await _dio.get('/Items', queryParameters: {
       'ParentId': ?parentId,
@@ -58,6 +61,10 @@ class JellyfinItemsApi implements ItemsApi {
       'CollapseBoxSetItems': ?collapseBoxSetItems,
       'EnableTotalRecordCount': ?enableTotalRecordCount,
       'EnableImageTypes': ?enableImageTypes,
+      if (tags != null && tags.isNotEmpty) 'Tags': tags.join('|'),
+      if (studios != null && studios.isNotEmpty) 'Studios': studios.join('|'),
+      if (minPremiereDate != null)
+        'MinPremiereDate': minPremiereDate.toUtc().toIso8601String(),
     });
     return response.data as Map<String, dynamic>;
   }

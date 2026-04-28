@@ -31,6 +31,9 @@ class EmbyItemsApi implements ItemsApi {
     bool? collapseBoxSetItems,
     bool? enableTotalRecordCount,
     String? enableImageTypes,
+    List<String>? tags,
+    List<String>? studios,
+    DateTime? minPremiereDate,
   }) async {
     final userId = _getUserId();
     final response = await _dio.get(
@@ -59,8 +62,10 @@ class EmbyItemsApi implements ItemsApi {
         'IsFavorite': ?isFavorite,
       'CollapseBoxSetItems': ?collapseBoxSetItems,
       'EnableTotalRecordCount': ?enableTotalRecordCount,
-      'EnableImageTypes': ?enableImageTypes,
-      },
+      'EnableImageTypes': ?enableImageTypes,        if (tags != null && tags.isNotEmpty) 'Tags': tags.join('|'),
+        if (studios != null && studios.isNotEmpty) 'Studios': studios.join('|'),
+        if (minPremiereDate != null)
+          'MinPremiereDate': minPremiereDate.toUtc().toIso8601String(),      },
     );
     return response.data as Map<String, dynamic>;
   }

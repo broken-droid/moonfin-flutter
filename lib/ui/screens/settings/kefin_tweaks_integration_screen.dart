@@ -7,22 +7,21 @@ import '../../widgets/settings/settings_panel.dart';
 import 'home_sections_screen.dart';
 import 'settings_app_bar.dart';
 
-/// Settings > Integrations > Home Screen Sections.
+/// Settings > Integrations > KefinTweaks.
 ///
-/// Surfaces the per-server detection state for the third-party
-/// "Home Screen Sections" Jellyfin plugin and lets the user trigger a refresh.
-class HomeScreenSectionsIntegrationScreen extends StatefulWidget {
-  const HomeScreenSectionsIntegrationScreen({super.key});
+/// Surfaces per-server detection state for the third-party "KefinTweaks"
+/// front-end Jellyfin enhancement and lets the user trigger a refresh.
+class KefinTweaksIntegrationScreen extends StatefulWidget {
+  const KefinTweaksIntegrationScreen({super.key});
 
   @override
-  State<HomeScreenSectionsIntegrationScreen> createState() =>
-      _HomeScreenSectionsIntegrationScreenState();
+  State<KefinTweaksIntegrationScreen> createState() =>
+      _KefinTweaksIntegrationScreenState();
 }
 
-class _HomeScreenSectionsIntegrationScreenState
-    extends State<HomeScreenSectionsIntegrationScreen> {
-  HomeScreenSectionsService get _service =>
-      GetIt.instance<HomeScreenSectionsService>();
+class _KefinTweaksIntegrationScreenState
+    extends State<KefinTweaksIntegrationScreen> {
+  KefinTweaksService get _service => GetIt.instance<KefinTweaksService>();
   bool _refreshing = false;
 
   @override
@@ -59,7 +58,7 @@ class _HomeScreenSectionsIntegrationScreenState
     return Scaffold(
       appBar: buildSettingsAppBar(
         context,
-        const Text('Home Screen Sections'),
+        const Text('KefinTweaks'),
         actions: [
           IconButton(
             tooltip: 'Refresh',
@@ -79,15 +78,17 @@ class _HomeScreenSectionsIntegrationScreenState
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'Detect rows exposed by IAmParadox27\'s "Home Screen Sections" '
-              'plugin. Rows can be enabled and reordered below.',
+              'Detect rows configured via ranaldsgift\'s "KefinTweaks" '
+              'plugin. Custom sections, recently released, watch again, '
+              'seasonal, and recently added in library are mirrored from the '
+              'KefinTweaks configuration on each Jellyfin server.',
               style: theme.textTheme.bodyMedium,
             ),
           ),
           if (caps.isEmpty)
             const Padding(
               padding: EdgeInsets.all(16),
-              child: Text('No Jellyfin servers reporting the plugin yet.'),
+              child: Text('No Jellyfin servers reporting KefinTweaks yet.'),
             )
           else
             ...caps.map(_buildCapabilityTile),
@@ -112,19 +113,18 @@ class _HomeScreenSectionsIntegrationScreenState
   bool _canOpenHomeSections() {
     final hssAvailable = GetIt.instance.isRegistered<HomeScreenSectionsService>() &&
         GetIt.instance<HomeScreenSectionsService>().availableServers.isNotEmpty;
-    final kefinAvailable = GetIt.instance.isRegistered<KefinTweaksService>() &&
-        GetIt.instance<KefinTweaksService>().availableServers.isNotEmpty;
+    final kefinAvailable = _service.availableServers.isNotEmpty;
     return hssAvailable || kefinAvailable;
   }
 
-  Widget _buildCapabilityTile(HomeScreenSectionsCapability cap) {
+  Widget _buildCapabilityTile(KefinTweaksCapability cap) {
     final status = cap.installed
         ? (cap.enabled ? 'Enabled' : 'Installed but disabled')
         : 'Not installed';
     final subtitle = StringBuffer(status);
-    if (cap.pluginVersion != null) subtitle.write(' • v${cap.pluginVersion}');
+    if (cap.version != null) subtitle.write(' • v${cap.version}');
     if (cap.sections.isNotEmpty) {
-      subtitle.write(' • ${cap.sections.length} section(s)');
+      subtitle.write(' • ${cap.sections.length} row(s) discovered');
     }
     if (cap.lastError != null && !cap.installed) {
       subtitle.write('\n${cap.lastError}');

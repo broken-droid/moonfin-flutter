@@ -24,6 +24,7 @@ import '../../widgets/navigation_layout.dart';
 import '../../widgets/focus/request_initial_focus.dart';
 import 'home_rows_image_type_screen.dart';
 import 'home_screen_sections_integration_screen.dart';
+import 'kefin_tweaks_integration_screen.dart';
 import 'home_sections_screen.dart';
 import 'library_settings_screen.dart';
 import 'media_bar_settings_screen.dart';
@@ -960,6 +961,20 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
               ),
               onTap: () => context.pushSettingsScreen(
                 const HomeScreenSectionsIntegrationScreen(),
+              ),
+            ),
+            _TvSettingsListTile(
+              leading: Image.asset(
+                'assets/icons/kf.png',
+                width: 24,
+                height: 24,
+              ),
+              title: const Text('KefinTweaks'),
+              subtitle: const Text(
+                'Mirror home rows from the KefinTweaks front-end plugin',
+              ),
+              onTap: () => context.pushSettingsScreen(
+                const KefinTweaksIntegrationScreen(),
               ),
             ),
           ],

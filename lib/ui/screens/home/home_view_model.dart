@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:server_core/server_core.dart';
@@ -70,17 +71,26 @@ class HomeViewModel extends ChangeNotifier {
             (c.serverId != null && c.serverId == _serverId))
         .toList(growable: false);
 
-    // Filter out plugin-dynamic rows that duplicate an already-enabled
-    // built-in section (e.g. plugin "ContinueWatching" when the native
-    // "Continue Watching" row is enabled).
-    final enabledBuiltins = visibleConfigsRaw
+    // Filter out plugin-dynamic rows that duplicate already-enabled built-ins
+    // and collapse equivalent rows across HSS/KefinTweaks so only the first
+    // configured plugin row in a duplicate group remains visible.
+    final enabledBuiltinKeys = visibleConfigsRaw
         .where((c) => c.isBuiltin)
-        .map((c) => c.type)
+        .expand(_duplicateKeysForConfig)
         .toSet();
+    final seenPluginKeys = <String>{};
     final visibleConfigs = visibleConfigsRaw.where((c) {
       if (!c.isPluginDynamic) return true;
-      final mapped = _builtinForPluginSection(c.pluginSection);
-      return mapped == null || !enabledBuiltins.contains(mapped);
+      final duplicateKeys = _duplicateKeysForConfig(c);
+      if (duplicateKeys.any(enabledBuiltinKeys.contains)) {
+        return false;
+      }
+      final duplicatesExistingPlugin =
+          duplicateKeys.any(seenPluginKeys.contains);
+      if (!duplicatesExistingPlugin) {
+        seenPluginKeys.addAll(duplicateKeys);
+      }
+      return !duplicatesExistingPlugin;
     }).toList(growable: false);
 
     final sections = visibleConfigs
@@ -208,6 +218,7 @@ class HomeViewModel extends ChangeNotifier {
         title: cfg.pluginDisplayText ?? section,
         serverId: cfg.serverId ?? _serverId,
         additionalData: cfg.pluginAdditionalData,
+        pluginSource: cfg.pluginSource,
       );
       return [row];
     }
@@ -255,6 +266,10 @@ class HomeViewModel extends ChangeNotifier {
       case 'LatestShows':
       case 'LatestMedia':
         return HomeSectionType.latestMedia;
+      case 'RecentlyReleased':
+      case 'RecentlyReleasedMovies':
+      case 'RecentlyReleasedEpisodes':
+        return HomeSectionType.recentlyReleased;
       case 'Playlists':
         return HomeSectionType.playlists;
       case 'ActiveRecordings':
@@ -262,6 +277,90 @@ class HomeViewModel extends ChangeNotifier {
       default:
         return null;
     }
+  }
+
+  static Set<String> _duplicateKeysForConfig(HomeSectionConfig cfg) {
+    if (cfg.isBuiltin) {
+      return _duplicateKeysForBuiltin(cfg.type);
+    }
+
+    switch (cfg.pluginSource) {
+      case HomeSectionPluginSource.hss:
+        final builtin = _builtinForPluginSection(cfg.pluginSection);
+        return builtin == null ? const <String>{} : _duplicateKeysForBuiltin(builtin);
+      case HomeSectionPluginSource.kefinTweaks:
+        return _duplicateKeysForKefinSection(
+          cfg.pluginSection,
+          cfg.pluginAdditionalData,
+        );
+    }
+  }
+
+  static Set<String> _duplicateKeysForBuiltin(HomeSectionType type) {
+    switch (type) {
+      case HomeSectionType.latestMedia:
+        return const {'latestMedia'};
+      case HomeSectionType.recentlyReleased:
+        return const {'recentlyReleased'};
+      case HomeSectionType.resume:
+        return const {'resume'};
+      case HomeSectionType.resumeAudio:
+        return const {'resumeAudio'};
+      case HomeSectionType.resumeBook:
+        return const {'resumeBook'};
+      case HomeSectionType.nextUp:
+        return const {'nextUp'};
+      case HomeSectionType.liveTv:
+        return const {'liveTv'};
+      case HomeSectionType.libraryTilesSmall:
+        return const {'libraryTiles'};
+      case HomeSectionType.libraryButtons:
+        return const {'libraryButtons'};
+      case HomeSectionType.playlists:
+        return const {'playlists'};
+      case HomeSectionType.activeRecordings:
+        return const {'activeRecordings'};
+      case HomeSectionType.mediaBar:
+      case HomeSectionType.none:
+        return const <String>{};
+    }
+  }
+
+  static Set<String> _duplicateKeysForKefinSection(
+    String? section,
+    String? additionalData,
+  ) {
+    final kind = _kefinKind(section, additionalData);
+    switch (kind) {
+      case 'recentlyReleasedMovies':
+      case 'recentlyReleasedEpisodes':
+        return _duplicateKeysForBuiltin(HomeSectionType.recentlyReleased);
+      case 'recentlyAddedInLibrary':
+        return _duplicateKeysForBuiltin(HomeSectionType.latestMedia);
+      default:
+        return const <String>{};
+    }
+  }
+
+  static String? _kefinKind(String? section, String? additionalData) {
+    if (additionalData != null && additionalData.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(additionalData);
+        if (decoded is Map<String, dynamic>) {
+          final kind = decoded['kind']?.toString();
+          if (kind != null && kind.isNotEmpty) {
+            return kind;
+          }
+        }
+      } catch (_) {}
+    }
+
+    if (section == null || section.isEmpty) return null;
+    final prefixIndex = section.indexOf(':');
+    if (prefixIndex >= 0 && prefixIndex + 1 < section.length) {
+      return section.substring(prefixIndex + 1);
+    }
+    return section;
   }
 
   Future<List<HomeRow>> _loadSection(HomeSectionType section) async {

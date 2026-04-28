@@ -22,6 +22,9 @@ abstract class ItemsApi {
     bool? collapseBoxSetItems,
     bool? enableTotalRecordCount,
     String? enableImageTypes,
+    List<String>? tags,
+    List<String>? studios,
+    DateTime? minPremiereDate,
   });
 
   Future<Map<String, dynamic>> getItem(String itemId);

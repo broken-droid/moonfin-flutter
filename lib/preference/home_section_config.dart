@@ -4,9 +4,9 @@ import 'preference_constants.dart';
 /// Categorizes a [HomeSectionConfig].
 ///
 /// `builtin` entries map to a [HomeSectionType] handled natively by the app.
-/// `pluginDynamic` entries are dynamic rows discovered from the third-party
-/// "Home Screen Sections" Jellyfin plugin and are scoped to a specific
-/// server.
+/// `pluginDynamic` entries are dynamic rows discovered from a third-party
+/// Jellyfin plugin and are scoped to a specific server. The originating
+/// plugin is identified by [HomeSectionPluginSource].
 enum HomeSectionKind {
   builtin('builtin'),
   pluginDynamic('pluginDynamic');
@@ -22,6 +22,26 @@ enum HomeSectionKind {
   }
 }
 
+/// Identifies which third-party plugin produced a `pluginDynamic` entry so
+/// row loading can dispatch to the correct backend.
+enum HomeSectionPluginSource {
+  /// IAmParadox27 "Home Screen Sections" plugin.
+  hss('hss'),
+
+  /// ranaldsgift "KefinTweaks" front-end plugin.
+  kefinTweaks('kefinTweaks');
+
+  const HomeSectionPluginSource(this.serializedName);
+  final String serializedName;
+
+  static HomeSectionPluginSource fromSerialized(String? value) {
+    for (final v in HomeSectionPluginSource.values) {
+      if (v.serializedName == value) return v;
+    }
+    return HomeSectionPluginSource.hss;
+  }
+}
+
 class HomeSectionConfig {
   final HomeSectionKind kind;
   final HomeSectionType type;
@@ -33,6 +53,7 @@ class HomeSectionConfig {
   final String? pluginSection;
   final String? pluginAdditionalData;
   final String? pluginDisplayText;
+  final HomeSectionPluginSource pluginSource;
 
   const HomeSectionConfig({
     this.kind = HomeSectionKind.builtin,
@@ -43,6 +64,7 @@ class HomeSectionConfig {
     this.pluginSection,
     this.pluginAdditionalData,
     this.pluginDisplayText,
+    this.pluginSource = HomeSectionPluginSource.hss,
   });
 
   factory HomeSectionConfig.pluginDynamic({
@@ -52,6 +74,7 @@ class HomeSectionConfig {
     String? pluginDisplayText,
     bool enabled = true,
     int order = 0,
+    HomeSectionPluginSource pluginSource = HomeSectionPluginSource.hss,
   }) =>
       HomeSectionConfig(
         kind: HomeSectionKind.pluginDynamic,
@@ -62,6 +85,7 @@ class HomeSectionConfig {
         pluginSection: pluginSection,
         pluginAdditionalData: pluginAdditionalData,
         pluginDisplayText: pluginDisplayText,
+        pluginSource: pluginSource,
       );
 
   factory HomeSectionConfig.fromJson(Map<String, dynamic> json) {
@@ -79,6 +103,8 @@ class HomeSectionConfig {
       pluginSection: json['pluginSection'] as String?,
       pluginAdditionalData: json['pluginAdditionalData'] as String?,
       pluginDisplayText: json['pluginDisplayText'] as String?,
+      pluginSource:
+          HomeSectionPluginSource.fromSerialized(json['pluginSource'] as String?),
     );
   }
 
@@ -90,6 +116,7 @@ class HomeSectionConfig {
     };
     if (kind != HomeSectionKind.builtin) {
       json['kind'] = kind.serializedName;
+      json['pluginSource'] = pluginSource.serializedName;
       if (serverId != null) json['serverId'] = serverId;
       if (pluginSection != null) json['pluginSection'] = pluginSection;
       if (pluginAdditionalData != null) {
@@ -111,6 +138,7 @@ class HomeSectionConfig {
     String? pluginSection,
     String? pluginAdditionalData,
     String? pluginDisplayText,
+    HomeSectionPluginSource? pluginSource,
   }) =>
       HomeSectionConfig(
         kind: kind ?? this.kind,
@@ -122,14 +150,15 @@ class HomeSectionConfig {
         pluginAdditionalData:
             pluginAdditionalData ?? this.pluginAdditionalData,
         pluginDisplayText: pluginDisplayText ?? this.pluginDisplayText,
+        pluginSource: pluginSource ?? this.pluginSource,
       );
 
   /// Stable identifier suitable for use as a row id / list key. Plugin
-  /// entries combine the originating server, section and additional data so
-  /// multiple instances of the same section can coexist.
+  /// entries combine the originating plugin, server, section and additional
+  /// data so multiple instances of the same section can coexist.
   String get stableId {
     if (kind == HomeSectionKind.pluginDynamic) {
-      return 'pluginDynamic:${serverId ?? ''}:${pluginSection ?? ''}:${pluginAdditionalData ?? ''}';
+      return 'pluginDynamic:${pluginSource.serializedName}:${serverId ?? ''}:${pluginSection ?? ''}:${pluginAdditionalData ?? ''}';
     }
     return 'builtin:${type.serializedName}';
   }
