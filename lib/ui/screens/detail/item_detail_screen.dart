@@ -3073,6 +3073,44 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
   }
 
+  List<Map<String, dynamic>> _streamsForTrackSelectors(
+    AggregatedItem item,
+    Map<String, dynamic>? selectedSource,
+  ) {
+    final manager = GetIt.instance<PlaybackManager>();
+    final queued = manager.queueService.currentItem;
+    final resolution = manager.currentResolution;
+    if (queued?.id == item.id && resolution != null && resolution.mediaStreams.isNotEmpty) {
+      return resolution.mediaStreams;
+    }
+    return _mediaStreamsForItem(item, selectedSource);
+  }
+
+  void _openAudioSelector(BuildContext context, AggregatedItem item) {
+    final selectedSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
+    final streams = _streamsForTrackSelectors(item, selectedSource)
+        .where((s) => s['Type'] == 'Audio')
+        .toList();
+    if (streams.length > 1) {
+      _showAudioSelector(context, streams);
+    }
+  }
+
+  void _openSubtitleSelector(BuildContext context, AggregatedItem item) {
+    final selectedSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
+    final selectorStreams = _streamsForTrackSelectors(item, selectedSource);
+    final subtitleStreams = selectorStreams
+        .where((s) => s['Type'] == 'Subtitle')
+        .toList();
+    final audioStreams = selectorStreams.where((s) => s['Type'] == 'Audio').toList();
+    _showSubtitleSelector(
+      context,
+      item,
+      subtitleStreams,
+      audioStreams,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final item = viewModel.item!;
@@ -3144,19 +3182,13 @@ class _ActionButtonsState extends State<_ActionButtons> {
         _DetailActionButton(
           label: l10n.audio,
           icon: Icons.audiotrack,
-          onPressed: () => _showAudioSelector(context, audioStreams),
+          onPressed: () => _openAudioSelector(context, item),
         ),
       if (subtitleStreams.isNotEmpty || _canDownloadRemoteSubtitles(item))
         _DetailActionButton(
           label: l10n.subtitles,
           icon: Icons.subtitles,
-          onPressed:
-              () => _showSubtitleSelector(
-                context,
-                item,
-                subtitleStreams,
-                audioStreams,
-              ),
+          onPressed: () => _openSubtitleSelector(context, item),
         ),
       if (item.mediaSources.length > 1)
         _DetailActionButton(
@@ -3373,9 +3405,31 @@ class _ActionButtonsState extends State<_ActionButtons> {
     ).showSnackBar(SnackBar(content: Text(l10n.failedToDeleteItem)));
   }
 
+  int? _activePlaybackAudioIndex() {
+    final item = widget.viewModel.item;
+    if (item == null) return null;
+    final manager = GetIt.instance<PlaybackManager>();
+    final queued = manager.queueService.currentItem;
+    if (queued?.id != item.id) return null;
+    return manager.audioStreamIndex;
+  }
+
+  int? _activePlaybackSubtitleIndex() {
+    final item = widget.viewModel.item;
+    if (item == null) return null;
+    final manager = GetIt.instance<PlaybackManager>();
+    final queued = manager.queueService.currentItem;
+    if (queued?.id != item.id) return null;
+    return manager.subtitleStreamIndex;
+  }
+
   int? _effectiveAudioStreamIndex(List<Map<String, dynamic>> audioStreams) {
     if (_selectedAudioIndex != null) {
       return _selectedAudioIndex;
+    }
+    final active = _activePlaybackAudioIndex();
+    if (active != null) {
+      return active;
     }
 
     final prefs = GetIt.instance<UserPreferences>();
@@ -3405,6 +3459,10 @@ class _ActionButtonsState extends State<_ActionButtons> {
   int? _effectiveSubtitleStreamIndex(List<Map<String, dynamic>> subtitleStreams) {
     if (_selectedSubtitleIndex != null) {
       return _selectedSubtitleIndex;
+    }
+    final active = _activePlaybackSubtitleIndex();
+    if (active != null) {
+      return active;
     }
     final prefs = GetIt.instance<UserPreferences>();
     final defaultToNone = prefs.get(
