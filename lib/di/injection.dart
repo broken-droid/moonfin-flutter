@@ -116,17 +116,25 @@ Future<String> _resolveAppVersion() async {
 }
 
 Future<void> _migrateLegacyBitrateCap(PreferenceStore store) async {
-  const migrationKey = 'pref_max_bitrate_migrated_v2';
+  const migrationKey = 'pref_max_bitrate_migrated_v3';
   if (store.getBool(migrationKey) == true) {
     return;
   }
 
-  final current = store.getString(UserPreferences.maxBitrate.key);
+  final current = store.getString(UserPreferences.maxBitrate.key) ?? '';
   if (current == '100') {
     await store.setString(
       UserPreferences.maxBitrate.key,
       UserPreferences.maxBitrate.defaultValue,
     );
+  } else {
+    final parsed = int.tryParse(current);
+    if (parsed != null && parsed >= 1000000) {
+      await store.setString(
+        UserPreferences.maxBitrate.key,
+        '${parsed ~/ 1000000}',
+      );
+    }
   }
 
   await store.setBool(migrationKey, true);

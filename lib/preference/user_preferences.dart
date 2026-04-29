@@ -136,7 +136,7 @@ class UserPreferences extends ChangeNotifier {
   );
   static final maxBitrate = Preference(
     key: 'pref_max_bitrate',
-    defaultValue: '200',
+    defaultValue: '120',
   );
 
   static final maxVideoResolution = EnumPreference(
@@ -260,7 +260,7 @@ class UserPreferences extends ChangeNotifier {
 
   static final hardwareDecoding = Preference(
     key: 'hardware_decoding',
-    defaultValue: false,
+    defaultValue: PlatformDetection.isAndroid,
   );
 
   static final defaultAudioLanguage = Preference(

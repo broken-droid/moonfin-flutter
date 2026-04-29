@@ -4591,6 +4591,16 @@ class _TvFocusButtonState extends State<_TvFocusButton> {
     final focusWidget = Focus(
       focusNode: _effectiveNode,
       onKeyEvent: (_, event) {
+        if (event is KeyDownEvent || event is KeyRepeatEvent) {
+          if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            final moved = FocusScope.of(context).previousFocus();
+            return moved ? KeyEventResult.handled : KeyEventResult.ignored;
+          }
+          if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            final moved = FocusScope.of(context).nextFocus();
+            return moved ? KeyEventResult.handled : KeyEventResult.ignored;
+          }
+        }
         if (widget.onPressed != null &&
             event is KeyDownEvent &&
             (event.logicalKey == LogicalKeyboardKey.select ||

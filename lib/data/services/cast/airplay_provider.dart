@@ -76,10 +76,7 @@ class AirPlayProvider implements CastProvider, CastTransportControls {
       item,
       deviceProfile: DeviceProfileBuilder.build(
         ac3Enabled: false,
-        trueHdEnabled: false,
-        useProgressiveTranscode: false,
         maxBitrateMbps: 15,
-        subtitlesInManifest: false,
       ),
       audioStreamIndex: audioStreamIndex,
       subtitleStreamIndex: subtitleStreamIndex,
