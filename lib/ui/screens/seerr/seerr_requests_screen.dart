@@ -8,6 +8,9 @@ import '../../../data/repositories/seerr_repository.dart';
 import '../../../data/services/seerr/seerr_api_models.dart';
 import '../../../data/viewmodels/seerr_requests_view_model.dart';
 import '../../navigation/destinations.dart';
+import '../../../preference/preference_constants.dart';
+import '../../../preference/user_preferences.dart';
+import '../../../util/platform_detection.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/focus/request_initial_focus.dart';
@@ -106,10 +109,14 @@ class _SeerrRequestsScreenState extends State<SeerrRequestsScreen> {
       );
     }
 
+    final prefs = GetIt.instance<UserPreferences>();
+    final navbarPosition = prefs.get(UserPreferences.navbarPosition);
+    final navbarIsLeft = navbarPosition == NavbarPosition.left;
+    final leftInset = (navbarIsLeft && PlatformDetection.isTV) ? 72.0 : 16.0;
     return RefreshIndicator(
       onRefresh: vm.refresh,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+        padding: EdgeInsets.fromLTRB(leftInset, 16, 16, 80),
         itemCount: s.requests.length,
         itemBuilder: (context, index) {
           final req = s.requests[index];

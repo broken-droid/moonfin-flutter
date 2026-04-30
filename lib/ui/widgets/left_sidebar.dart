@@ -33,6 +33,7 @@ const _kExpandedWidthDesktop = 240.0;
 const _kExpandedWidthMobile = 260.0;
 const _kExpandDuration = Duration(milliseconds: 200);
 const _kExpandedWidthTV = 280.0;
+const _kCollapsedWidthTV = 72.0;
 
 class LeftSidebar extends StatefulWidget {
   final String? activeRoute;
@@ -66,9 +67,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
   bool _showLabels = false;
   bool _librariesExpanded = false;
   bool _canExpandViaFocus = false;
+  bool _sidebarHadFocus = false;
   Timer? _clockTimer;
   Timer? _labelTimer;
   Timer? _focusExpandGateTimer;
+  Timer? _focusHomeTimer;
   String _currentTime = '';
   StreamSubscription? _userSub;
   String? _userImageUrl;
@@ -94,6 +97,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
     FocusManager.instance.addListener(_trackPreviousFocus);
     if (PlatformDetection.isTV) {
       _armTvFocusGate();
+      _sidebarFocus.addListener(_onSidebarFocusNodeChanged);
       _profileFocusNode.addListener(() {
         if (mounted) setState(() {});
       });
@@ -109,9 +113,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
       NavigationLayout.focusNavbarNotifier.value = _previousFocusNavbarCallback;
     }
     FocusManager.instance.removeListener(_trackPreviousFocus);
+    if (PlatformDetection.isTV) _sidebarFocus.removeListener(_onSidebarFocusNodeChanged);
     _clockTimer?.cancel();
     _labelTimer?.cancel();
     _focusExpandGateTimer?.cancel();
+    _focusHomeTimer?.cancel();
     _homeFocusNode.dispose();
     _settingsFocusNode.dispose();
     _profileFocusNode.dispose();
@@ -232,15 +238,23 @@ class _LeftSidebarState extends State<LeftSidebar> {
     }
   }
 
+  void _onSidebarFocusNodeChanged() {
+    final hasFocus = _sidebarFocus.hasFocus;
+    if (hasFocus && !_sidebarHadFocus && _canExpandViaFocus) {
+      _expand();
+      _focusHomeTimer?.cancel();
+      _focusHomeTimer = Timer(Duration.zero, () {
+        if (!mounted) return;
+        _homeFocusNode.requestFocus();
+      });
+    } else if (!hasFocus && _sidebarHadFocus && _canExpandViaFocus) {
+      _collapse();
+    }
+    _sidebarHadFocus = hasFocus;
+  }
+
   void _onSidebarFocusChange(bool hasFocus) {
     if (PlatformDetection.isTV) {
-      if (_canExpandViaFocus || !hasFocus) {
-        if (hasFocus) {
-          _expand();
-        } else {
-          _collapse();
-        }
-      }
       return;
     }
     if (hasFocus) {
@@ -462,7 +476,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
     return AnimatedContainer(
       duration: _kExpandDuration,
       curve: Curves.easeInOut,
-      width: _isExpanded ? _kExpandedWidthTV : 0,
+      width: _isExpanded ? _kExpandedWidthTV : _kCollapsedWidthTV,
       child: ClipRect(
         child: FocusScope(
           node: _sidebarFocus,
@@ -526,7 +540,6 @@ class _LeftSidebarState extends State<LeftSidebar> {
     return Column(
       children: [
         _buildUserSection(),
-        _buildSeparator(),
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -648,7 +661,6 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     },
                   ),
                 if (showLibraries && _libraries.isNotEmpty) ...[
-                  _buildSeparator(),
                   _SidebarItem(
                     baseColor: nextSidebarColor(),
                     iconBuilder: (size, color) => Image.asset(
@@ -730,7 +742,6 @@ class _LeftSidebarState extends State<LeftSidebar> {
             },
           ),
         ),
-        _buildSeparator(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: _SidebarItem(
@@ -887,18 +898,6 @@ class _LeftSidebarState extends State<LeftSidebar> {
     );
   }
 
-  Widget _buildSeparator() {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Container(
-        height: 1,
-        color: isNeon
-            ? AppColorScheme.accent.withValues(alpha: 0.75)
-            : Colors.white.withValues(alpha: 0.1),
-      ),
-    );
-  }
 }
 
 class _SidebarItem extends StatefulWidget {
@@ -940,6 +939,7 @@ class _SidebarItemState extends State<_SidebarItem> {
   void initState() {
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
+    _isFocused = _focusNode.hasFocus;
     _focusNode.addListener(
       () => setState(() => _isFocused = _focusNode.hasFocus),
     );

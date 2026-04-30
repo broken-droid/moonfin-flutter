@@ -1022,12 +1022,20 @@ class _ContentRowsState extends State<_ContentRows>
       focusNavbar();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
+        final navbarPosition = widget.prefs.get(UserPreferences.navbarPosition);
         final primary = FocusManager.instance.primaryFocus;
         final ctx = primary?.context;
         if (primary != null && ctx != null) {
           final box = ctx.findRenderObject();
-          if (box is RenderBox && box.localToGlobal(Offset.zero).dy < 120) {
-            return;
+          if (box is RenderBox) {
+            final global = box.localToGlobal(Offset.zero);
+            final isTopNavbarFocus =
+                navbarPosition == NavbarPosition.top && global.dy < 120;
+            final isLeftSidebarFocus =
+                navbarPosition == NavbarPosition.left && global.dx < 220;
+            if (isTopNavbarFocus || isLeftSidebarFocus) {
+              return;
+            }
           }
         }
         if (attempt < 4) {
@@ -1221,14 +1229,15 @@ class _ContentRowsState extends State<_ContentRows>
     );
   }
 
-  void _requestRowFocusFromMemory(int rowIndex, {int? preferredIndex}) {
+  bool _requestRowFocusFromMemory(int rowIndex, {int? preferredIndex}) {
     final state = _rowStateOf(rowIndex);
-    if (state == null) return;
+    if (state == null) return false;
     if (preferredIndex != null) {
       state.requestFocusAt(preferredIndex);
     } else {
       state.requestFocusFromMemory();
     }
+    return true;
   }
 
   bool _rowHasFocusableItems(HomeRow row) {
@@ -1242,7 +1251,7 @@ class _ContentRowsState extends State<_ContentRows>
     };
   }
 
-  void _ensureInitialHomeFocus(List<HomeRow> rows) {
+  void _ensureInitialHomeFocus(List<HomeRow> rows, {int attempt = 0}) {
     if (_initialFocusResolved || !mounted) {
       return;
     }
@@ -1306,7 +1315,16 @@ class _ContentRowsState extends State<_ContentRows>
           _scrollController.jumpTo(targetOffset);
         }
       }
-      _requestRowFocusFromMemory(rowIndex);
+      final didRequestFocus = _requestRowFocusFromMemory(rowIndex);
+      if (!didRequestFocus) {
+        if (attempt < 8) {
+          Future<void>.delayed(const Duration(milliseconds: 50), () {
+            if (!mounted || _initialFocusResolved) return;
+            _ensureInitialHomeFocus(rows, attempt: attempt + 1);
+          });
+        }
+        return;
+      }
       _initialFocusResolved = true;
     });
   }

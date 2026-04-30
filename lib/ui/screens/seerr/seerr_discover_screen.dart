@@ -152,6 +152,9 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
     final navbarHeight = navbarPosition == NavbarPosition.top
         ? (PlatformDetection.isTV ? 95.0 : PlatformDetection.useMobileUi ? 60.0 : 80.0)
         : 0.0;
+    final navbarIsLeft = navbarPosition == NavbarPosition.left;
+    final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
+    final infoPanelLeft = (navbarIsLeft && PlatformDetection.isTV) ? 80.0 : 48.0;
     final infoTopInset = topPad + navbarHeight + 8;
     return Scaffold(
       backgroundColor: Colors.black,
@@ -165,13 +168,13 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _InfoPanel(item: _selectedItem, topInset: infoTopInset),
+                _InfoPanel(item: _selectedItem, topInset: infoTopInset, leftInset: infoPanelLeft),
                 Expanded(
                   child: Focus(
                     canRequestFocus: false,
                     skipTraversal: true,
                     onKeyEvent: _onContentKeyEvent,
-                    child: _buildContent(),
+                    child: _buildContent(rowLeftInset: rowLeftInset),
                   ),
                 ),
               ],
@@ -182,7 +185,7 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent({double rowLeftInset = 0.0}) {
     final l10n = AppLocalizations.of(context);
     final vm = _viewModel;
     if (vm == null) {
@@ -221,7 +224,7 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
 
     return ListView.builder(
       controller: _scrollController,
-      padding: const EdgeInsets.only(bottom: 32),
+      padding: EdgeInsets.only(left: rowLeftInset, bottom: 32),
       itemCount: visibleRows.length,
       itemBuilder: (context, index) {
         final (origIndex, row) = visibleRows[index];
@@ -519,7 +522,8 @@ class _GradientScrim extends StatelessWidget {
 class _InfoPanel extends StatelessWidget {
   final SeerrDiscoverItem? item;
   final double topInset;
-  const _InfoPanel({this.item, required this.topInset});
+  final double leftInset;
+  const _InfoPanel({this.item, required this.topInset, this.leftInset = 48.0});
 
   @override
   Widget build(BuildContext context) {
@@ -536,7 +540,7 @@ class _InfoPanel extends StatelessWidget {
       duration: const Duration(milliseconds: 300),
       child: Padding(
         key: ValueKey(item!.id),
-        padding: EdgeInsets.fromLTRB(48, topInset, 48, 8),
+        padding: EdgeInsets.fromLTRB(leftInset, topInset, 48, 8),
         child: SizedBox(
           width: double.infinity,
           child: Column(

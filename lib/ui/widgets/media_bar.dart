@@ -854,6 +854,9 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
                     ),
                   ),
                 if (items.length > 1 && !PlatformDetection.useMobileUi) ...[
+                  if (!(PlatformDetection.isTV &&
+                      GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition) ==
+                          NavbarPosition.left))
                   Positioned(
                     left: 0,
                     top: 0,
@@ -1151,7 +1154,11 @@ class _SlideInfo extends StatelessWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.only(left: 8, right: 8, bottom: isMobile ? 24 : 36),
+      padding: EdgeInsets.only(
+        left: PlatformDetection.isTV ? 40.0 : 8.0,
+        right: PlatformDetection.isTV ? 40.0 : 8.0,
+        bottom: isMobile ? 24 : 36,
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: kIsWeb
