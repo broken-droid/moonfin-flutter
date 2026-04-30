@@ -2210,6 +2210,12 @@ abstract class AppLocalizations {
   /// **'{mbps} Mbps'**
   String bitrateValueMbps(int mbps);
 
+  /// Label shown in stream info when a manual bitrate override is active
+  ///
+  /// In en, this message translates to:
+  /// **'Bitrate Override'**
+  String get bitrateOverride;
+
   /// Title for audio delay adjuster
   ///
   /// In en, this message translates to:
@@ -10895,7 +10901,7 @@ abstract class AppLocalizations {
   /// Tooltip label for playback quality/bitrate control in player
   ///
   /// In en, this message translates to:
-  /// **'Playback quality'**
+  /// **'Bitrate'**
   String get playerTooltipPlaybackQuality;
 
   /// Tooltip label for entering fullscreen in player

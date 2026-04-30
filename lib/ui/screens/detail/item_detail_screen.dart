@@ -2151,27 +2151,13 @@ class _MetadataRow extends StatelessWidget {
           alignment: compact ? WrapAlignment.center : WrapAlignment.start,
           spacing: 2,
           runSpacing: 4,
-          children: [
-            ...separated,
-            if (!compact && badges.isNotEmpty) ...[
-              Text(
-                ' \u2022 ',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: isNeon
-                      ? AppColorScheme.onSurface.withValues(alpha: 0.6)
-                      : Colors.white.withValues(alpha: 0.5),
-                  shadows: _textShadows,
-                ),
-              ),
-              ...badges.map((b) => _techChip(theme, b)),
-            ],
-          ],
+          children: separated,
         ),
-        if (compact && badges.isNotEmpty)
+        if (badges.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 6),
             child: Wrap(
-              alignment: WrapAlignment.center,
+              alignment: compact ? WrapAlignment.center : WrapAlignment.start,
               spacing: 6,
               runSpacing: 4,
               children: badges.map((b) => _techChip(theme, b)).toList(),
@@ -4884,12 +4870,12 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
     final activeColor = widget.isActive ? widget.activeColor : null;
     final neonAccent = widget.neonAccentColor ?? AppColorScheme.onSurface;
     final iconColor = showHighlight
-        ? (isNeon ? AppColorScheme.accent : Colors.black)
+        ? (isNeon ? AppColorScheme.accent : AppColorScheme.onButtonFocused)
       : (widget.isActive
         ? (widget.activeColor ?? (isNeon ? neonAccent : Colors.white))
         : (isNeon ? neonAccent : Colors.white));
     final labelColor = showHighlight
-      ? (isNeon ? neonAccent : Colors.black)
+      ? (isNeon ? neonAccent : AppColorScheme.onButtonFocused)
       : (isNeon ? neonAccent : Colors.white);
 
     return MouseRegion(
@@ -4930,7 +4916,7 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
                   height: isMobile ? 44 : 52,
                   decoration: BoxDecoration(
                     color: showHighlight
-                      ? (isNeon ? Colors.transparent : Colors.white)
+                      ? (isNeon ? Colors.transparent : AppColorScheme.buttonFocused)
                         : activeColor != null
                             ? activeColor.withValues(alpha: isNeon ? 0.12 : 0.15)
                             : (isNeon

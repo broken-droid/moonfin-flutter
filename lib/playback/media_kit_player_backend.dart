@@ -42,7 +42,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
     try {
       final dynamic dyn = native;
       final value = await Future.value(dyn.getProperty(key));
-      return value?.toString();
+      return value.toString();
     } catch (_) {
       return null;
     }

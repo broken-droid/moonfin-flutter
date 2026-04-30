@@ -36,7 +36,6 @@ import '../../../util/audio_labels.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
-import '../../widgets/overlay_sheet.dart';
 import '../../widgets/subtitle_preview.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
@@ -148,6 +147,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   bool _showBrightnessOverlay = false;
   Timer? _volumeOverlayTimer;
   Timer? _brightnessOverlayTimer;
+  Timer? _zoomModeToastTimer;
+  OverlayEntry? _zoomModeToastOverlay;
   StreamSubscription<double>? _brightnessListenerSub;
   StreamSubscription<double>? _volumeListenerSub;
   double _verticalDragStartY = 0.0;
@@ -196,36 +197,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       return id?.toString();
     }
     return null;
-  }
-
-  Future<void> _showTvDialogBox({
-    required Widget child,
-    double maxWidth = 760,
-    double heightFactor = 0.78,
-  }) async {
-    final mediaQuery = MediaQuery.of(context);
-    final size = mediaQuery.size;
-    final dialogMaxWidth = math.min(maxWidth, math.max(320.0, size.width - 36));
-    final dialogMaxHeight = math.min(
-      size.height - 24,
-      math.max(280.0, size.height * heightFactor),
-    );
-
-    await showFocusRestoringDialog<void>(
-      context: context,
-      builder: (dialogContext) => Dialog(
-        backgroundColor: AppColorScheme.surface,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: dialogMaxWidth,
-            maxHeight: dialogMaxHeight,
-          ),
-          child: child,
-        ),
-      ),
-    );
   }
 
   bool _canDownloadRemoteSubtitles(AggregatedItem item) {
@@ -601,6 +572,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _hideTimer?.cancel();
     _volumeOverlayTimer?.cancel();
     _brightnessOverlayTimer?.cancel();
+    _zoomModeToastTimer?.cancel();
+    _removeZoomModeToastOverlay();
     _skipForwardTimer?.cancel();
     _skipBackwardTimer?.cancel();
     if (PlatformDetection.isMobile) {
@@ -1352,6 +1325,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyUpEvent) {
+      if (PlatformDetection.isTV &&
+          _controlsVisible &&
+          !_isOsdLocked &&
+          event.logicalKey != LogicalKeyboardKey.goBack &&
+          event.logicalKey != LogicalKeyboardKey.escape &&
+          event.logicalKey != LogicalKeyboardKey.browserBack &&
+          event.logicalKey != LogicalKeyboardKey.backspace) {
+        _scheduleHide();
+      }
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
           event.logicalKey == LogicalKeyboardKey.arrowRight) {
         _resetSeekAcceleration();
@@ -1362,12 +1344,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       return KeyEventResult.ignored;
     }
 
-    if (PlatformDetection.isTV) {
-      final primaryFocus = FocusManager.instance.primaryFocus;
+    final primaryFocus = FocusManager.instance.primaryFocus;
 
+    if (PlatformDetection.isTV) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        if (primaryFocus == _tvSecondaryLastFocus) {
+          if (_tvTransportFirstFocus.context != null) {
+            _tvTransportFirstFocus.requestFocus();
+          }
+          return KeyEventResult.handled;
+        }
         final isBoundaryFocus = primaryFocus == _tvTransportLastFocus ||
-            primaryFocus == _tvSecondaryLastFocus ||
             primaryFocus == _tvSeekbarFocus;
         if (isBoundaryFocus && _skipSegment != null) {
           _focusTvSkipSegment();
@@ -1419,7 +1406,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             _showControls(focusSeekbar: true);
             return KeyEventResult.handled;
           }
-          if (_controlsVisible) _scheduleHide();
           return KeyEventResult.ignored;
         case LogicalKeyboardKey.arrowRight:
           if (!_controlsVisible) {
@@ -1431,7 +1417,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             _showControls(focusSeekbar: true);
             return KeyEventResult.handled;
           }
-          if (_controlsVisible) _scheduleHide();
           return KeyEventResult.ignored;
         case LogicalKeyboardKey.arrowUp:
         case LogicalKeyboardKey.arrowDown:
@@ -1439,7 +1424,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             _showControls(focusSeekbar: true);
             return KeyEventResult.handled;
           }
-          if (_controlsVisible) _scheduleHide();
           return KeyEventResult.ignored;
         case LogicalKeyboardKey.select:
         case LogicalKeyboardKey.enter:
@@ -1456,6 +1440,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     switch (event.logicalKey) {
       case LogicalKeyboardKey.space:
         _togglePlayPause();
+        _showControls();
+        return KeyEventResult.handled;
+      case LogicalKeyboardKey.mediaPlay:
+        unawaited(_resumeWithConfiguredRewind());
+        _showControls();
+        return KeyEventResult.handled;
+      case LogicalKeyboardKey.mediaPause:
+        _manager.pause();
+        _showControls();
+        return KeyEventResult.handled;
+      case LogicalKeyboardKey.mediaPlayPause:
+        _togglePlayPause();
+        _showControls();
+        return KeyEventResult.handled;
+      case LogicalKeyboardKey.mediaFastForward:
+        _seekRelative(_prefs.get(UserPreferences.skipForwardLength));
+        _showControls();
+        return KeyEventResult.handled;
+      case LogicalKeyboardKey.mediaRewind:
+        _seekRelative(-_prefs.get(UserPreferences.skipBackLength));
         _showControls();
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowLeft:
@@ -2062,10 +2066,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTvTransportRow(),
             _buildSeekbar(),
             const SizedBox(height: AppSpacing.spaceXs),
-            _buildSecondaryControlsRow(),
+            _buildTvBottomControlsRow(),
           ],
         ),
       ),
@@ -2134,13 +2137,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                             _seekRelative(_prefs.get(UserPreferences.skipForwardLength));
                             return KeyEventResult.handled;
                           case LogicalKeyboardKey.arrowUp:
-                            if (_tvBottomPrimaryFocus.context != null) {
-                              _tvBottomPrimaryFocus.requestFocus();
-                            }
                             return KeyEventResult.handled;
                           case LogicalKeyboardKey.arrowDown:
-                            if (_tvSecondaryFocus.context != null) {
-                              _tvSecondaryFocus.requestFocus();
+                            if (_tvBottomPrimaryFocus.context != null) {
+                              _tvBottomPrimaryFocus.requestFocus();
                             }
                             return KeyEventResult.handled;
                           case LogicalKeyboardKey.select:
@@ -2152,45 +2152,48 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                             return KeyEventResult.ignored;
                         }
                       },
-                      child: SliderTheme(
-                        data: SliderThemeData(
-                          trackHeight: 4,
-                          thumbShape: const RoundSliderThumbShape(
-                            enabledThumbRadius: 7,
+                      child: ExcludeFocus(
+                        excluding: PlatformDetection.isTV,
+                        child: SliderTheme(
+                          data: SliderThemeData(
+                            trackHeight: 4,
+                            thumbShape: const RoundSliderThumbShape(
+                              enabledThumbRadius: 7,
+                            ),
+                            overlayShape: const RoundSliderOverlayShape(
+                              overlayRadius: 14,
+                            ),
+                            activeTrackColor: AppColorScheme.rangeProgress,
+                            secondaryActiveTrackColor:
+                                AppColorScheme.rangeTrack.withValues(alpha: 0.8),
+                            inactiveTrackColor: AppColorScheme.rangeTrack,
+                              thumbColor: (PlatformDetection.isTV && _seekbarFocused)
+                                ? Colors.white
+                                : AppColorScheme.rangeThumb,
+                            overlayColor: AppColorScheme.rangeThumb.withValues(
+                              alpha: 0.2,
+                            ),
                           ),
-                          overlayShape: const RoundSliderOverlayShape(
-                            overlayRadius: 14,
+                          child: Slider(
+                            value: positionMs.clamp(0.0, durationMs),
+                            secondaryTrackValue: bufferMs.clamp(0.0, durationMs),
+                            max: durationMs,
+                            onChangeStart: (v) {
+                              setState(() {
+                                _isSeeking = true;
+                                _seekValue = v;
+                              });
+                              _hideTimer?.cancel();
+                            },
+                            onChanged: (v) {
+                              setState(() => _seekValue = v);
+                            },
+                            onChangeEnd: (v) {
+                              _isSeeking = false;
+                              _manager.seekTo(Duration(milliseconds: v.round()));
+                              _scheduleHide();
+                            },
                           ),
-                          activeTrackColor: AppColorScheme.rangeProgress,
-                          secondaryActiveTrackColor:
-                              AppColorScheme.rangeTrack.withValues(alpha: 0.8),
-                          inactiveTrackColor: AppColorScheme.rangeTrack,
-                            thumbColor: (PlatformDetection.isTV && _seekbarFocused)
-                              ? Colors.white
-                              : AppColorScheme.rangeThumb,
-                          overlayColor: AppColorScheme.rangeThumb.withValues(
-                            alpha: 0.2,
-                          ),
-                        ),
-                        child: Slider(
-                          value: positionMs.clamp(0.0, durationMs),
-                          secondaryTrackValue: bufferMs.clamp(0.0, durationMs),
-                          max: durationMs,
-                          onChangeStart: (v) {
-                            setState(() {
-                              _isSeeking = true;
-                              _seekValue = v;
-                            });
-                            _hideTimer?.cancel();
-                          },
-                          onChanged: (v) {
-                            setState(() => _seekValue = v);
-                          },
-                          onChangeEnd: (v) {
-                            _isSeeking = false;
-                            _manager.seekTo(Duration(milliseconds: v.round()));
-                            _scheduleHide();
-                          },
                         ),
                       ),
                     ),
@@ -2366,6 +2369,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   Widget _buildTvTransportRow() {
+    final l10n = AppLocalizations.of(context);
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     final buttonExtent = isLandscape ? 56.0 : 48.0;
@@ -2373,24 +2377,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final hasPrevious = _queue.hasPrevious;
     final hasNext = _queue.hasNext;
 
-    return Focus(
-      skipTraversal: true,
-      canRequestFocus: false,
-      onKeyEvent: (node, event) {
-        if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
-          return KeyEventResult.ignored;
-        }
-        if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-          _tvSeekbarFocus.requestFocus();
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
-      },
-      child: FocusTraversalGroup(
-        policy: ReadingOrderTraversalPolicy(),
-        child: Padding(
+    return FocusTraversalGroup(
+      policy: ReadingOrderTraversalPolicy(),
+      child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               if (_queue.hasPrevious)
@@ -2400,6 +2392,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   size: buttonIconSize,
                   extent: buttonExtent,
                   focusNode: _tvTransportFirstFocus,
+                  tooltip: l10n.playerTooltipPrevious,
                 ),
               const SizedBox(width: 4),
               _controlButton(
@@ -2409,6 +2402,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                 size: buttonIconSize,
                 extent: buttonExtent,
                 focusNode: hasPrevious ? null : _tvTransportFirstFocus,
+                tooltip: _tooltipMessage(
+                  l10n.playerTooltipSeekBack,
+                  shortcut: 'Left',
+                ),
               ),
               const SizedBox(width: 8),
               StreamBuilder<bool>(
@@ -2423,6 +2420,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                     size: buttonIconSize,
                     extent: buttonExtent,
                     focusNode: _tvBottomPrimaryFocus,
+                    tooltip: _tooltipMessage(
+                      isPlaying ? l10n.pause : l10n.play,
+                      shortcut: 'Space',
+                    ),
                   );
                 },
               ),
@@ -2434,6 +2435,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                 size: buttonIconSize,
                 extent: buttonExtent,
                 focusNode: hasNext ? null : _tvTransportLastFocus,
+                tooltip: _tooltipMessage(
+                  l10n.playerTooltipSeekForward,
+                  shortcut: 'Right',
+                ),
               ),
               const SizedBox(width: 4),
               if (_queue.hasNext)
@@ -2443,10 +2448,35 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   size: buttonIconSize,
                   extent: buttonExtent,
                   focusNode: _tvTransportLastFocus,
+                  tooltip: l10n.next,
                 ),
             ],
           ),
         ),
+      );
+  }
+
+  Widget _buildTvBottomControlsRow() {
+    return Focus(
+      skipTraversal: true,
+      canRequestFocus: false,
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+          return KeyEventResult.ignored;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          _tvSeekbarFocus.requestFocus();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildTvTransportRow(),
+          const SizedBox(width: AppSpacing.spaceXs),
+          Expanded(child: _buildSecondaryControlsRow()),
+        ],
       ),
     );
   }
@@ -2459,21 +2489,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         final item = _queue.currentItem;
         final hasChapters = item is AggregatedItem && item.chapters.isNotEmpty;
         final hasCast = _hasCastCrew(item);
-        final resolution = _manager.currentResolution;
-        final offlineMeta = _manager.currentOfflineMetadata;
-        final allStreams =
-          resolution?.mediaStreams ??
-          (offlineMeta?['MediaStreams'] as List?)
-            ?.cast<Map<String, dynamic>>() ??
-          (item is AggregatedItem ? item.mediaStreams : const <Map<String, dynamic>>[]);
-        final subtitleTrackCount = allStreams
-          .where((s) => s['Type'] == 'Subtitle')
-          .length;
-        final audioTrackCount = allStreams
-          .where((s) => s['Type'] == 'Audio')
-          .length;
-        final showSubtitleButton = subtitleTrackCount > 0;
-        final showAudioButton = audioTrackCount > 1;
+        final showSubtitleButton = true;
+        final showAudioButton = true;
         final isLandscape =
             MediaQuery.of(context).orientation == Orientation.landscape;
         final secondaryIconSize = isLandscape ? 28.0 : 24.0;
@@ -2487,9 +2504,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           speedButton = _TvFocusButton(
             focusNode: _tvSecondaryFocus,
             extent: secondaryExtent,
+            tooltip: l10n.playerTooltipPlaybackSpeed,
             onPressed: () {
               _showControls();
-              unawaited(_showTvSpeedSelector());
+              _showSpeedSelector();
             },
             child: Text(
               '${_state.playbackSpeed}x',
@@ -2497,11 +2515,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             ),
           );
         } else {
-          final speedPopupKey = GlobalKey<PopupMenuButtonState<double>>();
           speedButton = _buildSpeedButton(
             extent: secondaryExtent,
             textSize: secondaryTextSize,
-            popupKey: speedPopupKey,
             tooltip: l10n.playerTooltipPlaybackSpeed,
           );
         }
@@ -2536,20 +2552,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               extent: secondaryExtent,
               tooltip: l10n.audio,
             ),
-          _controlButton(
-            Icons.timer_outlined,
-            onPressed: () => _showDelayAdjuster(audio: false),
-            size: secondaryIconSize,
-            extent: secondaryExtent,
-            tooltip: l10n.subtitleDelay,
-          ),
-          _controlButton(
-            Icons.schedule_rounded,
-            onPressed: () => _showDelayAdjuster(audio: true),
-            size: secondaryIconSize,
-            extent: secondaryExtent,
-            tooltip: l10n.audioDelay,
-          ),
           if (hasCast)
             _controlButton(
               Icons.people_outline_rounded,
@@ -2580,13 +2582,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               extent: secondaryExtent,
               tooltip: l10n.playerTooltipCastControls,
             ),
-          if (_manager.currentResolution?.playMethod ==
-              StreamPlayMethod.transcode)
-            _buildBitrateButton(
-              extent: secondaryExtent,
-              iconSize: secondaryIconSize,
-              tooltip: l10n.playerTooltipPlaybackQuality,
-            ),
+          _buildBitrateButton(
+            extent: secondaryExtent,
+            iconSize: secondaryIconSize,
+            tooltip: l10n.playerTooltipPlaybackQuality,
+          ),
           _buildZoomButton(
             size: secondaryIconSize,
             extent: secondaryExtent,
@@ -2599,6 +2599,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             extent: secondaryExtent,
             focusNode: _tvSecondaryLastFocus,
             tooltip: _tooltipMessage(l10n.playbackInformation, shortcut: 'I'),
+            onRightBoundary: () {
+              if (_tvTransportFirstFocus.context != null) {
+                _tvTransportFirstFocus.requestFocus();
+              }
+            },
           ),
           if (PlatformDetection.useDesktopUi)
             _controlButton(
@@ -2679,6 +2684,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               }
               if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
                 _tvSeekbarFocus.requestFocus();
+                return KeyEventResult.handled;
+              }
+              if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+                  _tvSecondaryLastFocus.hasFocus) {
+                _tvTransportFirstFocus.requestFocus();
                 return KeyEventResult.handled;
               }
               return KeyEventResult.ignored;
@@ -3236,16 +3246,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     double extent = 48,
     String? tooltip,
     FocusNode? focusNode,
+    Color iconColor = Colors.white,
+    VoidCallback? onRightBoundary,
   }) {
     if (PlatformDetection.isTV) {
       return _TvFocusButton(
         focusNode: focusNode,
         extent: extent,
+        tooltip: tooltip,
         onPressed: () {
           onPressed();
           _showControls();
         },
-        child: Icon(icon, color: Colors.white, size: size),
+        onRightBoundary: onRightBoundary,
+        child: Icon(icon, color: iconColor, size: size),
       );
     }
     return SizedBox(
@@ -3258,7 +3272,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _showControls();
         },
         tooltip: PlatformDetection.useDesktopUi ? tooltip : null,
-        icon: Icon(icon, color: Colors.white, size: size),
+        icon: Icon(icon, color: iconColor, size: size),
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints(),
       ),
@@ -3269,53 +3283,80 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     double extent = 48,
     double textSize = AppTypography.fontSizeSm,
     String? tooltip,
-    GlobalKey<PopupMenuButtonState<double>>? popupKey,
   }) {
-    final speedOptions = const <double>[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
     return SizedBox(
       width: extent,
       height: extent,
-      child: PopupMenuButton<double>(
-        key: popupKey,
-        tooltip: PlatformDetection.useDesktopUi ? tooltip : null,
-        onSelected: (speed) {
-          unawaited(
-            _runSinglePlayerMutation(
-              'speed_$speed',
-              () => _manager.setPlaybackSpeed(speed),
-              suppressBackFor: const Duration(seconds: 3),
-            ).then((started) {
-              if (started) {
-                _showControls();
-              }
-            }),
-          );
-        },
-        offset: const Offset(0, -200),
-        color: AppColorScheme.surface,
-        itemBuilder: (_) => speedOptions
-            .map(
-              (s) => PopupMenuItem(
-                value: s,
-                child: Text(
-                  '${s}x',
-                  style: TextStyle(
-                    color: _state.playbackSpeed == s
-                        ? AppColorScheme.accent
-                        : Colors.white,
-                  ),
-                ),
-              ),
-            )
-            .toList(),
-        child: Center(
-          child: Text(
-            '${_state.playbackSpeed}x',
-            style: TextStyle(color: Colors.white, fontSize: textSize),
+      child: Tooltip(
+        message: PlatformDetection.useDesktopUi ? (tooltip ?? '') : '',
+        child: InkWell(
+          borderRadius: BorderRadius.circular(extent / 2),
+          onTap: () {
+            _showControls();
+            _showSpeedSelector();
+          },
+          child: Center(
+            child: Text(
+              '${_state.playbackSpeed}x',
+              style: TextStyle(color: Colors.white, fontSize: textSize),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _showSpeedSelector() {
+    const speedOptions = <double>[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+    final l10n = AppLocalizations.of(context);
+    final options = speedOptions.map((s) => TrackOption(label: '${s}x')).toList();
+    final currentIdx = speedOptions.indexWhere(
+      (s) => (_state.playbackSpeed - s).abs() < 0.001,
+    );
+    unawaited(() async {
+      final result = await TrackSelectorDialog.show(
+        context,
+        title: l10n.playerTooltipPlaybackSpeed,
+        options: options,
+        selectedIndex: currentIdx >= 0 ? currentIdx : null,
+      );
+      _suppressBackNavigation();
+      if (result == null || !mounted) return;
+      final speed = speedOptions[result];
+      await _runSinglePlayerMutation(
+        'speed_$speed',
+        () async => _manager.setPlaybackSpeed(speed),
+        suppressBackFor: const Duration(seconds: 3),
+      );
+    }());
+    _showControls();
+  }
+
+  void _showBitrateSelector() {
+    final l10n = AppLocalizations.of(context);
+    final options = <int?>[null, 40, 20, 12, 8, 4, 2];
+    final current = _manager.maxBitrateOverrideMbps;
+
+    String label(int? mbps) =>
+        mbps == null ? l10n.auto : l10n.bitrateValueMbps(mbps);
+
+    final trackOptions =
+        options.map((mbps) => TrackOption(label: label(mbps))).toList();
+    final currentIdx = options.indexWhere((mbps) => mbps == current);
+
+    unawaited(() async {
+      final result = await TrackSelectorDialog.show(
+        context,
+        title: l10n.bitrate,
+        options: trackOptions,
+        selectedIndex: currentIdx >= 0 ? currentIdx : null,
+      );
+      _suppressBackNavigation();
+      if (result == null || !mounted) return;
+      final selectedBitrate = options[result];
+      _manager.changeBitrate(selectedBitrate);
+    }());
+    _showControls();
   }
 
   Widget _buildBitrateButton({
@@ -3323,48 +3364,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     double iconSize = 24,
     String? tooltip,
   }) {
-    final l10n = AppLocalizations.of(context);
-    // null means auto (profile default)
-    final options = <int?>[null, 40, 20, 12, 8, 4, 2];
     final current = _manager.maxBitrateOverrideMbps;
-
-    String label(int? mbps) =>
-        mbps == null ? l10n.auto : l10n.bitrateValueMbps(mbps);
-
-    return SizedBox(
-      width: extent,
-      height: extent,
-      child: PopupMenuButton<int?>(
-        tooltip: PlatformDetection.useDesktopUi ? tooltip : null,
-        onSelected: (mbps) {
-          _manager.changeBitrate(mbps);
-          _showControls();
-        },
-        offset: const Offset(0, -280),
-        color: AppColorScheme.surface,
-        itemBuilder: (_) => options
-            .map(
-              (mbps) => PopupMenuItem(
-                value: mbps,
-                child: Text(
-                  label(mbps),
-                  style: TextStyle(
-                    color: current == mbps
-                        ? AppColorScheme.accent
-                        : Colors.white,
-                  ),
-                ),
-              ),
-            )
-            .toList(),
-        child: Center(
-          child: Icon(
-            Icons.high_quality_outlined,
-            color: current != null ? AppColorScheme.accent : Colors.white,
-            size: iconSize,
-          ),
-        ),
-      ),
+    return _controlButton(
+      Icons.video_settings_outlined,
+      onPressed: _showBitrateSelector,
+      size: iconSize,
+      extent: extent,
+      tooltip: tooltip,
+      iconColor: current != null ? AppColorScheme.accent : Colors.white,
     );
   }
 
@@ -3381,259 +3388,108 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final streams = allStreams.where((s) => s['Type'] == streamType).toList();
     final audioStreams = allStreams.where((s) => s['Type'] == 'Audio').toList();
     final canDownloadRemote =
-      !audio && item is AggregatedItem && _canDownloadRemoteSubtitles(item);
+        !audio && item is AggregatedItem && _canDownloadRemoteSubtitles(item);
 
     final int? currentStreamIndex;
     if (audio) {
       currentStreamIndex =
           _manager.audioStreamIndex ??
-          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index']
-              as int?;
+          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index'] as int?;
     } else {
       final subIdx = _manager.subtitleStreamIndex;
       currentStreamIndex =
           subIdx ??
-          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index']
-              as int?;
+          streams.where((s) => s['IsDefault'] == true).firstOrNull?['Index'] as int?;
     }
     final isSubsOff = !audio && _manager.subtitleStreamIndex == -1;
-    var didHandleSelection = false;
 
-    void runTrackSelectionAction(
-      FutureOr<void> Function() action, {
-      required String label,
-    }) {
-      unawaited(() async {
-        await _runSinglePlayerMutation(label, action);
-      }());
-    }
+    final options = <TrackOption>[
+      if (!audio) TrackOption(label: l10n.off),
+      ...streams.asMap().entries.map((entry) {
+        final index = entry.key;
+        final s = entry.value;
+        final displayTitle = s['DisplayTitle'] as String?;
+        final title = s['Title'] as String?;
+        final language = s['Language'] as String?;
+        final codec = s['Codec'] as String?;
+        final label =
+            displayTitle ??
+            title ??
+            language ??
+            l10n.streamTypeFallback(streamType, index + 1);
+        final subtitle = [
+          if (language != null && displayTitle != null) language,
+          if (codec != null) codec.toUpperCase(),
+          if (s['Channels'] != null) '${s['Channels']}ch',
+        ].join(' · ');
+        return TrackOption(label: label, subtitle: subtitle.isNotEmpty ? subtitle : null);
+      }),
+      if (canDownloadRemote)
+        TrackOption(
+          label: l10n.downloadSubtitlesLabel,
+          subtitle: l10n.searchOpenSubtitlesPlugin,
+        ),
+    ];
 
-    bool markSelectionHandled(String reason) {
-      if (didHandleSelection) {
-        return false;
+    final int? selectedIndex;
+    if (audio) {
+      final idx = currentStreamIndex != null
+          ? streams.indexWhere((s) => s['Index'] == currentStreamIndex)
+          : -1;
+      selectedIndex = idx >= 0 ? idx : null;
+    } else {
+      if (isSubsOff || (currentStreamIndex == null && streams.isNotEmpty)) {
+        selectedIndex = 0;
+      } else if (currentStreamIndex != null) {
+        final idx = streams.indexWhere((s) => s['Index'] == currentStreamIndex);
+        selectedIndex = idx >= 0 ? idx + 1 : null;
+      } else {
+        selectedIndex = null;
       }
-      didHandleSelection = true;
-      return true;
     }
 
-    Widget sheetBody(
-      ScrollController? scrollController,
-      BuildContext sheetCtx,
-    ) {
-      return SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.spaceLg),
-              child: Text(
-                audio ? l10n.audio : l10n.subtitles,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: AppTypography.fontSizeLg,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                controller: scrollController,
-                children: [
-                  if (!audio)
-                    ListTile(
-                      title: Text(
-                        l10n.off,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      leading: Icon(
-                        Icons.radio_button_checked,
-                        color:
-                            isSubsOff ||
-                                (currentStreamIndex == null && streams.isNotEmpty)
-                            ? AppColorScheme.accent
-                            : Colors.white38,
-                      ),
-                      onTap: () {
-                        if (!markSelectionHandled('subtitles_off')) return;
-                        _suppressBackNavigation();
-                        Navigator.pop(sheetCtx);
-                        runTrackSelectionAction(
-                          _manager.disableSubtitles,
-                          label: 'subtitles_off',
-                        );
-                      },
-                    ),
-                  ...streams.asMap().entries.map((e) {
-                    final stream = e.value;
-                    final streamIndex = stream['Index'] as int? ?? e.key;
-                    final displayTitle = stream['DisplayTitle'] as String?;
-                    final title = stream['Title'] as String?;
-                    final language = stream['Language'] as String?;
-                    final codec = stream['Codec'] as String?;
-
-                    final label =
-                        displayTitle ??
-                        title ??
-                        language ??
-                        l10n.streamTypeFallback(streamType, e.key + 1);
-                    final subtitle = [
-                      if (language != null && displayTitle != null) language,
-                      if (codec != null) codec.toUpperCase(),
-                      if (stream['Channels'] != null) '${stream['Channels']}ch',
-                    ].join(' · ');
-
-                    final selected =
-                        !isSubsOff && currentStreamIndex == streamIndex;
-
-                    return ListTile(
-                      title: Text(
-                        label,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      subtitle: subtitle.isNotEmpty
-                          ? Text(
-                              subtitle,
-                              style: const TextStyle(color: Colors.white54),
-                            )
-                          : null,
-                      leading: Icon(
-                        Icons.radio_button_checked,
-                        color: selected
-                            ? AppColorScheme.accent
-                            : Colors.white38,
-                      ),
-                      onTap: () {
-                        if (!markSelectionHandled('stream_$streamIndex')) return;
-                        _suppressBackNavigation();
-                        Navigator.pop(sheetCtx);
-                        runTrackSelectionAction(() async {
-                          if (audio) {
-                            await _manager.changeAudioTrack(streamIndex);
-                          } else {
-                            await _manager.changeSubtitleTrack(streamIndex);
-                          }
-                        }, label: '${audio ? 'audio' : 'subtitle'}_$streamIndex');
-                      },
-                    );
-                  }),
-                  if (canDownloadRemote)
-                    ListTile(
-                      leading: const Icon(
-                        Icons.download_rounded,
-                        color: Colors.white,
-                      ),
-                      title: Text(
-                        l10n.downloadSubtitlesLabel,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      subtitle: Text(
-                        l10n.searchOpenSubtitlesPlugin,
-                        style: const TextStyle(color: Colors.white54),
-                      ),
-                      onTap: () async {
-                        if (!markSelectionHandled('download_remote_subtitles')) return;
-                        _suppressBackNavigation();
-                        Navigator.pop(sheetCtx);
-                        await _downloadRemoteSubtitles(item, streams, audioStreams);
-                      },
-                    ),
-                ],
-              ),
-            ),
-          ],
+    unawaited(() async {
+      final result = await TrackSelectorDialog.show(
+        context,
+        title: audio ? l10n.audioTrack : l10n.subtitleTrack,
+        options: options,
+        selectedIndex: selectedIndex,
+        footer: _DelayFooter(
+          initialDelay: audio ? _audioDelay : _subtitleDelay,
+          label: audio ? l10n.audioDelay : l10n.subtitleDelay,
+          onDelayChanged: (d) => _applyDelay(audio: audio, delay: d),
+          formatDelay: _formatDelay,
         ),
       );
-    }
-
-    if (PlatformDetection.isTV) {
-      unawaited(() async {
-        await _showTvDialogBox(
-          child: Builder(builder: (dialogCtx) => sheetBody(null, dialogCtx)),
-        );
-      }());
-    } else {
-      showFocusRestoringModalBottomSheet(
-        context: context,
-        backgroundColor: AppColorScheme.surface,
-        isScrollControlled: true,
-        builder: (sheetCtx) => DraggableScrollableSheet(
-          initialChildSize: 0.5,
-          maxChildSize: 0.8,
-          minChildSize: 0.3,
-          expand: false,
-          builder: (_, scrollController) => sheetBody(scrollController, sheetCtx),
-        ),
-      ).whenComplete(() {
-      });
-    }
-    _showControls();
-  }
-
-  Future<void> _showTvSpeedSelector() async {
-    const speedOptions = <double>[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
-    final l10n = AppLocalizations.of(context);
-    var didHandleSelection = false;
-
-    bool markSelectionHandled() {
-      if (didHandleSelection) return false;
-      didHandleSelection = true;
-      return true;
-    }
-
-    await _showTvDialogBox(
-      child: Builder(
-        builder: (dialogCtx) => SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(AppSpacing.spaceLg),
-                child: Text(
-                  l10n.playerTooltipPlaybackSpeed,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: AppTypography.fontSizeLg,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  children: speedOptions.map((speed) {
-                    final selected = (_state.playbackSpeed - speed).abs() < 0.001;
-                    return ListTile(
-                      leading: Icon(
-                        Icons.radio_button_checked,
-                        color: selected ? AppColorScheme.accent : Colors.white38,
-                      ),
-                      title: Text(
-                        '${speed}x',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      onTap: () {
-                        if (!markSelectionHandled()) return;
-                        Navigator.pop(dialogCtx);
-                        unawaited(
-                          _runSinglePlayerMutation(
-                            'speed_$speed',
-                            () async {
-                              await _manager.setPlaybackSpeed(speed);
-                            },
-                            suppressBackFor: const Duration(seconds: 3),
-                          ),
-                        );
-                      },
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      maxWidth: 560,
-      heightFactor: 0.7,
-    );
+      _suppressBackNavigation();
+      if (result == null || !mounted) return;
+      if (!audio) {
+        if (result == 0) {
+          await _runSinglePlayerMutation('subtitles_off', _manager.disableSubtitles);
+          return;
+        }
+        final streamIdx = result - 1;
+        if (canDownloadRemote && streamIdx == streams.length) {
+          await _downloadRemoteSubtitles(item, streams, audioStreams);
+          return;
+        }
+        if (streamIdx < streams.length) {
+          final streamIndex = streams[streamIdx]['Index'] as int? ?? streamIdx;
+          await _runSinglePlayerMutation(
+            'subtitle_$streamIndex',
+            () => _manager.changeSubtitleTrack(streamIndex),
+          );
+        }
+      } else {
+        if (result < streams.length) {
+          final streamIndex = streams[result]['Index'] as int? ?? result;
+          await _runSinglePlayerMutation(
+            'audio_$streamIndex',
+            () => _manager.changeAudioTrack(streamIndex),
+          );
+        }
+      }
+    }());
     _showControls();
   }
 
@@ -3656,13 +3512,77 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         final next = modes[(_zoomMode.index + 1) % modes.length];
         setState(() => _zoomMode = next);
         _prefs.set(UserPreferences.playerZoomMode, next);
+        _showZoomModeToast(next);
       },
       tooltip: tooltip,
     );
   }
 
+  void _showZoomModeToast(ZoomMode mode) {
+    final overlay = Overlay.of(context, rootOverlay: true);
+    final l10n = AppLocalizations.of(context);
+    _zoomModeToastTimer?.cancel();
+    _removeZoomModeToastOverlay();
+
+    _zoomModeToastOverlay = OverlayEntry(
+      builder: (overlayContext) => Positioned(
+        top: MediaQuery.paddingOf(overlayContext).top + 12,
+        left: 0,
+        right: 0,
+        child: IgnorePointer(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xD91A2230),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0x668FA8CC), width: 1),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x4D000000),
+                      blurRadius: 10,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  '${l10n.playerZoomMode}: ${_zoomModeLabel(mode)}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Color(0xFFE4ECF7),
+                    fontSize: AppTypography.fontSizeSm,
+                    fontWeight: FontWeight.w600,
+                    height: 1.2,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(_zoomModeToastOverlay!);
+    _zoomModeToastTimer = Timer(const Duration(seconds: 3), _removeZoomModeToastOverlay);
+  }
+
+  void _removeZoomModeToastOverlay() {
+    _zoomModeToastOverlay?.remove();
+    _zoomModeToastOverlay = null;
+  }
+
+  String _zoomModeLabel(ZoomMode mode) {
+    final spaced = mode.name.replaceAllMapped(_camelCaseSpaceRe, (_) => ' ');
+    return spaced.isEmpty
+        ? mode.name
+        : '${spaced[0].toUpperCase()}${spaced.substring(1)}';
+  }
+
   String _tooltipMessage(String label, {String? shortcut}) {
-    if (shortcut == null || shortcut.isEmpty) {
+    if (shortcut == null || shortcut.isEmpty || PlatformDetection.isTV) {
       return label;
     }
     return '$label ($shortcut)';
@@ -3674,69 +3594,27 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (item is! AggregatedItem) return;
     final chapters = item.chapters;
     if (chapters.isEmpty) return;
-
-    Widget body(ScrollController? scrollController, BuildContext dialogCtx) {
-      return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.spaceLg),
-            child: Text(
-              l10n.chapters,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: AppTypography.fontSizeLg,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: chapters.length,
-              itemBuilder: (ctx, i) {
-                final ch = chapters[i];
-                final name = (ch['Name'] as String?) ?? l10n.chapterNumber(i + 1);
-                final ticks = ch['StartPositionTicks'] as int? ?? 0;
-                final pos = Duration(microseconds: ticks ~/ 10);
-                return ListTile(
-                  title: Text(name, style: const TextStyle(color: Colors.white)),
-                  trailing: Text(
-                    _formatDuration(pos),
-                    style: const TextStyle(color: Colors.white54),
-                  ),
-                  onTap: () {
-                    _manager.seekTo(pos);
-                    Navigator.pop(dialogCtx);
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+    final options = List.generate(chapters.length, (i) {
+      final ch = chapters[i];
+      final name = (ch['Name'] as String?) ?? l10n.chapterNumber(i + 1);
+      final ticks = ch['StartPositionTicks'] as int? ?? 0;
+      return TrackOption(
+        label: name,
+        subtitle: _formatDuration(Duration(microseconds: ticks ~/ 10)),
       );
-    }
-
-    if (PlatformDetection.isTV) {
-      unawaited(
-        _showTvDialogBox(
-          child: Builder(builder: (dialogCtx) => body(null, dialogCtx)),
-          heightFactor: 0.72,
-        ),
+    });
+    unawaited(() async {
+      final result = await TrackSelectorDialog.show(
+        context,
+        title: l10n.chapters,
+        options: options,
       );
-    } else {
-      showFocusRestoringModalBottomSheet(
-        context: context,
-        backgroundColor: AppColorScheme.surface,
-        isScrollControlled: true,
-        builder: (ctx) => DraggableScrollableSheet(
-          initialChildSize: 0.5,
-          maxChildSize: 0.8,
-          minChildSize: 0.3,
-          expand: false,
-          builder: (ctx, scrollController) => body(scrollController, ctx),
-        ),
-      );
-    }
+      _suppressBackNavigation();
+      if (result == null || !mounted) return;
+      final ch = chapters[result];
+      final ticks = ch['StartPositionTicks'] as int? ?? 0;
+      _manager.seekTo(Duration(microseconds: ticks ~/ 10));
+    }());
     _showControls();
   }
 
@@ -3820,75 +3698,29 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       );
     }
 
-    Widget body(BuildContext routeContext) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
+    unawaited(() async {
+      await showStyledPlayerDialog<void>(
+        context,
+        title: AppLocalizations.of(context).castAndCrew,
+        maxWidth: 640,
+        builder: (dialogCtx) => SizedBox(
+          height: 210,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.spaceLg,
+              AppSpacing.spaceSm,
               AppSpacing.spaceLg,
-              AppSpacing.spaceLg,
-              AppSpacing.spaceMd,
+              AppSpacing.spaceSm,
             ),
-            child: Text(
-              AppLocalizations.of(context).castAndCrew,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: AppTypography.fontSizeLg,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 210,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.spaceLg,
-                vertical: AppSpacing.spaceSm,
-              ),
-              itemCount: people.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 16),
-              itemBuilder: (ctx, i) => personCard(
-                routeContext,
-                people[i],
-                autofocus: i == 0,
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (PlatformDetection.isTV) {
-      unawaited(
-        showFocusRestoringDialog<void>(
-          context: context,
-          barrierColor: Colors.transparent,
-          builder: (dialogContext) => Dialog(
-            backgroundColor: AppColorScheme.surface,
-            alignment: Alignment.bottomCenter,
-            insetPadding: EdgeInsets.zero,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: body(dialogContext),
-            ),
+            itemCount: people.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 16),
+            itemBuilder: (ctx, i) => personCard(dialogCtx, people[i], autofocus: i == 0),
           ),
         ),
       );
-    } else {
-      showFocusRestoringModalBottomSheet(
-        context: context,
-        backgroundColor: AppColorScheme.surface,
-        isScrollControlled: true,
-        builder: (ctx) => SafeArea(child: body(ctx)),
-      );
-    }
+      _suppressBackNavigation();
+    }());
     _showControls();
   }
 
@@ -3936,120 +3768,124 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _ => l10n.cast,
     };
 
-    showFocusRestoringModalBottomSheet(
-      context: context,
-      backgroundColor: AppColorScheme.surface,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(
-                l10n.castControlsTitle(label),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              subtitle: _remotePlaybackState != null
-                  ? Text(
-                      '${_remotePlaybackState![0].toUpperCase()}${_remotePlaybackState!.substring(1)}'
-                      ' · ${_formatDuration(Duration(microseconds: _remotePositionTicks ~/ 10))}',
-                      style: const TextStyle(color: Colors.white54),
-                    )
-                  : null,
-            ),
-            if (kind == CastTargetKind.googleCast ||
-                kind == CastTargetKind.dlna)
-              ListTile(
-                leading: const Icon(
-                  Icons.volume_up_rounded,
-                  color: Colors.white,
-                ),
-                title: Text(
-                  l10n.deviceVolume,
-                  style: const TextStyle(color: Colors.white),
-                ),
-                subtitle: _remoteVolume == null
-                    ? Text(
-                        l10n.unavailable,
-                        style: const TextStyle(color: Colors.white54),
-                      )
-                    : SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: AppColorScheme.accent,
-                          inactiveTrackColor: Colors.white24,
-                          thumbColor: Colors.white,
-                          overlayColor: Colors.white24,
+    final playbackSubtitle = _remotePlaybackState != null
+        ? '${_remotePlaybackState![0].toUpperCase()}${_remotePlaybackState!.substring(1)}'
+            ' · ${_formatDuration(Duration(microseconds: _remotePositionTicks ~/ 10))}'
+        : null;
+
+    unawaited(() async {
+      await showStyledPlayerDialog<void>(
+        context,
+        title: l10n.castControlsTitle(label),
+        subtitle: playbackSubtitle,
+        showCancel: true,
+        builder: (dialogCtx) {
+          double? localVolume = _remoteVolume;
+          return StatefulBuilder(
+            builder: (_, setDialogState) {
+              Widget actionRow(IconData icon, String text, VoidCallback onTap) {
+                return InkWell(
+                  onTap: onTap,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    child: Row(
+                      children: [
+                        Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 20),
+                        const SizedBox(width: 14),
+                        Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withValues(alpha: 0.8),
+                          ),
                         ),
-                        child: Slider(
-                          value: _remoteVolume!.clamp(0.0, 1.0),
-                          min: 0,
-                          max: 1,
-                          onChanged: (value) => _setRemoteVolume(value),
-                        ),
-                      ),
-                trailing: _remoteVolume == null
-                    ? null
-                    : Text(
-                        '${(_remoteVolume! * 100).round()}%',
-                        style: const TextStyle(color: Colors.white70),
-                      ),
-              ),
-            ListTile(
-              leading: const Icon(
-                Icons.play_arrow_rounded,
-                color: Colors.white,
-              ),
-              title: Text(
-                l10n.play,
-                style: const TextStyle(color: Colors.white),
-              ),
-              onTap: () {
-                Navigator.of(ctx).pop();
-                _runCastAction((k) => _castService.play(k));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.pause_rounded, color: Colors.white),
-              title: Text(
-                l10n.pause,
-                style: const TextStyle(color: Colors.white),
-              ),
-              onTap: () {
-                Navigator.of(ctx).pop();
-                _runCastAction((k) => _castService.pause(k));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.sync_rounded, color: Colors.white),
-              title: Text(
-                l10n.syncPosition,
-                style: const TextStyle(color: Colors.white),
-              ),
-              onTap: () {
-                Navigator.of(ctx).pop();
-                final positionTicks = _state.position.inMicroseconds * 10;
-                _runCastAction(
-                  (k) => _castService.seek(k, positionTicks: positionTicks),
+                      ],
+                    ),
+                  ),
                 );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.stop_rounded, color: Colors.white),
-              title: Text(
-                l10n.stopCast(label),
-                style: const TextStyle(color: Colors.white),
-              ),
-              onTap: () {
-                Navigator.of(ctx).pop();
-                _runCastAction((k) => _castService.stop(k));
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+              }
+
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (kind == CastTargetKind.googleCast || kind == CastTargetKind.dlna) ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.volume_up_rounded, color: Colors.white, size: 18),
+                            const SizedBox(width: 8),
+                            Text(l10n.deviceVolume, style: const TextStyle(color: Colors.white)),
+                            if (localVolume != null) ...[
+                              const Spacer(),
+                              Text(
+                                '${(localVolume! * 100).round()}%',
+                                style: const TextStyle(color: Colors.white70),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      if (localVolume == null)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 4, 24, 0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(l10n.unavailable, style: const TextStyle(color: Colors.white54)),
+                          ),
+                        )
+                      else
+                        SliderTheme(
+                          data: SliderTheme.of(dialogCtx).copyWith(
+                            activeTrackColor: AppColorScheme.accent,
+                            inactiveTrackColor: Colors.white24,
+                            thumbColor: Colors.white,
+                            overlayColor: Colors.white24,
+                          ),
+                          child: Slider(
+                            value: localVolume!.clamp(0.0, 1.0),
+                            min: 0,
+                            max: 1,
+                            onChanged: (v) {
+                              localVolume = v;
+                              setDialogState(() {});
+                              _setRemoteVolume(v);
+                            },
+                          ),
+                        ),
+                      Container(
+                        height: 1,
+                        color: Colors.white.withValues(alpha: 0.08),
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                      ),
+                    ],
+                    actionRow(Icons.play_arrow_rounded, l10n.play, () {
+                      Navigator.pop(dialogCtx);
+                      unawaited(_runCastAction((k) => _castService.play(k)));
+                    }),
+                    actionRow(Icons.pause_rounded, l10n.pause, () {
+                      Navigator.pop(dialogCtx);
+                      unawaited(_runCastAction((k) => _castService.pause(k)));
+                    }),
+                    actionRow(Icons.sync_rounded, l10n.syncPosition, () {
+                      Navigator.pop(dialogCtx);
+                      final positionTicks = _state.position.inMicroseconds * 10;
+                      unawaited(_runCastAction((k) => _castService.seek(k, positionTicks: positionTicks)));
+                    }),
+                    actionRow(Icons.stop_rounded, l10n.stopCast(label), () {
+                      Navigator.pop(dialogCtx);
+                      unawaited(_runCastAction((k) => _castService.stop(k)));
+                    }),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      );
+      _suppressBackNavigation();
+    }());
   }
 
   Future<void> _runCastAction(
@@ -4071,108 +3907,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       };
       _showThrottledCastError(l10n.castActionFailed(label, '$e'));
     }
-  }
-
-  void _showDelayAdjuster({required bool audio}) {
-    final l10n = AppLocalizations.of(context);
-    double delay = audio ? _audioDelay : _subtitleDelay;
-    showFocusRestoringModalBottomSheet(
-      context: context,
-      backgroundColor: AppColorScheme.surface,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setSheetState) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.spaceLg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  audio ? l10n.audioDelay : l10n.subtitleDelay,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: AppTypography.fontSizeLg,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.spaceLg),
-                Text(
-                  _formatDelay(delay),
-                  style: TextStyle(
-                    color: AppColorScheme.accent,
-                    fontSize: AppTypography.fontSizeLg,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.spaceMd),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        delay = ((delay - 0.1) * 10).roundToDouble() / 10;
-                        setSheetState(() {});
-                        _applyDelay(audio: audio, delay: delay);
-                      },
-                      icon: const Icon(
-                        Icons.remove_circle_outline,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.spaceSm),
-                    Text(
-                      '-100ms',
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: AppTypography.fontSizeXs,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.spaceLg),
-                    OutlinedButton(
-                      onPressed: () {
-                        delay = 0.0;
-                        setSheetState(() {});
-                        _applyDelay(audio: audio, delay: delay);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: ThemeRegistry.active.borders.chipBorder,
-                      ),
-                      child: Text(
-                        l10n.reset,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.spaceLg),
-                    Text(
-                      '+100ms',
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: AppTypography.fontSizeXs,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.spaceSm),
-                    IconButton(
-                      onPressed: () {
-                        delay = ((delay + 0.1) * 10).roundToDouble() / 10;
-                        setSheetState(() {});
-                        _applyDelay(audio: audio, delay: delay);
-                      },
-                      icon: const Icon(
-                        Icons.add_circle_outline,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.spaceMd),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-    _showControls();
   }
 
   void _applyDelay({required bool audio, required double delay}) {
@@ -4389,24 +4123,55 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final container =
         (mediaSource?['Container'] as String?)?.toUpperCase() ?? l10n.unknown;
     final bitrate = mediaSource?['Bitrate'] as int?;
+    final overrideMbps = _manager.maxBitrateOverrideMbps;
 
-    Widget body(ScrollController? scrollController) {
-      return SafeArea(
-        child: ListView(
-          controller: scrollController,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.spaceLg),
-              child: Text(
-                l10n.playbackInformation,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: AppTypography.fontSizeLg,
-                  fontWeight: FontWeight.w600,
-                ),
+    String effectiveBitrateText() {
+      if (overrideMbps != null) {
+        return l10n.bitrateValueMbps(overrideMbps);
+      }
+      return _formatBitrate(bitrate);
+    }
+
+    Widget body(ScrollController controller) {
+      return Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+            return KeyEventResult.ignored;
+          }
+
+          const step = 120.0;
+          final key = event.logicalKey;
+          if (key == LogicalKeyboardKey.arrowDown) {
+            final max = controller.position.maxScrollExtent;
+            final target = (controller.offset + step).clamp(0.0, max);
+            unawaited(
+              controller.animateTo(
+                target,
+                duration: const Duration(milliseconds: 120),
+                curve: Curves.easeOut,
               ),
-            ),
+            );
+            return KeyEventResult.handled;
+          }
+          if (key == LogicalKeyboardKey.arrowUp) {
+            final max = controller.position.maxScrollExtent;
+            final target = (controller.offset - step).clamp(0.0, max);
+            unawaited(
+              controller.animateTo(
+                target,
+                duration: const Duration(milliseconds: 120),
+                curve: Curves.easeOut,
+              ),
+            );
+            return KeyEventResult.handled;
+          }
 
+          return KeyEventResult.ignored;
+        },
+        child: ListView(
+          controller: controller,
+        children: [
             sectionHeader(l10n.playback),
             infoRow(l10n.playMethod, methodLabel, highlight: true),
             if (resolution != null &&
@@ -4420,7 +4185,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               ),
             infoRow(l10n.player, 'media_kit (libmpv)'),
             infoRow(l10n.container, container),
-            infoRow(l10n.bitrate, _formatBitrate(bitrate)),
+            infoRow(l10n.bitrate, effectiveBitrateText(), highlight: overrideMbps != null),
+            if (overrideMbps != null)
+              infoRow(
+                l10n.bitrateOverride,
+                l10n.bitrateValueMbps(overrideMbps),
+                highlight: true,
+              ),
 
             if (videoStream case final video?) ...[
               sectionHeader(l10n.video),
@@ -4473,33 +4244,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             ],
 
             const SizedBox(height: AppSpacing.spaceLg),
-          ],
+        ],
         ),
       );
     }
 
-    if (PlatformDetection.isTV) {
-      unawaited(
-        _showTvDialogBox(
-          child: Builder(builder: (_) => body(null)),
-          maxWidth: 820,
-          heightFactor: 0.8,
-        ),
-      );
-    } else {
-      showFocusRestoringModalBottomSheet(
-        context: context,
-        backgroundColor: AppColorScheme.surface,
-        isScrollControlled: true,
-        builder: (ctx) => DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.5,
-          minChildSize: 0.3,
-          maxChildSize: 0.85,
-          builder: (ctx, scrollController) => body(scrollController),
-        ),
-      );
-    }
+    unawaited(() async {
+      final controller = ScrollController();
+      try {
+        await showStyledPlayerDialog<void>(
+          context,
+          title: l10n.playbackInformation,
+          maxWidth: 560,
+          builder: (_) => body(controller),
+        );
+      } finally {
+        controller.dispose();
+      }
+    }());
     _showControls();
   }
 }
@@ -4509,12 +4271,16 @@ class _TvFocusButton extends StatefulWidget {
     required this.extent,
     required this.child,
     this.focusNode,
+    this.tooltip,
     this.onPressed,
+    this.onRightBoundary,
   });
 
   final FocusNode? focusNode;
   final double extent;
+  final String? tooltip;
   final VoidCallback? onPressed;
+  final VoidCallback? onRightBoundary;
   final Widget child;
 
   @override
@@ -4588,6 +4354,8 @@ class _TvFocusButtonState extends State<_TvFocusButton> {
 
   @override
   Widget build(BuildContext context) {
+    final tooltipText = widget.tooltip;
+    final hasTooltip = tooltipText != null && tooltipText.isNotEmpty;
     final focusWidget = Focus(
       focusNode: _effectiveNode,
       onKeyEvent: (_, event) {
@@ -4597,6 +4365,10 @@ class _TvFocusButtonState extends State<_TvFocusButton> {
             return moved ? KeyEventResult.handled : KeyEventResult.ignored;
           }
           if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            if (widget.onRightBoundary != null) {
+              widget.onRightBoundary!();
+              return KeyEventResult.handled;
+            }
             final moved = FocusScope.of(context).nextFocus();
             return moved ? KeyEventResult.handled : KeyEventResult.ignored;
           }
@@ -4631,10 +4403,51 @@ class _TvFocusButtonState extends State<_TvFocusButton> {
         child: Center(child: widget.child),
       ),
     );
-    if (widget.onPressed != null) {
-      return GestureDetector(onTap: widget.onPressed, child: focusWidget);
+    final button = widget.onPressed != null
+        ? GestureDetector(onTap: widget.onPressed, child: focusWidget)
+        : focusWidget;
+
+    if (!_focused || !hasTooltip) {
+      return button;
     }
-    return focusWidget;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        button,
+        Positioned(
+          bottom: widget.extent + 8,
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.78),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.fromBorderSide(
+                  ThemeRegistry.active.borders.focusBorder.copyWith(
+                    color: Colors.white.withValues(alpha: 0.45),
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Text(
+                  tooltipText,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: AppTypography.fontSizeXs,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -4737,6 +4550,111 @@ class _CastPersonTileState extends State<_CastPersonTile> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _DelayFooter extends StatefulWidget {
+  final double initialDelay;
+  final String label;
+  final void Function(double delay) onDelayChanged;
+  final String Function(double seconds) formatDelay;
+
+  const _DelayFooter({
+    required this.initialDelay,
+    required this.label,
+    required this.onDelayChanged,
+    required this.formatDelay,
+  });
+
+  @override
+  State<_DelayFooter> createState() => _DelayFooterState();
+}
+
+class _DelayFooterState extends State<_DelayFooter> {
+  late double _delay;
+
+  @override
+  void initState() {
+    super.initState();
+    _delay = widget.initialDelay;
+  }
+
+  void _adjust(double delta) {
+    setState(() => _delay = ((_delay + delta) * 10).roundToDouble() / 10);
+    widget.onDelayChanged(_delay);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Text(
+                widget.label,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: AppTypography.fontSizeSm,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                widget.formatDelay(_delay),
+                style: TextStyle(
+                  color: AppColorScheme.accent,
+                  fontSize: AppTypography.fontSizeSm,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () => _adjust(-0.1),
+                icon: const Icon(Icons.remove_circle_outline, color: Colors.white, size: 28),
+                tooltip: '-100ms',
+              ),
+              Text(
+                '-100ms',
+                style: const TextStyle(color: Colors.white54, fontSize: AppTypography.fontSizeXs),
+              ),
+              const Spacer(),
+              OutlinedButton(
+                onPressed: () {
+                  setState(() => _delay = 0.0);
+                  widget.onDelayChanged(0.0);
+                },
+                style: OutlinedButton.styleFrom(
+                  side: ThemeRegistry.active.borders.chipBorder,
+                ),
+                child: Text(l10n.reset, style: const TextStyle(color: Colors.white)),
+              ),
+              const Spacer(),
+              Text(
+                '+100ms',
+                style: const TextStyle(color: Colors.white54, fontSize: AppTypography.fontSizeXs),
+              ),
+              IconButton(
+                onPressed: () => _adjust(0.1),
+                icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 28),
+                tooltip: '+100ms',
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

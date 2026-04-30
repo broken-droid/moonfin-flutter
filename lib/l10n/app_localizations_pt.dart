@@ -1254,6 +1254,9 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get bitrateOverride => 'Override de taxa de bits';
+
+  @override
   String get audioDelay => 'Atraso de Áudio';
 
   @override
@@ -6188,7 +6191,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get playerTooltipCastControls => 'Controles de transmissão';
 
   @override
-  String get playerTooltipPlaybackQuality => 'Qualidade de reprodução';
+  String get playerTooltipPlaybackQuality => 'Bitrate';
 
   @override
   String get playerTooltipEnterFullscreen => 'Entrar em tela cheia';

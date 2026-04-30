@@ -22,11 +22,12 @@ class PlaybackManager {
   final List<StreamSubscription> _streamSubs = [];
   Timer? _progressTimer;
   StreamResolutionResult? _currentResolution;
+  dynamic _lastPlaybackItem;
+  StreamResolutionResult? _lastPlaybackResolution;
   int? _audioStreamIndex;
   int? _subtitleStreamIndex;
   String? _mediaSourceId;
   Duration _lastKnownPosition = Duration.zero;
-  Duration _transcodeStartOffset = Duration.zero;
   Duration _itemKnownDuration = Duration.zero;
   int? _maxBitrateOverrideMbps;
   DateTime? _playbackStartTime;
@@ -117,9 +118,8 @@ class PlaybackManager {
   void _bindStreams(PlayerBackend backend) {
     _streamSubs.addAll([
       backend.positionStream.listen((pos) {
-        final adjusted = pos + _transcodeStartOffset;
-        state.setPosition(adjusted);
-        if (adjusted > Duration.zero) _lastKnownPosition = adjusted;
+        state.setPosition(pos);
+        if (pos > Duration.zero) _lastKnownPosition = pos;
       }),
       backend.durationStream.listen((dur) {
         if (_itemKnownDuration > Duration.zero &&
@@ -294,15 +294,10 @@ class PlaybackManager {
       enableDirectStream: enableDirectStream,
     );
     _currentResolution = resolution;
+    _lastPlaybackItem = item;
+    _lastPlaybackResolution = resolution;
     _mediaSourceId = resolution.mediaSourceId;
     _itemKnownDuration = _resolvedItemDuration(item, resolution.mediaSourceId);
-
-    if (resolution.playMethod == StreamPlayMethod.transcode &&
-        startPosition > Duration.zero) {
-      _transcodeStartOffset = startPosition;
-    } else {
-      _transcodeStartOffset = Duration.zero;
-    }
 
     if (_itemKnownDuration > Duration.zero) {
       state.setDuration(_itemKnownDuration);
@@ -313,8 +308,7 @@ class PlaybackManager {
     bool mediaReady = false;
     Object? startupError;
     StackTrace? startupStackTrace;
-    final useNativeStart =
-        startTicks != null && resolution.playMethod != StreamPlayMethod.transcode;
+    final useNativeStart = startTicks != null;
     try {
       await _backend!.play(
         resolution.streamUrl,
@@ -644,25 +638,24 @@ class PlaybackManager {
     await _backend?.disableSubtitleTrack();
   }
 
-  /// Change the transcode bitrate and re-resolve the stream.
+  /// Re-resolve the stream at the current playback position.
   Future<void> changeBitrate(int? mbps) async {
     _maxBitrateOverrideMbps = mbps;
-    final isTranscode = _currentResolution?.playMethod == StreamPlayMethod.transcode;
-    if (isTranscode) {
-      await _reResolveAtCurrentPosition(forceTranscode: true);
-    }
+    await _reResolveAtCurrentPosition(forceTranscode: mbps != null);
   }
 
   Future<void> _reResolveAtCurrentPosition({bool forceTranscode = false}) async {
-    final rawBackendPos = _backend?.position ?? Duration.zero;
-    final backendPos = rawBackendPos + _transcodeStartOffset;
-    final statePos = state.position;
-    final currentPos = backendPos > Duration.zero
-        ? backendPos
-        : (statePos > Duration.zero ? statePos : _lastKnownPosition);
+    final backendPos = _backend?.position ?? Duration.zero;
+    final currentPos = Duration(
+      microseconds: [
+        backendPos.inMicroseconds,
+        state.position.inMicroseconds,
+        _lastKnownPosition.inMicroseconds,
+      ].reduce((a, b) => a > b ? a : b),
+    );
     _stopProgressTimer();
-    final item = queueService.currentItem;
-    final resolution = _currentResolution;
+    final item = queueService.currentItem ?? _lastPlaybackItem;
+    final resolution = _currentResolution ?? _lastPlaybackResolution;
     if (item != null && resolution != null) {
       _service?.onPlaybackStop(item, resolution, currentPos);
     }
@@ -845,7 +838,6 @@ class PlaybackManager {
     _onOfflineStop = onStop;
     _onOfflineAutoNext = onAutoNext;
     _itemKnownDuration = itemDuration;
-    _transcodeStartOffset = Duration.zero;
     _currentResolution = null;
 
     if (queueUrls.isNotEmpty) {
@@ -893,18 +885,24 @@ class PlaybackManager {
         return;
       }
       final item = queueService.currentItem;
-      final resolution = _currentResolution;
-      if (item != null && resolution != null) {
+      final resolution = _currentResolution ?? _lastPlaybackResolution;
+      final reportItem = item ?? _lastPlaybackItem;
+      if (reportItem != null && resolution != null) {
         final backendPos = _backend?.position ?? Duration.zero;
-        final backendWithOffset = backendPos + _transcodeStartOffset;
-        final pos = backendWithOffset > Duration.zero
-            ? backendWithOffset
-            : (state.position > Duration.zero ? state.position : _lastKnownPosition);
+        final pos = Duration(
+          microseconds: [
+            backendPos.inMicroseconds,
+            state.position.inMicroseconds,
+            _lastKnownPosition.inMicroseconds,
+          ].reduce((a, b) => a > b ? a : b),
+        );
         try {
-          await _service?.onPlaybackStop(item, resolution, pos);
+          await _service?.onPlaybackStop(reportItem, resolution, pos);
         } catch (_) {}
       }
       _currentResolution = null;
+      _lastPlaybackItem = null;
+      _lastPlaybackResolution = null;
       await _backend?.stop();
       if (!skipQueueChange) {
         queueService.clear();

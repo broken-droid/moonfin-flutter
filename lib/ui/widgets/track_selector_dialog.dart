@@ -7,6 +7,91 @@ import '../../l10n/app_localizations.dart';
 import '../../preference/user_preferences.dart';
 import 'overlay_sheet.dart';
 
+Future<T?> showStyledPlayerDialog<T>(
+  BuildContext context, {
+  required String title,
+  String? subtitle,
+  required Widget Function(BuildContext ctx) builder,
+  Widget? footer,
+  bool showCancel = false,
+  double maxWidth = 440,
+}) {
+  return showFocusRestoringDialog<T>(
+    context: context,
+    builder: (dialogContext) {
+      final mediaQuery = MediaQuery.of(dialogContext);
+      final maxDialogHeight = mediaQuery.size.height -
+          mediaQuery.padding.vertical -
+          mediaQuery.viewInsets.vertical -
+          24;
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          constraints: BoxConstraints(
+            minWidth: 340,
+            maxWidth: maxWidth,
+            maxHeight: maxDialogHeight,
+          ),
+          decoration: BoxDecoration(
+            color: AppColorScheme.surface.withValues(alpha: 0.9),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.fromBorderSide(ThemeRegistry.active.borders.chipBorder),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(24, 0, 24, subtitle != null ? 4 : 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              if (subtitle != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withValues(alpha: 0.54),
+                      ),
+                    ),
+                  ),
+                ),
+              Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+              const SizedBox(height: 8),
+              Flexible(child: builder(dialogContext)),
+              if (footer != null) ...[const SizedBox(height: 4), footer],
+              if (showCancel) ...[
+                const SizedBox(height: 4),
+                Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+                const SizedBox(height: 4),
+                _TrackRow(
+                  option: TrackOption(label: AppLocalizations.of(dialogContext).cancel),
+                  isSelected: false,
+                  onTap: () => Navigator.pop(dialogContext),
+                  dimmed: true,
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 class TrackOption {
   final String label;
   final String? subtitle;
@@ -14,89 +99,29 @@ class TrackOption {
   const TrackOption({required this.label, this.subtitle});
 }
 
-class TrackSelectorDialog extends StatelessWidget {
-  final String title;
-  final List<TrackOption> options;
-  final int? selectedIndex;
-
-  const TrackSelectorDialog({
-    super.key,
-    required this.title,
-    required this.options,
-    this.selectedIndex,
-  });
+class TrackSelectorDialog {
+  TrackSelectorDialog._();
 
   static Future<int?> show(
     BuildContext context, {
     required String title,
     required List<TrackOption> options,
     int? selectedIndex,
+    Widget? footer,
   }) {
-    return showFocusRestoringDialog<int>(
-      context: context,
-      builder: (_) => TrackSelectorDialog(
-        title: title,
-        options: options,
-        selectedIndex: selectedIndex,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final selected = selectedIndex;
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        constraints: const BoxConstraints(minWidth: 340, maxWidth: 440),
-        decoration: BoxDecoration(
-          color: AppColorScheme.surface.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.fromBorderSide(ThemeRegistry.active.borders.chipBorder),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
-            const SizedBox(height: 8),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 400),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: options.length,
-                itemBuilder: (_, i) => _TrackRow(
-                  option: options[i],
-                  isSelected: selected == i,
-                  autofocus: selected == i || (selected == null && i == 0),
-                  onTap: () => Navigator.pop(context, i),
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
-            const SizedBox(height: 4),
-            _TrackRow(
-              option: TrackOption(label: AppLocalizations.of(context).cancel),
-              isSelected: false,
-              onTap: () => Navigator.pop(context),
-              dimmed: true,
-            ),
-          ],
+    return showStyledPlayerDialog<int>(
+      context,
+      title: title,
+      footer: footer,
+      showCancel: true,
+      builder: (dialogCtx) => ListView.builder(
+        shrinkWrap: true,
+        itemCount: options.length,
+        itemBuilder: (_, i) => _TrackRow(
+          option: options[i],
+          isSelected: selectedIndex == i,
+          autofocus: selectedIndex == i || (selectedIndex == null && i == 0),
+          onTap: () => Navigator.pop(dialogCtx, i),
         ),
       ),
     );
@@ -169,7 +194,7 @@ class _TrackRowState extends State<_TrackRow> {
             children: [
               if (widget.isSelected)
                 Padding(
-                  padding: EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.only(right: 12),
                   child: Icon(Icons.check_circle, color: AppColorScheme.accent, size: 20),
                 )
               else

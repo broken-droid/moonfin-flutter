@@ -1265,6 +1265,9 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get bitrateOverride => 'Débit forcé';
+
+  @override
   String get audioDelay => 'Décalage audio';
 
   @override
@@ -6224,7 +6227,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get playerTooltipCastControls => 'Commandes Cast';
 
   @override
-  String get playerTooltipPlaybackQuality => 'Qualité de lecture';
+  String get playerTooltipPlaybackQuality => 'Bitrate';
 
   @override
   String get playerTooltipEnterFullscreen => 'Passer en plein écran';

@@ -1752,6 +1752,10 @@
       }
     }
   },
+  "bitrateOverride": "Bitraten-Override",
+  "@bitrateOverride": {
+    "description": "Label shown in stream info when a manual bitrate override is active"
+  },
   "audioDelay": "Audioverzögerung",
   "@audioDelay": {
     "description": "Title for audio delay adjuster"
@@ -6188,7 +6192,7 @@
   "@playerTooltipCastControls": {
     "description": "Tooltip label for active cast controls button in player"
   },
-  "playerTooltipPlaybackQuality": "Wiedergabequalität",
+  "playerTooltipPlaybackQuality": "Bitrate",
   "@playerTooltipPlaybackQuality": {
     "description": "Tooltip label for playback quality/bitrate control in player"
   },

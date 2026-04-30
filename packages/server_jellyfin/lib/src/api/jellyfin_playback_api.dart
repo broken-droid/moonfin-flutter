@@ -27,6 +27,7 @@ class JellyfinPlaybackApi implements PlaybackApi {
     String itemId, {
     Map<String, dynamic>? requestBody,
     String? userId,
+    int? startTimeTicks,
   }) async {
     final body = <String, dynamic>{
       'UserId': ?userId,
@@ -37,6 +38,7 @@ class JellyfinPlaybackApi implements PlaybackApi {
       data: body,
       queryParameters: {
         'userId': ?userId,
+        'startTimeTicks': ?startTimeTicks,
       },
     );
     return response.data as Map<String, dynamic>;

@@ -37,6 +37,7 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
       itemId,
       requestBody: request.toJson(),
       userId: _client.userId,
+      startTimeTicks: startTimeTicks,
     );
 
     final info = PlaybackInfoResult.fromJson(rawInfo);
@@ -53,7 +54,6 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
 
     if (playMethod == StreamPlayMethod.transcode) {
       url = MediaStreamResolver.applyStreamIndices(url, audioStreamIndex, subtitleStreamIndex);
-      url = _stripQueryParam(url, 'StartTimeTicks');
       if (!enableDirectPlay && subtitleStreamIndex != null && subtitleStreamIndex >= 0) {
         final smRegex = RegExp(r'SubtitleMethod=\w+');
         if (smRegex.hasMatch(url)) {
@@ -105,25 +105,6 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
       transcode ??= s.supportsTranscoding ? s : null;
     }
     return directStream ?? transcode ?? sources.first;
-  }
-
-  String _stripQueryParam(String url, String name) {
-    final qIndex = url.indexOf('?');
-    if (qIndex < 0) return url;
-    final base = url.substring(0, qIndex);
-    final query = url.substring(qIndex + 1);
-    if (query.isEmpty) return url;
-    final lowerName = name.toLowerCase();
-    final kept = query
-        .split('&')
-        .where((p) => p.isNotEmpty)
-        .where((p) {
-          final eq = p.indexOf('=');
-          final key = eq < 0 ? p : p.substring(0, eq);
-          return key.toLowerCase() != lowerName;
-        })
-        .toList();
-    return kept.isEmpty ? base : '$base?${kept.join('&')}';
   }
 
   String _appendAuth(String url) {

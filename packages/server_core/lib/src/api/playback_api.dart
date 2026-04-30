@@ -7,6 +7,7 @@ abstract class PlaybackApi {
     String itemId, {
     Map<String, dynamic>? requestBody,
     String? userId,
+    int? startTimeTicks,
   });
 
   String getStreamUrl(
