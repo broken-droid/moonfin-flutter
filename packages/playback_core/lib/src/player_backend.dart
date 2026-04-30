@@ -26,10 +26,11 @@ abstract class PlayerBackend {
   Future<void> setSubtitleTrack(int index, {bool isBitmapSubtitle = false});
   Future<void> disableSubtitleTrack();
   Future<void> waitForTracksReady();
+  Future<void> waitForEmbeddedSubtitleCount(int count);
   Future<void> setVolume(double volume);
   Future<void> setAudioDelay(double seconds);
   Future<void> setSubtitleDelay(double seconds);
-  Future<void> addExternalSubtitle(String url, {String? title, String? language});
+  Future<void> addExternalSubtitle(String url, {String? title, String? language, String? codec});
   Future<void> configureSubtitleStyle({
     int? textColor,
     int? backgroundColor,

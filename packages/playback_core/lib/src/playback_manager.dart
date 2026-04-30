@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'media_stream_resolver.dart';
 import 'player_backend.dart';
@@ -41,10 +40,7 @@ class PlaybackManager {
   Map<String, Map<String, dynamic>> _offlineMetadataByUrl = {};
   Future<void>? _stopInFlight;
   int _playbackSessionToken = 0;
-
-  void _subLog(String message) {
-    developer.log(message, name: 'MoonfinSubManager');
-  }
+  Future<void>? _externalSubsLoaded;
 
   PlayerBackend? get backend => _backend;
   StreamResolutionResult? get currentResolution => _currentResolution;
@@ -264,6 +260,7 @@ class PlaybackManager {
 
     _lastKnownPosition = Duration.zero;
     final sessionToken = ++_playbackSessionToken;
+    _externalSubsLoaded = null;
 
     if (_resolverConfigurator != null) {
       await _resolverConfigurator!(item);
@@ -371,12 +368,10 @@ class PlaybackManager {
       await _seekWhilePausedAndResume(startPosition);
     }
 
-    for (final sub in resolution.externalSubtitles) {
-      await _backend!.addExternalSubtitle(
-        sub.deliveryUrl,
-        title: sub.title,
-        language: sub.language,
-      );
+    if (resolution.externalSubtitles.isNotEmpty) {
+      _waitAndAddExternalSubtitles(sessionToken, resolution);
+    } else {
+      _externalSubsLoaded = Future.value();
     }
 
     if (resolution.playMethod == StreamPlayMethod.directPlay) {
@@ -389,7 +384,8 @@ class PlaybackManager {
           sessionToken,
           restorePosition: useNativeStart ? startPosition : null,
         );
-      } else if (_subtitleStreamIndex == -1) {
+      }
+      if (_subtitleStreamIndex == null || _subtitleStreamIndex == -1) {
         _waitAndDisableSubtitles(sessionToken);
       }
     } else if (resolution.playMethod == StreamPlayMethod.transcode) {
@@ -397,13 +393,11 @@ class PlaybackManager {
         final isBurnedIn = _isSubtitleBitmap(_subtitleStreamIndex!) &&
             !(_backend?.canRenderBitmapSubtitles ?? false);
         if (isBurnedIn) {
-          // Sub is baked into the video stream; suppress any auto-selected
-          // mpv external track so SRTs don't render on top of the burn-in.
           _waitAndDisableSubtitles(sessionToken);
         } else {
           _waitAndApplyExternalSubtitle(sessionToken, resolution);
         }
-      } else if (_subtitleStreamIndex == -1) {
+      } else {
         _waitAndDisableSubtitles(sessionToken);
       }
     }
@@ -580,65 +574,73 @@ class PlaybackManager {
       orElse: () => <String, dynamic>{},
     );
     final codec = ((sub['Codec'] as String?) ?? '').toLowerCase();
-    _subLog('isSubtitleBitmap streamIndex=$streamIndex codec=$codec isBitmap=${_bitmapSubCodecs.contains(codec)}');
     return _bitmapSubCodecs.contains(codec);
   }
 
+  bool _isSubtitleExternal(int streamIndex) {
+    final streams = _currentMediaStreams;
+    if (streams.isEmpty) return false;
+    for (final s in streams) {
+      if (s['Type'] != 'Subtitle') continue;
+      if (s['Index'] != streamIndex) continue;
+      return s['IsExternal'] == true;
+    }
+    return false;
+  }
+
   Future<void> changeSubtitleTrack(int streamIndex) async {
+    final previousSubtitleStreamIndex = _subtitleStreamIndex;
     final isBitmap = _isSubtitleBitmap(streamIndex);
     _subtitleStreamIndex = streamIndex;
-    _subLog(
-      'changeSubtitleTrack streamIndex=$streamIndex isBitmap=$isBitmap '
-      'playMethod=${_currentResolution?.playMethod} isOffline=$_isOfflinePlayback',
-    );
 
     if (_currentResolution?.playMethod == StreamPlayMethod.directPlay || _isOfflinePlayback) {
+      final isExternal = _isSubtitleExternal(streamIndex);
       if (isBitmap && !(_backend?.canRenderBitmapSubtitles ?? false)) {
-        _subLog('changeSubtitleTrack bitmap unsupported by backend; disabling and forcing transcode=$_isOfflinePlayback');
         await _backend?.disableSubtitleTrack();
         if (!_isOfflinePlayback) {
           await _reResolveAtCurrentPosition(forceTranscode: true);
         }
         return;
       }
+      if (isExternal) {
+        _waitAndApplyTrackSelections(_playbackSessionToken);
+        return;
+      }
       final mpvId = _mpvTrackIdForStream(streamIndex, 'Subtitle');
-      _subLog('changeSubtitleTrack direct/offline mappedMpvId=$mpvId');
       if (mpvId != null) {
         await _backend?.setSubtitleTrack(mpvId, isBitmapSubtitle: isBitmap);
-        _subLog('changeSubtitleTrack applied mappedMpvId=$mpvId');
       } else {
-        _subLog('changeSubtitleTrack mpvId null, scheduling deferred track apply');
         _waitAndApplyTrackSelections(_playbackSessionToken);
       }
     } else if (_currentResolution?.playMethod == StreamPlayMethod.transcode) {
+      final previousWasBurnedBitmap =
+          previousSubtitleStreamIndex != null &&
+          previousSubtitleStreamIndex >= 0 &&
+          _isSubtitleBitmap(previousSubtitleStreamIndex) &&
+          !(_backend?.canRenderBitmapSubtitles ?? false);
+      if (previousWasBurnedBitmap && !isBitmap) {
+        await _backend?.disableSubtitleTrack();
+        await _reResolveAtCurrentPosition();
+        return;
+      }
       if (isBitmap) {
-        // Bitmap subs cannot be loaded reliably as external mpv tracks over
-        // HTTP; re-resolve so Jellyfin burns them into the transcoded video.
-        _subLog('changeSubtitleTrack transcode bitmap selected, forcing burn-in re-resolve');
         await _reResolveAtCurrentPosition(forceTranscode: true);
         return;
       }
-      // For transcoded streams, select the matching external subtitle track.
       final externalSubs = _currentResolution!.externalSubtitles;
       final idx = externalSubs.indexWhere((s) => s.streamIndex == streamIndex);
-      _subLog('changeSubtitleTrack transcode externalIdx=$idx externalCount=${externalSubs.length}');
       if (idx >= 0) {
-        final mpvId = idx + 1;
-        await _backend?.setSubtitleTrack(mpvId);
-        _subLog('changeSubtitleTrack transcode applied externalMpvId=$mpvId');
+        await _backend?.setSubtitleTrack(idx + 1);
       } else {
-        _subLog('changeSubtitleTrack transcode no external match, re-resolving with transcode');
         await _reResolveAtCurrentPosition(forceTranscode: true);
       }
     } else {
-      _subLog('changeSubtitleTrack unknown play method, re-resolving current position');
       await _reResolveAtCurrentPosition();
     }
   }
 
   Future<void> disableSubtitles() async {
     _subtitleStreamIndex = -1;
-    _subLog('disableSubtitles requested by UI; subtitleStreamIndex=-1');
     await _backend?.disableSubtitleTrack();
   }
 
@@ -678,10 +680,6 @@ class PlaybackManager {
     Duration? restorePosition,
   }) async {
     if (sessionToken != _playbackSessionToken) return;
-    _subLog(
-      'applyStoredTrackSelections token=$sessionToken audioStreamIndex=$_audioStreamIndex '
-      'subtitleStreamIndex=$_subtitleStreamIndex restorePositionMs=${restorePosition?.inMilliseconds}',
-    );
     final shouldRestore = restorePosition != null && restorePosition > Duration.zero;
 
     if (_audioStreamIndex != null) {
@@ -693,17 +691,19 @@ class PlaybackManager {
     }
     if (_subtitleStreamIndex != null && _subtitleStreamIndex! >= 0) {
       final isBitmap = _isSubtitleBitmap(_subtitleStreamIndex!);
-      if (!(isBitmap && !(_backend?.canRenderBitmapSubtitles ?? false))) {
+      final canRenderBitmap = _backend?.canRenderBitmapSubtitles ?? false;
+      if (isBitmap && !canRenderBitmap) {
+        if (_currentResolution?.playMethod == StreamPlayMethod.directPlay && !_isOfflinePlayback) {
+          await _reResolveAtCurrentPosition(forceTranscode: true);
+        }
+      } else {
         final mpvId = _mpvTrackIdForStream(_subtitleStreamIndex!, 'Subtitle');
-        _subLog('applyStoredTrackSelections subtitle mappedMpvId=$mpvId isBitmap=$isBitmap');
         if (mpvId != null) {
           await _backend?.setSubtitleTrack(mpvId, isBitmapSubtitle: isBitmap);
-          _subLog('applyStoredTrackSelections subtitle applied mpvId=$mpvId');
           if (sessionToken != _playbackSessionToken) return;
         }
       }
     } else if (_subtitleStreamIndex == -1) {
-      _subLog('applyStoredTrackSelections subtitle disabled sentinel=-1');
       await _backend?.disableSubtitleTrack();
     }
 
@@ -722,10 +722,8 @@ class PlaybackManager {
     int sessionToken, {
     Duration? restorePosition,
   }) {
-    _subLog('waitAndApplyTrackSelections scheduled token=$sessionToken restore=${restorePosition?.inMilliseconds}');
-    _backend?.waitForTracksReady().then((_) {
+    _waitForTracksAndExternals().then((_) {
       if (sessionToken != _playbackSessionToken) return;
-      _subLog('waitAndApplyTrackSelections tracks ready token=$sessionToken');
       _applyStoredTrackSelections(
         sessionToken,
         restorePosition: restorePosition,
@@ -734,8 +732,11 @@ class PlaybackManager {
   }
 
   void _waitAndDisableSubtitles(int sessionToken) {
-    _backend?.waitForTracksReady().then((_) {
+    _waitForTracksAndExternals().then((_) {
       if (sessionToken != _playbackSessionToken) return;
+      if (_subtitleStreamIndex != null && _subtitleStreamIndex! >= 0) {
+        return;
+      }
       _backend?.disableSubtitleTrack();
     });
   }
@@ -744,45 +745,67 @@ class PlaybackManager {
     int sessionToken,
     StreamResolutionResult resolution,
   ) {
-    _subLog(
-      'waitAndApplyExternalSubtitle scheduled token=$sessionToken '
-      'subtitleStreamIndex=$_subtitleStreamIndex externalCount=${resolution.externalSubtitles.length}',
-    );
-    _backend?.waitForTracksReady().then((_) async {
+    _waitForTracksAndExternals().then((_) async {
       if (sessionToken != _playbackSessionToken) return;
       if (_subtitleStreamIndex == null || _subtitleStreamIndex! < 0) return;
       final externalSubs = resolution.externalSubtitles;
       final idx = externalSubs.indexWhere(
         (s) => s.streamIndex == _subtitleStreamIndex,
       );
-      _subLog('waitAndApplyExternalSubtitle resolvedIdx=$idx');
       if (idx >= 0) {
-        final mpvId = idx + 1;
-        await _backend?.setSubtitleTrack(mpvId);
-        _subLog('waitAndApplyExternalSubtitle applied externalMpvId=$mpvId');
+        await _backend?.setSubtitleTrack(idx + 1);
       }
     });
   }
 
-  /// Maps a Jellyfin stream Index to an mpv track ID (1-indexed among same-type tracks).
+  void _waitAndAddExternalSubtitles(
+    int sessionToken,
+    StreamResolutionResult resolution,
+  ) {
+    final completer = Completer<void>();
+    _externalSubsLoaded = completer.future;
+    final backend = _backend;
+    if (backend == null) {
+      completer.complete();
+      return;
+    }
+
+    final embeddedSubCount = _currentMediaStreams
+        .where((s) => s['Type'] == 'Subtitle' && s['IsExternal'] != true)
+        .length;
+
+    backend.waitForEmbeddedSubtitleCount(embeddedSubCount).then((_) async {
+      if (sessionToken == _playbackSessionToken) {
+        for (final sub in resolution.externalSubtitles) {
+          try {
+            await backend.addExternalSubtitle(
+              sub.deliveryUrl,
+              title: sub.title,
+              language: sub.language,
+              codec: sub.codec,
+            );
+          } catch (_) {}
+          if (sessionToken != _playbackSessionToken) break;
+        }
+      }
+      completer.complete();
+    });
+  }
+
+  Future<void> _waitForTracksAndExternals() async {
+    await _backend?.waitForTracksReady();
+    await _externalSubsLoaded;
+  }
+
   int? _mpvTrackIdForStream(int streamIndex, String type) {
     final streams = _currentMediaStreams;
-    if (streams.isEmpty) {
-      _subLog('mpvTrackIdForStream type=$type streamIndex=$streamIndex streams empty');
-      return null;
-    }
+    if (streams.isEmpty) return null;
     final typeStreams = streams.where((s) => s['Type'] == type).toList();
-    if (typeStreams.isEmpty) {
-      _subLog('mpvTrackIdForStream type=$type streamIndex=$streamIndex typeStreams empty');
-      return null;
-    }
+    if (typeStreams.isEmpty) return null;
 
     if (type == 'Subtitle') {
       final targetIdx = typeStreams.indexWhere((s) => s['Index'] == streamIndex);
-      if (targetIdx < 0) {
-        _subLog('mpvTrackIdForStream subtitle streamIndex=$streamIndex not found in typeStreams');
-        return null;
-      }
+      if (targetIdx < 0) return null;
       final target = typeStreams[targetIdx];
       final isExternal = target['IsExternal'] == true;
 
@@ -791,33 +814,18 @@ class PlaybackManager {
         final externalStreams = typeStreams.where((s) => s['IsExternal'] == true).toList();
         final externalPos = externalStreams.indexWhere((s) => s['Index'] == streamIndex);
         if (externalPos < 0) return null;
-        final mpvId = embeddedCount + externalPos + 1;
-        _subLog(
-          'mpvTrackIdForStream subtitle external streamIndex=$streamIndex '
-          'embeddedCount=$embeddedCount externalPos=$externalPos mappedMpvId=$mpvId',
-        );
-        return mpvId;
+        return embeddedCount + externalPos + 1;
       } else {
         final embeddedStreams = typeStreams.where((s) => s['IsExternal'] != true).toList();
         final embeddedPos = embeddedStreams.indexWhere((s) => s['Index'] == streamIndex);
         if (embeddedPos < 0) return null;
-        final mpvId = embeddedPos + 1;
-        _subLog(
-          'mpvTrackIdForStream subtitle embedded streamIndex=$streamIndex '
-          'embeddedPos=$embeddedPos mappedMpvId=$mpvId',
-        );
-        return mpvId;
+        return embeddedPos + 1;
       }
     }
 
     final positional = typeStreams.indexWhere((s) => s['Index'] == streamIndex);
-    if (positional < 0) {
-      _subLog('mpvTrackIdForStream type=$type streamIndex=$streamIndex positional not found');
-      return null;
-    }
-    final mpvId = positional + 1;
-    _subLog('mpvTrackIdForStream type=$type streamIndex=$streamIndex mappedMpvId=$mpvId');
-    return mpvId;
+    if (positional < 0) return null;
+    return positional + 1;
   }
 
   Future<void> playOffline(

@@ -53,9 +53,7 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
 
     if (playMethod == StreamPlayMethod.transcode) {
       url = MediaStreamResolver.applyStreamIndices(url, audioStreamIndex, subtitleStreamIndex);
-      // Avoid StartTimeTicks on segment requests generated from HLS playlists.
       url = _stripQueryParam(url, 'StartTimeTicks');
-      // Force burn-in when direct play was disabled for subtitle encoding.
       if (!enableDirectPlay && subtitleStreamIndex != null && subtitleStreamIndex >= 0) {
         final smRegex = RegExp(r'SubtitleMethod=\w+');
         if (smRegex.hasMatch(url)) {

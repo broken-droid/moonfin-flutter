@@ -2967,6 +2967,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   int? _selectedAudioIndex;
   int? _selectedSubtitleIndex;
   bool _expanded = false;
+  bool _playLaunchInFlight = false;
   DownloadedItem? _offlineRow;
   List<DownloadedItem>? _offlineQueue;
   DownloadService? _downloadService;
@@ -3492,10 +3493,6 @@ class _ActionButtonsState extends State<_ActionButtons> {
       }
     }
 
-    if (subtitleStreams.length == 1) {
-      return subtitleStreams.first['Index'] as int?;
-    }
-
     return null;
   }
 
@@ -3519,6 +3516,20 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }
 
   void _play(
+    BuildContext context,
+    AggregatedItem item, {
+    bool resume = false,
+  }) async {
+    if (_playLaunchInFlight) return;
+    _playLaunchInFlight = true;
+    try {
+      await _playInternal(context, item, resume: resume);
+    } finally {
+      _playLaunchInFlight = false;
+    }
+  }
+
+  Future<void> _playInternal(
     BuildContext context,
     AggregatedItem item, {
     bool resume = false,

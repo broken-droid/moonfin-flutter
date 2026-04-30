@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -38,9 +38,35 @@ class MediaKitPlayerBackend implements PlayerBackend {
   static final Map<String, _ParsedMpvConfCacheEntry> _parsedMpvConfCache =
       <String, _ParsedMpvConfCacheEntry>{};
 
-  void _subLog(String message) {
-    if (kDebugMode) {
-      debugPrint('[MoonfinSubBackend] $message');
+  Future<String?> _tryNativeGetProperty(Object native, String key) async {
+    try {
+      final dynamic dyn = native;
+      final value = await Future.value(dyn.getProperty(key));
+      return value?.toString();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  List<int> _extractSubtitleTrackIds(String? trackListRaw) {
+    if (trackListRaw == null || trackListRaw.isEmpty) return const <int>[];
+    try {
+      final decoded = jsonDecode(trackListRaw);
+      if (decoded is! List) return const <int>[];
+      final ids = <int>[];
+      for (final item in decoded) {
+        if (item is! Map) continue;
+        final type = item['type']?.toString();
+        if (type != 'sub') continue;
+        final idValue = item['id'];
+        final parsed = idValue is int ? idValue : int.tryParse(idValue?.toString() ?? '');
+        if (parsed != null && parsed > 0) {
+          ids.add(parsed);
+        }
+      }
+      return ids;
+    } catch (_) {
+      return const <int>[];
     }
   }
 
@@ -149,10 +175,8 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
-  // Bitmap subtitles (PGS, DVDSUB) cannot be reliably loaded as external
-  // tracks via mpv sub-add over HTTP, so we ask the upstream resolver to
-  // burn them into the transcoded video instead.
-  bool get canRenderBitmapSubtitles => false;
+  bool get canRenderBitmapSubtitles =>
+      PlatformDetection.isDesktop || PlatformDetection.isAndroid;
 
   VideoController get videoController => _videoController;
 
@@ -166,16 +190,14 @@ class MediaKitPlayerBackend implements PlayerBackend {
       maxBitrateMbps: maxBitrate,
       ac3Enabled: ac3Enabled,
       maxResolution: maxResolution,
+      pgsDirectPlay: _prefs.get(UserPreferences.pgsDirectPlay),
+      assDirectPlay: _prefs.get(UserPreferences.assDirectPlay),
     );
   }
 
   @override
   Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero}) async {
     final url = mediaItem as String;
-    _subLog(
-      'play startPositionMs=${startPosition.inMilliseconds} useLibass=$_useLibass '
-      'hwDecoding=$_hwDecodingEnabled url=${url.length > 120 ? '${url.substring(0, 120)}...' : url}',
-    );
     await _notifyNativeHandleReady();
     await _configureAppleMobileLibassFont();
     await _applyCustomMpvConfIfEnabled();
@@ -534,22 +556,16 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   Future<void> _applyAssOverrideMode() async {
-    if (!_useLibass) {
-      _subLog('applyAssOverride skipped because libass disabled');
-      return;
-    }
+    if (!_useLibass) return;
     try {
       final native = _player.platform as NativePlayer;
       final assEnabled = _prefs.get(UserPreferences.assDirectPlay);
-      _subLog('applyAssOverride assDirectPlay=$assEnabled value=${assEnabled ? 'no' : 'force'}');
       await _nativeSetProperty(
         native,
         'sub-ass-override',
         assEnabled ? 'no' : 'force',
       );
-    } catch (e) {
-      _subLog('applyAssOverride failed error=$e');
-    }
+    } catch (_) {}
   }
 
   Future<void> _notifyNativeHandleReady() async {
@@ -672,98 +688,91 @@ class MediaKitPlayerBackend implements PlayerBackend {
   @override
   Future<void> setSubtitleTrack(int mpvTrackId, {bool isBitmapSubtitle = false}) async {
     if (mpvTrackId < 1) return;
-    final id = mpvTrackId.toString();
-    _subLog('setSubtitleTrack requestedMpvId=$mpvTrackId requestedSid=$id isBitmap=$isBitmapSubtitle');
     try {
-      await _player.setSubtitleTrack(SubtitleTrack.no());
-      _subLog('setSubtitleTrack cleared current subtitle track');
+      final native = _player.platform as NativePlayer;
+      final trackListBefore = await _tryNativeGetProperty(native, 'track-list');
+      final subtitleIds = _extractSubtitleTrackIds(trackListBefore);
+      final sidToApply = (mpvTrackId <= subtitleIds.length)
+          ? subtitleIds[mpvTrackId - 1].toString()
+          : mpvTrackId.toString();
+      final subtitleTracks = _player.state.tracks.subtitle;
+      final playableSubtitleTracks = subtitleTracks
+          .where((t) => t.id != 'auto' && t.id != 'no')
+          .toList();
 
-      var tracks = _player.state.tracks.subtitle;
-      _subLog('setSubtitleTrack initialTracks=${tracks.map((t) => t.id).join(',')} count=${tracks.length}');
-      if (tracks.isEmpty) {
-        _subLog('setSubtitleTrack waiting for subtitle tracks up to 2000ms');
-        try {
-          final loaded = await _player.stream.tracks
-              .firstWhere((t) => t.subtitle.isNotEmpty)
-              .timeout(const Duration(seconds: 2));
-          tracks = loaded.subtitle;
-          _subLog('setSubtitleTrack loadedTracks=${tracks.map((t) => t.id).join(',')} count=${tracks.length}');
-        } catch (e) {
-          _subLog('setSubtitleTrack waitForSubtitleTracks failed error=$e');
+      var sidAfter = await _tryNativeGetProperty(native, 'sid');
+
+      if (PlatformDetection.isAndroid) {
+        SubtitleTrack? target;
+        for (final t in playableSubtitleTracks) {
+          if (t.id == sidToApply) {
+            target = t;
+            break;
+          }
+        }
+        target ??=
+            (mpvTrackId <= playableSubtitleTracks.length && mpvTrackId > 0)
+            ? playableSubtitleTracks[mpvTrackId - 1]
+            : null;
+        if (target != null) {
+          await _player.setSubtitleTrack(target);
+          sidAfter = await _tryNativeGetProperty(native, 'sid');
         }
       }
 
-      SubtitleTrack? match;
-      String selectedSid = id;
-      for (final t in tracks) {
-        if (t.id == id) { match = t; break; }
+      if (sidAfter != sidToApply) {
+        await _nativeSetProperty(native, 'sid', sidToApply);
+        sidAfter = await _tryNativeGetProperty(native, 'sid');
+      }
+      if (sidAfter != sidToApply) {
+        await _nativeCommand(native, ['set_property', 'sid', sidToApply]);
+        sidAfter = await _tryNativeGetProperty(native, 'sid');
       }
 
-      if (match != null) {
-        await _player.setSubtitleTrack(match);
-        selectedSid = match.id;
-        _subLog('setSubtitleTrack selected by exact sid match selectedSid=$selectedSid');
-      } else {
-        // No exact match - external tracks added via sub-add are not reflected in
-        // player.state.tracks.subtitle. Use a synthetic track so the native sid
-        // property set below activates the correct mpv track directly.
-        await _player.setSubtitleTrack(SubtitleTrack(id, null, null));
-        _subLog('setSubtitleTrack selected synthetic track sid=$id');
-      }
-
-      final native = _player.platform as NativePlayer;
-      await _nativeSetProperty(native, 'sid', selectedSid);
       await _nativeSetProperty(native, 'secondary-sid', 'no');
-      if (!_useLibass) {
-        await _nativeSetProperty(native, 'sub-visibility', 'yes');
-      } else {
-        await _nativeSetProperty(native, 'sub-visibility', 'yes');
+      await _nativeSetProperty(native, 'sub-visibility', 'yes');
+      if (_useLibass) {
         await _applyAssOverrideMode();
       }
-      _subLog(
-        'setSubtitleTrack final requestedSid=$id selectedSid=$selectedSid '
-        'subVisibility=yes secondarySid=no tracks=${tracks.map((t) => t.id).join(',')}',
-      );
-    } catch (e) {
-      _subLog('setSubtitleTrack failed requestedSid=$id error=$e');
-    }
+    } catch (_) {}
   }
 
   @override
   Future<void> disableSubtitleTrack() async {
-    _subLog('disableSubtitleTrack start');
     await _player.setSubtitleTrack(SubtitleTrack.no());
     try {
       final native = _player.platform as NativePlayer;
       await _nativeSetProperty(native, 'sid', 'no');
       await _nativeSetProperty(native, 'secondary-sid', 'no');
       await _nativeSetProperty(native, 'sub-visibility', 'no');
-      _subLog('disableSubtitleTrack applied sid=no secondarySid=no subVisibility=no');
-    } catch (e) {
-      _subLog('disableSubtitleTrack failed error=$e');
-    }
+    } catch (_) {}
   }
 
   @override
   Future<void> waitForTracksReady() async {
-    final initialAudio = _player.state.tracks.audio.length;
-    final initialSubtitle = _player.state.tracks.subtitle.length;
-    _subLog('waitForTracksReady start audioCount=$initialAudio subtitleCount=$initialSubtitle');
     if (_player.state.tracks.audio.isNotEmpty) {
-      _subLog('waitForTracksReady early-exit audio already ready');
       return;
     }
     try {
       final tracks = await _player.stream.tracks
           .firstWhere((t) => t.audio.isNotEmpty)
           .timeout(const Duration(seconds: 5));
-      _subLog(
-        'waitForTracksReady loaded audioCount=${tracks.audio.length} '
-        'subtitleCount=${tracks.subtitle.length}',
-      );
-    } catch (e) {
-      _subLog('waitForTracksReady timeoutOrError error=$e');
+      if (tracks.audio.isEmpty) return;
+    } catch (_) {}
+  }
+
+  @override
+  Future<void> waitForEmbeddedSubtitleCount(int count) async {
+    if (count <= 0) return;
+    if (_player.state.tracks.subtitle.length >= count) {
+      return;
     }
+    try {
+      final tracks = await _player.stream.tracks
+          .firstWhere((t) => t.subtitle.length >= count)
+          .timeout(const Duration(seconds: 5));
+      if (tracks.subtitle.length < count) return;
+    } catch (_) {}
   }
 
   @override
@@ -788,30 +797,16 @@ class MediaKitPlayerBackend implements PlayerBackend {
     String url, {
     String? title,
     String? language,
+    String? codec,
   }) async {
-    _subLog(
-      'addExternalSubtitle url=${url.length > 120 ? '${url.substring(0, 120)}...' : url} '
-      'title=${title ?? 'external'} language=${language ?? ''}',
-    );
     final native = _player.platform as NativePlayer;
-    try {
-      await _nativeCommand(native, [
-        'sub-add',
-        url,
-        'auto',
-        title ?? 'external',
-        language ?? '',
-      ]);
-      _subLog('addExternalSubtitle command sent');
-      try {
-        final trackList = await native.getProperty('track-list');
-        _subLog('addExternalSubtitle track-list after add (truncated)=${trackList.length > 400 ? '${trackList.substring(0, 400)}...' : trackList}');
-      } catch (e) {
-        _subLog('addExternalSubtitle getProperty track-list failed error=$e');
-      }
-    } catch (e) {
-      _subLog('addExternalSubtitle command FAILED error=$e');
-    }
+    await _nativeCommand(native, [
+      'sub-add',
+      url,
+      'auto',
+      title ?? 'external',
+      language ?? '',
+    ]);
   }
 
   @override
@@ -859,7 +854,6 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   void _enableNativeSubtitleRendering() {
-    _subLog('enableNativeSubtitleRendering scheduled +500ms');
     Future.delayed(const Duration(milliseconds: 500), () async {
       try {
         final native = _player.platform as NativePlayer;
@@ -867,10 +861,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
         await _nativeSetProperty(native, 'sub-ass', 'yes');
         await _nativeSetProperty(native, 'sub-ass-override', 'yes');
         await _nativeSetProperty(native, 'sub-forced-events-only', 'no');
-        _subLog('enableNativeSubtitleRendering applied sub-visibility=yes sub-ass=yes sub-ass-override=yes');
-      } catch (e) {
-        _subLog('enableNativeSubtitleRendering failed error=$e');
-      }
+      } catch (_) {}
     });
   }
 
