@@ -1,6 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../data/models/aggregated_item.dart';
 import '../../data/repositories/mdblist_repository.dart';
@@ -36,6 +36,13 @@ class InfoArea extends StatelessWidget {
       height: fixedHeight,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
+        layoutBuilder: (currentChild, previousChildren) => Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            ...previousChildren,
+            ?currentChild,
+          ],
+        ),
         child: _InfoAreaContent(key: ValueKey(item.id), item: item),
       ),
     );
@@ -148,24 +155,22 @@ class _InfoAreaContentState extends State<_InfoAreaContent> {
           SizedBox(
             height: logoHeight,
             child: hasLogo
-                ? Align(
-                    alignment: Alignment.centerLeft,
-                    child: CachedNetworkImage(
-                      imageUrl: imageApi.getLogoImageUrl(
+                ? Image(
+                    image: CachedNetworkImageProvider(
+                      imageApi.getLogoImageUrl(
                         logoItemId,
                         maxWidth: isMobile ? 300 : 400,
                         tag: logoTag,
                       ),
-                      fit: BoxFit.contain,
-                      height: logoHeight,
-                      alignment: Alignment.centerLeft,
-                      fadeInDuration: const Duration(milliseconds: 150),
-                      errorWidget: (_, _, _) => Text(
-                        title,
-                        style: titleStyle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    ),
+                    fit: BoxFit.contain,
+                    height: logoHeight,
+                    alignment: Alignment.centerLeft,
+                    errorBuilder: (_, _, _) => Text(
+                      title,
+                      style: titleStyle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   )
                 : Text(
