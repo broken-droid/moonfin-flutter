@@ -148,8 +148,12 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
           skipTraversal: true,
           onKeyEvent: (_, event) {
             if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-            if (event is KeyDownEvent || event is KeyUpEvent) {
+            if (event is KeyDownEvent) {
+              DialogBackSuppressor.markDismissed();
               closeOnce();
+              return KeyEventResult.handled;
+            }
+            if (event is KeyUpEvent) {
               return KeyEventResult.handled;
             }
             return KeyEventResult.ignored;

@@ -19,6 +19,7 @@ import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../widgets/overlay_sheet.dart';
+import '../../widgets/track_selector_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/focus/request_initial_focus.dart';
 
@@ -653,7 +654,7 @@ class _SeerrMediaDetailScreenState
       tiles.add(_ActionTile(
         icon: Icons.add,
         label: requestLabel,
-        onTap: s.isRequesting ? null : _showRequestSheet,
+        onTap: s.isRequesting ? null : _showRequestDialog,
         primary: !(s.isFullyAvailable || s.isPartiallyAvailable),
         focusNode: takeFirst(),
       ));
@@ -1133,7 +1134,7 @@ class _SeerrMediaDetailScreenState
                 ),
               if (canShowRequest)
                 ElevatedButton.icon(
-                  onPressed: s.isRequesting ? null : () => _showRequestSheet(),
+                  onPressed: s.isRequesting ? null : () => _showRequestDialog(),
                   icon: s.isRequesting
                       ? const SizedBox(
                           width: 16,
@@ -1232,17 +1233,14 @@ class _SeerrMediaDetailScreenState
     );
   }
 
-  void _showRequestSheet() {
+  void _showRequestDialog() {
     final vm = _vm!;
     final s = vm.state;
-    showFocusRestoringModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: const Color(0xFF1A1A2E),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) => _RequestBottomSheet(
+    final l10n = AppLocalizations.of(context);
+    showStyledPlayerDialog<void>(
+      context,
+      title: l10n.requestSeriesOrMovie(s.isTv ? l10n.series : l10n.movie),
+      builder: (_) => _RequestDialog(
         vm: vm,
         isTv: s.isTv,
         numberOfSeasons: s.numberOfSeasons ?? 0,
@@ -1747,13 +1745,13 @@ class _ActionTileState extends State<_ActionTile> with FocusStateMixin {
   }
 }
 
-class _RequestBottomSheet extends StatefulWidget {
+class _RequestDialog extends StatefulWidget {
   final SeerrMediaDetailViewModel vm;
   final bool isTv;
   final int numberOfSeasons;
   final Set<int> requestedSeasons;
 
-  const _RequestBottomSheet({
+  const _RequestDialog({
     required this.vm,
     required this.isTv,
     required this.numberOfSeasons,
@@ -1761,10 +1759,10 @@ class _RequestBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<_RequestBottomSheet> createState() => _RequestBottomSheetState();
+  State<_RequestDialog> createState() => _RequestDialogState();
 }
 
-class _RequestBottomSheetState extends State<_RequestBottomSheet> {
+class _RequestDialogState extends State<_RequestDialog> {
   bool _is4k = false;
   bool _allSeasons = true;
   final Set<int> _selectedSeasons = {};
@@ -1904,34 +1902,12 @@ class _RequestBottomSheetState extends State<_RequestBottomSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final bottomPad = MediaQuery.of(context).padding.bottom;
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottomPad),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.requestSeriesOrMovie(widget.isTv ? l10n.series : l10n.movie),
-              style:
-                  theme.textTheme.titleLarge?.copyWith(color: Colors.white),
-            ),
-            const SizedBox(height: 16),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
             if (widget.vm.canRequest4k)
               SwitchListTile(
                 title:
@@ -1966,8 +1942,7 @@ class _RequestBottomSheetState extends State<_RequestBottomSheet> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildSeasonSelector() {

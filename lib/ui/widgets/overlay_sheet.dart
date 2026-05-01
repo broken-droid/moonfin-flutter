@@ -96,7 +96,23 @@ Future<T?> showFocusRestoringModalBottomSheet<T>({
   final previousFocus = FocusManager.instance.primaryFocus;
   return showModalBottomSheet<T>(
     context: context,
-    builder: builder,
+    builder: (sheetContext) => Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onKeyEvent: (node, event) {
+        if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+        if (event is KeyDownEvent) {
+          DialogBackSuppressor.markDismissed();
+          Navigator.of(sheetContext).pop();
+          return KeyEventResult.handled;
+        }
+        if (event is KeyUpEvent) {
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: builder(sheetContext),
+    ),
     backgroundColor: backgroundColor,
     elevation: elevation,
     shape: shape,
