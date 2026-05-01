@@ -252,7 +252,12 @@ class JellyfinItemsApi implements ItemsApi {
 
   @override
   Future<Map<String, dynamic>> getPlaylistItems(String playlistId) async {
-    final response = await _dio.get('/Playlists/$playlistId/Items');
+    final response = await _dio.get('/Playlists/$playlistId/Items', queryParameters: {
+      'Fields':
+          'BasicSyncInfo,PrimaryImageAspectRatio,RunTimeTicks,Artists,AlbumArtist,IndexNumber,MediaType,PlaylistItemId,BackdropImageTags,ParentBackdropImageTags,ParentBackdropItemId',
+      'EnableImageTypes': 'Primary,Backdrop',
+      'ImageTypeLimit': 1,
+    });
     return response.data as Map<String, dynamic>;
   }
 

@@ -84,14 +84,10 @@ class BackgroundService {
 
   void _loadBackgrounds(List<String> urls) {
     if (urls.isEmpty) return clearBackgrounds();
-
-    final previousUrls = Set<String>.from(_backgrounds);
-    final nextUrls = Set<String>.from(urls);
     _slideshowTimer?.cancel();
     _backgrounds = urls;
     _currentIndex = 0;
     _update();
-    _evictBackgrounds(previousUrls.difference(nextUrls));
   }
 
   void _update() {

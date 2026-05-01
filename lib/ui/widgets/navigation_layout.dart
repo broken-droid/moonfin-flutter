@@ -12,6 +12,7 @@ class NavigationLayout extends StatefulWidget {
   final String? activeRoute;
   final Widget child;
   final bool showBackButton;
+  final bool showNavigationChrome;
 
   /// Notifier that any screen can update to trigger a live position change.
   static final positionNotifier = ValueNotifier<NavbarPosition?>(
@@ -25,6 +26,7 @@ class NavigationLayout extends StatefulWidget {
     this.activeRoute,
     required this.child,
     this.showBackButton = false,
+    this.showNavigationChrome = true,
   });
 
   @override
@@ -73,6 +75,9 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.showNavigationChrome) {
+      return widget.child;
+    }
     return switch (_position) {
       NavbarPosition.left => _buildSidebar(),
       NavbarPosition.top => _buildToolbar(),

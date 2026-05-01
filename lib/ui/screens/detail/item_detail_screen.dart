@@ -122,6 +122,11 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
   String? _backdropUrl;
   bool _themeMusicStarted = false;
   String? _selectedMediaSourceId;
+  Timer? _focusedBackdropDebounce;
+  String? _lastFocusedBackdropItemId;
+  String? _lastDetailBackdropItemId;
+  final Map<String, String> _focusedPrimaryBackdropUrlCache =
+      <String, String>{};
   FocusNode? _initialContentFocusNode;
 
   FocusNode _ensureInitialFocusNode() =>
@@ -171,6 +176,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _themeMusicService.unregisterDetailScreen(this);
+    _focusedBackdropDebounce?.cancel();
     _backgroundService.clearBackgrounds();
     _viewModel.removeListener(_onChanged);
     _prefs.removeListener(_onPrefsChanged);
@@ -184,13 +190,52 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
     setState(() {});
     final item = _viewModel.item;
     if (item != null) {
-      _backgroundService.setBackground(item, context: BlurContext.details);
-      _backdropUrl = _backgroundService.currentUrl;
+      if (_lastDetailBackdropItemId != item.id) {
+        _lastDetailBackdropItemId = item.id;
+        _focusedPrimaryBackdropUrlCache.clear();
+        _lastFocusedBackdropItemId = null;
+        _backgroundService.setBackground(item, context: BlurContext.details);
+        _backdropUrl = _backgroundService.currentUrl;
+      }
       if (!_themeMusicStarted) {
         _themeMusicStarted = true;
         _themeMusicService.playForItem(item);
       }
     }
+  }
+
+  void _onBackdropItemFocused(AggregatedItem focusedItem) {
+    final itemId = focusedItem.id;
+    if (_lastFocusedBackdropItemId == itemId) return;
+    _lastFocusedBackdropItemId = itemId;
+    _focusedBackdropDebounce?.cancel();
+    _focusedBackdropDebounce = Timer(const Duration(milliseconds: 80), () {
+      if (!mounted || _lastFocusedBackdropItemId != itemId) return;
+
+      final tag = focusedItem.primaryImageTag;
+      if (tag != null) {
+        final cacheKey = '${focusedItem.id}:$tag';
+        final url = _focusedPrimaryBackdropUrlCache.putIfAbsent(
+          cacheKey,
+          () => _viewModel.imageApi.getPrimaryImageUrl(
+            focusedItem.id,
+            maxHeight: 1080,
+            tag: tag,
+          ),
+        );
+        if (url != _backdropUrl) {
+          _backgroundService.setBackgroundUrl(url, context: BlurContext.details);
+          setState(() => _backdropUrl = url);
+        }
+        return;
+      }
+
+      _backgroundService.setBackground(focusedItem, context: BlurContext.details);
+      final nextUrl = _backgroundService.currentUrl;
+      if (nextUrl != _backdropUrl) {
+        setState(() => _backdropUrl = nextUrl);
+      }
+    });
   }
 
   void _onPrefsChanged() {
@@ -210,12 +255,16 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
     final type = _viewModel.item?.type;
     final useTargetNode = type == 'Person' || type == 'BoxSet';
     final node = useTargetNode ? _ensureInitialFocusNode() : null;
+    final isAlbumOrPlaylist = type == 'MusicAlbum' || type == 'Playlist';
+    final showNavigationChrome =
+        _viewModel.state == ItemDetailState.ready && !isAlbumOrPlaylist;
     return RequestInitialFocus(
       targetNode: node,
       child: Scaffold(
         backgroundColor: Colors.black,
         body: NavigationLayout(
           showBackButton: true,
+          showNavigationChrome: showNavigationChrome,
           child: _buildBody(context),
         ),
       ),
@@ -253,6 +302,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
         initialFocusNode: _ensureInitialFocusNode(),
         onSelectedMediaSourceChanged:
             (id) => setState(() => _selectedMediaSourceId = id),
+        onBackdropItemFocused: _onBackdropItemFocused,
         autoPlay: widget.autoPlay,
       ),
     };
@@ -265,6 +315,7 @@ class _DetailContent extends StatefulWidget {
   final String? backdropUrl;
   final String? selectedMediaSourceId;
   final ValueChanged<String?> onSelectedMediaSourceChanged;
+  final ValueChanged<AggregatedItem>? onBackdropItemFocused;
   final FocusNode? initialFocusNode;
   final bool autoPlay;
 
@@ -274,6 +325,7 @@ class _DetailContent extends StatefulWidget {
     this.backdropUrl,
     this.selectedMediaSourceId,
     required this.onSelectedMediaSourceChanged,
+    this.onBackdropItemFocused,
     this.initialFocusNode,
     this.autoPlay = false,
   });
@@ -285,12 +337,17 @@ class _DetailContent extends StatefulWidget {
 class _DetailContentState extends State<_DetailContent> {
   late ScrollController _scrollController;
   late FocusNode _contentFocusNode;
+  final FocusNode _albumPlayFocusNode = FocusNode(debugLabel: 'albumPlayButton');
+  final FocusNode _firstTrackFocusNode = FocusNode(debugLabel: 'albumFirstTrack');
+  String? _tvAlbumPlayFocusAppliedForItemId;
 
   ItemDetailViewModel get viewModel => widget.viewModel;
   UserPreferences get prefs => widget.prefs;
   String? get selectedMediaSourceId => widget.selectedMediaSourceId;
   ValueChanged<String?> get onSelectedMediaSourceChanged =>
       widget.onSelectedMediaSourceChanged;
+  ValueChanged<AggregatedItem>? get onBackdropItemFocused =>
+      widget.onBackdropItemFocused;
   FocusNode? get initialFocusNode => widget.initialFocusNode;
 
   @override
@@ -301,22 +358,65 @@ class _DetailContentState extends State<_DetailContent> {
   }
 
   @override
+  void didUpdateWidget(covariant _DetailContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newId = widget.viewModel.item?.id;
+    final oldId = oldWidget.viewModel.item?.id;
+    if (newId != oldId) {
+      _tvAlbumPlayFocusAppliedForItemId = null;
+    }
+  }
+
+  void _ensureTvAlbumPlayFocus(AggregatedItem item) {
+    if (!PlatformDetection.isTV) return;
+    if (item.type != 'MusicAlbum' && item.type != 'Playlist') return;
+    if (_tvAlbumPlayFocusAppliedForItemId == item.id) return;
+    _tryRequestTvAlbumPlayFocus(item.id, 0);
+  }
+
+  void _tryRequestTvAlbumPlayFocus(String itemId, int attempt) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (_tvAlbumPlayFocusAppliedForItemId == itemId) return;
+      final node = _albumPlayFocusNode;
+      if (node.context != null && node.canRequestFocus) {
+        node.requestFocus();
+        if (node.hasFocus) {
+          _tvAlbumPlayFocusAppliedForItemId = itemId;
+          return;
+        }
+      }
+      if (attempt + 1 >= 8) return;
+      Future<void>.delayed(const Duration(milliseconds: 50), () {
+        if (!mounted) return;
+        _tryRequestTvAlbumPlayFocus(itemId, attempt + 1);
+      });
+    });
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
     _contentFocusNode.dispose();
+    _albumPlayFocusNode.dispose();
+    _firstTrackFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final item = widget.viewModel.item!;
+    _ensureTvAlbumPlayFocus(item);
     final isReadableBook = _isReadableBookItem(item);
     final selectedMediaSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
     final blurAmount =
         widget.prefs.get(UserPreferences.detailsBackgroundBlurAmount).toDouble();
     final backdropEnabled = widget.prefs.get(UserPreferences.backdropEnabled);
     final navbarEnabled =
-      PlatformDetection.isTV && NavigationLayout.focusNavbarNotifier.value != null;
+      PlatformDetection.isTV &&
+      item.type != 'MusicAlbum' &&
+      item.type != 'Playlist' &&
+      NavigationLayout.focusNavbarNotifier.value != null;
 
     return Focus(
       focusNode: _contentFocusNode,
@@ -1157,6 +1257,12 @@ class _DetailContentState extends State<_DetailContent> {
       _AlbumActions(
         item: item,
         tracks: viewModel.tracks,
+        playFocusNode: PlatformDetection.isTV ? _albumPlayFocusNode : null,
+        autofocusPlay: PlatformDetection.isTV,
+        onPlayDown: () {
+          if (!_firstTrackFocusNode.canRequestFocus) return;
+          _firstTrackFocusNode.requestFocus();
+        },
         showAddToPlaylist: !isPlaylist,
         onDownloadAll:
           canDownloadAll
@@ -1180,6 +1286,12 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 12),
         _TrackList(
           tracks: viewModel.tracks,
+          firstTrackFocusNode: _firstTrackFocusNode,
+          onFirstTrackUp: () {
+            if (!_albumPlayFocusNode.canRequestFocus) return;
+            _albumPlayFocusNode.requestFocus();
+          },
+          onTrackFocused: onBackdropItemFocused,
           isAudiobook: isAudiobook,
           reorderable: canManagePlaylistTracks,
           onPlayTrack: (index) {
@@ -1187,7 +1299,11 @@ class _DetailContentState extends State<_DetailContent> {
             unawaited(() async {
               await manager.playItems(viewModel.tracks, startIndex: index);
               if (!context.mounted) return;
-              context.push(Destinations.audioPlayer);
+              final isAudio = viewModel.tracks.every((t) {
+                final mediaType = t.rawData['MediaType'] as String?;
+                return t.type == 'Audio' || mediaType == 'Audio';
+              });
+              context.push(isAudio ? Destinations.audioPlayer : Destinations.videoPlayer);
             }());
           },
           onReorder:
@@ -3294,6 +3410,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
           label: widget.label,
           icon: widget.icon,
           onPressed: widget.onPressed,
+          onArrowDown: widget.onArrowDown,
           isActive: widget.isActive,
           activeColor: widget.activeColor,
           focusNode: widget.focusNode,
@@ -4858,6 +4975,7 @@ class _DetailActionButton extends StatefulWidget {
   final String label;
   final IconData icon;
   final VoidCallback onPressed;
+  final VoidCallback? onArrowDown;
   final bool isActive;
   final Color? activeColor;
   final Color? neonAccentColor;
@@ -4868,6 +4986,7 @@ class _DetailActionButton extends StatefulWidget {
     required this.label,
     required this.icon,
     required this.onPressed,
+    this.onArrowDown,
     this.isActive = false,
     this.activeColor,
     this.neonAccentColor,
@@ -4881,13 +5000,47 @@ class _DetailActionButton extends StatefulWidget {
 
 class _DetailActionButtonState extends State<_DetailActionButton> with FocusStateMixin {
 
+  void _scrollToTopOnFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final scrollable = Scrollable.maybeOf(context);
+      if (scrollable == null) return;
+      final position = scrollable.position;
+      if (position.pixels <= position.minScrollExtent) return;
+      position.animateTo(
+        position.minScrollExtent,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  void _moveHorizontalFocus({required bool forward}) {
+    final current = widget.focusNode ?? Focus.of(context);
+    final moved = forward
+        ? FocusScope.of(context).nextFocus()
+        : FocusScope.of(context).previousFocus();
+    if (!moved) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final primary = FocusManager.instance.primaryFocus;
+      final inActionButtons =
+          primary?.context?.findAncestorWidgetOfExactType<_ActionButtons>() != null ||
+          primary?.context?.findAncestorWidgetOfExactType<_AlbumActions>() != null;
+      if (!inActionButtons) {
+        current.requestFocus();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final focusColor =
         Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
-    final showHighlight = showFocusBorder;
+    final nodeHasFocus = widget.focusNode?.hasFocus ?? false;
+    final showHighlight = showFocusBorder || nodeHasFocus;
 
     final activeColor = widget.isActive ? widget.activeColor : null;
     final neonAccent = widget.neonAccentColor ?? AppColorScheme.onSurface;
@@ -4907,17 +5060,28 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
       child: Focus(
         focusNode: widget.focusNode,
         autofocus: widget.autofocus,
-        onFocusChange: (focused) => setFocused(focused),
+        onFocusChange: (focused) {
+          setFocused(focused);
+          if (focused) {
+            _scrollToTopOnFocus();
+          }
+        },
         onKeyEvent: (_, event) {
           final isNavigationEvent = event is KeyDownEvent || event is KeyRepeatEvent;
           if (isNavigationEvent &&
               event.logicalKey == LogicalKeyboardKey.arrowRight) {
-            FocusScope.of(context).nextFocus();
+            _moveHorizontalFocus(forward: true);
             return KeyEventResult.handled;
           }
           if (isNavigationEvent &&
               event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-            FocusScope.of(context).previousFocus();
+            _moveHorizontalFocus(forward: false);
+            return KeyEventResult.handled;
+          }
+          if (isNavigationEvent &&
+              event.logicalKey == LogicalKeyboardKey.arrowDown &&
+              widget.onArrowDown != null) {
+            widget.onArrowDown!();
             return KeyEventResult.handled;
           }
           if (isActivateKey(event)) {
@@ -6921,6 +7085,9 @@ class _AlbumMeta extends StatelessWidget {
 class _AlbumActions extends StatelessWidget {
   final AggregatedItem item;
   final List<AggregatedItem> tracks;
+  final FocusNode? playFocusNode;
+  final bool autofocusPlay;
+  final VoidCallback? onPlayDown;
   final bool showAddToPlaylist;
   final VoidCallback? onDownloadAll;
   final VoidCallback? onDeleteDownloaded;
@@ -6929,6 +7096,9 @@ class _AlbumActions extends StatelessWidget {
   const _AlbumActions({
     required this.item,
     required this.tracks,
+    this.playFocusNode,
+    this.autofocusPlay = false,
+    this.onPlayDown,
     this.showAddToPlaylist = true,
     this.onDownloadAll,
     this.onDeleteDownloaded,
@@ -6991,6 +7161,9 @@ class _AlbumActions extends StatelessWidget {
           _DetailActionButton(
             label: l10n.play,
             icon: Icons.play_arrow,
+            focusNode: playFocusNode,
+            autofocus: autofocusPlay,
+            onArrowDown: onPlayDown,
             onPressed: () {
               if (tracks.isEmpty) return;
               _playAndOpenAudio(context, manager, tracks);
@@ -7095,6 +7268,9 @@ class _AlbumsRow extends StatelessWidget {
 
 class _TrackList extends StatelessWidget {
   final List<AggregatedItem> tracks;
+  final FocusNode? firstTrackFocusNode;
+  final VoidCallback? onFirstTrackUp;
+  final ValueChanged<AggregatedItem>? onTrackFocused;
   final bool isAudiobook;
   final ValueChanged<int> onPlayTrack;
   final bool reorderable;
@@ -7105,6 +7281,9 @@ class _TrackList extends StatelessWidget {
 
   const _TrackList({
     required this.tracks,
+    this.firstTrackFocusNode,
+    this.onFirstTrackUp,
+    this.onTrackFocused,
     this.isAudiobook = false,
     required this.onPlayTrack,
     this.reorderable = false,
@@ -7129,6 +7308,9 @@ class _TrackList extends StatelessWidget {
           return _TrackTile(
             key: ValueKey('playlist-track-$keyId'),
             track: track,
+            focusNode: index == 0 ? firstTrackFocusNode : null,
+            onArrowUp: index == 0 ? onFirstTrackUp : null,
+            onFocused: onTrackFocused == null ? null : () => onTrackFocused!(track),
             index: index + 1,
             totalCount: tracks.length,
             currentIndex: index,
@@ -7148,6 +7330,10 @@ class _TrackList extends StatelessWidget {
       children: List.generate(tracks.length, (index) {
         return _TrackTile(
           track: tracks[index],
+          focusNode: index == 0 ? firstTrackFocusNode : null,
+          onArrowUp: index == 0 ? onFirstTrackUp : null,
+          onFocused:
+              onTrackFocused == null ? null : () => onTrackFocused!(tracks[index]),
           index: index + 1,
           totalCount: tracks.length,
           currentIndex: index,
@@ -7166,6 +7352,9 @@ class _TrackList extends StatelessWidget {
 
 class _TrackTile extends StatefulWidget {
   final AggregatedItem track;
+  final FocusNode? focusNode;
+  final VoidCallback? onFocused;
+  final VoidCallback? onArrowUp;
   final bool isAudiobook;
   final int index;
   final int currentIndex;
@@ -7180,6 +7369,9 @@ class _TrackTile extends StatefulWidget {
   const _TrackTile({
     super.key,
     required this.track,
+    this.focusNode,
+    this.onFocused,
+    this.onArrowUp,
     this.isAudiobook = false,
     required this.index,
     required this.currentIndex,
@@ -7197,6 +7389,78 @@ class _TrackTile extends StatefulWidget {
 }
 
 class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
+  Timer? _selectLongPressTimer;
+  bool _selectLongPressTriggered = false;
+
+  @override
+  void dispose() {
+    _selectLongPressTimer?.cancel();
+    super.dispose();
+  }
+
+  KeyEventResult _handleTvKeys(KeyEvent event) {
+    final key = event.logicalKey;
+
+    if (key.isUpKey && event.isActionable && widget.onArrowUp != null) {
+      widget.onArrowUp!.call();
+      return KeyEventResult.handled;
+    }
+
+    if (widget.reorderable && event.isActionable) {
+      if (key.isLeftKey) {
+        if (widget.onMoveUp != null && widget.currentIndex > 0) {
+          widget.onMoveUp!(widget.currentIndex);
+        }
+        return KeyEventResult.handled;
+      }
+      if (key.isRightKey) {
+        if (widget.onMoveDown != null && widget.currentIndex < widget.totalCount - 1) {
+          widget.onMoveDown!(widget.currentIndex);
+        }
+        return KeyEventResult.handled;
+      }
+    }
+
+    if (key.isContextMenuKey && event.isActionable) {
+      _showTrackActions(context);
+      return KeyEventResult.handled;
+    }
+
+    if (!key.isSelectKey) return KeyEventResult.ignored;
+
+    if (event is KeyDownEvent) {
+      _selectLongPressTriggered = false;
+      _selectLongPressTimer?.cancel();
+      _selectLongPressTimer = Timer(const Duration(milliseconds: 450), () {
+        if (!mounted || _selectLongPressTriggered) return;
+        _selectLongPressTriggered = true;
+        _showTrackActions(context);
+      });
+      return KeyEventResult.handled;
+    }
+
+    if (event is KeyRepeatEvent) {
+      if (!_selectLongPressTriggered) {
+        _selectLongPressTimer?.cancel();
+        _selectLongPressTriggered = true;
+        _showTrackActions(context);
+      }
+      return KeyEventResult.handled;
+    }
+
+    if (event is KeyUpEvent) {
+      _selectLongPressTimer?.cancel();
+      _selectLongPressTimer = null;
+      if (_selectLongPressTriggered) {
+        _selectLongPressTriggered = false;
+        return KeyEventResult.handled;
+      }
+      widget.onTap();
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -7218,14 +7482,14 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
-        onFocusChange: (hasFocus) => setFocused(hasFocus),
-        onKeyEvent: (_, event) {
-          if (isActivateKey(event)) {
-            widget.onTap();
-            return KeyEventResult.handled;
+        focusNode: widget.focusNode,
+        onFocusChange: (hasFocus) {
+          setFocused(hasFocus);
+          if (hasFocus) {
+            widget.onFocused?.call();
           }
-          return KeyEventResult.ignored;
         },
+        onKeyEvent: (_, event) => _handleTvKeys(event),
         child: GestureDetector(
           onTap: widget.onTap,
           onLongPress: widget.reorderable ? null : () => _showTrackActions(context),
@@ -7310,36 +7574,67 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
                       ),
                     ),
                   ),
-                if (widget.reorderable)
-                  ReorderableDragStartListener(
-                    index: widget.reorderIndex,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Icon(
-                        Icons.drag_indicator,
-                        color: showFocusBorder ? Colors.white70 : Colors.white38,
+                if (PlatformDetection.isTV) ...[
+                  if (widget.reorderable) ...[
+                    IconButton(
+                      onPressed: widget.currentIndex > 0
+                          ? () => widget.onMoveUp?.call(widget.currentIndex)
+                          : null,
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: showFocusBorder ? Colors.white : Colors.white38,
                         size: 18,
                       ),
+                      splashRadius: 20,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                     ),
+                    IconButton(
+                      onPressed: widget.currentIndex < widget.totalCount - 1
+                          ? () => widget.onMoveDown?.call(widget.currentIndex)
+                          : null,
+                      icon: Icon(
+                        Icons.arrow_forward,
+                        color: showFocusBorder ? Colors.white : Colors.white38,
+                        size: 18,
+                      ),
+                      splashRadius: 20,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                    ),
+                  ],
+                ] else ...[
+                  if (widget.reorderable)
+                    ReorderableDragStartListener(
+                      index: widget.reorderIndex,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Icon(
+                          Icons.drag_indicator,
+                          color: showFocusBorder ? Colors.white70 : Colors.white38,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  IconButton(
+                    onPressed: widget.onTap,
+                    icon: Icon(
+                      Icons.play_arrow,
+                      color: showFocusBorder ? Colors.white : Colors.white54,
+                      size: 22,
+                    ),
+                    splashRadius: 20,
                   ),
-                IconButton(
-                  onPressed: widget.onTap,
-                  icon: Icon(
-                    Icons.play_arrow,
-                    color: showFocusBorder ? Colors.white : Colors.white54,
-                    size: 22,
+                  IconButton(
+                    onPressed: () => _showTrackActions(context),
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: showFocusBorder ? Colors.white : Colors.white54,
+                      size: 20,
+                    ),
+                    splashRadius: 20,
                   ),
-                  splashRadius: 20,
-                ),
-                IconButton(
-                  onPressed: () => _showTrackActions(context),
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: showFocusBorder ? Colors.white : Colors.white54,
-                    size: 20,
-                  ),
-                  splashRadius: 20,
-                ),
+                ],
                 const SizedBox(width: 4),
               ],
             ),
