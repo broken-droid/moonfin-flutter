@@ -23,7 +23,7 @@ class MediaBarViewModel extends ChangeNotifier {
 
   String get baseUrl => _client.baseUrl;
 
-  late bool _lastEnabled;
+  late String _lastMode;
   late String _lastContentType;
   late String _lastItemCount;
 
@@ -39,21 +39,25 @@ class MediaBarViewModel extends ChangeNotifier {
     this._prefs,
     this._client,
   ) {
-    _lastEnabled = _prefs.get(UserPreferences.mediaBarEnabled);
+    _lastMode = UserPreferences.normalizeMediaBarMode(
+      _prefs.get(UserPreferences.mediaBarMode),
+    );
     _lastContentType = _prefs.get(UserPreferences.mediaBarContentType);
     _lastItemCount = _prefs.get(UserPreferences.mediaBarItemCount);
     _prefs.addListener(_onPrefsChanged);
   }
 
   void _onPrefsChanged() {
-    final enabled = _prefs.get(UserPreferences.mediaBarEnabled);
+    final mode = UserPreferences.normalizeMediaBarMode(
+      _prefs.get(UserPreferences.mediaBarMode),
+    );
     final contentType = _prefs.get(UserPreferences.mediaBarContentType);
     final itemCount = _prefs.get(UserPreferences.mediaBarItemCount);
 
-    if (enabled != _lastEnabled ||
+    if (mode != _lastMode ||
         contentType != _lastContentType ||
         itemCount != _lastItemCount) {
-      _lastEnabled = enabled;
+      _lastMode = mode;
       _lastContentType = contentType;
       _lastItemCount = itemCount;
       load();

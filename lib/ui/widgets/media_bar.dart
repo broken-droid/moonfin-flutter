@@ -69,6 +69,9 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
 
   bool _readyHooksAppliedForCurrentLoad = false;
 
+  DateTime? _keyDownTime;
+  static const _keyLongPressThreshold = Duration(milliseconds: 500);
+
   Player? _trailerPlayer;
   VideoController? _trailerController;
   StreamSubscription<bool>? _trailerCompletedSub;
@@ -601,6 +604,10 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = widget.viewModel.state;
+    final mode = UserPreferences.normalizeMediaBarMode(
+      widget.prefs.get(UserPreferences.mediaBarMode),
+    );
+    final useMakdStyle = mode == UserPreferences.mediaBarModeMakd;
 
     return switch (state) {
       MediaBarLoading() => SizedBox(height: widget.height),
@@ -613,7 +620,9 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
         ),
       MediaBarReady(items: final items) => items.isEmpty
           ? const SizedBox.shrink()
-          : _buildSlideshow(context, items),
+          : (useMakdStyle
+                ? _buildMakdSlideshow(context, items)
+                : _buildSlideshow(context, items)),
     };
   }
 
@@ -689,8 +698,8 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     
     final isMobile = PlatformDetection.useMobileUi;
     final isTablet = isMobile && MediaQuery.of(context).size.shortestSide >= 600;
-    final navbarAtTop = isMobile && 
-        (GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition) == NavbarPosition.top);
+    final navbarAtTop = isMobile &&
+        (widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top);
     final toolbarInset = navbarAtTop ? MediaQuery.of(context).padding.top + 60.0 : 0.0;
 
     return MouseRegion(
@@ -704,6 +713,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
         onKeyEvent: (node, event) => _handleKeyEvent(event, items),
         child: GestureDetector(
           onTap: () => _navigateToItem(context, items),
+          onLongPress: () => _navigateToItemAndPlay(context, items),
           child: Padding(
             padding: EdgeInsets.only(top: toolbarInset),
             child: SizedBox(
@@ -724,55 +734,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
                     onPageChanged: _onPageChanged,
                   ),
                 ),
-                if (_trailerController != null)
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: AnimatedOpacity(
-                        opacity: _trailerVideoOpacity,
-                        duration: const Duration(milliseconds: 800),
-                        child: Video(
-                          controller: _trailerController!,
-                          controls: NoVideoControls,
-                          fit: BoxFit.cover,
-                          pauseUponEnteringBackgroundMode: false,
-                          fill: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                  ),
-                if (_activeYouTubeVideoId != null)
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: AnimatedOpacity(
-                        opacity: _trailerVideoOpacity,
-                        duration: const Duration(milliseconds: 800),
-                        child: ClipRect(
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              const overscan = 1.15;
-                              final w = constraints.maxWidth * overscan;
-                              final h = constraints.maxHeight * overscan;
-                              return OverflowBox(
-                                minWidth: w,
-                                minHeight: h,
-                                maxWidth: w,
-                                maxHeight: h,
-                                child: WebYouTubeTrailer(
-                                  key: ValueKey(
-                                    '${_activeYouTubeVideoId}_${widget.prefs.get(UserPreferences.previewAudioEnabled)}',
-                                  ),
-                                  videoId: _activeYouTubeVideoId!,
-                                  muted: !widget.prefs.get(
-                                    UserPreferences.previewAudioEnabled,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                ..._buildVideoOverlays(),
                 _GradientOverlay(
                   color: overlayColor,
                   opacity: overlayOpacity,
@@ -893,12 +855,247 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     );
   }
 
+  Widget _buildMakdSlideshow(BuildContext context, List<MediaBarSlideItem> items) {
+    final currentItem = items.elementAtOrNull(_currentIndex);
+    final isMobile = PlatformDetection.useMobileUi;
+    final navbarAtTop =
+      isMobile &&
+      (widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top);
+    final toolbarInset = navbarAtTop ? MediaQuery.of(context).padding.top + 60.0 : 0.0;
+    final contentWidth = (MediaQuery.of(context).size.width * 0.42).clamp(280.0, 560.0);
+
+    return MouseRegion(
+      onEnter: (_) => _setPaused(true),
+      onExit: (_) => _setPaused(false),
+      child: Focus(
+        focusNode: widget.focusNode,
+        autofocus: widget.focusNode == null && PlatformDetection.useLeanbackUi,
+        skipTraversal: true,
+        onFocusChange: (focused) => _setPaused(focused),
+        onKeyEvent: (node, event) => _handleKeyEvent(event, items),
+        child: GestureDetector(
+          onTap: () => _navigateToItem(context, items),
+          onLongPress: () => _navigateToItemAndPlay(context, items),
+          child: Padding(
+            padding: EdgeInsets.only(top: toolbarInset),
+            child: SizedBox(
+              height: widget.height - toolbarInset,
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  AnimatedOpacity(
+                    opacity: ((PlatformDetection.isLinux || _activeYouTubeVideoId != null) &&
+                            _trailerVideoOpacity > 0)
+                        ? 0
+                        : 1,
+                    duration: const Duration(milliseconds: 250),
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 1.0, end: 1.08),
+                      duration: const Duration(seconds: 10),
+                      curve: Curves.easeOut,
+                      builder: (context, scale, child) {
+                        return Transform.scale(
+                          scale: scale,
+                          alignment: Alignment.center,
+                          child: child,
+                        );
+                      },
+                      child: _BackdropLayer(
+                        items: items,
+                        pageController: _pageController,
+                        onPageChanged: _onPageChanged,
+                      ),
+                    ),
+                  ),
+                  ..._buildVideoOverlays(),
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.78),
+                            Colors.black.withValues(alpha: 0.46),
+                            Colors.black.withValues(alpha: 0.06),
+                          ],
+                          stops: const [0.0, 0.46, 1.0],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.12),
+                            Colors.black.withValues(alpha: 0.28),
+                            Colors.black.withValues(alpha: 0.78),
+                          ],
+                          stops: const [0.0, 0.48, 1.0],
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (currentItem != null && currentItem.logoUrl != null)
+                    Builder(builder: (context) {
+                      final contentHeight = widget.height - toolbarInset;
+                      final screenWidth = MediaQuery.of(context).size.width;
+                      final logoTop = contentHeight * 0.22;
+                      final logoWidth = (screenWidth * 0.45).clamp(220.0, 640.0);
+                      final logoHeight = (contentHeight * 0.35).clamp(90.0, 300.0);
+                      return Positioned(
+                        left: isMobile ? null : 50,
+                        top: isMobile ? 12 : logoTop,
+                        child: isMobile
+                            ? SizedBox(
+                                width: screenWidth,
+                                child: Center(
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 300),
+                                    child: SizedBox(
+                                      key: ValueKey('makd_logo_${currentItem.itemId}'),
+                                      width: 200,
+                                      height: 80,
+                                      child: _buildLogoWithShadow(currentItem.logoUrl!),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                child: SizedBox(
+                                  key: ValueKey('makd_logo_${currentItem.itemId}'),
+                                  width: logoWidth,
+                                  height: logoHeight,
+                                  child: _buildLogoWithShadow(currentItem.logoUrl!),
+                                ),
+                              ),
+                      );
+                    }),
+                  if (currentItem != null)
+                    Positioned(
+                      left: isMobile ? 0 : 50,
+                      right: isMobile ? 0 : null,
+                      bottom: isMobile ? 52 : 20,
+                      child: Padding(
+                        padding: isMobile
+                            ? const EdgeInsets.symmetric(horizontal: 20)
+                            : EdgeInsets.zero,
+                        child: SizedBox(
+                          width: isMobile ? null : contentWidth,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 320),
+                            child: _MakdContent(
+                              key: ValueKey('makd_content_${currentItem.itemId}'),
+                              item: currentItem,
+                              ratings: widget.viewModel.ratingsFor(currentItem.itemId),
+                              enableAdditionalRatings: widget.prefs.get(
+                                UserPreferences.enableAdditionalRatings,
+                              ),
+                              enabledRatings: widget.prefs.get(UserPreferences.enabledRatings),
+                              showLabels: widget.prefs.get(UserPreferences.showRatingLabels),
+                              showBadges: widget.prefs.get(UserPreferences.showRatingBadges),
+                              isMobile: isMobile,
+                              onPlay: () => _navigateToItemAndPlay(context, items),
+                              onInfo: () => _navigateToItem(context, items),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (items.length > 1)
+                    isMobile
+                        ? Positioned(
+                            bottom: 14,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: _MakdDots(
+                                count: items.length,
+                                current: _currentIndex,
+                              ),
+                            ),
+                          )
+                        : Positioned(
+                            right: 20,
+                            bottom: 24,
+                            child: _MakdDots(
+                              count: items.length,
+                              current: _currentIndex,
+                            ),
+                          ),
+                  if (items.length > 1 && !PlatformDetection.useMobileUi) ...[
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: _NavArrow(
+                          icon: Icons.chevron_left,
+                          onTap: _currentIndex > 0
+                              ? () => _goToPage(_currentIndex - 1)
+                              : null,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 44,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: _NavArrow(
+                          icon: Icons.chevron_right,
+                          onTap: _currentIndex < items.length - 1
+                              ? () => _goToPage(_currentIndex + 1)
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   KeyEventResult _handleKeyEvent(
     KeyEvent event,
     List<MediaBarSlideItem> items,
   ) {
-    if (event is! KeyDownEvent) return KeyEventResult.ignored;
     final key = event.logicalKey;
+
+    if (key == LogicalKeyboardKey.select || key == LogicalKeyboardKey.enter) {
+      if (event is KeyDownEvent) {
+        _keyDownTime ??= DateTime.now();
+        return KeyEventResult.handled;
+      }
+      if (event is KeyRepeatEvent) {
+        _keyDownTime ??= DateTime.now();
+        return KeyEventResult.handled;
+      }
+      if (event is KeyUpEvent) {
+        final downTime = _keyDownTime;
+        _keyDownTime = null;
+        if (downTime != null &&
+            DateTime.now().difference(downTime) >= _keyLongPressThreshold) {
+          _navigateToItemAndPlay(context, items);
+        } else {
+          _navigateToItem(context, items);
+        }
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.handled;
+    }
+
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
 
     if (key == LogicalKeyboardKey.arrowLeft) {
       if (_currentIndex > 0) {
@@ -920,10 +1117,6 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       widget.onNavigateUp?.call();
       return KeyEventResult.handled;
     }
-    if (key == LogicalKeyboardKey.select || key == LogicalKeyboardKey.enter) {
-      _navigateToItem(context, items);
-      return KeyEventResult.handled;
-    }
     return KeyEventResult.ignored;
   }
 
@@ -932,6 +1125,70 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     if (item != null) {
       _cancelTrailerPreview();
       context.push(Destinations.item(item.itemId, serverId: item.serverId));
+    }
+  }
+
+  List<Widget> _buildVideoOverlays() {
+    return [
+      if (_trailerController != null)
+        Positioned.fill(
+          child: IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _trailerVideoOpacity,
+              duration: const Duration(milliseconds: 800),
+              child: Video(
+                controller: _trailerController!,
+                controls: NoVideoControls,
+                fit: BoxFit.cover,
+                pauseUponEnteringBackgroundMode: false,
+                fill: Colors.transparent,
+              ),
+            ),
+          ),
+        ),
+      if (_activeYouTubeVideoId != null)
+        Positioned.fill(
+          child: IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _trailerVideoOpacity,
+              duration: const Duration(milliseconds: 800),
+              child: ClipRect(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    const overscan = 1.15;
+                    final w = constraints.maxWidth * overscan;
+                    final h = constraints.maxHeight * overscan;
+                    return OverflowBox(
+                      minWidth: w,
+                      minHeight: h,
+                      maxWidth: w,
+                      maxHeight: h,
+                      child: WebYouTubeTrailer(
+                        key: ValueKey(
+                          '${_activeYouTubeVideoId}_${widget.prefs.get(UserPreferences.previewAudioEnabled)}',
+                        ),
+                        videoId: _activeYouTubeVideoId!,
+                        muted: !widget.prefs.get(
+                          UserPreferences.previewAudioEnabled,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+    ];
+  }
+
+  void _navigateToItemAndPlay(BuildContext context, List<MediaBarSlideItem> items) {
+    final item = items.elementAtOrNull(_currentIndex);
+    if (item != null) {
+      _cancelTrailerPreview();
+      context.push(
+        Destinations.item(item.itemId, serverId: item.serverId, autoPlay: true),
+      );
     }
   }
 
@@ -1114,7 +1371,7 @@ class _SlideInfo extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _MetadataRow(item: item),
-          if (ratings.isNotEmpty || item.communityRating != null) ...[
+          if (ratings.isNotEmpty || item.communityRating != null || item.criticRating != null) ...[
             const SizedBox(height: 6),
             RatingsRow(
               ratings: ratings,
@@ -1303,6 +1560,180 @@ class _IndicatorDots extends StatelessWidget {
           }),
         ),
       ),
+    );
+  }
+}
+
+class _MakdDots extends StatelessWidget {
+  final int count;
+  final int current;
+
+  const _MakdDots({
+    required this.count,
+    required this.current,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(count, (i) {
+        final isActive = i == current;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          width: isActive ? 9 : 7,
+          height: isActive ? 9 : 7,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isActive
+                ? Colors.white
+                : Colors.white.withValues(alpha: 0.45),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _MakdContent extends StatelessWidget {
+  final MediaBarSlideItem item;
+  final Map<String, double> ratings;
+  final bool enableAdditionalRatings;
+  final String enabledRatings;
+  final bool showLabels;
+  final bool showBadges;
+  final bool isMobile;
+  final VoidCallback onPlay;
+  final VoidCallback onInfo;
+
+  const _MakdContent({
+    super.key,
+    required this.item,
+    required this.ratings,
+    required this.enableAdditionalRatings,
+    required this.enabledRatings,
+    required this.showLabels,
+    required this.showBadges,
+    required this.isMobile,
+    required this.onPlay,
+    required this.onInfo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final crossAxis =
+        isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start;
+    return Column(
+      crossAxisAlignment: crossAxis,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _MetadataRow(item: item),
+        if (ratings.isNotEmpty || item.communityRating != null || item.criticRating != null) ...[
+          const SizedBox(height: 6),
+          RatingsRow(
+            ratings: ratings,
+            communityRating: item.communityRating,
+            criticRating: item.criticRating,
+            enableAdditionalRatings: enableAdditionalRatings,
+            enabledRatings: enabledRatings,
+            showLabels: showLabels,
+            showBadges: showBadges,
+          ),
+        ],
+        if (item.overview?.isNotEmpty ?? false) ...[
+          const SizedBox(height: 10),
+          Text(
+            item.overview!,
+            maxLines: isMobile ? 2 : 3,
+            overflow: TextOverflow.ellipsis,
+            style: (isMobile ? theme.textTheme.bodySmall : theme.textTheme.bodyMedium)?.copyWith(
+              color: Colors.white.withValues(alpha: 0.88),
+              height: 1.38,
+              shadows: _textShadows,
+            ),
+          ),
+        ],
+        const SizedBox(height: 14),
+        _MakdActionButtons(onPlay: onPlay, onInfo: onInfo, isMobile: isMobile),
+      ],
+    );
+  }
+}
+
+class _MakdActionButtons extends StatelessWidget {
+  final VoidCallback onPlay;
+  final VoidCallback onInfo;
+  final bool isMobile;
+
+  const _MakdActionButtons({
+    required this.onPlay,
+    required this.onInfo,
+    required this.isMobile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: onPlay,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 14 : 18,
+              vertical: isMobile ? 7 : 10,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.black,
+                  size: isMobile ? 20 : 24,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  l10n.play,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: isMobile ? 14 : 17,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: onInfo,
+          child: Container(
+            width: isMobile ? 36 : 46,
+            height: isMobile ? 36 : 46,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: 0.18),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.7),
+                width: 1.5,
+              ),
+            ),
+            child: Icon(
+              Icons.info_outline_rounded,
+              color: Colors.white,
+              size: isMobile ? 18 : 22,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

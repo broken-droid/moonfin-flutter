@@ -140,10 +140,34 @@ Future<void> _migrateLegacyBitrateCap(PreferenceStore store) async {
   await store.setBool(migrationKey, true);
 }
 
+Future<void> _migrateLegacyMediaBarMode(PreferenceStore store) async {
+  const migrationKey = 'pref_media_bar_mode_migrated_v1';
+  if (store.getBool(migrationKey) == true) {
+    return;
+  }
+
+  final existingMode = store.getString(UserPreferences.mediaBarMode.key);
+  if (existingMode == null || existingMode.trim().isEmpty) {
+    final legacyEnabled = store.getBool(UserPreferences.mediaBarEnabled.key);
+    final nextMode = legacyEnabled == false
+        ? UserPreferences.mediaBarModeOff
+        : UserPreferences.mediaBarModeMoonfin;
+    await store.setString(UserPreferences.mediaBarMode.key, nextMode);
+  } else {
+    final normalized = UserPreferences.normalizeMediaBarMode(existingMode);
+    if (normalized != existingMode) {
+      await store.setString(UserPreferences.mediaBarMode.key, normalized);
+    }
+  }
+
+  await store.setBool(migrationKey, true);
+}
+
 Future<void> configureDependencies() async {
   final preferenceStore = PreferenceStore();
   await preferenceStore.init();
   await _migrateLegacyBitrateCap(preferenceStore);
+  await _migrateLegacyMediaBarMode(preferenceStore);
 
   var deviceId = preferenceStore.getString('device_id');
   if (deviceId == null) {

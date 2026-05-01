@@ -529,6 +529,11 @@ class _ContentRowsState extends State<_ContentRows>
     _onGlobalFocusChanged();
   }
 
+  bool _isMediaBarEnabledByMode() {
+    final mode = widget.prefs.get(UserPreferences.mediaBarMode);
+    return UserPreferences.isMediaBarModeEnabled(mode);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -537,7 +542,7 @@ class _ContentRowsState extends State<_ContentRows>
     appRouter.routerDelegate.addListener(_onRouteChanged);
     FocusManager.instance.addListener(_onGlobalFocusChanged);
     SettingsPanel.isOpenNotifier.addListener(_onSettingsPanelOpenChanged);
-    if (!widget.prefs.get(UserPreferences.mediaBarEnabled)) {
+    if (!_isMediaBarEnabledByMode()) {
       _infoRevealed = true;
     }
   }
@@ -951,7 +956,7 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   bool _isMediaBarIncluded() {
-    if (!widget.prefs.get(UserPreferences.mediaBarEnabled)) {
+    if (!_isMediaBarEnabledByMode()) {
       return false;
     }
 
@@ -1257,7 +1262,7 @@ class _ContentRowsState extends State<_ContentRows>
     }
     if (!_isHomeRouteActive()) return;
 
-    final mediaBarEnabled = widget.prefs.get(UserPreferences.mediaBarEnabled);
+    final mediaBarEnabled = _isMediaBarEnabledByMode();
     final mediaBarState = widget.mediaBarViewModel.state;
     final firstRowIndex = rows.indexWhere(_rowHasFocusableItems);
 

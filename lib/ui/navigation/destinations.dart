@@ -148,9 +148,13 @@ class Destinations {
       '/library/$libraryId/letters';
   static String librarySuggestionsOf(String libraryId) =>
       '/library/$libraryId/suggestions';
-  static String item(String itemId, {String? serverId}) {
+  static String item(String itemId, {String? serverId, bool autoPlay = false}) {
     final base = '/item/$itemId';
-    return serverId != null ? '$base?serverId=$serverId' : base;
+    final params = <String>[
+      if (serverId != null) 'serverId=$serverId',
+      if (autoPlay) 'autoPlay=true',
+    ];
+    return params.isEmpty ? base : '$base?${params.join('&')}';
   }
 
   static String itemListOf(String itemId) => '/item/$itemId/list';

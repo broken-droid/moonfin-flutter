@@ -4544,6 +4544,36 @@ abstract class AppLocalizations {
   /// **'Media Bar'**
   String get mediaBar;
 
+  /// Setting for choosing media bar style
+  ///
+  /// In en, this message translates to:
+  /// **'Media Bar Style'**
+  String get mediaBarMode;
+
+  /// Description for media bar style setting
+  ///
+  /// In en, this message translates to:
+  /// **'Choose between Moonfin, MakD, or turn the media bar off'**
+  String get mediaBarModeDescription;
+
+  /// Media bar style option: Moonfin
+  ///
+  /// In en, this message translates to:
+  /// **'Moonfin'**
+  String get mediaBarModeMoonfin;
+
+  /// Media bar style option: MakD
+  ///
+  /// In en, this message translates to:
+  /// **'MakD'**
+  String get mediaBarModeMakd;
+
+  /// Media bar style option: Off
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get mediaBarModeOff;
+
   /// Setting for enabling media bar
   ///
   /// In en, this message translates to:

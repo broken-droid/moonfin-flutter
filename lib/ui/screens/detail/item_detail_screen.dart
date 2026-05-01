@@ -105,8 +105,9 @@ Future<bool> _showDeleteConfirmationDialog(
 class ItemDetailScreen extends StatefulWidget {
   final String itemId;
   final String? serverId;
+  final bool autoPlay;
 
-  const ItemDetailScreen({super.key, required this.itemId, this.serverId});
+  const ItemDetailScreen({super.key, required this.itemId, this.serverId, this.autoPlay = false});
 
   @override
   State<ItemDetailScreen> createState() => _ItemDetailScreenState();
@@ -252,6 +253,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
         initialFocusNode: _ensureInitialFocusNode(),
         onSelectedMediaSourceChanged:
             (id) => setState(() => _selectedMediaSourceId = id),
+        autoPlay: widget.autoPlay,
       ),
     };
   }
@@ -264,6 +266,7 @@ class _DetailContent extends StatefulWidget {
   final String? selectedMediaSourceId;
   final ValueChanged<String?> onSelectedMediaSourceChanged;
   final FocusNode? initialFocusNode;
+  final bool autoPlay;
 
   const _DetailContent({
     required this.viewModel,
@@ -272,6 +275,7 @@ class _DetailContent extends StatefulWidget {
     this.selectedMediaSourceId,
     required this.onSelectedMediaSourceChanged,
     this.initialFocusNode,
+    this.autoPlay = false,
   });
 
   @override
@@ -434,6 +438,7 @@ class _DetailContentState extends State<_DetailContent> {
         viewModel: viewModel,
         selectedMediaSourceId: selectedMediaSourceId,
         onSelectedMediaSourceChanged: onSelectedMediaSourceChanged,
+        autoPlay: widget.autoPlay,
       ),
       if (exifEntries.isNotEmpty) ...[
         const SizedBox(height: 24),
@@ -629,6 +634,7 @@ class _DetailContentState extends State<_DetailContent> {
         viewModel: viewModel,
         selectedMediaSourceId: selectedMediaSourceId,
         onSelectedMediaSourceChanged: onSelectedMediaSourceChanged,
+        autoPlay: widget.autoPlay,
       ),
       const SizedBox(height: 28),
       _SectionHeader(title: l10n.overview),
@@ -704,6 +710,7 @@ class _DetailContentState extends State<_DetailContent> {
         viewModel: viewModel,
         selectedMediaSourceId: selectedMediaSourceId,
         onSelectedMediaSourceChanged: onSelectedMediaSourceChanged,
+        autoPlay: widget.autoPlay,
       ),
       if (_hasMetadata(item)) ...[
         const SizedBox(height: 24),
@@ -773,6 +780,7 @@ class _DetailContentState extends State<_DetailContent> {
         viewModel: viewModel,
         selectedMediaSourceId: selectedMediaSourceId,
         onSelectedMediaSourceChanged: onSelectedMediaSourceChanged,
+        autoPlay: widget.autoPlay,
       ),
       if (_hasMetadata(item)) ...[
         const SizedBox(height: 24),
@@ -859,6 +867,7 @@ class _DetailContentState extends State<_DetailContent> {
         viewModel: viewModel,
         selectedMediaSourceId: selectedMediaSourceId,
         onSelectedMediaSourceChanged: onSelectedMediaSourceChanged,
+        autoPlay: widget.autoPlay,
       ),
       if (viewModel.episodes.isNotEmpty) ...[
         const SizedBox(height: 32),
@@ -882,6 +891,7 @@ class _DetailContentState extends State<_DetailContent> {
         viewModel: viewModel,
         selectedMediaSourceId: selectedMediaSourceId,
         onSelectedMediaSourceChanged: onSelectedMediaSourceChanged,
+        autoPlay: widget.autoPlay,
       ),
       if (_hasMetadata(item)) ...[
         const SizedBox(height: 24),
@@ -2259,11 +2269,13 @@ class _ActionButtons extends StatefulWidget {
   final ItemDetailViewModel viewModel;
   final String? selectedMediaSourceId;
   final ValueChanged<String?> onSelectedMediaSourceChanged;
+  final bool autoPlay;
 
   const _ActionButtons({
     required this.viewModel,
     this.selectedMediaSourceId,
     required this.onSelectedMediaSourceChanged,
+    this.autoPlay = false,
   });
 
   @override
@@ -2954,6 +2966,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   int? _selectedSubtitleIndex;
   bool _expanded = false;
   bool _playLaunchInFlight = false;
+  bool _autoPlayTriggered = false;
   DownloadedItem? _offlineRow;
   List<DownloadedItem>? _offlineQueue;
   DownloadService? _downloadService;
@@ -3057,6 +3070,15 @@ class _ActionButtonsState extends State<_ActionButtons> {
     if (oldWidget.selectedMediaSourceId != widget.selectedMediaSourceId) {
       _selectedAudioIndex = null;
       _selectedSubtitleIndex = null;
+    }
+    if (widget.autoPlay && !_autoPlayTriggered) {
+      final item = widget.viewModel.item;
+      if (item != null) {
+        _autoPlayTriggered = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _play(context, item);
+        });
+      }
     }
   }
 

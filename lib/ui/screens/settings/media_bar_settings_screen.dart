@@ -24,6 +24,16 @@ class MediaBarSettingsScreen extends StatefulWidget {
 class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   final _store = GetIt.instance<PreferenceStore>();
 
+  @override
+  void initState() {
+    super.initState();
+    final current = _store.get(UserPreferences.mediaBarMode);
+    final normalized = UserPreferences.normalizeMediaBarMode(current);
+    if (current != normalized) {
+      _store.set(UserPreferences.mediaBarMode, normalized);
+    }
+  }
+
   List<String> _splitCsv(Preference<String> pref) {
     return _store
         .get(pref)
@@ -256,11 +266,17 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
       ),
       body: ListView(
         children: [
-          SwitchPreferenceTile(
-            preference: UserPreferences.mediaBarEnabled,
-            title: l10n.enableMediaBar,
-            subtitle: l10n.showFeaturedContentSlideshow,
+          StringPickerPreferenceTile(
+            preference: UserPreferences.mediaBarMode,
+            title: l10n.mediaBarMode,
+            description: l10n.mediaBarModeDescription,
             icon: Icons.featured_play_list,
+            options: {
+              UserPreferences.mediaBarModeMoonfin: l10n.mediaBarModeMoonfin,
+              UserPreferences.mediaBarModeMakd: l10n.mediaBarModeMakd,
+              UserPreferences.mediaBarModeOff: l10n.mediaBarModeOff,
+            },
+            onChanged: _pushSync,
           ),
           _MediaBarContentTypePickerTile(onChanged: _pushSync),
           _MediaBarItemCountPickerTile(onChanged: _pushSync),

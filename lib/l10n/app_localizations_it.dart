@@ -2555,6 +2555,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get mediaBar => 'Barra Media';
 
   @override
+  String get mediaBarMode => 'Stile della barra media';
+
+  @override
+  String get mediaBarModeDescription =>
+      'Scegli tra Moonfin, MakD o disattiva la barra media';
+
+  @override
+  String get mediaBarModeMoonfin => 'Moonfin';
+
+  @override
+  String get mediaBarModeMakd => 'MakD';
+
+  @override
+  String get mediaBarModeOff => 'Disattivata';
+
+  @override
   String get enableMediaBar => 'Abilita Barra Media';
 
   @override

@@ -3559,6 +3559,26 @@
   "@mediaBar": {
     "description": "Media bar section title"
   },
+  "mediaBarMode": "Media Bar Style",
+  "@mediaBarMode": {
+    "description": "Setting for choosing media bar style"
+  },
+  "mediaBarModeDescription": "Choose between Moonfin, MakD, or turn the media bar off",
+  "@mediaBarModeDescription": {
+    "description": "Description for media bar style setting"
+  },
+  "mediaBarModeMoonfin": "Moonfin",
+  "@mediaBarModeMoonfin": {
+    "description": "Media bar style option: Moonfin"
+  },
+  "mediaBarModeMakd": "MakD",
+  "@mediaBarModeMakd": {
+    "description": "Media bar style option: MakD"
+  },
+  "mediaBarModeOff": "Off",
+  "@mediaBarModeOff": {
+    "description": "Media bar style option: Off"
+  },
   "enableMediaBar": "Enable Media Bar",
   "@enableMediaBar": {
     "description": "Setting for enabling media bar"

@@ -264,10 +264,12 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final itemId = state.pathParameters['itemId']!;
         final serverId = state.uri.queryParameters['serverId'];
+        final autoPlay = state.uri.queryParameters['autoPlay'] == 'true';
         return ItemDetailScreen(
           key: ValueKey(itemId),
           itemId: itemId,
           serverId: serverId,
+          autoPlay: autoPlay,
         );
       },
       routes: [

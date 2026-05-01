@@ -6,6 +6,15 @@ import 'home_section_config.dart';
 import 'preference_constants.dart';
 
 class UserPreferences extends ChangeNotifier {
+  static const mediaBarModeMoonfin = 'moonfin';
+  static const mediaBarModeMakd = 'makd';
+  static const mediaBarModeOff = 'off';
+  static const mediaBarModeValues = <String>{
+    mediaBarModeMoonfin,
+    mediaBarModeMakd,
+    mediaBarModeOff,
+  };
+
   final PreferenceStore _store;
 
   UserPreferences(this._store);
@@ -19,6 +28,18 @@ class UserPreferences extends ChangeNotifier {
 
   void notifyPreferenceChanged() {
     notifyListeners();
+  }
+
+  static String normalizeMediaBarMode(String? mode) {
+    final normalized = (mode ?? '').trim().toLowerCase();
+    if (mediaBarModeValues.contains(normalized)) {
+      return normalized;
+    }
+    return mediaBarModeMoonfin;
+  }
+
+  static bool isMediaBarModeEnabled(String? mode) {
+    return normalizeMediaBarMode(mode) != mediaBarModeOff;
   }
 
   static final posterSize = EnumPreference(
@@ -370,6 +391,11 @@ class UserPreferences extends ChangeNotifier {
   static final mediaBarEnabled = Preference(
     key: 'mediaBarEnabled',
     defaultValue: true,
+  );
+
+  static final mediaBarMode = Preference(
+    key: 'mediaBarMode',
+    defaultValue: mediaBarModeMoonfin,
   );
 
   static final mediaBarContentType = Preference(

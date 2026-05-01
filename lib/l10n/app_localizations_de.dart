@@ -2558,6 +2558,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mediaBar => 'Medienleiste';
 
   @override
+  String get mediaBarMode => 'Stil der Medienleiste';
+
+  @override
+  String get mediaBarModeDescription =>
+      'Zwischen Moonfin, MakD oder Aus fur die Medienleiste wahlen';
+
+  @override
+  String get mediaBarModeMoonfin => 'Moonfin';
+
+  @override
+  String get mediaBarModeMakd => 'MakD';
+
+  @override
+  String get mediaBarModeOff => 'Aus';
+
+  @override
   String get enableMediaBar => 'Medienleiste aktivieren';
 
   @override

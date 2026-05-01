@@ -3498,6 +3498,26 @@
   "@mediaBar": {
     "description": "Media bar section title"
   },
+  "mediaBarMode": "Mediefaltsstil",
+  "@mediaBarMode": {
+    "description": "Setting for choosing media bar style"
+  },
+  "mediaBarModeDescription": "Valj mellan Moonfin, MakD eller stang av mediefaltet",
+  "@mediaBarModeDescription": {
+    "description": "Description for media bar style setting"
+  },
+  "mediaBarModeMoonfin": "Moonfin",
+  "@mediaBarModeMoonfin": {
+    "description": "Media bar style option: Moonfin"
+  },
+  "mediaBarModeMakd": "MakD",
+  "@mediaBarModeMakd": {
+    "description": "Media bar style option: MakD"
+  },
+  "mediaBarModeOff": "Av",
+  "@mediaBarModeOff": {
+    "description": "Media bar style option: Off"
+  },
   "enableMediaBar": "Enable Media Bar",
   "@enableMediaBar": {
     "description": "Setting for enabling media bar"

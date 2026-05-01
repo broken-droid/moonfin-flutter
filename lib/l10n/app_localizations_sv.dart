@@ -2528,6 +2528,22 @@ class AppLocalizationsSv extends AppLocalizations {
   String get mediaBar => 'Media Bar';
 
   @override
+  String get mediaBarMode => 'Mediefaltsstil';
+
+  @override
+  String get mediaBarModeDescription =>
+      'Valj mellan Moonfin, MakD eller stang av mediefaltet';
+
+  @override
+  String get mediaBarModeMoonfin => 'Moonfin';
+
+  @override
+  String get mediaBarModeMakd => 'MakD';
+
+  @override
+  String get mediaBarModeOff => 'Av';
+
+  @override
   String get enableMediaBar => 'Enable Media Bar';
 
   @override

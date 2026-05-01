@@ -405,7 +405,7 @@ class PluginSyncService extends ChangeNotifier {
     _applyString(
         resolved, 'seasonalSurprise', UserPreferences.seasonalSurprise);
 
-    _applyBool(resolved, 'mediaBarEnabled', UserPreferences.mediaBarEnabled);
+    _applyMediaBarMode(resolved);
     _applyString(resolved, 'mediaBarSourceType',
         UserPreferences.mediaBarContentType);
     _applyInt(
@@ -635,6 +635,30 @@ class PluginSyncService extends ChangeNotifier {
     }
   }
 
+  void _applyMediaBarMode(Map<String, dynamic> data) {
+    final modeFromServer = _readString(data, 'mediaBarMode');
+    if (modeFromServer != null && modeFromServer.trim().isNotEmpty) {
+      final normalized = UserPreferences.normalizeMediaBarMode(modeFromServer);
+      _store.set(UserPreferences.mediaBarMode, normalized);
+      _store.set(
+        UserPreferences.mediaBarEnabled,
+        UserPreferences.isMediaBarModeEnabled(normalized),
+      );
+      return;
+    }
+
+    final legacyEnabled = _readBool(data, 'mediaBarEnabled');
+    if (legacyEnabled != null) {
+      _store.set(UserPreferences.mediaBarEnabled, legacyEnabled);
+      _store.set(
+        UserPreferences.mediaBarMode,
+        legacyEnabled
+            ? UserPreferences.mediaBarModeMoonfin
+            : UserPreferences.mediaBarModeOff,
+      );
+    }
+  }
+
   List<String> _csvToList(Preference<String> pref) {
     return _prefs
         .get(pref)
@@ -644,6 +668,10 @@ class PluginSyncService extends ChangeNotifier {
   }
 
   Map<String, dynamic> _buildProfileFromLocal() {
+    final mediaBarMode = UserPreferences.normalizeMediaBarMode(
+      _prefs.get(UserPreferences.mediaBarMode),
+    );
+    final mediaBarEnabled = UserPreferences.isMediaBarModeEnabled(mediaBarMode);
     return {
       'visualTheme': _prefs.get(UserPreferences.visualTheme).name,
       'navbarPosition': _prefs.get(UserPreferences.navbarPosition).name,
@@ -662,7 +690,8 @@ class PluginSyncService extends ChangeNotifier {
           _prefs.get(UserPreferences.enableMultiServerLibraries),
       'enableFolderView': _prefs.get(UserPreferences.enableFolderView),
       'seasonalSurprise': _prefs.get(UserPreferences.seasonalSurprise),
-      'mediaBarEnabled': _prefs.get(UserPreferences.mediaBarEnabled),
+      'mediaBarEnabled': mediaBarEnabled,
+      'mediaBarMode': mediaBarMode,
       'mediaBarSourceType': _prefs.get(UserPreferences.mediaBarContentType),
       'mediaBarItemCount':
           int.tryParse(_prefs.get(UserPreferences.mediaBarItemCount)) ?? 10,

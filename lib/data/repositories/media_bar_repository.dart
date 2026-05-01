@@ -24,7 +24,8 @@ class MediaBarRepository {
   MediaBarRepository(this._client, this._prefs);
 
   Future<MediaBarState> loadItems() async {
-    if (!_prefs.get(UserPreferences.mediaBarEnabled)) {
+    final mediaBarMode = _prefs.get(UserPreferences.mediaBarMode);
+    if (!UserPreferences.isMediaBarModeEnabled(mediaBarMode)) {
       return const MediaBarDisabled();
     }
 

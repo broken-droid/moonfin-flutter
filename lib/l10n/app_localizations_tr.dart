@@ -2528,6 +2528,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get mediaBar => 'Media Bar';
 
   @override
+  String get mediaBarMode => 'Medya Cubugu Stili';
+
+  @override
+  String get mediaBarModeDescription =>
+      'Moonfin, MakD arasindan secin veya medya cubugunu kapatin';
+
+  @override
+  String get mediaBarModeMoonfin => 'Moonfin';
+
+  @override
+  String get mediaBarModeMakd => 'MakD';
+
+  @override
+  String get mediaBarModeOff => 'Kapali';
+
+  @override
   String get enableMediaBar => 'Enable Media Bar';
 
   @override
