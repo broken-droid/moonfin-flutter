@@ -25,6 +25,8 @@ class FolderBrowseScreen extends StatefulWidget {
 class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
   late final FolderBrowseViewModel _vm;
   final _scrollController = ScrollController();
+  DateTime? _lastItemTapAt;
+  String? _lastTappedItemId;
 
   @override
   void initState() {
@@ -97,11 +99,26 @@ class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
   }
 
   void _onItemTap(AggregatedItem item) {
+    final now = DateTime.now();
+    final isDuplicateTap =
+        _lastTappedItemId == item.id &&
+        _lastItemTapAt != null &&
+        now.difference(_lastItemTapAt!) < const Duration(milliseconds: 500);
+    if (isDuplicateTap) return;
+    _lastTappedItemId = item.id;
+    _lastItemTapAt = now;
+
     if (_vm.isNavigableFolder(item)) {
       _scrollController.jumpTo(0);
       _vm.enterFolder(item);
     } else {
-      context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type));
+      context.push(
+        Destinations.itemOrPhoto(
+          item.id,
+          serverId: item.serverId,
+          type: item.type,
+        ),
+      );
     }
   }
 

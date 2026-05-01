@@ -471,6 +471,7 @@ class _ContentRowsState extends State<_ContentRows>
   bool _infoRevealed = false;
   bool _mediaBarVisible = true;
   bool _initialFocusResolved = false;
+  bool _hasEverFocusedHomeContent = false;
   String? _lastObservedPath;
   bool _suppressNextRowPreviewFromMediaBar = false;
   bool _forceRevealOnNextRowFocusFromMediaBar = false;
@@ -584,7 +585,36 @@ class _ContentRowsState extends State<_ContentRows>
     // user's previous focus in place.
     if (!wasOnHome) {
       _initialFocusResolved = false;
+      _hasEverFocusedHomeContent = false;
     }
+  }
+
+  bool _shouldRepairInitialFocusAfterMediaBarSync() {
+    if (!_initialFocusResolved) return false;
+    if (_hasEverFocusedHomeContent) return false;
+    if (_isMediaBarIncluded()) return false;
+    if (!_isHomeRouteActive()) return false;
+    if (SettingsPanel.isOpenNotifier.value) return false;
+    if (_activeFocusedRowIndex != null) return false;
+
+    final primary = FocusManager.instance.primaryFocus;
+    final primaryContext = primary?.context;
+    if (primary == null || primaryContext == null) {
+      return true;
+    }
+
+    final box = primaryContext.findRenderObject();
+    if (box is! RenderBox) {
+      return true;
+    }
+
+    final global = box.localToGlobal(Offset.zero);
+    final navbarPosition = widget.prefs.get(UserPreferences.navbarPosition);
+    final isTopNavbarFocus =
+        navbarPosition == NavbarPosition.top && global.dy < 140;
+    final isLeftSidebarFocus =
+        navbarPosition == NavbarPosition.left && global.dx < 240;
+    return isTopNavbarFocus || isLeftSidebarFocus;
   }
 
   static bool _supportsEpisodePreview(AggregatedItem item) {
@@ -1257,7 +1287,13 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   void _ensureInitialHomeFocus(List<HomeRow> rows, {int attempt = 0}) {
-    if (_initialFocusResolved || !mounted) {
+    if (!mounted) {
+      return;
+    }
+    if (_shouldRepairInitialFocusAfterMediaBarSync()) {
+      _initialFocusResolved = false;
+    }
+    if (_initialFocusResolved) {
       return;
     }
     if (!_isHomeRouteActive()) return;
@@ -1479,6 +1515,7 @@ class _ContentRowsState extends State<_ContentRows>
   void _onRowFocusTracked(int rowIndex, bool focused) {
     if (!mounted) return;
     if (focused) {
+      _hasEverFocusedHomeContent = true;
       if (_activeFocusedRowIndex != rowIndex && _activePreviewKey != null) {
         _finishSharedPreview();
       }

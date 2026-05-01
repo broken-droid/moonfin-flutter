@@ -27,6 +27,7 @@ import 'util/focus/dpad_keys.dart';
 import 'util/fullscreen_helper.dart';
 import 'util/focus/input_mode_tracker.dart';
 import 'util/platform_detection.dart';
+import 'ui/widgets/overlay_sheet.dart';
 
 class MoonfinApp extends StatefulWidget {
   const MoonfinApp({super.key});
@@ -139,7 +140,8 @@ class _GlobalShortcutScope extends StatefulWidget {
   State<_GlobalShortcutScope> createState() => _GlobalShortcutScopeState();
 }
 
-class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowListener {
+class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
+    with WindowListener, WidgetsBindingObserver {
   final FocusNode _focusNode = FocusNode(debugLabel: 'GlobalShortcutScope');
   late final KeyEventCallback _hardwareKeyHandler;
   Timer? _geometrySaveTimer;
@@ -150,9 +152,28 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
     super.initState();
     _hardwareKeyHandler = _onHardwareKeyEvent;
     HardwareKeyboard.instance.addHandler(_hardwareKeyHandler);
+    WidgetsBinding.instance.addObserver(this);
     if (PlatformDetection.isDesktop) {
       windowManager.addListener(this);
     }
+  }
+
+  @override
+  Future<bool> didPopRoute() async {
+    if (DialogBackSuppressor.consume()) return true;
+    if (_isPlayerRoute()) return false;
+    final navigatorState = appRouter.routerDelegate.navigatorKey.currentState;
+    if (navigatorState == null) return false;
+    bool hasPagelessRouteOnTop = false;
+    navigatorState.popUntil((route) {
+      hasPagelessRouteOnTop = route.settings is! Page;
+      return true;
+    });
+    if (hasPagelessRouteOnTop) {
+      await navigatorState.maybePop();
+      return true;
+    }
+    return false;
   }
 
   bool _isPlayerRoute() {
@@ -244,6 +265,7 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope> with WindowL
     if (PlatformDetection.isDesktop) {
       windowManager.removeListener(this);
     }
+    WidgetsBinding.instance.removeObserver(this);
     HardwareKeyboard.instance.removeHandler(_hardwareKeyHandler);
     _focusNode.dispose();
     super.dispose();

@@ -15,9 +15,11 @@ Future<T?> showStyledPlayerDialog<T>(
   Widget? footer,
   bool showCancel = false,
   double maxWidth = 440,
+  bool useRootNavigator = true,
 }) {
   return showFocusRestoringDialog<T>(
     context: context,
+    useRootNavigator: useRootNavigator,
     builder: (dialogContext) {
       final mediaQuery = MediaQuery.of(dialogContext);
       final maxDialogHeight = mediaQuery.size.height -
@@ -108,12 +110,14 @@ class TrackSelectorDialog {
     required List<TrackOption> options,
     int? selectedIndex,
     Widget? footer,
+    bool useRootNavigator = true,
   }) {
     return showStyledPlayerDialog<int>(
       context,
       title: title,
       footer: footer,
       showCancel: true,
+      useRootNavigator: useRootNavigator,
       builder: (dialogCtx) => ListView.builder(
         shrinkWrap: true,
         itemCount: options.length,

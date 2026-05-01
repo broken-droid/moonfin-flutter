@@ -6,6 +6,25 @@ import 'package:flutter/services.dart';
 import '../../util/focus/dpad_keys.dart';
 import 'focus/focus_theme.dart';
 
+// Tracks dialogs closed by the back key. Android also sends a popRoute
+// MethodChannel event after the key event fires, so we suppress that second
+// event in didPopRoute() to prevent GoRouter from also popping the page.
+class DialogBackSuppressor {
+  DialogBackSuppressor._();
+
+  static int _count = 0;
+
+  static void markDismissed() => _count++;
+
+  static bool consume() {
+    if (_count > 0) {
+      _count--;
+      return true;
+    }
+    return false;
+  }
+}
+
 /// Drop-in replacement for [showDialog] that captures the currently focused
 /// node before opening and restores focus to it after the dialog closes.
 /// Use this everywhere [showDialog] is called from a TV-facing screen so
@@ -30,6 +49,7 @@ Future<T?> showFocusRestoringDialog<T>({
       onKeyEvent: (node, event) {
         if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
         if (event is KeyDownEvent) {
+          DialogBackSuppressor.markDismissed();
           Navigator.of(dialogContext).pop();
           return KeyEventResult.handled;
         }

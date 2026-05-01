@@ -94,6 +94,7 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
     _nameController.clear();
     showFocusRestoringDialog(
       context: context,
+      useRootNavigator: false,
       builder: (ctx) {
         final insets = MediaQuery.of(ctx).viewInsets;
         return Dialog(
