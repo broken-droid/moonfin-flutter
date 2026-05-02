@@ -647,7 +647,6 @@ Widget _radioCircle(bool selected) {
   );
 }
 
-class _FavoritesStatusBar extends StatelessWidget {
 class _SortDialog extends StatefulWidget {
   final FavoritesViewModel vm;
 

@@ -4742,7 +4742,6 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
   }
 }
 
-class _LibraryStatusBar extends StatelessWidget {
 class _FilterSortDialog extends StatefulWidget {
   final LibraryBrowseViewModel vm;
 

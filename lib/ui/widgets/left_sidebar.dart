@@ -72,7 +72,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   Timer? _labelTimer;
   Timer? _focusExpandGateTimer;
   Timer? _focusHomeTimer;
-  String _currentTime = '';
+  late final ValueNotifier<String> _currentTime;
   StreamSubscription? _userSub;
   String? _userImageUrl;
   FocusNode? _previousFocus;
@@ -82,6 +82,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   @override
   void initState() {
     super.initState();
+    _currentTime = ValueNotifier<String>('');
     _focusNavbarCallback = () => _homeFocusNode.requestFocus();
     _previousFocusNavbarCallback = NavigationLayout.focusNavbarNotifier.value;
     NavigationLayout.focusNavbarNotifier.value = _focusNavbarCallback;
@@ -125,6 +126,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _scrollController.dispose();
     _userSub?.cancel();
     _prefs.removeListener(_onPrefsChanged);
+    _currentTime.dispose();
     super.dispose();
   }
 
@@ -138,15 +140,19 @@ class _LeftSidebarState extends State<LeftSidebar> {
     final now = DateTime.now();
     final use24 = _prefs.get(UserPreferences.use24HourClock);
     final minute = now.minute.toString().padLeft(2, '0');
+    String newTime;
     if (use24) {
       final hour = now.hour.toString().padLeft(2, '0');
-      if (mounted) setState(() => _currentTime = '$hour:$minute');
+      newTime = '$hour:$minute';
     } else {
       final hour = now.hour > 12
           ? now.hour - 12
           : (now.hour == 0 ? 12 : now.hour);
       final period = now.hour >= 12 ? 'PM' : 'AM';
-      if (mounted) setState(() => _currentTime = '$hour:$minute $period');
+      newTime = '$hour:$minute $period';
+    }
+    if (mounted && _currentTime.value != newTime) {
+      _currentTime.value = newTime;
     }
   }
 
@@ -181,8 +187,18 @@ class _LeftSidebarState extends State<LeftSidebar> {
         }
       } catch (_) {}
 
-      if (mounted) setState(() => _libraries = filtered);
+      if (mounted && !_librariesEqual(_libraries, filtered)) {
+        setState(() => _libraries = filtered);
+      }
     } catch (_) {}
+  }
+
+  bool _librariesEqual(List<AggregatedLibrary> a, List<AggregatedLibrary> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i].id != b[i].id) return false;
+    }
+    return true;
   }
 
   Color _overlayColor() {
@@ -695,6 +711,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                             children: _libraries
                                 .map(
                                   (lib) => _SidebarLibraryItem(
+                                    key: ObjectKey(lib.id),
                                     label: lib.name,
                                     baseColor: nextSidebarColor(),
                                     showLabel: _showLabels,
@@ -760,14 +777,19 @@ class _LeftSidebarState extends State<LeftSidebar> {
         if (showClock && _showLabels)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              _currentTime,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.5),
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
+            child: ValueListenableBuilder<String>(
+              valueListenable: _currentTime,
+              builder: (context, time, _) {
+                return Text(
+                  time,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                );
+              },
             ),
           ),
         SizedBox(height: showClock && _showLabels ? 8 : 16),
@@ -1041,6 +1063,7 @@ class _SidebarLibraryItem extends StatefulWidget {
   final Color? baseColor;
 
   const _SidebarLibraryItem({
+    super.key,
     required this.label,
     required this.showLabel,
     required this.onPressed,

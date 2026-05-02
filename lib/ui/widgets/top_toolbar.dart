@@ -80,13 +80,14 @@ class _TopToolbarState extends State<TopToolbar> {
   FocusNode? _previousFocus;
   List<AggregatedLibrary> _libraries = [];
   Timer? _clockTimer;
-  String _currentTime = '';
+  late final ValueNotifier<String> _currentTime;
   StreamSubscription? _userSub;
   String? _userImageUrl;
 
   @override
   void initState() {
     super.initState();
+    _currentTime = ValueNotifier<String>('');
     _focusNavbarCallback = () => _homeFocus.requestFocus();
     _previousFocusNavbarCallback = NavigationLayout.focusNavbarNotifier.value;
     NavigationLayout.focusNavbarNotifier.value = _focusNavbarCallback;
@@ -121,6 +122,7 @@ class _TopToolbarState extends State<TopToolbar> {
     _inlineLibrariesTriggerFocus.dispose();
     _userSub?.cancel();
     _prefs.removeListener(_onPrefsChanged);
+    _currentTime.dispose();
     super.dispose();
   }
 
@@ -169,15 +171,19 @@ class _TopToolbarState extends State<TopToolbar> {
     final now = DateTime.now();
     final use24 = _prefs.get(UserPreferences.use24HourClock);
     final minute = now.minute.toString().padLeft(2, '0');
+    String newTime;
     if (use24) {
       final hour = now.hour.toString().padLeft(2, '0');
-      if (mounted) setState(() => _currentTime = '$hour:$minute');
+      newTime = '$hour:$minute';
     } else {
       final hour = now.hour > 12
           ? now.hour - 12
           : (now.hour == 0 ? 12 : now.hour);
       final period = now.hour >= 12 ? 'PM' : 'AM';
-      if (mounted) setState(() => _currentTime = '$hour:$minute $period');
+      newTime = '$hour:$minute $period';
+    }
+    if (mounted && _currentTime.value != newTime) {
+      _currentTime.value = newTime;
     }
   }
 
@@ -212,8 +218,18 @@ class _TopToolbarState extends State<TopToolbar> {
         }
       } catch (_) {}
 
-      if (mounted) setState(() => _libraries = filtered);
+      if (mounted && !_librariesEqual(_libraries, filtered)) {
+        setState(() => _libraries = filtered);
+      }
     } catch (_) {}
+  }
+
+  bool _librariesEqual(List<AggregatedLibrary> a, List<AggregatedLibrary> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i].id != b[i].id) return false;
+    }
+    return true;
   }
 
   void _trackPreviousFocus() {
@@ -799,18 +815,23 @@ class _TopToolbarState extends State<TopToolbar> {
 
     if (!showClock) return const SizedBox.shrink();
 
-    return Text(
-      _currentTime,
-      style: TextStyle(
-        color: isNeon
-            ? AppColorScheme.onSurface
-            : Colors.white.withValues(alpha: 0.9),
-        fontSize: 22,
-        fontWeight: FontWeight.w500,
-        shadows: isNeon
-            ? const [Shadow(color: Color(0x6600E5FF), blurRadius: 8)]
-            : null,
-      ),
+    return ValueListenableBuilder<String>(
+      valueListenable: _currentTime,
+      builder: (context, time, _) {
+        return Text(
+          time,
+          style: TextStyle(
+            color: isNeon
+                ? AppColorScheme.onSurface
+                : Colors.white.withValues(alpha: 0.9),
+            fontSize: 22,
+            fontWeight: FontWeight.w500,
+            shadows: isNeon
+                ? const [Shadow(color: Color(0x6600E5FF), blurRadius: 8)]
+                : null,
+          ),
+        );
+      },
     );
   }
 
