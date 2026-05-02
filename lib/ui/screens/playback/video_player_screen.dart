@@ -806,6 +806,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _tryStartIosPiPForBackground();
           return;
         }
+        if (PlatformDetection.isAndroid && !PlatformDetection.isTV) {
+          return;
+        }
         if (PlatformDetection.isTV || PlatformDetection.isDesktop || PlatformDetection.isWeb) {
           return;
         }
@@ -814,6 +817,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _backend.setVideoEnabled(false);
       case AppLifecycleState.paused:
       case AppLifecycleState.hidden:
+        if (PlatformDetection.isAndroid && !PlatformDetection.isTV) {
+          return;
+        }
         if (PlatformDetection.isTV) {
           if (_isTvLifecycleExitSuppressed()) return;
           if (_didHandleBackgroundSuspend) return;
@@ -915,6 +921,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       case 'pause':
         _manager.pause();
       case 'dismissed':
+        final lifecycle = WidgetsBinding.instance.lifecycleState;
+        final isForeground = lifecycle == AppLifecycleState.resumed ||
+            lifecycle == AppLifecycleState.inactive;
+        if (PlatformDetection.isAndroid && isForeground) {
+          return;
+        }
         _exitPlayback();
     }
   }
@@ -1642,7 +1654,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           height: constraints.maxHeight,
           fit: _zoomToFit(_zoomMode),
           fill: Colors.black,
-          pauseUponEnteringBackgroundMode: !PlatformDetection.isIOS,
+          pauseUponEnteringBackgroundMode:
+              !PlatformDetection.isIOS && !PlatformDetection.isAndroid,
           subtitleViewConfiguration: _buildSubtitleConfig(),
         ),
       ),

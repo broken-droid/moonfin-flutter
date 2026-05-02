@@ -319,12 +319,24 @@ class MainActivity : AudioServiceActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (pipEnabled &&
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.S
-        ) {
-            enterPictureInPictureMode(buildPiPParams(true))
-        }
+        requestEnterPiPIfEligible()
+    }
+
+    override fun onPictureInPictureRequested(): Boolean {
+        return requestEnterPiPIfEligible()
+    }
+
+    private fun requestEnterPiPIfEligible(): Boolean {
+        val hasPiPFeature = packageManager.hasSystemFeature(
+            android.content.pm.PackageManager.FEATURE_PICTURE_IN_PICTURE,
+        )
+        if (!pipEnabled) return false
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return false
+        if (!hasPiPFeature) return false
+        if (isInPictureInPictureMode) return true
+        if (isFinishing || isDestroyed) return false
+        val result = enterPictureInPictureMode(buildPiPParams(true))
+        return result
     }
 
     override fun onPictureInPictureModeChanged(
