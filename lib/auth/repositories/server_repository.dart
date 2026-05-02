@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 import 'package:server_core/server_core.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,6 +14,7 @@ import '../store/authentication_store.dart';
 class ServerRepository {
   final AuthenticationStore _authStore;
   final MediaServerClientFactory _clientFactory;
+  final _logger = Logger();
 
   final List<Server> _servers = [];
   final _stateController = StreamController<ServerAdditionState>.broadcast();
@@ -46,16 +48,23 @@ class ServerRepository {
   }
 
   Future<Server?> addServer(String address) async {
+    final rawAddress = address;
     address = normalizeServerBaseUrl(address.trim());
-    if (address.isEmpty) return null;
+    if (address.isEmpty) {
+      _logger.w('addServer skipped: empty address after normalization. raw=$rawAddress');
+      return null;
+    }
 
     final candidates = _buildCandidates(address);
+    _logger.i('addServer start: raw=$rawAddress normalized=$address candidates=$candidates');
     _stateController.add(ServerConnecting(address: address));
 
     for (final candidate in candidates) {
       try {
+        _logger.i('addServer probe candidate: $candidate');
         final (info, serverType, resolvedUrl) = await _probeServer(candidate);
         final serverAddress = resolvedUrl.isNotEmpty ? resolvedUrl : candidate;
+        _logger.i('addServer probe success: candidate=$candidate resolved=$serverAddress type=$serverType version=${info['Version']}');
 
         final existingIndex =
             _servers.indexWhere((s) => s.address == serverAddress);
@@ -72,6 +81,7 @@ class ServerRepository {
           _stateController.add(
             ServerConnected(id: updated.id, publicInfo: info),
           );
+          _logger.i('addServer reused existing server id=${updated.id} address=${updated.address}');
           return updated;
         }
 
@@ -89,10 +99,18 @@ class ServerRepository {
         await _authStore.putServer(server);
         _servers.add(server);
         _stateController.add(ServerConnected(id: server.id, publicInfo: info));
+        _logger.i('addServer added new server id=${server.id} address=${server.address}');
         return server;
-      } catch (_) {}
+      } on DioException catch (e) {
+        final status = e.response?.statusCode;
+        final detail = e.response?.data?.toString() ?? e.message ?? e.error?.toString();
+        _logger.w('addServer probe failed: candidate=$candidate status=$status type=${e.type.name} detail=$detail');
+      } catch (e) {
+        _logger.w('addServer probe failed: candidate=$candidate error=$e');
+      }
     }
 
+    _logger.w('addServer failed: no candidate succeeded for normalized=$address candidates=$candidates');
     _stateController.add(ServerUnableToConnect(candidatesTried: candidates));
     return null;
   }
@@ -124,7 +142,9 @@ class ServerRepository {
 
     try {
       var requestUrl = '$baseUrl/System/Info/Public';
+      _logger.i('_probeServer request: $requestUrl');
       var response = await dio.get(requestUrl);
+      _logger.i('_probeServer response: status=${response.statusCode} url=$requestUrl');
 
       var redirects = 0;
       while (response.statusCode != null &&
@@ -132,8 +152,10 @@ class ServerRepository {
           redirects < 5) {
         final location = response.headers.value('location');
         if (location == null || location.isEmpty) break;
+        _logger.i('_probeServer redirect: from=$requestUrl to=$location');
         requestUrl = Uri.parse(requestUrl).resolve(location).toString();
         response = await dio.get(requestUrl);
+        _logger.i('_probeServer redirected response: status=${response.statusCode} url=$requestUrl');
         redirects++;
       }
 

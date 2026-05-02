@@ -15,6 +15,7 @@ import '../../../auth/repositories/auth_repository.dart';
 import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/repositories/session_repository.dart';
 import '../../../data/services/media_server_client_factory.dart';
+import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
@@ -121,6 +122,18 @@ class _LoginScreenState extends State<LoginScreen> {
   ) {
     if (!PlatformDetection.isTV || _isLoading) return false;
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
+    if (event.logicalKey.isBackKey) {
+      final tvFieldKey =
+          focusNode == _usernameFocus
+              ? _usernameTvFieldKey
+              : _passwordTvFieldKey;
+      if (event is KeyDownEvent &&
+          (tvFieldKey.currentState?.isKeyboardVisible ?? false)) {
+        tvFieldKey.currentState?.closeKeyboard();
+        return true;
+      }
+      return false;
+    }
     if (event.logicalKey == LogicalKeyboardKey.enter ||
         event.logicalKey == LogicalKeyboardKey.select) {
       if (!focusNode.hasFocus) focusNode.requestFocus();
@@ -327,40 +340,56 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final result = await _authRepo.authenticate(
-      client: _client!,
-      serverId: _server!.id,
-      username: username,
-      password: _passwordController.text,
-    );
+    try {
+      final result = await _authRepo.authenticate(
+        client: _client!,
+        serverId: _server!.id,
+        username: username,
+        password: _passwordController.text,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    final l10n = AppLocalizations.of(context);
-    switch (result) {
-      case Authenticated():
-        await _sessionRepo.switchCurrentSession(
-          serverId: result.serverId,
-          userId: result.userId,
-          username: username,
-          password: _passwordController.text,
-        );
-        if (mounted) context.go(Destinations.home);
-      case ApiClientError(:final error):
-        setState(() {
-          _isLoading = false;
-          _errorMessage = error;
-        });
-      case ServerUnavailable():
-        setState(() {
-          _isLoading = false;
-          _errorMessage = l10n.serverUnavailable;
-        });
-      default:
-        setState(() {
-          _isLoading = false;
-          _errorMessage = l10n.loginFailed;
-        });
+      final l10n = AppLocalizations.of(context);
+      switch (result) {
+        case Authenticated():
+          final switched = await _sessionRepo.switchCurrentSession(
+            serverId: result.serverId,
+            userId: result.userId,
+            username: username,
+            password: _passwordController.text,
+          );
+          if (!mounted) return;
+          if (switched) {
+            context.go(Destinations.home);
+            return;
+          }
+          setState(() {
+            _isLoading = false;
+            _errorMessage = l10n.loginFailed;
+          });
+        case ApiClientError(:final error):
+          setState(() {
+            _isLoading = false;
+            _errorMessage = error;
+          });
+        case ServerUnavailable():
+          setState(() {
+            _isLoading = false;
+            _errorMessage = l10n.serverUnavailable;
+          });
+        default:
+          setState(() {
+            _isLoading = false;
+            _errorMessage = l10n.loginFailed;
+          });
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = AppLocalizations.of(context).loginFailed;
+      });
     }
   }
 
@@ -654,6 +683,7 @@ class _LoginScreenState extends State<LoginScreen> {
               textFieldType: obscureText
                   ? TextFieldType.password
                   : TextFieldType.other,
+                popParentOnKeyboardClose: false,
               onFieldSubmitted: onSubmitted,
               onVisibilityChanged: (visible) =>
                   _handleTvKeyboardVisibility(visible, tvFieldKey),

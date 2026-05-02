@@ -27,9 +27,30 @@ class EmbyConnectService {
     required String password,
   }) async {
     final headers = {
-      'Content-Type': 'application/json',
       'X-Application': _applicationHeader,
     };
+
+    // Canonical Emby Connect auth flow: POST form data.
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/user/authenticate',
+        data: {
+          'nameOrEmail': username,
+          'rawpw': password,
+        },
+        options: Options(
+          headers: headers,
+          contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        ),
+      );
+
+      final data = response.data;
+      if (data != null) {
+        return EmbyConnectAuthResult.fromJson(data);
+      }
+    } on DioException catch (_) {
+      // Fall through to compatibility variants below.
+    }
 
     final queryVariants = <Map<String, String>>[
       {'nameOrEmail': username, 'rawpw': password},
@@ -137,17 +158,20 @@ class EmbyConnectService {
     try {
       for (final exchangeUri in _exchangeUris(serverAddress)) {
         try {
+          final queryUri = exchangeUri.replace(
+            queryParameters: {
+              ...exchangeUri.queryParameters,
+              'format': 'json',
+              'ConnectUserId': connectUserId,
+            },
+          );
+
           final response = await dio.getUri<Map<String, dynamic>>(
-            exchangeUri.replace(
-              queryParameters: {
-                ...exchangeUri.queryParameters,
-                'format': 'json',
-                'ConnectUserId': connectUserId,
-              },
-            ),
+            queryUri,
             options: Options(
               headers: {
                 'X-Emby-Token': accessKey,
+                'X-Application': _applicationHeader,
                 'X-Emby-Authorization': buildServerAuthorizationHeader(
                   scheme: 'Emby',
                   deviceInfo: _deviceInfo,
@@ -161,7 +185,10 @@ class EmbyConnectService {
             throw const FormatException('Invalid exchange response');
           }
 
-          return EmbyConnectExchangeResult.fromJson(data);
+          return EmbyConnectExchangeResult.fromJson(
+            data,
+            resolvedBaseUrl: _baseUrlFromExchangeUri(exchangeUri),
+          );
         } on DioException catch (e) {
           lastDioError = e;
           lastError = e;
@@ -183,12 +210,30 @@ class EmbyConnectService {
     final normalized = serverAddress.endsWith('/') ? serverAddress : '$serverAddress/';
     final base = Uri.parse(normalized);
 
-    // Keep any existing base path from Emby Connect (for example, /emby).
-    yield base.resolve('Connect/Exchange');
-
-    // Some servers expose exchange under /emby even when base path is root.
+    // Prefer Emby's canonical API base path first.
     final root = base.replace(path: '/', query: '', fragment: '');
     yield root.resolve('emby/Connect/Exchange');
+
+    // Keep any existing base path from Emby Connect (for example, /emby).
+    yield base.resolve('Connect/Exchange');
+  }
+
+  String _baseUrlFromExchangeUri(Uri exchangeUri) {
+    final path = exchangeUri.path;
+    const suffix = '/Connect/Exchange';
+    var basePath = path;
+    if (path.toLowerCase().endsWith(suffix.toLowerCase())) {
+      basePath = path.substring(0, path.length - suffix.length);
+    }
+    final trimmedPath = basePath.endsWith('/') && basePath.length > 1
+        ? basePath.substring(0, basePath.length - 1)
+        : basePath;
+    final base = exchangeUri.replace(
+      path: trimmedPath,
+      query: '',
+      fragment: '',
+    );
+    return base.toString();
   }
 }
 
@@ -282,16 +327,22 @@ class EmbyConnectServer {
 class EmbyConnectExchangeResult {
   final String localUserId;
   final String accessToken;
+  final String resolvedBaseUrl;
 
   const EmbyConnectExchangeResult({
     required this.localUserId,
     required this.accessToken,
+    required this.resolvedBaseUrl,
   });
 
-  factory EmbyConnectExchangeResult.fromJson(Map<String, dynamic> json) {
+  factory EmbyConnectExchangeResult.fromJson(
+    Map<String, dynamic> json, {
+    required String resolvedBaseUrl,
+  }) {
     return EmbyConnectExchangeResult(
       localUserId: json['LocalUserId'] as String? ?? '',
       accessToken: json['AccessToken'] as String? ?? '',
+      resolvedBaseUrl: resolvedBaseUrl,
     );
   }
 }

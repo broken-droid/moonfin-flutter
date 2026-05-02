@@ -12,6 +12,7 @@ import '../../../auth/store/authentication_store.dart';
 import '../../../data/services/emby_connect_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../util/platform_detection.dart';
+import '../../../util/focus/dpad_keys.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
 import '../../widgets/server_type_icon.dart';
@@ -151,9 +152,11 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
           continue;
         }
 
-        final connectedServer = await _serverRepo.addServer(address);
+        final connectedServer = await _serverRepo.addServer(
+          exchange.resolvedBaseUrl,
+        );
         if (connectedServer == null) {
-          lastError = l10n.unableToConnectTo(address);
+          lastError = l10n.unableToConnectTo(exchange.resolvedBaseUrl);
           continue;
         }
 
@@ -369,11 +372,23 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
     FocusNode? up,
     FocusNode? down,
   }) {
+    final tvFieldKey = identical(controller, _usernameController)
+        ? _usernameTvFieldKey
+        : _passwordTvFieldKey;
+
     return Focus(
       focusNode: focusNode,
       onKeyEvent: (node, event) {
         if (!PlatformDetection.isTV) return KeyEventResult.ignored;
         if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+          return KeyEventResult.ignored;
+        }
+        if (event.logicalKey.isBackKey) {
+          if (event is KeyDownEvent &&
+              (tvFieldKey.currentState?.isKeyboardVisible ?? false)) {
+            tvFieldKey.currentState?.closeKeyboard();
+            return KeyEventResult.handled;
+          }
           return KeyEventResult.ignored;
         }
         if (event.logicalKey == LogicalKeyboardKey.arrowUp && up != null) {
@@ -387,11 +402,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
         if (event.logicalKey == LogicalKeyboardKey.enter ||
             event.logicalKey == LogicalKeyboardKey.select) {
           if (!focusNode.hasFocus) focusNode.requestFocus();
-          if (identical(controller, _usernameController)) {
-            _usernameTvFieldKey.currentState?.openKeyboard();
-          } else {
-            _passwordTvFieldKey.currentState?.openKeyboard();
-          }
+          tvFieldKey.currentState?.openKeyboard();
           return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
@@ -402,9 +413,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
               builder: (_, _) {
                 final focused = focusNode.hasFocus;
                 return CustomTVTextField(
-                  key: identical(controller, _usernameController)
-                      ? _usernameTvFieldKey
-                      : _passwordTvFieldKey,
+                  key: tvFieldKey,
                   controller: controller,
                   isFocused: focused,
                   hint: label,
@@ -426,13 +435,12 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
                   textFieldType: isPassword
                       ? TextFieldType.password
                       : TextFieldType.other,
+                  popParentOnKeyboardClose: false,
                   onFieldSubmitted: isPassword ? (_) => _signIn() : null,
                   onVisibilityChanged: (visible) =>
                       _handleTvKeyboardVisibility(
                         visible,
-                        identical(controller, _usernameController)
-                            ? _usernameTvFieldKey
-                            : _passwordTvFieldKey,
+                        tvFieldKey,
                       ),
                 );
               },

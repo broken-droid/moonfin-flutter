@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../data/repositories/seerr_repository.dart';
+import '../../ui/widgets/navigation_layout.dart';
 import '../../preference/home_section_config.dart';
 import '../../preference/preference_constants.dart' as prefs;
 import '../../preference/seerr_preferences.dart';
@@ -237,11 +239,15 @@ class PluginSyncService extends ChangeNotifier {
       await _prefs.set(syncInitializedPref, true);
 
       if (availability != _PluginAvailabilityStatus.available) {
+        await _applyFallbackHomeRows();
         return;
       }
 
       final resolved = await _fetchResolvedProfile(client, _profileName);
-      if (resolved == null) return;
+      if (resolved == null) {
+        await _applyFallbackHomeRows();
+        return;
+      }
 
       await _prefs.set(UserPreferences.pluginSyncEnabled, true);
 
@@ -532,6 +538,12 @@ class PluginSyncService extends ChangeNotifier {
     }
 
     _prefs.notifyPreferenceChanged();
+
+    // Force navigation layout to rebuild with new position preference
+    final navbarPos = _prefs.get(UserPreferences.navbarPosition);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      NavigationLayout.positionNotifier.value = navbarPos;
+    });
   }
 
   Future<void> _applyFallbackHomeRows({

@@ -3,15 +3,15 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
+import '../../../auth/models/login_state.dart';
 import '../../../auth/models/server.dart';
 import '../../../auth/repositories/auth_repository.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/repositories/server_user_repository.dart';
 import '../../../auth/repositories/session_repository.dart';
-import '../../../auth/models/login_state.dart';
 import '../../../auth/store/authentication_preferences.dart';
 import '../../../data/services/media_server_client_factory.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../util/pin_code_util.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
@@ -36,6 +36,7 @@ class _ServerScreenState extends State<ServerScreen> {
   Server? _server;
   List<_MergedUser> _users = [];
   bool _isLoading = true;
+  String? _errorMessage;
   final _scrollController = ScrollController();
   final List<FocusNode> _userFocusNodes = [];
 
@@ -46,36 +47,59 @@ class _ServerScreenState extends State<ServerScreen> {
   }
 
   Future<void> _load() async {
-    await _serverRepo.loadStoredServers();
-    final server = _serverRepo.getServer(widget.serverId);
-    if (server == null) {
-      if (mounted) context.go(Destinations.serverSelect);
-      return;
-    }
+    try {
+      await _serverRepo.loadStoredServers();
+      final server = _serverRepo.getServer(widget.serverId);
+      if (server == null) {
+        if (mounted) context.go(Destinations.serverSelect);
+        return;
+      }
 
-    final stored = _userRepo.getStoredServerUsers(server.id);
-    final publicUsers = await _userRepo.getPublicServerUsers(server);
+      final stored = _userRepo.getStoredServerUsers(server.id);
+      final publicUsers = await _userRepo.getPublicServerUsers(server);
 
-    final merged = <String, _MergedUser>{};
-    for (final u in stored) {
-      merged[u.id] = _MergedUser(id: u.id, name: u.name, imageTag: u.imageTag, hasToken: true, hasPassword: true);
-    }
-    for (final u in publicUsers) {
-      merged.putIfAbsent(u.id, () => _MergedUser(id: u.id, name: u.name, imageTag: u.imageTag, hasToken: false, hasPassword: u.hasPassword));
-    }
+      final merged = <String, _MergedUser>{};
+      for (final u in stored) {
+        merged[u.id] = _MergedUser(
+          id: u.id,
+          name: u.name,
+          imageTag: u.imageTag,
+          hasToken: true,
+          hasPassword: true,
+        );
+      }
+      for (final u in publicUsers) {
+        merged.putIfAbsent(
+          u.id,
+          () => _MergedUser(
+            id: u.id,
+            name: u.name,
+            imageTag: u.imageTag,
+            hasToken: false,
+            hasPassword: u.hasPassword,
+          ),
+        );
+      }
 
-    if (mounted) {
+      if (mounted && merged.isEmpty) {
+        context.go('${Destinations.login}?serverId=${server.id}');
+        return;
+      }
+
+      if (!mounted) return;
       for (final node in _userFocusNodes) {
         node.dispose();
       }
       final allUsers = merged.values.toList();
-      _userFocusNodes.clear();
-      _userFocusNodes.addAll(List.generate(allUsers.length, (_) => FocusNode()));
+      _userFocusNodes
+        ..clear()
+        ..addAll(List.generate(allUsers.length, (_) => FocusNode()));
 
       setState(() {
         _server = server;
         _users = allUsers;
         _isLoading = false;
+        _errorMessage = null;
       });
 
       if (allUsers.isNotEmpty) {
@@ -85,11 +109,19 @@ class _ServerScreenState extends State<ServerScreen> {
           }
         });
       }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = AppLocalizations.of(context).unableToConnectToServer;
+      });
     }
   }
 
   Future<void> _onUserTap(_MergedUser user) async {
-    final server = _server!;
+    final server = _server;
+    if (server == null) return;
+
     final store = GetIt.instance<PreferenceStore>();
     final pinUtil = PinCodeUtil(store, user.id);
 
@@ -100,7 +132,9 @@ class _ServerScreenState extends State<ServerScreen> {
         onVerify: pinUtil.verifyPin,
         onForgotPin: () {
           if (mounted) {
-            context.go('${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}');
+            context.go(
+              '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
+            );
           }
         },
       );
@@ -111,14 +145,24 @@ class _ServerScreenState extends State<ServerScreen> {
         GetIt.instance<AuthenticationPreferences>().shouldAlwaysAuthenticate;
 
     if (user.hasToken && !alwaysAuthenticate) {
-      final success = await _sessionRepo.switchCurrentSession(
-        serverId: server.id,
-        userId: user.id,
-      );
-      if (success && mounted) {
-        context.go(Destinations.home);
-        return;
+      try {
+        final success = await _sessionRepo.switchCurrentSession(
+          serverId: server.id,
+          userId: user.id,
+        );
+        if (success && mounted) {
+          context.go(Destinations.home);
+          return;
+        }
+      } catch (e) {
+        // fall through to login
       }
+      if (mounted) {
+        context.go(
+          '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
+        );
+      }
+      return;
     }
 
     if (!user.hasPassword && !alwaysAuthenticate) {
@@ -127,21 +171,38 @@ class _ServerScreenState extends State<ServerScreen> {
         serverType: server.serverType,
         baseUrl: server.address,
       );
-      final result = await _authRepo.authenticate(
-        client: client,
-        serverId: server.id,
-        username: user.name,
-        password: '',
-      );
-      if (result is Authenticated && mounted) {
-        await _sessionRepo.switchCurrentSession(serverId: server.id, userId: result.userId);
-        if (mounted) context.go(Destinations.home);
-        return;
+      try {
+        final result = await _authRepo.authenticate(
+          client: client,
+          serverId: server.id,
+          username: user.name,
+          password: '',
+        );
+        if (result is Authenticated && mounted) {
+          final switched = await _sessionRepo.switchCurrentSession(
+            serverId: server.id,
+            userId: result.userId,
+          );
+          if (switched && mounted) {
+            context.go(Destinations.home);
+            return;
+          }
+        }
+      } catch (e) {
+        // fall through to login
       }
+      if (mounted) {
+        context.go(
+          '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
+        );
+      }
+      return;
     }
 
     if (mounted) {
-      context.go('${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}');
+      context.go(
+        '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
+      );
     }
   }
 
@@ -151,7 +212,18 @@ class _ServerScreenState extends State<ServerScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final server = _server!;
+    final server = _server;
+    if (server == null) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            _errorMessage ?? AppLocalizations.of(context).unableToConnectToServer,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
     final l10n = AppLocalizations.of(context);
     return LoginScaffold(
       header: Padding(
@@ -170,9 +242,12 @@ class _ServerScreenState extends State<ServerScreen> {
           const SizedBox(height: 16),
           Text(
             l10n.whosWatching,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
-          if (server.loginDisclaimer != null && server.loginDisclaimer!.isNotEmpty) ...[
+          if (server.loginDisclaimer != null &&
+              server.loginDisclaimer!.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
               server.loginDisclaimer!,
@@ -184,12 +259,23 @@ class _ServerScreenState extends State<ServerScreen> {
           ],
           const SizedBox(height: 24),
           _buildUserRow(),
+          if (_errorMessage != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _errorMessage!,
+              style: const TextStyle(color: Color(0xFFef4444)),
+              textAlign: TextAlign.center,
+            ),
+          ],
           const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => context.go('${Destinations.login}?serverId=${_server!.id}'),
+                  onPressed:
+                      () => context.go(
+                        '${Destinations.login}?serverId=${server.id}',
+                      ),
                   icon: const Icon(Icons.person, size: 18),
                   label: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -220,13 +306,15 @@ class _ServerScreenState extends State<ServerScreen> {
   ButtonStyle _focusableButtonStyle() {
     return ButtonStyle(
       side: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.focused) || states.contains(WidgetState.hovered)) {
+        if (states.contains(WidgetState.focused) ||
+            states.contains(WidgetState.hovered)) {
           return const BorderSide(color: Color(0xFF00A4DC), width: 2);
         }
         return BorderSide(color: Colors.white.withValues(alpha: 0.2));
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.focused) || states.contains(WidgetState.hovered)) {
+        if (states.contains(WidgetState.focused) ||
+            states.contains(WidgetState.hovered)) {
           return const Color(0xFF00A4DC);
         }
         return Colors.white.withValues(alpha: 0.8);
@@ -236,8 +324,7 @@ class _ServerScreenState extends State<ServerScreen> {
 
   Widget _buildUserRow() {
     final items = <Widget>[
-      for (var i = 0; i < _users.length; i++)
-        _buildUserCard(_users[i], i),
+      for (var i = 0; i < _users.length; i++) _buildUserCard(_users[i], i),
     ];
 
     final showArrows = PlatformDetection.useDesktopUi;
@@ -268,12 +355,20 @@ class _ServerScreenState extends State<ServerScreen> {
           bottom: 0,
           child: Center(
             child: IconButton(
-              onPressed: () => _scrollController.animateTo(
-                (_scrollController.offset - 150).clamp(0, _scrollController.position.maxScrollExtent),
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
+              onPressed:
+                  () => _scrollController.animateTo(
+                    (_scrollController.offset - 150).clamp(
+                      0,
+                      _scrollController.position.maxScrollExtent,
+                    ),
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  ),
+              icon: const Icon(
+                Icons.chevron_left,
+                color: Colors.white54,
+                size: 28,
               ),
-              icon: const Icon(Icons.chevron_left, color: Colors.white54, size: 28),
               splashRadius: 20,
             ),
           ),
@@ -284,12 +379,20 @@ class _ServerScreenState extends State<ServerScreen> {
           bottom: 0,
           child: Center(
             child: IconButton(
-              onPressed: () => _scrollController.animateTo(
-                (_scrollController.offset + 150).clamp(0, _scrollController.position.maxScrollExtent),
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
+              onPressed:
+                  () => _scrollController.animateTo(
+                    (_scrollController.offset + 150).clamp(
+                      0,
+                      _scrollController.position.maxScrollExtent,
+                    ),
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  ),
+              icon: const Icon(
+                Icons.chevron_right,
+                color: Colors.white54,
+                size: 28,
               ),
-              icon: const Icon(Icons.chevron_right, color: Colors.white54, size: 28),
               splashRadius: 20,
             ),
           ),
@@ -305,7 +408,8 @@ class _ServerScreenState extends State<ServerScreen> {
 
   Widget _buildUserCard(_MergedUser user, int index) {
     final hasFocus = ValueNotifier(false);
-    final focusNode = index < _userFocusNodes.length ? _userFocusNodes[index] : FocusNode();
+    final focusNode =
+        index < _userFocusNodes.length ? _userFocusNodes[index] : FocusNode();
 
     return ValueListenableBuilder<bool>(
       valueListenable: hasFocus,
@@ -319,47 +423,57 @@ class _ServerScreenState extends State<ServerScreen> {
               duration: const Duration(milliseconds: 120),
               curve: Curves.easeOut,
               child: InkWell(
-              focusNode: focusNode,
-              onFocusChange: (f) => hasFocus.value = f,
-              onTap: () => _onUserTap(user),
-              borderRadius: BorderRadius.circular(12),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: focused
-                            ? Border.all(color: const Color(0xFF00A4DC), width: 3)
-                            : null,
+                focusNode: focusNode,
+                onFocusChange: (f) => hasFocus.value = f,
+                onTap: () => _onUserTap(user),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border:
+                              focused
+                                  ? Border.all(
+                                    color: const Color(0xFF00A4DC),
+                                    width: 3,
+                                  )
+                                  : null,
+                        ),
+                        child: CircleAvatar(
+                          radius: 36,
+                          backgroundColor: Colors.white.withValues(alpha: 0.1),
+                          backgroundImage:
+                              user.imageTag != null
+                                  ? NetworkImage(_userImageUrl(user))
+                                  : null,
+                          child:
+                              user.imageTag == null
+                                  ? Icon(
+                                    Icons.person,
+                                    size: 32,
+                                    color: Colors.white.withValues(alpha: 0.6),
+                                  )
+                                  : null,
+                        ),
                       ),
-                      child: CircleAvatar(
-                        radius: 36,
-                        backgroundColor: Colors.white.withValues(alpha: 0.1),
-                        backgroundImage: user.imageTag != null
-                            ? NetworkImage(_userImageUrl(user))
-                            : null,
-                        child: user.imageTag == null
-                            ? Icon(Icons.person, size: 32, color: Colors.white.withValues(alpha: 0.6))
-                            : null,
+                      const SizedBox(height: 8),
+                      Text(
+                        user.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: focused ? const Color(0xFF00A4DC) : null,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      user.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: focused ? const Color(0xFF00A4DC) : null,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
             ),
           ),
         );

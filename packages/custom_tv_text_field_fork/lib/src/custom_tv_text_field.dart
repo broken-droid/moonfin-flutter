@@ -45,6 +45,7 @@ class CustomTVTextField extends StatefulWidget {
   final bool isRequired;
   final TextFieldType textFieldType;
   final int maxLines;
+  final bool popParentOnKeyboardClose;
 
   const CustomTVTextField({
     super.key,
@@ -80,6 +81,7 @@ class CustomTVTextField extends StatefulWidget {
     this.isRequired = false,
     this.textFieldType = TextFieldType.other,
     this.maxLines = 1,
+    this.popParentOnKeyboardClose = true,
   });
   bool get obscureText => textFieldType == TextFieldType.password;
 
@@ -96,6 +98,8 @@ class CustomTVTextFieldState extends State<CustomTVTextField>
   final ValueNotifier<bool> _isOverlayOpen = ValueNotifier<bool>(false);
   final ValueNotifier<String?> _errorText = ValueNotifier<String?>(null);
   final FocusNode _keyboardFocusNode = FocusNode();
+
+  bool get isKeyboardVisible => _keyboardController.isVisible;
 
   bool _validateEmail(String value) {
     return RegExp(
@@ -178,7 +182,9 @@ class CustomTVTextFieldState extends State<CustomTVTextField>
     _keyboardController.onTextChanged = (text) => widget.controller.text = text;
     _keyboardController.onKeyboardClosed = (shouldPop) {
       widget.onFieldSubmitted?.call(widget.controller.text);
-      if (shouldPop && Navigator.canPop(context)) {
+      if (widget.popParentOnKeyboardClose &&
+          shouldPop &&
+          Navigator.canPop(context)) {
         Navigator.pop(context);
       }
     };

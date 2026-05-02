@@ -101,15 +101,20 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
         _addressController.clear();
         context.go('${Destinations.server}?serverId=$id');
       case ServerUnableToConnect():
-        setState(() {
-          _isConnecting = false;
-          _errorMessage = AppLocalizations.of(context).unableToConnectToServer;
-        });
+        setState(() => _isConnecting = false);
     }
   }
 
   Future<void> _connectToDiscovered(DiscoveredServer discovered) async {
-    await _serverRepo.addServer(discovered.address);
+    try {
+      await _serverRepo.addServer(discovered.address);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isConnecting = false;
+        _errorMessage = AppLocalizations.of(context).unableToConnectToServer;
+      });
+    }
   }
 
   Future<void> _deleteServer(Server server) async {
@@ -395,19 +400,16 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
   Future<void> _showAddServerDialog() async {
     if (_isAddDialogOpen) return;
     _isAddDialogOpen = true;
-    final l10n = AppLocalizations.of(context);
     _addressController.clear();
     try {
-      final address = await showFocusRestoringDialog<String>(
+      await showFocusRestoringDialog<void>(
         context: context,
         builder: (ctx) => _AddServerDialog(
-          l10n: l10n,
+          l10n: AppLocalizations.of(context),
           controller: _addressController,
+          serverRepo: _serverRepo,
         ),
       );
-      if (address != null && address.trim().isNotEmpty) {
-        await _serverRepo.addServer(address.trim());
-      }
     } finally {
       _isAddDialogOpen = false;
     }
@@ -467,8 +469,13 @@ class _FocusableTileState extends State<_FocusableTile> {
 class _AddServerDialog extends StatefulWidget {
   final AppLocalizations l10n;
   final TextEditingController controller;
+  final ServerRepository serverRepo;
 
-  const _AddServerDialog({required this.l10n, required this.controller});
+  const _AddServerDialog({
+    required this.l10n,
+    required this.controller,
+    required this.serverRepo,
+  });
 
   @override
   State<_AddServerDialog> createState() => _AddServerDialogState();
@@ -479,6 +486,9 @@ class _AddServerDialogState extends State<_AddServerDialog> {
   final _connectFocus = FocusNode(debugLabel: 'addServerConnect');
   final _cancelFocus = FocusNode(debugLabel: 'addServerCancel');
   final _tvFieldKey = GlobalKey<CustomTVTextFieldState>();
+
+  bool _isConnecting = false;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -497,8 +507,37 @@ class _AddServerDialogState extends State<_AddServerDialog> {
     super.dispose();
   }
 
-  void _submit() {
-    Navigator.of(context).pop(widget.controller.text);
+  Future<void> _submit() async {
+    final address = widget.controller.text.trim();
+    if (address.isEmpty) return;
+
+    setState(() {
+      _isConnecting = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final server = await widget.serverRepo.addServer(address);
+      if (!mounted) return;
+      if (server != null) {
+        Navigator.of(context).pop();
+      } else {
+        _showError(widget.l10n.unableToConnectToServer);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showError(widget.l10n.unableToConnectToServer);
+    }
+  }
+
+  void _showError(String message) {
+    setState(() {
+      _isConnecting = false;
+      _errorMessage = message;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _connectFocus.requestFocus();
+    });
   }
 
   void _cancel() {
@@ -513,6 +552,11 @@ class _AddServerDialogState extends State<_AddServerDialog> {
 
     if (key.isBackKey) {
       if (event is KeyDownEvent) {
+        if (PlatformDetection.isTV &&
+            (_tvFieldKey.currentState?.isKeyboardVisible ?? false)) {
+          _tvFieldKey.currentState?.closeKeyboard();
+          return KeyEventResult.handled;
+        }
         _cancel();
         return KeyEventResult.handled;
       }
@@ -615,8 +659,8 @@ class _AddServerDialogState extends State<_AddServerDialog> {
                     Icons.dns,
                     color: focused ? Colors.black : Colors.white,
                   ),
-                  onFieldSubmitted: (value) =>
-                      Navigator.of(context).pop(value),
+                  popParentOnKeyboardClose: false,
+                  onFieldSubmitted: (_) => _submit(),
                 );
               },
             ),
@@ -632,21 +676,23 @@ class _AddServerDialogState extends State<_AddServerDialog> {
             ),
             keyboardType: TextInputType.url,
             autofocus: true,
-            onSubmitted: (value) => Navigator.of(context).pop(value),
+            onSubmitted: (value) => _submit(),
           );
 
     final cancelButton = OutlinedButton(
       focusNode: _cancelFocus,
-      onPressed: _cancel,
+      onPressed: _isConnecting ? null : _cancel,
       style: _actionStyle(),
-      child: Text(l10n.cancel),
+      child: Text(widget.l10n.cancel),
     );
 
     final connectButton = OutlinedButton(
       focusNode: _connectFocus,
-      onPressed: _submit,
+      onPressed: _isConnecting ? null : _submit,
       style: _actionStyle(),
-      child: Text(l10n.connect),
+      child: _isConnecting
+          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+          : Text(widget.l10n.connect),
     );
 
     return Focus(
@@ -654,8 +700,21 @@ class _AddServerDialogState extends State<_AddServerDialog> {
       skipTraversal: true,
       onKeyEvent: _onDialogKey,
       child: AlertDialog(
-        title: Text(l10n.connectToServer),
-        content: field,
+        title: Text(widget.l10n.connectToServer),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            field,
+            if (_errorMessage != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: Color(0xFFef4444), fontSize: 12),
+              ),
+            ],
+          ],
+        ),
         actions: [cancelButton, connectButton],
       ),
     );

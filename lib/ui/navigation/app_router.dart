@@ -110,11 +110,15 @@ final appRouter = GoRouter(
     if (path.startsWith('/downloads')) return null;
 
     final session = GetIt.instance<SessionRepository>();
-    if (session.activeUserId == null) return Destinations.startup;
+    if (session.activeUserId == null) {
+      return Destinations.startup;
+    }
 
     if (path.startsWith('/admin')) {
       final user = getIt<UserRepository>().currentUser;
-      if (user == null || !user.isAdministrator) return Destinations.home;
+      if (user == null || !user.isAdministrator) {
+        return Destinations.home;
+      }
     }
 
     final connectivity = GetIt.instance<ConnectivityService>();
