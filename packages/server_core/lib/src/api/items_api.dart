@@ -16,6 +16,7 @@ abstract class ItemsApi {
     List<String>? filters,
     List<String>? seriesStatus,
     String? nameStartsWith,
+    String? nameLessThan,
     List<String>? genreIds,
     List<String>? genres,
     bool? isFavorite,
@@ -75,6 +76,7 @@ abstract class ItemsApi {
     bool? recursive,
     String? fields,
     String? nameStartsWith,
+    String? nameLessThan,
     bool? isFavorite,
   });
 
@@ -88,6 +90,7 @@ abstract class ItemsApi {
     bool? recursive,
     String? fields,
     String? nameStartsWith,
+    String? nameLessThan,
     bool? isFavorite,
   });
 

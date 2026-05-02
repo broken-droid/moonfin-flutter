@@ -936,9 +936,40 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
   void _onScroll() {
     if (!_scrollController.hasClients) return;
     final pos = _scrollController.position;
-    if (pos.pixels > pos.maxScrollExtent - 600) {
+    if (pos.pixels > pos.maxScrollExtent - 400) {
       _vm.loadMore();
     }
+  }
+
+  void _scrollToGridRow({
+    required int index,
+    required int crossAxisCount,
+    required double cellHeight,
+    required double mainAxisSpacing,
+    double gridTopPadding = 8.0,
+  }) {
+    if (!mounted || !_scrollController.hasClients) return;
+    final row = index ~/ crossAxisCount;
+    final rowTop = gridTopPadding + row * (cellHeight + mainAxisSpacing);
+    final rowBottom = rowTop + cellHeight;
+    final position = _scrollController.position;
+    final viewportH = position.viewportDimension;
+    final current = position.pixels;
+    const topPad = 8.0;
+    const bottomPad = 52.0;
+    double target = current;
+    if (rowTop - topPad < current) {
+      target = rowTop - topPad;
+    } else if (rowBottom + bottomPad > current + viewportH) {
+      target = rowBottom + bottomPad - viewportH;
+    }
+    target = target.clamp(position.minScrollExtent, position.maxScrollExtent);
+    if ((target - current).abs() < 1) return;
+    unawaited(_scrollController.animateTo(
+      target,
+      duration: const Duration(milliseconds: 160),
+      curve: Curves.easeOutCubic,
+    ));
   }
 
   void _onItemFocused(AggregatedItem item) {
@@ -3594,6 +3625,13 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
 
   String? _imageUrl(AggregatedItem item) {
     final api = _vm.imageApi;
+    final baseCardWidth = _cardWidth();
+    final posterMaxW = baseCardWidth < 260
+      ? 420
+      : (baseCardWidth < 340 ? 560 : 700);
+    final landscapeMaxW = baseCardWidth < 260
+      ? 720
+      : (baseCardWidth < 340 ? 960 : 1200);
 
     final itemThumbTag = _tagForType(item, 'Thumb');
     final itemBannerTag = _tagForType(item, 'Banner');
@@ -3604,56 +3642,91 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
     if (_vm.isNavigableFolder(item)) {
       if (_vm.imageType == ImageType.poster) {
         if (item.primaryImageTag != null) {
-          return api.getPrimaryImageUrl(item.id, tag: item.primaryImageTag);
+          return api.getPrimaryImageUrl(
+            item.id,
+            maxWidth: posterMaxW,
+            tag: item.primaryImageTag,
+          );
         }
         if (itemThumbTag != null) {
-          return api.getThumbImageUrl(item.id, tag: itemThumbTag);
+          return api.getThumbImageUrl(
+            item.id,
+            maxWidth: landscapeMaxW,
+            tag: itemThumbTag,
+          );
         }
         if (item.backdropImageTags.isNotEmpty) {
           return api.getBackdropImageUrl(
             item.id,
+            maxWidth: landscapeMaxW,
             tag: item.backdropImageTags.first,
           );
         }
         return null;
       }
       if (itemThumbTag != null) {
-        return api.getThumbImageUrl(item.id, tag: itemThumbTag);
+        return api.getThumbImageUrl(
+          item.id,
+          maxWidth: landscapeMaxW,
+          tag: itemThumbTag,
+        );
       }
       if (itemBannerTag != null) {
-        return api.getBannerImageUrl(item.id, tag: itemBannerTag);
+        return api.getBannerImageUrl(
+          item.id,
+          maxWidth: landscapeMaxW,
+          tag: itemBannerTag,
+        );
       }
       if (item.backdropImageTags.isNotEmpty) {
         return api.getBackdropImageUrl(
           item.id,
+          maxWidth: landscapeMaxW,
           tag: item.backdropImageTags.first,
         );
       }
       if (item.primaryImageTag != null) {
-        return api.getPrimaryImageUrl(item.id, tag: item.primaryImageTag);
+        return api.getPrimaryImageUrl(
+          item.id,
+          maxWidth: posterMaxW,
+          tag: item.primaryImageTag,
+        );
       }
       if (parentThumbItemId != null && parentThumbTag != null) {
-        return api.getThumbImageUrl(parentThumbItemId, tag: parentThumbTag);
+        return api.getThumbImageUrl(
+          parentThumbItemId,
+          maxWidth: landscapeMaxW,
+          tag: parentThumbTag,
+        );
       }
       return null;
     }
 
     if (_vm.isPlaylistBrowse) {
       return item.primaryImageTag != null
-          ? api.getPrimaryImageUrl(item.id)
+          ? api.getPrimaryImageUrl(item.id, maxWidth: posterMaxW)
           : null;
     }
 
     if (_vm.imageType == ImageType.banner) {
       if (itemBannerTag != null) {
-        return api.getBannerImageUrl(item.id, tag: itemBannerTag);
+        return api.getBannerImageUrl(
+          item.id,
+          maxWidth: landscapeMaxW,
+          tag: itemBannerTag,
+        );
       }
       if (item.primaryImageTag != null) {
-        return api.getPrimaryImageUrl(item.id, tag: item.primaryImageTag);
+        return api.getPrimaryImageUrl(
+          item.id,
+          maxWidth: posterMaxW,
+          tag: item.primaryImageTag,
+        );
       }
       if (item.backdropImageTags.isNotEmpty) {
         return api.getBackdropImageUrl(
           item.id,
+          maxWidth: landscapeMaxW,
           tag: item.backdropImageTags.first,
         );
       }
@@ -3662,63 +3735,96 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
 
     if (_vm.imageType == ImageType.thumb) {
       if (itemThumbTag != null) {
-        return api.getThumbImageUrl(item.id, tag: itemThumbTag);
+        return api.getThumbImageUrl(
+          item.id,
+          maxWidth: landscapeMaxW,
+          tag: itemThumbTag,
+        );
       }
       if (item.backdropImageTags.isNotEmpty) {
         return api.getBackdropImageUrl(
           item.id,
+          maxWidth: landscapeMaxW,
           tag: item.backdropImageTags.first,
         );
       }
       if (parentThumbItemId != null && parentThumbTag != null) {
-        return api.getThumbImageUrl(parentThumbItemId, tag: parentThumbTag);
+        return api.getThumbImageUrl(
+          parentThumbItemId,
+          maxWidth: landscapeMaxW,
+          tag: parentThumbTag,
+        );
       }
       if (item.parentBackdropItemId != null &&
           item.parentBackdropImageTags.isNotEmpty) {
         return api.getBackdropImageUrl(
           item.parentBackdropItemId!,
+          maxWidth: landscapeMaxW,
           tag: item.parentBackdropImageTags.first,
         );
       }
       if (item.primaryImageTag != null) {
-        return api.getPrimaryImageUrl(item.id, tag: item.primaryImageTag);
+        return api.getPrimaryImageUrl(
+          item.id,
+          maxWidth: posterMaxW,
+          tag: item.primaryImageTag,
+        );
       }
       return null;
     }
 
     if (prefersThumbArtwork && !_vm.isGenreBrowse) {
       if (itemThumbTag != null) {
-        return api.getThumbImageUrl(item.id, tag: itemThumbTag);
+        return api.getThumbImageUrl(
+          item.id,
+          maxWidth: landscapeMaxW,
+          tag: itemThumbTag,
+        );
       }
       if (item.backdropImageTags.isNotEmpty) {
         return api.getBackdropImageUrl(
           item.id,
+          maxWidth: landscapeMaxW,
           tag: item.backdropImageTags.first,
         );
       }
       if (parentThumbItemId != null && parentThumbTag != null) {
-        return api.getThumbImageUrl(parentThumbItemId, tag: parentThumbTag);
+        return api.getThumbImageUrl(
+          parentThumbItemId,
+          maxWidth: landscapeMaxW,
+          tag: parentThumbTag,
+        );
       }
     }
 
     if (item.primaryImageTag != null) {
-      return api.getPrimaryImageUrl(item.id, tag: item.primaryImageTag);
+      return api.getPrimaryImageUrl(
+        item.id,
+        maxWidth: posterMaxW,
+        tag: item.primaryImageTag,
+      );
     }
 
     if (item.seriesId != null && item.seriesPrimaryImageTag != null) {
       return api.getPrimaryImageUrl(
         item.seriesId!,
+        maxWidth: posterMaxW,
         tag: item.seriesPrimaryImageTag,
       );
     }
 
     if (itemThumbTag != null) {
-      return api.getThumbImageUrl(item.id, tag: itemThumbTag);
+      return api.getThumbImageUrl(
+        item.id,
+        maxWidth: landscapeMaxW,
+        tag: itemThumbTag,
+      );
     }
 
     if (item.backdropImageTags.isNotEmpty) {
       return api.getBackdropImageUrl(
         item.id,
+        maxWidth: landscapeMaxW,
         tag: item.backdropImageTags.first,
       );
     }
@@ -3800,11 +3906,6 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                 onFavoriteFilterChanged: (value) => _vm.setFavoriteFilter(value),
               ),
               Expanded(child: _buildBody()),
-              _LibraryStatusBar(
-                statusText: _vm.statusText,
-                counterText: _vm.counterText,
-                isBookBrowse: isBookBrowse,
-              ),
             ],
           ),
         ],
@@ -3877,7 +3978,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
           controller: _scrollController,
           slivers: [
             SliverPadding(
-              padding: EdgeInsets.fromLTRB(gridPadding, 20, gridPadding, 16),
+              padding: EdgeInsets.fromLTRB(gridPadding, 8, gridPadding, 16),
               sliver: SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
@@ -3910,11 +4011,39 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                     playedPercentage: _displayPlayedPercentage(item),
                     watchedBehavior: watchedBehavior,
                     itemType: item.type,
-                    onFocus: isMobile ? null : () => _onItemFocused(item),
+                    onFocus: isMobile
+                      ? null
+                      : () {
+                          _onItemFocused(item);
+                          _scrollToGridRow(
+                            index: index,
+                            crossAxisCount: crossAxisCount,
+                            cellHeight: cellWidth / childAspectRatio,
+                            mainAxisSpacing: 8.0,
+                          );
+                        },
                     onHoverStart: isMobile ? null : () => _onItemFocused(item),
                     onHoverEnd: isMobile
                         ? null
                         : () => _vm.setFocusedItem(null),
+                    onKeyEvent: (_, event) {
+                      if (!_vm.hasMore && !_vm.loadingMore) {
+                        return KeyEventResult.ignored;
+                      }
+                      if (!event.isActionable ||
+                          !event.logicalKey.isDownKey) {
+                        return KeyEventResult.ignored;
+                      }
+
+                      final nextRowIndex = index + crossAxisCount;
+                      final atBottomLoadedRow = nextRowIndex >= _vm.items.length;
+                      if (!atBottomLoadedRow) {
+                        return KeyEventResult.ignored;
+                      }
+
+                      _vm.loadMore();
+                      return KeyEventResult.handled;
+                    },
                     onLongPress: () => showContextMenu(
                       context,
                       item,
@@ -4062,7 +4191,9 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                               UserPreferences.watchedIndicatorBehavior,
                             ),
                             itemType: item.type,
-                            onFocus: isMobile ? null : () => _onItemFocused(item),
+                            onFocus: isMobile
+                                ? null
+                                : () => _onItemFocused(item),
                             onHoverStart:
                                 isMobile ? null : () => _onItemFocused(item),
                             onHoverEnd:
@@ -4206,7 +4337,7 @@ class _LibraryHeader extends StatelessWidget {
     final showInlineAlpha =
       !isBookBrowse && sortBy == LibrarySortBy.name && (!isMobile || isCompactLandscape);
     final showBelowAlpha = !isBookBrowse && sortBy == LibrarySortBy.name && isCompactPortrait;
-    final topPad = isMobile ? MediaQuery.of(context).padding.top + 8 : 12.0;
+    final topPad = isMobile ? MediaQuery.of(context).padding.top : 0.0;
     final hPad = isMobile ? 16.0 : _horizontalPadding;
 
     return Padding(
@@ -4242,7 +4373,7 @@ class _LibraryHeader extends StatelessWidget {
             ],
           ),
           if (!isMobile && !isBookBrowse) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 2),
             _FocusedItemHud(
               item: focusedItem,
               ratings: focusedRatings,
@@ -4252,7 +4383,8 @@ class _LibraryHeader extends StatelessWidget {
               showBadges: showBadges,
             ),
           ],
-          SizedBox(height: isBookBrowse ? 2 : 6),
+          SizedBox(height: isBookBrowse ? 2 : 2),
+                    const SizedBox(height: 2),
           Row(
             mainAxisAlignment: (isMobile && !showInlineAlpha)
                 ? MainAxisAlignment.center
@@ -4261,37 +4393,41 @@ class _LibraryHeader extends StatelessWidget {
               if (PlatformDetection.isTV)
                 FocusableToolbarButton(
                   icon: Icons.home,
-                  iconSize: 28,
+                  size: 30,
+                  iconSize: 20,
                   unfocusedIconAlpha: 128,
                   onTap: () => context.go(Destinations.home),
                 )
               else
                 FocusableToolbarButton(
                   icon: Icons.arrow_back,
-                  iconSize: 28,
+                  size: 30,
+                  iconSize: 20,
                   unfocusedIconAlpha: 128,
                   onTap: onBack,
                 ),
               if (!isBookBrowse) ...[
-                const SizedBox(width: 4),
+                const SizedBox(width: 2),
                 FocusableToolbarButton(
                   icon: Icons.sort,
-                  iconSize: 28,
+                  size: 30,
+                  iconSize: 20,
                   unfocusedIconAlpha: 128,
                   onTap: onSort,
                 ),
               ],
               if (!isMusicBrowse && !isBookBrowse) ...[
-                const SizedBox(width: 4),
+                const SizedBox(width: 2),
                 FocusableToolbarButton(
                   icon: Icons.settings,
-                  iconSize: 28,
+                  size: 30,
+                  iconSize: 20,
                   unfocusedIconAlpha: 128,
                   onTap: onSettings,
                 ),
               ],
               if (showInlineAlpha) ...[
-                const SizedBox(width: 16),
+                const SizedBox(width: 10),
                 Expanded(
                   child: _AlphaPickerBar(
                     selected: letterFilter,
@@ -4573,7 +4709,7 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 120),
             width: 30,
-            height: 34,
+            height: 30,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: widget.isSelected ? Colors.white.withAlpha(26) : null,
@@ -4607,48 +4743,6 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
 }
 
 class _LibraryStatusBar extends StatelessWidget {
-  final String statusText;
-  final String counterText;
-  final bool isBookBrowse;
-
-  const _LibraryStatusBar({
-    required this.statusText,
-    required this.counterText,
-    this.isBookBrowse = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hPad = _isCompact(context) ? 16.0 : _horizontalPadding;
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            statusText,
-            style: TextStyle(
-              fontSize: 11,
-              color: isBookBrowse
-                  ? const Color(0xFFD7B890).withAlpha(170)
-                  : Colors.white.withAlpha(77),
-            ),
-          ),
-          Text(
-            counterText,
-            style: TextStyle(
-              fontSize: 13,
-              color: isBookBrowse
-                  ? const Color(0xFFE8CFB0).withAlpha(190)
-                  : Colors.white.withAlpha(115),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _FilterSortDialog extends StatefulWidget {
   final LibraryBrowseViewModel vm;
 

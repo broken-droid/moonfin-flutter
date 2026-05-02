@@ -130,7 +130,6 @@ class _MusicBrowseScreenState extends State<MusicBrowseScreen> {
                         ),
                       ),
               ),
-              _StatusBar(libraryName: _vm.libraryName),
             ],
           ),
         ],
@@ -548,27 +547,3 @@ class _MusicSquareCardState extends State<_MusicSquareCard> with FocusStateMixin
 }
 
 class _StatusBar extends StatelessWidget {
-  final String libraryName;
-
-  const _StatusBar({required this.libraryName});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: _horizontalPadding, vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            libraryName,
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.white.withAlpha(77),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

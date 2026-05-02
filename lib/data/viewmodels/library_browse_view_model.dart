@@ -19,9 +19,10 @@ class LibraryBrowseViewModel extends ChangeNotifier {
   final String? overrideName;
   final List<String>? includeItemTypes;
 
-  static const _pageSize = 100;
+  static const _pageSize = 80;
+  static const _firstPageSize = 36;
   static const _browseFields =
-      'PrimaryImageAspectRatio,SortName,Type,IsFolder,ChildCount,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,CriticRating,Author,Authors,AlbumArtist,Artists,People,MediaStreams';
+      'PrimaryImageAspectRatio,SortName,Type,IsFolder,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag';
 
   LibraryBrowseState _state = LibraryBrowseState.loading;
   LibraryBrowseState get state => _state;
@@ -231,6 +232,7 @@ class LibraryBrowseViewModel extends ChangeNotifier {
   }
 
   Future<void> _fetchPage(int startIndex) async {
+    final pageSize = startIndex == 0 ? _firstPageSize : _pageSize;
     final filters = <String>[];
     if (_playedFilter == PlayedStatusFilter.watched) {
       filters.add('IsPlayed');
@@ -298,6 +300,13 @@ class LibraryBrowseViewModel extends ChangeNotifier {
       includeTypes = ['MusicAlbum'];
     }
 
+    if (genreId != null && includeItemTypes == null) {
+      final currentExclude = excludeTypes ?? const <String>[];
+      if (!currentExclude.contains('Episode')) {
+        excludeTypes = [...currentExclude, 'Episode'];
+      }
+    }
+
     if (isAlbumArtistBrowse || isArtistBrowse) {
       includeTypes = null;
       excludeTypes = null;
@@ -305,6 +314,11 @@ class LibraryBrowseViewModel extends ChangeNotifier {
       recursive = true;
       sortBy = 'SortName';
     }
+
+    final selectedLetter = _letterFilter.isEmpty ? null : _letterFilter;
+    final isNumericBucket = selectedLetter == '#';
+    final nameStartsWith = isNumericBucket ? null : selectedLetter;
+    final nameLessThan = isNumericBucket ? 'A' : null;
 
     final Map<String, dynamic> response;
     if (isAlbumArtistBrowse) {
@@ -316,10 +330,11 @@ class LibraryBrowseViewModel extends ChangeNotifier {
             ? 'Ascending'
             : 'Descending',
         startIndex: startIndex,
-        limit: _pageSize,
+        limit: pageSize,
         recursive: recursive,
         fields: 'PrimaryImageAspectRatio,SortName',
-        nameStartsWith: _letterFilter.isEmpty ? null : _letterFilter,
+        nameStartsWith: nameStartsWith,
+        nameLessThan: nameLessThan,
         isFavorite: _favoriteFilter ? true : null,
       );
     } else if (isArtistBrowse) {
@@ -331,10 +346,11 @@ class LibraryBrowseViewModel extends ChangeNotifier {
             ? 'Ascending'
             : 'Descending',
         startIndex: startIndex,
-        limit: _pageSize,
+        limit: pageSize,
         recursive: recursive,
         fields: 'PrimaryImageAspectRatio,SortName',
-        nameStartsWith: _letterFilter.isEmpty ? null : _letterFilter,
+        nameStartsWith: nameStartsWith,
+        nameLessThan: nameLessThan,
         isFavorite: _favoriteFilter ? true : null,
       );
     } else {
@@ -349,11 +365,13 @@ class LibraryBrowseViewModel extends ChangeNotifier {
             ? 'Ascending'
             : 'Descending',
         startIndex: startIndex,
+        limit: pageSize,
         recursive: recursive,
         fields: _browseFields,
         filters: filters.isEmpty ? null : filters,
         seriesStatus: seriesStatus.isEmpty ? null : seriesStatus,
-        nameStartsWith: _letterFilter.isEmpty ? null : _letterFilter,
+        nameStartsWith: nameStartsWith,
+        nameLessThan: nameLessThan,
         isFavorite: _favoriteFilter ? true : null,
       );
     }
@@ -365,20 +383,20 @@ class LibraryBrowseViewModel extends ChangeNotifier {
       _totalCount = totalFromServer!;
       _hasMoreFromPageSize = _items.length + rawItems.length < _totalCount;
     } else {
-      _hasMoreFromPageSize = rawItems.length == _pageSize;
+      _hasMoreFromPageSize = rawItems.length == pageSize;
       final loadedCount = startIndex + rawItems.length;
       _totalCount = loadedCount + (_hasMoreFromPageSize ? 1 : 0);
     }
 
     final mapped = rawItems
-        .cast<Map<String, dynamic>>()
-        .map(
-          (raw) => AggregatedItem(
-            id: raw['Id'] as String,
-            serverId: _client.baseUrl,
-            rawData: raw,
-          ),
-        )
+        .whereType<Map>()
+        .map((raw) => raw.cast<String, dynamic>())
+        .map((raw) {
+          final id = raw['Id'] as String?;
+          if (id == null || id.isEmpty) return null;
+          return AggregatedItem(id: id, serverId: _client.baseUrl, rawData: raw);
+        })
+        .whereType<AggregatedItem>()
         .toList();
 
     final filtered = await _filterLibraryItems(mapped);
@@ -399,11 +417,13 @@ class LibraryBrowseViewModel extends ChangeNotifier {
     required String sortBy,
     required String sortOrder,
     required int startIndex,
+    required int limit,
     required bool recursive,
     required String fields,
     List<String>? filters,
     List<String>? seriesStatus,
     String? nameStartsWith,
+    String? nameLessThan,
     bool? isFavorite,
   }) async {
     try {
@@ -416,13 +436,15 @@ class LibraryBrowseViewModel extends ChangeNotifier {
         sortBy: sortBy,
         sortOrder: sortOrder,
         startIndex: startIndex,
-        limit: _pageSize,
+        limit: limit,
         recursive: recursive,
         fields: fields,
         filters: filters,
         seriesStatus: seriesStatus,
         nameStartsWith: nameStartsWith,
+        nameLessThan: nameLessThan,
         isFavorite: isFavorite,
+        enableImageTypes: 'Primary,Backdrop',
       );
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode ?? 0;
@@ -444,12 +466,13 @@ class LibraryBrowseViewModel extends ChangeNotifier {
         sortBy: fallbackSort,
         sortOrder: sortOrder,
         startIndex: startIndex,
-        limit: _pageSize,
+        limit: limit,
         recursive: recursive,
         fields: fields,
         filters: filters,
         seriesStatus: seriesStatus,
         nameStartsWith: nameStartsWith,
+        nameLessThan: nameLessThan,
         isFavorite: isFavorite,
         enableTotalRecordCount: false,
       );

@@ -22,6 +22,9 @@ import '../../../l10n/app_localizations.dart';
 Color get _navyBackground => AppColorScheme.background;
 const _horizontalPadding = 60.0;
 const _kCompactBreakpoint = 600.0;
+const _genresPageSize = 200;
+const _initialArtworkBatch = 18;
+const _backgroundArtworkConcurrency = 6;
 
 bool _isCompact(BuildContext context) =>
     PlatformDetection.useMobileUi ||
@@ -66,12 +69,30 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
 
   Future<void> _load() async {
     try {
-      final response = await _client.itemsApi.getGenres(
-        sortBy: 'SortName',
-        sortOrder: 'Ascending',
-      );
+      final items = <dynamic>[];
+      var startIndex = 0;
+      int? total;
 
-      final items = (response['Items'] as List?) ?? [];
+      while (true) {
+        final response = await _client.itemsApi.getGenres(
+          sortBy: 'SortName',
+          sortOrder: 'Ascending',
+          recursive: true,
+          startIndex: startIndex,
+          limit: _genresPageSize,
+          fields: 'ItemCounts',
+        );
+
+        total ??= response['TotalRecordCount'] as int?;
+        final pageItems = (response['Items'] as List?) ?? const [];
+        if (pageItems.isEmpty) break;
+        items.addAll(pageItems);
+
+        startIndex += pageItems.length;
+        if (pageItems.length < _genresPageSize) break;
+        if (total != null && startIndex >= total!) break;
+      }
+
       _genres = items.map((g) {
         final data = g as Map<String, dynamic>;
         return GenreCardData(
@@ -93,11 +114,23 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
   }
 
   Future<void> _loadGenreArtwork() async {
-    await Future.wait(_genres.map(_loadGenreItems));
+    final toLoad = _genres.take(_initialArtworkBatch).toList();
+    await Future.wait(toLoad.map(_loadGenreItems));
 
-    final before = _genres.length;
-    _genres.removeWhere((g) => g.itemCount == 0);
-    if (!_disposed && mounted && _genres.length != before) setState(() {});
+    if (!_disposed && _genres.length > _initialArtworkBatch) {
+      unawaited(_loadGenreArtworkAsync(_genres.skip(_initialArtworkBatch).toList()));
+    }
+  }
+
+  Future<void> _loadGenreArtworkAsync(List<GenreCardData> remaining) async {
+    for (
+      var i = 0;
+      i < remaining.length && !_disposed;
+      i += _backgroundArtworkConcurrency
+    ) {
+      final batch = remaining.skip(i).take(_backgroundArtworkConcurrency);
+      await Future.wait(batch.map(_loadGenreItems));
+    }
   }
 
   Future<void> _loadGenreItems(GenreCardData genre) async {
@@ -105,15 +138,15 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
     try {
       final response = await _client.itemsApi.getItems(
         genreIds: [genre.id],
-        includeItemTypes: ['Movie', 'Series'],
-        sortBy: 'Random',
+        includeItemTypes: ['Movie', 'Series', 'MusicAlbum', 'MusicVideo'],
+        excludeItemTypes: ['Episode'],
+        sortBy: 'SortName',
         sortOrder: 'Ascending',
         recursive: true,
-        limit: 10,
+        limit: 4,
         fields: 'PrimaryImageTag,ImageTags,BackdropImageTags',
+        enableImageTypes: 'Primary,Backdrop',
       );
-      final totalCount = response['TotalRecordCount'] as int? ?? 0;
-      genre.itemCount = totalCount;
 
       final items = (response['Items'] as List?) ?? [];
       String? imageUrl;

@@ -158,10 +158,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 onSettings: () => _showSettingsDialog(context),
               ),
               Expanded(child: _buildBody()),
-              _FavoritesStatusBar(
-                statusText: _vm.statusText,
-                counterText: _vm.counterText,
-              ),
             ],
           ),
         ],
@@ -652,36 +648,6 @@ Widget _radioCircle(bool selected) {
 }
 
 class _FavoritesStatusBar extends StatelessWidget {
-  final String statusText;
-  final String counterText;
-
-  const _FavoritesStatusBar({
-    required this.statusText,
-    required this.counterText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hPad = _isCompact(context) ? 16.0 : _horizontalPadding;
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            statusText,
-            style: TextStyle(fontSize: 11, color: Colors.white.withAlpha(77)),
-          ),
-          Text(
-            counterText,
-            style: TextStyle(fontSize: 13, color: Colors.white.withAlpha(115)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _SortDialog extends StatefulWidget {
   final FavoritesViewModel vm;
 

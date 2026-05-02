@@ -315,7 +315,9 @@ class _CardImage extends StatelessWidget {
                   child: imageUrl != null
                       ? BoundedNetworkImage(
                           imageUrl: imageUrl!,
-                          fadeInDuration: const Duration(milliseconds: 200),
+                          fadeInDuration: Duration.zero,
+                          scale: isCircular ? 0.8 : 0.9,
+                          maxWidth: aspectRatio > 1.2 ? 960 : 640,
                           errorBuilder: (_, _, _) =>
                               _PlaceholderIcon(itemType: itemType),
                         )

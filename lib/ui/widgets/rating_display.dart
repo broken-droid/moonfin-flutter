@@ -116,7 +116,7 @@ class _SingleRating extends StatelessWidget {
         (media.orientation == Orientation.landscape && media.size.width >= 700);
     final valueText = RatingIconProvider.formatRating(source, value);
     final labelText = RatingIconProvider.sourceDisplayName(source);
-    final valueFontSize = isLargeLayout ? 16.0 : 13.0;
+    final valueFontSize = 14.0;
     final labelFontSize = isLargeLayout ? 9.0 : 8.0;
     final iconHeight = isLargeLayout ? 18.0 : 15.0;
     final starSize = isLargeLayout ? 16.0 : 14.0;

@@ -26,6 +26,7 @@ class JellyfinItemsApi implements ItemsApi {
     List<String>? filters,
     List<String>? seriesStatus,
     String? nameStartsWith,
+    String? nameLessThan,
     List<String>? genreIds,
     List<String>? genres,
     bool? isFavorite,
@@ -55,6 +56,7 @@ class JellyfinItemsApi implements ItemsApi {
       if (filters != null) 'Filters': filters.join(','),
       if (seriesStatus != null) 'SeriesStatus': seriesStatus.join(','),
       'NameStartsWith': ?nameStartsWith,
+      'NameLessThan': ?nameLessThan,
       if (genreIds != null) 'GenreIds': genreIds.join(','),
       if (genres != null) 'Genres': genres.join(','),
       'IsFavorite': ?isFavorite,
@@ -205,6 +207,7 @@ class JellyfinItemsApi implements ItemsApi {
     bool? recursive,
     String? fields,
     String? nameStartsWith,
+    String? nameLessThan,
     bool? isFavorite,
   }) async {
     final response = await _dio.get('/Artists', queryParameters: {
@@ -217,6 +220,7 @@ class JellyfinItemsApi implements ItemsApi {
       'Recursive': ?recursive,
       'Fields': ?fields,
       'NameStartsWith': ?nameStartsWith,
+      'NameLessThan': ?nameLessThan,
       'IsFavorite': ?isFavorite,
     });
     return response.data as Map<String, dynamic>;
@@ -233,6 +237,7 @@ class JellyfinItemsApi implements ItemsApi {
     bool? recursive,
     String? fields,
     String? nameStartsWith,
+    String? nameLessThan,
     bool? isFavorite,
   }) async {
     final response = await _dio.get('/Artists/AlbumArtists', queryParameters: {
@@ -245,6 +250,7 @@ class JellyfinItemsApi implements ItemsApi {
       'Recursive': ?recursive,
       'Fields': ?fields,
       'NameStartsWith': ?nameStartsWith,
+      'NameLessThan': ?nameLessThan,
       'IsFavorite': ?isFavorite,
     });
     return response.data as Map<String, dynamic>;

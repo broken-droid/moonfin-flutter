@@ -109,10 +109,19 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
   }
 
   Future<void> _loadArtwork() async {
+    const visibleLimit = 12;
     final includeType = _includeType;
+    final toLoad = _genres.take(visibleLimit);
     await Future.wait(
-      _genres.map((genre) => _loadGenreArtwork(genre, includeType)),
+      toLoad.map((genre) => _loadGenreArtwork(genre, includeType)),
     );
+    
+    if (!_disposed && _genres.length > visibleLimit) {
+      final remaining = _genres.skip(visibleLimit).toList();
+      for (final genre in remaining) {
+        unawaited(_loadGenreArtwork(genre, includeType));
+      }
+    }
   }
 
   Future<void> _loadGenreArtwork(
@@ -127,12 +136,14 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
         includeItemTypes: includeType != null
             ? [includeType]
             : ['Movie', 'Series'],
+        excludeItemTypes: includeType == null ? ['Episode'] : null,
         sortBy: 'Random',
         sortOrder: 'Ascending',
         recursive: true,
         limit: 20,
         fields:
             'PrimaryImageAspectRatio,PrimaryImageTag,ImageTags,BackdropImageTags',
+        enableImageTypes: 'Primary,Backdrop',
       );
       final items = (response['Items'] as List?) ?? [];
 
@@ -407,7 +418,7 @@ class _GenresHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
-    final topPadding = isMobile ? MediaQuery.of(context).padding.top + 8 : 20.0;
+    final topPadding = isMobile ? MediaQuery.of(context).padding.top : 8.0;
     final horizontalPadding = isMobile
         ? _mobileHorizontalPadding
         : _horizontalPadding;
