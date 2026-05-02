@@ -1444,6 +1444,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             return KeyEventResult.handled;
           }
           return KeyEventResult.ignored;
+        case LogicalKeyboardKey.mediaPlay:
+          unawaited(_resumeWithConfiguredRewind());
+          _showControls();
+          return KeyEventResult.handled;
+        case LogicalKeyboardKey.mediaPause:
+          _manager.pause();
+          _showControls();
+          return KeyEventResult.handled;
+        case LogicalKeyboardKey.mediaPlayPause:
+          _togglePlayPause();
+          _showControls();
+          return KeyEventResult.handled;
+        case LogicalKeyboardKey.mediaFastForward:
+          _seekRelative(_prefs.get(UserPreferences.skipForwardLength));
+          _showControls();
+          return KeyEventResult.handled;
+        case LogicalKeyboardKey.mediaRewind:
+          _seekRelative(-_prefs.get(UserPreferences.skipBackLength));
+          _showControls();
+          return KeyEventResult.handled;
         default:
           return KeyEventResult.ignored;
       }
