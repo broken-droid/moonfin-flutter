@@ -18,6 +18,7 @@ import '../../widgets/focus/context_menu_sheet.dart';
 import '../../widgets/focus/focusable_toolbar_button.dart';
 import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
+import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/rating_display.dart';
@@ -56,7 +57,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
     _vm.addListener(_onChanged);
     _vm.load();
-    _scrollController.addListener(_onScroll);
     _backgroundSub = _backgroundService.backgroundStream.listen((url) {
       if (mounted) setState(() => _backdropUrl = url);
     });
@@ -78,34 +78,17 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (mounted) setState(() {});
   }
 
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final pos = _scrollController.position;
-    if (pos.pixels > pos.maxScrollExtent - 600) {
-      _vm.loadMore();
-    }
-  }
-
   void _onItemFocused(AggregatedItem item) {
     _vm.setFocusedItem(item);
     _backgroundService.setBackground(item, context: BlurContext.browsing);
   }
 
-  double _cardWidth() {
-    final posterSize = _vm.posterSize;
-    return switch (_vm.imageType) {
-      ImageType.thumb => posterSize.landscapeHeight * (16 / 9),
-      ImageType.banner => posterSize.landscapeHeight * (16 / 9),
-      ImageType.poster => posterSize.portraitHeight * (2 / 3),
-    };
-  }
-
-  double _aspectRatio() {
-    return switch (_vm.imageType) {
-      ImageType.thumb => 16 / 9,
-      ImageType.banner => 16 / 9,
-      ImageType.poster => 2 / 3,
-    };
+  double _imageHeight(double aspectRatio) {
+    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
+    final base = aspectRatio >= 1
+        ? _vm.posterSize.landscapeHeight.toDouble()
+        : _vm.posterSize.portraitHeight.toDouble();
+    return base * tvScale;
   }
 
   String? _imageUrl(AggregatedItem item) {
@@ -179,16 +162,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: _vm.load, child: Text(AppLocalizations.of(context).retry)),
+            ElevatedButton(
+              onPressed: _vm.load,
+              child: Text(AppLocalizations.of(context).retry),
+            ),
           ],
         ),
       ),
-      FavoritesState.ready => _buildGrid(),
+      FavoritesState.ready => _buildRows(),
     };
   }
 
-  Widget _buildGrid() {
-    if (_vm.items.isEmpty) {
+  Widget _buildRows() {
+    if (_vm.rowItems.isEmpty) {
       return Center(
         child: Text(
           AppLocalizations.of(context).noFavoritesYet,
@@ -197,100 +183,70 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       );
     }
 
-    final cardWidth = _cardWidth();
-    const spacing = 12.0;
-    final watchedBehavior = _prefs.get(
-      UserPreferences.watchedIndicatorBehavior,
-    );
+    final isMobile = _isCompact(context);
+    final navbarIsLeft = _prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
+    final rowLeftInset = (!isMobile && navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
+    final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
+    final cardFocusExpansion = _prefs.get(UserPreferences.cardFocusExpansion);
+    final watchedBehavior = _prefs.get(UserPreferences.watchedIndicatorBehavior);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isMobile = _isCompact(context);
-        final gridPadding = isMobile ? 16.0 : _horizontalPadding;
-        final crossAxisCount =
-            ((constraints.maxWidth - gridPadding * 2 + spacing) /
-                    (cardWidth + spacing))
-                .floor()
-                .clamp(2, 20);
+    final rows = <Widget>[];
+    for (final type in FavoritesViewModel.rowTypes) {
+      final items = _vm.rowItems[type];
+      if (items == null || items.isEmpty) continue;
 
-        final cellWidth =
-            (constraints.maxWidth -
-                gridPadding * 2 -
-                (crossAxisCount - 1) * spacing) /
-            crossAxisCount;
-        final ar = _aspectRatio();
-        final hasSubtitles = _vm.items.any(
-          (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
-        );
-        final textHeight = hasSubtitles ? 38.0 : 22.0;
-        final childAspectRatio = cellWidth / (cellWidth / ar + textHeight);
+      final ar = MediaCard.aspectRatioForType(type.itemTypes?.first);
+      final imageH = _imageHeight(ar);
+      final rowHeight = imageH + 102;
 
-        return CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(gridPadding, 20, gridPadding, 16),
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: spacing,
-                  childAspectRatio: childAspectRatio,
+      rows.add(
+        Padding(
+          padding: EdgeInsets.only(left: rowLeftInset, top: 4),
+          child: LibraryRow(
+            title: type.displayName,
+            rowHeight: rowHeight,
+            children: items.map((item) {
+              final width = imageH * ar;
+              return MediaCard(
+                title: item.name,
+                subtitle: _cardSubtitle(item),
+                imageUrl: _imageUrl(item),
+                width: width,
+                aspectRatio: ar,
+                isFavorite: item.isFavorite,
+                isPlayed: item.isPlayed,
+                unplayedCount: item.unplayedItemCount,
+                playedPercentage: item.playedPercentage,
+                watchedBehavior: watchedBehavior,
+                itemType: item.type,
+                focusColor: focusColor,
+                cardFocusExpansion: cardFocusExpansion,
+                onFocus: isMobile ? null : () => _onItemFocused(item),
+                onHoverStart: isMobile ? null : () => _onItemFocused(item),
+                onHoverEnd: isMobile ? null : () => _vm.setFocusedItem(null),
+                onLongPress: () => showContextMenu(
+                  context,
+                  item,
+                  onChanged: () => setState(() {}),
                 ),
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final item = _vm.items[index];
-                  final focusColor = Color(
-                    _prefs.get(UserPreferences.focusColor).colorValue,
-                  );
-                  return MediaCard(
-                    title: item.name,
-                    subtitle: _cardSubtitle(item),
-                    imageUrl: _imageUrl(item),
-                    width: double.infinity,
-                    aspectRatio: ar,
-                    focusColor: focusColor,
-                    cardFocusExpansion: _prefs.get(
-                      UserPreferences.cardFocusExpansion,
-                    ),
-                    isPlayed: item.isPlayed,
-                    isFavorite: item.isFavorite,
-                    unplayedCount: item.unplayedItemCount,
-                    playedPercentage: item.playedPercentage,
-                    watchedBehavior: watchedBehavior,
-                    itemType: item.type,
-                    onFocus: isMobile ? null : () => _onItemFocused(item),
-                    onHoverStart: isMobile ? null : () => _onItemFocused(item),
-                    onHoverEnd: isMobile
-                        ? null
-                        : () => _vm.setFocusedItem(null),
-                    onLongPress: () => showContextMenu(
-                      context,
-                      item,
-                      onChanged: () => setState(() {}),
-                    ),
-                    onTap: () => context.push(
-                      Destinations.itemOrPhoto(
-                        item.id,
-                        serverId: item.serverId,
-                        type: item.type,
-                      ),
-                    ),
-                  );
-                }, childCount: _vm.items.length),
-              ),
-            ),
-            if (_vm.loadingMore)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Center(
-                    child: CircularProgressIndicator(color: AppColorScheme.accent),
+                onTap: () => context.push(
+                  Destinations.itemOrPhoto(
+                    item.id,
+                    serverId: item.serverId,
+                    type: item.type,
                   ),
                 ),
-              ),
-          ],
-        );
-      },
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    }
+
+    return ListView(
+      controller: _scrollController,
+      padding: const EdgeInsets.only(bottom: 32),
+      children: rows,
     );
   }
 
@@ -302,11 +258,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (rt != null) {
       final h = rt.inHours;
       final m = rt.inMinutes % 60;
-      if (h > 0) {
-        parts.add('${h}h ${m}m');
-      } else {
-        parts.add('${m}m');
-      }
+      parts.add(h > 0 ? '${h}h ${m}m' : '${m}m');
     }
     if (item.communityRating != null) {
       parts.add('★ ${item.communityRating!.toStringAsFixed(1)}');
@@ -703,14 +655,6 @@ class _SortDialogState extends State<_SortDialog> {
                 ),
               ),
             ),
-            Divider(color: Colors.white.withAlpha(20)),
-            _sectionHeader(AppLocalizations.of(context).type),
-            for (final type in FavoriteTypeFilter.values)
-              _radioTile(
-                label: type.displayName,
-                selected: vm.typeFilter == type,
-                onTap: () => vm.setTypeFilter(type),
-              ),
             Divider(color: Colors.white.withAlpha(20)),
             _sectionHeader(AppLocalizations.of(context).sortBy),
             for (final option in LibrarySortBy.values)

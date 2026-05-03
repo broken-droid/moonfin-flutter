@@ -14,27 +14,29 @@ class FavoritesViewModel extends ChangeNotifier {
   final UserPreferences _prefs;
   final MdbListRepository _mdbListRepository;
 
-  static const _pageSize = 100;
+  static const _rowLimit = 30;
   static const _prefKey = 'favorites';
   static const _browseFields =
       'Type,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,Status,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,CriticRating,MediaStreams';
 
+  static const List<FavoriteTypeFilter> rowTypes = [
+    FavoriteTypeFilter.movie,
+    FavoriteTypeFilter.series,
+    FavoriteTypeFilter.episode,
+    FavoriteTypeFilter.person,
+    FavoriteTypeFilter.musicArtist,
+    FavoriteTypeFilter.musicAlbum,
+    FavoriteTypeFilter.audio,
+  ];
+
   FavoritesState _state = FavoritesState.loading;
   FavoritesState get state => _state;
 
-  List<AggregatedItem> _items = const [];
-  List<AggregatedItem> get items => _items;
+  Map<FavoriteTypeFilter, List<AggregatedItem>> _rowItems = {};
+  Map<FavoriteTypeFilter, List<AggregatedItem>> get rowItems => _rowItems;
 
-  int _totalCount = 0;
-  int get totalCount => _totalCount;
-
-  bool _totalCountKnown = true;
-  bool _hasMoreFromPageSize = false;
-
-  bool get hasMore => _totalCountKnown ? _items.length < _totalCount : _hasMoreFromPageSize;
-
-  bool _loadingMore = false;
-  bool get loadingMore => _loadingMore;
+  int get totalCount =>
+      _rowItems.values.fold(0, (sum, list) => sum + list.length);
 
   late LibrarySortBy _sortBy;
   LibrarySortBy get sortBy => _sortBy;
@@ -47,9 +49,6 @@ class FavoritesViewModel extends ChangeNotifier {
 
   late PosterSize _posterSize;
   PosterSize get posterSize => _posterSize;
-
-  late FavoriteTypeFilter _typeFilter;
-  FavoriteTypeFilter get typeFilter => _typeFilter;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -75,7 +74,6 @@ class FavoritesViewModel extends ChangeNotifier {
     _sortDirection = _prefs.get(UserPreferences.librarySortDirection(_prefKey));
     _imageType = _prefs.get(UserPreferences.libraryImageType(_prefKey));
     _posterSize = _prefs.get(UserPreferences.posterSize);
-    _typeFilter = _prefs.get(UserPreferences.favoriteTypeFilter);
   }
 
   void setFocusedItem(AggregatedItem? item) {
@@ -117,15 +115,19 @@ class FavoritesViewModel extends ChangeNotifier {
 
   Future<void> load() async {
     _state = FavoritesState.loading;
-    _items = const [];
-    _totalCount = 0;
-    _totalCountKnown = true;
-    _hasMoreFromPageSize = false;
+    _rowItems = {};
     _tmdbIdByItemId.clear();
     notifyListeners();
 
     try {
-      await _fetchPage(0);
+      final results = await Future.wait(
+        rowTypes.map((type) => _fetchRowItems(type)),
+      );
+      final map = <FavoriteTypeFilter, List<AggregatedItem>>{};
+      for (var i = 0; i < rowTypes.length; i++) {
+        if (results[i].isNotEmpty) map[rowTypes[i]] = results[i];
+      }
+      _rowItems = map;
       _state = FavoritesState.ready;
     } catch (e) {
       _errorMessage = e.toString();
@@ -134,86 +136,48 @@ class FavoritesViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadMore() async {
-    if (_loadingMore || !hasMore) return;
-    _loadingMore = true;
-    notifyListeners();
-
+  Future<List<AggregatedItem>> _fetchRowItems(FavoriteTypeFilter type) async {
     try {
-      await _fetchPage(_items.length);
-    } catch (_) {}
-
-    _loadingMore = false;
-    notifyListeners();
-  }
-
-  Future<void> _fetchPage(int startIndex) async {
-    final response = await _fetchItemsWithFallback(startIndex: startIndex);
-
-    final rawItems = (response['Items'] as List?) ?? [];
-    final totalFromServer = response['TotalRecordCount'] as int?;
-    _totalCountKnown = totalFromServer != null;
-    if (_totalCountKnown) {
-      _totalCount = totalFromServer!;
-      _hasMoreFromPageSize = _items.length + rawItems.length < _totalCount;
-    } else {
-      _hasMoreFromPageSize = rawItems.length == _pageSize;
-      final loadedCount = startIndex + rawItems.length;
-      _totalCount = loadedCount + (_hasMoreFromPageSize ? 1 : 0);
-    }
-
-    final mapped = rawItems.cast<Map<String, dynamic>>().map((raw) => AggregatedItem(
-      id: raw['Id'] as String,
-      serverId: _client.baseUrl,
-      rawData: raw,
-    )).toList();
-
-    if (startIndex == 0) {
-      _items = mapped;
-    } else {
-      _items = [..._items, ...mapped];
-    }
-  }
-
-  Future<Map<String, dynamic>> _fetchItemsWithFallback({
-    required int startIndex,
-  }) async {
-    try {
-      return await _client.itemsApi.getItems(
-        sortBy: _sortBy.apiValue,
-        sortOrder: _sortDirection == SortDirection.ascending
-            ? 'Ascending'
-            : 'Descending',
-        startIndex: startIndex,
-        limit: _pageSize,
-        recursive: true,
-        isFavorite: true,
-        includeItemTypes: _resolvedIncludeItemTypes(),
-        fields: _browseFields,
-      );
-    } on DioException catch (e) {
-      final statusCode = e.response?.statusCode ?? 0;
-      if (statusCode < 500) {
-        rethrow;
+      final sortValue = _sortBy.apiValue;
+      final sortOrder = _sortDirection == SortDirection.ascending
+          ? 'Ascending'
+          : 'Descending';
+      Map<String, dynamic> response;
+      try {
+        response = await _client.itemsApi.getItems(
+          sortBy: sortValue,
+          sortOrder: sortOrder,
+          limit: _rowLimit,
+          recursive: true,
+          isFavorite: true,
+          includeItemTypes: type.itemTypes,
+          fields: _browseFields,
+        );
+      } on DioException catch (e) {
+        final statusCode = e.response?.statusCode ?? 0;
+        if (statusCode < 500) rethrow;
+        final fallbackSort = sortValue.toLowerCase().contains('isfolder')
+            ? 'SortName'
+            : sortValue;
+        response = await _client.itemsApi.getItems(
+          sortBy: fallbackSort,
+          sortOrder: sortOrder,
+          limit: _rowLimit,
+          recursive: true,
+          isFavorite: true,
+          includeItemTypes: type.itemTypes,
+          fields: _browseFields,
+          enableTotalRecordCount: false,
+        );
       }
-
-      final fallbackSort = _sortBy.apiValue.toLowerCase().contains('isfolder')
-          ? 'SortName'
-          : _sortBy.apiValue;
-
-      return _client.itemsApi.getItems(
-        sortBy: fallbackSort,
-        sortOrder: _sortDirection == SortDirection.ascending
-            ? 'Ascending'
-            : 'Descending',
-        startIndex: startIndex,
-        limit: _pageSize,
-        recursive: true,
-        isFavorite: true,
-        includeItemTypes: _resolvedIncludeItemTypes(),
-        fields: _browseFields,
-        enableTotalRecordCount: false,
-      );
+      final rawItems = (response['Items'] as List?) ?? [];
+      return rawItems.cast<Map<String, dynamic>>().map((raw) => AggregatedItem(
+        id: raw['Id'] as String,
+        serverId: _client.baseUrl,
+        rawData: raw,
+      )).toList();
+    } catch (_) {
+      return const [];
     }
   }
 
@@ -250,44 +214,4 @@ class FavoritesViewModel extends ChangeNotifier {
     await _prefs.set(UserPreferences.posterSize, value);
     notifyListeners();
   }
-
-  Future<void> setTypeFilter(FavoriteTypeFilter value) async {
-    if (_typeFilter == value) return;
-    _typeFilter = value;
-    _focusedItem = null;
-    await _prefs.set(UserPreferences.favoriteTypeFilter, value);
-    await load();
-  }
-
-  List<String>? _resolvedIncludeItemTypes() {
-    if (_typeFilter != FavoriteTypeFilter.all) {
-      return _typeFilter.itemTypes;
-    }
-    final csv = _prefs.get(UserPreferences.defaultFavoritesFilter);
-    if (csv.trim().isEmpty) return null;
-    final selected = csv
-        .split(',')
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toSet();
-    if (selected.contains(FavoriteTypeFilter.all.name)) return null;
-    final types = <String>{};
-    for (final filter in FavoriteTypeFilter.values) {
-      if (selected.contains(filter.name)) {
-        final typesForFilter = filter.itemTypes;
-        if (typesForFilter == null) return null;
-        types.addAll(typesForFilter);
-      }
-    }
-    return types.isEmpty ? null : types.toList();
-  }
-
-  String get statusText {
-    final typeLabel = _typeFilter == FavoriteTypeFilter.all
-        ? 'all favorites'
-        : '${_typeFilter.displayName} favorites';
-    return 'Showing $typeLabel sorted by ${_sortBy.displayName}';
-  }
-
-  String get counterText => '${_items.length} | $_totalCount';
 }
