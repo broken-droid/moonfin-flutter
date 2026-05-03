@@ -81,7 +81,7 @@ class MainActivity : AudioServiceActivity() {
             when (intent?.action) {
                 Intent.ACTION_SCREEN_OFF ->
                     methodChannel?.invokeMethod("onScreenLock", true)
-                Intent.ACTION_SCREEN_ON ->
+                Intent.ACTION_USER_PRESENT ->
                     methodChannel?.invokeMethod("onScreenLock", false)
             }
         }
@@ -309,7 +309,7 @@ class MainActivity : AudioServiceActivity() {
 
         val screenFilter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
-            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_USER_PRESENT)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(screenReceiver, screenFilter, Context.RECEIVER_EXPORTED)

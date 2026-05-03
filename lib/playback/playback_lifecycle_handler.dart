@@ -11,6 +11,11 @@ class PlaybackLifecycleHandler with WidgetsBindingObserver {
   bool? _wasPlaying;
   Timer? _bgCorrectionTimer;
   bool _bgSeekInFlight = false;
+  bool _screenLocked = false;
+
+  void setScreenLocked(bool locked) {
+    _screenLocked = locked;
+  }
 
   PlaybackLifecycleHandler(this._manager) {
     WidgetsBinding.instance.addObserver(this);
@@ -84,6 +89,8 @@ class PlaybackLifecycleHandler with WidgetsBindingObserver {
     _bgCorrectionTimer?.cancel();
     _bgCorrectionTimer = null;
     _bgSeekInFlight = false;
+
+    if (_screenLocked) return;
 
     final savedPos = _savedPosition;
     final wasPlaying = _wasPlaying;

@@ -126,6 +126,7 @@ class _NextUpOverlayState extends State<NextUpOverlay>
                     children: [
                       Expanded(
                         child: ElevatedButton(
+                          autofocus: true,
                           onPressed: widget.onPlayNext,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColorScheme.accent,

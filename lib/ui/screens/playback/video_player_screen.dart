@@ -17,6 +17,7 @@ import '../../../util/fullscreen_helper.dart';
 import '../../widgets/playback/seek_icons.dart';
 
 import '../../../playback/media_kit_player_backend.dart';
+import '../../../playback/playback_lifecycle_handler.dart';
 import '../../../auth/repositories/user_repository.dart';
 import '../../../data/models/aggregated_item.dart';
 import '../../../data/models/media_segment.dart';
@@ -65,6 +66,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _nativeDlna = GetIt.instance<NativeDlnaChannel>();
   final _nativeAirPlay = GetIt.instance<NativeAirPlayChannel>();
   final _pipService = GetIt.instance<PipService>();
+  final _lifecycleHandler = GetIt.instance<PlaybackLifecycleHandler>();
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
   late MediaSegmentService _segmentService;
 
@@ -93,8 +95,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   DateTime? _suppressBackNavigationUntil;
   bool _isPlayerMutationInFlight = false;
   Duration? _positionBeforeScreenLock;
-  StreamSubscription? _screenLockSub;
+  StreamSubscription<bool>? _screenLockSub;
+  StreamSubscription<bool>? _completedSub;
   bool _isRestoringPosition = false;
+  bool _wasPlayingBeforeScreenLock = false;
 
   MediaSegment? _skipSegment;
   Duration? _skipTo;
@@ -529,6 +533,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       }
     }
     _stallSub = _manager.stallStream.listen((_) => _onPlaybackStall());
+    _completedSub = _backend.completedStream.listen(_onPlaybackCompleted);
 
     _queueSub = _queue.queueChangedStream.listen((_) {
       _loadSegmentsForCurrentItem();
@@ -607,6 +612,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _airPlayEventsSub?.cancel();
     _stallSub?.cancel();
     _screenLockSub?.cancel();
+    _completedSub?.cancel();
     _tvBackgroundExitTimer?.cancel();
     _overlayFocus.dispose();
     _tvSeekbarFocus.dispose();
@@ -881,6 +887,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
   }
 
+  void _onPlaybackCompleted(bool completed) {
+    if (!completed || !mounted || _isStopping) return;
+    if (_queue.hasNext) return;
+
+    final duration = _state.duration;
+    if (duration > Duration.zero && (duration - _state.position) > const Duration(seconds: 5)) {
+      return;
+    }
+
+    unawaited(_exitPlayback());
+  }
+
   void _onPlaybackStall() {
     if (!mounted || _stallDialogShown) return;
     _stallDialogShown = true;
@@ -909,27 +927,50 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _onScreenLock(bool locked) {
+    _lifecycleHandler.setScreenLocked(locked);
     if (locked) {
       _positionBeforeScreenLock = _backend.position;
+      _wasPlayingBeforeScreenLock = _state.isPlaying;
       _isRestoringPosition = true;
+      if (_wasPlayingBeforeScreenLock) {
+        _manager.pause();
+      }
+      return;
     }
+
+    if (!_isRestoringPosition) return;
+    unawaited(_restorePositionAfterScreenLock());
   }
 
   Future<void> _restorePositionAfterScreenLock() async {
     final pos = _positionBeforeScreenLock;
-    if (pos == null || pos == Duration.zero) {
+    final shouldResume = _wasPlayingBeforeScreenLock;
+    _positionBeforeScreenLock = null;
+    _wasPlayingBeforeScreenLock = false;
+
+    try {
+      if (pos != null && pos > Duration.zero) {
+        await Future.delayed(const Duration(milliseconds: 450));
+        if (!mounted || _isStopping) return;
+
+        final currentPos = _backend.position;
+        final regressed = currentPos + const Duration(seconds: 1) < pos;
+        if (regressed) {
+          await _backend.seekTo(pos);
+        }
+      }
+
+      if (shouldResume && !_state.isPlaying) {
+        await _manager.resume();
+      }
+    } catch (_) {
+    } finally {
       if (_isRestoringPosition && mounted) {
         setState(() => _isRestoringPosition = false);
+      } else {
+        _isRestoringPosition = false;
       }
-      return;
     }
-    _positionBeforeScreenLock = null;
-    // The surface re-creation triggers a second decoder allocation up to ~700ms
-    // after the activity resumes. Wait long enough for it to settle.
-    await Future.delayed(const Duration(milliseconds: 1500));
-    if (!mounted || _isStopping) return;
-    await _backend.seekTo(pos);
-    if (mounted) setState(() => _isRestoringPosition = false);
   }
 
   void _onPiPChanged(bool isInPiP) {
@@ -1172,8 +1213,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (mounted) setState(() => _seekbarFocused = _tvSeekbarFocus.hasFocus);
   }
 
-  void _focusTvSeekbar({int attempt = 0}) {
+  void _focusTvPrimaryButton() {
     if (!PlatformDetection.isTV) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_controlsVisible) return;
+      _tvBottomPrimaryFocus.requestFocus();
+    });
+  }
+
+  void _focusTvSeekbar({int attempt = 0}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_controlsVisible || _isOsdLocked) return;
       _tvSeekbarFocus.requestFocus();
@@ -1480,22 +1528,25 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         case LogicalKeyboardKey.mediaPlay:
           unawaited(_resumeWithConfiguredRewind());
           _showControls();
+          _focusTvPrimaryButton();
           return KeyEventResult.handled;
         case LogicalKeyboardKey.mediaPause:
           _manager.pause();
           _showControls();
+          _focusTvPrimaryButton();
           return KeyEventResult.handled;
         case LogicalKeyboardKey.mediaPlayPause:
           _togglePlayPause();
           _showControls();
+          _focusTvPrimaryButton();
           return KeyEventResult.handled;
         case LogicalKeyboardKey.mediaFastForward:
           _seekRelative(_prefs.get(UserPreferences.skipForwardLength));
-          _showControls();
+          _showControls(focusSeekbar: PlatformDetection.isTV);
           return KeyEventResult.handled;
         case LogicalKeyboardKey.mediaRewind:
           _seekRelative(-_prefs.get(UserPreferences.skipBackLength));
-          _showControls();
+          _showControls(focusSeekbar: PlatformDetection.isTV);
           return KeyEventResult.handled;
         default:
           return KeyEventResult.ignored;
@@ -1510,22 +1561,25 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       case LogicalKeyboardKey.mediaPlay:
         unawaited(_resumeWithConfiguredRewind());
         _showControls();
+        _focusTvPrimaryButton();
         return KeyEventResult.handled;
       case LogicalKeyboardKey.mediaPause:
         _manager.pause();
         _showControls();
+        _focusTvPrimaryButton();
         return KeyEventResult.handled;
       case LogicalKeyboardKey.mediaPlayPause:
         _togglePlayPause();
         _showControls();
+        _focusTvPrimaryButton();
         return KeyEventResult.handled;
       case LogicalKeyboardKey.mediaFastForward:
         _seekRelative(_prefs.get(UserPreferences.skipForwardLength));
-        _showControls();
+        _showControls(focusSeekbar: PlatformDetection.isTV);
         return KeyEventResult.handled;
       case LogicalKeyboardKey.mediaRewind:
         _seekRelative(-_prefs.get(UserPreferences.skipBackLength));
-        _showControls();
+        _showControls(focusSeekbar: PlatformDetection.isTV);
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowLeft:
         _seekRelative(

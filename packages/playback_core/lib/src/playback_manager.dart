@@ -53,6 +53,7 @@ class PlaybackManager {
   int _stallSlowCount = 0;
   int _stallWarmupTick = 0;
   bool _jumpRecoveryInFlight = false;
+  DateTime? _lastSeekTime;
 
   Stream<void> get stallStream => _stallController.stream;
 
@@ -127,8 +128,13 @@ class PlaybackManager {
       // Some Amlogic HEVC/HDR direct-play sessions jump 60-180s forward when
       // MediaCodec reconfigures on late HDR metadata. Treat this as a decoder
       // failure and resume from the last stable position using transcode.
+      // Suppress within 10 s of any user-initiated seek so FF doesn't
+      // falsely trigger this path.
+      final recentSeek = _lastSeekTime != null &&
+          now.difference(_lastSeekTime!).inSeconds < 10;
       if (_currentResolution?.playMethod == StreamPlayMethod.directPlay &&
           !_jumpRecoveryInFlight &&
+          !recentSeek &&
           positionDeltaMs > 15000 &&
           ratio > 10) {
         _jumpRecoveryInFlight = true;
@@ -638,6 +644,7 @@ class PlaybackManager {
   Future<void> seekTo(Duration position) async {
     if (await _maybeIntercept(TransportAction.seek, position: position)) return;
     _lastKnownPosition = position;
+    _lastSeekTime = DateTime.now();
     await _backend?.seekTo(position);
   }
 
