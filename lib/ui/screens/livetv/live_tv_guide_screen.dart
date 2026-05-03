@@ -7,14 +7,12 @@ import 'package:server_core/server_core.dart';
 
 import '../../../data/viewmodels/live_tv_guide_view_model.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../preference/preference_constants.dart';
-import '../../../preference/user_preferences.dart';
-import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/horizontal_scroll_section.dart';
-import '../../widgets/navigation_layout.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/focus/request_initial_focus.dart';
+import '../../../util/focus/dpad_keys.dart';
+import '../../../util/focus/key_event_utils.dart';
 
 const _kChannelColumnWidth = 160.0;
 const _kRowHeight = 74.0;
@@ -39,35 +37,22 @@ class LiveTvGuideScreen extends StatefulWidget {
 
 class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
   late final LiveTvGuideViewModel _vm;
-  final _prefs = GetIt.instance<UserPreferences>();
   final _channelScrollController = ScrollController();
   final _programScrollController = ScrollController();
   final _timeHeaderHorizontalScrollController = ScrollController();
   final _guideHorizontalScrollController = ScrollController();
+  final Map<int, FocusNode> _channelFocusNodes = {};
 
-  double _contentTopInset() {
-    if (PlatformDetection.isTV) {
-      final navbarPosition = _prefs.get(UserPreferences.navbarPosition);
-      if (navbarPosition != NavbarPosition.top) {
-        return 8.0;
-      }
-      return 95.0;
-    }
+  bool _syncingScroll = false;
+  bool _syncingHorizontalScroll = false;
+  int _lastComputedHours = _kMinGuideHours;
+  bool _isShowingDatePicker = false;
+  bool _isOpeningRecordings = false;
+  int? _lastFocusedRowIndex;
 
-    return 50.0;
-  }
+  double _contentTopInset() => 20.0;
 
-  double _contentLeftInset() {
-    if (PlatformDetection.isTV) {
-      final navbarPosition = _prefs.get(UserPreferences.navbarPosition);
-      if (navbarPosition == NavbarPosition.top) {
-        return 0.0;
-      }
-      return 104.0;
-    }
-
-    return 8.0;
-  }
+  double _contentLeftInset() => 24.0;
 
   @override
   void initState() {
@@ -87,11 +72,12 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
     });
   }
 
-  bool _syncingScroll = false;
-  bool _syncingHorizontalScroll = false;
   void _syncVerticalScroll() {
     if (_syncingScroll) return;
-    if (!_channelScrollController.hasClients || !_programScrollController.hasClients) return;
+    if (!_channelScrollController.hasClients || !_programScrollController.hasClients) {
+      return;
+    }
+
     _syncingScroll = true;
     try {
       final source = _channelScrollController.position.isScrollingNotifier.value
@@ -135,12 +121,84 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
       if ((target.offset - targetOffset).abs() > 0.5) {
         target.jumpTo(targetOffset);
       }
-    } catch (_) {}
+    } catch (_) {
+    }
     _syncingHorizontalScroll = false;
   }
 
   void _onChanged() {
     if (mounted) setState(() {});
+  }
+
+  void _scrollToRow(int index) {
+    final offset = index * _kRowHeight;
+    final targetRow = index;
+    if (_lastFocusedRowIndex == targetRow) {
+      return;
+    }
+    _lastFocusedRowIndex = targetRow;
+    if (_channelScrollController.hasClients) {
+      final max = _channelScrollController.position.maxScrollExtent;
+      _channelScrollController.animateTo(
+        offset.clamp(0.0, max),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
+    if (_programScrollController.hasClients) {
+      final max = _programScrollController.position.maxScrollExtent;
+      _programScrollController.animateTo(
+        offset.clamp(0.0, max),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  FocusNode _channelFocusNodeFor(int index) {
+    return _channelFocusNodes.putIfAbsent(
+      index,
+      () => FocusNode(debugLabel: 'GuideChannel:$index'),
+    );
+  }
+
+  void _focusChannelRow(int index) {
+    _scrollToRow(index);
+    _channelFocusNodeFor(index).requestFocus();
+  }
+
+  Future<void> _openDatePicker() async {
+    if (_isShowingDatePicker) return;
+    _isShowingDatePicker = true;
+    try {
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: _vm.guideDate,
+        firstDate: DateTime.now().subtract(const Duration(days: 7)),
+        lastDate: DateTime.now().add(const Duration(days: 14)),
+        builder: (context, child) {
+          return FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
+      );
+      if (picked != null) {
+        _vm.setDate(picked);
+      }
+    } finally {
+      _isShowingDatePicker = false;
+    }
+  }
+
+  Future<void> _openRecordings() async {
+    if (_isOpeningRecordings) return;
+    _isOpeningRecordings = true;
+    try {
+      await context.push(Destinations.liveTvRecordings);
+    } finally {
+      _isOpeningRecordings = false;
+    }
   }
 
   @override
@@ -151,6 +209,10 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
     _programScrollController.dispose();
     _timeHeaderHorizontalScrollController.dispose();
     _guideHorizontalScrollController.dispose();
+    for (final node in _channelFocusNodes.values) {
+      node.dispose();
+    }
+    _channelFocusNodes.clear();
     super.dispose();
   }
 
@@ -164,7 +226,20 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
 
   String _formatDate(DateTime dt) {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return '${days[dt.weekday - 1]}, ${months[dt.month - 1]} ${dt.day}';
   }
 
@@ -173,8 +248,6 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
     return minutes * _kPixelsPerMinute;
   }
 
-  int _lastComputedHours = _kMinGuideHours;
-
   @override
   Widget build(BuildContext context) =>
       RequestInitialFocus(child: _buildContent(context));
@@ -182,37 +255,35 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
   Widget _buildContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: NavigationLayout(
-        showBackButton: true,
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final hours = _guideHoursForWidth(
-                constraints.maxWidth - _contentLeftInset(),
-              );
-              if (hours != _lastComputedHours &&
-                  _vm.state == GuideState.ready) {
-                _lastComputedHours = hours;
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) _vm.setWindowHours(hours);
-                });
-              }
-              return Padding(
-                padding: EdgeInsets.only(
-                  top: _contentTopInset(),
-                  left: _contentLeftInset(),
-                ),
-                child: Column(
-                  children: [
-                    _buildToolbar(),
-                    _buildFilterChips(),
-                    const SizedBox(height: 8),
-                    Expanded(child: _buildBody()),
-                  ],
-                ),
-              );
-            },
-          ),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final hours = _guideHoursForWidth(
+              constraints.maxWidth - _contentLeftInset(),
+            );
+            if (hours != _lastComputedHours && _vm.state == GuideState.ready) {
+              _lastComputedHours = hours;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) _vm.setWindowHours(hours);
+              });
+            }
+            return Padding(
+              padding: EdgeInsets.only(
+                top: _contentTopInset(),
+                left: _contentLeftInset(),
+                right: 24,
+                bottom: 16,
+              ),
+              child: Column(
+                children: [
+                  _buildToolbar(),
+                  _buildFilterChips(),
+                  const SizedBox(height: 8),
+                  Expanded(child: _buildBody()),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -220,38 +291,48 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
 
   Widget _buildToolbar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.white),
-            onPressed: () => _vm.shiftWindow(-_vm.guideWindowHours),
-          ),
-          TextButton(
-            onPressed: () => _vm.goToNow(),
-            child: Text(AppLocalizations.of(context).now, style: const TextStyle(color: Colors.blue)),
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right, color: Colors.white),
-            onPressed: () => _vm.shiftWindow(_vm.guideWindowHours),
+          _GuidePillButton(
+            icon: Icons.arrow_back,
+            onPressed: () => context.pop(),
           ),
           const SizedBox(width: 8),
-          Text(
-            '${_formatDate(_vm.guideDate)}  ${_formatTime(_vm.windowStart)} – ${_formatTime(_vm.windowEnd)}',
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+          _GuidePillButton(
+            icon: Icons.chevron_left,
+            onPressed: () => _vm.shiftWindow(-_vm.guideWindowHours),
           ),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.calendar_today, color: Colors.white70, size: 20),
-            onPressed: () async {
-              final picked = await showDatePicker(
-                context: context,
-                initialDate: _vm.guideDate,
-                firstDate: DateTime.now().subtract(const Duration(days: 7)),
-                lastDate: DateTime.now().add(const Duration(days: 14)),
-              );
-              if (picked != null) _vm.setDate(picked);
-            },
+          const SizedBox(width: 4),
+          _GuidePillButton(
+            label: AppLocalizations.of(context).now,
+            onPressed: () => _vm.goToNow(),
+          ),
+          const SizedBox(width: 4),
+          _GuidePillButton(
+            icon: Icons.chevron_right,
+            onPressed: () => _vm.shiftWindow(_vm.guideWindowHours),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              '${_formatDate(_vm.guideDate)}  ${_formatTime(_vm.windowStart)} – ${_formatTime(_vm.windowEnd)}',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 14,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          _GuidePillButton(
+            icon: Icons.calendar_today,
+            onPressed: _openDatePicker,
+          ),
+          const SizedBox(width: 8),
+          _GuidePillButton(
+            icon: Icons.fiber_dvr,
+            label: AppLocalizations.of(context).recordings,
+            onPressed: _openRecordings,
           ),
         ],
       ),
@@ -261,24 +342,16 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
   Widget _buildFilterChips() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
       child: Row(
-        children: GuideFilter.values.map((f) {
-          final selected = _vm.filter == f;
+        children: GuideFilter.values.map((filter) {
+          final selected = _vm.filter == filter;
           return Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: FilterChip(
-              label: Text(_filterLabel(f)),
-              selected: selected,
-              onSelected: (_) => _vm.setFilter(selected ? GuideFilter.all : f),
-              selectedColor: Colors.blue.withAlpha(77),
-              checkmarkColor: Colors.blue,
-              labelStyle: TextStyle(
-                color: selected ? Colors.blue : Colors.white70,
-                fontSize: 13,
-              ),
-              backgroundColor: const Color(0xFF1E1E1E),
-              side: BorderSide.none,
+            child: _GuidePillButton(
+              label: _filterLabel(filter),
+              isActive: selected,
+              onPressed: () => _vm.setFilter(selected ? GuideFilter.all : filter),
             ),
           );
         }).toList(),
@@ -286,9 +359,9 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
     );
   }
 
-  String _filterLabel(GuideFilter f) {
+  String _filterLabel(GuideFilter filter) {
     final l10n = AppLocalizations.of(context);
-    return switch (f) {
+    return switch (filter) {
       GuideFilter.all => l10n.all,
       GuideFilter.movies => l10n.movies,
       GuideFilter.series => l10n.series,
@@ -371,7 +444,8 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
                   controller: _channelScrollController,
                   itemCount: channels.length,
                   itemExtent: _kRowHeight,
-                  itemBuilder: (context, index) => _buildChannelCell(channels[index]),
+                  itemBuilder: (context, index) =>
+                      _buildChannelCell(channels[index], index),
                 ),
               ),
               VerticalDivider(
@@ -397,8 +471,8 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
 
   Widget _buildTimeHeader(double totalWidth) {
     final slots = <Widget>[];
-    var t = _vm.windowStart;
-    while (t.isBefore(_vm.windowEnd)) {
+    var time = _vm.windowStart;
+    while (time.isBefore(_vm.windowEnd)) {
       final slotWidth = 30 * _kPixelsPerMinute;
       slots.add(
         SizedBox(
@@ -409,14 +483,14 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
-                _formatTime(t),
+                _formatTime(time),
                 style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
             ),
           ),
         ),
       );
-      t = t.add(const Duration(minutes: 30));
+      time = time.add(const Duration(minutes: 30));
     }
     return SizedBox(
       width: totalWidth,
@@ -425,68 +499,69 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
     );
   }
 
-  Widget _buildChannelCell(GuideChannel channel) {
+  Widget _buildChannelCell(GuideChannel channel, int index) {
     final imageUrl = channel.imageTag != null
         ? _vm.imageApi.getPrimaryImageUrl(channel.id, tag: channel.imageTag)
         : null;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _watchChannel(channel.id),
-        child: Container(
-          height: _kRowHeight,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: ThemeRegistry.active.borders.cardBorder,
-            ),
+    return _GuideFocusableSurface(
+      focusNode: _channelFocusNodeFor(index),
+      onPressed: () => _watchChannel(channel.id),
+      onFocusChange: (focused) {
+        if (focused) _scrollToRow(index);
+      },
+      builder: (_) => Container(
+        height: _kRowHeight,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: ThemeRegistry.active.borders.cardBorder,
           ),
-          child: Row(
-            children: [
-              if (imageUrl != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    width: 32,
-                    height: 32,
-                    fit: BoxFit.contain,
-                    errorWidget: (_, _, _) =>
-                        const Icon(Icons.tv, color: Colors.white38, size: 24),
-                  ),
-                )
-              else
-                const Icon(Icons.tv, color: Colors.white38, size: 24),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (channel.number != null)
-                      Text(
-                        channel.number!,
-                        style: const TextStyle(color: Colors.white54, fontSize: 11),
-                        maxLines: 1,
-                      ),
-                    Text(
-                      channel.name,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+        ),
+        child: Row(
+          children: [
+            if (imageUrl != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.contain,
+                  errorWidget: (_, _, _) =>
+                      const Icon(Icons.tv, color: Colors.white38, size: 24),
                 ),
+              )
+            else
+              const Icon(Icons.tv, color: Colors.white38, size: 24),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (channel.number != null)
+                    Text(
+                      channel.number!,
+                      style: const TextStyle(color: Colors.white54, fontSize: 11),
+                      maxLines: 1,
+                    ),
+                  Text(
+                    channel.name,
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildProgramRow(List<GuideProgram> programs) {
+  Widget _buildProgramRow(List<GuideProgram> programs, int rowIndex) {
     if (programs.isEmpty) {
       return Container(
         decoration: BoxDecoration(
@@ -497,112 +572,33 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
       );
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: ThemeRegistry.active.borders.cardBorder,
-        ),
-      ),
-      child: Stack(
-        children: programs.map((p) => _buildProgramCell(p)).toList(),
-      ),
-    );
-  }
-
-  Widget _buildProgramCell(GuideProgram program) {
-    final offsetMinutes = program.startDate.difference(_vm.windowStart).inMinutes.toDouble();
-    final clampedStart = offsetMinutes < 0 ? 0.0 : offsetMinutes;
-
-    final endOffset = program.endDate.difference(_vm.windowStart).inMinutes.toDouble();
-    final totalMinutes = _vm.windowEnd.difference(_vm.windowStart).inMinutes.toDouble();
-    final clampedEnd = endOffset > totalMinutes ? totalMinutes : endOffset;
-
-    final left = clampedStart * _kPixelsPerMinute;
-    final width = (clampedEnd - clampedStart) * _kPixelsPerMinute;
-
-    if (width <= 0) return const SizedBox.shrink();
-
-    final now = DateTime.now();
-    final isLive = now.isAfter(program.startDate) && now.isBefore(program.endDate);
-
-    return Positioned(
-      left: left,
-      width: width,
-      top: 2,
-      bottom: 2,
-      child: GestureDetector(
-        onTap: () => _showProgramDetails(program),
-        child: Container(
-          margin: const EdgeInsets.only(right: 1),
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-          decoration: BoxDecoration(
-            color: isLive ? Colors.blue.withAlpha(51) : const Color(0xFF1E1E1E),
-            borderRadius: BorderRadius.circular(4),
-            border: isLive
-                ? Border.fromBorderSide(
-                    ThemeRegistry.active.borders.focusBorder.copyWith(
-                      color: Colors.blue.withAlpha(128),
-                    ),
-                  )
-                : null,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  if (isLive)
-                    Container(
-                      margin: const EdgeInsets.only(right: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      child: Text(AppLocalizations.of(context).liveBadge, style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
-                    ),
-                  if (program.hasTimer)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 4),
-                      child: Icon(Icons.fiber_manual_record, color: Colors.red, size: 10),
-                    ),
-                  Expanded(
-                    child: Text(
-                      program.name,
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              if (width > 80)
-                Text(
-                  '${_formatTime(program.startDate)} – ${_formatTime(program.endDate)}',
-                  style: const TextStyle(color: Colors.white38, fontSize: 10),
-                  maxLines: 1,
-                ),
-              if (isLive)
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: LinearProgressIndicator(
-                    value: program.progressAt(now),
-                    backgroundColor: Colors.white12,
-                    valueColor: const AlwaysStoppedAnimation(Colors.blue),
-                    minHeight: 2,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
+    return _GuideProgramRow(
+      programs: programs,
+      rowIndex: rowIndex,
+      windowStart: _vm.windowStart,
+      windowEnd: _vm.windowEnd,
+      onLeftEdge: () => _focusChannelRow(rowIndex),
+      onProgramSelected: _showProgramDetails,
+      onProgramFocused: (left, width) {
+        _scrollToRow(rowIndex);
+        if (_guideHorizontalScrollController.hasClients) {
+          final viewport = _guideHorizontalScrollController.position.viewportDimension;
+          final max = _guideHorizontalScrollController.position.maxScrollExtent;
+          final target = (left + (width / 2) - (viewport / 2)).clamp(0.0, max);
+          _guideHorizontalScrollController.animateTo(
+            target,
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOut,
+          );
+        }
+      },
+      formatTime: _formatTime,
     );
   }
 
   void _watchChannel(String channelId) {
     final channels = _vm.filteredChannels;
-    final index = channels.indexWhere((c) => c.id == channelId);
+    final index = channels.indexWhere((channel) => channel.id == channelId);
     if (index < 0) return;
     context.push(Destinations.liveTvPlayer, extra: {
       'channels': channels,
@@ -635,18 +631,27 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
               ],
               if (program.overview != null && program.overview!.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                Text(program.overview!, style: const TextStyle(color: Colors.white60, fontSize: 13)),
+                Text(
+                  program.overview!,
+                  style: const TextStyle(color: Colors.white60, fontSize: 13),
+                ),
               ],
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 children: [
-                  if (program.isMovie) Chip(label: Text(l10n.movie), visualDensity: VisualDensity.compact),
-                  if (program.isSeries) Chip(label: Text(l10n.series), visualDensity: VisualDensity.compact),
-                  if (program.isSports) Chip(label: Text(l10n.sports), visualDensity: VisualDensity.compact),
-                  if (program.isNews) Chip(label: Text(l10n.news), visualDensity: VisualDensity.compact),
-                  if (program.isKids) Chip(label: Text(l10n.kids), visualDensity: VisualDensity.compact),
-                  if (program.isPremiere) Chip(label: Text(l10n.premiere), visualDensity: VisualDensity.compact),
+                  if (program.isMovie)
+                    Chip(label: Text(l10n.movie), visualDensity: VisualDensity.compact),
+                  if (program.isSeries)
+                    Chip(label: Text(l10n.series), visualDensity: VisualDensity.compact),
+                  if (program.isSports)
+                    Chip(label: Text(l10n.sports), visualDensity: VisualDensity.compact),
+                  if (program.isNews)
+                    Chip(label: Text(l10n.news), visualDensity: VisualDensity.compact),
+                  if (program.isKids)
+                    Chip(label: Text(l10n.kids), visualDensity: VisualDensity.compact),
+                  if (program.isPremiere)
+                    Chip(label: Text(l10n.premiere), visualDensity: VisualDensity.compact),
                 ],
               ),
             ],
@@ -705,7 +710,7 @@ class _GuideGridView extends StatefulWidget {
   final double guideWidth;
   final ScrollController verticalController;
   final ScrollController horizontalController;
-  final Widget Function(List<GuideProgram>) buildProgramRow;
+  final Widget Function(List<GuideProgram>, int rowIndex) buildProgramRow;
   final List<GuideProgram> Function(String channelId) programsForChannel;
 
   const _GuideGridView({
@@ -739,9 +744,373 @@ class _GuideGridViewState extends State<_GuideGridView> {
             return SizedBox(
               width: widget.guideWidth,
               height: _kRowHeight,
-              child: widget.buildProgramRow(programs),
+              child: widget.buildProgramRow(programs, index),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _GuidePillButton extends StatefulWidget {
+  final String? label;
+  final IconData? icon;
+  final bool isActive;
+  final VoidCallback? onPressed;
+
+  const _GuidePillButton({
+    this.label,
+    this.icon,
+    this.isActive = false,
+    this.onPressed,
+  });
+
+  @override
+  State<_GuidePillButton> createState() => _GuidePillButtonState();
+}
+
+class _GuidePillButtonState extends State<_GuidePillButton> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = _focused || widget.isActive;
+    return _GuideFocusableSurface(
+      onPressed: widget.onPressed,
+      onFocusChange: (focused) {
+        if (_focused != focused) setState(() => _focused = focused);
+      },
+      borderRadius: BorderRadius.circular(20),
+      builder: (_) => AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: active
+              ? AppColorScheme.accent.withValues(alpha: _focused ? 1.0 : 0.7)
+              : Colors.white.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: _buildChild(active),
+      ),
+    );
+  }
+
+  Widget _buildChild(bool active) {
+    final color = Colors.white.withValues(alpha: active ? 1.0 : 0.8);
+    if (widget.icon != null && widget.label != null) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(widget.icon, color: color, size: 16),
+          const SizedBox(width: 6),
+          Text(widget.label!, style: TextStyle(color: color, fontSize: 13)),
+        ],
+      );
+    }
+    if (widget.icon != null) {
+      return Icon(widget.icon, color: color, size: 18);
+    }
+    return Text(widget.label ?? '', style: TextStyle(color: color, fontSize: 13));
+  }
+}
+
+class _GuideFocusableSurface extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final ValueChanged<bool>? onFocusChange;
+  final Widget Function(bool focused) builder;
+  final BorderRadiusGeometry? borderRadius;
+  final FocusNode? focusNode;
+  final FocusOnKeyEventCallback? onKeyEvent;
+
+  const _GuideFocusableSurface({
+    required this.builder,
+    this.onPressed,
+    this.onFocusChange,
+    this.borderRadius,
+    this.focusNode,
+    this.onKeyEvent,
+  });
+
+  @override
+  State<_GuideFocusableSurface> createState() => _GuideFocusableSurfaceState();
+}
+
+class _GuideFocusableSurfaceState extends State<_GuideFocusableSurface> {
+  FocusNode? _ownedFocusNode;
+  bool _focused = false;
+
+  FocusNode get _focusNode => widget.focusNode ?? (_ownedFocusNode ??= FocusNode());
+
+  @override
+  void dispose() {
+    _ownedFocusNode?.dispose();
+    super.dispose();
+  }
+
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    final override = widget.onKeyEvent?.call(node, event);
+    if (override != null && override != KeyEventResult.ignored) {
+      return override;
+    }
+    final onPressed = widget.onPressed;
+    if (onPressed == null) return KeyEventResult.ignored;
+    return handleOneShotSelect(event, onPressed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child = widget.builder(_focused);
+    if (widget.borderRadius != null) {
+      child = ClipRRect(borderRadius: widget.borderRadius!, child: child);
+    }
+
+    return Focus(
+      focusNode: _focusNode,
+      onKeyEvent: _handleKeyEvent,
+      onFocusChange: (focused) {
+        if (_focused != focused) {
+          setState(() => _focused = focused);
+        }
+        widget.onFocusChange?.call(focused);
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onPressed,
+        child: child,
+      ),
+    );
+  }
+}
+
+class _GuideProgramRow extends StatefulWidget {
+  final List<GuideProgram> programs;
+  final int rowIndex;
+  final DateTime windowStart;
+  final DateTime windowEnd;
+  final VoidCallback? onLeftEdge;
+  final ValueChanged<GuideProgram> onProgramSelected;
+  final void Function(double left, double width) onProgramFocused;
+  final String Function(DateTime) formatTime;
+
+  const _GuideProgramRow({
+    required this.programs,
+    required this.rowIndex,
+    required this.windowStart,
+    required this.windowEnd,
+    this.onLeftEdge,
+    required this.onProgramSelected,
+    required this.onProgramFocused,
+    required this.formatTime,
+  });
+
+  @override
+  State<_GuideProgramRow> createState() => _GuideProgramRowState();
+}
+
+class _GuideProgramRowState extends State<_GuideProgramRow> {
+  final List<FocusNode> _focusNodes = [];
+  int? _focusedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncFocusNodes();
+  }
+
+  @override
+  void didUpdateWidget(covariant _GuideProgramRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.programs.length != widget.programs.length) {
+      _syncFocusNodes();
+      if (_focusedIndex != null && _focusedIndex! >= widget.programs.length) {
+        _focusedIndex = widget.programs.isEmpty ? null : widget.programs.length - 1;
+      }
+    }
+  }
+
+  void _syncFocusNodes() {
+    while (_focusNodes.length < widget.programs.length) {
+      _focusNodes.add(FocusNode(debugLabel: 'GuideProgramRow${widget.rowIndex}:${_focusNodes.length}'));
+    }
+    while (_focusNodes.length > widget.programs.length) {
+      _focusNodes.removeLast().dispose();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final node in _focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  KeyEventResult _handleProgramKeyEvent(int index, FocusNode node, KeyEvent event) {
+    final selected = handleOneShotSelect(event, () {
+      widget.onProgramSelected(widget.programs[index]);
+    });
+    if (selected != KeyEventResult.ignored) return selected;
+    if (!event.isActionable) return KeyEventResult.ignored;
+
+    final key = event.logicalKey;
+    if (key.isLeftKey) {
+      if (index > 0) {
+        _focusNodes[index - 1].requestFocus();
+        return KeyEventResult.handled;
+      }
+      if (widget.onLeftEdge != null) {
+        widget.onLeftEdge!();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    }
+    if (key.isRightKey) {
+      if (index < _focusNodes.length - 1) {
+        _focusNodes[index + 1].requestFocus();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    }
+
+    return KeyEventResult.ignored;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final totalMinutes = widget.windowEnd.difference(widget.windowStart).inMinutes.toDouble();
+    final now = DateTime.now();
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: ThemeRegistry.active.borders.cardBorder,
+        ),
+      ),
+      child: Stack(
+        children: [
+          for (var index = 0; index < widget.programs.length; index++)
+            _buildProgramCell(index, widget.programs[index], totalMinutes, now),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgramCell(
+    int index,
+    GuideProgram program,
+    double totalMinutes,
+    DateTime now,
+  ) {
+    final offsetMinutes = program.startDate.difference(widget.windowStart).inMinutes.toDouble();
+    final clampedStart = offsetMinutes < 0 ? 0.0 : offsetMinutes;
+    final endOffset = program.endDate.difference(widget.windowStart).inMinutes.toDouble();
+    final clampedEnd = endOffset > totalMinutes ? totalMinutes : endOffset;
+    final left = clampedStart * _kPixelsPerMinute;
+    final width = (clampedEnd - clampedStart) * _kPixelsPerMinute;
+
+    if (width <= 0) return const SizedBox.shrink();
+
+    final isLive = now.isAfter(program.startDate) && now.isBefore(program.endDate);
+    final isFocused = _focusedIndex == index;
+
+    return Positioned(
+      left: left,
+      width: width,
+      top: 2,
+      bottom: 2,
+      child: _GuideFocusableSurface(
+        focusNode: _focusNodes[index],
+        onPressed: () => widget.onProgramSelected(program),
+        onKeyEvent: (node, event) => _handleProgramKeyEvent(index, node, event),
+        onFocusChange: (focused) {
+          if (!focused) return;
+          if (_focusedIndex != index) {
+            setState(() => _focusedIndex = index);
+          }
+          widget.onProgramFocused(left, width);
+        },
+        borderRadius: BorderRadius.circular(4),
+        builder: (_) => Container(
+          margin: const EdgeInsets.only(right: 1),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          decoration: BoxDecoration(
+            color: isFocused
+                ? AppColorScheme.accent.withValues(alpha: 0.25)
+                : isLive
+                    ? AppColorScheme.accent.withValues(alpha: 0.2)
+                    : const Color(0xFF1E1E1E),
+            borderRadius: BorderRadius.circular(4),
+            border: isFocused
+                ? Border.fromBorderSide(
+                    ThemeRegistry.active.borders.focusBorder.copyWith(
+                      color: AppColorScheme.accent,
+                    ),
+                  )
+                : isLive
+                    ? Border.fromBorderSide(
+                        ThemeRegistry.active.borders.focusBorder.copyWith(
+                          color: AppColorScheme.accent.withValues(alpha: 0.5),
+                        ),
+                      )
+                    : null,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  if (isLive)
+                    Container(
+                      margin: const EdgeInsets.only(right: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context).liveBadge,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  if (program.hasTimer)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 4),
+                      child: Icon(Icons.fiber_manual_record, color: Colors.red, size: 10),
+                    ),
+                  Expanded(
+                    child: Text(
+                      program.name,
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              if (width > 80)
+                Text(
+                  '${widget.formatTime(program.startDate)} – ${widget.formatTime(program.endDate)}',
+                  style: const TextStyle(color: Colors.white38, fontSize: 10),
+                  maxLines: 1,
+                ),
+              if (isLive)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: LinearProgressIndicator(
+                    value: program.progressAt(now),
+                    backgroundColor: Colors.white12,
+                    valueColor: AlwaysStoppedAnimation(AppColorScheme.accent),
+                    minHeight: 2,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

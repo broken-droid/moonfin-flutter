@@ -9,9 +9,9 @@ import '../../../data/viewmodels/schedule_view_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
-import '../../widgets/navigation_layout.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/focus/request_initial_focus.dart';
+import 'widgets/live_tv_section_header.dart';
 
 class LiveTvScheduleScreen extends StatefulWidget {
   const LiveTvScheduleScreen({super.key});
@@ -49,11 +49,8 @@ class _LiveTvScheduleScreenState extends State<LiveTvScheduleScreen> {
   Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: NavigationLayout(
-        showBackButton: true,
-        child: SafeArea(
-          child: _buildContent(),
-        ),
+      body: SafeArea(
+        child: _buildContent(),
       ),
     );
   }
@@ -68,25 +65,9 @@ class _LiveTvScheduleScreenState extends State<LiveTvScheduleScreen> {
   }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 60, right: 60, top: 80, bottom: 8),
-      child: Column(
-        children: [
-          Center(
-            child: Text(
-              AppLocalizations.of(context).schedule,
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w300,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          _FocusedItemHud(item: _vm.focusedItem),
-          const SizedBox(height: 8),
-        ],
-      ),
+    return LiveTvSectionHeader(
+      title: AppLocalizations.of(context).schedule,
+      details: _FocusedItemHud(item: _vm.focusedItem),
     );
   }
 

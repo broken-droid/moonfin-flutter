@@ -6,12 +6,14 @@ import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/viewmodels/recordings_view_model.dart';
+import '../../../data/viewmodels/schedule_view_model.dart';
+import '../../../data/viewmodels/series_recordings_view_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../navigation/destinations.dart';
-import '../../widgets/navigation_layout.dart';
 import '../../widgets/focus/request_initial_focus.dart';
+import '../../widgets/overlay_sheet.dart';
 
 class LiveTvRecordingsScreen extends StatefulWidget {
   const LiveTvRecordingsScreen({super.key});
@@ -20,15 +22,26 @@ class LiveTvRecordingsScreen extends StatefulWidget {
   State<LiveTvRecordingsScreen> createState() => _LiveTvRecordingsScreenState();
 }
 
+enum _RecordingsTab { recordings, scheduled, series }
+
 class _LiveTvRecordingsScreenState extends State<LiveTvRecordingsScreen> {
   late final RecordingsViewModel _vm;
+  late final ScheduleViewModel _scheduleVm;
+  late final SeriesRecordingsViewModel _seriesVm;
+  _RecordingsTab _activeTab = _RecordingsTab.recordings;
 
   @override
   void initState() {
     super.initState();
     _vm = RecordingsViewModel(GetIt.instance<MediaServerClient>());
+    _scheduleVm = ScheduleViewModel(GetIt.instance<MediaServerClient>());
+    _seriesVm = SeriesRecordingsViewModel(GetIt.instance<MediaServerClient>());
     _vm.addListener(_onChanged);
+    _scheduleVm.addListener(_onChanged);
+    _seriesVm.addListener(_onChanged);
     _vm.load();
+    _scheduleVm.load();
+    _seriesVm.load();
   }
 
   void _onChanged() {
@@ -38,7 +51,11 @@ class _LiveTvRecordingsScreenState extends State<LiveTvRecordingsScreen> {
   @override
   void dispose() {
     _vm.removeListener(_onChanged);
+    _scheduleVm.removeListener(_onChanged);
+    _seriesVm.removeListener(_onChanged);
     _vm.dispose();
+    _scheduleVm.dispose();
+    _seriesVm.dispose();
     super.dispose();
   }
 
@@ -49,11 +66,8 @@ class _LiveTvRecordingsScreenState extends State<LiveTvRecordingsScreen> {
   Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: NavigationLayout(
-        showBackButton: true,
-        child: SafeArea(
-          child: _buildContent(),
-        ),
+      body: SafeArea(
+        child: _buildContent(),
       ),
     );
   }
@@ -67,37 +81,70 @@ class _LiveTvRecordingsScreenState extends State<LiveTvRecordingsScreen> {
     );
   }
 
+  int get _recordingsCount =>
+      _vm.recentRecordings.length +
+      _vm.seriesRecordings.length +
+      _vm.movieRecordings.length +
+      _vm.sportsRecordings.length +
+      _vm.kidsRecordings.length;
+
+  int get _scheduledCount =>
+      _scheduleVm.groups.fold(0, (sum, g) => sum + g.items.length);
+
   Widget _buildHeader() {
     final l10n = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.only(left: 60, right: 60, top: 80, bottom: 8),
-      child: Column(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
+      child: Row(
         children: [
-          Center(
-            child: Text(
-              l10n.recordings,
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w300,
-                color: Colors.white,
-              ),
+          Text(
+            l10n.recordings,
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
           ),
-          const SizedBox(height: 8),
-          _FocusedItemHud(item: _vm.focusedItem),
-          const SizedBox(height: 8),
+          const Spacer(),
+          _RecordingsPillButton(
+            label: '${l10n.recordings} ($_recordingsCount)',
+            isActive: _activeTab == _RecordingsTab.recordings,
+            onPressed: () => setState(() => _activeTab = _RecordingsTab.recordings),
+          ),
+          const SizedBox(width: 8),
+          _RecordingsPillButton(
+            label: '${l10n.schedule} ($_scheduledCount)',
+            isActive: _activeTab == _RecordingsTab.scheduled,
+            onPressed: () => setState(() => _activeTab = _RecordingsTab.scheduled),
+          ),
+          const SizedBox(width: 8),
+          _RecordingsPillButton(
+            label: '${l10n.seriesRecordings} (${_seriesVm.seriesTimers.length})',
+            isActive: _activeTab == _RecordingsTab.series,
+            onPressed: () => setState(() => _activeTab = _RecordingsTab.series),
+          ),
+          const SizedBox(width: 12),
+          _RecordingsPillButton(
+            icon: Icons.arrow_back,
+            onPressed: () => Navigator.of(context).maybePop(),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildBody() {
-    if (_vm.state == RecordingsState.loading) {
-      return const Center(
-        child: CircularProgressIndicator(color: Color(0xFF0066CC)),
-      );
-    }
+    return switch (_activeTab) {
+      _RecordingsTab.recordings => _buildRecordingsTab(),
+      _RecordingsTab.scheduled => _buildScheduledTab(),
+      _RecordingsTab.series => _buildSeriesTab(),
+    };
+  }
 
+  Widget _buildRecordingsTab() {
+    if (_vm.state == RecordingsState.loading) {
+      return Center(child: CircularProgressIndicator(color: AppColorScheme.accent));
+    }
     if (_vm.state == RecordingsState.error) {
       return Center(
         child: Text(
@@ -106,105 +153,173 @@ class _LiveTvRecordingsScreenState extends State<LiveTvRecordingsScreen> {
         ),
       );
     }
+    final l10n = AppLocalizations.of(context);
+    final rows = <Widget>[];
+    void addRow(String title, List<RecordingItem> items) {
+      if (items.isEmpty) {
+        return;
+      }
+      rows.add(
+        _RecordingRow(
+          title: title,
+          items: items,
+          imageApi: _vm.imageApi,
+          onItemFocused: _vm.setFocusedItem,
+          onItemTap: _onItemTap,
+        ),
+      );
+    }
 
+    addRow(l10n.scheduledInNext24Hours, _vm.scheduledNext24h);
+    addRow(l10n.recentRecordings, _vm.recentRecordings);
+    addRow(l10n.tvSeries, _vm.seriesRecordings);
+    addRow(l10n.movies, _vm.movieRecordings);
+    addRow(l10n.sports, _vm.sportsRecordings);
+    addRow(l10n.kids, _vm.kidsRecordings);
+    if (rows.isEmpty) {
+      return Center(
+        child: Text(
+          'No recordings found',
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+        ),
+      );
+    }
+    return ListView(padding: const EdgeInsets.only(bottom: 24), children: rows);
+  }
+
+  Widget _buildScheduledTab() {
+    if (_scheduleVm.state == ScheduleState.loading) {
+      return Center(child: CircularProgressIndicator(color: AppColorScheme.accent));
+    }
+    if (_scheduleVm.state == ScheduleState.error) {
+      return Center(
+        child: Text(
+          AppLocalizations.of(context).failedToLoadSchedule,
+          style: const TextStyle(color: Colors.white54),
+        ),
+      );
+    }
+    if (_scheduleVm.groups.isEmpty) {
+      return Center(
+        child: Text(
+          AppLocalizations.of(context).noScheduledRecordings,
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+        ),
+      );
+    }
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
       children: [
-        _buildNavRow(),
-        if (_vm.scheduledNext24h.isNotEmpty)
+        for (final group in _scheduleVm.groups)
           _RecordingRow(
-            title: AppLocalizations.of(context).scheduledInNext24Hours,
-            items: _vm.scheduledNext24h,
-            imageApi: _vm.imageApi,
-            onItemFocused: _vm.setFocusedItem,
-            onItemTap: _onItemTap,
-          ),
-        if (_vm.recentRecordings.isNotEmpty)
-          _RecordingRow(
-            title: AppLocalizations.of(context).recentRecordings,
-            items: _vm.recentRecordings,
-            imageApi: _vm.imageApi,
-            onItemFocused: _vm.setFocusedItem,
-            onItemTap: _onItemTap,
-          ),
-        if (_vm.seriesRecordings.isNotEmpty)
-          _RecordingRow(
-            title: AppLocalizations.of(context).tvSeries,
-            items: _vm.seriesRecordings,
-            imageApi: _vm.imageApi,
-            onItemFocused: _vm.setFocusedItem,
-            onItemTap: _onItemTap,
-          ),
-        if (_vm.movieRecordings.isNotEmpty)
-          _RecordingRow(
-            title: AppLocalizations.of(context).movies,
-            items: _vm.movieRecordings,
-            imageApi: _vm.imageApi,
-            onItemFocused: _vm.setFocusedItem,
-            onItemTap: _onItemTap,
-          ),
-        if (_vm.sportsRecordings.isNotEmpty)
-          _RecordingRow(
-            title: AppLocalizations.of(context).sports,
-            items: _vm.sportsRecordings,
-            imageApi: _vm.imageApi,
-            onItemFocused: _vm.setFocusedItem,
-            onItemTap: _onItemTap,
-          ),
-        if (_vm.kidsRecordings.isNotEmpty)
-          _RecordingRow(
-            title: AppLocalizations.of(context).kids,
-            items: _vm.kidsRecordings,
-            imageApi: _vm.imageApi,
-            onItemFocused: _vm.setFocusedItem,
-            onItemTap: _onItemTap,
+            title: group.dateLabel,
+            items: group.items,
+            imageApi: _scheduleVm.imageApi,
+            onItemFocused: _scheduleVm.setFocusedItem,
+            onItemTap: (item) => _cancelTimer(item),
           ),
       ],
     );
   }
 
-  Widget _buildNavRow() {
+  Widget _buildSeriesTab() {
+    if (_seriesVm.state == SeriesRecordingsState.loading) {
+      return Center(child: CircularProgressIndicator(color: AppColorScheme.accent));
+    }
+    if (_seriesVm.state == SeriesRecordingsState.error) {
+      return Center(
+        child: Text(
+          AppLocalizations.of(context).failedToLoadSeriesRecordings,
+          style: const TextStyle(color: Colors.white54),
+        ),
+      );
+    }
+    if (_seriesVm.seriesTimers.isEmpty) {
+      return Center(
+        child: Text(
+          AppLocalizations.of(context).noSeriesRecordings,
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+        ),
+      );
+    }
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 24),
+      children: [
+        _SeriesTimerRow(
+          timers: _seriesVm.seriesTimers,
+          onItemFocused: _seriesVm.setFocusedTimer,
+          onItemTap: (timer) => _cancelSeriesTimer(timer),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _cancelTimer(RecordingItem item) async {
     final l10n = AppLocalizations.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 60, bottom: 8),
-            child: Text(
-              l10n.views,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 100,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 60),
-              children: [
-                _NavButton(
-                  label: l10n.schedule,
-                  icon: Icons.schedule,
-                  onTap: () => context.push(Destinations.liveTvSchedule),
-                ),
-                const SizedBox(width: 12),
-                _NavButton(
-                  label: l10n.seriesRecordings,
-                  icon: Icons.fiber_smart_record,
-                  onTap: () =>
-                      context.push(Destinations.liveTvSeriesRecordings),
-                ),
-              ],
-            ),
+    final confirmed = await showFocusRestoringDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        title: Text(l10n.cancelRecording, style: const TextStyle(color: Colors.white)),
+        content: Text(
+          l10n.cancelScheduledRecordingOf(item.name),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.no)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(l10n.yesCancel),
           ),
         ],
       ),
     );
+    if (confirmed == true) {
+      try {
+        await _scheduleVm.cancelTimer(item.id);
+      } catch (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.failedToCancelRecording)),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _cancelSeriesTimer(SeriesTimerItem timer) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showFocusRestoringDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        title: Text(l10n.cancelSeriesRecordingQuestion, style: const TextStyle(color: Colors.white)),
+        content: Text(
+          l10n.stopRecordingName(timer.name),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.no)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(l10n.yesCancel),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      try {
+        await _seriesVm.cancelSeriesTimer(timer.id);
+      } catch (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.failedToCancelSeriesRecording)),
+          );
+        }
+      }
+    }
   }
 
   void _onItemTap(RecordingItem item) {
@@ -212,43 +327,201 @@ class _LiveTvRecordingsScreenState extends State<LiveTvRecordingsScreen> {
   }
 }
 
-class _FocusedItemHud extends StatelessWidget {
-  final RecordingItem? item;
+class _SeriesTimerRow extends StatelessWidget {
+  final List<SeriesTimerItem> timers;
+  final ValueChanged<SeriesTimerItem> onItemFocused;
+  final ValueChanged<SeriesTimerItem> onItemTap;
 
-  const _FocusedItemHud({required this.item});
+  const _SeriesTimerRow({
+    required this.timers,
+    required this.onItemFocused,
+    required this.onItemTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: item == null
-          ? const SizedBox.shrink()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  item!.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (item!.subtitle.isNotEmpty)
-                  Text(
-                    item!.subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.6),
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: SizedBox(
+        height: 160,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 60),
+          itemCount: timers.length,
+          separatorBuilder: (_, _) => const SizedBox(width: 12),
+          itemBuilder: (context, index) {
+            final timer = timers[index];
+            return _SeriesTimerCard(
+              timer: timer,
+              onFocused: () => onItemFocused(timer),
+              onTap: () => onItemTap(timer),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _SeriesTimerCard extends StatefulWidget {
+  final SeriesTimerItem timer;
+  final VoidCallback onFocused;
+  final VoidCallback onTap;
+
+  const _SeriesTimerCard({
+    required this.timer,
+    required this.onFocused,
+    required this.onTap,
+  });
+
+  @override
+  State<_SeriesTimerCard> createState() => _SeriesTimerCardState();
+}
+
+class _SeriesTimerCardState extends State<_SeriesTimerCard> with FocusStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    final cardExpansion =
+        GetIt.instance<UserPreferences>().get(UserPreferences.cardFocusExpansion);
+    final scale = cardExpansion && showFocusBorder ? 1.08 : 1.0;
+    final alpha = showFocusBorder ? 1.0 : 0.75;
+    final focusColor = Color(
+      GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue,
+    );
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setHovered(true),
+      onExit: (_) => setHovered(false),
+      child: Focus(
+        onFocusChange: (focused) {
+          setFocused(focused);
+          if (focused) widget.onFocused();
+        },
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedScale(
+            scale: scale,
+            duration: const Duration(milliseconds: 150),
+            child: Opacity(
+              opacity: alpha,
+              child: SizedBox(
+                width: 200,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 200,
+                      height: 112,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(4),
+                        border: showFocusBorder
+                            ? Border.fromBorderSide(
+                                ThemeRegistry.active.borders.focusBorder.copyWith(
+                                  color: focusColor,
+                                ),
+                              )
+                            : null,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.fiber_smart_record,
+                          size: 48,
+                          color: showFocusBorder
+                              ? Colors.white.withValues(alpha: 0.4)
+                              : Colors.white.withValues(alpha: 0.15),
+                        ),
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-              ],
+                    const SizedBox(height: 5),
+                    Text(
+                      widget.timer.name,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (widget.timer.subtitle.isNotEmpty)
+                      Text(
+                        widget.timer.subtitle,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.white.withValues(alpha: 0.5),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                  ],
+                ),
+              ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RecordingsPillButton extends StatefulWidget {
+  final String? label;
+  final IconData? icon;
+  final bool isActive;
+  final VoidCallback? onPressed;
+
+  const _RecordingsPillButton({
+    this.label,
+    this.icon,
+    this.isActive = false,
+    this.onPressed,
+  });
+
+  @override
+  State<_RecordingsPillButton> createState() => _RecordingsPillButtonState();
+}
+
+class _RecordingsPillButtonState extends State<_RecordingsPillButton> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = _focused || widget.isActive;
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: widget.onPressed,
+        borderRadius: BorderRadius.circular(20),
+        focusColor: Colors.transparent,
+        hoverColor: Colors.white.withValues(alpha: 0.05),
+        splashColor: Colors.white24,
+        highlightColor: Colors.transparent,
+        onFocusChange: (f) {
+          if (_focused != f) setState(() => _focused = f);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+          decoration: BoxDecoration(
+            color: active
+                ? AppColorScheme.accent.withValues(alpha: _focused ? 1.0 : 0.7)
+                : Colors.white.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: widget.icon != null
+              ? Icon(widget.icon, color: Colors.white.withValues(alpha: active ? 1.0 : 0.8), size: 18)
+              : Text(
+                  widget.label ?? '',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: active ? 1.0 : 0.8),
+                    fontSize: 13,
+                  ),
+                ),
+        ),
+      ),
     );
   }
 }
@@ -422,71 +695,6 @@ class _RecordingCardState extends State<_RecordingCard> with FocusStateMixin {
         Icons.fiber_dvr,
         size: 48,
         color: Colors.white.withValues(alpha: 0.2),
-      ),
-    );
-  }
-}
-
-class _NavButton extends StatefulWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _NavButton({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  State<_NavButton> createState() => _NavButtonState();
-}
-
-class _NavButtonState extends State<_NavButton> with FocusStateMixin {
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = focused
-        ? Colors.white.withValues(alpha: 0.20)
-        : Colors.white.withValues(alpha: 0.08);
-
-    return Focus(
-      onFocusChange: (f) => setFocused(f),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          width: 140,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                widget.icon,
-                size: 32,
-                color: focused
-                    ? Colors.white
-                    : Colors.white.withValues(alpha: 0.6),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                widget.label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: focused ? FontWeight.w600 : FontWeight.normal,
-                  color: focused
-                      ? Colors.white
-                      : Colors.white.withValues(alpha: 0.7),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
