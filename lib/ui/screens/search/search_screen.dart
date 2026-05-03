@@ -12,6 +12,7 @@ import '../../../data/models/aggregated_item.dart';
 import '../../../data/repositories/search_repository.dart';
 import '../../../data/repositories/seerr_repository.dart';
 import '../../../data/viewmodels/search_view_model.dart';
+import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../navigation/destinations.dart';
 import '../../../util/platform_detection.dart';
@@ -573,6 +574,9 @@ class _SearchScreenState extends State<SearchScreen> {
     final prefs = GetIt.instance<UserPreferences>();
     final focusColor = Color(prefs.get(UserPreferences.focusColor).colorValue);
     final cardFocusExpansion = prefs.get(UserPreferences.cardFocusExpansion);
+    final posterSize = prefs.get(UserPreferences.posterSize);
+    final navbarIsLeft = prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
+    final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
     final hasSeerr = _vm.seerrResults.isNotEmpty;
     final totalCount = _vm.results.length + (hasSeerr ? 1 : 0);
     return ListView.builder(
@@ -584,49 +588,50 @@ class _SearchScreenState extends State<SearchScreen> {
           final group = _vm.results[index];
           final isFirstVisibleRow = index == 0;
           return Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(top: 8, left: rowLeftInset),
             child: LibraryRow(
-              title: group.title,
-              rowHeight: _rowHeight(group),
-              children: group.items.map((item) {
-                final ar = MediaCard.aspectRatioForType(item.type);
-                final height = ar >= 1 ? 150.0 : 200.0;
-                final width = height * ar;
-                return MediaCard(
-                  title: item.name,
-                  subtitle: _subtitle(item),
-                  imageUrl: _imageUrl(item),
-                  width: width,
-                  aspectRatio: ar,
-                  isFavorite: item.isFavorite,
-                  isPlayed: item.isPlayed,
-                  unplayedCount: item.unplayedItemCount,
-                  playedPercentage: item.playedPercentage,
-                  itemType: item.type,
-                  focusColor: focusColor,
-                  cardFocusExpansion: cardFocusExpansion,
-                  onFocus: () {
-                    if (isFirstVisibleRow) {
-                      _isFirstRowFocused = true;
-                      _restoreNavbarToNormalPosition();
-                    }
-                  },
-                  onFocusLost: () {
-                    if (isFirstVisibleRow) {
-                      _isFirstRowFocused = false;
-                    }
-                  },
-                  onTap: () => context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type)),
-                );
-              }).toList(),
-            ),
+                title: group.title,
+                rowHeight: _rowHeight(group, posterSize),
+                children: group.items.map((item) {
+                  final ar = MediaCard.aspectRatioForType(item.type);
+                  final height = _searchImageHeight(ar, posterSize);
+                  final width = height * ar;
+                  return MediaCard(
+                    title: item.name,
+                    subtitle: _subtitle(item),
+                    imageUrl: _imageUrl(item),
+                    width: width,
+                    aspectRatio: ar,
+                    isFavorite: item.isFavorite,
+                    isPlayed: item.isPlayed,
+                    unplayedCount: item.unplayedItemCount,
+                    playedPercentage: item.playedPercentage,
+                    itemType: item.type,
+                    focusColor: focusColor,
+                    cardFocusExpansion: cardFocusExpansion,
+                    onFocus: () {
+                      if (isFirstVisibleRow) {
+                        _isFirstRowFocused = true;
+                        _restoreNavbarToNormalPosition();
+                      }
+                    },
+                    onFocusLost: () {
+                      if (isFirstVisibleRow) {
+                        _isFirstRowFocused = false;
+                      }
+                    },
+                    onTap: () => context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type)),
+                  );
+                }).toList(),
+              ),
           );
         }
         return Padding(
-          padding: const EdgeInsets.only(top: 8),
+          padding: EdgeInsets.only(top: 8, left: rowLeftInset),
           child: _buildSeerrRow(
             focusColor: focusColor,
             cardFocusExpansion: cardFocusExpansion,
+            posterSize: posterSize,
           ),
         );
       },
@@ -636,10 +641,11 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSeerrRow({
     required Color focusColor,
     required bool cardFocusExpansion,
+    required PosterSize posterSize,
   }) {
-    const height = 200.0;
+    final height = _searchImageHeight(2.0 / 3.0, posterSize);
     const ar = 2.0 / 3.0;
-    const width = height * ar;
+    final width = height * ar;
     return LibraryRow(
       title: AppLocalizations.of(context).seerr,
       rowHeight: height + 56,
@@ -666,8 +672,16 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  double _rowHeight(SearchResultGroup group) {
+  double _searchImageHeight(double aspectRatio, PosterSize posterSize) {
+    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
+    final baseHeight = aspectRatio >= 1
+        ? posterSize.landscapeHeight.toDouble()
+        : posterSize.portraitHeight.toDouble();
+    return baseHeight * tvScale;
+  }
+
+  double _rowHeight(SearchResultGroup group, PosterSize posterSize) {
     final ar = MediaCard.aspectRatioForType(group.items.first.type);
-    return (ar >= 1 ? 150.0 : 200.0) + 56;
+    return _searchImageHeight(ar, posterSize) + 56;
   }
 }
