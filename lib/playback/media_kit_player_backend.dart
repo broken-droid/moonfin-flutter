@@ -59,7 +59,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
         final type = item['type']?.toString();
         if (type != 'sub') continue;
         final idValue = item['id'];
-        final parsed = idValue is int ? idValue : int.tryParse(idValue?.toString() ?? '');
+        final parsed = idValue is int
+            ? idValue
+            : int.tryParse(idValue?.toString() ?? '');
         if (parsed != null && parsed > 0) {
           ids.add(parsed);
         }
@@ -119,7 +121,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   static bool get _useLibass =>
-      PlatformDetection.isDesktop || PlatformDetection.isAndroid || PlatformDetection.isIOS;
+      PlatformDetection.isDesktop ||
+      PlatformDetection.isAndroid ||
+      PlatformDetection.isIOS;
 
   MediaKitPlayerBackend._(
     this._player,
@@ -134,10 +138,12 @@ class MediaKitPlayerBackend implements PlayerBackend {
     Future<void> Function(int handle)? onNativeHandleReady,
   }) {
     final hwDecodingEnabled = prefs.get(UserPreferences.hardwareDecoding);
+    final bool isAndroidTV =
+        PlatformDetection.isAndroid && PlatformDetection.isTV;
     final String? hwdec = hwDecodingEnabled
         ? ((PlatformDetection.isAndroid && PlatformDetection.isTV)
-            ? 'auto'
-            : (PlatformDetection.isLinux ? 'auto-safe' : null))
+              ? 'auto'
+              : (PlatformDetection.isLinux ? 'auto-safe' : null))
         : 'no';
 
     final player = Player(
@@ -152,8 +158,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
     final platform = player.platform;
     if (platform is NativePlayer) {
       _nativeSetProperty(platform, 'network-timeout', '120');
-      if (PlatformDetection.isAndroid && PlatformDetection.isTV) {
-        // Prefer AudioTrack + preloaded scaletempo2 for stable TV speed changes.
+      if (isAndroidTV) {
         _nativeSetProperty(platform, 'ao', 'audiotrack');
         _nativeSetProperty(platform, 'af', 'scaletempo2');
       }
@@ -181,7 +186,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
   VideoController get videoController => _videoController;
 
   @override
-  Map<String, dynamic> getDeviceProfile({bool useProgressiveTranscode = false}) {
+  Map<String, dynamic> getDeviceProfile({
+    bool useProgressiveTranscode = false,
+  }) {
     final maxBitrate = int.tryParse(_prefs.get(UserPreferences.maxBitrate));
     final ac3Enabled = _prefs.get(UserPreferences.ac3Enabled);
     final maxResolution = _prefs.get(UserPreferences.maxVideoResolution);
@@ -196,7 +203,10 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
-  Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero}) async {
+  Future<void> play(
+    dynamic mediaItem, {
+    Duration startPosition = Duration.zero,
+  }) async {
     final url = mediaItem as String;
     await _notifyNativeHandleReady();
     await _configureAppleMobileLibassFont();
@@ -225,8 +235,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
       return;
     }
     try {
-      await _videoController.waitUntilFirstFrameRendered
-          .timeout(_linuxHwdecFirstFrameTimeout);
+      await _videoController.waitUntilFirstFrameRendered.timeout(
+        _linuxHwdecFirstFrameTimeout,
+      );
       return;
     } on TimeoutException {
       var hasVideoTrack = _player.state.tracks.video.isNotEmpty;
@@ -294,7 +305,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
         length: length,
       );
       final native = _player.platform as NativePlayer;
-      final unsafeAdvanced = _prefs.get(UserPreferences.customMpvConfUnsafeAdvanced);
+      final unsafeAdvanced = _prefs.get(
+        UserPreferences.customMpvConfUnsafeAdvanced,
+      );
 
       for (final parsed in parsedEntries) {
         final key = parsed.$1;
@@ -479,10 +492,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
     'input-conf',
   };
 
-  static const List<String> _deniedMpvPrefixes = [
-    'script-',
-    'ipc-',
-  ];
+  static const List<String> _deniedMpvPrefixes = ['script-', 'ipc-'];
 
   static const Set<String> _allowedMpvKeys = {
     'scale',
@@ -536,8 +546,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
     }
     try {
       final supportDirectory = await getApplicationSupportDirectory();
-      final fontsDirectory =
-          Directory('${supportDirectory.path}/moonfin-subfonts');
+      final fontsDirectory = Directory(
+        '${supportDirectory.path}/moonfin-subfonts',
+      );
       await fontsDirectory.create(recursive: true);
 
       final fontFile = File('${fontsDirectory.path}/NotoSans-Regular.ttf');
@@ -654,7 +665,11 @@ class MediaKitPlayerBackend implements PlayerBackend {
         final speedValue = speed.toString();
         final setOk = await _tryNativeSetProperty(native, 'speed', speedValue);
         if (!setOk) {
-          await _tryNativeCommand(native, ['set_property', 'speed', speedValue]);
+          await _tryNativeCommand(native, [
+            'set_property',
+            'speed',
+            speedValue,
+          ]);
         }
         return;
       } catch (_) {}
@@ -670,7 +685,10 @@ class MediaKitPlayerBackend implements PlayerBackend {
       final tracks = _player.state.tracks.audio;
       AudioTrack? match;
       for (final t in tracks) {
-        if (t.id == id) { match = t; break; }
+        if (t.id == id) {
+          match = t;
+          break;
+        }
       }
       if (match != null) {
         await _player.setAudioTrack(match);
@@ -686,7 +704,10 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
-  Future<void> setSubtitleTrack(int mpvTrackId, {bool isBitmapSubtitle = false}) async {
+  Future<void> setSubtitleTrack(
+    int mpvTrackId, {
+    bool isBitmapSubtitle = false,
+  }) async {
     if (mpvTrackId < 1) return;
     try {
       final native = _player.platform as NativePlayer;
@@ -821,7 +842,11 @@ class MediaKitPlayerBackend implements PlayerBackend {
     try {
       final native = _player.platform as NativePlayer;
       if (textColor != null) {
-        await _nativeSetProperty(native, 'sub-color', _argbToMpvColor(textColor));
+        await _nativeSetProperty(
+          native,
+          'sub-color',
+          _argbToMpvColor(textColor),
+        );
       }
       if (backgroundColor != null) {
         await _nativeSetProperty(

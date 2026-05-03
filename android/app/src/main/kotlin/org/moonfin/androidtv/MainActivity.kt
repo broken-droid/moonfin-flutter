@@ -33,6 +33,8 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.common.images.WebImage
 import com.ryanheise.audioservice.AudioServiceActivity
+import io.flutter.embedding.android.RenderMode
+import io.flutter.embedding.android.TransparencyMode
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -316,6 +318,10 @@ class MainActivity : AudioServiceActivity() {
             registerReceiver(screenReceiver, screenFilter)
         }
     }
+
+    override fun getRenderMode(): RenderMode = RenderMode.surface
+
+    override fun getTransparencyMode(): TransparencyMode = TransparencyMode.transparent
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()

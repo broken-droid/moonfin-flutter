@@ -287,7 +287,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: PlatformDetection.isAndroid ? Colors.transparent : Colors.black,
         body: Focus(
           focusNode: _overlayFocus,
           autofocus: true,

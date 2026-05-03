@@ -6188,5 +6188,21 @@
   "contextMenuGoToSeries": "Go to Series",
   "@contextMenuGoToSeries": {
     "description": "Context menu action to navigate to the parent series of an episode"
+  },
+  "playbackStallTitle": "Playback Struggling",
+  "@playbackStallTitle": {
+    "description": "Title for the dialog shown when playback is too slow for the device"
+  },
+  "playbackStallMessage": "This device is having trouble playing this content directly. Switch to transcoded quality?",
+  "@playbackStallMessage": {
+    "description": "Body for the dialog shown when playback is too slow for the device"
+  },
+  "playbackStallKeepPlaying": "Keep Playing",
+  "@playbackStallKeepPlaying": {
+    "description": "Button to dismiss the playback stall dialog without switching"
+  },
+  "playbackStallSwitchToTranscode": "Switch to Transcoding",
+  "@playbackStallSwitchToTranscode": {
+    "description": "Button to switch from direct play to transcoding when playback is stalling"
   }
 }
