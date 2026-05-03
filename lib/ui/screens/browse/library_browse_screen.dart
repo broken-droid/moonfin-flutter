@@ -4237,6 +4237,14 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
       return parts.isEmpty ? AppLocalizations.of(context).folder : parts.join('  ');
     }
 
+    if (_vm.isPlaylistBrowse) {
+      final count = item.childCount ?? item.recursiveItemCount;
+      if (count != null) {
+        parts.add(AppLocalizations.of(context).itemCountLabel(count));
+      }
+      return parts.isEmpty ? null : parts.join('  ');
+    }
+
     if (item.productionYear != null) parts.add('${item.productionYear}');
     if (item.officialRating != null) parts.add(item.officialRating!);
     final rt = item.runtime;

@@ -106,8 +106,8 @@ bool _isCinemaEligible(AggregatedItem item, {required bool resume}) {
 
 Future<List<AggregatedItem>> _buildCinemaQueue(AggregatedItem item) async {
   final factory = GetIt.instance<MediaServerClientFactory>();
-  final client = (item.serverId != null && item.serverId!.isNotEmpty
-      ? factory.getClientIfExists(item.serverId!)
+  final client = (item.serverId.isNotEmpty
+      ? factory.getClientIfExists(item.serverId)
       : null) ??
       GetIt.instance<MediaServerClient>();
   final prerolls = <AggregatedItem>[];
@@ -1203,6 +1203,16 @@ class _DetailContentState extends State<_DetailContent> {
 
     return [
       _PersonHeader(item: item, imageApi: viewModel.imageApi),
+      const SizedBox(height: 20),
+      Center(
+        child: _DetailActionButton(
+          label: item.isFavorite ? l10n.favorited : l10n.favorite,
+          icon: Icons.favorite,
+          onPressed: viewModel.toggleFavorite,
+          isActive: item.isFavorite,
+          activeColor: const Color(0xFFFF4757),
+        ),
+      ),
       if (hasBio) ...[
         const SizedBox(height: 24),
         _ExpandableBiography(text: item.overview!, toggleFocusNode: firstFocus),
@@ -1341,6 +1351,17 @@ class _DetailContentState extends State<_DetailContent> {
           isAudiobook: isAudiobook,
           reorderable: canManagePlaylistTracks,
           onPlayTrack: (index) {
+            final selectedTrack = viewModel.tracks[index];
+            if (isPlaylist && !_isAudioItem(selectedTrack)) {
+              context.push(
+                Destinations.itemOrPhoto(
+                  selectedTrack.id,
+                  serverId: selectedTrack.serverId,
+                  type: selectedTrack.type,
+                ),
+              );
+              return;
+            }
             final manager = GetIt.instance<PlaybackManager>();
             unawaited(() async {
               await manager.playItems(viewModel.tracks, startIndex: index);
@@ -1355,8 +1376,11 @@ class _DetailContentState extends State<_DetailContent> {
             }());
           },
           onReorder: canManagePlaylistTracks
-              ? (oldIndex, newIndex) =>
-                    viewModel.reorderPlaylistTrack(oldIndex, newIndex)
+              ? (oldIndex, newIndex) {
+                  final targetIndex =
+                      newIndex > oldIndex ? newIndex - 1 : newIndex;
+                  viewModel.reorderPlaylistTrack(oldIndex, targetIndex);
+                }
               : null,
           onRemoveFromPlaylist: canManagePlaylistTracks
               ? (track) => viewModel.removeTrackFromPlaylist(track)
@@ -1365,7 +1389,7 @@ class _DetailContentState extends State<_DetailContent> {
               ? (index) => viewModel.reorderPlaylistTrack(index, index - 1)
               : null,
           onMoveDown: canManagePlaylistTracks
-              ? (index) => viewModel.reorderPlaylistTrack(index, index + 2)
+              ? (index) => viewModel.reorderPlaylistTrack(index, index + 1)
               : null,
         ),
       ],
@@ -7582,6 +7606,18 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
   Timer? _selectLongPressTimer;
   bool _selectLongPressTriggered = false;
 
+  void _keepTrackVisible() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 180),
+        alignment: 0.9,
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
   @override
   void dispose() {
     _selectLongPressTimer?.cancel();
@@ -7600,6 +7636,7 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
       if (key.isLeftKey) {
         if (widget.onMoveUp != null && widget.currentIndex > 0) {
           widget.onMoveUp!(widget.currentIndex);
+          _keepTrackVisible();
         }
         return KeyEventResult.handled;
       }
@@ -7607,6 +7644,7 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
         if (widget.onMoveDown != null &&
             widget.currentIndex < widget.totalCount - 1) {
           widget.onMoveDown!(widget.currentIndex);
+          _keepTrackVisible();
         }
         return KeyEventResult.handled;
       }
@@ -7772,7 +7810,10 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
                   if (widget.reorderable) ...[
                     IconButton(
                       onPressed: widget.currentIndex > 0
-                          ? () => widget.onMoveUp?.call(widget.currentIndex)
+                          ? () {
+                              widget.onMoveUp?.call(widget.currentIndex);
+                              _keepTrackVisible();
+                            }
                           : null,
                       icon: Icon(
                         Icons.arrow_back,
@@ -7788,7 +7829,10 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
                     ),
                     IconButton(
                       onPressed: widget.currentIndex < widget.totalCount - 1
-                          ? () => widget.onMoveDown?.call(widget.currentIndex)
+                          ? () {
+                              widget.onMoveDown?.call(widget.currentIndex);
+                              _keepTrackVisible();
+                            }
                           : null,
                       icon: Icon(
                         Icons.arrow_forward,

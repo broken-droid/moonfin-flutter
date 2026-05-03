@@ -291,8 +291,7 @@ class ItemDetailViewModel extends ChangeNotifier {
     if (oldIndex < 0 || oldIndex >= _tracks.length) {
       return;
     }
-    var targetIndex = newIndex;
-    if (targetIndex > oldIndex) targetIndex -= 1;
+    final targetIndex = newIndex;
     if (targetIndex < 0 || targetIndex >= _tracks.length) {
       return;
     }
