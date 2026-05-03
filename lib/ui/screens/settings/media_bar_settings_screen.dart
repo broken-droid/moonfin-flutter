@@ -23,6 +23,7 @@ class MediaBarSettingsScreen extends StatefulWidget {
 
 class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   final _store = GetIt.instance<PreferenceStore>();
+  bool _selectorOpen = false;
 
   @override
   void initState() {
@@ -57,6 +58,8 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   }
 
   Future<void> _showLibrarySelector() async {
+    if (_selectorOpen) return;
+    _selectorOpen = true;
     final l10n = AppLocalizations.of(context);
     final client = GetIt.instance<MediaServerClient>();
     final selected = _splitCsv(UserPreferences.mediaBarLibraryIds).toSet();
@@ -88,10 +91,15 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
       if (result != null) {
         _saveCsv(UserPreferences.mediaBarLibraryIds, result.toList());
       }
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      _selectorOpen = false;
+    }
   }
 
   Future<void> _showCollectionSelector() async {
+    if (_selectorOpen) return;
+    _selectorOpen = true;
     final l10n = AppLocalizations.of(context);
     final client = GetIt.instance<MediaServerClient>();
     final selected = _splitCsv(UserPreferences.mediaBarCollectionIds).toSet();
@@ -125,10 +133,15 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
       if (result != null) {
         _saveCsv(UserPreferences.mediaBarCollectionIds, result.toList());
       }
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      _selectorOpen = false;
+    }
   }
 
   Future<void> _showGenreSelector() async {
+    if (_selectorOpen) return;
+    _selectorOpen = true;
     final l10n = AppLocalizations.of(context);
     final client = GetIt.instance<MediaServerClient>();
     final selected = _splitCsv(UserPreferences.mediaBarExcludedGenres).toSet();
@@ -153,7 +166,10 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
       if (result != null) {
         _saveCsv(UserPreferences.mediaBarExcludedGenres, result.toList());
       }
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      _selectorOpen = false;
+    }
   }
 
   Future<Set<String>?> _showMultiSelectDialog({
@@ -373,6 +389,7 @@ class _MediaBarContentTypePickerTileState
   };
 
   late final PreferenceBinding<String> _binding;
+  bool _pickerOpen = false;
 
   @override
   void initState() {
@@ -436,6 +453,8 @@ class _MediaBarContentTypePickerTileState
   }
 
   Future<void> _showPicker(BuildContext context, String current) async {
+    if (_pickerOpen) return;
+    _pickerOpen = true;
     final l10n = AppLocalizations.of(context);
     final normalizedCurrent = _normalize(current);
     final options = <String, String>{
@@ -447,53 +466,57 @@ class _MediaBarContentTypePickerTileState
     final selectedIndex = entries.indexWhere((e) => e.key == normalizedCurrent);
     final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
 
-    final result = await showFocusRestoringDialog<String>(
-      context: context,
-      useRootNavigator: false,
-      builder: (ctx) {
-        var closed = false;
-        void closeOnce() {
-          if (closed) return;
-          closed = true;
-          Navigator.pop(ctx);
-        }
-        return Focus(
-          canRequestFocus: false,
-          skipTraversal: true,
-          onKeyEvent: (_, event) {
-            if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-            if (event is KeyDownEvent || event is KeyUpEvent) {
-              closeOnce();
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
-          child: FocusScope(
-            autofocus: true,
-            child: SimpleDialog(
-              title: Text(l10n.contentType),
-              children: entries.asMap().entries.map((entry) {
-                final i = entry.key;
-                final e = entry.value;
-                final selected = e.key == normalizedCurrent;
-                return TvFocusHighlight(
-                  builder: (_, _) => ListTile(
-                    autofocus: i == autofocusIndex,
-                    title: Text(e.value),
-                    trailing: selected ? const Icon(Icons.check) : null,
-                    onTap: () => Navigator.pop(ctx, e.key),
-                  ),
-                );
-              }).toList(),
+    try {
+      final result = await showFocusRestoringDialog<String>(
+        context: context,
+        useRootNavigator: false,
+        builder: (ctx) {
+          var closed = false;
+          void closeOnce() {
+            if (closed) return;
+            closed = true;
+            Navigator.pop(ctx);
+          }
+          return Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onKeyEvent: (_, event) {
+              if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+              if (event is KeyDownEvent || event is KeyUpEvent) {
+                closeOnce();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: SimpleDialog(
+                title: Text(l10n.contentType),
+                children: entries.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final e = entry.value;
+                  final selected = e.key == normalizedCurrent;
+                  return TvFocusHighlight(
+                    builder: (_, _) => ListTile(
+                      autofocus: i == autofocusIndex,
+                      title: Text(e.value),
+                      trailing: selected ? const Icon(Icons.check) : null,
+                      onTap: () => Navigator.pop(ctx, e.key),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
 
-    if (!mounted || result == null || result == _binding.value) return;
-    _binding.value = result;
-    widget.onChanged?.call();
+      if (!mounted || result == null || result == _binding.value) return;
+      _binding.value = result;
+      widget.onChanged?.call();
+    } finally {
+      _pickerOpen = false;
+    }
   }
 }
 
@@ -517,6 +540,7 @@ class _MediaBarItemCountPickerTileState
   };
 
   late final PreferenceBinding<String> _binding;
+  bool _pickerOpen = false;
 
   @override
   void initState() {
@@ -552,57 +576,63 @@ class _MediaBarItemCountPickerTileState
   }
 
   Future<void> _showPicker(BuildContext context, String current) async {
+    if (_pickerOpen) return;
+    _pickerOpen = true;
     final l10n = AppLocalizations.of(context);
     final entries = _options.entries.toList();
     final selectedIndex = entries.indexWhere((e) => e.key == current);
     final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
-    final result = await showFocusRestoringDialog<String>(
-      context: context,
-      useRootNavigator: false,
-      builder: (ctx) {
-        var closed = false;
-        void closeOnce() {
-          if (closed) return;
-          closed = true;
-          Navigator.pop(ctx);
-        }
-        return Focus(
-          canRequestFocus: false,
-          skipTraversal: true,
-          onKeyEvent: (_, event) {
-            if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-            if (event is KeyDownEvent || event is KeyUpEvent) {
-              closeOnce();
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
-          child: FocusScope(
-            autofocus: true,
-            child: SimpleDialog(
-              title: Text(l10n.itemCount),
-              children: entries.asMap().entries.map((entry) {
-                final i = entry.key;
-                final e = entry.value;
-                final selected = e.key == current;
-                return TvFocusHighlight(
-                  builder: (_, _) => ListTile(
-                    autofocus: i == autofocusIndex,
-                    title: Text(e.value),
-                    trailing: selected ? const Icon(Icons.check) : null,
-                    onTap: () => Navigator.pop(ctx, e.key),
-                  ),
-                );
-              }).toList(),
+    try {
+      final result = await showFocusRestoringDialog<String>(
+        context: context,
+        useRootNavigator: false,
+        builder: (ctx) {
+          var closed = false;
+          void closeOnce() {
+            if (closed) return;
+            closed = true;
+            Navigator.pop(ctx);
+          }
+          return Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onKeyEvent: (_, event) {
+              if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+              if (event is KeyDownEvent || event is KeyUpEvent) {
+                closeOnce();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: SimpleDialog(
+                title: Text(l10n.itemCount),
+                children: entries.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final e = entry.value;
+                  final selected = e.key == current;
+                  return TvFocusHighlight(
+                    builder: (_, _) => ListTile(
+                      autofocus: i == autofocusIndex,
+                      title: Text(e.value),
+                      trailing: selected ? const Icon(Icons.check) : null,
+                      onTap: () => Navigator.pop(ctx, e.key),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
 
-    if (!mounted || result == null || result == _binding.value) return;
-    _binding.value = result;
-    widget.onChanged?.call();
+      if (!mounted || result == null || result == _binding.value) return;
+      _binding.value = result;
+      widget.onChanged?.call();
+    } finally {
+      _pickerOpen = false;
+    }
   }
 }
 
