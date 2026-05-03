@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import '../../../auth/models/login_state.dart';
@@ -145,17 +146,10 @@ class _ServerScreenState extends State<ServerScreen> {
         GetIt.instance<AuthenticationPreferences>().shouldAlwaysAuthenticate;
 
     if (user.hasToken && !alwaysAuthenticate) {
-      try {
-        final success = await _sessionRepo.switchCurrentSession(
-          serverId: server.id,
-          userId: user.id,
-        );
-        if (success && mounted) {
-          context.go(Destinations.home);
-          return;
-        }
-      } catch (e) {
-        // fall through to login
+      final success = await _trySwitchSession(server.id, user.id);
+      if (success && mounted) {
+        context.go(Destinations.home);
+        return;
       }
       if (mounted) {
         context.go(
@@ -166,30 +160,16 @@ class _ServerScreenState extends State<ServerScreen> {
     }
 
     if (!user.hasPassword && !alwaysAuthenticate) {
-      final client = _clientFactory.getClient(
-        serverId: server.id,
-        serverType: server.serverType,
-        baseUrl: server.address,
-      );
-      try {
-        final result = await _authRepo.authenticate(
-          client: client,
+      final result = await _tryPasswordlessAuth(server, user);
+      if (result is Authenticated && mounted) {
+        final switched = await _sessionRepo.switchCurrentSession(
           serverId: server.id,
-          username: user.name,
-          password: '',
+          userId: result.userId,
         );
-        if (result is Authenticated && mounted) {
-          final switched = await _sessionRepo.switchCurrentSession(
-            serverId: server.id,
-            userId: result.userId,
-          );
-          if (switched && mounted) {
-            context.go(Destinations.home);
-            return;
-          }
+        if (switched && mounted) {
+          context.go(Destinations.home);
+          return;
         }
-      } catch (e) {
-        // fall through to login
       }
       if (mounted) {
         context.go(
@@ -203,6 +183,35 @@ class _ServerScreenState extends State<ServerScreen> {
       context.go(
         '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
       );
+    }
+  }
+
+  Future<bool> _trySwitchSession(String serverId, String userId) async {
+    try {
+      return await _sessionRepo.switchCurrentSession(
+        serverId: serverId,
+        userId: userId,
+      );
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<LoginState?> _tryPasswordlessAuth(Server server, _MergedUser user) async {
+    final client = _clientFactory.getClient(
+      serverId: server.id,
+      serverType: server.serverType,
+      baseUrl: server.address,
+    );
+    try {
+      return await _authRepo.authenticate(
+        client: client,
+        serverId: server.id,
+        username: user.name,
+        password: '',
+      );
+    } catch (_) {
+      return null;
     }
   }
 
@@ -268,56 +277,81 @@ class _ServerScreenState extends State<ServerScreen> {
             ),
           ],
           const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed:
-                      () => context.go(
-                        '${Destinations.login}?serverId=${server.id}',
-                      ),
-                  icon: const Icon(Icons.person, size: 18),
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(l10n.addUser),
+          if (PlatformDetection.useMobileUi)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () => context.go(
+                    '${Destinations.login}?serverId=${server.id}',
                   ),
-                  style: _focusableButtonStyle(),
+                  icon: const Icon(Icons.person, size: 18),
+                  label: Text(l10n.addUser),
+                  style: _focusableButtonStyle(context),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
+                const SizedBox(height: 10),
+                OutlinedButton.icon(
                   onPressed: () => context.go(Destinations.serverSelect),
                   icon: const Icon(Icons.home, size: 18),
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(l10n.selectServer),
-                  ),
-                  style: _focusableButtonStyle(),
+                  label: Text(l10n.selectServer),
+                  style: _focusableButtonStyle(context),
                 ),
-              ),
-            ],
-          ),
+              ],
+            )
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.go(
+                      '${Destinations.login}?serverId=${server.id}',
+                    ),
+                    icon: const Icon(Icons.person, size: 18),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(l10n.addUser),
+                    ),
+                    style: _focusableButtonStyle(context),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.go(Destinations.serverSelect),
+                    icon: const Icon(Icons.home, size: 18),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(l10n.selectServer),
+                    ),
+                    style: _focusableButtonStyle(context),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
   }
 
-  ButtonStyle _focusableButtonStyle() {
+  ButtonStyle _focusableButtonStyle(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
+    final focusBorder = ThemeRegistry.active.borders.focusBorder;
     return ButtonStyle(
       side: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||
             states.contains(WidgetState.hovered)) {
-          return const BorderSide(color: Color(0xFF00A4DC), width: 2);
+          return focusBorder.copyWith(color: accent);
         }
-        return BorderSide(color: Colors.white.withValues(alpha: 0.2));
+        return BorderSide(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+        );
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||
             states.contains(WidgetState.hovered)) {
-          return const Color(0xFF00A4DC);
+          return accent;
         }
-        return Colors.white.withValues(alpha: 0.8);
+        return Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8);
       }),
     );
   }
@@ -330,14 +364,22 @@ class _ServerScreenState extends State<ServerScreen> {
     final showArrows = PlatformDetection.useDesktopUi;
 
     final listView = SizedBox(
+      width: double.infinity,
       height: 130,
-      child: Center(
-        child: ListView(
-          controller: _scrollController,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          children: items,
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: items,
+              ),
+            ),
+          );
+        },
       ),
     );
 
@@ -438,7 +480,7 @@ class _ServerScreenState extends State<ServerScreen> {
                           border:
                               focused
                                   ? Border.all(
-                                    color: const Color(0xFF00A4DC),
+                                    color: Theme.of(context).colorScheme.primary,
                                     width: 3,
                                   )
                                   : null,
@@ -467,7 +509,10 @@ class _ServerScreenState extends State<ServerScreen> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: focused ? const Color(0xFF00A4DC) : null,
+                          color:
+                              focused
+                                  ? Theme.of(context).colorScheme.primary
+                                  : null,
                         ),
                       ),
                     ],

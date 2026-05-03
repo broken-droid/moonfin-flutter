@@ -22,7 +22,12 @@ const _kGradientColors = [
 ];
 
 class StartupScreen extends StatefulWidget {
-  const StartupScreen({super.key});
+  final bool bootstrapActiveSession;
+
+  const StartupScreen({
+    super.key,
+    this.bootstrapActiveSession = false,
+  });
 
   @override
   State<StartupScreen> createState() => _StartupScreenState();
@@ -65,6 +70,12 @@ class _StartupScreenState extends State<StartupScreen>
     }
 
     await serverRepo.loadStoredServers();
+
+    if (widget.bootstrapActiveSession && session.activeUserId != null) {
+      if (mounted) context.go(Destinations.home);
+      return;
+    }
+
     final restored = authPrefs.shouldAlwaysAuthenticate
         ? false
         : await session.restoreSession();

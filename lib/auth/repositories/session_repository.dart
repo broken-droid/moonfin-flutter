@@ -124,7 +124,13 @@ class SessionRepository {
     final user = users[userIndex];
 
     final token = await _credentialStore.getToken(serverId);
-    final accessToken = token ?? user.accessToken;
+    final accessToken = user.accessToken.isNotEmpty ? user.accessToken : token;
+
+    if (accessToken == null || accessToken.isEmpty) {
+      _logger.w('No access token available for user $userId on server $serverId');
+      _setState(SessionState.ready);
+      return false;
+    }
 
     final client = _clientFactory.getClient(
       serverId: serverId,
@@ -201,7 +207,6 @@ class SessionRepository {
     final userId = _activeUserId;
     _pluginSyncService.resetState();
 
-    // Revoke the token server-side
     if (serverId != null) {
       try {
         final client = _clientFactory.getClientIfExists(serverId);

@@ -132,7 +132,10 @@ final appRouter = GoRouter(
     // Auth
     GoRoute(
       path: Destinations.startup,
-      builder: (context, state) => const StartupScreen(),
+      builder: (context, state) {
+        final bootstrap = state.uri.queryParameters['bootstrap'] == '1';
+        return StartupScreen(bootstrapActiveSession: bootstrap);
+      },
     ),
     GoRoute(
       path: Destinations.serverSelect,
