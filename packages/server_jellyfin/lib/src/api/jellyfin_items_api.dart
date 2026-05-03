@@ -352,22 +352,28 @@ class JellyfinItemsApi implements ItemsApi {
     return response.data as Map<String, dynamic>;
   }
 
+  List<Map<String, dynamic>> _parseItemListResponse(dynamic data) {
+    if (data is List) return data.cast<Map<String, dynamic>>();
+    if (data is Map<String, dynamic>) {
+      final items = data['Items'] as List?;
+      if (items == null) return const [];
+      return items.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList(growable: false);
+    }
+    return const [];
+  }
+
   @override
   Future<List<Map<String, dynamic>>> getLocalTrailers(String itemId) async {
     final userId = _getUserId();
     final response = await _dio.get('/Users/$userId/Items/$itemId/LocalTrailers');
-    final data = response.data;
-    if (data is List) {
-      return data.cast<Map<String, dynamic>>();
-    }
-    if (data is Map<String, dynamic>) {
-      final items = data['Items'] as List?;
-      if (items == null) {
-        return const [];
-      }
-      return items.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList(growable: false);
-    }
-    return const [];
+    return _parseItemListResponse(response.data);
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getIntros(String itemId) async {
+    final userId = _getUserId();
+    final response = await _dio.get('/Users/$userId/Items/$itemId/Intros');
+    return _parseItemListResponse(response.data);
   }
 
   @override

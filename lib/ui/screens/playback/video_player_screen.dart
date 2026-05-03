@@ -205,6 +205,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     return null;
   }
 
+  bool _isPrerollQueueItem(dynamic item) {
+    final raw = _rawDataForQueueItem(item);
+    return raw?['__moonfinIsPreroll'] == true;
+  }
+
   bool _canDownloadRemoteSubtitles(AggregatedItem item) {
     final client = _clientForItem(item);
     final user = GetIt.instance<UserRepository>().currentUser;
@@ -1103,6 +1108,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (nextUpBehavior == NextUpBehavior.disabled ||
         _nextUpDismissed ||
         _showNextUp) {
+      return;
+    }
+
+    if (_isPrerollQueueItem(_queue.currentItem)) {
       return;
     }
 

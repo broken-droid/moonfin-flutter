@@ -95,6 +95,40 @@ Future<bool> _showDeleteConfirmationDialog(
   return confirmed == true;
 }
 
+bool _isCinemaEligible(AggregatedItem item, {required bool resume}) {
+  if (resume) return false;
+  final prefs = GetIt.instance<UserPreferences>();
+  if (!prefs.get(UserPreferences.cinemaModeEnabled)) return false;
+  final itemType = item.type?.toLowerCase() ?? '';
+  final mediaType = (item.rawData['MediaType'] as String?)?.toLowerCase() ?? '';
+  return itemType == 'movie' || mediaType == 'video';
+}
+
+Future<List<AggregatedItem>> _buildCinemaQueue(AggregatedItem item) async {
+  final factory = GetIt.instance<MediaServerClientFactory>();
+  final client = (item.serverId != null && item.serverId!.isNotEmpty
+      ? factory.getClientIfExists(item.serverId!)
+      : null) ??
+      GetIt.instance<MediaServerClient>();
+  final prerolls = <AggregatedItem>[];
+
+  try {
+    final intros = await client.itemsApi.getIntros(item.id);
+    for (final raw in intros) {
+      final id = raw['Id'] as String?;
+      if (id == null || id.isEmpty || id == item.id) continue;
+      final prerollRaw = Map<String, dynamic>.from(raw)
+        ..['__moonfinIsPreroll'] = true;
+      prerolls.add(
+        AggregatedItem(id: id, serverId: item.serverId, rawData: prerollRaw),
+      );
+    }
+  } catch (_) {}
+
+  if (prerolls.isEmpty) return [item];
+  return [...prerolls, item];
+}
+
 class ItemDetailScreen extends StatefulWidget {
   final String itemId;
   final String? serverId;
@@ -3826,13 +3860,25 @@ class _ActionButtonsState extends State<_ActionButtons> {
         final startPosition = resume
             ? _effectivePlaybackPosition(item)
             : Duration.zero;
-        await manager.playItems(
-          [item],
-          startPosition: startPosition,
-          audioStreamIndex: audioStreamIndex,
-          subtitleStreamIndex: subtitleStreamIndex,
-          mediaSourceId: widget.selectedMediaSourceId,
-        );
+        if (_isCinemaEligible(item, resume: resume)) {
+          final queue = await _buildCinemaQueue(item);
+          final usesPrerolls = queue.length > 1;
+          await manager.playItems(
+            queue,
+            startPosition: startPosition,
+            audioStreamIndex: usesPrerolls ? null : audioStreamIndex,
+            subtitleStreamIndex: usesPrerolls ? null : subtitleStreamIndex,
+            mediaSourceId: usesPrerolls ? null : widget.selectedMediaSourceId,
+          );
+        } else {
+          await manager.playItems(
+            [item],
+            startPosition: startPosition,
+            audioStreamIndex: audioStreamIndex,
+            subtitleStreamIndex: subtitleStreamIndex,
+            mediaSourceId: widget.selectedMediaSourceId,
+          );
+        }
     }
 
     if (!context.mounted) return;

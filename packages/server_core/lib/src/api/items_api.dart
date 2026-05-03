@@ -133,6 +133,8 @@ abstract class ItemsApi {
 
   Future<List<Map<String, dynamic>>> getLocalTrailers(String itemId);
 
+  Future<List<Map<String, dynamic>>> getIntros(String itemId);
+
   Future<List<Map<String, dynamic>>> getSpecialFeatures(String itemId);
 
   Future<List<Map<String, dynamic>>> getMediaSegments(String itemId);
