@@ -344,7 +344,7 @@ build_flutter_binary() {
   local flutter_bin
   flutter_bin="$(resolve_flutter)"
   cd "$REPO_ROOT"
-  "$flutter_bin" build linux --release
+  "$flutter_bin" build linux --release --dart-define=DISTRIBUTION_CHANNEL=linux
 }
 
 build_appimage() {

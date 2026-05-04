@@ -12,6 +12,8 @@ import '../../../data/services/plugin_sync_service.dart';
 import '../../../di/providers.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
+import '../../../util/app_distribution.dart';
+import '../../widgets/app_update_dialog.dart';
 
 import '../../../auth/store/authentication_preferences.dart';
 import '../../../l10n/app_localizations.dart';
@@ -23,6 +25,7 @@ import '../../widgets/settings/preference_binding.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../widgets/settings/settings_panel.dart';
 import '../../widgets/navigation_layout.dart';
+import '../../widgets/support_dialog.dart';
 import '../../widgets/focus/request_initial_focus.dart';
 import 'home_rows_image_type_screen.dart';
 import 'home_screen_sections_integration_screen.dart';
@@ -1226,7 +1229,6 @@ class _AboutCategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appVersion = GetIt.instance<DeviceInfo>().appVersion;
-    final platformLabel = _platformLabel();
     return Scaffold(
       appBar: buildSettingsAppBar(context, const Text('About')),
       body: ListView(
@@ -1256,13 +1258,8 @@ class _AboutCategoryScreen extends StatelessWidget {
             trailing: const SizedBox.shrink(),
             onTap: () {},
           ),
-          _TvSettingsListTile(
-            leading: const Icon(Icons.devices),
-            title: const Text('Platform'),
-            subtitle: Text(platformLabel),
-            trailing: const SizedBox.shrink(),
-            onTap: () {},
-          ),
+          if (AppDistribution.supportsInAppUpdates)
+            const _CheckForUpdatesTile(),
           _TvSettingsListTile(
             leading: const Icon(Icons.code),
             title: const Text('Source Code'),
@@ -1290,15 +1287,22 @@ class _AboutCategoryScreen extends StatelessWidget {
             ),
           ),
           _TvSettingsListTile(
+            leading: const Icon(Icons.forum),
+            title: const Text('Join Discord'),
+            subtitle: const Text('Chat with the community'),
+            onTap: () => showQrOrLaunch(
+              context,
+              url: 'https://discord.gg/u7ny4Rnxze',
+              title: 'Join the Discord',
+            ),
+          ),
+          _TvSettingsListTile(
             leading: const Icon(Icons.favorite),
             title: const Text('Support Moonfin'),
             subtitle: const Text(
               'Star the project on GitHub or contribute',
             ),
-            onTap: () => launchUrl(
-              Uri.parse('https://github.com/Moonfin-Client'),
-              mode: LaunchMode.externalApplication,
-            ),
+            onTap: () => showSupportDialog(context),
           ),
           const _SectionHeader('LEGAL'),
           _TvSettingsListTile(
@@ -1323,15 +1327,39 @@ class _AboutCategoryScreen extends StatelessWidget {
     );
   }
 
-  String _platformLabel() {
-    if (PlatformDetection.isTV) return 'Android TV';
-    if (PlatformDetection.isAndroid) return 'Android';
-    if (PlatformDetection.isIOS) return 'iOS';
-    if (PlatformDetection.isMacOS) return 'macOS';
-    if (PlatformDetection.isWindows) return 'Windows';
-    if (PlatformDetection.isLinux) return 'Linux';
-    if (PlatformDetection.isWeb) return 'Web';
-    return 'Unknown';
+}
+
+class _CheckForUpdatesTile extends StatefulWidget {
+  const _CheckForUpdatesTile();
+
+  @override
+  State<_CheckForUpdatesTile> createState() => _CheckForUpdatesTileState();
+}
+
+class _CheckForUpdatesTileState extends State<_CheckForUpdatesTile> {
+  bool _checking = false;
+
+  Future<void> _check() async {
+    setState(() => _checking = true);
+    await checkAndShowUpdateResult(context);
+    if (!mounted) return;
+    setState(() => _checking = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _TvSettingsListTile(
+      leading: _checking
+          ? const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.system_update_alt),
+      title: const Text('Check for Updates'),
+      subtitle: const Text('Check for the latest Moonfin release'),
+      onTap: _checking ? null : _check,
+    );
   }
 }
 

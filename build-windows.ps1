@@ -293,7 +293,7 @@ try {
   Invoke-CheckedCommand -Name "flutter pub get" -FilePath $flutterExe -Arguments @("pub", "get")
 
   Write-Host "Building Windows x64 release..."
-  Invoke-CheckedCommand -Name "flutter build windows" -FilePath $flutterExe -Arguments @("build", "windows", "--release")
+  Invoke-CheckedCommand -Name "flutter build windows" -FilePath $flutterExe -Arguments @("build", "windows", "--release", "--dart-define=DISTRIBUTION_CHANNEL=windows")
 
   $releaseDir = Join-Path $repoRoot "build\windows\x64\runner\Release"
   $releaseExe = Join-Path $releaseDir "moonfin.exe"

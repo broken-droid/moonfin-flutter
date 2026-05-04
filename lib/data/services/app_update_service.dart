@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../preference/user_preferences.dart';
+import '../../util/app_distribution.dart';
 import '../../util/platform_detection.dart';
 
 enum DesktopUpdateCheckStatus {
@@ -32,11 +35,13 @@ class DesktopUpdateInfo {
   final String version;
   final Uri downloadUri;
   final String assetName;
+  final String releaseNotesUrl;
 
   const DesktopUpdateInfo({
     required this.version,
     required this.downloadUri,
     required this.assetName,
+    required this.releaseNotesUrl,
   });
 }
 
@@ -75,12 +80,71 @@ class AppUpdateService {
     );
   }
 
+  /// Downloads [update] to a temporary file, yielding progress in [0.0, 1.0].
+  /// Completes with the local file path when done.
+  Stream<_DownloadEvent> downloadUpdate(DesktopUpdateInfo update) async* {
+    final dir = PlatformDetection.isAndroid
+        ? await getExternalStorageDirectory() ?? await getTemporaryDirectory()
+        : await getTemporaryDirectory();
+
+    final fileName = update.assetName.isNotEmpty
+        ? update.assetName
+        : 'moonfin_update${_extensionFor(update.downloadUri.path)}';
+    final savePath = '${dir.path}/$fileName';
+
+    final client = HttpClient()
+      ..userAgent = 'MoonfinUpdateChecker/1.0'
+      ..connectionTimeout = const Duration(seconds: 20);
+
+    try {
+      final request = await client.getUrl(update.downloadUri);
+      final response = await request.close().timeout(const Duration(seconds: 20));
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        await response.drain<void>().catchError((_) {});
+        yield _DownloadEvent.failed('HTTP ${response.statusCode}');
+        return;
+      }
+
+      final contentLength = response.contentLength;
+      int received = 0;
+      final file = File(savePath);
+      await file.parent.create(recursive: true);
+      final raf = await file.open(mode: FileMode.write);
+      try {
+        await for (final chunk in response) {
+          await raf.writeFrom(chunk);
+          received += chunk.length;
+          if (contentLength > 0) {
+            yield _DownloadEvent.progress(received / contentLength);
+          } else {
+            yield _DownloadEvent.progress(-1);
+          }
+        }
+      } finally {
+        await raf.close();
+      }
+      yield _DownloadEvent.done(savePath);
+    } catch (e) {
+      yield _DownloadEvent.failed(e.toString());
+    } finally {
+      client.close(force: true);
+    }
+  }
+
+  String _extensionFor(String path) {
+    final lower = path.toLowerCase();
+    for (final ext in const ['.apk', '.dmg', '.exe', '.appimage', '.deb', '.rpm']) {
+      if (lower.endsWith(ext)) return ext;
+    }
+    return '';
+  }
+
   Future<DesktopUpdateCheckResult> _checkForUpdate({
     required bool enforceCooldown,
     required bool respectNotificationPreference,
     required bool suppressIfAlreadyNotified,
   }) async {
-    if (!PlatformDetection.isDesktop) {
+    if (!AppDistribution.supportsInAppUpdates) {
       return const DesktopUpdateCheckResult(
         status: DesktopUpdateCheckStatus.unsupportedPlatform,
       );
@@ -122,11 +186,14 @@ class AppUpdateService {
       );
     }
 
-    final selectedAsset = _selectAssetForCurrentDesktop(release.assets);
-    if (selectedAsset == null) {
-      return const DesktopUpdateCheckResult(
-        status: DesktopUpdateCheckStatus.noMatchingAsset,
-      );
+    _ReleaseAsset? selectedAsset;
+    if (!AppDistribution.opensReleasesInBrowser) {
+      selectedAsset = _selectAsset(release.assets);
+      if (selectedAsset == null) {
+        return const DesktopUpdateCheckResult(
+          status: DesktopUpdateCheckStatus.noMatchingAsset,
+        );
+      }
     }
 
     final lastNotified = _store.getString(_lastNotifiedVersionKey);
@@ -143,8 +210,11 @@ class AppUpdateService {
       status: DesktopUpdateCheckStatus.updateAvailable,
       update: DesktopUpdateInfo(
         version: release.version,
-        downloadUri: Uri.parse(selectedAsset.downloadUrl),
-        assetName: selectedAsset.name,
+        downloadUri: selectedAsset != null
+            ? Uri.parse(selectedAsset.downloadUrl)
+            : Uri.parse(release.releaseNotesUrl),
+        assetName: selectedAsset?.name ?? '',
+        releaseNotesUrl: release.releaseNotesUrl,
       ),
     );
   }
@@ -186,6 +256,9 @@ class AppUpdateService {
         return null;
       }
 
+      final htmlUrl = decoded['html_url']?.toString() ??
+          'https://github.com/Moonfin-Client/Mobile-Desktop/releases/latest';
+
       final assetsJson = decoded['assets'];
       final assets = <_ReleaseAsset>[];
       if (assetsJson is List) {
@@ -202,7 +275,7 @@ class AppUpdateService {
         }
       }
 
-      return _LatestRelease(version: tagName, assets: assets);
+      return _LatestRelease(version: tagName, assets: assets, releaseNotesUrl: htmlUrl);
     } catch (_) {
       return null;
     } finally {
@@ -210,26 +283,38 @@ class AppUpdateService {
     }
   }
 
-  _ReleaseAsset? _selectAssetForCurrentDesktop(List<_ReleaseAsset> assets) {
-    if (assets.isEmpty) {
-      return null;
-    }
+  _ReleaseAsset? _selectAsset(List<_ReleaseAsset> assets) {
+    if (assets.isEmpty) return null;
 
-    if (PlatformDetection.isWindows) {
-      return _firstByExtension(assets, const ['.exe']);
+    switch (AppDistribution.channel) {
+      case DistributionChannel.apk:
+        return _firstWhere(assets, '.apk', excludeSubstring: 'tv') ??
+            _firstByExtension(assets, const ['.apk']);
+      case DistributionChannel.androidTvApk:
+        return _firstWhere(assets, '.apk', requireSubstring: 'tv') ??
+            _firstByExtension(assets, const ['.apk']);
+      case DistributionChannel.macosDmg:
+        return _firstByExtension(assets, const ['.dmg']);
+      case DistributionChannel.windows:
+        return _firstByExtension(assets, const ['.exe']);
+      default:
+        return null;
     }
+  }
 
-    if (PlatformDetection.isMacOS) {
-      return _firstByExtension(assets, const ['.dmg']);
+  _ReleaseAsset? _firstWhere(
+    List<_ReleaseAsset> assets,
+    String extension, {
+    String? requireSubstring,
+    String? excludeSubstring,
+  }) {
+    for (final asset in assets) {
+      final lower = asset.name.toLowerCase();
+      if (!lower.endsWith(extension)) continue;
+      if (requireSubstring != null && !lower.contains(requireSubstring)) continue;
+      if (excludeSubstring != null && lower.contains(excludeSubstring)) continue;
+      return asset;
     }
-
-    if (PlatformDetection.isLinux) {
-      return _firstByExtension(
-        assets,
-        const ['.appimage', '.deb', '.rpm', '.snap', '.flatpak', '.tar.gz', '.tar.xz'],
-      );
-    }
-
     return null;
   }
 
@@ -301,8 +386,36 @@ class AppUpdateService {
 class _LatestRelease {
   final String version;
   final List<_ReleaseAsset> assets;
+  final String releaseNotesUrl;
 
-  const _LatestRelease({required this.version, required this.assets});
+  const _LatestRelease({
+    required this.version,
+    required this.assets,
+    required this.releaseNotesUrl,
+  });
+}
+
+sealed class _DownloadEvent {
+  const _DownloadEvent();
+
+  const factory _DownloadEvent.progress(double fraction) = DownloadProgressEvent;
+  const factory _DownloadEvent.done(String filePath) = DownloadDoneEvent;
+  const factory _DownloadEvent.failed(String error) = DownloadFailedEvent;
+}
+
+final class DownloadProgressEvent extends _DownloadEvent {
+  final double fraction;
+  const DownloadProgressEvent(this.fraction);
+}
+
+final class DownloadDoneEvent extends _DownloadEvent {
+  final String filePath;
+  const DownloadDoneEvent(this.filePath);
+}
+
+final class DownloadFailedEvent extends _DownloadEvent {
+  final String error;
+  const DownloadFailedEvent(this.error);
 }
 
 class _ReleaseAsset {

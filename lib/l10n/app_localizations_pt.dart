@@ -3049,6 +3049,24 @@ class AppLocalizationsPt extends AppLocalizations {
       'Mostrar quando atualizações estiverem disponíveis';
 
   @override
+  String updateAvailableTitle(String version) {
+    return 'v$version Available';
+  }
+
+  @override
+  String get readReleaseNotes => 'Read Release Notes';
+
+  @override
+  String get downloadingUpdate => 'Downloading update...';
+
+  @override
+  String get updateDownloadFailed =>
+      'Update download failed. Please try again.';
+
+  @override
+  String get openReleasesPage => 'Open Releases Page';
+
+  @override
   String get navigation => 'Navegação';
 
   @override

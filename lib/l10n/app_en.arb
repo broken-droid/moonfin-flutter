@@ -4196,6 +4196,31 @@
   "@showWhenUpdatesAvailable": {
     "description": "Description for update notifications"
   },
+  "updateAvailableTitle": "v{version} Available",
+  "@updateAvailableTitle": {
+    "description": "Title of the update dialog showing the new version",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "readReleaseNotes": "Read Release Notes",
+  "@readReleaseNotes": {
+    "description": "Option to read the release notes in a browser"
+  },
+  "downloadingUpdate": "Downloading update...",
+  "@downloadingUpdate": {
+    "description": "Label shown while an update is being downloaded"
+  },
+  "updateDownloadFailed": "Update download failed. Please try again.",
+  "@updateDownloadFailed": {
+    "description": "Error shown when the update download fails"
+  },
+  "openReleasesPage": "Open Releases Page",
+  "@openReleasesPage": {
+    "description": "Option to open the GitHub releases page in a browser (Linux)"
+  },
   "navigation": "Navigation",
   "@navigation": {
     "description": "Navigation settings title"

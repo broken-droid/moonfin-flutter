@@ -5438,6 +5438,36 @@ abstract class AppLocalizations {
   /// **'Show when updates are available'**
   String get showWhenUpdatesAvailable;
 
+  /// Title of the update dialog showing the new version
+  ///
+  /// In en, this message translates to:
+  /// **'v{version} Available'**
+  String updateAvailableTitle(String version);
+
+  /// Option to read the release notes in a browser
+  ///
+  /// In en, this message translates to:
+  /// **'Read Release Notes'**
+  String get readReleaseNotes;
+
+  /// Label shown while an update is being downloaded
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading update...'**
+  String get downloadingUpdate;
+
+  /// Error shown when the update download fails
+  ///
+  /// In en, this message translates to:
+  /// **'Update download failed. Please try again.'**
+  String get updateDownloadFailed;
+
+  /// Option to open the GitHub releases page in a browser (Linux)
+  ///
+  /// In en, this message translates to:
+  /// **'Open Releases Page'**
+  String get openReleasesPage;
+
   /// Navigation settings title
   ///
   /// In en, this message translates to:

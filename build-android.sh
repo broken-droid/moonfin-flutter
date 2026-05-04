@@ -77,7 +77,8 @@ echo "Building Android release APK (arm64-v8a only)..."
   --flavor mobile \
   --build-name "$APP_VERSION" \
   --build-number "$APP_BUILD_NUMBER" \
-  --target-platform android-arm64
+  --target-platform android-arm64 \
+  --dart-define=DISTRIBUTION_CHANNEL=apk
 
 if [ ! -f "$APK_SOURCE" ]; then
   echo "Error: APK not found at $APK_SOURCE" >&2
@@ -98,7 +99,8 @@ echo "Building Android App Bundle..."
 if ! "$FLUTTER" build appbundle --release \
   --flavor mobile \
   --build-name "$APP_VERSION" \
-  --build-number "$APP_BUILD_NUMBER"; then
+  --build-number "$APP_BUILD_NUMBER" \
+  --dart-define=DISTRIBUTION_CHANNEL=aab; then
   echo "Flutter appbundle build failed. Retrying with Gradle bundleRelease fallback..."
   (
     cd "$REPO_ROOT/android"
@@ -125,7 +127,8 @@ echo "Building Android TV release APK..."
 "$FLUTTER" build apk --release \
   --flavor androidTv \
   --build-name "$TV_VERSION" \
-  --build-number "$TV_BUILD_NUMBER"
+  --build-number "$TV_BUILD_NUMBER" \
+  --dart-define=DISTRIBUTION_CHANNEL=android_tv_apk
 
 if [ ! -f "$TV_APK_SOURCE" ]; then
   echo "Error: TV APK not found at $TV_APK_SOURCE" >&2
@@ -146,7 +149,8 @@ echo "Building Android TV App Bundle..."
 if ! "$FLUTTER" build appbundle --release \
   --flavor androidTv \
   --build-name "$TV_VERSION" \
-  --build-number "$TV_BUILD_NUMBER"; then
+  --build-number "$TV_BUILD_NUMBER" \
+  --dart-define=DISTRIBUTION_CHANNEL=android_tv_aab; then
   echo "Flutter appbundle build failed. Retrying with Gradle bundleAndroidTvRelease fallback..."
   (
     cd "$REPO_ROOT/android"

@@ -3,9 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:server_core/server_core.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../data/services/app_update_service.dart';
 import '../../../preference/user_preferences.dart';
-import '../../../util/platform_detection.dart';
+import '../../../util/app_distribution.dart';
+import '../../widgets/app_update_dialog.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import '../../../l10n/app_localizations.dart';
 import 'settings_app_bar.dart';
@@ -30,6 +30,10 @@ class AboutScreen extends StatelessWidget {
           Center(child: Image.asset('assets/images/logo_and_text.png', height: 80)),
           const SizedBox(height: 4),
           Center(child: Text(l10n.versionValue(appVersion))),
+          if (AppDistribution.supportsInAppUpdates) ...[
+            const SizedBox(height: 16),
+            const _CheckForUpdatesButton(),
+          ],
           const SizedBox(height: 24),
           const Divider(),
           ListTile(
@@ -51,59 +55,8 @@ class AboutScreen extends StatelessWidget {
             subtitle: const Text('https://github.com/Moonfin-Client/Mobile-Desktop'),
             onTap: () => launchUrl(Uri.parse('https://github.com/Moonfin-Client/Mobile-Desktop')),
           ),
-          if (PlatformDetection.isDesktop) ...[
+          if (AppDistribution.supportsInAppUpdates) ...[
             const Divider(),
-            ListTile(
-              leading: const Icon(Icons.system_update_alt),
-              title: Text(l10n.checkForUpdatesNow),
-              subtitle: Text(l10n.checksLatestDesktopRelease),
-              onTap: () async {
-                final messenger = ScaffoldMessenger.of(context);
-                final result = await GetIt.instance<AppUpdateService>().checkForUpdateNowDetailed();
-                if (!context.mounted) {
-                  return;
-                }
-
-                final l10n = AppLocalizations.of(context);
-                messenger.clearSnackBars();
-                final update = result.update;
-                if (update == null) {
-                  final message = switch (result.status) {
-                    DesktopUpdateCheckStatus.upToDate => l10n.youAreUpToDate,
-                    DesktopUpdateCheckStatus.checkFailed => l10n.couldNotCheckForUpdates,
-                    DesktopUpdateCheckStatus.noMatchingAsset => l10n.noCompatibleUpdate,
-                    DesktopUpdateCheckStatus.unsupportedPlatform => l10n.updateChecksNotSupported,
-                    DesktopUpdateCheckStatus.disabledByPreference => l10n.updateNotificationsDisabled,
-                    DesktopUpdateCheckStatus.rateLimited => l10n.pleaseWaitBeforeChecking,
-                    DesktopUpdateCheckStatus.alreadyNotified => l10n.latestUpdateAlreadyShown,
-                    DesktopUpdateCheckStatus.updateAvailable => l10n.updateAvailable,
-                  };
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: Text(message),
-                      duration: const Duration(seconds: 4),
-                    ),
-                  );
-                  return;
-                }
-
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.updateAvailableVersion(update.version)),
-                    duration: const Duration(seconds: 10),
-                    action: SnackBarAction(
-                      label: l10n.download,
-                      onPressed: () {
-                        launchUrl(
-                          update.downloadUri,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
             SwitchPreferenceTile(
               preference: UserPreferences.updateNotificationsEnabled,
               title: l10n.updateNotifications,
@@ -114,5 +67,41 @@ class AboutScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _CheckForUpdatesButton extends StatefulWidget {
+  const _CheckForUpdatesButton();
+
+  @override
+  State<_CheckForUpdatesButton> createState() => _CheckForUpdatesButtonState();
+}
+
+class _CheckForUpdatesButtonState extends State<_CheckForUpdatesButton> {
+  bool _checking = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Center(
+      child: TextButton.icon(
+        icon: _checking
+            ? const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(Icons.system_update_alt, size: 18),
+        label: Text(l10n.checkForUpdatesNow),
+        onPressed: _checking ? null : () => _check(context),
+      ),
+    );
+  }
+
+  Future<void> _check(BuildContext context) async {
+    setState(() => _checking = true);
+    await checkAndShowUpdateResult(context);
+    if (!mounted) return;
+    setState(() => _checking = false);
   }
 }

@@ -89,7 +89,11 @@ echo "Resolving packages..."
 flutter pub get
 
 echo "Preparing Flutter macOS generated files..."
-flutter build macos --release
+if [ "$BUILD_APPSTORE_PKG" = "1" ]; then
+  flutter build macos --release --dart-define=DISTRIBUTION_CHANNEL=macos_pkg
+else
+  flutter build macos --release --dart-define=DISTRIBUTION_CHANNEL=macos_dmg
+fi
 
 echo "Cleaning previous App Store outputs..."
 rm -rf "$ARCHIVE_PATH" "$EXPORT_DIR"
@@ -189,15 +193,45 @@ if [ "$BUILD_APPSTORE_PKG" = "1" ]; then
 fi
 
 if [ "$BUILD_DMG_GITHUB" = "1" ]; then
-  if [ ! -d "$APP_FROM_ARCHIVE" ]; then
-    echo "Error: archived app not found at $APP_FROM_ARCHIVE" >&2
+  # When both PKG and DMG are requested, the initial Flutter build used macos_pkg.
+  # Rebuild Flutter with the macos_dmg channel so the DMG binary includes the updater.
+  if [ "$BUILD_APPSTORE_PKG" = "1" ]; then
+    echo "Rebuilding Flutter for DMG distribution channel..."
+    DMG_ARCHIVE_PATH="$REPO_ROOT/build/macos/dmg/${APP_NAME}.xcarchive"
+    rm -rf "$DMG_ARCHIVE_PATH"
+    mkdir -p "$(dirname "$DMG_ARCHIVE_PATH")"
+    flutter build macos --release --dart-define=DISTRIBUTION_CHANNEL=macos_dmg
+    DMG_ARCHIVE_CMD=(
+      xcodebuild
+      -workspace "$WORKSPACE"
+      -scheme "$SCHEME"
+      -configuration "$CONFIGURATION"
+      -destination "generic/platform=macOS"
+      -archivePath "$DMG_ARCHIVE_PATH"
+      CODE_SIGN_STYLE=Automatic
+      archive
+    )
+    if [ -n "$TEAM_ID" ]; then
+      DMG_ARCHIVE_CMD+=( DEVELOPMENT_TEAM="$TEAM_ID" )
+    fi
+    if [ "$ALLOW_PROVISIONING_UPDATES" = "1" ]; then
+      DMG_ARCHIVE_CMD+=( -allowProvisioningUpdates )
+    fi
+    "${DMG_ARCHIVE_CMD[@]}"
+    DMG_APP_FROM_ARCHIVE="$DMG_ARCHIVE_PATH/Products/Applications/${APP_NAME}.app"
+  else
+    DMG_APP_FROM_ARCHIVE="$APP_FROM_ARCHIVE"
+  fi
+
+  if [ ! -d "$DMG_APP_FROM_ARCHIVE" ]; then
+    echo "Error: archived app not found at $DMG_APP_FROM_ARCHIVE" >&2
     exit 1
   fi
 
   echo "Building DMG for GitHub distribution..."
   rm -rf "$STAGING_DIR"
   mkdir -p "$STAGING_DIR"
-  cp -R "$APP_FROM_ARCHIVE" "$STAGING_DIR/"
+  cp -R "$DMG_APP_FROM_ARCHIVE" "$STAGING_DIR/"
 
   if [ -n "$APP_SIGN_ID" ]; then
     echo "Re-signing app bundle with hardened runtime..."

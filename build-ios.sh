@@ -94,7 +94,8 @@ rm -f "$ROOT_UNSIGNED_IPA_OUTPUT"
 rm -f "$IPA_DIR"/*.ipa 2>/dev/null || true
 
 echo "Building unsigned iOS archive..."
-"$FLUTTER" build ipa --release --no-codesign
+"$FLUTTER" build ipa --release --no-codesign \
+  --dart-define=DISTRIBUTION_CHANNEL=ios_unsigned
 
 if [ ! -d "$ARCHIVE_DIR" ]; then
   echo "Error: expected archive directory not found: $ARCHIVE_DIR" >&2
@@ -131,10 +132,12 @@ if [ -n "$IOS_EXPORT_OPTIONS_PLIST" ]; then
     exit 1
   fi
   echo "Building signed App Store IPA with export options plist..."
-  "$FLUTTER" build ipa --release --export-options-plist="$IOS_EXPORT_OPTIONS_PLIST"
+  "$FLUTTER" build ipa --release --export-options-plist="$IOS_EXPORT_OPTIONS_PLIST" \
+    --dart-define=DISTRIBUTION_CHANNEL=ios_signed
 else
   echo "Building signed App Store IPA with export method: $IOS_EXPORT_METHOD"
-  "$FLUTTER" build ipa --release --export-method="$IOS_EXPORT_METHOD"
+  "$FLUTTER" build ipa --release --export-method="$IOS_EXPORT_METHOD" \
+    --dart-define=DISTRIBUTION_CHANNEL=ios_signed
 fi
 
 IPA_SOURCE="$(find "$IPA_DIR" -maxdepth 1 -type f -name '*.ipa' ! -name '*-unsigned.ipa' | head -n 1)"

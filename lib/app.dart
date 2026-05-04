@@ -21,7 +21,9 @@ import 'ui/theme/app_theme_controller.dart';
 import 'ui/widgets/cast_mini_player.dart';
 import 'ui/widgets/mini_audio_player.dart';
 import 'ui/widgets/offline_banner.dart';
+import 'ui/widgets/app_update_dialog.dart';
 import 'ui/widgets/exit_confirmation_dialog.dart';
+import 'util/app_distribution.dart';
 import 'util/app_exit.dart';
 import 'util/focus/dpad_keys.dart';
 import 'util/fullscreen_helper.dart';
@@ -381,7 +383,7 @@ class _ConnectivityListenerState
   }
 
   void _scheduleDesktopUpdateCheck() {
-    if (!PlatformDetection.isDesktop || _didScheduleUpdateCheck) {
+    if (!AppDistribution.supportsInAppUpdates || _didScheduleUpdateCheck) {
       return;
     }
 
@@ -455,19 +457,19 @@ class _ConnectivityListenerState
 
       final messenger = ScaffoldMessenger.of(context);
       messenger.clearSnackBars();
+      final l10n = AppLocalizations.of(context);
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Update available: v${update.version}'),
-          duration: const Duration(seconds: 10),
+          content: Text(l10n.updateAvailableVersion(update.version)),
+          duration: const Duration(seconds: 12),
           action: SnackBarAction(
-            label: 'Download',
+            label: l10n.download,
             onPressed: () {
-              unawaited(
-                launchUrl(
-                  update.downloadUri,
-                  mode: LaunchMode.externalApplication,
-                ),
-              );
+              final navContext =
+                  appRouter.routerDelegate.navigatorKey.currentContext ?? context;
+              if (navContext.mounted) {
+                showAppUpdateDialog(navContext, update);
+              }
             },
           ),
         ),
