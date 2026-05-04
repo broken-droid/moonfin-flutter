@@ -316,6 +316,12 @@ class _HomeShellState extends State<_HomeShell>
     final backdropEnabled = _userPrefs.get(UserPreferences.backdropEnabled);
     final blurAmount = _userPrefs.get(UserPreferences.browsingBackgroundBlurAmount).toDouble();
     final seasonalEffect = _userPrefs.get(UserPreferences.seasonalSurprise);
+    final mediaBarMode = UserPreferences.normalizeMediaBarMode(
+      _userPrefs.get(UserPreferences.mediaBarMode),
+    );
+    final useMakdBackdropFx =
+        PlatformDetection.useMobileUi &&
+        mediaBarMode == UserPreferences.mediaBarModeMakd;
 
     return PopScope(
       canPop: false,
@@ -330,7 +336,12 @@ class _HomeShellState extends State<_HomeShell>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              if (backdropEnabled) _Backdrop(url: _backdropUrl, blurAmount: blurAmount),
+              if (backdropEnabled)
+                _Backdrop(
+                  url: _backdropUrl,
+                  blurAmount: blurAmount,
+                  useMakdBackdropFx: useMakdBackdropFx,
+                ),
               const _GradientScrim(),
               Positioned.fill(
                 child: _ContentRows(
@@ -394,15 +405,53 @@ class _GradientScrim extends StatelessWidget {
 class _Backdrop extends StatelessWidget {
   final String? url;
   final double blurAmount;
+  final bool useMakdBackdropFx;
 
-  const _Backdrop({this.url, required this.blurAmount});
+  const _Backdrop({
+    this.url,
+    required this.blurAmount,
+    this.useMakdBackdropFx = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FullscreenBackdropSwitcher(
       imageUrl: url,
       duration: BackgroundService.transitionDuration,
-      imageBuilder: (imageUrl) => _blurredImage(imageUrl, blurAmount),
+      imageBuilder: (imageUrl) {
+        final image = _blurredImage(imageUrl, blurAmount);
+        if (!useMakdBackdropFx) {
+          return image;
+        }
+
+        return ClipRect(
+          child: TweenAnimationBuilder<double>(
+            key: ValueKey('makd_home_backdrop_$imageUrl'),
+            tween: Tween(begin: 1.0, end: 1.08),
+            duration: const Duration(seconds: 10),
+            curve: Curves.easeOut,
+            builder: (context, scale, child) {
+              return Transform.scale(
+                scale: scale,
+                alignment: Alignment.center,
+                child: child,
+              );
+            },
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                image,
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.26),
+                  ),
+                  child: const SizedBox.expand(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -1012,7 +1061,18 @@ class _ContentRowsState extends State<_ContentRows>
     }
 
     final isLandscape = screenWidth > screenHeight;
-    return isLandscape ? screenHeight : screenHeight * 0.55;
+    if (isLandscape) {
+      return screenHeight;
+    }
+
+    final mediaBarMode = UserPreferences.normalizeMediaBarMode(
+      widget.prefs.get(UserPreferences.mediaBarMode),
+    );
+    if (mediaBarMode == UserPreferences.mediaBarModeMakd) {
+      return screenHeight * 0.46;
+    }
+
+    return screenHeight * 0.55;
   }
 
   double _pinnedInfoCollapseOffset() {

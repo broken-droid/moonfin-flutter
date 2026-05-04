@@ -3200,6 +3200,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
       _downloadService!.addListener(_onDownloadChanged);
     }
     _checkOffline();
+    _maybeTriggerAutoPlay();
   }
 
   @override
@@ -3294,15 +3295,24 @@ class _ActionButtonsState extends State<_ActionButtons> {
       _selectedAudioIndex = null;
       _selectedSubtitleIndex = null;
     }
-    if (widget.autoPlay && !_autoPlayTriggered) {
-      final item = widget.viewModel.item;
-      if (item != null) {
-        _autoPlayTriggered = true;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _play(context, item);
-        });
-      }
-    }
+    _maybeTriggerAutoPlay();
+  }
+
+  void _maybeTriggerAutoPlay() {
+    if (!widget.autoPlay || _autoPlayTriggered) return;
+
+    final item = widget.viewModel.item;
+    if (item == null) return;
+
+    _autoPlayTriggered = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      // Consume autoPlay from the current detail route so back navigation
+      // doesn't re-trigger playback.
+      context.replace(Destinations.item(item.id, serverId: item.serverId));
+      _play(context, item);
+    });
   }
 
   List<Map<String, dynamic>> _streamsForTrackSelectors(

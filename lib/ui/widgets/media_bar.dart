@@ -14,6 +14,7 @@ import 'package:server_core/server_core.dart';
 
 import '../../data/models/media_bar_slide_item.dart';
 import '../../data/models/media_bar_state.dart';
+import '../../data/services/background_service.dart';
 import '../../data/services/media_server_client_factory.dart';
 import '../../data/services/youtube_stream_resolver.dart';
 import '../../data/viewmodels/media_bar_view_model.dart';
@@ -54,12 +55,14 @@ class MediaBar extends StatefulWidget {
   State<MediaBar> createState() => _MediaBarState();
 }
 
-class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
+class _MediaBarState extends State<MediaBar>
+  with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   static const _openTimeout = Duration(seconds: 10);
   static const _previewRevealDelay = Duration(seconds: 3);
   static const _pageAnimDuration = Duration(milliseconds: 220);
 
   final _pageController = PageController();
+  final _backgroundService = GetIt.instance<BackgroundService>();
   RouteInformationProvider? _routeInformationProvider;
   bool _isHomeRouteActive = true;
 
@@ -83,11 +86,25 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
   bool _isTrailerPlaying = false;
   String? _activeYouTubeVideoId;
   String? _pendingYouTubeVideoId;
+  String? _lastSyncedMakdBackdropUrl;
   late bool _lastHardwareDecodingEnabled;
+  late final AnimationController _makdKenBurnsController;
+  late final Animation<double> _makdKenBurnsScale;
 
   @override
   void initState() {
     super.initState();
+    _makdKenBurnsController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 10),
+    );
+    _makdKenBurnsScale = Tween<double>(
+      begin: 1.0,
+      end: 1.08,
+    ).animate(
+      CurvedAnimation(parent: _makdKenBurnsController, curve: Curves.easeOut),
+    );
+    _makdKenBurnsController.forward();
     _lastHardwareDecodingEnabled = widget.prefs.get(
       UserPreferences.hardwareDecoding,
     );
@@ -113,6 +130,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     _autoAdvanceTimer?.cancel();
     _trailerRevealTimer?.cancel();
     _disposeTrailerPlayer();
+    _makdKenBurnsController.dispose();
     _pageController.dispose();
     widget.viewModel.removeListener(_onStateChanged);
     widget.prefs.removeListener(_onPrefsChanged);
@@ -173,7 +191,45 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       if (_activeTrailerItemId == null && _currentIndex < state.items.length) {
         _scheduleTrailerPreview(state.items[_currentIndex]);
       }
+      _syncMakdBackdropWithCurrentSlide();
     }
+  }
+
+  void _syncMakdBackdropWithCurrentSlide() {
+    if (!_isHomeRouteActive) return;
+
+    final mode = UserPreferences.normalizeMediaBarMode(
+      widget.prefs.get(UserPreferences.mediaBarMode),
+    );
+    if (mode != UserPreferences.mediaBarModeMakd) {
+      _lastSyncedMakdBackdropUrl = null;
+      return;
+    }
+
+    final items = widget.viewModel.items;
+    if (_currentIndex >= items.length) return;
+
+    final backdropUrl = items[_currentIndex].backdropUrl;
+    if (backdropUrl == null || backdropUrl.isEmpty) return;
+
+    if (_lastSyncedMakdBackdropUrl == backdropUrl ||
+        _backgroundService.currentUrl == backdropUrl) {
+      return;
+    }
+
+    _backgroundService.setBackgroundUrl(
+      backdropUrl,
+      context: BlurContext.browsing,
+    );
+    _lastSyncedMakdBackdropUrl = backdropUrl;
+  }
+
+  bool _isMakdMobileMode() {
+    if (!PlatformDetection.useMobileUi) return false;
+    final mode = UserPreferences.normalizeMediaBarMode(
+      widget.prefs.get(UserPreferences.mediaBarMode),
+    );
+    return mode == UserPreferences.mediaBarModeMakd;
   }
 
   void _prefetchAllInBackground(List<MediaBarSlideItem> items, int centerIndex) {
@@ -216,6 +272,11 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     if (!mounted) return;
     setState(() {});
 
+    if (_isMakdMobileMode()) {
+      _cancelTrailerPreview();
+      return;
+    }
+
     final trailerPreviewEnabled = widget.prefs.get(
       UserPreferences.mediaBarTrailerPreview,
     );
@@ -252,6 +313,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     if (!_isHomeRouteActive) {
       _autoAdvanceTimer?.cancel();
       _cancelTrailerPreview();
+      _lastSyncedMakdBackdropUrl = null;
       return;
     }
 
@@ -264,6 +326,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     if (_currentIndex < items.length) {
       _scheduleTrailerPreview(items[_currentIndex]);
     }
+    _syncMakdBackdropWithCurrentSlide();
   }
 
   void _startAutoAdvance() {
@@ -292,7 +355,14 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
   }
 
   void _goToPage(int index) {
-    if (!_pageController.hasClients) return;
+    if (!_pageController.hasClients) {
+      // In MakD mobile we intentionally hide the local PageView layer,
+      // so update index/state directly for swipe + auto-advance behavior.
+      if (_currentIndex != index) {
+        _onPageChanged(index);
+      }
+      return;
+    }
     _pageController.animateToPage(
       index,
       duration: _pageAnimDuration,
@@ -302,6 +372,8 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
 
   void _onPageChanged(int index) {
     setState(() => _currentIndex = index);
+    _makdKenBurnsController.forward(from: 0);
+    _syncMakdBackdropWithCurrentSlide();
     _startAutoAdvance();
     _cancelTrailerPreview();
     final items = widget.viewModel.items;
@@ -344,6 +416,10 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
   }
 
   void _scheduleTrailerPreview(MediaBarSlideItem item) {
+    if (_isMakdMobileMode()) {
+      _cancelTrailerPreview();
+      return;
+    }
     if (!widget.prefs.get(UserPreferences.mediaBarTrailerPreview)) return;
     if (!_isHomeRouteActive) return;
     if (_activeTrailerItemId == item.itemId && _trailerVideoOpacity > 0) return;
@@ -862,6 +938,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       isMobile &&
       (widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top);
     final toolbarInset = navbarAtTop ? MediaQuery.of(context).padding.top + 60.0 : 0.0;
+    final effectiveTopInset = isMobile ? 0.0 : toolbarInset;
     final contentWidth = (MediaQuery.of(context).size.width * 0.42).clamp(280.0, 560.0);
 
     return MouseRegion(
@@ -876,39 +953,49 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
         child: GestureDetector(
           onTap: () => _navigateToItem(context, items),
           onLongPress: () => _navigateToItemAndPlay(context, items),
+          onHorizontalDragEnd: isMobile
+              ? (details) {
+                  final velocity = details.primaryVelocity ?? 0;
+                  if (velocity < -300 && _currentIndex < items.length - 1) {
+                    _goToPage(_currentIndex + 1);
+                  } else if (velocity > 300 && _currentIndex > 0) {
+                    _goToPage(_currentIndex - 1);
+                  }
+                }
+              : null,
           child: Padding(
-            padding: EdgeInsets.only(top: toolbarInset),
+            padding: EdgeInsets.only(top: effectiveTopInset),
             child: SizedBox(
-              height: widget.height - toolbarInset,
+              height: widget.height - effectiveTopInset,
               width: double.infinity,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  AnimatedOpacity(
-                    opacity: ((PlatformDetection.isLinux || _activeYouTubeVideoId != null) &&
-                            _trailerVideoOpacity > 0)
-                        ? 0
-                        : 1,
-                    duration: const Duration(milliseconds: 250),
-                    child: TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 1.0, end: 1.08),
-                      duration: const Duration(seconds: 10),
-                      curve: Curves.easeOut,
-                      builder: (context, scale, child) {
-                        return Transform.scale(
-                          scale: scale,
-                          alignment: Alignment.center,
-                          child: child,
-                        );
-                      },
-                      child: _BackdropLayer(
-                        items: items,
-                        pageController: _pageController,
-                        onPageChanged: _onPageChanged,
+                  if (!isMobile)
+                    AnimatedOpacity(
+                      opacity: ((PlatformDetection.isLinux || _activeYouTubeVideoId != null) &&
+                              _trailerVideoOpacity > 0)
+                          ? 0
+                          : 1,
+                      duration: const Duration(milliseconds: 250),
+                      child: AnimatedBuilder(
+                        animation: _makdKenBurnsScale,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: _makdKenBurnsScale.value,
+                            alignment: Alignment.center,
+                            child: child,
+                          );
+                        },
+                        child: _BackdropLayer(
+                          items: items,
+                          pageController: _pageController,
+                          onPageChanged: _onPageChanged,
+                        ),
                       ),
                     ),
-                  ),
-                  ..._buildVideoOverlays(),
+                  if (!isMobile) ..._buildVideoOverlays(),
+                  if (!isMobile)
                   Positioned.fill(
                     child: DecoratedBox(
                       decoration: BoxDecoration(
@@ -925,32 +1012,38 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
                       ),
                     ),
                   ),
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withValues(alpha: 0.12),
-                            Colors.black.withValues(alpha: 0.28),
-                            Colors.black.withValues(alpha: 0.78),
-                          ],
-                          stops: const [0.0, 0.48, 1.0],
+                  if (!isMobile)
+                    Positioned.fill(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.12),
+                              Colors.black.withValues(alpha: 0.28),
+                              Colors.black.withValues(alpha: 0.78),
+                            ],
+                            stops: const [0.0, 0.48, 1.0],
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   if (currentItem != null && currentItem.logoUrl != null)
                     Builder(builder: (context) {
-                      final contentHeight = widget.height - toolbarInset;
+                      final contentHeight = widget.height - effectiveTopInset;
                       final screenWidth = MediaQuery.of(context).size.width;
                       final logoTop = contentHeight * 0.22;
                       final logoWidth = (screenWidth * 0.45).clamp(220.0, 640.0);
                       final logoHeight = (contentHeight * 0.35).clamp(90.0, 300.0);
+                      final mobileLogoHeight = (contentHeight * 0.18).clamp(58.0, 112.0);
+                      final mobileLogoWidth = (screenWidth * 0.7).clamp(190.0, 380.0);
+                      final mobileLogoTop =
+                          (contentHeight * 0.5 - mobileLogoHeight / 2)
+                              .clamp(8.0, contentHeight * 0.56);
                       return Positioned(
                         left: isMobile ? null : 50,
-                        top: isMobile ? 12 : logoTop,
+                        top: isMobile ? mobileLogoTop : logoTop,
                         child: isMobile
                             ? SizedBox(
                                 width: screenWidth,
@@ -959,8 +1052,8 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
                                     duration: const Duration(milliseconds: 300),
                                     child: SizedBox(
                                       key: ValueKey('makd_logo_${currentItem.itemId}'),
-                                      width: 200,
-                                      height: 80,
+                                      width: mobileLogoWidth,
+                                      height: mobileLogoHeight,
                                       child: _buildLogoWithShadow(currentItem.logoUrl!),
                                     ),
                                   ),
@@ -981,7 +1074,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
                     Positioned(
                       left: isMobile ? 0 : 50,
                       right: isMobile ? 0 : null,
-                      bottom: isMobile ? 52 : 20,
+                      bottom: isMobile ? 24 : 20,
                       child: Padding(
                         padding: isMobile
                             ? const EdgeInsets.symmetric(horizontal: 20)
@@ -1643,13 +1736,13 @@ class _MakdContent extends StatelessWidget {
             showBadges: showBadges,
           ),
         ],
-        if (item.overview?.isNotEmpty ?? false) ...[
+        if (!isMobile && (item.overview?.isNotEmpty ?? false)) ...[
           const SizedBox(height: 10),
           Text(
             item.overview!,
-            maxLines: isMobile ? 2 : 3,
+            maxLines: 3,
             overflow: TextOverflow.ellipsis,
-            style: (isMobile ? theme.textTheme.bodySmall : theme.textTheme.bodyMedium)?.copyWith(
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: Colors.white.withValues(alpha: 0.88),
               height: 1.38,
               shadows: _textShadows,
@@ -1657,7 +1750,8 @@ class _MakdContent extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 14),
-        _MakdActionButtons(onPlay: onPlay, onInfo: onInfo, isMobile: isMobile),
+        if (!PlatformDetection.isTV)
+          _MakdActionButtons(onPlay: onPlay, onInfo: onInfo, isMobile: isMobile),
       ],
     );
   }
