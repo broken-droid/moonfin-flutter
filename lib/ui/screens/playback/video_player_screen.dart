@@ -125,6 +125,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _tvSkipSegmentFocus = FocusNode(
     debugLabel: 'video_player_tv_skip_segment',
   );
+  final _tvNextUpPlayFocus = FocusNode(
+    debugLabel: 'video_player_tv_next_up_play',
+  );
+  final _tvNextUpDismissFocus = FocusNode(
+    debugLabel: 'video_player_tv_next_up_dismiss',
+  );
   final _tvTransportFirstFocus = FocusNode(
     debugLabel: 'video_player_tv_transport_first',
   );
@@ -622,6 +628,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _overlayFocus.dispose();
     _tvSeekbarFocus.dispose();
     _tvSkipSegmentFocus.dispose();
+    _tvNextUpPlayFocus.dispose();
+    _tvNextUpDismissFocus.dispose();
     _tvTransportFirstFocus.dispose();
     _tvBottomPrimaryFocus.dispose();
     _tvSecondaryFocus.dispose();
@@ -1083,23 +1091,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final result = _segmentService.checkPosition(position);
     if (result.shouldSkip && result.skipTo != null) {
       _manager.seekTo(result.skipTo!);
-      setState(() {
-        _skipSegment = null;
-        _skipTo = null;
-      });
+      _clearSkipSegment();
       return;
     }
     if (result.shouldAsk && result.isNew && result.segment != null) {
       setState(() {
         _skipSegment = result.segment;
         _skipTo = result.skipTo;
+        _controlsVisible = false;
       });
-      _showControls(focusSeekbar: true);
+      _hideTimer?.cancel();
+      _focusTvSkipSegment();
     } else if (result.isNone && _skipSegment != null) {
-      setState(() {
-        _skipSegment = null;
-        _skipTo = null;
-      });
+      _clearSkipSegment();
     }
   }
 
@@ -1136,13 +1140,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         setState(() {
           _showNextUp = true;
           _nextUpItem = nextItem;
+          _controlsVisible = false;
         });
+        _hideTimer?.cancel();
+        _focusTvNextUpPlay();
       }
     }
   }
 
   Future<void> _handleNextUpPlay() async {
     if (_isNextUpAdvancing) return;
+    _suppressBackNavigation(duration: const Duration(milliseconds: 500));
     _isNextUpAdvancing = true;
     setState(() => _showNextUp = false);
     try {
@@ -1154,10 +1162,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _handleNextUpDismiss() {
+    _suppressBackNavigation(duration: const Duration(milliseconds: 500));
     _manager.suppressAutoNext = false;
     setState(() {
       _showNextUp = false;
       _nextUpDismissed = true;
+    });
+  }
+
+  void _focusTvNextUpPlay({int attempt = 0}) {
+    if (!PlatformDetection.isTV || !_showNextUp) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_showNextUp) return;
+      _tvNextUpPlayFocus.requestFocus();
+
+      if (!_tvNextUpPlayFocus.hasFocus && attempt < 8) {
+        Future<void>.delayed(const Duration(milliseconds: 50), () {
+          if (!mounted) return;
+          _focusTvNextUpPlay(attempt: attempt + 1);
+        });
+      }
     });
   }
 
@@ -1185,6 +1209,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _skipTo = null;
     });
     _showControls(focusSeekbar: true);
+  }
+
+  void _dismissSkipSegment() {
+    _suppressBackNavigation(duration: const Duration(milliseconds: 500));
+    _clearSkipSegment();
+  }
+
+  void _clearSkipSegment() {
+    setState(() {
+      _skipSegment = null;
+      _skipTo = null;
+    });
   }
 
   Future<void> _exitPlayback() async {
@@ -1261,6 +1297,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   void _focusPreferredTvOverlayTarget() {
     if (!PlatformDetection.isTV) return;
+    if (_showNextUp) {
+      _focusTvNextUpPlay();
+      return;
+    }
     if (_skipSegment != null) {
       _focusTvSkipSegment();
       return;
@@ -1449,6 +1489,26 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final primaryFocus = FocusManager.instance.primaryFocus;
 
     if (PlatformDetection.isTV) {
+      if (_showNextUp) {
+        switch (event.logicalKey) {
+          case LogicalKeyboardKey.arrowLeft:
+            if (primaryFocus == _tvNextUpDismissFocus) {
+              _tvNextUpPlayFocus.requestFocus();
+            }
+            return KeyEventResult.handled;
+          case LogicalKeyboardKey.arrowRight:
+            if (primaryFocus == _tvNextUpPlayFocus) {
+              _tvNextUpDismissFocus.requestFocus();
+            }
+            return KeyEventResult.handled;
+          case LogicalKeyboardKey.arrowUp:
+          case LogicalKeyboardKey.arrowDown:
+            return KeyEventResult.handled;
+          default:
+            break;
+        }
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         if (primaryFocus == _tvSecondaryLastFocus) {
           if (_tvTransportFirstFocus.context != null) {
@@ -1485,7 +1545,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         case LogicalKeyboardKey.escape:
         case LogicalKeyboardKey.browserBack:
         case LogicalKeyboardKey.backspace:
+          if (event is KeyRepeatEvent) {
+            return KeyEventResult.handled;
+          }
           if (_isBackNavigationSuppressed()) {
+            return KeyEventResult.handled;
+          }
+          if (_showNextUp) {
+            _handleNextUpDismiss();
+            return KeyEventResult.handled;
+          }
+          if (_skipSegment != null) {
+            _dismissSkipSegment();
             return KeyEventResult.handled;
           }
           if (_dismissTopOverlayRouteIfAny()) {
@@ -1499,6 +1570,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _exitPlayback();
           return KeyEventResult.handled;
         case LogicalKeyboardKey.arrowLeft:
+          if (_showNextUp) {
+            return KeyEventResult.ignored;
+          }
           if (!_controlsVisible) {
             final step = _accelerateSeekStep(
               _prefs.get(UserPreferences.skipBackLength),
@@ -1510,6 +1584,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           }
           return KeyEventResult.ignored;
         case LogicalKeyboardKey.arrowRight:
+          if (_showNextUp) {
+            return KeyEventResult.ignored;
+          }
           if (!_controlsVisible) {
             final step = _accelerateSeekStep(
               _prefs.get(UserPreferences.skipForwardLength),
@@ -1522,6 +1599,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return KeyEventResult.ignored;
         case LogicalKeyboardKey.arrowUp:
         case LogicalKeyboardKey.arrowDown:
+          if (_showNextUp) {
+            return KeyEventResult.ignored;
+          }
           if (!_controlsVisible) {
             _showControls(focusSeekbar: true);
             return KeyEventResult.handled;
@@ -1529,6 +1609,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return KeyEventResult.ignored;
         case LogicalKeyboardKey.select:
         case LogicalKeyboardKey.enter:
+          if (_showNextUp) {
+            return KeyEventResult.ignored;
+          }
           if (!_controlsVisible) {
             _showControls(focusSeekbar: true);
             return KeyEventResult.handled;
@@ -1650,6 +1733,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         if (_isBackNavigationSuppressed()) {
           return;
         }
+        if (_showNextUp) {
+          _handleNextUpDismiss();
+          return;
+        }
+        if (_skipSegment != null) {
+          _dismissSkipSegment();
+          return;
+        }
         _exitPlayback();
       },
       child: Scaffold(
@@ -1723,13 +1814,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                       focusNode: PlatformDetection.isTV
                           ? _tvSkipSegmentFocus
                           : null,
-                      onDismiss: () {
-                        setState(() {
-                          _skipSegment = null;
-                          _skipTo = null;
-                        });
-                        _showControls(focusSeekbar: true);
-                      },
+                      onDismiss: _clearSkipSegment,
                     ),
                   if (_showNextUp && _nextUpItem != null)
                     NextUpOverlay(
@@ -1746,6 +1831,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                       timeoutMs: _prefs.get(UserPreferences.nextUpTimeout),
                       onPlayNext: _handleNextUpPlay,
                       onDismiss: _handleNextUpDismiss,
+                      focusNode: PlatformDetection.isTV
+                          ? _tvNextUpPlayFocus
+                          : null,
+                        dismissFocusNode: PlatformDetection.isTV
+                          ? _tvNextUpDismissFocus
+                          : null,
                     ),
                 ],
               ),

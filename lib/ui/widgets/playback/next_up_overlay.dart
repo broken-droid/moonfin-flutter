@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 
 import '../../../data/models/aggregated_item.dart';
@@ -13,6 +14,8 @@ class NextUpOverlay extends StatefulWidget {
   final int timeoutMs;
   final VoidCallback onPlayNext;
   final VoidCallback onDismiss;
+  final FocusNode? focusNode;
+  final FocusNode? dismissFocusNode;
 
   const NextUpOverlay({
     super.key,
@@ -21,6 +24,8 @@ class NextUpOverlay extends StatefulWidget {
     required this.timeoutMs,
     required this.onPlayNext,
     required this.onDismiss,
+    this.focusNode,
+    this.dismissFocusNode,
   });
 
   @override
@@ -31,6 +36,8 @@ class _NextUpOverlayState extends State<NextUpOverlay>
     with SingleTickerProviderStateMixin {
   late AnimationController _countdownController;
   Timer? _timer;
+  bool _playFocused = false;
+  bool _dismissFocused = false;
 
   @override
   void initState() {
@@ -59,6 +66,7 @@ class _NextUpOverlayState extends State<NextUpOverlay>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final item = widget.nextItem;
+    final tvFocusMode = widget.focusNode != null || widget.dismissFocusNode != null;
     final epInfo = item.indexNumber != null
         ? 'S${item.parentIndexNumber ?? '?'}:E${item.indexNumber}'
         : null;
@@ -125,26 +133,60 @@ class _NextUpOverlayState extends State<NextUpOverlay>
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton(
-                          autofocus: true,
-                          onPressed: widget.onPlayNext,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColorScheme.accent,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Focus(
+                          focusNode: widget.focusNode,
+                          onFocusChange: (focused) {
+                            if (_playFocused != focused) {
+                              setState(() => _playFocused = focused);
+                            }
+                          },
+                          onKeyEvent: (_, event) {
+                            if (event is KeyDownEvent &&
+                                (event.logicalKey == LogicalKeyboardKey.select ||
+                                    event.logicalKey == LogicalKeyboardKey.enter)) {
+                              widget.onPlayNext();
+                              return KeyEventResult.handled;
+                            }
+                            return KeyEventResult.ignored;
+                          },
+                          child: ElevatedButton(
+                            autofocus: widget.focusNode == null,
+                            onPressed: widget.onPlayNext,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: tvFocusMode
+                                  ? (_playFocused
+                                      ? AppColorScheme.accent
+                                      : AppColorScheme.surfaceVariant.withValues(alpha: 0.9))
+                                  : AppColorScheme.accent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                            ),
+                            child: Text(l10n.playNext),
                           ),
-                          child: Text(l10n.playNext),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      OutlinedButton(
-                        onPressed: widget.onDismiss,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          side: ThemeRegistry.active.borders.chipBorder,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                      Focus(
+                        focusNode: widget.dismissFocusNode,
+                        onFocusChange: (focused) {
+                          if (_dismissFocused != focused) {
+                            setState(() => _dismissFocused = focused);
+                          }
+                        },
+                        child: OutlinedButton(
+                          onPressed: widget.onDismiss,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: _dismissFocused
+                                ? AppColorScheme.accent.withValues(alpha: 0.24)
+                                : Colors.transparent,
+                            side: _dismissFocused
+                                ? ThemeRegistry.active.borders.focusBorder
+                                : ThemeRegistry.active.borders.chipBorder,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                          ),
+                          child: Text(l10n.close),
                         ),
-                        child: Text(l10n.close),
                       ),
                     ],
                   ),
