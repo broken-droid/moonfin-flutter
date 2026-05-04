@@ -20,6 +20,7 @@ Future<void> enterFullscreen(BuildContext context) {
   return lock.synchronized(() async {
     if (!isFullscreen(context)) {
       if (context.mounted) {
+        await onEnterFullscreen(context)?.call();
         final stateValue = state(context);
         final contextNotifierValue = contextNotifier(context);
         final videoViewParametersNotifierValue =
@@ -83,7 +84,6 @@ Future<void> enterFullscreen(BuildContext context) {
             reverseTransitionDuration: Duration.zero,
           ),
         );
-        await onEnterFullscreen(context)?.call();
       }
     }
   });

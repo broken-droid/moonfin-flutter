@@ -17,7 +17,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class VideoOutput implements SurfaceHolder.Callback {
@@ -31,6 +30,7 @@ public class VideoOutput implements SurfaceHolder.Callback {
     private final TextureUpdateCallback textureUpdateCallback;
     private final Activity activity;
     private final SurfaceView surfaceView;
+    private ViewGroup contentView;
     private long id = 0;
     private long wid = 0;
     private final Object lock = new Object();
@@ -54,7 +54,6 @@ public class VideoOutput implements SurfaceHolder.Callback {
         this.textureUpdateCallback = textureUpdateCallback;
         this.id = 0;
 
-        // Create SurfaceView and add it to the activity behind Flutter
         this.surfaceView = new SurfaceView(activity);
         surfaceView.setLayoutParams(new ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -64,19 +63,16 @@ public class VideoOutput implements SurfaceHolder.Callback {
         surfaceView.setZOrderMediaOverlay(false);
         surfaceView.getHolder().addCallback(this);
 
-        // Add to content view at index 0 (behind Flutter)
         activity.runOnUiThread(() -> {
-            ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
+            contentView = (ViewGroup) activity.findViewById(android.R.id.content);
             if (contentView != null) {
                 contentView.addView(surfaceView, 0);
-                Log.i(TAG, String.format(Locale.ENGLISH, "SurfaceView added to content view for handle=%d", handle));
             }
         });
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.i(TAG, String.format(Locale.ENGLISH, "surfaceCreated handle=%d", handle));
         synchronized (lock) {
             Surface surface = holder.getSurface();
             if (surface != null && surface.isValid()) {
@@ -87,7 +83,6 @@ public class VideoOutput implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i(TAG, String.format(Locale.ENGLISH, "surfaceChanged handle=%d %dx%d", handle, width, height));
         synchronized (lock) {
             textureUpdateCallback.onTextureUpdate(id, wid, width, height);
         }
@@ -95,7 +90,6 @@ public class VideoOutput implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.i(TAG, String.format(Locale.ENGLISH, "surfaceDestroyed handle=%d", handle));
         synchronized (lock) {
             textureUpdateCallback.onTextureUpdate(id, 0, 0, 0);
             if (wid != 0) {
@@ -108,11 +102,10 @@ public class VideoOutput implements SurfaceHolder.Callback {
 
     public void dispose() {
         activity.runOnUiThread(() -> {
-            ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
             if (contentView != null && surfaceView.getParent() == contentView) {
                 contentView.removeView(surfaceView);
-                Log.i(TAG, String.format(Locale.ENGLISH, "SurfaceView removed from content view for handle=%d", handle));
             }
+            contentView = null;
         });
 
         synchronized (lock) {
@@ -124,6 +117,13 @@ public class VideoOutput implements SurfaceHolder.Callback {
             }
             surfaceView.getHolder().removeCallback(this);
         }
+    }
+
+    public void setPiPMode(boolean isInPiP) {
+        activity.runOnUiThread(() -> {
+            surfaceView.setZOrderOnTop(isInPiP);
+            surfaceView.setZOrderMediaOverlay(false);
+        });
     }
 
     private static long jniNewGlobalObjectRef(Object object) {

@@ -49,6 +49,8 @@ class PipService {
   final _screenLockController = StreamController<bool>.broadcast();
   Stream<bool> get onScreenLock => _screenLockController.stream;
 
+  bool _disposed = false;
+
   PipService() {
     final channel = _activeChannel;
     if (channel != null) {
@@ -57,15 +59,27 @@ class PipService {
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
+    if (_disposed) return null;
     switch (call.method) {
       case 'onPiPChanged':
         _isInPiP = call.arguments as bool;
-        _pipChangedController.add(_isInPiP);
+        if (!_pipChangedController.isClosed) {
+          _pipChangedController.add(_isInPiP);
+        }
+        return null;
       case 'onPiPAction':
-        _actionController.add(call.arguments as String);
+        if (!_actionController.isClosed) {
+          _actionController.add(call.arguments as String);
+        }
+        return null;
       case 'onScreenLock':
         _isScreenLocked = call.arguments as bool;
-        _screenLockController.add(_isScreenLocked);
+        if (!_screenLockController.isClosed) {
+          _screenLockController.add(_isScreenLocked);
+        }
+        return null;
+      default:
+        return null;
     }
   }
 
@@ -129,6 +143,8 @@ class PipService {
   }
 
   void dispose() {
+    _disposed = true;
+    _activeChannel?.setMethodCallHandler(null);
     _pipChangedController.close();
     _actionController.close();
     _screenLockController.close();

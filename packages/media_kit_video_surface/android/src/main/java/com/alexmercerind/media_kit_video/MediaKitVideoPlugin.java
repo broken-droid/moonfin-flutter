@@ -29,6 +29,27 @@ public class MediaKitVideoPlugin implements FlutterPlugin, ActivityAware, Method
     private VideoOutputManager videoOutputManager;
     private Activity activity;
 
+    private static VideoOutputManager staticVideoOutputManager;
+
+    public static VideoOutputManager getVideoOutputManager() {
+        return staticVideoOutputManager;
+    }
+
+    private void clearVideoOutputManager() {
+        if (videoOutputManager != null) {
+            videoOutputManager.disposeAll();
+        }
+        videoOutputManager = null;
+        staticVideoOutputManager = null;
+    }
+
+    private void attachToActivity(@NonNull Activity activity) {
+        clearVideoOutputManager();
+        this.activity = activity;
+        videoOutputManager = new VideoOutputManager(activity);
+        staticVideoOutputManager = videoOutputManager;
+    }
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.alexmercerind/media_kit_video");
@@ -37,23 +58,23 @@ public class MediaKitVideoPlugin implements FlutterPlugin, ActivityAware, Method
 
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-        activity = binding.getActivity();
-        videoOutputManager = new VideoOutputManager(activity);
+        attachToActivity(binding.getActivity());
     }
 
     @Override
     public void onDetachedFromActivity() {
+        clearVideoOutputManager();
         activity = null;
-        videoOutputManager = null;
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
-        activity = binding.getActivity();
+        attachToActivity(binding.getActivity());
     }
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
+        clearVideoOutputManager();
         activity = null;
     }
 
@@ -86,6 +107,14 @@ public class MediaKitVideoPlugin implements FlutterPlugin, ActivityAware, Method
                 result.success(null);
                 break;
             }
+            case "VideoOutputManager.SetPiPMode": {
+                final boolean isInPiP = Boolean.TRUE.equals(call.argument("isInPiP"));
+                if (videoOutputManager != null) {
+                    videoOutputManager.setPiPMode(isInPiP);
+                }
+                result.success(null);
+                break;
+            }
             case "Utils.IsEmulator": {
                 result.success(Utils.isEmulator());
                 break;
@@ -99,6 +128,8 @@ public class MediaKitVideoPlugin implements FlutterPlugin, ActivityAware, Method
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        clearVideoOutputManager();
+        activity = null;
         channel.setMethodCallHandler(null);
     }
 }

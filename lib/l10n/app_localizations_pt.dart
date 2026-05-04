@@ -6234,6 +6234,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get playerTooltipExitFullscreen => 'Sair da tela cheia';
 
   @override
+  String get playerTooltipLockLandscape => 'Lock landscape';
+
+  @override
+  String get playerTooltipUnlockOrientation => 'Allow rotation';
+
+  @override
   String get playerTooltipPrevious => 'Anterior';
 
   @override

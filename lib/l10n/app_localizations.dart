@@ -10976,6 +10976,18 @@ abstract class AppLocalizations {
   /// **'Exit fullscreen'**
   String get playerTooltipExitFullscreen;
 
+  /// Tooltip label for locking landscape orientation in player
+  ///
+  /// In en, this message translates to:
+  /// **'Lock landscape'**
+  String get playerTooltipLockLandscape;
+
+  /// Tooltip label for unlocking orientation lock in player
+  ///
+  /// In en, this message translates to:
+  /// **'Allow rotation'**
+  String get playerTooltipUnlockOrientation;
+
   /// Tooltip label for previous item control in player
   ///
   /// In en, this message translates to:

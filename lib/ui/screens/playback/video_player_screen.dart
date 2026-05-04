@@ -86,6 +86,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   DateTime? _lastCastErrorAt;
   String? _lastCastErrorMessage;
   bool _isInPiP = false;
+  bool _forcedLandscape = false;
   double _playerVolume = 100.0;
   bool _didRequestIosPiPForBackground = false;
   bool _isStartingIosPiPForBackground = false;
@@ -507,11 +508,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _applySubtitleStyle();
     _scheduleHide();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitUp,
-    ]);
+    if (PlatformDetection.isMobile) {
+      _forcedLandscape = true;
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitUp,
+      ]);
+    }
     WidgetsBinding.instance.addObserver(this);
     _loadSegmentsForCurrentItem();
     _positionSub = _state.positionStream.listen(_onPositionUpdate);
@@ -986,12 +995,35 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
   }
 
+  void _toggleOrientationLock() {
+    setState(() => _forcedLandscape = !_forcedLandscape);
+    if (_forcedLandscape) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitUp,
+      ]);
+    }
+  }
+
   void _onPiPChanged(bool isInPiP) {
     if (!mounted) return;
     setState(() => _isInPiP = isInPiP);
     if (!isInPiP) {
       _didRequestIosPiPForBackground = false;
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      if (PlatformDetection.isMobile && _forcedLandscape) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      }
+      _showControls();
     }
   }
 
@@ -1003,10 +1035,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         } else {
           _manager.resume();
         }
+        return;
       case 'play':
         _manager.resume();
+        return;
       case 'pause':
         _manager.pause();
+        return;
       case 'dismissed':
         final lifecycle = WidgetsBinding.instance.lifecycleState;
         final isForeground = lifecycle == AppLifecycleState.resumed ||
@@ -1015,6 +1050,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return;
         }
         _exitPlayback();
+        return;
+      default:
+        return;
     }
   }
 
@@ -2814,6 +2852,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             extent: secondaryExtent,
             tooltip: l10n.playerZoomMode,
           ),
+          if (PlatformDetection.isMobile)
+            _controlButton(
+              _forcedLandscape
+                  ? Icons.screen_lock_landscape_outlined
+                  : Icons.screen_rotation_outlined,
+              onPressed: _toggleOrientationLock,
+              size: secondaryIconSize,
+              extent: secondaryExtent,
+              tooltip: _forcedLandscape
+                  ? l10n.playerTooltipUnlockOrientation
+                  : l10n.playerTooltipLockLandscape,
+            ),
           _controlButton(
             Icons.info_outline_rounded,
             onPressed: _showStreamInfo,

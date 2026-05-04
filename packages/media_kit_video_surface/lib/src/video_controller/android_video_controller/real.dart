@@ -55,19 +55,11 @@ class AndroidVideoController extends PlatformVideoController {
       final voValue = widValue == '0' ? 'null' : configuration.vo!;
       final vidValue = widValue == '0' ? 'no' : 'auto';
       if (widValue == '0') {
-        // Surface destroyed: set vo=null first to safely detach mpv from the
-        // SurfaceHolder and avoid SIGSEGV when the surface is gone.
+        // Detach mpv from a destroyed surface.
         await setProperty('vo', 'null');
       }
-      // When attaching to a valid surface (widValue != '0'), do NOT set vo=null
-      // first. Setting vo=null disconnects the SurfaceHolder, which fires
-      // surfaceDestroyed+surfaceCreated in VideoOutput.java, generating a new
-      // JNI global ref (different integer), which triggers VideoOutput.Resize
-      // with the new wid, which triggers widListener again — a cascade of codec
-      // buffer flushes and position jumps every ~2 s.
       await setProperties(
         {
-          // ORDER IS IMPORTANT.
           'android-surface-size': androidSurfaceSizeValue,
           'wid': widValue,
           'vo': voValue,
@@ -233,7 +225,6 @@ class AndroidVideoController extends PlatformVideoController {
   Future<void> _dispose() async {
     super.dispose();
     wid.dispose();
-    wid.removeListener(widListener);
     await videoParamsSubscription?.cancel();
     final handle = await player.handle;
     _controllers.remove(handle);
@@ -272,6 +263,10 @@ class AndroidVideoController extends PlatformVideoController {
                     _controllers[handle]?.rect.value = rect;
                     _controllers[handle]?.id.value = id;
                     _controllers[handle]?.wid.value = wid;
+                    // Resize can happen with the same wid value, so run once here.
+                    unawaited(
+                      _controllers[handle]?.widListener() ?? Future.value(),
+                    );
                     break;
                   }
                 case 'VideoOutput.WaitUntilFirstFrameRenderedNotify':

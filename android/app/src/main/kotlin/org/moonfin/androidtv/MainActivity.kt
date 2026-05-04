@@ -35,6 +35,7 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.common.images.WebImage
 import com.ryanheise.audioservice.AudioServiceActivity
+import com.alexmercerind.media_kit_video.MediaKitVideoPlugin
 import io.flutter.embedding.android.RenderMode
 import io.flutter.embedding.android.TransparencyMode
 import io.flutter.embedding.engine.FlutterEngine
@@ -400,7 +401,12 @@ class MainActivity : AudioServiceActivity() {
         if (!hasPiPFeature) return false
         if (isInPictureInPictureMode) return true
         if (isFinishing || isDestroyed) return false
+        val mgr = MediaKitVideoPlugin.getVideoOutputManager()
+        mgr?.setPiPMode(true)
         val result = enterPictureInPictureMode(buildPiPParams(true))
+        if (!result) {
+            mgr?.setPiPMode(false)
+        }
         return result
     }
 
@@ -409,14 +415,21 @@ class MainActivity : AudioServiceActivity() {
         newConfig: Configuration,
     ) {
         super.onPictureInPictureModeChanged(isInPiP, newConfig)
-        methodChannel?.invokeMethod("onPiPChanged", isInPiP)
+        dispatchPiPMethod("onPiPChanged", isInPiP)
+        val mgr = MediaKitVideoPlugin.getVideoOutputManager()
+        mgr?.setPiPMode(isInPiP)
+
+        dismissRunnable?.let {
+            handler.removeCallbacks(it)
+            dismissRunnable = null
+        }
 
         if (!isInPiP) {
             val power = getSystemService(Context.POWER_SERVICE) as PowerManager
             if (!power.isInteractive) return
 
             dismissRunnable = Runnable {
-                methodChannel?.invokeMethod("onPiPAction", "dismissed")
+                dispatchPiPMethod("onPiPAction", "dismissed")
                 dismissRunnable = null
             }
             handler.postDelayed(dismissRunnable!!, DISMISS_DELAY_MS)
@@ -425,9 +438,21 @@ class MainActivity : AudioServiceActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (isInPictureInPictureMode) return
         dismissRunnable?.let {
             handler.removeCallbacks(it)
             dismissRunnable = null
+        }
+    }
+
+    private fun dispatchPiPMethod(method: String, argument: Any) {
+        val channel = methodChannel
+        if (channel != null) {
+            channel.invokeMethod(method, argument)
+            return
+        }
+        handler.post {
+            methodChannel?.invokeMethod(method, argument)
         }
     }
 

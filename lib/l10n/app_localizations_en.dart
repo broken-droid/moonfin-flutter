@@ -6142,6 +6142,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playerTooltipExitFullscreen => 'Exit fullscreen';
 
   @override
+  String get playerTooltipLockLandscape => 'Lock landscape';
+
+  @override
+  String get playerTooltipUnlockOrientation => 'Allow rotation';
+
+  @override
   String get playerTooltipPrevious => 'Previous';
 
   @override

@@ -6182,6 +6182,14 @@
   "@playerTooltipExitFullscreen": {
     "description": "Tooltip label for exiting fullscreen in player"
   },
+  "playerTooltipLockLandscape": "Lock landscape",
+  "@playerTooltipLockLandscape": {
+    "description": "Tooltip label for locking landscape orientation in player"
+  },
+  "playerTooltipUnlockOrientation": "Allow rotation",
+  "@playerTooltipUnlockOrientation": {
+    "description": "Tooltip label for unlocking orientation lock in player"
+  },
   "playerTooltipPrevious": "Previous",
   "@playerTooltipPrevious": {
     "description": "Tooltip label for previous item control in player"
