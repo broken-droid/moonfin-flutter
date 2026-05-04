@@ -25,6 +25,7 @@ class HomeViewModel extends ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  bool _bgMergeInFlight = false;
 
   String get _serverId => _client.baseUrl;
   MediaBarViewModel get mediaBarViewModel => _mediaBarViewModel;
@@ -521,6 +522,8 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   void _loadResumeAndNextUpInBackground() {
+    if (_bgMergeInFlight) return;
+    _bgMergeInFlight = true;
     unawaited(() async {
       try {
         if (_multiServerEnabled) {
@@ -532,10 +535,8 @@ class HomeViewModel extends ChangeNotifier {
               return null;
             }
           }();
-
           final resumeRow = await resumeFuture;
           final nextUpRow = await nextUpFuture;
-
           final mergedItemsMap = <String, AggregatedItem>{};
           for (final item in resumeRow.items) {
             mergedItemsMap[item.id] = item;
@@ -543,47 +544,41 @@ class HomeViewModel extends ChangeNotifier {
           for (final item in nextUpRow?.items ?? []) {
             mergedItemsMap.putIfAbsent(item.id, () => item);
           }
-          final mergedItems = mergedItemsMap.values.toList();
-
-          const resumeId = 'resume';
-          final resumeIndex = _rows.indexWhere((r) => r.id == resumeId);
-          if (resumeIndex >= 0) {
-            _rows = List.of(_rows);
-            _rows[resumeIndex] = _rows[resumeIndex].copyWith(
-              items: mergedItems,
-              isLoading: false,
-            );
-            notifyListeners();
-          }
+          _applyMergedResumeResult(mergedItemsMap.values.toList());
         } else {
-          final relaxedRows = await Future.wait([
-            _dataSource.loadResumeRelaxed(_serverId),
-            _dataSource.loadNextUpRelaxed(_serverId),
+          final results = await Future.wait([
+            _dataSource.loadResume(_serverId),
+            _dataSource.loadNextUp(_serverId),
           ]);
-          final resumeRow = relaxedRows[0];
-          final nextUpRow = relaxedRows[1];
           final mergedItemsMap = <String, AggregatedItem>{};
-          for (final item in resumeRow.items) {
+          for (final item in results[0].items) {
             mergedItemsMap[item.id] = item;
           }
-          for (final item in nextUpRow.items) {
+          for (final item in results[1].items) {
             mergedItemsMap.putIfAbsent(item.id, () => item);
           }
-          final mergedItems = mergedItemsMap.values.toList();
-
-          const resumeId = 'resume';
-          final resumeIndex = _rows.indexWhere((r) => r.id == resumeId);
-          if (resumeIndex >= 0) {
-            _rows = List.of(_rows);
-            _rows[resumeIndex] = _rows[resumeIndex].copyWith(
-              items: mergedItems,
-              isLoading: false,
-            );
-            notifyListeners();
-          }
+          _applyMergedResumeResult(mergedItemsMap.values.toList());
         }
-      } catch (_) {}
+      } catch (_) {
+      } finally {
+        _bgMergeInFlight = false;
+      }
     }());
+  }
+
+  void _applyMergedResumeResult(List<AggregatedItem> mergedItems) {
+    final resumeIndex = _rows.indexWhere((r) => r.id == 'resume');
+    if (resumeIndex < 0) return;
+    _rows = List.of(_rows);
+    if (mergedItems.isEmpty) {
+      _rows.removeAt(resumeIndex);
+    } else {
+      _rows[resumeIndex] = _rows[resumeIndex].copyWith(
+        items: mergedItems,
+        isLoading: false,
+      );
+    }
+    notifyListeners();
   }
 }
 

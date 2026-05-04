@@ -305,6 +305,7 @@ class _HomeShellState extends State<_HomeShell>
       _themeMusicService.fadeOutAndStop();
       return;
     }
+    _viewModel.refresh(preserveExisting: true);
     _maybeRegisterThemeMusic();
     if (_selectedItem != null) {
       _maybePlayThemeMusic(_selectedItem);
