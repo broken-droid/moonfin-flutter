@@ -29,10 +29,12 @@ body:
       multiple: true
       options:
         - Android
+        - Android TV
         - iOS
         - macOS
         - Windows
         - Linux
+        - Tizen
         - All / Not platform-specific
     validations:
       required: true

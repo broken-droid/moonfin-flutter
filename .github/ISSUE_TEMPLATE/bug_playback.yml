@@ -23,10 +23,12 @@ body:
       label: Platform
       options:
         - Android
+        - Android TV
         - iOS
         - macOS
         - Windows
         - Linux
+        - Tizen
     validations:
       required: true
 
