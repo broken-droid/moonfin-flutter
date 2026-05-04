@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 
 import '../../preference/preference_constants.dart';
+import '../../util/focus/dpad_keys.dart';
 import 'bounded_network_image.dart';
 import 'marquee_text.dart';
 import '../mixins/focus_state_mixin.dart';
@@ -133,6 +136,15 @@ class MediaCard extends StatefulWidget {
 }
 
 class _MediaCardState extends State<MediaCard> with FocusStateMixin {
+  Timer? _longPressTimer;
+  bool _longPressFired = false;
+
+  @override
+  void dispose() {
+    _longPressTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final externallyDriven = widget.externalIsFocused != null;
@@ -250,9 +262,41 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
               focusNode: widget.focusNode,
               autofocus: widget.autofocus,
               onKeyEvent: (node, event) {
-                if (event is KeyDownEvent &&
-                    (event.logicalKey == LogicalKeyboardKey.select ||
-                        event.logicalKey == LogicalKeyboardKey.enter)) {
+                final key = event.logicalKey;
+
+                if (widget.onLongPress != null && key.isSelectKey) {
+                  if (event is KeyDownEvent) {
+                    _longPressFired = false;
+                    _longPressTimer?.cancel();
+                    _longPressTimer = Timer(
+                      const Duration(milliseconds: 500),
+                      () {
+                        _longPressFired = true;
+                        widget.onLongPress!();
+                      },
+                    );
+                    return KeyEventResult.handled;
+                  }
+                  if (event is KeyRepeatEvent) {
+                    return KeyEventResult.handled;
+                  }
+                  if (event is KeyUpEvent) {
+                    _longPressTimer?.cancel();
+                    _longPressTimer = null;
+                    if (!_longPressFired) widget.onTap?.call();
+                    _longPressFired = false;
+                    return KeyEventResult.handled;
+                  }
+                }
+
+                if (widget.onLongPress != null &&
+                    key.isContextMenuKey &&
+                    event is KeyDownEvent) {
+                  widget.onLongPress!();
+                  return KeyEventResult.handled;
+                }
+
+                if (event is KeyDownEvent && key.isSelectKey) {
                   widget.onTap?.call();
                   return KeyEventResult.handled;
                 }
