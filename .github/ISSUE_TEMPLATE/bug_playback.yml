@@ -49,6 +49,19 @@ body:
     validations:
       required: false
 
+  - type: dropdown
+    id: input_method
+    attributes:
+      label: Input method
+      options:
+        - Touch
+        - D-pad / remote
+        - Mouse / trackpad
+        - Keyboard
+        - Other / not sure
+    validations:
+      required: true
+
   - type: input
     id: server_version
     attributes:

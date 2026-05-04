@@ -68,6 +68,7 @@ body:
       label: Input method
       options:
         - Touch
+        - D-pad / remote
         - Mouse / trackpad
         - Keyboard
         - Other / not sure
