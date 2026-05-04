@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 
 import 'bounded_network_image.dart';
+import 'marquee_text.dart';
 import '../../util/focus/dpad_keys.dart';
 import 'focus/focus_theme.dart';
 import '../mixins/focus_state_mixin.dart';
@@ -50,6 +51,7 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final borderColor =
         widget.focusColor ?? Theme.of(context).colorScheme.primary;
+    final showMarquee = hovered || focused;
     final imageUrl = widget.genre.imageUrl ?? widget.genre.backdropUrl;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -102,10 +104,9 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                       BoundedNetworkImage(
                         imageUrl: imageUrl,
                         fadeInDuration: const Duration(milliseconds: 200),
-                        errorBuilder: (_, _, _) =>
-                            Container(
-                              color: AppColorScheme.surface.withValues(alpha: 0.35),
-                            ),
+                        errorBuilder: (_, _, _) => Container(
+                          color: AppColorScheme.surface.withValues(alpha: 0.35),
+                        ),
                       )
                     else
                       Container(
@@ -133,26 +134,51 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                             : CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            widget.genre.name,
-                            maxLines: widget.centerTitle ? 2 : 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: widget.centerTitle
-                                ? TextAlign.center
-                                : TextAlign.start,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
+                          SizedBox(
+                            height: 20,
+                            child: showMarquee
+                                ? MarqueeText(
+                                    text: widget.genre.name,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    widget.genre.name,
+                                    maxLines: widget.centerTitle ? 2 : 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: widget.centerTitle
+                                        ? TextAlign.center
+                                        : TextAlign.start,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                           if (widget.genre.itemCount > 0)
-                            Text(
-                              '${widget.genre.itemCount} items',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white.withAlpha(178),
-                              ),
+                            SizedBox(
+                              height: 16,
+                              child: showMarquee
+                                  ? MarqueeText(
+                                      text: '${widget.genre.itemCount} items',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white.withAlpha(178),
+                                      ),
+                                    )
+                                  : Text(
+                                      '${widget.genre.itemCount} items',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white.withAlpha(178),
+                                      ),
+                                    ),
                             ),
                         ],
                       ),

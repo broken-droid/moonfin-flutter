@@ -4,6 +4,7 @@ import 'package:jellyfin_design/jellyfin_design.dart';
 
 import '../../preference/preference_constants.dart';
 import 'bounded_network_image.dart';
+import 'marquee_text.dart';
 import '../mixins/focus_state_mixin.dart';
 
 class MediaCard extends StatefulWidget {
@@ -148,7 +149,8 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
           ? null
           : () => widget.onLongPress!(),
       child: AnimatedScale(
-        scale: widget.cardFocusExpansion &&
+        scale:
+            widget.cardFocusExpansion &&
                 (externallyDriven ? effectiveFocused : showFocusBorder)
             ? 1.05
             : 1.0,
@@ -180,10 +182,12 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
               SizedBox(
                 height: 16,
                 child: showMarquee
-                    ? _MarqueeText(
+                    ? MarqueeText(
                         text: widget.title!,
-                        style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle())
-                            .copyWith(color: widget.titleColor),
+                        style:
+                            (Theme.of(context).textTheme.bodySmall ??
+                                    const TextStyle())
+                                .copyWith(color: widget.titleColor),
                       )
                     : Text(
                         widget.title!,
@@ -198,15 +202,32 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
             if (widget.subtitle != null)
               SizedBox(
                 height: 16,
-                child: Text(
-                  widget.subtitle!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: widget.subtitleColor ??
-                        Theme.of(context).colorScheme.onSurface.withAlpha(153),
-                  ),
-                ),
+                child: showMarquee
+                    ? MarqueeText(
+                        text: widget.subtitle!,
+                        style:
+                            (Theme.of(context).textTheme.bodySmall ??
+                                    const TextStyle())
+                                .copyWith(
+                                  color:
+                                      widget.subtitleColor ??
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withAlpha(153),
+                                ),
+                      )
+                    : Text(
+                        widget.subtitle!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color:
+                              widget.subtitleColor ??
+                              Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withAlpha(153),
+                        ),
+                      ),
               ),
           ],
         ),
@@ -250,10 +271,7 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
             ),
     );
 
-    return SizedBox(
-      width: widget.width,
-      child: mouseRegion,
-    );
+    return SizedBox(width: widget.width, child: mouseRegion);
   }
 }
 
@@ -377,7 +395,8 @@ class _CardImage extends StatelessWidget {
                   border: Border.fromBorderSide(
                     borders.focusBorder.copyWith(color: borderColor),
                   ),
-                  boxShadow: (!suppressFocusGlow && borders.focusGlow.isNotEmpty)
+                  boxShadow:
+                      (!suppressFocusGlow && borders.focusGlow.isNotEmpty)
                       ? borders.focusGlow
                       : null,
                 ),
@@ -408,7 +427,10 @@ class _CardImage extends StatelessWidget {
   }
 
   bool get _showSeerrStatusIndicator =>
-      seerrStatus == 2 || seerrStatus == 3 || seerrStatus == 4 || seerrStatus == 5;
+      seerrStatus == 2 ||
+      seerrStatus == 3 ||
+      seerrStatus == 4 ||
+      seerrStatus == 5;
 
   Widget _buildSeerrMediaTypeBadge() {
     final type = seerrMediaType?.toLowerCase();
@@ -544,67 +566,6 @@ class _PlaceholderIcon extends StatelessWidget {
         size: 32,
         color: Colors.white38,
       ),
-    );
-  }
-}
-
-class _MarqueeText extends StatefulWidget {
-  final String text;
-  final TextStyle style;
-
-  const _MarqueeText({required this.text, required this.style});
-
-  @override
-  State<_MarqueeText> createState() => _MarqueeTextState();
-}
-
-class _MarqueeTextState extends State<_MarqueeText>
-    with SingleTickerProviderStateMixin {
-  late final ScrollController _controller;
-  late final AnimationController _anim;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = ScrollController();
-    _anim = AnimationController(vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkOverflow());
-  }
-
-  void _checkOverflow() {
-    if (!mounted || !_controller.hasClients) return;
-    final max = _controller.position.maxScrollExtent;
-    if (max > 0) {
-      final duration = Duration(
-        milliseconds: (max * 30).toInt().clamp(1500, 8000),
-      );
-      _anim.duration = duration;
-      _anim.addListener(_onTick);
-      _anim.repeat(reverse: true);
-    }
-  }
-
-  void _onTick() {
-    if (_controller.hasClients) {
-      _controller.jumpTo(_anim.value * _controller.position.maxScrollExtent);
-    }
-  }
-
-  @override
-  void dispose() {
-    _anim.removeListener(_onTick);
-    _anim.dispose();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _controller,
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Text(widget.text, maxLines: 1, style: widget.style),
     );
   }
 }
