@@ -4391,8 +4391,7 @@ class _LibraryHeader extends StatelessWidget {
               showBadges: showBadges,
             ),
           ],
-          SizedBox(height: isBookBrowse ? 2 : 2),
-                    const SizedBox(height: 2),
+          SizedBox(height: isBookBrowse ? 2 : 8),
           Row(
             mainAxisAlignment: (isMobile && !showInlineAlpha)
                 ? MainAxisAlignment.center
