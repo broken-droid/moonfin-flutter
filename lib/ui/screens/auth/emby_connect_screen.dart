@@ -8,6 +8,7 @@ import 'package:server_core/server_core.dart';
 
 import '../../../auth/models/user.dart';
 import '../../../auth/repositories/server_repository.dart';
+import '../../../auth/repositories/session_repository.dart';
 import '../../../auth/store/authentication_store.dart';
 import '../../../data/services/emby_connect_service.dart';
 import '../../../l10n/app_localizations.dart';
@@ -170,11 +171,22 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
           ),
         );
 
+        final switched = await GetIt.instance<SessionRepository>()
+            .switchCurrentSession(
+          serverId: connectedServer.id,
+          userId: exchange.localUserId,
+          username: username,
+        );
+
         if (!mounted) return;
-        context.go('${Destinations.server}?serverId=${connectedServer.id}');
+        if (switched) {
+          context.go(Destinations.home);
+        } else {
+          context.go('${Destinations.server}?serverId=${connectedServer.id}');
+        }
         return;
       } on DioException catch (e) {
-        lastError = _dioMessage(e);
+        lastError = _exchangeDioMessage(e);
       } catch (e) {
         lastError = e;
       }
@@ -194,11 +206,22 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
     if (statusCode == 400 || statusCode == 401) {
       return l10n.invalidEmbyConnectLogin;
     }
+    if (statusCode != null) {
+      return '${l10n.embyConnectNetworkError} (HTTP $statusCode)';
+    }
+    return e.message ?? l10n.embyConnectNetworkError;
+  }
+
+  String _exchangeDioMessage(DioException e) {
+    final l10n = AppLocalizations.of(context);
+    final statusCode = e.response?.statusCode;
     if (statusCode == 404) {
       return l10n.embyConnectExchangeNotSupported;
     }
-    return e.message ??
-        l10n.embyConnectNetworkError;
+    if (statusCode != null) {
+      return '${l10n.embyConnectNetworkError} (HTTP $statusCode)';
+    }
+    return e.message ?? l10n.embyConnectNetworkError;
   }
 
   void _resetAfterError() {
