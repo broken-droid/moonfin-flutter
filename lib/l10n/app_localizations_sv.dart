@@ -6170,17 +6170,4 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get contextMenuGoToSeries => 'Gå till serien';
-
-  @override
-  String get playbackStallTitle => 'Playback Struggling';
-
-  @override
-  String get playbackStallMessage =>
-      'This device is having trouble playing this content directly. Switch to transcoded quality?';
-
-  @override
-  String get playbackStallKeepPlaying => 'Keep Playing';
-
-  @override
-  String get playbackStallSwitchToTranscode => 'Switch to Transcoding';
 }

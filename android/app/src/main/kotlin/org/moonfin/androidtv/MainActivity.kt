@@ -35,9 +35,6 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.common.images.WebImage
 import com.ryanheise.audioservice.AudioServiceActivity
-import com.alexmercerind.media_kit_video.MediaKitVideoPlugin
-import io.flutter.embedding.android.RenderMode
-import io.flutter.embedding.android.TransparencyMode
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -379,10 +376,6 @@ class MainActivity : AudioServiceActivity() {
         }
     }
 
-    override fun getRenderMode(): RenderMode = RenderMode.surface
-
-    override fun getTransparencyMode(): TransparencyMode = TransparencyMode.transparent
-
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         requestEnterPiPIfEligible()
@@ -401,12 +394,7 @@ class MainActivity : AudioServiceActivity() {
         if (!hasPiPFeature) return false
         if (isInPictureInPictureMode) return true
         if (isFinishing || isDestroyed) return false
-        val mgr = MediaKitVideoPlugin.getVideoOutputManager()
-        mgr?.setPiPMode(true)
         val result = enterPictureInPictureMode(buildPiPParams(true))
-        if (!result) {
-            mgr?.setPiPMode(false)
-        }
         return result
     }
 
@@ -416,8 +404,6 @@ class MainActivity : AudioServiceActivity() {
     ) {
         super.onPictureInPictureModeChanged(isInPiP, newConfig)
         dispatchPiPMethod("onPiPChanged", isInPiP)
-        val mgr = MediaKitVideoPlugin.getVideoOutputManager()
-        mgr?.setPiPMode(isInPiP)
 
         dismissRunnable?.let {
             handler.removeCallbacks(it)

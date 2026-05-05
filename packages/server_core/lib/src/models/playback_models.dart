@@ -228,6 +228,5 @@ class PlaybackStopReport {
         if (mediaSourceId != null) 'MediaSourceId': mediaSourceId,
         if (playSessionId != null) 'PlaySessionId': playSessionId,
         if (positionTicks != null) 'PositionTicks': positionTicks,
-        'Failed': false,
       };
 }

@@ -11035,30 +11035,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go to Series'**
   String get contextMenuGoToSeries;
-
-  /// Title for the dialog shown when playback is too slow for the device
-  ///
-  /// In en, this message translates to:
-  /// **'Playback Struggling'**
-  String get playbackStallTitle;
-
-  /// Body for the dialog shown when playback is too slow for the device
-  ///
-  /// In en, this message translates to:
-  /// **'This device is having trouble playing this content directly. Switch to transcoded quality?'**
-  String get playbackStallMessage;
-
-  /// Button to dismiss the playback stall dialog without switching
-  ///
-  /// In en, this message translates to:
-  /// **'Keep Playing'**
-  String get playbackStallKeepPlaying;
-
-  /// Button to switch from direct play to transcoding when playback is stalling
-  ///
-  /// In en, this message translates to:
-  /// **'Switch to Transcoding'**
-  String get playbackStallSwitchToTranscode;
 }
 
 class _AppLocalizationsDelegate

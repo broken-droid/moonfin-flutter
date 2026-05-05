@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -117,12 +116,12 @@ class _TrailerPlayerScreenState extends State<TrailerPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: !kIsWeb && Platform.isAndroid ? Colors.transparent : Colors.black,
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           Positioned.fill(
             child: ColoredBox(
-              color: kIsWeb ? Colors.black : Colors.transparent,
+              color: Colors.black,
               child: kIsWeb
                   ? (_webVideoId != null
                       ? Center(

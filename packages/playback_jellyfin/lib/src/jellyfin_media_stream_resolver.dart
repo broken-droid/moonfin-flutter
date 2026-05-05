@@ -1,25 +1,9 @@
 
 import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
-import 'package:logger/logger.dart';
 
 class JellyfinMediaStreamResolver implements MediaStreamResolver {
   final MediaServerClient _client;
-  static final Logger _logger = Logger();
-
-  static bool get _diagEnabled {
-    var enabled = false;
-    assert(() {
-      enabled = true;
-      return true;
-    }());
-    return enabled;
-  }
-
-  static void _diag(String message) {
-    if (!_diagEnabled) return;
-    _logger.i('[MoonfinResolver] $message');
-  }
 
   JellyfinMediaStreamResolver(this._client);
 
@@ -49,13 +33,6 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
       enableDirectStream: enableDirectStream,
     );
 
-    _diag(
-      'resolve item=$itemId profile=${deviceProfile?['Name']} '
-      'maxBitrate=${maxStreamingBitrate ?? deviceProfile?['MaxStreamingBitrate']} '
-      'directPlay=$enableDirectPlay directStream=$enableDirectStream '
-      'audioIdx=$audioStreamIndex subIdx=$subtitleStreamIndex',
-    );
-
     final rawInfo = await _client.playbackApi.getPlaybackInfo(
       itemId,
       requestBody: request.toJson(),
@@ -74,12 +51,6 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
 
     final source = _selectBestSource(info.mediaSources, preferredId: mediaSourceId);
     var (url, playMethod) = _resolveStreamUrl(itemId, source);
-
-    _diag(
-      'selected source=${source.id} method=$playMethod '
-      'supports(dp=${source.supportsDirectPlay},ds=${source.supportsDirectStream},tc=${source.supportsTranscoding}) '
-      'reasons=${source.transcodingReasons.join('|')} playSession=${info.playSessionId}',
-    );
 
     if (playMethod == StreamPlayMethod.transcode) {
       url = MediaStreamResolver.applyStreamIndices(url, audioStreamIndex, subtitleStreamIndex);

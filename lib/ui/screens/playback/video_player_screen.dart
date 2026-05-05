@@ -162,8 +162,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   OverlayEntry? _zoomModeToastOverlay;
   StreamSubscription<double>? _brightnessListenerSub;
   StreamSubscription<double>? _volumeListenerSub;
-  StreamSubscription<void>? _stallSub;
-  bool _stallDialogShown = false;
   double _verticalDragStartY = 0.0;
   double _verticalDragStartValue = 0.0;
   bool _verticalDragIsVolume = false;
@@ -552,14 +550,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         );
       }
     }
-    _stallSub = _manager.stallStream.listen((_) => _onPlaybackStall());
-    _completedSub = _backend.completedStream.listen(_onPlaybackCompleted);
-
     _queueSub = _queue.queueChangedStream.listen((_) {
       _loadSegmentsForCurrentItem();
       _manager.suppressAutoNext = false;
       _consecutiveEpisodes++;
-      _stallDialogShown = false;
       setState(() {
         _nextUpDismissed = false;
         _showNextUp = false;
@@ -630,7 +624,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _castEventsSub?.cancel();
     _dlnaEventsSub?.cancel();
     _airPlayEventsSub?.cancel();
-    _stallSub?.cancel();
     _screenLockSub?.cancel();
     _completedSub?.cancel();
     _tvBackgroundExitTimer?.cancel();
@@ -907,45 +900,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     } finally {
       _isStartingIosPiPForBackground = false;
     }
-  }
-
-  void _onPlaybackCompleted(bool completed) {
-    if (!completed || !mounted || _isStopping) return;
-    if (_queue.hasNext) return;
-
-    final duration = _state.duration;
-    if (duration > Duration.zero && (duration - _state.position) > const Duration(seconds: 5)) {
-      return;
-    }
-
-    unawaited(_exitPlayback());
-  }
-
-  void _onPlaybackStall() {
-    if (!mounted || _stallDialogShown) return;
-    _stallDialogShown = true;
-    final l10n = AppLocalizations.of(context);
-    showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.playbackStallTitle),
-        content: Text(l10n.playbackStallMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.playbackStallKeepPlaying),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(l10n.playbackStallSwitchToTranscode),
-          ),
-        ],
-      ),
-    ).then((switchToTranscode) {
-      if (switchToTranscode == true && mounted) {
-        _manager.retryAsTranscode();
-      }
-    });
   }
 
   void _onScreenLock(bool locked) {
@@ -1755,11 +1709,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldBg = PlatformDetection.isAndroid ? Colors.transparent : Colors.black;
-
     if (_isInPiP) {
       return Scaffold(
-        backgroundColor: scaffoldBg,
+        backgroundColor: Colors.black,
         body: Stack(fit: StackFit.expand, children: [_buildVideoSurface()]),
       );
     }
@@ -1782,7 +1734,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _exitPlayback();
       },
       child: Scaffold(
-        backgroundColor: scaffoldBg,
+        backgroundColor: Colors.black,
         body: Focus(
           focusNode: _overlayFocus,
           autofocus: true,
