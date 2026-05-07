@@ -5386,7 +5386,7 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
       final inActionButtons =
           primary?.context?.findAncestorWidgetOfExactType<_ActionButtons>() != null ||
           primary?.context?.findAncestorWidgetOfExactType<_AlbumActions>() != null;
-      if (!inActionButtons) {
+      if (forward && !inActionButtons) {
         current.requestFocus();
       }
     });

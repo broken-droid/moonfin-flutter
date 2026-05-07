@@ -577,7 +577,15 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   void _onSettingsPanelOpenChanged() {
+    final isOpen = SettingsPanel.isOpenNotifier.value;
     _onGlobalFocusChanged();
+    if (isOpen) return;
+    if (_activeFocusedRowIndex != null) return;
+    if (!_initialFocusResolved) return;
+    _initialFocusResolved = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   bool _isMediaBarEnabledByMode() {
@@ -634,8 +642,12 @@ class _ContentRowsState extends State<_ContentRows>
     // (e.g. login, server select). Pop-back from /item should keep the
     // user's previous focus in place.
     if (!wasOnHome) {
+      final shouldRebuild = _initialFocusResolved || _hasEverFocusedHomeContent;
       _initialFocusResolved = false;
       _hasEverFocusedHomeContent = false;
+      if (mounted && shouldRebuild) {
+        setState(() {});
+      }
     }
   }
 

@@ -67,6 +67,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
   bool _showLabels = false;
   bool _librariesExpanded = false;
   bool _canExpandViaFocus = false;
+  bool _skipExpandOnNextFocusFromNavigation = false;
   bool _sidebarHadFocus = false;
   Timer? _clockTimer;
   Timer? _labelTimer;
@@ -256,17 +257,32 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   void _onSidebarFocusNodeChanged() {
     final hasFocus = _sidebarFocus.hasFocus;
-    if (hasFocus && !_sidebarHadFocus && _canExpandViaFocus) {
-      _expand();
-      _focusHomeTimer?.cancel();
-      _focusHomeTimer = Timer(Duration.zero, () {
-        if (!mounted) return;
-        _homeFocusNode.requestFocus();
-      });
+    if (hasFocus && !_sidebarHadFocus) {
+      if (_skipExpandOnNextFocusFromNavigation) {
+        _skipExpandOnNextFocusFromNavigation = false;
+        _focusHomeTimer?.cancel();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          _exitSidebarToContent();
+        });
+      } else if (_canExpandViaFocus) {
+        _expand();
+        _focusHomeTimer?.cancel();
+        _focusHomeTimer = Timer(Duration.zero, () {
+          if (!mounted) return;
+          _homeFocusNode.requestFocus();
+        });
+      }
     } else if (!hasFocus && _sidebarHadFocus && _canExpandViaFocus) {
       _collapse();
     }
     _sidebarHadFocus = hasFocus;
+  }
+
+  void _markNavigationAwayFromSidebar() {
+    if (PlatformDetection.isTV) {
+      _skipExpandOnNextFocusFromNavigation = true;
+    }
   }
 
   void _onSidebarFocusChange(bool hasFocus) {
@@ -332,11 +348,31 @@ class _LeftSidebarState extends State<LeftSidebar> {
       return;
     }
     final fallback = widget.contentFocusNode;
-    if (fallback != null && fallback.canRequestFocus) {
-      fallback.requestFocus();
+    if (fallback != null &&
+        fallback.canRequestFocus &&
+        fallback.context != null) {
+      final firstContent = _firstFocusableDescendant(fallback);
+      if (firstContent != null) {
+        firstContent.requestFocus();
+      } else {
+        fallback.requestFocus();
+      }
       return;
     }
     if (mounted) FocusScope.of(context).nextFocus();
+  }
+
+  static FocusNode? _firstFocusableDescendant(FocusNode node) {
+    for (final child in node.children) {
+      if (!child.skipTraversal &&
+          child.canRequestFocus &&
+          child.context != null) {
+        return child;
+      }
+      final found = _firstFocusableDescendant(child);
+      if (found != null) return found;
+    }
+    return null;
   }
 
   bool _isActive(String route) => widget.activeRoute == route;
@@ -570,9 +606,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     _onNavigate();
                     if (_isActive(Destinations.home)) {
                       requestHomeRefresh();
+                      _exitSidebarToContent();
                       return;
                     }
                     requestHomeRefreshAfterNavigation();
+                    _markNavigationAwayFromSidebar();
                     context.go(Destinations.home);
                   },
                 ),
@@ -583,7 +621,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   showLabel: _showLabels,
                   onPressed: () {
                     _onNavigate();
-                    if (_isActive(Destinations.search)) return;
+                    if (_isActive(Destinations.search)) {
+                      _exitSidebarToContent();
+                      return;
+                    }
+                    _markNavigationAwayFromSidebar();
                     context.navigateTopLevel(Destinations.search);
                   },
                 ),
@@ -615,7 +657,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     showLabel: _showLabels,
                     onPressed: () {
                       _onNavigate();
-                      if (_isActive(Destinations.allGenres)) return;
+                      if (_isActive(Destinations.allGenres)) {
+                        _exitSidebarToContent();
+                        return;
+                      }
+                      _markNavigationAwayFromSidebar();
                       context.navigateTopLevel(Destinations.allGenres);
                     },
                   ),
@@ -627,7 +673,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     showLabel: _showLabels,
                     onPressed: () {
                       _onNavigate();
-                      if (_isActive(Destinations.allFavorites)) return;
+                      if (_isActive(Destinations.allFavorites)) {
+                        _exitSidebarToContent();
+                        return;
+                      }
+                      _markNavigationAwayFromSidebar();
                       context.navigateTopLevel(Destinations.allFavorites);
                     },
                   ),
@@ -639,7 +689,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     showLabel: _showLabels,
                     onPressed: () {
                       _onNavigate();
-                      if (_isActive(Destinations.folderView)) return;
+                      if (_isActive(Destinations.folderView)) {
+                        _exitSidebarToContent();
+                        return;
+                      }
+                      _markNavigationAwayFromSidebar();
                       context.navigateTopLevel(Destinations.folderView);
                     },
                   ),
@@ -651,6 +705,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     showLabel: _showLabels,
                     onPressed: () {
                       _onNavigate();
+                      _markNavigationAwayFromSidebar();
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder: (_) => const SyncPlayScreen(),
@@ -672,7 +727,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     showLabel: _showLabels,
                     onPressed: () {
                       _onNavigate();
-                      if (_isActive(Destinations.seerrDiscover)) return;
+                      if (_isActive(Destinations.seerrDiscover)) {
+                        _exitSidebarToContent();
+                        return;
+                      }
+                      _markNavigationAwayFromSidebar();
                       context.navigateTopLevel(Destinations.seerrDiscover);
                     },
                   ),
@@ -717,6 +776,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                                     showLabel: _showLabels,
                                     onPressed: () {
                                       _onNavigate();
+                                      _markNavigationAwayFromSidebar();
                                       if (lib.collectionType == 'music') {
                                         context.navigateTopLevel(
                                           '/music/${lib.id}',
@@ -770,7 +830,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
             onPressed: () async {
               _onNavigate();
               await SettingsPanel.open(context, const SettingsSidePanel());
-              if (mounted) _settingsFocusNode.requestFocus();
+              if (!mounted) return;
+              _markNavigationAwayFromSidebar();
+              _settingsFocusNode.requestFocus();
             },
           ),
         ),
@@ -799,6 +861,13 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   void _onNavigate() {
     if (_isMobile) _collapse();
+  }
+
+  void _exitSidebarToContent() {
+    _collapse();
+    if (PlatformDetection.isTV) {
+      _restoreFocusOutsideSidebar();
+    }
   }
 
   Future<void> _shuffleRandom(BuildContext context) async {

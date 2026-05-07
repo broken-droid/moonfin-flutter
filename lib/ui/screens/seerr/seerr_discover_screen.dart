@@ -43,6 +43,9 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
   Timer? _backdropDebounce;
   String? _backdropUrl;
   final _initialFocusNode = FocusNode(debugLabel: 'seerrDiscoverInitial');
+  final _loadingHoldFocusNode =
+      FocusNode(debugLabel: 'seerrDiscoverLoadingHold', skipTraversal: true);
+  bool _initialFocusResolved = false;
   bool _isFirstRowFocused = false;
 
   static const _selectionDelay = Duration(milliseconds: 150);
@@ -52,7 +55,13 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
   void initState() {
     super.initState();
     _prefs.addListener(_onPrefsChanged);
+    _initialFocusNode.addListener(_onInitialFocusNodeChanged);
     _initViewModel();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _initialFocusResolved) return;
+      if (_loadingHoldFocusNode.context == null) return;
+      _loadingHoldFocusNode.requestFocus();
+    });
   }
 
   Future<void> _initViewModel() async {
@@ -70,7 +79,9 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
     _scrollController.dispose();
     _viewModel?.removeListener(_onChanged);
     _prefs.removeListener(_onPrefsChanged);
+    _initialFocusNode.removeListener(_onInitialFocusNodeChanged);
     _initialFocusNode.dispose();
+    _loadingHoldFocusNode.dispose();
     super.dispose();
   }
 
@@ -87,6 +98,20 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
     _isFirstRowFocused = focused;
   }
 
+  void _onInitialFocusNodeChanged() {
+    if (!_initialFocusNode.hasFocus) return;
+    _initialFocusResolved = true;
+    _initialFocusNode.removeListener(_onInitialFocusNodeChanged);
+    final targetContext = _initialFocusNode.context;
+    if (!mounted || targetContext == null) return;
+    Scrollable.ensureVisible(
+      targetContext,
+      alignment: 0.0,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+    );
+  }
+
   void _focusNavbarEntry() {
     final focusNavbar = NavigationLayout.focusNavbarNotifier.value;
     if (focusNavbar != null) {
@@ -96,6 +121,15 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
 
   KeyEventResult _onContentKeyEvent(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    if (!_initialFocusResolved && _loadingHoldFocusNode.hasFocus) {
+      final key = event.logicalKey;
+      if (key == LogicalKeyboardKey.arrowUp ||
+          key == LogicalKeyboardKey.arrowDown ||
+          key == LogicalKeyboardKey.arrowLeft ||
+          key == LogicalKeyboardKey.arrowRight) {
+        return KeyEventResult.handled;
+      }
+    }
     if (!event.logicalKey.isUpKey) return KeyEventResult.ignored;
     if (!_isFirstRowFocused) return KeyEventResult.ignored;
 
@@ -109,7 +143,24 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
   }
 
   void _onChanged() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    setState(() {});
+    if (_initialFocusResolved) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _initialFocusResolved || _initialFocusNode.hasFocus) {
+        return;
+      }
+      final targetContext = _initialFocusNode.context;
+      if (targetContext == null) return;
+      FocusScope.of(targetContext).requestFocus(_initialFocusNode);
+    });
+  }
+
+  bool _rowHasFocusableContent(SeerrDiscoverRow row) {
+    if (row.isGenreRow) return row.genres.isNotEmpty;
+    if (row.isNetworkRow) return row.networks.isNotEmpty;
+    if (row.isStudioRow) return row.studios.isNotEmpty;
+    return row.items.isNotEmpty;
   }
 
   void _onItemSelected(SeerrDiscoverItem item) {
@@ -171,7 +222,8 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
                 _InfoPanel(item: _selectedItem, topInset: infoTopInset, leftInset: infoPanelLeft),
                 Expanded(
                   child: Focus(
-                    canRequestFocus: false,
+                    focusNode: _loadingHoldFocusNode,
+                    canRequestFocus: !_initialFocusResolved,
                     skipTraversal: true,
                     onKeyEvent: _onContentKeyEvent,
                     child: _buildContent(rowLeftInset: rowLeftInset),
@@ -216,49 +268,56 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final visibleRows = <(int, SeerrDiscoverRow)>[];
+    var firstFocusableVisibleIndex = -1;
     for (var i = 0; i < rows.length; i++) {
       final row = rows[i];
-      visibleRows.add((i, row));
+      if (row.isLoading) break;
+      if (_rowHasFocusableContent(row)) {
+        firstFocusableVisibleIndex = i;
+        break;
+      }
     }
 
     return ListView.builder(
       controller: _scrollController,
       padding: EdgeInsets.only(left: rowLeftInset, bottom: 32),
-      itemCount: visibleRows.length,
+      itemCount: rows.length,
       itemBuilder: (context, index) {
-        final (origIndex, row) = visibleRows[index];
-        final shouldAutofocus = index == 0;
-        final firstNode = shouldAutofocus ? _initialFocusNode : null;
+        final row = rows[index];
+        if (!row.isLoading && !_rowHasFocusableContent(row)) {
+          return const SizedBox.shrink();
+        }
+        final isFirstFocusableRow = index == firstFocusableVisibleIndex;
+        final firstNode = isFirstFocusableRow ? _initialFocusNode : null;
         if (row.isGenreRow) {
           return _buildGenreRow(
             row,
-            isFirstVisibleRow: index == 0,
-            autofocusFirst: shouldAutofocus,
+            isFirstVisibleRow: isFirstFocusableRow,
+            autofocusFirst: isFirstFocusableRow,
             firstFocusNode: firstNode,
           );
         }
         if (row.isNetworkRow) {
           return _buildNetworkRow(
             row,
-            isFirstVisibleRow: index == 0,
-            autofocusFirst: shouldAutofocus,
+            isFirstVisibleRow: isFirstFocusableRow,
+            autofocusFirst: isFirstFocusableRow,
             firstFocusNode: firstNode,
           );
         }
         if (row.isStudioRow) {
           return _buildStudioRow(
             row,
-            isFirstVisibleRow: index == 0,
-            autofocusFirst: shouldAutofocus,
+            isFirstVisibleRow: isFirstFocusableRow,
+            autofocusFirst: isFirstFocusableRow,
             firstFocusNode: firstNode,
           );
         }
         return _buildMediaRow(
           row,
-          origIndex,
-          isFirstVisibleRow: index == 0,
-          autofocusFirst: shouldAutofocus,
+          index,
+          isFirstVisibleRow: isFirstFocusableRow,
+          autofocusFirst: isFirstFocusableRow,
           firstFocusNode: firstNode,
         );
       },

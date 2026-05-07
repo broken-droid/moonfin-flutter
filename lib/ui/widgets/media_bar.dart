@@ -73,7 +73,9 @@ class _MediaBarState extends State<MediaBar>
   bool _readyHooksAppliedForCurrentLoad = false;
 
   DateTime? _keyDownTime;
+  DateTime? _lastFocusReceivedAt;
   static const _keyLongPressThreshold = Duration(milliseconds: 500);
+  static const _focusActivationGuardDuration = Duration(milliseconds: 350);
 
   Player? _trailerPlayer;
   VideoController? _trailerController;
@@ -412,6 +414,13 @@ class _MediaBarState extends State<MediaBar>
       _autoAdvanceTimer?.cancel();
     } else {
       _startAutoAdvance();
+    }
+  }
+
+  void _handleFocusChange(bool focused) {
+    _setPaused(focused);
+    if (focused) {
+      _lastFocusReceivedAt = DateTime.now();
     }
   }
 
@@ -785,7 +794,7 @@ class _MediaBarState extends State<MediaBar>
         focusNode: widget.focusNode,
         autofocus: widget.focusNode == null && PlatformDetection.useLeanbackUi,
         skipTraversal: true,
-        onFocusChange: (focused) => _setPaused(focused),
+        onFocusChange: _handleFocusChange,
         onKeyEvent: (node, event) => _handleKeyEvent(event, items),
         child: GestureDetector(
           onTap: () => _navigateToItem(context, items),
@@ -948,7 +957,7 @@ class _MediaBarState extends State<MediaBar>
         focusNode: widget.focusNode,
         autofocus: widget.focusNode == null && PlatformDetection.useLeanbackUi,
         skipTraversal: true,
-        onFocusChange: (focused) => _setPaused(focused),
+        onFocusChange: _handleFocusChange,
         onKeyEvent: (node, event) => _handleKeyEvent(event, items),
         child: GestureDetector(
           onTap: () => _navigateToItem(context, items),
@@ -1175,10 +1184,20 @@ class _MediaBarState extends State<MediaBar>
         return KeyEventResult.handled;
       }
       if (event is KeyUpEvent) {
+        final now = DateTime.now();
         final downTime = _keyDownTime;
         _keyDownTime = null;
+        final focusedAt = _lastFocusReceivedAt;
+        final shouldSuppressBleedThrough =
+            downTime == null &&
+            focusedAt != null &&
+            now.difference(focusedAt) <
+                _focusActivationGuardDuration;
+        if (shouldSuppressBleedThrough) {
+          return KeyEventResult.handled;
+        }
         if (downTime != null &&
-            DateTime.now().difference(downTime) >= _keyLongPressThreshold) {
+            now.difference(downTime) >= _keyLongPressThreshold) {
           _navigateToItemAndPlay(context, items);
         } else {
           _navigateToItem(context, items);

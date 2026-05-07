@@ -71,6 +71,8 @@ class SeerrDiscoverViewModel extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  static const _localRowsFetchLimit = 15;
+
   SeerrDiscoverViewModel(this._repo, this._prefs);
 
   static const _nsfwKeywords = [
@@ -264,7 +266,7 @@ class SeerrDiscoverViewModel extends ChangeNotifier {
   Future<void> _loadRecentlyAdded(int index) async {
     final row = _rows[index];
     try {
-      final media = await _repo.getRecentlyAdded(limit: _prefs.fetchLimit.limit);
+      final media = await _repo.getRecentlyAdded(limit: _localRowsFetchLimit);
       final items = await Future.wait(media.map(_mediaToDiscoverItem));
       _updateRow(index, row.copyWith(items: items, isLoading: false));
     } catch (_) {
@@ -296,7 +298,7 @@ class SeerrDiscoverViewModel extends ChangeNotifier {
       final user = await _repo.getCurrentUser();
       final response = await _repo.getRequests(
         requestedBy: user.canViewAllRequests ? null : user.id,
-        limit: _prefs.fetchLimit.limit,
+        limit: _localRowsFetchLimit,
       );
 
       final rawItems = response.results

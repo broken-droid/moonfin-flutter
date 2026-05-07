@@ -143,6 +143,12 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
   }
 
   Widget _buildSidebar() {
+    final content = Focus(
+      focusNode: _contentFocusNode,
+      skipTraversal: true,
+      child: widget.child,
+    );
+
     final sidebar = LeftSidebar(
       activeRoute: widget.activeRoute,
       contentFocusNode: _contentFocusNode,
@@ -155,7 +161,7 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
           Expanded(
             child: Stack(
               children: [
-                Positioned.fill(child: widget.child),
+                Positioned.fill(child: content),
                 Positioned(
                   top: 0,
                   left: 0,
@@ -175,7 +181,7 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
         Expanded(
           child: Stack(
             children: [
-              Positioned.fill(child: widget.child),
+              Positioned.fill(child: content),
               Positioned.fill(
                 child: sidebar,
               ),
