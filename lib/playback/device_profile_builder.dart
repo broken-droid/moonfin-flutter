@@ -55,6 +55,7 @@ class DeviceProfileBuilder {
   static Map<String, dynamic> build({
     int? maxBitrateMbps,
     bool ac3Enabled = true,
+    bool trueHdEnabled = true,
     bool downMixAudio = false,
     MaxVideoResolution maxResolution = MaxVideoResolution.auto,
     bool pgsDirectPlay = true,
@@ -96,11 +97,15 @@ class DeviceProfileBuilder {
 
     final allowedAudioCodecs = downMixAudio
         ? _downmixSupportedAudioCodecs
-        : (ac3Enabled
-              ? _supportedAudioCodecs
-              : _supportedAudioCodecs
-                    .where((codec) => codec != 'ac3' && codec != 'eac3')
-                    .toList(growable: false));
+        : _supportedAudioCodecs.where((codec) {
+            if (!ac3Enabled && (codec == 'ac3' || codec == 'eac3')) {
+              return false;
+            }
+            if (!trueHdEnabled && (codec == 'truehd' || codec == 'mlp')) {
+              return false;
+            }
+            return true;
+          }).toList(growable: false);
 
     final hlsVideoCodecs = <String>[
       if (supportsHevc) 'hevc',

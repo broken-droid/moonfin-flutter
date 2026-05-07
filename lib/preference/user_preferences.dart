@@ -261,7 +261,7 @@ class UserPreferences extends ChangeNotifier {
 
   static final trueHdEnabled = Preference(
     key: 'pref_bitstream_truncated_hd',
-    defaultValue: false,
+    defaultValue: true,
   );
 
   static final customMpvConfEnabled = Preference(
