@@ -9,6 +9,7 @@ import '../../data/repositories/offline_repository.dart';
 import '../../data/services/media_server_client_factory.dart';
 import '../../data/services/offline_playback_tracker.dart';
 import '../../playback/hdr_stream_capability.dart';
+import '../../playback/known_defects.dart';
 import '../../playback/media_kit_player_backend.dart';
 import '../../playback/media3_player_backend.dart';
 import '../../playback/offline_stream_resolver.dart';
@@ -30,8 +31,19 @@ bool _isDolbyVisionResolution(StreamResolutionResult resolution) {
 }
 
 bool _hasUnsupportedDolbyVisionProfile(StreamResolutionResult resolution) {
+  final prefs = _getIt<UserPreferences>();
+  final allowDolbyVisionProfile7ElDirectPlay =
+      KnownDefects.shouldAllowDolbyVisionProfile7ElDirectPlay(
+        behavior: prefs.get(
+          UserPreferences.dolbyVisionProfile7DirectPlayBehavior,
+        ),
+      );
   for (final stream in resolution.mediaStreams) {
-    if (HdrStreamCapability.streamNeedsDolbyVisionProfileTranscode(stream)) {
+    if (HdrStreamCapability.streamNeedsDolbyVisionProfileTranscode(
+      stream,
+      allowDolbyVisionProfile7ElDirectPlay:
+          allowDolbyVisionProfile7ElDirectPlay,
+    )) {
       return true;
     }
   }

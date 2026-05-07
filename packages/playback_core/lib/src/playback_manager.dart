@@ -23,6 +23,10 @@ class PlaybackManager {
   _backendSelector;
   bool Function(StreamResolutionResult resolution)? _transcodeSelector;
   Duration Function(dynamic item, Duration startPosition)? _startPositionAdjuster;
+  Future<PlaybackStartupRecoveryDecision> Function(
+    PlaybackStartupFailureContext context,
+  )?
+  _startupRecoveryDecider;
   final QueueService queueService = QueueService();
   final PlayerState state = PlayerState();
   final Set<PlayerBackend> _retainedBackends = <PlayerBackend>{};
@@ -152,6 +156,14 @@ class PlaybackManager {
     Duration Function(dynamic item, Duration startPosition)? adjuster,
   ) {
     _startPositionAdjuster = adjuster;
+  }
+
+  void setStartupRecoveryDecider(
+    Future<PlaybackStartupRecoveryDecision> Function(
+      PlaybackStartupFailureContext context,
+    )? decider,
+  ) {
+    _startupRecoveryDecider = decider;
   }
 
   void _resetBackendSelectionLock() {
@@ -471,6 +483,27 @@ class PlaybackManager {
       if (allowStartupRecovery) {
         final forceTranscodeFallback =
             resolution.playMethod != StreamPlayMethod.transcode;
+        if (forceTranscodeFallback) {
+          var decision = PlaybackStartupRecoveryDecision.retryWithTranscode;
+          final decider = _startupRecoveryDecider;
+          if (decider != null) {
+            try {
+              decision = await decider(
+                PlaybackStartupFailureContext(
+                  resolution: resolution,
+                  startPosition: startPosition,
+                  error: startupError,
+                  stackTrace: startupStackTrace,
+                ),
+              );
+            } catch (_) {}
+          }
+
+          if (decision == PlaybackStartupRecoveryDecision.abortPlayback) {
+            throw const PlaybackStartupRecoveryAbortedException();
+          }
+        }
+
         await _playCurrentItem(
           startPosition: startPosition,
           enableDirectPlay: forceTranscodeFallback ? false : enableDirectPlay,
@@ -1258,3 +1291,27 @@ class PlaybackManager {
 
 /// Transport actions that may be intercepted before reaching the backend.
 enum TransportAction { resume, pause, seek, stop, next, previous }
+
+enum PlaybackStartupRecoveryDecision { retryWithTranscode, abortPlayback }
+
+class PlaybackStartupFailureContext {
+  final StreamResolutionResult resolution;
+  final Duration startPosition;
+  final Object? error;
+  final StackTrace? stackTrace;
+
+  const PlaybackStartupFailureContext({
+    required this.resolution,
+    required this.startPosition,
+    this.error,
+    this.stackTrace,
+  });
+}
+
+class PlaybackStartupRecoveryAbortedException implements Exception {
+  const PlaybackStartupRecoveryAbortedException();
+
+  @override
+  String toString() =>
+      'PlaybackStartupRecoveryAbortedException: startup fallback canceled by user';
+}

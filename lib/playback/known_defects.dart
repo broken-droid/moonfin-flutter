@@ -1,3 +1,4 @@
+import '../preference/preference_constants.dart';
 import '../util/platform_detection.dart';
 
 class KnownDefects {
@@ -9,6 +10,11 @@ class KnownDefects {
     'AFTKM',
   };
 
+  static const Set<String> modelsWithDolbyVisionProfile7ElDirectPlayDefault =
+      <String>{
+        'AFTKRT',
+      };
+
   static bool get hevcDoviHdr10PlusBug =>
       PlatformDetection.knownHevcDoviHdr10PlusBug ||
       modelHasHevcDoviHdr10PlusBug(PlatformDetection.deviceModel);
@@ -18,5 +24,30 @@ class KnownDefects {
       return false;
     }
     return modelsWithDoViHdr10PlusBug.contains(model.trim().toUpperCase());
+  }
+
+  static bool modelHasDolbyVisionProfile7ElDirectPlayDefault(String? model) {
+    if (model == null) {
+      return false;
+    }
+    return modelsWithDolbyVisionProfile7ElDirectPlayDefault.contains(
+      model.trim().toUpperCase(),
+    );
+  }
+
+  static bool shouldAllowDolbyVisionProfile7ElDirectPlay({
+    required DolbyVisionProfile7DirectPlayBehavior behavior,
+    String? model,
+  }) {
+    switch (behavior) {
+      case DolbyVisionProfile7DirectPlayBehavior.enabled:
+        return true;
+      case DolbyVisionProfile7DirectPlayBehavior.disabled:
+        return false;
+      case DolbyVisionProfile7DirectPlayBehavior.auto:
+        return modelHasDolbyVisionProfile7ElDirectPlayDefault(
+          model ?? PlatformDetection.deviceModel,
+        );
+    }
   }
 }

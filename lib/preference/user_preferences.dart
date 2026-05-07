@@ -298,6 +298,12 @@ class UserPreferences extends ChangeNotifier {
     values: DolbyVisionFallbackBehavior.values,
   );
 
+  static final dolbyVisionProfile7DirectPlayBehavior = EnumPreference(
+    key: 'dolby_vision_profile7_direct_play_behavior',
+    defaultValue: DolbyVisionProfile7DirectPlayBehavior.auto,
+    values: DolbyVisionProfile7DirectPlayBehavior.values,
+  );
+
   static final defaultAudioLanguage = Preference(
     key: 'pref_audio_language',
     defaultValue: '',

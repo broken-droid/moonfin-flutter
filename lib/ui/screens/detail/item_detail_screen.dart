@@ -44,6 +44,7 @@ import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../../playback/offline_playback_launcher.dart';
 import '../../../playback/hdr_stream_capability.dart';
+import '../../../playback/known_defects.dart';
 import '../../../syncplay/syncplay_manager.dart';
 import '../../../util/audio_labels.dart';
 import '../../../util/download_utils.dart';
@@ -1103,15 +1104,21 @@ class _DetailContentState extends State<_DetailContent> {
       [item],
       mediaSourceId: mediaSourceId,
     );
-    await manager.playItems(
-      [item],
-      startPosition: startPosition,
-      mediaSourceId: mediaSourceId,
-      enableDirectPlay: !forceTranscode,
-      enableDirectStream: !forceTranscode,
-    );
     if (!context.mounted) return;
-    context.push(Destinations.videoPlayer);
+    final started = await _runWithDolbyVisionStartupFallbackPrompt(
+      context,
+      manager,
+      () => manager.playItems(
+        [item],
+        startPosition: startPosition,
+        mediaSourceId: mediaSourceId,
+        enableDirectPlay: !forceTranscode,
+        enableDirectStream: !forceTranscode,
+      ),
+    );
+    if (!started) return;
+    if (!mounted) return;
+    this.context.push(Destinations.videoPlayer);
   }
 
   List<Widget> _buildChapterAndFeatureSections(
@@ -3760,106 +3767,114 @@ class _ActionButtonsState extends State<_ActionButtons> {
         item.type == 'AudioBook' ||
         mediaType == 'Audio';
 
-    switch (item.type) {
-      case 'Series':
-        final nextUp = viewModel.nextUp;
-        if (nextUp == null) return;
-        final startPosition =
-            resume ? (nextUp.playbackPosition ?? Duration.zero) : Duration.zero;
-        final forceTranscode = await _shouldForceTranscodeForDolbyVision(
-          context,
-          [nextUp],
-        );
-        await manager.playItems(
-          [nextUp],
-          startPosition: startPosition,
-          audioStreamIndex: audioStreamIndex,
-          subtitleStreamIndex: subtitleStreamIndex,
-          enableDirectPlay: !forceTranscode,
-          enableDirectStream: !forceTranscode,
-        );
-
-      case 'Season':
-        final episodes = viewModel.episodes;
-        if (episodes.isEmpty) return;
-        final startIndex =
-            resume
-                ? episodes.indexWhere(
-                  (e) => (e.playedPercentage ?? 0) > 0 && !e.isPlayed,
-                )
-                : episodes.indexWhere((e) => !e.isPlayed);
-        final idx = startIndex >= 0 ? startIndex : 0;
-        final startPosition =
-            resume
-                ? (episodes[idx].playbackPosition ?? Duration.zero)
-                : Duration.zero;
-        final forceTranscode = await _shouldForceTranscodeForDolbyVision(
-          context,
-          [episodes[idx]],
-        );
-        await manager.playItems(
-          episodes,
-          startIndex: idx,
-          startPosition: startPosition,
-          audioStreamIndex: audioStreamIndex,
-          subtitleStreamIndex: subtitleStreamIndex,
-          enableDirectPlay: !forceTranscode,
-          enableDirectStream: !forceTranscode,
-        );
-
-      case 'Episode':
-        final episodes = viewModel.episodes;
-        if (episodes.length > 1) {
-          final startIndex = episodes.indexWhere((e) => e.id == item.id);
-          final idx = startIndex >= 0 ? startIndex : 0;
-          final startPosition =
-              resume
-                  ? (episodes[idx].playbackPosition ?? Duration.zero)
-                  : Duration.zero;
-          final forceTranscode = await _shouldForceTranscodeForDolbyVision(
-            context,
-            [episodes[idx]],
-            mediaSourceId: widget.selectedMediaSourceId,
-          );
-          await manager.playItems(
-            episodes,
-            startIndex: idx,
-            startPosition: startPosition,
-            audioStreamIndex: audioStreamIndex,
-            subtitleStreamIndex: subtitleStreamIndex,
-            mediaSourceId: widget.selectedMediaSourceId,
-            enableDirectPlay: !forceTranscode,
-            enableDirectStream: !forceTranscode,
-          );
-          break;
-        }
-        continue defaultCase;
-
-      case 'MusicAlbum':
-        final tracks = viewModel.tracks;
-        if (tracks.isEmpty) return;
-        await manager.playItems(tracks);
-
-      defaultCase:
-      default:
-        final startPosition =
-            resume ? (item.playbackPosition ?? Duration.zero) : Duration.zero;
-        final forceTranscode = !isAudio &&
-            await _shouldForceTranscodeForDolbyVision(
+    final started = await _runWithDolbyVisionStartupFallbackPrompt(
+      context,
+      manager,
+      () async {
+        switch (item.type) {
+          case 'Series':
+            final nextUp = viewModel.nextUp;
+            if (nextUp == null) return;
+            final startPosition =
+                resume ? (nextUp.playbackPosition ?? Duration.zero) : Duration.zero;
+            final forceTranscode = await _shouldForceTranscodeForDolbyVision(
               context,
-              [item],
-              mediaSourceId: widget.selectedMediaSourceId,
+              [nextUp],
             );
-        await manager.playItems(
-          [item],
-          startPosition: startPosition,
-          audioStreamIndex: audioStreamIndex,
-          subtitleStreamIndex: subtitleStreamIndex,
-          mediaSourceId: widget.selectedMediaSourceId,
-          enableDirectPlay: !forceTranscode,
-          enableDirectStream: !forceTranscode,
-        );
-    }
+            await manager.playItems(
+              [nextUp],
+              startPosition: startPosition,
+              audioStreamIndex: audioStreamIndex,
+              subtitleStreamIndex: subtitleStreamIndex,
+              enableDirectPlay: !forceTranscode,
+              enableDirectStream: !forceTranscode,
+            );
+
+          case 'Season':
+            final episodes = viewModel.episodes;
+            if (episodes.isEmpty) return;
+            final startIndex =
+                resume
+                    ? episodes.indexWhere(
+                      (e) => (e.playedPercentage ?? 0) > 0 && !e.isPlayed,
+                    )
+                    : episodes.indexWhere((e) => !e.isPlayed);
+            final idx = startIndex >= 0 ? startIndex : 0;
+            final startPosition =
+                resume
+                    ? (episodes[idx].playbackPosition ?? Duration.zero)
+                    : Duration.zero;
+            final forceTranscode = await _shouldForceTranscodeForDolbyVision(
+              context,
+              [episodes[idx]],
+            );
+            await manager.playItems(
+              episodes,
+              startIndex: idx,
+              startPosition: startPosition,
+              audioStreamIndex: audioStreamIndex,
+              subtitleStreamIndex: subtitleStreamIndex,
+              enableDirectPlay: !forceTranscode,
+              enableDirectStream: !forceTranscode,
+            );
+
+          case 'Episode':
+            final episodes = viewModel.episodes;
+            if (episodes.length > 1) {
+              final startIndex = episodes.indexWhere((e) => e.id == item.id);
+              final idx = startIndex >= 0 ? startIndex : 0;
+              final startPosition =
+                  resume
+                      ? (episodes[idx].playbackPosition ?? Duration.zero)
+                      : Duration.zero;
+              final forceTranscode = await _shouldForceTranscodeForDolbyVision(
+                context,
+                [episodes[idx]],
+                mediaSourceId: widget.selectedMediaSourceId,
+              );
+              await manager.playItems(
+                episodes,
+                startIndex: idx,
+                startPosition: startPosition,
+                audioStreamIndex: audioStreamIndex,
+                subtitleStreamIndex: subtitleStreamIndex,
+                mediaSourceId: widget.selectedMediaSourceId,
+                enableDirectPlay: !forceTranscode,
+                enableDirectStream: !forceTranscode,
+              );
+              break;
+            }
+            continue defaultCase;
+
+          case 'MusicAlbum':
+            final tracks = viewModel.tracks;
+            if (tracks.isEmpty) return;
+            await manager.playItems(tracks);
+
+          defaultCase:
+          default:
+            final startPosition =
+                resume ? (item.playbackPosition ?? Duration.zero) : Duration.zero;
+            final forceTranscode = !isAudio &&
+                await _shouldForceTranscodeForDolbyVision(
+                  context,
+                  [item],
+                  mediaSourceId: widget.selectedMediaSourceId,
+                );
+            await manager.playItems(
+              [item],
+              startPosition: startPosition,
+              audioStreamIndex: audioStreamIndex,
+              subtitleStreamIndex: subtitleStreamIndex,
+              mediaSourceId: widget.selectedMediaSourceId,
+              enableDirectPlay: !forceTranscode,
+              enableDirectStream: !forceTranscode,
+            );
+        }
+      },
+    );
+
+    if (!started) return;
 
     if (!context.mounted) return;
     await context.push(
@@ -4006,13 +4021,19 @@ class _ActionButtonsState extends State<_ActionButtons> {
         context,
         [localTrailer],
       );
-      await manager.playItems(
-        [localTrailer],
-        enableDirectPlay: !forceTranscode,
-        enableDirectStream: !forceTranscode,
-      );
       if (!context.mounted) return;
-      await context.push(Destinations.videoPlayer);
+      final started = await _runWithDolbyVisionStartupFallbackPrompt(
+        context,
+        manager,
+        () => manager.playItems(
+          [localTrailer],
+          enableDirectPlay: !forceTranscode,
+          enableDirectStream: !forceTranscode,
+        ),
+      );
+      if (!started) return;
+      if (!mounted) return;
+      await this.context.push(Destinations.videoPlayer);
       viewModel.load();
       return;
     }
@@ -4481,9 +4502,91 @@ List<Map<String, dynamic>> _mediaStreamsForItem(
   return item.mediaStreams;
 }
 
+bool _allowDolbyVisionProfile7ElDirectPlay(UserPreferences prefs) {
+  return KnownDefects.shouldAllowDolbyVisionProfile7ElDirectPlay(
+    behavior: prefs.get(UserPreferences.dolbyVisionProfile7DirectPlayBehavior),
+  );
+}
+
+bool _shouldPromptDolbyVisionDirectPlayStartupFailure(
+  PlaybackStartupFailureContext failure,
+  UserPreferences prefs,
+) {
+  if (failure.resolution.playMethod == StreamPlayMethod.transcode) {
+    return false;
+  }
+  if (!_allowDolbyVisionProfile7ElDirectPlay(prefs)) {
+    return false;
+  }
+  return failure.resolution.mediaStreams.any(
+    HdrStreamCapability.isDolbyVisionVideoStream,
+  );
+}
+
+Future<PlaybackStartupRecoveryDecision>
+_showDolbyVisionDirectPlayStartupFailureDecisionDialog(
+  BuildContext context,
+) async {
+  final retryWithTranscode = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: const Text('Dolby Vision Direct Play Failed'),
+        content: const Text(
+          'Direct play failed to start for this Dolby Vision stream. '
+          'Retry using server transcode?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Retry with transcode'),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (retryWithTranscode == true) {
+    return PlaybackStartupRecoveryDecision.retryWithTranscode;
+  }
+  return PlaybackStartupRecoveryDecision.abortPlayback;
+}
+
+Future<bool> _runWithDolbyVisionStartupFallbackPrompt(
+  BuildContext context,
+  PlaybackManager manager,
+  Future<void> Function() playAction,
+) async {
+  final prefs = GetIt.instance<UserPreferences>();
+
+  manager.setStartupRecoveryDecider((failure) async {
+    if (!_shouldPromptDolbyVisionDirectPlayStartupFailure(failure, prefs)) {
+      return PlaybackStartupRecoveryDecision.retryWithTranscode;
+    }
+    if (!context.mounted) {
+      return PlaybackStartupRecoveryDecision.retryWithTranscode;
+    }
+    return _showDolbyVisionDirectPlayStartupFailureDecisionDialog(context);
+  });
+
+  try {
+    await playAction();
+    return true;
+  } on PlaybackStartupRecoveryAbortedException {
+    return false;
+  } finally {
+    manager.setStartupRecoveryDecider(null);
+  }
+}
+
 ({bool hasDolbyVision, bool hasUnsupportedProfile}) _analyzeDolbyVisionQueue(
   List<AggregatedItem> queue, {
   String? mediaSourceId,
+  bool allowDolbyVisionProfile7ElDirectPlay = false,
 }) {
   var hasDolbyVision = false;
   var hasUnsupportedProfile = false;
@@ -4497,7 +4600,11 @@ List<Map<String, dynamic>> _mediaStreamsForItem(
         hasDolbyVision = true;
       }
       if (!hasUnsupportedProfile &&
-          HdrStreamCapability.streamNeedsDolbyVisionProfileTranscode(stream)) {
+          HdrStreamCapability.streamNeedsDolbyVisionProfileTranscode(
+            stream,
+            allowDolbyVisionProfile7ElDirectPlay:
+                allowDolbyVisionProfile7ElDirectPlay,
+          )) {
         hasUnsupportedProfile = true;
       }
       if (hasDolbyVision && hasUnsupportedProfile) {
@@ -4590,9 +4697,15 @@ Future<bool> _shouldForceTranscodeForDolbyVisionQueue(
     return false;
   }
 
+  final prefs = GetIt.instance<UserPreferences>();
+  final allowDolbyVisionProfile7ElDirectPlay =
+      _allowDolbyVisionProfile7ElDirectPlay(prefs);
+
   final dvAnalysis = _analyzeDolbyVisionQueue(
     queue,
     mediaSourceId: mediaSourceId,
+    allowDolbyVisionProfile7ElDirectPlay:
+        allowDolbyVisionProfile7ElDirectPlay,
   );
   if (!dvAnalysis.hasDolbyVision) {
     return false;
@@ -4610,7 +4723,6 @@ Future<bool> _shouldForceTranscodeForDolbyVisionQueue(
     return true;
   }
 
-  final prefs = GetIt.instance<UserPreferences>();
   final behavior = prefs.get(UserPreferences.dolbyVisionFallbackBehavior);
   if (behavior == DolbyVisionFallbackBehavior.transcode) {
     return true;

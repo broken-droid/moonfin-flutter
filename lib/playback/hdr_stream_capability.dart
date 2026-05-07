@@ -77,7 +77,9 @@ class HdrStreamCapability {
   }
 
   static bool streamNeedsDolbyVisionProfileTranscode(
-    Map<String, dynamic> stream,
+    Map<String, dynamic> stream, {
+    bool allowDolbyVisionProfile7ElDirectPlay = false,
+  }
   ) {
     final requiredProfile = requiredDolbyVisionProfile(stream);
     if (requiredProfile == null) {
@@ -95,6 +97,9 @@ class HdrStreamCapability {
       case DolbyVisionRequiredProfile.profile5:
         return !PlatformDetection.supportsDoViProfile5;
       case DolbyVisionRequiredProfile.profile7:
+        if (allowDolbyVisionProfile7ElDirectPlay) {
+          return false;
+        }
         return !PlatformDetection.supportsDoViProfile7;
       case DolbyVisionRequiredProfile.profile8:
         return !PlatformDetection.supportsDoViProfile8;

@@ -14,6 +14,12 @@ enum DolbyVisionFallbackBehavior {
   transcode,
 }
 
+enum DolbyVisionProfile7DirectPlayBehavior {
+  auto,
+  enabled,
+  disabled,
+}
+
 enum ClockBehavior {
   always,
   inMenus,

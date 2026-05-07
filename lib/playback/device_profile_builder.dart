@@ -90,6 +90,7 @@ class DeviceProfileBuilder {
     bool supportsDvProfile7 = false,
     bool supportsDvProfile8 = false,
     bool knownHevcDoviHdr10PlusBug = false,
+    bool allowDolbyVisionProfile7ElDirectPlay = false,
   }) {
     final bitrateBps = maxBitrateMbps == null ? null : maxBitrateMbps * 1000000;
 
@@ -143,6 +144,8 @@ class DeviceProfileBuilder {
       supportsDvProfile7: supportsDvProfile7,
       supportsDvProfile8: supportsDvProfile8,
       knownHevcDoviHdr10PlusBug: hasKnownHevcDoviHdr10PlusBug,
+      allowDolbyVisionProfile7ElDirectPlay:
+          allowDolbyVisionProfile7ElDirectPlay,
     );
 
     return <String, dynamic>{
@@ -248,6 +251,7 @@ class DeviceProfileBuilder {
     required bool supportsDvProfile7,
     required bool supportsDvProfile8,
     required bool knownHevcDoviHdr10PlusBug,
+    required bool allowDolbyVisionProfile7ElDirectPlay,
   }) {
     final profiles = <Map<String, dynamic>>[];
 
@@ -545,9 +549,11 @@ class DeviceProfileBuilder {
       'DOVI_INVALID',
     };
     if (!supportsHevcDolbyVisionEl) {
-      unsupportedRangeTypesHevc.add('DOVI_WITH_EL');
-      if (!supportsHevcHdr10Plus && !knownHevcDoviHdr10PlusBug) {
-        unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+      if (!allowDolbyVisionProfile7ElDirectPlay) {
+        unsupportedRangeTypesHevc.add('DOVI_WITH_EL');
+        if (!supportsHevcHdr10Plus && !knownHevcDoviHdr10PlusBug) {
+          unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+        }
       }
 
       if (!supportsHevcDolbyVision) {
@@ -584,8 +590,10 @@ class DeviceProfileBuilder {
       unsupportedRangeTypesHevc.add('DOVI');
     }
     if (!supportsDvProfile7) {
-      unsupportedRangeTypesHevc.add('DOVI_WITH_EL');
-      unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+      if (!allowDolbyVisionProfile7ElDirectPlay) {
+        unsupportedRangeTypesHevc.add('DOVI_WITH_EL');
+        unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+      }
     }
     if (!supportsDvProfile8) {
       unsupportedRangeTypesHevc.add('DOVI_WITH_HDR10');
@@ -628,7 +636,8 @@ class DeviceProfileBuilder {
       return;
     }
 
-    final sortedRangeTypes = rangeTypes.toList(growable: false)..sort();
+    final expandedRangeTypes = _expandVideoRangeTypeAliases(rangeTypes);
+    final sortedRangeTypes = expandedRangeTypes.toList(growable: false)..sort();
     final joinedRangeTypes = sortedRangeTypes.join('|');
     profiles.add(
       _codecProfile(
@@ -653,6 +662,35 @@ class DeviceProfileBuilder {
       ),
     );
   }
+
+  static Set<String> _expandVideoRangeTypeAliases(Set<String> rangeTypes) {
+    final expanded = <String>{};
+    for (final token in rangeTypes) {
+      final aliases = _videoRangeTypeAliases[token];
+      if (aliases == null || aliases.isEmpty) {
+        expanded.add(token);
+      } else {
+        expanded.addAll(aliases);
+      }
+    }
+    return expanded;
+  }
+
+  static const Map<String, List<String>> _videoRangeTypeAliases =
+      <String, List<String>>{
+        'DOVI_INVALID': <String>['DOVI_INVALID', 'DOVIInvalid'],
+        'DOVI_WITH_EL': <String>['DOVI_WITH_EL', 'DOVIWithEL'],
+        'DOVI_WITH_ELHDR10_PLUS': <String>[
+          'DOVI_WITH_ELHDR10_PLUS',
+          'DOVIWithELHDR10Plus',
+        ],
+        'DOVI_WITH_HDR10': <String>['DOVI_WITH_HDR10', 'DOVIWithHDR10'],
+        'DOVI_WITH_HDR10_PLUS': <String>[
+          'DOVI_WITH_HDR10_PLUS',
+          'DOVIWithHDR10Plus',
+        ],
+        'HDR10_PLUS': <String>['HDR10_PLUS', 'HDR10Plus'],
+      };
 
   static void _addResolutionProfile({
     required List<Map<String, dynamic>> profiles,

@@ -1750,6 +1750,22 @@ class _VideoPlaybackScreen extends StatelessWidget {
                 DolbyVisionFallbackBehavior.transcode => 'Prefer server transcode',
               },
             ),
+          if (PlatformDetection.isAndroid && PlatformDetection.isTV)
+            EnumPreferenceTile<DolbyVisionProfile7DirectPlayBehavior>(
+              preference: UserPreferences.dolbyVisionProfile7DirectPlayBehavior,
+              title: 'Dolby Vision Profile 7 Direct Play',
+              description:
+                  'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.',
+              icon: Icons.movie_filter,
+              labelOf: (v) => switch (v) {
+                DolbyVisionProfile7DirectPlayBehavior.auto =>
+                  'Auto (AFTKRT enabled)',
+                DolbyVisionProfile7DirectPlayBehavior.enabled =>
+                  'Enabled on this device',
+                DolbyVisionProfile7DirectPlayBehavior.disabled =>
+                  'Disabled (prefer transcode)',
+              },
+            ),
           SwitchPreferenceTile(
             preference: UserPreferences.hardwareDecoding,
             title: 'Hardware Decoding',

@@ -7,6 +7,7 @@ import '../preference/preference_constants.dart';
 import '../preference/user_preferences.dart';
 import '../util/platform_detection.dart';
 import 'device_profile_builder.dart';
+import 'known_defects.dart';
 
 class Media3PlayerBackend implements PlayerBackend {
   Media3PlayerBackend(this._prefs) {
@@ -293,6 +294,12 @@ class Media3PlayerBackend implements PlayerBackend {
       supportsDvProfile7: PlatformDetection.supportsDoViProfile7,
       supportsDvProfile8: PlatformDetection.supportsDoViProfile8,
       knownHevcDoviHdr10PlusBug: PlatformDetection.knownHevcDoviHdr10PlusBug,
+      allowDolbyVisionProfile7ElDirectPlay:
+          KnownDefects.shouldAllowDolbyVisionProfile7ElDirectPlay(
+            behavior: _prefs.get(
+              UserPreferences.dolbyVisionProfile7DirectPlayBehavior,
+            ),
+          ),
     );
   }
 
