@@ -23,6 +23,7 @@ class HomeRowsImageTypeScreen extends StatefulWidget {
 class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
   final _prefs = GetIt.instance<UserPreferences>();
   final _syncService = GetIt.instance<PluginSyncService>();
+  bool _pickerOpen = false;
 
   @override
   void initState() {
@@ -128,64 +129,61 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
     required ImageType current,
     required Future<void> Function(ImageType value) onSelected,
   }) async {
+    if (_pickerOpen) return;
+    _pickerOpen = true;
     final l10n = AppLocalizations.of(context);
     final values = ImageType.values.toList();
     final selectedIndex = values.indexOf(current);
     final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
-    final result = await showFocusRestoringDialog<ImageType>(
-      context: context,
-      useRootNavigator: false,
-      builder: (ctx) {
-        var closed = false;
-        void closeOnce() {
-          if (closed) return;
-          closed = true;
-          Navigator.pop(ctx);
-        }
-        var picked = false;
-        return Focus(
-          canRequestFocus: false,
-          skipTraversal: true,
-          onKeyEvent: (_, event) {
-            if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-            if (event is KeyDownEvent) {
-              DialogBackSuppressor.markDismissed();
-              closeOnce();
-              return KeyEventResult.handled;
-            }
-            if (event is KeyUpEvent) {
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
-          child: FocusScope(
-            autofocus: true,
-            child: SimpleDialog(
-              title: Text(l10n.imageType),
-              children: values.asMap().entries.map((entry) {
-                final i = entry.key;
-                final v = entry.value;
-                final selected = v == current;
-                return TvFocusHighlight(
-                  builder: (_, _) => ListTile(
-                    autofocus: i == autofocusIndex,
-                    title: Text(_imageTypeLabel(v, l10n)),
-                    trailing: selected ? const Icon(Icons.check) : null,
-                    onTap: () {
-                      if (picked) return;
-                      picked = true;
-                      Navigator.pop(ctx, v);
-                    },
-                  ),
-                );
-              }).toList(),
+    try {
+      final result = await showFocusRestoringDialog<ImageType>(
+        context: context,
+        useRootNavigator: false,
+        builder: (ctx) {
+          final closeOnce = createDialogBackCloseHandler(ctx);
+          var picked = false;
+          return Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onKeyEvent: (_, event) {
+              if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+              if (event is KeyDownEvent || event is KeyUpEvent) {
+                closeOnce();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: SimpleDialog(
+                title: Text(l10n.imageType),
+                children: values.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final v = entry.value;
+                  final selected = v == current;
+                  return TvFocusHighlight(
+                    builder: (_, _) => ListTile(
+                      autofocus: i == autofocusIndex,
+                      title: Text(_imageTypeLabel(v, l10n)),
+                      trailing: selected ? const Icon(Icons.check) : null,
+                      onTap: () {
+                        if (picked) return;
+                        picked = true;
+                        Navigator.pop(ctx, v);
+                      },
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        );
-      },
-    );
-    if (result != null && result != current) {
-      await onSelected(result);
+          );
+        },
+      );
+      if (result != null && result != current) {
+        await onSelected(result);
+      }
+    } finally {
+      _pickerOpen = false;
     }
   }
 }

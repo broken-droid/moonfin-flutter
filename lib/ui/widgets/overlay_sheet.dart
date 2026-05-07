@@ -25,6 +25,20 @@ class DialogBackSuppressor {
   }
 }
 
+/// Creates an idempotent back-dismiss action for a dialog route.
+///
+/// Use this in custom back-key handlers inside dialogs so the Android
+/// follow-up popRoute event is suppressed consistently.
+VoidCallback createDialogBackCloseHandler(BuildContext dialogContext) {
+  var closed = false;
+  return () {
+    if (closed) return;
+    closed = true;
+    DialogBackSuppressor.markDismissed();
+    Navigator.pop(dialogContext);
+  };
+}
+
 /// Drop-in replacement for [showDialog] that captures the currently focused
 /// node before opening and restores focus to it after the dialog closes.
 /// Use this everywhere [showDialog] is called from a TV-facing screen so

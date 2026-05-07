@@ -179,87 +179,87 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   }) {
     final l10n = AppLocalizations.of(context);
     final working = Set<String>.from(selected);
-    var closed = false;
     return showFocusRestoringDialog<Set<String>>(
       context: context,
       useRootNavigator: false,
-      builder: (ctx) => Focus(
-        canRequestFocus: false,
-        skipTraversal: true,
-        onKeyEvent: (_, event) {
-          if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-          if (closed) return KeyEventResult.handled;
-          if (event is KeyDownEvent || event is KeyUpEvent) {
-            closed = true;
-            Navigator.pop(ctx);
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        },
-        child: FocusScope(
-          autofocus: true,
-          child: StatefulBuilder(
-          builder: (ctx, setDialogState) => AlertDialog(
-            title: Text(title),
-            content: SizedBox(
-              width: double.maxFinite,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+      builder: (ctx) {
+        final closeOnce = createDialogBackCloseHandler(ctx);
+        return Focus(
+          canRequestFocus: false,
+          skipTraversal: true,
+          onKeyEvent: (_, event) {
+            if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+            if (event is KeyDownEvent || event is KeyUpEvent) {
+              closeOnce();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: FocusScope(
+            autofocus: true,
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) => AlertDialog(
+                title: Text(title),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          setDialogState(() => working.addAll(items.keys));
-                        },
-                        child: Text(l10n.selectAll),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              setDialogState(() => working.addAll(items.keys));
+                            },
+                            child: Text(l10n.selectAll),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setDialogState(() => working.clear());
+                            },
+                            child: Text(l10n.clear),
+                          ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setDialogState(() => working.clear());
-                        },
-                        child: Text(l10n.clear),
+                      Flexible(
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: items.entries.map((e) {
+                            return CheckboxListTile(
+                              title: Text(e.value),
+                              value: working.contains(e.key),
+                              onChanged: (checked) {
+                                setDialogState(() {
+                                  if (checked == true) {
+                                    working.add(e.key);
+                                  } else {
+                                    working.remove(e.key);
+                                  }
+                                });
+                              },
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ],
                   ),
-                  Flexible(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: items.entries.map((e) {
-                        return CheckboxListTile(
-                          title: Text(e.value),
-                          value: working.contains(e.key),
-                          onChanged: (checked) {
-                            setDialogState(() {
-                              if (checked == true) {
-                                working.add(e.key);
-                              } else {
-                                working.remove(e.key);
-                              }
-                            });
-                          },
-                        );
-                      }).toList(),
-                    ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: Text(l10n.cancel),
+                  ),
+                  FilledButton(
+                    onPressed: () => Navigator.pop(ctx, working),
+                    child: Text(l10n.save),
                   ),
                 ],
               ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(l10n.cancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(ctx, working),
-                child: Text(l10n.save),
-              ),
-            ],
           ),
-        ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -471,12 +471,7 @@ class _MediaBarContentTypePickerTileState
         context: context,
         useRootNavigator: false,
         builder: (ctx) {
-          var closed = false;
-          void closeOnce() {
-            if (closed) return;
-            closed = true;
-            Navigator.pop(ctx);
-          }
+          final closeOnce = createDialogBackCloseHandler(ctx);
           return Focus(
             canRequestFocus: false,
             skipTraversal: true,
@@ -587,12 +582,7 @@ class _MediaBarItemCountPickerTileState
         context: context,
         useRootNavigator: false,
         builder: (ctx) {
-          var closed = false;
-          void closeOnce() {
-            if (closed) return;
-            closed = true;
-            Navigator.pop(ctx);
-          }
+          final closeOnce = createDialogBackCloseHandler(ctx);
           return Focus(
             canRequestFocus: false,
             skipTraversal: true,

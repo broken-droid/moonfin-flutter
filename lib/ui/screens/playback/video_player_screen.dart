@@ -4963,7 +4963,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       } finally {
         controller.dispose();
       }
-      _suppressBackNavigation();
     }());
     _showControls();
   }

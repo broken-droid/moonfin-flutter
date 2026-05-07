@@ -8,12 +8,7 @@ import '../overlay_sheet.dart';
 import 'preference_binding.dart';
 
 Widget _withBackClose(BuildContext dialogContext, Widget child) {
-  var closed = false;
-  void closeDialog() {
-    if (closed) return;
-    closed = true;
-    Navigator.pop(dialogContext);
-  }
+  final closeDialog = createDialogBackCloseHandler(dialogContext);
 
   return Shortcuts(
     shortcuts: const <ShortcutActivator, Intent>{
@@ -36,7 +31,6 @@ Widget _withBackClose(BuildContext dialogContext, Widget child) {
         skipTraversal: true,
         onKeyEvent: (_, event) {
           if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-          if (closed) return KeyEventResult.handled;
           if (event is KeyDownEvent || event is KeyUpEvent) {
             closeDialog();
             return KeyEventResult.handled;

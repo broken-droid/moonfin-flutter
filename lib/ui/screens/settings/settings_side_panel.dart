@@ -225,6 +225,11 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
   late final FocusNode _focusNode;
   late final bool _ownsFocusNode;
 
+  void _invokeTap() {
+    final onTap = widget.onTap;
+    if (onTap != null) onTap();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -249,16 +254,11 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
         widget.trailing ?? (widget.onTap != null ? const Icon(Icons.chevron_right) : null);
     return Focus(
       onKeyEvent: (_, event) {
-        if (event is KeyDownEvent &&
-            (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter)) {
-          final onTap = widget.onTap;
-          if (onTap != null) {
-            onTap();
-            return KeyEventResult.handled;
-          }
+        if (!event.logicalKey.isSelectKey) return KeyEventResult.ignored;
+        if (event is KeyDownEvent) {
+          _invokeTap();
         }
-        return KeyEventResult.ignored;
+        return KeyEventResult.handled;
       },
       child: TvFocusHighlight(
         builder: (context, focused) => ListTile(
@@ -301,7 +301,7 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
                   child: resolvedTrailing,
                 )
               : null,
-          onTap: widget.onTap,
+          onTap: _invokeTap,
         ),
       ),
     );
@@ -2538,51 +2538,51 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
     final result = await showFocusRestoringDialog<String>(
       context: context,
       useRootNavigator: false,
-      builder: (ctx) => Focus(
-        canRequestFocus: false,
-        skipTraversal: true,
-        onKeyEvent: (_, event) {
-          if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-          if (event is KeyDownEvent) {
-            return KeyEventResult.handled;
-          }
-          if (event is KeyUpEvent) {
-            Navigator.pop(ctx);
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        },
-        child: SimpleDialog(
-          title: const Text('Navbar Color'),
-          children: entries.asMap().entries.map((entry) {
-            final i = entry.key;
-            final e = entry.value;
-            final selected = e.key == current;
-            final swatch = _swatchColor(e.key);
-            return TvFocusHighlight(
-              builder: (_, _) => ListTile(
-                autofocus: i == autofocusIndex,
-                leading: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: swatch,
-                    shape: BoxShape.circle,
-                    border: Border.fromBorderSide(
-                      ThemeRegistry.active.borders.chipBorder.copyWith(
-                        color: _swatchBorder(swatch),
+      builder: (ctx) {
+        final closeOnce = createDialogBackCloseHandler(ctx);
+        return Focus(
+          canRequestFocus: false,
+          skipTraversal: true,
+          onKeyEvent: (_, event) {
+            if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+            if (event is KeyDownEvent || event is KeyUpEvent) {
+              closeOnce();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: SimpleDialog(
+            title: const Text('Navbar Color'),
+            children: entries.asMap().entries.map((entry) {
+              final i = entry.key;
+              final e = entry.value;
+              final selected = e.key == current;
+              final swatch = _swatchColor(e.key);
+              return TvFocusHighlight(
+                builder: (_, _) => ListTile(
+                  autofocus: i == autofocusIndex,
+                  leading: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: swatch,
+                      shape: BoxShape.circle,
+                      border: Border.fromBorderSide(
+                        ThemeRegistry.active.borders.chipBorder.copyWith(
+                          color: _swatchBorder(swatch),
+                        ),
                       ),
                     ),
                   ),
+                  title: Text(e.value),
+                  trailing: selected ? const Icon(Icons.check) : null,
+                  onTap: () => Navigator.pop(ctx, e.key),
                 ),
-                title: Text(e.value),
-                trailing: selected ? const Icon(Icons.check) : null,
-                onTap: () => Navigator.pop(ctx, e.key),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
 
     if (!mounted || result == null || result == _binding.value) return;
@@ -2611,6 +2611,7 @@ class _ShuffleContentTypePickerTileState
   static const _fallbackKey = 'both';
 
   late final PreferenceBinding<String> _binding;
+  bool _pickerOpen = false;
 
   @override
   void initState() {
@@ -2655,56 +2656,57 @@ class _ShuffleContentTypePickerTileState
   }
 
   Future<void> _showPicker(BuildContext context, String current) async {
+    if (_pickerOpen) return;
+    _pickerOpen = true;
     final entries = _labels.entries.toList();
     final normalizedCurrent = _normalize(current);
     final selectedIndex = entries.indexWhere((e) => e.key == normalizedCurrent);
     final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
-    final result = await showFocusRestoringDialog<String>(
-      context: context,
-      useRootNavigator: false,
-      builder: (ctx) {
-        var closed = false;
-        void closeOnce() {
-          if (closed) return;
-          closed = true;
-          Navigator.pop(ctx);
-        }
-        return Focus(
-          canRequestFocus: false,
-          skipTraversal: true,
-          onKeyEvent: (_, event) {
-            if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-            if (event is KeyDownEvent || event is KeyUpEvent) {
-              closeOnce();
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
-          child: FocusScope(
-            autofocus: true,
-            child: SimpleDialog(
-              title: const Text('Shuffle Content Type Filter'),
-              children: entries.asMap().entries.map((entry) {
-                final i = entry.key;
-                final e = entry.value;
-                final selected = e.key == normalizedCurrent;
-                return TvFocusHighlight(
-                  builder: (_, _) => ListTile(
-                    autofocus: i == autofocusIndex,
-                    title: Text(e.value),
-                    trailing: selected ? const Icon(Icons.check) : null,
-                    onTap: () => Navigator.pop(ctx, e.key),
-                  ),
-                );
-              }).toList(),
+    try {
+      final result = await showFocusRestoringDialog<String>(
+        context: context,
+        useRootNavigator: false,
+        builder: (ctx) {
+          final closeOnce = createDialogBackCloseHandler(ctx);
+          return Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onKeyEvent: (_, event) {
+              if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+              if (event is KeyDownEvent || event is KeyUpEvent) {
+                closeOnce();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: SimpleDialog(
+                title: const Text('Shuffle Content Type Filter'),
+                children: entries.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final e = entry.value;
+                  final selected = e.key == normalizedCurrent;
+                  return TvFocusHighlight(
+                    builder: (_, _) => ListTile(
+                      autofocus: i == autofocusIndex,
+                      title: Text(e.value),
+                      trailing: selected ? const Icon(Icons.check) : null,
+                      onTap: () => Navigator.pop(ctx, e.key),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
 
-    if (!mounted || result == null || result == _binding.value) return;
-    _binding.value = result;
-    widget.onChanged?.call();
+      if (!mounted || result == null || result == _binding.value) return;
+      _binding.value = result;
+      widget.onChanged?.call();
+    } finally {
+      _pickerOpen = false;
+    }
   }
 }
