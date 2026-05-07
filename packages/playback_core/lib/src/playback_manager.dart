@@ -16,9 +16,16 @@ class PlaybackManager {
   MediaStreamResolver? _resolver;
   PlayerService? _service;
   Future<void> Function(dynamic item)? _resolverConfigurator;
+  PlayerBackend Function(
+    StreamResolutionResult resolution,
+    PlayerBackend currentBackend,
+  )?
+  _backendSelector;
+  bool Function(StreamResolutionResult resolution)? _transcodeSelector;
   Duration Function(dynamic item, Duration startPosition)? _startPositionAdjuster;
   final QueueService queueService = QueueService();
   final PlayerState state = PlayerState();
+  final Set<PlayerBackend> _retainedBackends = <PlayerBackend>{};
   final List<StreamSubscription> _streamSubs = [];
   Timer? _progressTimer;
   StreamResolutionResult? _currentResolution;
@@ -36,14 +43,19 @@ class PlaybackManager {
   bool _isManualNexting = false;
   bool suppressAutoNext = false;
   bool _isOfflinePlayback = false;
+  bool _forceTranscodeForQueue = false;
+  bool _backendSelectionLockedForSession = false;
+  PlayerBackend? _sessionLockedBackend;
   Future<void> Function()? _onOfflineStop;
   Future<void> Function(String url)? _onOfflineAutoNext;
   Map<String, Map<String, dynamic>> _offlineMetadataByUrl = {};
   Future<void>? _stopInFlight;
   int _playbackSessionToken = 0;
   Future<void>? _externalSubsLoaded;
+  final _backendChangedController = StreamController<PlayerBackend>.broadcast();
 
   PlayerBackend? get backend => _backend;
+  Stream<PlayerBackend> get backendChangedStream => _backendChangedController.stream;
   StreamResolutionResult? get currentResolution => _currentResolution;
   int? get audioStreamIndex => _audioStreamIndex;
   int? get subtitleStreamIndex => _subtitleStreamIndex;
@@ -68,11 +80,45 @@ class PlaybackManager {
     return (meta?['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
   }
 
-  void setBackend(PlayerBackend backend) {
+  Map<String, dynamic> _buildBackendMediaPayload({
+    required String url,
+    List<Map<String, dynamic>> mediaStreams = const [],
+    String? mediaType,
+    double? normalizationGainDb,
+  }) {
+    final resolvedMediaType = mediaType?.trim().toLowerCase();
+    return <String, dynamic>{
+      'url': url,
+      'mediaType':
+          (resolvedMediaType == 'audio' || resolvedMediaType == 'video')
+          ? resolvedMediaType
+          : MediaStreamResolver.detectMediaType(
+              mediaStreams,
+              fallbackUrl: url,
+            ),
+      'normalizationGainDb':
+          normalizationGainDb ??
+          MediaStreamResolver.extractNormalizationGainDb(mediaStreams),
+    };
+  }
+
+  void setBackend(PlayerBackend backend, {bool disposePrevious = true}) {
+    if (identical(_backend, backend)) {
+      return;
+    }
+    final previous = _backend;
     _disposeStreamSubs();
-    _backend?.dispose();
     _backend = backend;
+    _retainedBackends.add(backend);
     _bindStreams(backend);
+    if (previous != null && !identical(previous, backend)) {
+      unawaited(previous.stop());
+    }
+    _backendChangedController.add(backend);
+    if (previous != null && disposePrevious) {
+      _retainedBackends.remove(previous);
+      previous.dispose();
+    }
   }
 
   void setResolver(MediaStreamResolver resolver) {
@@ -87,10 +133,30 @@ class PlaybackManager {
     _resolverConfigurator = configurator;
   }
 
+  void setBackendSelector(
+    PlayerBackend Function(
+      StreamResolutionResult resolution,
+      PlayerBackend currentBackend,
+    )? selector,
+  ) {
+    _backendSelector = selector;
+  }
+
+  void setTranscodeSelector(
+    bool Function(StreamResolutionResult resolution)? selector,
+  ) {
+    _transcodeSelector = selector;
+  }
+
   void setStartPositionAdjuster(
     Duration Function(dynamic item, Duration startPosition)? adjuster,
   ) {
     _startPositionAdjuster = adjuster;
+  }
+
+  void _resetBackendSelectionLock() {
+    _backendSelectionLockedForSession = false;
+    _sessionLockedBackend = null;
   }
 
   /// Optional interceptor invoked before transport actions (resume/pause/seek/stop).
@@ -216,6 +282,7 @@ class PlaybackManager {
       return;
     }
     await _stopAndReportCurrent(skipQueueChange: true);
+    _resetBackendSelectionLock();
     final hadNext = queueService.next();
     if (hadNext) {
       await _playCurrentItem();
@@ -229,14 +296,18 @@ class PlaybackManager {
     int? audioStreamIndex,
     int? subtitleStreamIndex,
     String? mediaSourceId,
+    bool enableDirectPlay = true,
+    bool enableDirectStream = true,
   }) async {
     _isAutoNexting = false;
     _isManualNexting = false;
     suppressAutoNext = false;
     await _stopAndReportCurrent();
+    _resetBackendSelectionLock();
     _audioStreamIndex = audioStreamIndex;
     _subtitleStreamIndex = subtitleStreamIndex;
     _mediaSourceId = mediaSourceId;
+    _forceTranscodeForQueue = !enableDirectPlay && !enableDirectStream;
     final adjuster = _startPositionAdjuster;
     if (adjuster != null && startPosition > Duration.zero && items.isNotEmpty) {
       final currentItem = items[startIndex.clamp(0, items.length - 1)];
@@ -244,7 +315,11 @@ class PlaybackManager {
       startPosition = adjusted < Duration.zero ? Duration.zero : adjusted;
     }
     queueService.setQueue(items, startIndex: startIndex);
-    await _playCurrentItem(startPosition: startPosition);
+    await _playCurrentItem(
+      startPosition: startPosition,
+      enableDirectPlay: enableDirectPlay,
+      enableDirectStream: enableDirectStream,
+    );
   }
 
   Future<void> _playCurrentItem({
@@ -253,10 +328,24 @@ class PlaybackManager {
     bool enableDirectStream = true,
     bool allowStartupRecovery = true,
   }) async {
+    if (_forceTranscodeForQueue) {
+      enableDirectPlay = false;
+      enableDirectStream = false;
+    }
+
     final item = queueService.currentItem;
     if (item == null || _backend == null) {
       return;
     }
+
+    final lockedBackend = _sessionLockedBackend;
+    if (_backendSelectionLockedForSession &&
+        lockedBackend != null &&
+        !identical(_backend, lockedBackend)) {
+      setBackend(lockedBackend, disposePrevious: false);
+    }
+
+    await _resetSubtitleRendererMode();
 
     _lastKnownPosition = Duration.zero;
     final sessionToken = ++_playbackSessionToken;
@@ -293,6 +382,35 @@ class PlaybackManager {
       enableDirectPlay: enableDirectPlay,
       enableDirectStream: enableDirectStream,
     );
+
+    if (!_backendSelectionLockedForSession) {
+      final selector = _backendSelector;
+      if (selector != null && _backend != null) {
+        final selectedBackend = selector(resolution, _backend!);
+        if (!identical(selectedBackend, _backend)) {
+          setBackend(selectedBackend, disposePrevious: false);
+        }
+      }
+
+      _sessionLockedBackend = _backend;
+      _backendSelectionLockedForSession = true;
+    }
+
+    final transcodeSelector = _transcodeSelector;
+    if (transcodeSelector != null &&
+        enableDirectPlay &&
+        enableDirectStream &&
+        resolution.playMethod != StreamPlayMethod.transcode &&
+        transcodeSelector(resolution)) {
+      await _playCurrentItem(
+        startPosition: startPosition,
+        enableDirectPlay: false,
+        enableDirectStream: false,
+        allowStartupRecovery: allowStartupRecovery,
+      );
+      return;
+    }
+
     _currentResolution = resolution;
     _lastPlaybackItem = item;
     _lastPlaybackResolution = resolution;
@@ -310,14 +428,24 @@ class PlaybackManager {
     StackTrace? startupStackTrace;
     final useNativeStart = startTicks != null;
     try {
+      final backendMediaPayload = _buildBackendMediaPayload(
+        url: resolution.streamUrl,
+        mediaStreams: resolution.mediaStreams,
+        mediaType: resolution.mediaType,
+        normalizationGainDb: resolution.normalizationGainDb,
+      );
       await _backend!.play(
-        resolution.streamUrl,
+        backendMediaPayload,
         startPosition: useNativeStart ? startPosition : Duration.zero,
       );
-      mediaReady = await _waitForMediaReady(
-        isTranscode: resolution.playMethod == StreamPlayMethod.transcode,
-        timeout: _onlineStartupReadyTimeout,
-      );
+      if (_backend!.requiresStartupMediaReadyCheck) {
+        mediaReady = await _waitForMediaReady(
+          isTranscode: resolution.playMethod == StreamPlayMethod.transcode,
+          timeout: _onlineStartupReadyTimeout,
+        );
+      } else {
+        mediaReady = true;
+      }
     } catch (e, st) {
       startupError = e;
       startupStackTrace = st;
@@ -387,7 +515,13 @@ class PlaybackManager {
         final isBurnedIn = _isSubtitleBitmap(_subtitleStreamIndex!) &&
             !(_backend?.canRenderBitmapSubtitles ?? false);
         if (isBurnedIn) {
-          _waitAndDisableSubtitles(sessionToken);
+          _waitAndDisableSubtitles(sessionToken, force: true);
+        } else if (_subtitleRendererModeForStream(_subtitleStreamIndex!) ==
+            SubtitleRendererMode.assOverlay) {
+          _waitAndApplyTrackSelections(
+            sessionToken,
+            restorePosition: useNativeStart ? startPosition : null,
+          );
         } else {
           _waitAndApplyExternalSubtitle(sessionToken, resolution);
         }
@@ -503,6 +637,7 @@ class PlaybackManager {
     _mediaSourceId = null;
     try {
       await _stopAndReportCurrent(skipQueueChange: true);
+      _resetBackendSelectionLock();
       final hadNext = queueService.next();
       if (hadNext) {
         await _playCurrentItem();
@@ -520,6 +655,7 @@ class PlaybackManager {
     }
     _mediaSourceId = null;
     await _stopAndReportCurrent(skipQueueChange: true);
+    _resetBackendSelectionLock();
     final hadPrevious = queueService.previous();
     if (hadPrevious) {
       await _playCurrentItem();
@@ -529,6 +665,7 @@ class PlaybackManager {
   Future<void> playFromQueue(int index) async {
     _mediaSourceId = null;
     await _stopAndReportCurrent(skipQueueChange: true);
+    _resetBackendSelectionLock();
     queueService.jumpTo(index);
     await _playCurrentItem();
   }
@@ -546,6 +683,11 @@ class PlaybackManager {
   Future<void> changeAudioTrack(int streamIndex) async {
     _audioStreamIndex = streamIndex;
 
+    if (!_isOfflinePlayback && !(_backend?.supportsRuntimeTrackSelection ?? true)) {
+      await _reResolveAtCurrentPosition();
+      return;
+    }
+
     if (_currentResolution?.playMethod == StreamPlayMethod.directPlay || _isOfflinePlayback) {
       final mpvId = _mpvTrackIdForStream(streamIndex, 'Audio');
       if (mpvId != null) {
@@ -559,6 +701,7 @@ class PlaybackManager {
   }
 
   static const _bitmapSubCodecs = {'pgs', 'pgssub', 'dvbsub', 'dvdsub', 'hdmv_pgs_subtitle', 'dvd_subtitle', 'dvb_subtitle', 'xsub'};
+  static const _assSubCodecs = {'ass', 'ssa'};
 
   bool _isSubtitleBitmap(int streamIndex) {
     final streams = _currentMediaStreams;
@@ -582,10 +725,115 @@ class PlaybackManager {
     return false;
   }
 
+  String? _subtitleCodecForStream(int streamIndex) {
+    final streams = _currentMediaStreams;
+    if (streams.isNotEmpty) {
+      for (final stream in streams) {
+        if (stream['Type'] != 'Subtitle') continue;
+        if (stream['Index'] != streamIndex) continue;
+        final codec = stream['Codec'] as String?;
+        if (codec != null && codec.isNotEmpty) {
+          return codec.toLowerCase();
+        }
+      }
+    }
+
+    final externals = _currentResolution?.externalSubtitles ?? const [];
+    for (final sub in externals) {
+      if (sub.streamIndex != streamIndex) continue;
+      if (sub.codec.isNotEmpty) {
+        return sub.codec.toLowerCase();
+      }
+    }
+
+    return null;
+  }
+
+  String? _externalSubtitleUrlForStream(int streamIndex) {
+    final externals = _currentResolution?.externalSubtitles ?? const [];
+    for (final sub in externals) {
+      if (sub.streamIndex != streamIndex) continue;
+      if (sub.deliveryUrl.isNotEmpty) {
+        return sub.deliveryUrl;
+      }
+    }
+
+    final streams = _currentMediaStreams;
+    for (final stream in streams) {
+      if (stream['Type'] != 'Subtitle') continue;
+      if (stream['Index'] != streamIndex) continue;
+
+      final deliveryUrl = (stream['DeliveryUrl'] as String?)?.trim();
+      if (deliveryUrl == null || deliveryUrl.isEmpty) {
+        continue;
+      }
+
+      if (deliveryUrl.startsWith('http://') || deliveryUrl.startsWith('https://')) {
+        return deliveryUrl;
+      }
+
+      final streamUrl = _currentResolution?.streamUrl;
+      if (streamUrl == null || streamUrl.isEmpty) {
+        return deliveryUrl;
+      }
+
+      final baseUri = Uri.tryParse(streamUrl);
+      if (baseUri == null) {
+        return deliveryUrl;
+      }
+
+      final resolved = baseUri.resolve(deliveryUrl);
+      final hasApiKey = resolved.queryParameters.keys.any((k) => k.toLowerCase() == 'api_key');
+      final baseApiKeyEntry = baseUri.queryParameters.entries.firstWhere(
+        (entry) => entry.key.toLowerCase() == 'api_key',
+        orElse: () => const MapEntry('', ''),
+      );
+
+      if (!hasApiKey && baseApiKeyEntry.key.isNotEmpty && baseApiKeyEntry.value.isNotEmpty) {
+        final mergedParams = <String, String>{
+          ...resolved.queryParameters,
+          baseApiKeyEntry.key: baseApiKeyEntry.value,
+        };
+        return resolved.replace(queryParameters: mergedParams).toString();
+      }
+
+      return resolved.toString();
+    }
+
+    return null;
+  }
+
+  SubtitleRendererMode _subtitleRendererModeForStream(int streamIndex) {
+    final codec = _subtitleCodecForStream(streamIndex);
+    if (codec != null && _assSubCodecs.contains(codec)) {
+      return SubtitleRendererMode.assOverlay;
+    }
+    return SubtitleRendererMode.native;
+  }
+
+  Future<void> _applySubtitleRendererModeForStream(int streamIndex) async {
+    final mode = _subtitleRendererModeForStream(streamIndex);
+    await _backend?.setSubtitleRendererMode(mode);
+  }
+
+  Future<void> _resetSubtitleRendererMode() async {
+    await _backend?.setSubtitleRendererMode(SubtitleRendererMode.native);
+  }
+
   Future<void> changeSubtitleTrack(int streamIndex) async {
     final previousSubtitleStreamIndex = _subtitleStreamIndex;
     final isBitmap = _isSubtitleBitmap(streamIndex);
     _subtitleStreamIndex = streamIndex;
+
+    await _applySubtitleRendererModeForStream(streamIndex);
+
+    if (!_isOfflinePlayback && !(_backend?.supportsRuntimeTrackSelection ?? true)) {
+      final canRenderBitmap = _backend?.canRenderBitmapSubtitles ?? false;
+      await _reResolveAtCurrentPosition(
+        forceTranscode: isBitmap && !canRenderBitmap,
+      );
+      return;
+    }
 
     if (_currentResolution?.playMethod == StreamPlayMethod.directPlay || _isOfflinePlayback) {
       final isExternal = _isSubtitleExternal(streamIndex);
@@ -602,7 +850,13 @@ class PlaybackManager {
       }
       final mpvId = _mpvTrackIdForStream(streamIndex, 'Subtitle');
       if (mpvId != null) {
-        await _backend?.setSubtitleTrack(mpvId, isBitmapSubtitle: isBitmap);
+        await _backend?.setSubtitleTrack(
+          mpvId,
+          isBitmapSubtitle: isBitmap,
+          subtitleCodec: _subtitleCodecForStream(streamIndex),
+          isExternalSubtitle: isExternal,
+          externalSubtitleUrl: _externalSubtitleUrlForStream(streamIndex),
+        );
       } else {
         _waitAndApplyTrackSelections(_playbackSessionToken);
       }
@@ -621,10 +875,33 @@ class PlaybackManager {
         await _reResolveAtCurrentPosition(forceTranscode: true);
         return;
       }
+
+      final shouldPreferRuntimeTrackSelection =
+          _backend?.supportsRuntimeTrackSelection ?? false;
+      if (shouldPreferRuntimeTrackSelection) {
+        final mpvId = _mpvTrackIdForStream(streamIndex, 'Subtitle');
+        if (mpvId != null) {
+          await _backend?.setSubtitleTrack(
+            mpvId,
+            isBitmapSubtitle: isBitmap,
+            subtitleCodec: _subtitleCodecForStream(streamIndex),
+            isExternalSubtitle: _isSubtitleExternal(streamIndex),
+            externalSubtitleUrl: _externalSubtitleUrlForStream(streamIndex),
+          );
+          return;
+        }
+      }
+
       final externalSubs = _currentResolution!.externalSubtitles;
       final idx = externalSubs.indexWhere((s) => s.streamIndex == streamIndex);
       if (idx >= 0) {
-        await _backend?.setSubtitleTrack(idx + 1);
+        final selectedExternal = externalSubs[idx];
+        await _backend?.setSubtitleTrack(
+          idx + 1,
+          subtitleCodec: selectedExternal.codec,
+          isExternalSubtitle: true,
+          externalSubtitleUrl: selectedExternal.deliveryUrl,
+        );
       } else {
         await _reResolveAtCurrentPosition(forceTranscode: true);
       }
@@ -635,6 +912,11 @@ class PlaybackManager {
 
   Future<void> disableSubtitles() async {
     _subtitleStreamIndex = -1;
+    await _resetSubtitleRendererMode();
+    if (!_isOfflinePlayback && !(_backend?.supportsRuntimeTrackSelection ?? true)) {
+      await _reResolveAtCurrentPosition();
+      return;
+    }
     await _backend?.disableSubtitleTrack();
   }
 
@@ -690,13 +972,24 @@ class PlaybackManager {
           await _reResolveAtCurrentPosition(forceTranscode: true);
         }
       } else {
+        await _applySubtitleRendererModeForStream(_subtitleStreamIndex!);
+        if (sessionToken != _playbackSessionToken) return;
         final mpvId = _mpvTrackIdForStream(_subtitleStreamIndex!, 'Subtitle');
         if (mpvId != null) {
-          await _backend?.setSubtitleTrack(mpvId, isBitmapSubtitle: isBitmap);
+          await _backend?.setSubtitleTrack(
+            mpvId,
+            isBitmapSubtitle: isBitmap,
+            subtitleCodec: _subtitleCodecForStream(_subtitleStreamIndex!),
+            isExternalSubtitle: _isSubtitleExternal(_subtitleStreamIndex!),
+            externalSubtitleUrl: _externalSubtitleUrlForStream(
+              _subtitleStreamIndex!,
+            ),
+          );
           if (sessionToken != _playbackSessionToken) return;
         }
       }
     } else if (_subtitleStreamIndex == -1) {
+      await _resetSubtitleRendererMode();
       await _backend?.disableSubtitleTrack();
     }
 
@@ -715,8 +1008,17 @@ class PlaybackManager {
     int sessionToken, {
     Duration? restorePosition,
   }) {
-    _waitForTracksAndExternals().then((_) {
+    _backend?.waitForTracksReady().then((_) async {
       if (sessionToken != _playbackSessionToken) return;
+
+      final selectedSubtitleIndex = _subtitleStreamIndex;
+      if (selectedSubtitleIndex != null &&
+          selectedSubtitleIndex >= 0 &&
+          _isSubtitleExternal(selectedSubtitleIndex)) {
+        await _externalSubsLoaded;
+        if (sessionToken != _playbackSessionToken) return;
+      }
+
       _applyStoredTrackSelections(
         sessionToken,
         restorePosition: restorePosition,
@@ -724,10 +1026,10 @@ class PlaybackManager {
     });
   }
 
-  void _waitAndDisableSubtitles(int sessionToken) {
-    _waitForTracksAndExternals().then((_) {
+  void _waitAndDisableSubtitles(int sessionToken, {bool force = false}) {
+    _backend?.waitForTracksReady().then((_) {
       if (sessionToken != _playbackSessionToken) return;
-      if (_subtitleStreamIndex != null && _subtitleStreamIndex! >= 0) {
+      if (!force && _subtitleStreamIndex != null && _subtitleStreamIndex! >= 0) {
         return;
       }
       _backend?.disableSubtitleTrack();
@@ -746,7 +1048,15 @@ class PlaybackManager {
         (s) => s.streamIndex == _subtitleStreamIndex,
       );
       if (idx >= 0) {
-        await _backend?.setSubtitleTrack(idx + 1);
+        await _applySubtitleRendererModeForStream(_subtitleStreamIndex!);
+        if (sessionToken != _playbackSessionToken) return;
+        final selectedExternal = externalSubs[idx];
+        await _backend?.setSubtitleTrack(
+          idx + 1,
+          subtitleCodec: selectedExternal.codec,
+          isExternalSubtitle: true,
+          externalSubtitleUrl: selectedExternal.deliveryUrl,
+        );
       }
     });
   }
@@ -834,6 +1144,7 @@ class PlaybackManager {
     _isManualNexting = false;
     suppressAutoNext = false;
     await _stopAndReportCurrent();
+    _resetBackendSelectionLock();
     _isOfflinePlayback = true;
     _onOfflineStop = onStop;
     _onOfflineAutoNext = onAutoNext;
@@ -853,7 +1164,14 @@ class PlaybackManager {
     _playbackStartTime = DateTime.now();
     _waitingForMedia = true;
     ++_playbackSessionToken;
-    await _backend!.play(url, startPosition: startPosition);
+    final offlineStreams =
+      (_offlineMetadataByUrl[url]?['MediaStreams'] as List?)
+        ?.cast<Map<String, dynamic>>() ??
+      const <Map<String, dynamic>>[];
+    await _backend!.play(
+      _buildBackendMediaPayload(url: url, mediaStreams: offlineStreams),
+      startPosition: startPosition,
+    );
     await _waitForMediaReady();
     _waitingForMedia = false;
 
@@ -877,6 +1195,8 @@ class PlaybackManager {
         if (!skipQueueChange) {
           await _onOfflineStop?.call();
           _isOfflinePlayback = false;
+          _forceTranscodeForQueue = false;
+          _resetBackendSelectionLock();
           _onOfflineStop = null;
           _onOfflineAutoNext = null;
           queueService.clear();
@@ -905,6 +1225,8 @@ class PlaybackManager {
       _lastPlaybackResolution = null;
       await _backend?.stop();
       if (!skipQueueChange) {
+        _forceTranscodeForQueue = false;
+        _resetBackendSelectionLock();
         queueService.clear();
         state.reset();
       }
@@ -923,7 +1245,11 @@ class PlaybackManager {
   void dispose() {
     _stopProgressTimer();
     _disposeStreamSubs();
-    _backend?.dispose();
+    _backendChangedController.close();
+    for (final backend in _retainedBackends.toList()) {
+      backend.dispose();
+    }
+    _retainedBackends.clear();
     _service?.dispose();
     queueService.dispose();
     state.dispose();

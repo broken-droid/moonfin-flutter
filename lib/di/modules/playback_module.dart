@@ -8,13 +8,44 @@ import '../../data/models/aggregated_item.dart';
 import '../../data/repositories/offline_repository.dart';
 import '../../data/services/media_server_client_factory.dart';
 import '../../data/services/offline_playback_tracker.dart';
+import '../../playback/hdr_stream_capability.dart';
 import '../../playback/media_kit_player_backend.dart';
+import '../../playback/media3_player_backend.dart';
 import '../../playback/offline_stream_resolver.dart';
 import '../../platform/pip_service.dart';
+import '../../preference/preference_constants.dart';
 import '../../preference/user_preferences.dart';
 import '../../syncplay/syncplay_manager.dart';
+import '../../util/platform_detection.dart';
 
 final _getIt = GetIt.instance;
+
+bool _isDolbyVisionResolution(StreamResolutionResult resolution) {
+  for (final stream in resolution.mediaStreams) {
+    if (HdrStreamCapability.isDolbyVisionVideoStream(stream)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool _hasUnsupportedDolbyVisionProfile(StreamResolutionResult resolution) {
+  for (final stream in resolution.mediaStreams) {
+    if (HdrStreamCapability.streamNeedsDolbyVisionProfileTranscode(stream)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool _hasHdr10PlusWithoutDisplaySupport(StreamResolutionResult resolution) {
+  for (final stream in resolution.mediaStreams) {
+    if (HdrStreamCapability.streamNeedsHdr10PlusDisplayTranscode(stream)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 void registerPlaybackModule() {
   final pipService = PipService();
@@ -24,11 +55,72 @@ void registerPlaybackModule() {
     _getIt<UserPreferences>(),
     onNativeHandleReady: pipService.initializeIos,
   );
+  final media3Backend = Media3PlayerBackend(_getIt<UserPreferences>());
   _getIt.registerSingleton<MediaKitPlayerBackend>(backend);
-  _getIt.registerSingleton<PlayerBackend>(backend);
+  _getIt.registerSingleton<Media3PlayerBackend>(media3Backend);
+
+  final prefs = _getIt<UserPreferences>();
+  final useMedia3ByDefault =
+      PlatformDetection.isAndroid &&
+      PlatformDetection.isTV &&
+      prefs.get(UserPreferences.playbackEnginePreference) ==
+          PlaybackEnginePreference.media3;
+  final initialBackend = useMedia3ByDefault ? media3Backend : backend;
+  _getIt.registerSingleton<PlayerBackend>(initialBackend);
 
   final manager = PlaybackManager();
-  manager.setBackend(backend);
+  manager.setBackend(initialBackend);
+  manager.setBackendSelector((resolution, currentBackend) {
+    if (PlatformDetection.isAndroid && PlatformDetection.isTV) {
+      final preferMedia3 =
+          prefs.get(UserPreferences.playbackEnginePreference) ==
+          PlaybackEnginePreference.media3;
+      if (preferMedia3) {
+        if (currentBackend is Media3PlayerBackend) return currentBackend;
+        return _getIt<Media3PlayerBackend>();
+      }
+      if (currentBackend is MediaKitPlayerBackend) return currentBackend;
+      return _getIt<MediaKitPlayerBackend>();
+    }
+
+    if (currentBackend is MediaKitPlayerBackend) return currentBackend;
+    return _getIt<MediaKitPlayerBackend>();
+  });
+  manager.setTranscodeSelector((resolution) {
+    if (!(PlatformDetection.isAndroid && PlatformDetection.isTV)) {
+      return false;
+    }
+
+    if (_hasUnsupportedDolbyVisionProfile(resolution)) {
+      return true;
+    }
+
+    if (_hasHdr10PlusWithoutDisplaySupport(resolution)) {
+      return true;
+    }
+
+    if (!_isDolbyVisionResolution(resolution)) {
+      return false;
+    }
+
+    if (PlatformDetection.supportsDolbyVision) {
+      return false;
+    }
+
+    if (!PlatformDetection.supportsAnyHdr) {
+      return true;
+    }
+
+    final selected = prefs.get(UserPreferences.dolbyVisionFallbackBehavior);
+    if (selected == DolbyVisionFallbackBehavior.transcode) {
+      return true;
+    }
+    if (selected == DolbyVisionFallbackBehavior.hdr10Fallback) {
+      return !PlatformDetection.supportsHdr10;
+    }
+
+    return false;
+  });
   manager.setStartPositionAdjuster((_, startPosition) {
     final prefs = _getIt<UserPreferences>();
     final raw = prefs.get(UserPreferences.resumeSubtractDuration);

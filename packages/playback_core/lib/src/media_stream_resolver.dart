@@ -58,6 +58,94 @@ abstract class MediaStreamResolver {
     return subs;
   }
 
+  static String detectMediaType(
+    List<Map<String, dynamic>> mediaStreams, {
+    String fallbackUrl = '',
+  }) {
+    var hasVideo = false;
+    var hasAudio = false;
+
+    for (final stream in mediaStreams) {
+      final type = stream['Type']?.toString().toUpperCase();
+      if (type == 'VIDEO') {
+        hasVideo = true;
+      } else if (type == 'AUDIO') {
+        hasAudio = true;
+      }
+      if (hasVideo && hasAudio) {
+        break;
+      }
+    }
+
+    if (hasVideo) {
+      return 'video';
+    }
+    if (hasAudio) {
+      return 'audio';
+    }
+
+    final uri = Uri.tryParse(fallbackUrl);
+    final path = uri?.path.toLowerCase() ?? fallbackUrl.toLowerCase();
+    const audioExtensions = <String>{
+      '.mp3',
+      '.flac',
+      '.aac',
+      '.m4a',
+      '.ogg',
+      '.opus',
+      '.wav',
+      '.alac',
+      '.ape',
+      '.wma',
+    };
+    for (final ext in audioExtensions) {
+      if (path.endsWith(ext)) {
+        return 'audio';
+      }
+    }
+
+    return 'video';
+  }
+
+  static double? extractNormalizationGainDb(
+    List<Map<String, dynamic>> mediaStreams,
+  ) {
+    for (final stream in mediaStreams) {
+      if ((stream['Type']?.toString().toUpperCase() ?? '') != 'AUDIO') {
+        continue;
+      }
+
+      for (final key in const <String>[
+        'NormalizationGain',
+        'normalizationGain',
+        'ReplayGain',
+        'replayGain',
+        'TrackGain',
+        'trackGain',
+      ]) {
+        final parsed = _parseGain(stream[key]);
+        if (parsed != null) {
+          return parsed;
+        }
+      }
+    }
+    return null;
+  }
+
+  static double? _parseGain(dynamic value) {
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is String) {
+      final normalized = value.trim().replaceAll(
+        RegExp(r'\s*dB\s*$', caseSensitive: false),
+        '',
+      );
+      return double.tryParse(normalized);
+    }
+    return null;
+  }
+
   Future<StreamResolutionResult> resolve(
     dynamic mediaItem, {
     Map<String, dynamic>? deviceProfile,

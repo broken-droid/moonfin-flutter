@@ -5,6 +5,8 @@ allprojects {
     }
 }
 
+val media3Version = "1.10.0"
+
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
 rootProject.layout.buildDirectory.value(newBuildDir)
 
@@ -14,6 +16,16 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(":app")
+}
+
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "androidx.media3") {
+                useVersion(media3Version)
+            }
+        }
+    }
 }
 
 tasks.register<Delete>("clean") {

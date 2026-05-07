@@ -284,6 +284,20 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: PlatformDetection.isAndroid,
   );
 
+  static final playbackEnginePreference = EnumPreference(
+    key: 'playback_engine_preference',
+    defaultValue: PlatformDetection.isAndroid && PlatformDetection.isTV
+        ? PlaybackEnginePreference.media3
+        : PlaybackEnginePreference.mpv,
+    values: PlaybackEnginePreference.values,
+  );
+
+  static final dolbyVisionFallbackBehavior = EnumPreference(
+    key: 'dolby_vision_fallback_behavior',
+    defaultValue: DolbyVisionFallbackBehavior.ask,
+    values: DolbyVisionFallbackBehavior.values,
+  );
+
   static final defaultAudioLanguage = Preference(
     key: 'pref_audio_language',
     defaultValue: '',

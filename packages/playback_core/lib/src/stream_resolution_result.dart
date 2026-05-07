@@ -25,6 +25,8 @@ class StreamResolutionResult {
   final String mediaSourceId;
   final String? playSessionId;
   final StreamPlayMethod playMethod;
+  final String mediaType;
+  final double? normalizationGainDb;
   final List<ExternalSubtitle> externalSubtitles;
   final List<Map<String, dynamic>> mediaStreams;
   final List<String> transcodingReasons;
@@ -34,6 +36,8 @@ class StreamResolutionResult {
     required this.mediaSourceId,
     this.playSessionId,
     required this.playMethod,
+    this.mediaType = 'video',
+    this.normalizationGainDb,
     this.externalSubtitles = const [],
     this.mediaStreams = const [],
     this.transcodingReasons = const [],

@@ -87,6 +87,8 @@ dependencies:
     path: packages/design
   jellyfin_preference:
     path: packages/preference
+  moonfin_native_video:
+    path: packages/moonfin_native_video
   url_launcher: ^6.3.2
   file_picker: ^11.0.2
   webview_flutter: ^4.13.1

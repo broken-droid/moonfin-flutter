@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,6 +71,36 @@ Future<void> _detectAndSetTvMode() async {
   } catch (_) {}
 }
 
+Future<void> _detectAndSetDisplayCapabilities() async {
+  if (!(PlatformDetection.isAndroid && PlatformDetection.isTV)) return;
+  try {
+    const channel = MethodChannel('org.moonfin.androidtv/platform');
+    final hdrTypes = await channel.invokeMethod<List<dynamic>>('displayHdrTypes');
+    PlatformDetection.setDisplayHdrTypes(
+      hdrTypes?.map((value) => value.toString()),
+    );
+
+    final codecCaps = await channel.invokeMethod<Map<dynamic, dynamic>>(
+      'mediaCodecCapabilities',
+    );
+    if (codecCaps != null) {
+      PlatformDetection.setMediaCodecCapabilities(
+        codecCaps.map((key, value) => MapEntry(key.toString(), value)),
+      );
+      return;
+    }
+
+    final legacyDvCaps = await channel.invokeMethod<Map<dynamic, dynamic>>(
+      'dolbyVisionCodecCapabilities',
+    );
+    PlatformDetection.setDolbyVisionCodecCapabilities(
+      legacyDvCaps?.map(
+        (key, value) => MapEntry(key.toString(), value == true),
+      ),
+    );
+  } catch (_) {}
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -80,6 +112,7 @@ void main() async {
   MediaKit.ensureInitialized();
 
   await _detectAndSetTvMode();
+  await _detectAndSetDisplayCapabilities();
 
   // On Linux the GTK font pipeline loads fonts asynchronously. The first frame
   // can render before MaterialIcons and other fonts are ready, causing icons to

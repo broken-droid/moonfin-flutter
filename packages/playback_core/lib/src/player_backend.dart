@@ -1,3 +1,8 @@
+enum SubtitleRendererMode {
+  native,
+  assOverlay,
+}
+
 abstract class PlayerBackend {
   Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero});
   Future<void> resume();
@@ -23,7 +28,13 @@ abstract class PlayerBackend {
 
   Future<void> setPlaybackSpeed(double speed);
   Future<void> setAudioTrack(int index);
-  Future<void> setSubtitleTrack(int index, {bool isBitmapSubtitle = false});
+  Future<void> setSubtitleTrack(
+    int index, {
+    bool isBitmapSubtitle = false,
+    String? subtitleCodec,
+    bool isExternalSubtitle = false,
+    String? externalSubtitleUrl,
+  });
   Future<void> disableSubtitleTrack();
   Future<void> waitForTracksReady();
   Future<void> waitForEmbeddedSubtitleCount(int count);
@@ -39,6 +50,22 @@ abstract class PlayerBackend {
     int? fontWeight,
     double? verticalOffset,
   });
+
+  /// Requests which subtitle renderer mode the backend should use.
+  ///
+  /// `native` means default backend subtitle rendering, while `assOverlay`
+  /// is reserved for ASS/SSA dedicated overlay paths.
+  Future<void> setSubtitleRendererMode(SubtitleRendererMode mode);
+
+  /// Whether this backend can change audio/subtitle tracks on the active
+  /// stream without reopening playback.
+  bool get supportsRuntimeTrackSelection;
+
+  /// Whether PlaybackManager should block startup on media-ready polling.
+  ///
+  /// Backends that start before a render surface is attached can return false
+  /// to avoid premature startup fallback.
+  bool get requiresStartupMediaReadyCheck => true;
 
   bool get canRenderBitmapSubtitles;
 

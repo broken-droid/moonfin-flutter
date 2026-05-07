@@ -8,6 +8,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:playback_core/playback_core.dart';
 
+import '../preference/preference_constants.dart';
 import '../preference/user_preferences.dart';
 import '../util/platform_detection.dart';
 import 'device_profile_builder.dart';
@@ -27,7 +28,7 @@ class _ParsedMpvConfCacheEntry {
 class MediaKitPlayerBackend implements PlayerBackend {
   static const Duration _linuxHwdecFirstFrameTimeout = Duration(seconds: 4);
   final Player _player;
-  final VideoController _videoController;
+  final VideoController? _videoController;
   final UserPreferences _prefs;
   final Future<void> Function(int handle)? _onNativeHandleReady;
   final bool _hwDecodingEnabled;
@@ -121,6 +122,8 @@ class MediaKitPlayerBackend implements PlayerBackend {
   static bool get _useLibass =>
       PlatformDetection.isDesktop || PlatformDetection.isAndroid || PlatformDetection.isIOS;
 
+  static bool get _useNativeSurface => PlatformDetection.useNativeVideoSurface;
+
   MediaKitPlayerBackend._(
     this._player,
     this._videoController,
@@ -135,8 +138,8 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }) {
     final hwDecodingEnabled = prefs.get(UserPreferences.hardwareDecoding);
     final String? hwdec = hwDecodingEnabled
-        ? ((PlatformDetection.isAndroid && PlatformDetection.isTV)
-            ? 'auto'
+        ? (_useNativeSurface
+            ? 'mediacodec'
             : (PlatformDetection.isLinux ? 'auto-safe' : null))
         : 'no';
 
@@ -156,15 +159,36 @@ class MediaKitPlayerBackend implements PlayerBackend {
         // Prefer AudioTrack + preloaded scaletempo2 for stable TV speed changes.
         _nativeSetProperty(platform, 'ao', 'audiotrack');
         _nativeSetProperty(platform, 'af', 'scaletempo2');
+        _nativeSetProperty(platform, 'audio-channels', 'auto');
+        _nativeSetProperty(platform, 'audio-normalize-downmix', 'no');
+        _nativeSetProperty(platform, 'audio-fallback-to-null', 'no');
       }
       if (PlatformDetection.isIOS || PlatformDetection.isAndroid) {
         _nativeSetProperty(platform, 'tone-mapping', 'auto');
       }
+
+      if (_useNativeSurface) {
+        _nativeSetProperty(platform, 'vo', 'null');
+        _nativeSetProperty(platform, 'hwdec', hwDecodingEnabled ? 'mediacodec' : 'no');
+        _nativeSetProperty(platform, 'hwdec-codecs', 'h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1');
+        _nativeSetProperty(platform, 'vid', 'auto');
+        _nativeSetProperty(platform, 'force-window', 'yes');
+      }
     }
-    final controller = VideoController(
-      player,
-      configuration: VideoControllerConfiguration(hwdec: hwdec),
-    );
+
+    VideoController? controller;
+    if (_useNativeSurface) {
+      player.platform?.isVideoControllerAttached = true;
+      if (!(player.platform?.videoControllerCompleter.isCompleted ?? true)) {
+        player.platform?.videoControllerCompleter.complete();
+      }
+    } else {
+      controller = VideoController(
+        player,
+        configuration: VideoControllerConfiguration(hwdec: hwdec),
+      );
+    }
+
     return MediaKitPlayerBackend._(
       player,
       controller,
@@ -175,10 +199,18 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
+  bool get supportsRuntimeTrackSelection => true;
+
+  @override
+  bool get requiresStartupMediaReadyCheck => true;
+
+  @override
   bool get canRenderBitmapSubtitles =>
       PlatformDetection.isDesktop || PlatformDetection.isAndroid;
 
-  VideoController get videoController => _videoController;
+  Player get player => _player;
+
+  VideoController? get videoController => _videoController;
 
   @override
   Map<String, dynamic> getDeviceProfile({bool useProgressiveTranscode = false}) {
@@ -189,15 +221,53 @@ class MediaKitPlayerBackend implements PlayerBackend {
     return DeviceProfileBuilder.build(
       maxBitrateMbps: maxBitrate,
       ac3Enabled: ac3Enabled,
+      downMixAudio:
+          _prefs.get(UserPreferences.audioBehavior) == AudioBehavior.downmixToStereo,
       maxResolution: maxResolution,
       pgsDirectPlay: _prefs.get(UserPreferences.pgsDirectPlay),
       assDirectPlay: _prefs.get(UserPreferences.assDirectPlay),
+      supportsAvc: PlatformDetection.supportsAvc,
+      supportsAvcHigh10: PlatformDetection.supportsAvcHigh10,
+      avcMainLevel: PlatformDetection.avcMainLevel,
+      avcHigh10Level: PlatformDetection.avcHigh10Level,
+      supportsHevc: PlatformDetection.supportsHevc,
+      supportsHevcMain10: PlatformDetection.supportsHevcMain10,
+      hevcMainLevel: PlatformDetection.hevcMainLevel,
+      hevcMain10Level: PlatformDetection.hevcMain10Level,
+      supportsHevcDolbyVision: PlatformDetection.supportsHevcDolbyVision,
+      supportsHevcDolbyVisionEl: PlatformDetection.supportsHevcDolbyVisionEl,
+      supportsHevcHdr10: PlatformDetection.supportsHevcHdr10,
+      supportsHevcHdr10Plus: PlatformDetection.supportsHevcHdr10Plus,
+      supportsAv1: PlatformDetection.supportsAv1,
+      supportsAv1Main10: PlatformDetection.supportsAv1Main10,
+      supportsAv1DolbyVision: PlatformDetection.supportsAv1DolbyVision,
+      supportsAv1Hdr10: PlatformDetection.supportsAv1Hdr10,
+      supportsAv1Hdr10Plus: PlatformDetection.supportsAv1Hdr10Plus,
+      supportsVc1: PlatformDetection.supportsVc1,
+      maxResolutionAvcWidth: PlatformDetection.maxResolutionAvcWidth,
+      maxResolutionAvcHeight: PlatformDetection.maxResolutionAvcHeight,
+      maxResolutionHevcWidth: PlatformDetection.maxResolutionHevcWidth,
+      maxResolutionHevcHeight: PlatformDetection.maxResolutionHevcHeight,
+      maxResolutionAv1Width: PlatformDetection.maxResolutionAv1Width,
+      maxResolutionAv1Height: PlatformDetection.maxResolutionAv1Height,
+      maxResolutionVc1Width: PlatformDetection.maxResolutionVc1Width,
+      maxResolutionVc1Height: PlatformDetection.maxResolutionVc1Height,
+      supportsHdr10PlusDisplay: PlatformDetection.supportsHdr10PlusDisplay,
+      supportsDvProfile5: PlatformDetection.supportsDoViProfile5,
+      supportsDvProfile7: PlatformDetection.supportsDoViProfile7,
+      supportsDvProfile8: PlatformDetection.supportsDoViProfile8,
+      knownHevcDoviHdr10PlusBug: PlatformDetection.knownHevcDoviHdr10PlusBug,
     );
   }
 
   @override
   Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero}) async {
-    final url = mediaItem as String;
+    final payload = mediaItem is Map ? mediaItem : const <String, dynamic>{};
+    final url = mediaItem is String
+        ? mediaItem
+        : payload['url']?.toString() ?? '';
+    if (url.isEmpty) return;
+
     await _notifyNativeHandleReady();
     await _configureAppleMobileLibassFont();
     await _applyCustomMpvConfIfEnabled();
@@ -225,7 +295,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
       return;
     }
     try {
-      await _videoController.waitUntilFirstFrameRendered
+      await _videoController!.waitUntilFirstFrameRendered
           .timeout(_linuxHwdecFirstFrameTimeout);
       return;
     } on TimeoutException {
@@ -686,7 +756,13 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
-  Future<void> setSubtitleTrack(int mpvTrackId, {bool isBitmapSubtitle = false}) async {
+  Future<void> setSubtitleTrack(
+    int mpvTrackId, {
+    bool isBitmapSubtitle = false,
+    String? subtitleCodec,
+    bool isExternalSubtitle = false,
+    String? externalSubtitleUrl,
+  }) async {
     if (mpvTrackId < 1) return;
     try {
       final native = _player.platform as NativePlayer;
@@ -732,6 +808,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
       await _nativeSetProperty(native, 'secondary-sid', 'no');
       await _nativeSetProperty(native, 'sub-visibility', 'yes');
       if (_useLibass) {
+        await _nativeSetProperty(native, 'sub-ass', 'yes');
         await _applyAssOverrideMode();
       }
     } catch (_) {}
@@ -851,6 +928,10 @@ class MediaKitPlayerBackend implements PlayerBackend {
       }
       await _applyAssOverrideMode();
     } catch (_) {}
+  }
+
+  @override
+  Future<void> setSubtitleRendererMode(SubtitleRendererMode mode) async {
   }
 
   void _enableNativeSubtitleRendering() {

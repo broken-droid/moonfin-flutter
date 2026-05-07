@@ -8,16 +8,19 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
 import android.os.PowerManager
 import android.provider.Settings
 import android.util.Rational
+import android.view.Display
 import androidx.core.content.FileProvider
 import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
@@ -69,6 +72,28 @@ class MainActivity : AudioServiceActivity() {
         private const val UPDATE_CHANNEL = "org.moonfin.androidtv/update"
     }
 
+    private fun getDisplayHdrTypes(): List<String> {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return emptyList()
+        }
+        val currentDisplay = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            display
+        } else {
+            @Suppress("DEPRECATION")
+            windowManager.defaultDisplay
+        }
+        val hdrTypes = currentDisplay?.hdrCapabilities?.supportedHdrTypes ?: return emptyList()
+        return hdrTypes.map { type ->
+            when (type) {
+                Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION -> "DOLBY_VISION"
+                Display.HdrCapabilities.HDR_TYPE_HDR10 -> "HDR10"
+                Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS -> "HDR10_PLUS"
+                Display.HdrCapabilities.HDR_TYPE_HLG -> "HLG"
+                else -> type.toString()
+            }
+        }
+    }
+
     private val pipReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION_PLAY_PAUSE) {
@@ -88,6 +113,13 @@ class MainActivity : AudioServiceActivity() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            runCatching { window.colorMode = ActivityInfo.COLOR_MODE_HDR }
+        }
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -103,7 +135,16 @@ class MainActivity : AudioServiceActivity() {
             when (call.method) {
                 "isTvDevice" -> {
                     val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
-                    result.success(uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION)
+                    val isTv = uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION ||
+                        packageManager.hasSystemFeature("amazon.hardware.fire_tv")
+                    result.success(isTv)
+                }
+                "displayHdrTypes" -> result.success(getDisplayHdrTypes())
+                "dolbyVisionCodecCapabilities" -> {
+                    result.success(MediaCodecCapabilities.queryDolbyVisionCapabilities())
+                }
+                "mediaCodecCapabilities" -> {
+                    result.success(MediaCodecCapabilities.query())
                 }
                 "exitApp" -> {
                     result.success(true)
@@ -914,4 +955,5 @@ class MainActivity : AudioServiceActivity() {
         return runCatching { CastContext.getSharedInstance(this).sessionManager.currentCastSession }
             .getOrNull()
     }
+
 }

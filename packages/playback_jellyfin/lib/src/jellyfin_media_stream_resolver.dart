@@ -78,11 +78,20 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
       streamIndex: s.streamIndex,
     )).toList();
 
+    final mediaType = MediaStreamResolver.detectMediaType(
+      source.mediaStreams,
+      fallbackUrl: url,
+    );
+    final normalizationGainDb =
+        MediaStreamResolver.extractNormalizationGainDb(source.mediaStreams);
+
     return StreamResolutionResult(
       streamUrl: url,
       mediaSourceId: source.id,
       playSessionId: info.playSessionId,
       playMethod: playMethod,
+      mediaType: mediaType,
+      normalizationGainDb: normalizationGainDb,
       externalSubtitles: authedSubs,
       mediaStreams: source.mediaStreams,
       transcodingReasons: source.transcodingReasons,

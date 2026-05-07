@@ -25,6 +25,7 @@ import '../../../data/services/book_reader_service.dart';
 import '../../../data/services/theme_music_service.dart';
 import '../../../data/viewmodels/item_detail_view_model.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
 import '../../../auth/repositories/user_repository.dart';
@@ -42,6 +43,7 @@ import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../../playback/offline_playback_launcher.dart';
+import '../../../playback/hdr_stream_capability.dart';
 import '../../../syncplay/syncplay_manager.dart';
 import '../../../util/audio_labels.dart';
 import '../../../util/download_utils.dart';
@@ -100,40 +102,6 @@ Future<bool> _showDeleteConfirmationDialog(
   );
 
   return confirmed == true;
-}
-
-bool _isCinemaEligible(AggregatedItem item, {required bool resume}) {
-  if (resume) return false;
-  final prefs = GetIt.instance<UserPreferences>();
-  if (!prefs.get(UserPreferences.cinemaModeEnabled)) return false;
-  final itemType = item.type?.toLowerCase() ?? '';
-  final mediaType = (item.rawData['MediaType'] as String?)?.toLowerCase() ?? '';
-  return itemType == 'movie' || mediaType == 'video';
-}
-
-Future<List<AggregatedItem>> _buildCinemaQueue(AggregatedItem item) async {
-  final factory = GetIt.instance<MediaServerClientFactory>();
-  final client = (item.serverId.isNotEmpty
-      ? factory.getClientIfExists(item.serverId)
-      : null) ??
-      GetIt.instance<MediaServerClient>();
-  final prerolls = <AggregatedItem>[];
-
-  try {
-    final intros = await client.itemsApi.getIntros(item.id);
-    for (final raw in intros) {
-      final id = raw['Id'] as String?;
-      if (id == null || id.isEmpty || id == item.id) continue;
-      final prerollRaw = Map<String, dynamic>.from(raw)
-        ..['__moonfinIsPreroll'] = true;
-      prerolls.add(
-        AggregatedItem(id: id, serverId: item.serverId, rawData: prerollRaw),
-      );
-    }
-  } catch (_) {}
-
-  if (prerolls.isEmpty) return [item];
-  return [...prerolls, item];
 }
 
 class ItemDetailScreen extends StatefulWidget {
@@ -1130,10 +1098,17 @@ class _DetailContentState extends State<_DetailContent> {
     String? mediaSourceId,
   ) async {
     final manager = GetIt.instance<PlaybackManager>();
+    final forceTranscode = await _shouldForceTranscodeForDolbyVisionQueue(
+      context,
+      [item],
+      mediaSourceId: mediaSourceId,
+    );
     await manager.playItems(
       [item],
       startPosition: startPosition,
       mediaSourceId: mediaSourceId,
+      enableDirectPlay: !forceTranscode,
+      enableDirectStream: !forceTranscode,
     );
     if (!context.mounted) return;
     context.push(Destinations.videoPlayer);
@@ -3132,6 +3107,16 @@ class _AuthorBookEntry {
   }
 }
 
+class _DolbyVisionPlayDecision {
+  final bool forceTranscode;
+  final DolbyVisionFallbackBehavior? rememberBehavior;
+
+  const _DolbyVisionPlayDecision({
+    required this.forceTranscode,
+    this.rememberBehavior,
+  });
+}
+
 class _ActionButtonsState extends State<_ActionButtons> {
   int? _selectedAudioIndex;
   int? _selectedSubtitleIndex;
@@ -3648,12 +3633,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }
 
   int? _effectiveSubtitleStreamIndex(List<Map<String, dynamic>> subtitleStreams) {
-    if (_selectedSubtitleIndex != null) {
-      return _selectedSubtitleIndex;
-    }
     final active = _activePlaybackSubtitleIndex();
     if (active != null) {
       return active;
+    }
+    if (_selectedSubtitleIndex != null) {
+      return _selectedSubtitleIndex;
     }
     final prefs = GetIt.instance<UserPreferences>();
     final defaultToNone = prefs.get(
@@ -3692,6 +3677,18 @@ class _ActionButtonsState extends State<_ActionButtons> {
     } catch (_) {
       return false;
     }
+  }
+
+  Future<bool> _shouldForceTranscodeForDolbyVision(
+    BuildContext context,
+    List<AggregatedItem> queue, {
+    String? mediaSourceId,
+  }) async {
+    return _shouldForceTranscodeForDolbyVisionQueue(
+      context,
+      queue,
+      mediaSourceId: mediaSourceId ?? widget.selectedMediaSourceId,
+    );
   }
 
   void _watchWithGroup(BuildContext context, AggregatedItem item) {
@@ -3769,11 +3766,17 @@ class _ActionButtonsState extends State<_ActionButtons> {
         if (nextUp == null) return;
         final startPosition =
             resume ? (nextUp.playbackPosition ?? Duration.zero) : Duration.zero;
+        final forceTranscode = await _shouldForceTranscodeForDolbyVision(
+          context,
+          [nextUp],
+        );
         await manager.playItems(
           [nextUp],
           startPosition: startPosition,
           audioStreamIndex: audioStreamIndex,
           subtitleStreamIndex: subtitleStreamIndex,
+          enableDirectPlay: !forceTranscode,
+          enableDirectStream: !forceTranscode,
         );
 
       case 'Season':
@@ -3790,12 +3793,18 @@ class _ActionButtonsState extends State<_ActionButtons> {
             resume
                 ? (episodes[idx].playbackPosition ?? Duration.zero)
                 : Duration.zero;
+        final forceTranscode = await _shouldForceTranscodeForDolbyVision(
+          context,
+          [episodes[idx]],
+        );
         await manager.playItems(
           episodes,
           startIndex: idx,
           startPosition: startPosition,
           audioStreamIndex: audioStreamIndex,
           subtitleStreamIndex: subtitleStreamIndex,
+          enableDirectPlay: !forceTranscode,
+          enableDirectStream: !forceTranscode,
         );
 
       case 'Episode':
@@ -3807,6 +3816,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
               resume
                   ? (episodes[idx].playbackPosition ?? Duration.zero)
                   : Duration.zero;
+          final forceTranscode = await _shouldForceTranscodeForDolbyVision(
+            context,
+            [episodes[idx]],
+            mediaSourceId: widget.selectedMediaSourceId,
+          );
           await manager.playItems(
             episodes,
             startIndex: idx,
@@ -3814,6 +3828,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
             audioStreamIndex: audioStreamIndex,
             subtitleStreamIndex: subtitleStreamIndex,
             mediaSourceId: widget.selectedMediaSourceId,
+            enableDirectPlay: !forceTranscode,
+            enableDirectStream: !forceTranscode,
           );
           break;
         }
@@ -3828,12 +3844,20 @@ class _ActionButtonsState extends State<_ActionButtons> {
       default:
         final startPosition =
             resume ? (item.playbackPosition ?? Duration.zero) : Duration.zero;
+        final forceTranscode = !isAudio &&
+            await _shouldForceTranscodeForDolbyVision(
+              context,
+              [item],
+              mediaSourceId: widget.selectedMediaSourceId,
+            );
         await manager.playItems(
           [item],
           startPosition: startPosition,
           audioStreamIndex: audioStreamIndex,
           subtitleStreamIndex: subtitleStreamIndex,
           mediaSourceId: widget.selectedMediaSourceId,
+          enableDirectPlay: !forceTranscode,
+          enableDirectStream: !forceTranscode,
         );
     }
 
@@ -3978,7 +4002,15 @@ class _ActionButtonsState extends State<_ActionButtons> {
     if (!context.mounted) return;
 
     if (localTrailer != null) {
-      await manager.playItems([localTrailer]);
+      final forceTranscode = await _shouldForceTranscodeForDolbyVisionQueue(
+        context,
+        [localTrailer],
+      );
+      await manager.playItems(
+        [localTrailer],
+        enableDirectPlay: !forceTranscode,
+        enableDirectStream: !forceTranscode,
+      );
       if (!context.mounted) return;
       await context.push(Destinations.videoPlayer);
       viewModel.load();
@@ -4447,6 +4479,156 @@ List<Map<String, dynamic>> _mediaStreamsForItem(
     }
   }
   return item.mediaStreams;
+}
+
+({bool hasDolbyVision, bool hasUnsupportedProfile}) _analyzeDolbyVisionQueue(
+  List<AggregatedItem> queue, {
+  String? mediaSourceId,
+}) {
+  var hasDolbyVision = false;
+  var hasUnsupportedProfile = false;
+
+  for (final item in queue) {
+    final selectedSource = _selectedMediaSourceForItem(item, mediaSourceId);
+    final streams = _mediaStreamsForItem(item, selectedSource);
+    for (final stream in streams) {
+      if (!hasDolbyVision &&
+          HdrStreamCapability.isDolbyVisionVideoStream(stream)) {
+        hasDolbyVision = true;
+      }
+      if (!hasUnsupportedProfile &&
+          HdrStreamCapability.streamNeedsDolbyVisionProfileTranscode(stream)) {
+        hasUnsupportedProfile = true;
+      }
+      if (hasDolbyVision && hasUnsupportedProfile) {
+        return (
+          hasDolbyVision: true,
+          hasUnsupportedProfile: true,
+        );
+      }
+    }
+  }
+
+  return (
+    hasDolbyVision: hasDolbyVision,
+    hasUnsupportedProfile: hasUnsupportedProfile,
+  );
+}
+
+Future<_DolbyVisionPlayDecision?> _showDolbyVisionFallbackDecisionDialog(
+  BuildContext context,
+) async {
+  var rememberChoice = false;
+
+  final choice = await showDialog<DolbyVisionFallbackBehavior>(
+    context: context,
+    builder: (dialogContext) {
+      return StatefulBuilder(
+        builder: (dialogContext, setDialogState) {
+          return AlertDialog(
+            title: const Text('Dolby Vision Not Supported'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'This device cannot decode Dolby Vision content directly. '
+                  'Use HDR10 fallback or request server transcoding.',
+                ),
+                const SizedBox(height: 12),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  value: rememberChoice,
+                  onChanged: (value) {
+                    setDialogState(() {
+                      rememberChoice = value ?? false;
+                    });
+                  },
+                  title: const Text('Remember my choice'),
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop(
+                    DolbyVisionFallbackBehavior.hdr10Fallback,
+                  );
+                },
+                child: const Text('Play HDR10 fallback'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop(
+                    DolbyVisionFallbackBehavior.transcode,
+                  );
+                },
+                child: const Text('Request transcode'),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+
+  if (choice == null) return null;
+  return _DolbyVisionPlayDecision(
+    forceTranscode: choice == DolbyVisionFallbackBehavior.transcode,
+    rememberBehavior: rememberChoice ? choice : null,
+  );
+}
+
+Future<bool> _shouldForceTranscodeForDolbyVisionQueue(
+  BuildContext context,
+  List<AggregatedItem> queue, {
+  String? mediaSourceId,
+}) async {
+  if (!(PlatformDetection.isAndroid && PlatformDetection.isTV)) {
+    return false;
+  }
+
+  final dvAnalysis = _analyzeDolbyVisionQueue(
+    queue,
+    mediaSourceId: mediaSourceId,
+  );
+  if (!dvAnalysis.hasDolbyVision) {
+    return false;
+  }
+
+  if (dvAnalysis.hasUnsupportedProfile) {
+    return true;
+  }
+
+  if (PlatformDetection.supportsDolbyVision) {
+    return false;
+  }
+
+  if (!PlatformDetection.supportsAnyHdr) {
+    return true;
+  }
+
+  final prefs = GetIt.instance<UserPreferences>();
+  final behavior = prefs.get(UserPreferences.dolbyVisionFallbackBehavior);
+  if (behavior == DolbyVisionFallbackBehavior.transcode) {
+    return true;
+  }
+  if (behavior == DolbyVisionFallbackBehavior.hdr10Fallback) {
+    return !PlatformDetection.supportsHdr10;
+  }
+
+  final decision = await _showDolbyVisionFallbackDecisionDialog(context);
+  if (decision == null) {
+    return false;
+  }
+  final remember = decision.rememberBehavior;
+  if (remember != null) {
+    await prefs.set(UserPreferences.dolbyVisionFallbackBehavior, remember);
+  }
+
+  return decision.forceTranscode;
 }
 
 Duration? _runtimeForItem(AggregatedItem item, Map<String, dynamic>? mediaSource) {

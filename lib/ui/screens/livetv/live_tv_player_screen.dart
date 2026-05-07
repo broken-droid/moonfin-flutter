@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:moonfin_native_video/moonfin_native_video.dart';
 import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 
@@ -12,6 +13,7 @@ import '../../../data/models/aggregated_item.dart';
 import '../../../data/viewmodels/live_tv_guide_view_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../playback/media_kit_player_backend.dart';
+import '../../../playback/media3_player_backend.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
@@ -37,6 +39,16 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   final _client = GetIt.instance<MediaServerClient>();
   final _prefs = GetIt.instance<UserPreferences>();
 
+  MediaKitPlayerBackend? get _activeMediaKitBackend {
+    final backend = _manager.backend;
+    return backend is MediaKitPlayerBackend ? backend : null;
+  }
+
+  Media3PlayerBackend? get _activeMedia3Backend {
+    final backend = _manager.backend;
+    return backend is Media3PlayerBackend ? backend : null;
+  }
+
   late int _currentIndex;
   bool _infoVisible = true;
   Timer? _hideTimer;
@@ -45,6 +57,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
 
   GuideProgram? _currentProgram;
   Timer? _programRefreshTimer;
+  StreamSubscription<PlayerBackend>? _backendSub;
 
   final _overlayFocus = FocusNode();
   PlayerState get _state => _manager.state;
@@ -59,6 +72,10 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
       DeviceOrientation.landscapeRight,
     ]);
     _applySubtitleStyle();
+    _backendSub = _manager.backendChangedStream.listen((backend) {
+      if (!mounted) return;
+      setState(() {});
+    });
     _playCurrentChannel();
     _scheduleHide();
     _startProgramRefresh();
@@ -68,6 +85,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   void dispose() {
     _hideTimer?.cancel();
     _programRefreshTimer?.cancel();
+    _backendSub?.cancel();
     _overlayFocus.dispose();
     if (!_isStopping) {
       _manager.stop(userInitiated: false);
@@ -204,13 +222,17 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   }
 
   void _applySubtitleStyle() {
-    _backend.configureSubtitleStyle(
-      textColor: _prefs.get(UserPreferences.subtitlesTextColor),
-      backgroundColor: _prefs.get(UserPreferences.subtitlesBackgroundColor),
-      strokeColor: _prefs.get(UserPreferences.subtitleTextStrokeColor),
-      fontSize: _prefs.get(UserPreferences.subtitlesTextSize),
-      fontWeight: _prefs.get(UserPreferences.subtitlesTextWeight),
-      verticalOffset: _prefs.get(UserPreferences.subtitlesOffsetPosition),
+    final backend = _manager.backend;
+    if (backend == null) return;
+    unawaited(
+      backend.configureSubtitleStyle(
+        textColor: _prefs.get(UserPreferences.subtitlesTextColor),
+        backgroundColor: _prefs.get(UserPreferences.subtitlesBackgroundColor),
+        strokeColor: _prefs.get(UserPreferences.subtitleTextStrokeColor),
+        fontSize: _prefs.get(UserPreferences.subtitlesTextSize),
+        fontWeight: _prefs.get(UserPreferences.subtitlesTextWeight),
+        verticalOffset: _prefs.get(UserPreferences.subtitlesOffsetPosition),
+      ),
     );
   }
 
@@ -337,10 +359,36 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   }
 
   Widget _buildVideoSurface() {
+    final prefersMedia3 =
+        _prefs.get(UserPreferences.playbackEnginePreference) ==
+        PlaybackEnginePreference.media3;
+    final prewarmMedia3 = _manager.backend == null && prefersMedia3;
+    if (_activeMedia3Backend != null || prewarmMedia3) {
+      return const Positioned.fill(
+        child: Media3VideoView(fill: Colors.black),
+      );
+    }
+
+    final mediaKitBackend = _activeMediaKitBackend ?? _backend;
     final size = MediaQuery.sizeOf(context);
+    if (PlatformDetection.useNativeVideoSurface) {
+      return Positioned.fill(
+        child: NativeVideoView(
+          player: mediaKitBackend.player,
+          fill: Colors.black,
+          videoOutput: 'mediacodec_embed',
+        ),
+      );
+    }
+
+    final controller = mediaKitBackend.videoController;
+    if (controller == null) {
+      return const Positioned.fill(child: ColoredBox(color: Colors.black));
+    }
+
     return Positioned.fill(
       child: Video(
-        controller: _backend.videoController,
+        controller: controller,
         controls: NoVideoControls,
         width: size.width,
         height: size.height,

@@ -3,6 +3,17 @@ enum AudioBehavior {
   downmixToStereo,
 }
 
+enum PlaybackEnginePreference {
+  media3,
+  mpv,
+}
+
+enum DolbyVisionFallbackBehavior {
+  ask,
+  hdr10Fallback,
+  transcode,
+}
+
 enum ClockBehavior {
   always,
   inMenus,

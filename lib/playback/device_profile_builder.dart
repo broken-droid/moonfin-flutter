@@ -1,26 +1,203 @@
 import '../preference/preference_constants.dart';
 import '../util/platform_detection.dart';
+import 'known_defects.dart';
 
 class DeviceProfileBuilder {
   const DeviceProfileBuilder._();
 
+  static const List<String> _downmixSupportedAudioCodecs = <String>[
+    'aac',
+    'mp2',
+    'mp3',
+  ];
+
+  static const List<String> _supportedAudioCodecs = <String>[
+    'aac',
+    'aac_latm',
+    'ac3',
+    'alac',
+    'dca',
+    'dts',
+    'eac3',
+    'flac',
+    'mlp',
+    'mp2',
+    'mp3',
+    'opus',
+    'pcm_alaw',
+    'pcm_mulaw',
+    'pcm_s16le',
+    'pcm_s20le',
+    'pcm_s24le',
+    'truehd',
+    'vorbis',
+  ];
+
+  static const List<String> _hlsMpegTsAudioCodecs = <String>[
+    'aac',
+    'ac3',
+    'eac3',
+    'mp3',
+  ];
+
+  static const List<String> _hlsFmp4AudioCodecs = <String>[
+    'aac',
+    'ac3',
+    'eac3',
+    'mp3',
+    'alac',
+    'flac',
+    'opus',
+    'dts',
+    'truehd',
+  ];
+
   static Map<String, dynamic> build({
     int? maxBitrateMbps,
     bool ac3Enabled = true,
+    bool downMixAudio = false,
     MaxVideoResolution maxResolution = MaxVideoResolution.auto,
     bool pgsDirectPlay = true,
     bool assDirectPlay = true,
+    bool supportsAvc = false,
+    bool supportsAvcHigh10 = false,
+    int avcMainLevel = 0,
+    int avcHigh10Level = 0,
+    bool supportsHevc = false,
+    bool supportsHevcMain10 = false,
+    int hevcMainLevel = 0,
+    int hevcMain10Level = 0,
+    bool supportsHevcDolbyVision = false,
+    bool supportsHevcDolbyVisionEl = false,
+    bool supportsHevcHdr10 = false,
+    bool supportsHevcHdr10Plus = false,
+    bool supportsAv1 = false,
+    bool supportsAv1Main10 = false,
+    bool supportsAv1DolbyVision = false,
+    bool supportsAv1Hdr10 = false,
+    bool supportsAv1Hdr10Plus = false,
+    bool supportsVc1 = false,
+    int maxResolutionAvcWidth = 0,
+    int maxResolutionAvcHeight = 0,
+    int maxResolutionHevcWidth = 0,
+    int maxResolutionHevcHeight = 0,
+    int maxResolutionAv1Width = 0,
+    int maxResolutionAv1Height = 0,
+    int maxResolutionVc1Width = 0,
+    int maxResolutionVc1Height = 0,
+    bool supportsHdr10PlusDisplay = false,
+    bool supportsDvProfile5 = false,
+    bool supportsDvProfile7 = false,
+    bool supportsDvProfile8 = false,
+    bool knownHevcDoviHdr10PlusBug = false,
   }) {
     final bitrateBps = maxBitrateMbps == null ? null : maxBitrateMbps * 1000000;
-    return {
+
+    final allowedAudioCodecs = downMixAudio
+        ? _downmixSupportedAudioCodecs
+        : (ac3Enabled
+              ? _supportedAudioCodecs
+              : _supportedAudioCodecs
+                    .where((codec) => codec != 'ac3' && codec != 'eac3')
+                    .toList(growable: false));
+
+    final hlsVideoCodecs = <String>[
+      if (supportsHevc) 'hevc',
+      'h264',
+    ].join(',');
+
+    final hasKnownHevcDoviHdr10PlusBug =
+        knownHevcDoviHdr10PlusBug || KnownDefects.hevcDoviHdr10PlusBug;
+
+    final codecProfiles = _codecProfiles(
+      downMixAudio: downMixAudio,
+      maxResolution: maxResolution,
+      supportsAvc: supportsAvc,
+      supportsAvcHigh10: supportsAvcHigh10,
+      avcMainLevel: avcMainLevel,
+      avcHigh10Level: avcHigh10Level,
+      supportsHevc: supportsHevc,
+      supportsHevcMain10: supportsHevcMain10,
+      hevcMainLevel: hevcMainLevel,
+      hevcMain10Level: hevcMain10Level,
+      supportsHevcDolbyVision: supportsHevcDolbyVision,
+      supportsHevcDolbyVisionEl: supportsHevcDolbyVisionEl,
+      supportsHevcHdr10: supportsHevcHdr10,
+      supportsHevcHdr10Plus: supportsHevcHdr10Plus,
+      supportsAv1: supportsAv1,
+      supportsAv1Main10: supportsAv1Main10,
+      supportsAv1DolbyVision: supportsAv1DolbyVision,
+      supportsAv1Hdr10: supportsAv1Hdr10,
+      supportsAv1Hdr10Plus: supportsAv1Hdr10Plus,
+      supportsVc1: supportsVc1,
+      maxResolutionAvcWidth: maxResolutionAvcWidth,
+      maxResolutionAvcHeight: maxResolutionAvcHeight,
+      maxResolutionHevcWidth: maxResolutionHevcWidth,
+      maxResolutionHevcHeight: maxResolutionHevcHeight,
+      maxResolutionAv1Width: maxResolutionAv1Width,
+      maxResolutionAv1Height: maxResolutionAv1Height,
+      maxResolutionVc1Width: maxResolutionVc1Width,
+      maxResolutionVc1Height: maxResolutionVc1Height,
+      supportsHdr10PlusDisplay: supportsHdr10PlusDisplay,
+      supportsDvProfile5: supportsDvProfile5,
+      supportsDvProfile7: supportsDvProfile7,
+      supportsDvProfile8: supportsDvProfile8,
+      knownHevcDoviHdr10PlusBug: hasKnownHevcDoviHdr10PlusBug,
+    );
+
+    return <String, dynamic>{
       'Name': _profileName(),
-      'MaxStaticBitrate': ?bitrateBps,
-      'MaxStreamingBitrate': ?bitrateBps,
+      'MaxStaticBitrate': bitrateBps,
+      'MaxStreamingBitrate': bitrateBps,
       'MusicStreamingTranscodingBitrate': 384000,
-      'DirectPlayProfiles': _directPlayProfiles(ac3Enabled: ac3Enabled),
-      'TranscodingProfiles': _transcodingProfiles(ac3Enabled: ac3Enabled),
+      'DirectPlayProfiles': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'Type': 'Video',
+          'Container':
+              'asf,hls,m4v,mkv,mov,mp4,ogm,ogv,ts,vob,webm,wmv,xvid',
+          'VideoCodec': 'av1,h264,hevc,mpeg,mpeg2video,vc1,vp8,vp9',
+          'AudioCodec': allowedAudioCodecs.join(','),
+        },
+        <String, dynamic>{
+          'Type': 'Audio',
+          'AudioCodec': allowedAudioCodecs.join(','),
+        },
+      ],
+      'TranscodingProfiles': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'Type': 'Video',
+          'Context': 'Streaming',
+          'Container': 'ts',
+          'Protocol': 'hls',
+          'VideoCodec': hlsVideoCodecs,
+          'AudioCodec': _hlsMpegTsAudioCodecs
+              .where(allowedAudioCodecs.contains)
+              .join(','),
+          'CopyTimestamps': false,
+          'EnableSubtitlesInManifest': true,
+        },
+        <String, dynamic>{
+          'Type': 'Video',
+          'Context': 'Streaming',
+          'Container': 'mp4',
+          'Protocol': 'hls',
+          'VideoCodec': hlsVideoCodecs,
+          'AudioCodec': _hlsFmp4AudioCodecs
+              .where(allowedAudioCodecs.contains)
+              .join(','),
+          'CopyTimestamps': false,
+          'EnableSubtitlesInManifest': true,
+        },
+        <String, dynamic>{
+          'Type': 'Audio',
+          'Context': 'Streaming',
+          'Container': 'ts',
+          'Protocol': 'hls',
+          'AudioCodec': 'aac',
+        },
+      ],
       'ContainerProfiles': <Map<String, dynamic>>[],
-      'CodecProfiles': _codecProfiles(maxResolution: maxResolution),
+      'CodecProfiles': codecProfiles,
       'SubtitleProfiles': _subtitleProfiles(
         pgsDirectPlay: pgsDirectPlay,
         assDirectPlay: assDirectPlay,
@@ -37,134 +214,565 @@ class DeviceProfileBuilder {
     return 'Moonfin';
   }
 
-  static List<Map<String, dynamic>> _directPlayProfiles({
-    required bool ac3Enabled,
-  }) {
-    const videoCodecs = 'h264,hevc,vp8,vp9,av1,mpeg2video,mpeg4,vc1';
-    final audio = [
-      'aac',
-      if (ac3Enabled) ...['ac3', 'eac3'],
-      'mp3',
-      'flac',
-      'vorbis',
-      'opus',
-      'dts',
-      'truehd',
-      'pcm_s16le',
-      'pcm_s24le',
-    ].join(',');
-    return [
-      {
-        'Container': 'mp4,m4v,mkv,avi,mov',
-        'Type': 'Video',
-        'VideoCodec': videoCodecs,
-        'AudioCodec': audio,
-      },
-      {
-        'Container': 'webm',
-        'Type': 'Video',
-        'VideoCodec': 'vp8,vp9,av1',
-        'AudioCodec': 'vorbis,opus',
-      },
-      {
-        'Container': 'ts,m2ts,mpegts',
-        'Type': 'Video',
-        'VideoCodec': 'h264,hevc,mpeg2video',
-        'AudioCodec': ac3Enabled ? 'aac,ac3,eac3,dts,mp3' : 'aac,dts,mp3',
-      },
-      {
-        'Container': 'wmv,asf',
-        'Type': 'Video',
-        'VideoCodec': 'vc1,mpeg4',
-        'AudioCodec': ac3Enabled ? 'aac,ac3,mp3' : 'aac,mp3',
-      },
-      {'Container': 'mp3', 'Type': 'Audio'},
-      {'Container': 'aac', 'Type': 'Audio'},
-      {'Container': 'flac', 'Type': 'Audio'},
-      {'Container': 'ogg', 'Type': 'Audio', 'AudioCodec': 'vorbis,opus'},
-      {'Container': 'wav', 'Type': 'Audio'},
-    ];
-  }
-
-  static List<Map<String, dynamic>> _transcodingProfiles({
-    required bool ac3Enabled,
-  }) {
-    final audioCodecs = [
-      'aac',
-      if (ac3Enabled) ...['ac3', 'eac3'],
-      'mp3',
-    ].join(',');
-    return [
-      {
-        'Container': 'ts',
-        'Type': 'Video',
-        'VideoCodec': 'h264',
-        'AudioCodec': audioCodecs,
-        'Protocol': 'hls',
-        'Context': 'Streaming',
-        'CopyTimestamps': false,
-        'EnableSubtitlesInManifest': false,
-        'BreakOnNonKeyFrames': false,
-      },
-      {
-        'Container': 'mp3',
-        'Type': 'Audio',
-        'AudioCodec': 'mp3',
-        'Protocol': 'http',
-        'Context': 'Streaming',
-      },
-    ];
-  }
-
   static List<Map<String, dynamic>> _codecProfiles({
-    MaxVideoResolution maxResolution = MaxVideoResolution.auto,
+    required bool downMixAudio,
+    required MaxVideoResolution maxResolution,
+    required bool supportsAvc,
+    required bool supportsAvcHigh10,
+    required int avcMainLevel,
+    required int avcHigh10Level,
+    required bool supportsHevc,
+    required bool supportsHevcMain10,
+    required int hevcMainLevel,
+    required int hevcMain10Level,
+    required bool supportsHevcDolbyVision,
+    required bool supportsHevcDolbyVisionEl,
+    required bool supportsHevcHdr10,
+    required bool supportsHevcHdr10Plus,
+    required bool supportsAv1,
+    required bool supportsAv1Main10,
+    required bool supportsAv1DolbyVision,
+    required bool supportsAv1Hdr10,
+    required bool supportsAv1Hdr10Plus,
+    required bool supportsVc1,
+    required int maxResolutionAvcWidth,
+    required int maxResolutionAvcHeight,
+    required int maxResolutionHevcWidth,
+    required int maxResolutionHevcHeight,
+    required int maxResolutionAv1Width,
+    required int maxResolutionAv1Height,
+    required int maxResolutionVc1Width,
+    required int maxResolutionVc1Height,
+    required bool supportsHdr10PlusDisplay,
+    required bool supportsDvProfile5,
+    required bool supportsDvProfile7,
+    required bool supportsDvProfile8,
+    required bool knownHevcDoviHdr10PlusBug,
   }) {
     final profiles = <Map<String, dynamic>>[];
-    if (maxResolution != MaxVideoResolution.auto) {
+
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: 'h264',
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: supportsAvc ? 'NotEquals' : 'Equals',
+            property: 'VideoProfile',
+            value: supportsAvc ? 'none' : 'none',
+          ),
+        ],
+      ),
+    );
+
+    if (!supportsAvcHigh10) {
       profiles.add(
-        {
-          'Type': 'Video',
-          'Conditions': [
-            {
-              'Condition': 'LessThanEqual',
-              'Property': 'Width',
-              'Value': '${maxResolution.width}',
-              'IsRequired': true,
-            },
-            {
-              'Condition': 'LessThanEqual',
-              'Property': 'Height',
-              'Value': '${maxResolution.height}',
-              'IsRequired': true,
-            },
+        _codecProfile(
+          type: 'Video',
+          codec: 'h264',
+          conditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'NotEquals',
+              property: 'VideoProfile',
+              value: 'high 10',
+            ),
           ],
-        },
+        ),
       );
     }
+
+    if (supportsAvc && avcMainLevel > 0) {
+      for (final profile in const <String>[
+        'high',
+        'main',
+        'baseline',
+        'constrained baseline',
+      ]) {
+        profiles.add(
+          _codecProfile(
+            type: 'Video',
+            codec: 'h264',
+            conditions: <Map<String, dynamic>>[
+              _condition(
+                condition: 'LessThanEqual',
+                property: 'VideoLevel',
+                value: '$avcMainLevel',
+              ),
+            ],
+            applyConditions: <Map<String, dynamic>>[
+              _condition(
+                condition: 'Equals',
+                property: 'VideoProfile',
+                value: profile,
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+    if (supportsAvcHigh10 && avcHigh10Level > 0) {
+      profiles.add(
+        _codecProfile(
+          type: 'Video',
+          codec: 'h264',
+          conditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'LessThanEqual',
+              property: 'VideoLevel',
+              value: '$avcHigh10Level',
+            ),
+          ],
+          applyConditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'Equals',
+              property: 'VideoProfile',
+              value: 'high 10',
+            ),
+          ],
+        ),
+      );
+    }
+
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: 'h264',
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'LessThanEqual',
+            property: 'RefFrames',
+            value: '12',
+          ),
+        ],
+        applyConditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'GreaterThanEqual',
+            property: 'Width',
+            value: '1200',
+          ),
+        ],
+      ),
+    );
+
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: 'h264',
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'LessThanEqual',
+            property: 'RefFrames',
+            value: '4',
+          ),
+        ],
+        applyConditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'GreaterThanEqual',
+            property: 'Width',
+            value: '1900',
+          ),
+        ],
+      ),
+    );
+
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: 'hevc',
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: supportsHevc ? 'NotEquals' : 'Equals',
+            property: 'VideoProfile',
+            value: supportsHevc ? 'none' : 'none',
+          ),
+        ],
+      ),
+    );
+
+    if (!supportsHevcMain10) {
+      profiles.add(
+        _codecProfile(
+          type: 'Video',
+          codec: 'hevc',
+          conditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'NotEquals',
+              property: 'VideoProfile',
+              value: 'main 10',
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (supportsHevc && hevcMainLevel > 0) {
+      profiles.add(
+        _codecProfile(
+          type: 'Video',
+          codec: 'hevc',
+          conditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'LessThanEqual',
+              property: 'VideoLevel',
+              value: '$hevcMainLevel',
+            ),
+          ],
+          applyConditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'Equals',
+              property: 'VideoProfile',
+              value: 'main',
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (supportsHevcMain10 && hevcMain10Level > 0) {
+      profiles.add(
+        _codecProfile(
+          type: 'Video',
+          codec: 'hevc',
+          conditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'LessThanEqual',
+              property: 'VideoLevel',
+              value: '$hevcMain10Level',
+            ),
+          ],
+          applyConditions: <Map<String, dynamic>>[
+            _condition(
+              condition: 'Equals',
+              property: 'VideoProfile',
+              value: 'main 10',
+            ),
+          ],
+        ),
+      );
+    }
+
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: 'av1',
+        conditions: <Map<String, dynamic>>[
+          if (!supportsAv1)
+            _condition(
+              condition: 'Equals',
+              property: 'VideoProfile',
+              value: 'none',
+            )
+          else if (!supportsAv1Main10)
+            _condition(
+              condition: 'NotEquals',
+              property: 'VideoProfile',
+              value: 'main 10',
+            )
+          else
+            _condition(
+              condition: 'NotEquals',
+              property: 'VideoProfile',
+              value: 'none',
+            ),
+        ],
+      ),
+    );
+
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: 'vc1',
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: supportsVc1 ? 'NotEquals' : 'Equals',
+            property: 'VideoProfile',
+            value: 'none',
+          ),
+        ],
+      ),
+    );
+
+    _addResolutionProfile(
+      profiles: profiles,
+      codec: 'h264',
+      maxResolution: maxResolution,
+      detectedWidth: maxResolutionAvcWidth,
+      detectedHeight: maxResolutionAvcHeight,
+    );
+    _addResolutionProfile(
+      profiles: profiles,
+      codec: 'hevc',
+      maxResolution: maxResolution,
+      detectedWidth: maxResolutionHevcWidth,
+      detectedHeight: maxResolutionHevcHeight,
+    );
+    _addResolutionProfile(
+      profiles: profiles,
+      codec: 'av1',
+      maxResolution: maxResolution,
+      detectedWidth: maxResolutionAv1Width,
+      detectedHeight: maxResolutionAv1Height,
+    );
+    _addResolutionProfile(
+      profiles: profiles,
+      codec: 'vc1',
+      maxResolution: maxResolution,
+      detectedWidth: maxResolutionVc1Width,
+      detectedHeight: maxResolutionVc1Height,
+    );
+
+    final unsupportedRangeTypesAv1 = <String>{
+      'DOVI_INVALID',
+    };
+    if (!supportsAv1DolbyVision) {
+      unsupportedRangeTypesAv1.add('DOVI');
+      if (!supportsAv1Hdr10) {
+        unsupportedRangeTypesAv1.add('DOVI_WITH_HDR10');
+      }
+      if (!supportsAv1Hdr10Plus) {
+        unsupportedRangeTypesAv1.add('DOVI_WITH_HDR10_PLUS');
+      }
+    }
+    if (!supportsAv1Hdr10Plus) {
+      unsupportedRangeTypesAv1.add('HDR10_PLUS');
+      if (!supportsAv1Hdr10) {
+        unsupportedRangeTypesAv1.add('HDR10');
+      }
+    }
+
+    final unsupportedRangeTypesHevc = <String>{
+      'DOVI_INVALID',
+    };
+    if (!supportsHevcDolbyVisionEl) {
+      unsupportedRangeTypesHevc.add('DOVI_WITH_EL');
+      if (!supportsHevcHdr10Plus && !knownHevcDoviHdr10PlusBug) {
+        unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+      }
+
+      if (!supportsHevcDolbyVision) {
+        unsupportedRangeTypesHevc.add('DOVI');
+        if (!supportsHevcHdr10) {
+          unsupportedRangeTypesHevc.add('DOVI_WITH_HDR10');
+        }
+        if (!supportsHevcHdr10Plus && !knownHevcDoviHdr10PlusBug) {
+          unsupportedRangeTypesHevc.add('DOVI_WITH_HDR10_PLUS');
+        }
+      }
+    }
+
+    if (!supportsHevcHdr10Plus) {
+      unsupportedRangeTypesHevc.add('HDR10_PLUS');
+      if (!supportsHevcHdr10) {
+        unsupportedRangeTypesHevc.add('HDR10');
+      }
+    }
+
+    if (knownHevcDoviHdr10PlusBug) {
+      unsupportedRangeTypesHevc.add('DOVI_WITH_HDR10_PLUS');
+      unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+    }
+
+    if (!supportsHdr10PlusDisplay) {
+      unsupportedRangeTypesAv1.add('HDR10_PLUS');
+      unsupportedRangeTypesHevc.add('HDR10_PLUS');
+      unsupportedRangeTypesHevc.add('DOVI_WITH_HDR10_PLUS');
+      unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+    }
+
+    if (!supportsDvProfile5) {
+      unsupportedRangeTypesHevc.add('DOVI');
+    }
+    if (!supportsDvProfile7) {
+      unsupportedRangeTypesHevc.add('DOVI_WITH_EL');
+      unsupportedRangeTypesHevc.add('DOVI_WITH_ELHDR10_PLUS');
+    }
+    if (!supportsDvProfile8) {
+      unsupportedRangeTypesHevc.add('DOVI_WITH_HDR10');
+      unsupportedRangeTypesHevc.add('DOVI_WITH_HDR10_PLUS');
+    }
+
+    _addUnsupportedRangeProfiles(
+      profiles: profiles,
+      codec: 'av1',
+      rangeTypes: unsupportedRangeTypesAv1,
+    );
+    _addUnsupportedRangeProfiles(
+      profiles: profiles,
+      codec: 'hevc',
+      rangeTypes: unsupportedRangeTypesHevc,
+    );
+
+    profiles.add(
+      _codecProfile(
+        type: 'VideoAudio',
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'LessThanEqual',
+            property: 'AudioChannels',
+            value: downMixAudio ? '2' : '8',
+          ),
+        ],
+      ),
+    );
+
     return profiles;
   }
 
-  static List<Map<String, dynamic>> _subtitleProfiles({
-    bool pgsDirectPlay = true,
-    bool assDirectPlay = true,
+  static void _addUnsupportedRangeProfiles({
+    required List<Map<String, dynamic>> profiles,
+    required String codec,
+    required Set<String> rangeTypes,
   }) {
-    const externalFormats = ['srt', 'subrip', 'vtt', 'webvtt', 'sub', 'ttml'];
-    final profiles = <Map<String, dynamic>>[
-      for (final format in externalFormats) {'Format': format, 'Method': 'External'},
-    ];
-
-    for (final format in const ['ass', 'ssa']) {
-      profiles.add({
-        'Format': format,
-        'Method': assDirectPlay ? 'Embed' : 'External',
-      });
+    if (rangeTypes.isEmpty) {
+      return;
     }
 
-    for (final format in const ['pgssub', 'pgs', 'dvbsub', 'dvdsub']) {
-      profiles.add({
-        'Format': format,
-        'Method': pgsDirectPlay ? 'Embed' : 'Encode',
-      });
+    final sortedRangeTypes = rangeTypes.toList(growable: false)..sort();
+    final joinedRangeTypes = sortedRangeTypes.join('|');
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: codec,
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'NotEquals',
+            property: 'VideoRangeType',
+            value: joinedRangeTypes,
+            isRequired: false,
+          ),
+        ],
+        applyConditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'EqualsAny',
+            property: 'VideoRangeType',
+            value: joinedRangeTypes,
+            isRequired: false,
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void _addResolutionProfile({
+    required List<Map<String, dynamic>> profiles,
+    required String codec,
+    required MaxVideoResolution maxResolution,
+    required int detectedWidth,
+    required int detectedHeight,
+  }) {
+    final userWidth =
+        maxResolution == MaxVideoResolution.auto ? 0 : maxResolution.width;
+    final userHeight =
+        maxResolution == MaxVideoResolution.auto ? 0 : maxResolution.height;
+
+    var width = detectedWidth > 0 ? detectedWidth : userWidth;
+    var height = detectedHeight > 0 ? detectedHeight : userHeight;
+
+    if (userWidth > 0) {
+      width = width <= 0 ? userWidth : width.clamp(0, userWidth).toInt();
+    }
+    if (userHeight > 0) {
+      height =
+          height <= 0 ? userHeight : height.clamp(0, userHeight).toInt();
+    }
+
+    if (width <= 0 || height <= 0) {
+      return;
+    }
+
+    profiles.add(
+      _codecProfile(
+        type: 'Video',
+        codec: codec,
+        conditions: <Map<String, dynamic>>[
+          _condition(
+            condition: 'LessThanEqual',
+            property: 'Width',
+            value: '$width',
+          ),
+          _condition(
+            condition: 'LessThanEqual',
+            property: 'Height',
+            value: '$height',
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Map<String, dynamic> _codecProfile({
+    required String type,
+    String? codec,
+    List<Map<String, dynamic>> conditions = const <Map<String, dynamic>>[],
+    List<Map<String, dynamic>> applyConditions = const <Map<String, dynamic>>[],
+  }) {
+    final profile = <String, dynamic>{
+      'Type': type,
+      'Conditions': conditions,
+      if (applyConditions.isNotEmpty) 'ApplyConditions': applyConditions,
+    };
+
+    if (codec != null) {
+      profile['Codec'] = codec;
+    }
+
+    return profile;
+  }
+
+  static Map<String, dynamic> _condition({
+    required String condition,
+    required String property,
+    required String value,
+    bool isRequired = true,
+  }) {
+    return <String, dynamic>{
+      'Condition': condition,
+      'Property': property,
+      'Value': value,
+      'IsRequired': isRequired,
+    };
+  }
+
+  static List<Map<String, dynamic>> _subtitleProfiles({
+    required bool pgsDirectPlay,
+    required bool assDirectPlay,
+  }) {
+    final profiles = <Map<String, dynamic>>[];
+
+    void add(String format, String method) {
+      profiles.add(<String, dynamic>{'Format': format, 'Method': method});
+    }
+
+    for (final format in const <String>['vtt', 'webvtt']) {
+      add(format, 'Embed');
+      add(format, 'External');
+      add(format, 'Hls');
+    }
+
+    for (final format in const <String>['srt', 'subrip', 'ttml']) {
+      add(format, 'Embed');
+      add(format, 'External');
+    }
+
+    for (final format in const <String>['dvbsub', 'dvdsub', 'idx']) {
+      add(format, 'Embed');
+      add(format, 'Encode');
+    }
+
+    for (final format in const <String>['pgs', 'pgssub']) {
+      if (pgsDirectPlay) {
+        add(format, 'Embed');
+      }
+      add(format, 'Encode');
+    }
+
+    for (final format in const <String>['ass', 'ssa']) {
+      if (assDirectPlay) {
+        add(format, 'Embed');
+        add(format, 'External');
+      }
+      add(format, 'Encode');
     }
 
     return profiles;

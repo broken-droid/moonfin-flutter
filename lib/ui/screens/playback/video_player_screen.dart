@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:moonfin_native_video/moonfin_native_video.dart';
 import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
@@ -45,6 +46,7 @@ import '../../widgets/playback/next_up_overlay.dart';
 import '../../widgets/playback/still_watching_dialog.dart';
 import '../../widgets/syncplay/syncplay_player_button.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../playback/media3_player_backend.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   const VideoPlayerScreen({super.key});
@@ -70,6 +72,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
   late MediaSegmentService _segmentService;
 
+  PlayerBackend? get _activeBackend => _manager.backend;
+
+  MediaKitPlayerBackend? get _activeMediaKitBackend {
+    final backend = _activeBackend;
+    return backend is MediaKitPlayerBackend ? backend : null;
+  }
+
+  Media3PlayerBackend? get _activeMedia3Backend {
+    final backend = _activeBackend;
+    return backend is Media3PlayerBackend ? backend : null;
+  }
+
   bool _controlsVisible = true;
   Timer? _hideTimer;
   bool _isSeeking = false;
@@ -77,6 +91,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   late ZoomMode _zoomMode;
   double _audioDelay = 0.0;
   double _subtitleDelay = 0.0;
+  bool _subtitleActive = false;
+  bool _subtitleReapplyRetryScheduled = false;
   bool _isStopping = false;
   DateTime? _suppressTvLifecycleExitUntil;
   bool _isOsdLocked = false;
@@ -110,6 +126,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   int _consecutiveEpisodes = 0;
   StreamSubscription? _positionSub;
   StreamSubscription? _queueSub;
+  StreamSubscription<PlayerBackend>? _backendSub;
   StreamSubscription? _pipChangedSub;
   StreamSubscription? _pipActionSub;
   StreamSubscription? _playingSub;
@@ -117,6 +134,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   StreamSubscription<Map<String, dynamic>>? _castEventsSub;
   StreamSubscription<Map<String, dynamic>>? _dlnaEventsSub;
   StreamSubscription<Map<String, dynamic>>? _airPlayEventsSub;
+  StreamSubscription<Map<String, dynamic>>? _media3ActivityActionSub;
+  final Map<String, List<Map<String, dynamic>>> _media3CastPeopleCache = {};
 
   TrickplayInfo? _trickplayInfo;
   String? _trickplayMediaSourceId;
@@ -206,6 +225,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (item is Map) {
       final id = item['Id'] ?? item['id'];
       return id?.toString();
+    }
+    return null;
+  }
+
+  String? _serverIdForQueueItem(dynamic item) {
+    if (item is AggregatedItem) {
+      return item.serverId;
+    }
+    if (item is Map) {
+      final raw = item['ServerId'] ?? item['serverId'];
+      return raw?.toString();
     }
     return null;
   }
@@ -457,7 +487,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             _runSinglePlayerMutation(
               'downloaded_subtitle_$streamIndex',
               () => _manager.changeSubtitleTrack(streamIndex),
-            ),
+            ).then((_) {
+              if (mounted) _syncSubtitleActive();
+            }),
           );
         }
         messenger.showSnackBar(
@@ -500,6 +532,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   @override
   void initState() {
     super.initState();
+    if (PlatformDetection.useNativeVideoSurface) {
+      _subtitleActive = (_manager.subtitleStreamIndex ?? -1) >= 0;
+    }
     _themeMusicService.setExternalAudioActive(true);
     _segmentService = _createSegmentService();
     _zoomMode = _prefs.get(UserPreferences.playerZoomMode);
@@ -522,9 +557,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     WidgetsBinding.instance.addObserver(this);
     _loadSegmentsForCurrentItem();
     _positionSub = _state.positionStream.listen(_onPositionUpdate);
+    _backendSub = _manager.backendChangedStream.listen((backend) {
+      if (backend is Media3PlayerBackend) {
+        unawaited(_syncMedia3ZoomMode());
+      }
+      if (!mounted) return;
+      setState(() {});
+    });
     if (PlatformDetection.isTV) _tvSeekbarFocus.addListener(_onSeekbarFocusChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showControls(focusSeekbar: true);
+      if (PlatformDetection.useNativeVideoSurface) {
+        _syncSubtitleActive();
+      }
+      unawaited(_pushMedia3UiMetadata());
     });
     if (PlatformDetection.isAndroid || PlatformDetection.isIOS) {
       _castEventsSub = _nativeCast.googleCastEventStream().listen(
@@ -554,6 +600,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _loadSegmentsForCurrentItem();
       _manager.suppressAutoNext = false;
       _consecutiveEpisodes++;
+      unawaited(_pushMedia3UiMetadata());
       setState(() {
         _nextUpDismissed = false;
         _showNextUp = false;
@@ -561,12 +608,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       });
     });
 
+    _media3ActivityActionSub = Media3PlayerBackend.activityActionStream.listen(
+      _onMedia3ActivityAction,
+      onError: (_) {},
+    );
+
     if (PlatformDetection.isAndroid || PlatformDetection.isIOS) {
       _pipChangedSub = _pipService.onPiPChanged.listen(_onPiPChanged);
       _pipActionSub = _pipService.onPiPAction.listen(_onPiPAction);
       _playingSub = _state.playingStream.listen((playing) {
         _pipService.updatePiPActions(isPlaying: playing);
         _syncAirPlayPlaybackState();
+        if (PlatformDetection.useNativeVideoSurface && playing) {
+          _syncSubtitleActive();
+        }
       });
       if (PlatformDetection.isAndroid) {
         _pipService.enableAutoPiP(true);
@@ -617,6 +672,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
     _positionSub?.cancel();
     _queueSub?.cancel();
+    _backendSub?.cancel();
     _pipChangedSub?.cancel();
     _pipActionSub?.cancel();
     _playingSub?.cancel();
@@ -624,6 +680,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _castEventsSub?.cancel();
     _dlnaEventsSub?.cancel();
     _airPlayEventsSub?.cancel();
+    _media3ActivityActionSub?.cancel();
     _screenLockSub?.cancel();
     _completedSub?.cancel();
     _tvBackgroundExitTimer?.cancel();
@@ -676,6 +733,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         if (castKind == CastTargetKind.airPlay) {
           _syncAirPlayPlaybackState();
         }
+        unawaited(_pushMedia3UiMetadata());
       case 'disconnected':
         if (_castService.activeKind == castKind) {
           _castService.setActiveKind(null);
@@ -686,6 +744,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _remotePositionTicks = 0;
           _remoteVolume = null;
         }
+        unawaited(_pushMedia3UiMetadata());
       case 'playing' || 'paused' || 'buffering' || 'idle':
         final positionTicks = (event['positionTicks'] as int?) ?? 0;
         _castService.remoteStateNotifier.value = state;
@@ -696,6 +755,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             _remotePositionTicks = positionTicks;
           });
         }
+        unawaited(_pushMedia3UiMetadata());
       case 'error':
         if (mounted) {
           final l10n = AppLocalizations.of(context);
@@ -737,12 +797,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       setState(() {
         _remoteVolume = volume;
       });
+      unawaited(_pushMedia3UiMetadata());
     } catch (_) {
       if (!mounted) return;
       _castService.remoteVolumeNotifier.value = null;
       setState(() {
         _remoteVolume = null;
       });
+      unawaited(_pushMedia3UiMetadata());
     }
   }
 
@@ -753,6 +815,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     setState(() {
       _remoteVolume = volume;
     });
+    unawaited(_pushMedia3UiMetadata());
     try {
       await _castService.setVolume(kind, volume: volume);
     } catch (e) {
@@ -841,7 +904,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         }
         if (_isInPiP || _isStopping || _pipService.isScreenLocked) return;
         _videoWasDisabledByLifecycle = true;
-        _backend.setVideoEnabled(false);
+        _activeMediaKitBackend?.setVideoEnabled(false);
       case AppLifecycleState.paused:
       case AppLifecycleState.hidden:
         if (PlatformDetection.isAndroid && !PlatformDetection.isTV) {
@@ -860,7 +923,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         }
         if (_isInPiP || _isStopping || _pipService.isScreenLocked) return;
         _videoWasDisabledByLifecycle = true;
-        _backend.setVideoEnabled(false);
+        _activeMediaKitBackend?.setVideoEnabled(false);
       case AppLifecycleState.resumed:
         _didHandleBackgroundSuspend = false;
         _cancelTvBackgroundExit();
@@ -870,7 +933,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         }
         if (_videoWasDisabledByLifecycle) {
           _videoWasDisabledByLifecycle = false;
-          _backend.setVideoEnabled(true);
+          _activeMediaKitBackend?.setVideoEnabled(true);
           _restorePositionAfterScreenLock();
         }
         if (PlatformDetection.isMobile) _syncBrightnessFromSystem();
@@ -905,7 +968,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   void _onScreenLock(bool locked) {
     _lifecycleHandler.setScreenLocked(locked);
     if (locked) {
-      _positionBeforeScreenLock = _backend.position;
+      _positionBeforeScreenLock = _activeBackend?.position ?? _state.position;
       _wasPlayingBeforeScreenLock = _state.isPlaying;
       _isRestoringPosition = true;
       if (_wasPlayingBeforeScreenLock) {
@@ -929,10 +992,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         await Future.delayed(const Duration(milliseconds: 450));
         if (!mounted || _isStopping) return;
 
-        final currentPos = _backend.position;
+        final currentPos = _activeBackend?.position ?? _state.position;
         final regressed = currentPos + const Duration(seconds: 1) < pos;
         if (regressed) {
-          await _backend.seekTo(pos);
+          await _activeBackend?.seekTo(pos);
         }
       }
 
@@ -1017,6 +1080,469 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       await _segmentService.loadSegments(item.id);
     }
     _loadTrickplayInfo(item);
+    await _pushMedia3UiMetadata();
+  }
+
+  List<Map<String, dynamic>> _buildMedia3StreamInfoSections() {
+    final l10n = AppLocalizations.of(context);
+    final resolution = _manager.currentResolution;
+    final playMethod = resolution?.playMethod;
+    final methodLabel = _manager.isOfflinePlayback
+        ? l10n.directPlay
+        : switch (playMethod) {
+            StreamPlayMethod.directPlay => l10n.directPlay,
+            StreamPlayMethod.directStream => l10n.directStream,
+            StreamPlayMethod.transcode => l10n.transcoding,
+            _ => l10n.unknown,
+          };
+
+    final item = _queue.currentItem;
+    Map<String, dynamic>? mediaSource;
+    Map<String, dynamic>? videoStream;
+    Map<String, dynamic>? audioStream;
+    Map<String, dynamic>? subtitleStream;
+
+    Map<String, dynamic>? pickStream(
+      List<Map<String, dynamic>> streams,
+      String type,
+      int? preferredIndex,
+    ) {
+      if (preferredIndex != null && preferredIndex >= 0) {
+        final preferred = streams
+            .where((s) => s['Type'] == type)
+            .firstWhere(
+              (s) => s['Index'] == preferredIndex,
+              orElse: () => const <String, dynamic>{},
+            );
+        if (preferred.isNotEmpty) {
+          return preferred;
+        }
+      }
+
+      return streams
+              .where((s) => s['Type'] == type && s['IsDefault'] == true)
+              .firstOrNull ??
+          streams.where((s) => s['Type'] == type).firstOrNull;
+    }
+
+    void populateStreams(List<Map<String, dynamic>> streams) {
+      videoStream = streams.where((s) => s['Type'] == 'Video').firstOrNull;
+      audioStream = pickStream(streams, 'Audio', _manager.audioStreamIndex);
+      subtitleStream = _manager.subtitleStreamIndex == -1
+          ? null
+          : pickStream(streams, 'Subtitle', _manager.subtitleStreamIndex);
+    }
+
+    if (item is AggregatedItem) {
+      final streams = resolution?.mediaStreams ?? item.mediaStreams;
+      populateStreams(streams);
+
+      final sourceId = resolution?.mediaSourceId;
+      final sources = item.mediaSources;
+      if (sourceId != null && sources.isNotEmpty) {
+        mediaSource = sources.firstWhere(
+          (s) => s['Id'] == sourceId,
+          orElse: () => sources.first,
+        );
+      } else if (sources.isNotEmpty) {
+        mediaSource = sources.first;
+      }
+    } else if (item is String) {
+      final meta = _manager.currentOfflineMetadata;
+      if (meta != null) {
+        final streams =
+            (meta['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ??
+            [];
+        populateStreams(streams);
+        final sources = meta['MediaSources'] as List?;
+        if (sources != null && sources.isNotEmpty) {
+          mediaSource = sources.first as Map<String, dynamic>?;
+        }
+      }
+    }
+
+    final container =
+        (mediaSource?['Container'] as String?)?.toUpperCase() ?? l10n.unknown;
+    final bitrate = mediaSource?['Bitrate'] as int?;
+    final overrideMbps = _manager.maxBitrateOverrideMbps;
+
+    String effectiveBitrateText() {
+      if (overrideMbps != null) {
+        return l10n.bitrateValueMbps(overrideMbps);
+      }
+      return _formatBitrate(bitrate);
+    }
+
+    Map<String, dynamic> row(String label, String value, {bool highlight = false}) {
+      return {
+        'label': label,
+        'value': value,
+        'highlight': highlight,
+      };
+    }
+
+    final sections = <Map<String, dynamic>>[];
+
+    void addSection(String title, List<Map<String, dynamic>> rows) {
+      if (rows.isEmpty) return;
+      sections.add({
+        'title': title,
+        'rows': rows,
+      });
+    }
+
+    final playbackRows = <Map<String, dynamic>>[
+      row(l10n.playMethod, methodLabel, highlight: true),
+      if (resolution != null &&
+          playMethod == StreamPlayMethod.transcode &&
+          resolution.transcodingReasons.isNotEmpty)
+        row(
+          l10n.transcodeReasons,
+          resolution.transcodingReasons
+              .map((r) => r.replaceAllMapped(_camelCaseSpaceRe, (_) => ' '))
+              .join(', '),
+        ),
+      row(
+        l10n.player,
+        switch (_activeBackend) {
+          Media3PlayerBackend _ => 'Media3 (ExoPlayer)',
+          MediaKitPlayerBackend _ => 'media_kit (libmpv)',
+          _ => l10n.unknown,
+        },
+      ),
+      row(l10n.container, container),
+      row(l10n.bitrate, effectiveBitrateText(), highlight: overrideMbps != null),
+      if (overrideMbps != null)
+        row(
+          l10n.bitrateOverride,
+          l10n.bitrateValueMbps(overrideMbps),
+          highlight: true,
+        ),
+    ];
+    addSection(l10n.playback, playbackRows);
+
+    if (videoStream case final video?) {
+      final fps = video['RealFrameRate'] as num?;
+      final width = video['Width'];
+      final height = video['Height'];
+      final videoRows = <Map<String, dynamic>>[
+        row(
+          l10n.resolution,
+          '${width ?? '?'}×${height ?? '?'}${fps != null ? ' @ ${fps.round()}fps' : ''}',
+        ),
+        row(l10n.hdr, _getHdrType(video)),
+        row(l10n.codec, _formatVideoCodec(video)),
+        if (video['BitRate'] != null)
+          row(l10n.videoBitrate, _formatBitrate(video['BitRate'] as int?)),
+      ];
+      addSection(l10n.video, videoRows);
+    }
+
+    if (audioStream case final audio?) {
+      final audioRows = <Map<String, dynamic>>[
+        row(
+          l10n.track,
+          audio['DisplayTitle'] as String? ??
+              audio['Language'] as String? ??
+              l10n.unknown,
+        ),
+        row(l10n.codec, _formatAudioCodec(audio)),
+        row(l10n.channels, _formatChannels(audio['Channels'] as int?)),
+        if (audio['BitRate'] != null)
+          row(l10n.audioBitrate, _formatBitrate(audio['BitRate'] as int?)),
+        if (audio['SampleRate'] != null)
+          row(
+            l10n.sampleRate,
+            '${((audio['SampleRate'] as num) / 1000).toStringAsFixed(1)} kHz',
+          ),
+      ];
+      addSection(l10n.audio, audioRows);
+    }
+
+    if (subtitleStream case final subtitle?) {
+      final subtitleRows = <Map<String, dynamic>>[
+        row(
+          l10n.track,
+          subtitle['DisplayTitle'] as String? ??
+              subtitle['Language'] as String? ??
+              l10n.unknown,
+        ),
+        row(
+          l10n.format,
+          ((subtitle['Codec'] as String?) ?? l10n.unknown).toUpperCase(),
+        ),
+        row(
+          l10n.type,
+          subtitle['IsExternal'] == true ? l10n.external : l10n.embedded,
+        ),
+      ];
+      addSection(l10n.subtitles, subtitleRows);
+    }
+
+    return sections;
+  }
+
+  String _castKindLabel(CastTargetKind kind, AppLocalizations l10n) {
+    return switch (kind) {
+      CastTargetKind.googleCast => 'Google Cast',
+      CastTargetKind.airPlay => 'AirPlay',
+      CastTargetKind.dlna => 'DLNA',
+      _ => l10n.cast,
+    };
+  }
+
+  String _castStateLabel(String state, AppLocalizations l10n) {
+    final base = state.isEmpty
+        ? l10n.unknown
+        : '${state[0].toUpperCase()}${state.substring(1)}';
+    if (_remotePositionTicks <= 0) {
+      return base;
+    }
+    return '$base · ${_formatDuration(Duration(microseconds: _remotePositionTicks ~/ 10))}';
+  }
+
+  Future<List<Map<String, dynamic>>> _resolveCastPeopleForMetadata(
+    dynamic item,
+  ) async {
+    if (item is! AggregatedItem || !_hasCastCrew(item)) {
+      return const <Map<String, dynamic>>[];
+    }
+
+    final cacheKey = '${item.serverId}:${item.id}';
+    final cached = _media3CastPeopleCache[cacheKey];
+    if (cached != null) {
+      return cached;
+    }
+
+    final imageApi = _clientForItem(item).imageApi;
+    final people = await _resolveCastPeople(item);
+    final resolved = people
+        .map((person) {
+          final name = (person['Name'] as String?)?.trim() ?? '';
+          if (name.isEmpty) {
+            return null;
+          }
+          final personId = (person['Id'] as String?)?.trim() ?? '';
+          final imageTag = (person['PrimaryImageTag'] as String?)?.trim();
+          final role = (person['Role'] as String?)?.trim();
+          final type = (person['Type'] as String?)?.trim();
+          final subtitle = (role != null && role.isNotEmpty)
+              ? role
+              : ((type != null && type.isNotEmpty) ? type : '');
+
+          String imageUrl = '';
+          if (personId.isNotEmpty && imageTag != null && imageTag.isNotEmpty) {
+            imageUrl = imageApi.getPrimaryImageUrl(
+              personId,
+              maxHeight: 200,
+              tag: imageTag,
+            );
+          }
+
+          return <String, dynamic>{
+            'name': name,
+            'subtitle': subtitle,
+            'personId': personId,
+            'imageUrl': imageUrl,
+            'serverId': item.serverId,
+          };
+        })
+        .whereType<Map<String, dynamic>>()
+        .toList(growable: false);
+
+    _media3CastPeopleCache[cacheKey] = resolved;
+    return resolved;
+  }
+
+  Future<void> _openMedia3CastPerson(Map<String, dynamic> event) async {
+    final personId = (event['personId'] as String?)?.trim();
+    if (personId == null || personId.isEmpty) return;
+
+    final fromEventServerId = (event['serverId'] as String?)?.trim();
+    final fallbackServerId = _serverIdForQueueItem(_queue.currentItem);
+    final serverId =
+        (fromEventServerId != null && fromEventServerId.isNotEmpty)
+            ? fromEventServerId
+            : fallbackServerId;
+
+    await _activeMedia3Backend?.stopNativeActivity();
+    if (!mounted) return;
+
+    context.push(Destinations.item(personId, serverId: serverId));
+  }
+
+  Future<void> _pushMedia3UiMetadata() async {
+    final backend = _activeMedia3Backend;
+    if (backend == null) return;
+
+    final l10n = AppLocalizations.of(context);
+    final item = _queue.currentItem;
+    final chapters = <Map<String, dynamic>>[];
+    final streamInfoSections = _buildMedia3StreamInfoSections();
+    final hasCastCrew = _hasCastCrew(item);
+    final castPeople = await _resolveCastPeopleForMetadata(item);
+    final castKind = _castService.activeKind;
+    final canCastControl = castKind != null;
+    final castKindLabel = castKind == null ? '' : _castKindLabel(castKind, l10n);
+    final castStateLabel = _remotePlaybackState == null
+        ? ''
+        : _castStateLabel(_remotePlaybackState!, l10n);
+
+    List<Map<String, dynamic>>? rawChapters;
+    if (item is AggregatedItem) {
+      rawChapters = item.chapters;
+    } else if (item is String) {
+      rawChapters =
+          (_manager.currentOfflineMetadata?['Chapters'] as List?)
+              ?.cast<Map<String, dynamic>>();
+    }
+
+    if (rawChapters != null) {
+      for (var i = 0; i < rawChapters.length; i++) {
+        final chapter = rawChapters[i];
+        final ticks = (chapter['StartPositionTicks'] as int?) ?? 0;
+        final startMs = ticks ~/ 10000;
+        final title = (chapter['Name'] as String?)?.trim();
+        chapters.add({
+          'title':
+              (title != null && title.isNotEmpty)
+                  ? title
+                  : 'Chapter ${i + 1}',
+          'startMs': startMs,
+        });
+      }
+    }
+
+    String topTitle = '';
+    String topSubtitle = '';
+    if (item is AggregatedItem) {
+      final episodeInfo = item.indexNumber != null
+          ? 'S${item.parentIndexNumber ?? '?'}:E${item.indexNumber}'
+          : null;
+      topSubtitle = item.seriesName ?? '';
+      topTitle = [
+        ?episodeInfo,
+        item.name,
+      ].where((s) => s.isNotEmpty).join(' - ');
+    } else if (item is Map) {
+      final title = (item['Name'] as String?) ?? '';
+      final series = (item['SeriesName'] as String?) ?? '';
+      final idx = item['IndexNumber'];
+      final episodeInfo = idx != null
+          ? 'S${item['ParentIndexNumber'] ?? '?'}:E$idx'
+          : null;
+      topSubtitle = series;
+      topTitle = [
+        ?episodeInfo,
+        title,
+      ].where((s) => s.isNotEmpty).join(' - ');
+    } else if (item is String) {
+      final meta = _manager.currentOfflineMetadata;
+      final title = (meta?['Name'] as String?) ?? item.split('/').last;
+      final series = (meta?['SeriesName'] as String?) ?? '';
+      final idx = meta?['IndexNumber'] as int?;
+      final parentIdx = meta?['ParentIndexNumber'] as int?;
+      final episodeInfo = idx != null ? 'S${parentIdx ?? '?'}:E$idx' : null;
+      topSubtitle = series;
+      topTitle = [
+        ?episodeInfo,
+        title,
+      ].where((s) => s.isNotEmpty).join(' - ');
+    }
+
+    final showClock =
+        _prefs.get(UserPreferences.clockBehavior) == ClockBehavior.always;
+
+    await backend.setUiMetadata(
+      hasPrevious: _queue.hasPrevious,
+      hasNext: _queue.hasNext,
+      chapters: chapters,
+      skipBackMs: _prefs.get(UserPreferences.skipBackLength),
+      skipForwardMs: _prefs.get(UserPreferences.skipForwardLength),
+      topTitle: topTitle,
+      topSubtitle: topSubtitle,
+      showClock: showClock,
+      zoomModeLabel: _zoomModeLabel(_zoomMode),
+      streamInfoSections: streamInfoSections,
+      hasCastCrew: hasCastCrew,
+      castPeople: castPeople,
+      canCastControl: canCastControl,
+      castKindLabel: castKindLabel,
+      castStateLabel: castStateLabel,
+      castPositionMs: _remotePositionTicks ~/ 10000,
+      castVolume: _remoteVolume,
+      selectedBitrateMbps: _manager.maxBitrateOverrideMbps,
+    );
+  }
+
+  void _onMedia3ActivityAction(Map<String, dynamic> event) {
+    if (!mounted || _activeMedia3Backend == null) {
+      return;
+    }
+
+    final action = event['action'] as String?;
+    switch (action) {
+      case 'next':
+        unawaited(
+          _runSinglePlayerMutation(
+            'native_activity_next',
+            () async => _manager.next(),
+            suppressBackFor: const Duration(milliseconds: 500),
+          ),
+        );
+        return;
+      case 'previous':
+        unawaited(
+          _runSinglePlayerMutation(
+            'native_activity_previous',
+            () async => _manager.previous(),
+            suppressBackFor: const Duration(milliseconds: 500),
+          ),
+        );
+        return;
+      case 'setBitrate':
+        final raw = event['bitrateMbps'];
+        final selectedBitrate = raw is num ? raw.toInt() : null;
+        _manager.changeBitrate(selectedBitrate);
+        unawaited(_pushMedia3UiMetadata());
+        return;
+      case 'toggleZoom':
+        final modes = ZoomMode.values;
+        final next = modes[(_zoomMode.index + 1) % modes.length];
+        setState(() => _zoomMode = next);
+        _prefs.set(UserPreferences.playerZoomMode, next);
+        _showZoomModeToast(next);
+        unawaited(_syncMedia3ZoomMode());
+        unawaited(_pushMedia3UiMetadata());
+        return;
+      case 'castPlay':
+        unawaited(_runCastAction((k) => _castService.play(k)));
+        return;
+      case 'castPause':
+        unawaited(_runCastAction((k) => _castService.pause(k)));
+        return;
+      case 'castSyncPosition':
+        final positionTicks = _state.position.inMicroseconds * 10;
+        unawaited(_runCastAction((k) => _castService.seek(k, positionTicks: positionTicks)));
+        return;
+      case 'castStop':
+        unawaited(_runCastAction((k) => _castService.stop(k)));
+        return;
+      case 'castSetVolume':
+        final raw = event['volume'];
+        if (raw is num) {
+          unawaited(_setRemoteVolume(raw.toDouble().clamp(0.0, 1.0)));
+        }
+        return;
+      case 'showCastCrew':
+        unawaited(_showCast());
+        return;
+      case 'openCastPerson':
+        unawaited(_openMedia3CastPerson(event));
+        return;
+      default:
+        return;
+    }
   }
 
   void _loadTrickplayInfo(dynamic item) {
@@ -1056,6 +1582,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   void _onPositionUpdate(Duration position) {
     if (!mounted || _isSeeking || _isRestoringPosition) return;
+    if (PlatformDetection.useNativeVideoSurface) {
+      _syncSubtitleActive();
+    }
     _refreshTrickplayIfNeeded();
     _syncAirPlayPlaybackState(position: position);
     _checkSegments(position);
@@ -1447,13 +1976,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _applySubtitleStyle() {
-    _backend.configureSubtitleStyle(
-      textColor: _prefs.get(UserPreferences.subtitlesTextColor),
-      backgroundColor: _prefs.get(UserPreferences.subtitlesBackgroundColor),
-      strokeColor: _prefs.get(UserPreferences.subtitleTextStrokeColor),
-      fontSize: _prefs.get(UserPreferences.subtitlesTextSize),
-      fontWeight: _prefs.get(UserPreferences.subtitlesTextWeight),
-      verticalOffset: _prefs.get(UserPreferences.subtitlesOffsetPosition),
+    final backend = _activeBackend;
+    if (backend == null) return;
+    unawaited(
+      backend.configureSubtitleStyle(
+        textColor: _prefs.get(UserPreferences.subtitlesTextColor),
+        backgroundColor: _prefs.get(UserPreferences.subtitlesBackgroundColor),
+        strokeColor: _prefs.get(UserPreferences.subtitleTextStrokeColor),
+        fontSize: _prefs.get(UserPreferences.subtitlesTextSize),
+        fontWeight: _prefs.get(UserPreferences.subtitlesTextWeight),
+        verticalOffset: _prefs.get(UserPreferences.subtitlesOffsetPosition),
+      ),
     );
   }
 
@@ -1843,22 +2376,102 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     ZoomMode.stretch => BoxFit.fill,
   };
 
+  void _syncSubtitleActive() {
+    if (!PlatformDetection.useNativeVideoSurface || !mounted) return;
+    final active = (_manager.subtitleStreamIndex ?? -1) >= 0;
+    if (active != _subtitleActive) {
+      setState(() {
+        _subtitleActive = active;
+      });
+    }
+  }
+
+  void _onVoReady() {
+    if (!mounted || !_subtitleActive) return;
+    final idx = _manager.subtitleStreamIndex;
+    if (idx == null || idx < 0) return;
+    unawaited(_manager.changeSubtitleTrack(idx));
+    if (_subtitleReapplyRetryScheduled || _state.duration > Duration.zero) {
+      return;
+    }
+    _subtitleReapplyRetryScheduled = true;
+    unawaited(
+      Future<void>.delayed(const Duration(milliseconds: 250)).then((_) async {
+        _subtitleReapplyRetryScheduled = false;
+        if (!mounted || !_subtitleActive || _state.duration > Duration.zero) {
+          return;
+        }
+        final retryIdx = _manager.subtitleStreamIndex;
+        if (retryIdx == null || retryIdx < 0) return;
+        await _manager.changeSubtitleTrack(retryIdx);
+      }),
+    );
+  }
+
   Widget _buildVideoSurface() {
+    final prefersMedia3 =
+        _prefs.get(UserPreferences.playbackEnginePreference) ==
+        PlaybackEnginePreference.media3;
+    final prewarmMedia3 = _activeBackend == null && prefersMedia3;
+    if (_activeMedia3Backend != null || prewarmMedia3) {
+      return const Positioned.fill(
+        child: Media3VideoView(fill: Colors.black),
+      );
+    }
+
+    final mediaKitBackend = _activeMediaKitBackend ?? _backend;
+    final selectedVo = _subtitleActive ? 'gpu' : 'mediacodec_embed';
+    if (PlatformDetection.useNativeVideoSurface) {
+      return Positioned.fill(
+        child: NativeVideoView(
+          player: mediaKitBackend.player,
+          zoomMode: _nativeZoomMode(_zoomMode),
+          fill: Colors.black,
+          videoOutput: selectedVo,
+          onVoReady: _onVoReady,
+        ),
+      );
+    }
+
     return Positioned.fill(
       child: LayoutBuilder(
-        builder: (context, constraints) => Video(
-          controller: _backend.videoController,
-          controls: NoVideoControls,
-          width: constraints.maxWidth,
-          height: constraints.maxHeight,
-          fit: _zoomToFit(_zoomMode),
-          fill: Colors.black,
-          pauseUponEnteringBackgroundMode:
-              !PlatformDetection.isIOS && !PlatformDetection.isAndroid,
-          subtitleViewConfiguration: _buildSubtitleConfig(),
-        ),
+        builder: (context, constraints) {
+          final controller = mediaKitBackend.videoController;
+          if (controller == null) {
+            return const ColoredBox(color: Colors.black);
+          }
+          return Video(
+            controller: controller,
+            controls: NoVideoControls,
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+            fit: _zoomToFit(_zoomMode),
+            fill: Colors.black,
+            pauseUponEnteringBackgroundMode:
+                !PlatformDetection.isIOS && !PlatformDetection.isAndroid,
+            subtitleViewConfiguration: _buildSubtitleConfig(),
+          );
+        },
       ),
     );
+  }
+
+  NativeVideoZoomMode _nativeZoomMode(ZoomMode mode) => switch (mode) {
+    ZoomMode.fit => NativeVideoZoomMode.fit,
+    ZoomMode.autoCrop => NativeVideoZoomMode.crop,
+    ZoomMode.stretch => NativeVideoZoomMode.stretch,
+  };
+
+  String _media3ZoomModeWire(ZoomMode mode) => switch (mode) {
+    ZoomMode.fit => 'fit',
+    ZoomMode.autoCrop => 'crop',
+    ZoomMode.stretch => 'stretch',
+  };
+
+  Future<void> _syncMedia3ZoomMode() async {
+    final backend = _activeMedia3Backend;
+    if (backend == null) return;
+    await backend.setZoomMode(_media3ZoomModeWire(_zoomMode));
   }
 
   Widget _buildBufferingIndicator() {
@@ -3579,6 +4192,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       if (result == null || !mounted) return;
       final selectedBitrate = options[result];
       _manager.changeBitrate(selectedBitrate);
+      unawaited(_pushMedia3UiMetadata());
     }());
     _showControls();
   }
@@ -3691,6 +4305,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       if (!audio) {
         if (result == 0) {
           await _runSinglePlayerMutation('subtitles_off', _manager.disableSubtitles);
+          _syncSubtitleActive();
           return;
         }
         final streamIdx = result - 1;
@@ -3704,6 +4319,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             'subtitle_$streamIndex',
             () => _manager.changeSubtitleTrack(streamIndex),
           );
+          _syncSubtitleActive();
         }
       } else {
         if (result < streams.length) {
@@ -3738,6 +4354,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         setState(() => _zoomMode = next);
         _prefs.set(UserPreferences.playerZoomMode, next);
         _showZoomModeToast(next);
+        unawaited(_syncMedia3ZoomMode());
+        unawaited(_pushMedia3UiMetadata());
       },
       tooltip: tooltip,
     );
@@ -4223,80 +4841,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   void _showStreamInfo() {
     final l10n = AppLocalizations.of(context);
-    final resolution = _manager.currentResolution;
-    final playMethod = resolution?.playMethod;
-    final methodLabel = _manager.isOfflinePlayback
-        ? l10n.directPlay
-        : switch (playMethod) {
-            StreamPlayMethod.directPlay => l10n.directPlay,
-            StreamPlayMethod.directStream => l10n.directStream,
-            StreamPlayMethod.transcode => l10n.transcoding,
-            _ => l10n.unknown,
-          };
-
-    final item = _queue.currentItem;
-    Map<String, dynamic>? mediaSource;
-    Map<String, dynamic>? videoStream;
-    Map<String, dynamic>? audioStream;
-    Map<String, dynamic>? subtitleStream;
-
-    Map<String, dynamic>? pickStream(
-      List<Map<String, dynamic>> streams,
-      String type,
-      int? preferredIndex,
-    ) {
-      if (preferredIndex != null && preferredIndex >= 0) {
-        final preferred = streams
-            .where((s) => s['Type'] == type)
-            .firstWhere(
-              (s) => s['Index'] == preferredIndex,
-              orElse: () => const <String, dynamic>{},
-            );
-        if (preferred.isNotEmpty) {
-          return preferred;
-        }
-      }
-
-      return streams
-              .where((s) => s['Type'] == type && s['IsDefault'] == true)
-              .firstOrNull ??
-          streams.where((s) => s['Type'] == type).firstOrNull;
-    }
-
-    void populateStreams(List<Map<String, dynamic>> streams) {
-      videoStream = streams.where((s) => s['Type'] == 'Video').firstOrNull;
-      audioStream = pickStream(streams, 'Audio', _manager.audioStreamIndex);
-      subtitleStream = _manager.subtitleStreamIndex == -1
-          ? null
-          : pickStream(streams, 'Subtitle', _manager.subtitleStreamIndex);
-    }
-
-    if (item is AggregatedItem) {
-      final streams = resolution?.mediaStreams ?? item.mediaStreams;
-      populateStreams(streams);
-
-      final sourceId = resolution?.mediaSourceId;
-      final sources = item.mediaSources;
-      if (sourceId != null && sources.isNotEmpty) {
-        mediaSource = sources.firstWhere(
-          (s) => s['Id'] == sourceId,
-          orElse: () => sources.first,
-        );
-      } else if (sources.isNotEmpty) {
-        mediaSource = sources.first;
-      }
-    } else if (item is String) {
-      final meta = _manager.currentOfflineMetadata;
-      if (meta != null) {
-        final streams =
-            (meta['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ?? [];
-        populateStreams(streams);
-        final sources = meta['MediaSources'] as List?;
-        if (sources != null && sources.isNotEmpty) {
-          mediaSource = sources.first as Map<String, dynamic>?;
-        }
-      }
-    }
+    final streamInfoSections = _buildMedia3StreamInfoSections();
 
     const headerStyle = TextStyle(
       color: Colors.white,
@@ -4345,18 +4890,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       );
     }
 
-    final container =
-        (mediaSource?['Container'] as String?)?.toUpperCase() ?? l10n.unknown;
-    final bitrate = mediaSource?['Bitrate'] as int?;
-    final overrideMbps = _manager.maxBitrateOverrideMbps;
-
-    String effectiveBitrateText() {
-      if (overrideMbps != null) {
-        return l10n.bitrateValueMbps(overrideMbps);
-      }
-      return _formatBitrate(bitrate);
-    }
-
     Widget body(ScrollController controller) {
       return Focus(
         autofocus: true,
@@ -4396,80 +4929,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         },
         child: ListView(
           controller: controller,
-        children: [
-            sectionHeader(l10n.playback),
-            infoRow(l10n.playMethod, methodLabel, highlight: true),
-            if (resolution != null &&
-                playMethod == StreamPlayMethod.transcode &&
-                resolution.transcodingReasons.isNotEmpty)
-              infoRow(
-                l10n.transcodeReasons,
-                resolution.transcodingReasons
-                    .map((r) => r.replaceAllMapped(_camelCaseSpaceRe, (_) => ' '))
-                    .join(', '),
-              ),
-            infoRow(l10n.player, 'media_kit (libmpv)'),
-            infoRow(l10n.container, container),
-            infoRow(l10n.bitrate, effectiveBitrateText(), highlight: overrideMbps != null),
-            if (overrideMbps != null)
-              infoRow(
-                l10n.bitrateOverride,
-                l10n.bitrateValueMbps(overrideMbps),
-                highlight: true,
-              ),
-
-            if (videoStream case final video?) ...[
-              sectionHeader(l10n.video),
-              infoRow(
-                l10n.resolution,
-                '${video['Width']}×${video['Height']}'
-                '${video['RealFrameRate'] != null ? ' @ ${(video['RealFrameRate'] as num).round()}fps' : ''}',
-              ),
-              infoRow(l10n.hdr, _getHdrType(video)),
-              infoRow(l10n.codec, _formatVideoCodec(video)),
-              if (video['BitRate'] != null)
-                infoRow(l10n.videoBitrate, _formatBitrate(video['BitRate'] as int?)),
+          children: [
+            for (final section in streamInfoSections) ...[
+              sectionHeader((section['title'] as String?) ?? l10n.unknown),
+              ...(((section['rows'] as List?) ?? const <dynamic>[])
+                  .whereType<Map>()
+                  .map((rawRow) {
+                    final row = rawRow.map(
+                      (key, value) => MapEntry(key.toString(), value),
+                    );
+                    return infoRow(
+                      row['label']?.toString() ?? l10n.unknown,
+                      row['value']?.toString() ?? l10n.unknown,
+                      highlight: row['highlight'] == true,
+                    );
+                  })),
             ],
-
-            if (audioStream case final audio?) ...[
-              sectionHeader(l10n.audio),
-              infoRow(
-                l10n.track,
-                audio['DisplayTitle'] as String? ??
-                    audio['Language'] as String? ??
-                    l10n.unknown,
-              ),
-              infoRow(l10n.codec, _formatAudioCodec(audio)),
-              infoRow(l10n.channels, _formatChannels(audio['Channels'] as int?)),
-              if (audio['BitRate'] != null)
-                infoRow(l10n.audioBitrate, _formatBitrate(audio['BitRate'] as int?)),
-              if (audio['SampleRate'] != null)
-                infoRow(
-                  l10n.sampleRate,
-                  '${((audio['SampleRate'] as num) / 1000).toStringAsFixed(1)} kHz',
-                ),
-            ],
-
-            if (subtitleStream case final subtitle?) ...[
-              sectionHeader(l10n.subtitles),
-              infoRow(
-                l10n.track,
-                subtitle['DisplayTitle'] as String? ??
-                    subtitle['Language'] as String? ??
-                    l10n.unknown,
-              ),
-              infoRow(
-                l10n.format,
-                ((subtitle['Codec'] as String?) ?? l10n.unknown).toUpperCase(),
-              ),
-              infoRow(
-                l10n.type,
-                subtitle['IsExternal'] == true ? l10n.external : l10n.embedded,
-              ),
-            ],
-
             const SizedBox(height: AppSpacing.spaceLg),
-        ],
+          ],
         ),
       );
     }

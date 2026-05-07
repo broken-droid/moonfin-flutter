@@ -1724,6 +1724,32 @@ class _VideoPlaybackScreen extends StatelessWidget {
               ZoomMode.stretch => 'Stretch',
             },
           ),
+          if (PlatformDetection.isAndroid && PlatformDetection.isTV)
+            EnumPreferenceTile<PlaybackEnginePreference>(
+              preference: UserPreferences.playbackEnginePreference,
+              title: 'Playback Engine (Android TV)',
+              description:
+                  'Choose the default playback engine on Android TV devices. '
+                  'Changes apply to the next playback session.',
+              icon: Icons.video_settings,
+              labelOf: (v) => switch (v) {
+                PlaybackEnginePreference.media3 => 'Media3 (recommended)',
+                PlaybackEnginePreference.mpv => 'mpv (legacy)',
+              },
+            ),
+          if (PlatformDetection.isAndroid && PlatformDetection.isTV)
+            EnumPreferenceTile<DolbyVisionFallbackBehavior>(
+              preference: UserPreferences.dolbyVisionFallbackBehavior,
+              title: 'Dolby Vision Fallback',
+              description:
+                  'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.',
+              icon: Icons.hdr_strong,
+              labelOf: (v) => switch (v) {
+                DolbyVisionFallbackBehavior.ask => 'Ask each time',
+                DolbyVisionFallbackBehavior.hdr10Fallback => 'Prefer HDR10 fallback',
+                DolbyVisionFallbackBehavior.transcode => 'Prefer server transcode',
+              },
+            ),
           SwitchPreferenceTile(
             preference: UserPreferences.hardwareDecoding,
             title: 'Hardware Decoding',
