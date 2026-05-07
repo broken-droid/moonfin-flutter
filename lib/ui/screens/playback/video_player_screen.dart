@@ -245,6 +245,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     return raw?['__moonfinIsPreroll'] == true;
   }
 
+  bool get _isCurrentPreroll => _isPrerollQueueItem(_queue.currentItem);
+
+  void _syncPrerollOsdState() {
+    if (!_isCurrentPreroll) return;
+    _hideTimer?.cancel();
+    if (!_controlsVisible && !_isOsdLocked) return;
+    setState(() {
+      _controlsVisible = false;
+      _isOsdLocked = false;
+    });
+  }
+
   bool _canDownloadRemoteSubtitles(AggregatedItem item) {
     final client = _clientForItem(item);
     final user = GetIt.instance<UserRepository>().currentUser;
@@ -601,11 +613,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _manager.suppressAutoNext = false;
       _consecutiveEpisodes++;
       unawaited(_pushMedia3UiMetadata());
+      final isPreroll = _isCurrentPreroll;
       setState(() {
         _nextUpDismissed = false;
         _showNextUp = false;
         _skipSegment = null;
+        if (isPreroll) {
+          _controlsVisible = false;
+          _isOsdLocked = false;
+        }
       });
+      if (isPreroll) {
+        _hideTimer?.cancel();
+      }
     });
 
     _media3ActivityActionSub = Media3PlayerBackend.activityActionStream.listen(
@@ -1830,6 +1850,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _showControls({bool focusSeekbar = false}) {
+    if (_isCurrentPreroll) {
+      _syncPrerollOsdState();
+      return;
+    }
     setState(() => _controlsVisible = true);
     _scheduleHide();
     if (focusSeekbar) {
@@ -1838,6 +1862,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _toggleControls() {
+    if (_isCurrentPreroll) {
+      _syncPrerollOsdState();
+      return;
+    }
     if (_isOsdLocked) {
       _showControls();
       return;
@@ -2242,6 +2270,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   @override
   Widget build(BuildContext context) {
+    final hideOsdForPreroll = _isCurrentPreroll;
     if (_isInPiP) {
       return Scaffold(
         backgroundColor: Colors.black,
@@ -2316,7 +2345,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                       child: ColoredBox(color: Colors.black),
                     ),
                   _buildPausedDescriptionOverlay(),
-                  if (_controlsVisible && !_isOsdLocked) ...[
+                  if (_controlsVisible && !_isOsdLocked && !hideOsdForPreroll) ...[
                     _buildTopOverlay(context),
                     _buildBottomOverlay(context),
                     if (!PlatformDetection.useLeanbackUi)
@@ -2329,7 +2358,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   _buildVolumeOverlay(),
                   if (PlatformDetection.useMobileUi) _buildBrightnessOverlay(),
                   if (PlatformDetection.useMobileUi) _buildDoubleTapSkipOverlay(),
-                  if (_isOsdLocked) _buildLockedOverlay(),
+                  if (_isOsdLocked && !hideOsdForPreroll) _buildLockedOverlay(),
                   if (_skipSegment != null)
                     SkipSegmentOverlay(
                       segment: _skipSegment!,

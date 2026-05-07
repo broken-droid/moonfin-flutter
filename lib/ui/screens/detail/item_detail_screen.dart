@@ -3723,6 +3723,58 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
   }
 
+  MediaServerClient _clientForItem(AggregatedItem item) {
+    final clientFactory = GetIt.instance<MediaServerClientFactory>();
+    final defaultClient = GetIt.instance<MediaServerClient>();
+    if (item.serverId.isEmpty) {
+      return defaultClient;
+    }
+    return clientFactory.getClientIfExists(item.serverId) ?? defaultClient;
+  }
+
+  Future<List<AggregatedItem>> _moviePrerollsForStart(
+    AggregatedItem item,
+    Duration startPosition,
+  ) async {
+    if (item.type != 'Movie') {
+      return const [];
+    }
+    if (startPosition > Duration.zero) {
+      return const [];
+    }
+    if (!GetIt.instance<UserPreferences>().get(UserPreferences.cinemaModeEnabled)) {
+      return const [];
+    }
+
+    try {
+      final client = _clientForItem(item);
+      final intros = await client.itemsApi.getIntros(item.id);
+      if (intros.isEmpty) {
+        return const [];
+      }
+
+      final prerolls = <AggregatedItem>[];
+      for (final raw in intros) {
+        final id = raw['Id'] as String?;
+        if (id == null || id.isEmpty) {
+          continue;
+        }
+        final prerollRaw = Map<String, dynamic>.from(raw)
+          ..['__moonfinIsPreroll'] = true;
+        prerolls.add(
+          AggregatedItem(
+            id: id,
+            serverId: item.serverId,
+            rawData: prerollRaw,
+          ),
+        );
+      }
+      return prerolls;
+    } catch (_) {
+      return const [];
+    }
+  }
+
   Future<void> _playInternal(
     BuildContext context,
     AggregatedItem item, {
@@ -3855,6 +3907,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
           default:
             final startPosition =
                 resume ? (item.playbackPosition ?? Duration.zero) : Duration.zero;
+            final prerolls = await _moviePrerollsForStart(item, startPosition);
+            if (!context.mounted) return;
+            final applyMainItemStreamOverrides = prerolls.isEmpty;
+            final queue =
+                prerolls.isEmpty ? <AggregatedItem>[item] : <AggregatedItem>[...prerolls, item];
             final forceTranscode = !isAudio &&
                 await _shouldForceTranscodeForDolbyVision(
                   context,
@@ -3862,11 +3919,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
                   mediaSourceId: widget.selectedMediaSourceId,
                 );
             await manager.playItems(
-              [item],
+              queue,
               startPosition: startPosition,
-              audioStreamIndex: audioStreamIndex,
-              subtitleStreamIndex: subtitleStreamIndex,
-              mediaSourceId: widget.selectedMediaSourceId,
+              audioStreamIndex: applyMainItemStreamOverrides ? audioStreamIndex : null,
+              subtitleStreamIndex: applyMainItemStreamOverrides ? subtitleStreamIndex : null,
+              mediaSourceId: applyMainItemStreamOverrides ? widget.selectedMediaSourceId : null,
               enableDirectPlay: !forceTranscode,
               enableDirectStream: !forceTranscode,
             );
