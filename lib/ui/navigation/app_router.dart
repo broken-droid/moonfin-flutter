@@ -100,6 +100,21 @@ bool _isOfflineAllowed(String path) {
   return false;
 }
 
+CustomTransitionPage<T> _opaqueFullScreenPage<T>({
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    opaque: true,
+    barrierColor: Colors.black,
+    transitionDuration: Duration.zero,
+    reverseTransitionDuration: Duration.zero,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
+    child: child,
+  );
+}
+
 final appRouter = GoRouter(
   initialLocation: Destinations.startup,
   observers: [FocusRouteObserver(), routeLifecycleObserver],
@@ -326,11 +341,14 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: 'player',
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final extra = state.extra as Map<String, dynamic>;
-            return LiveTvPlayerScreen(
-              channels: extra['channels'] as List<GuideChannel>,
-              startIndex: extra['startIndex'] as int,
+            return _opaqueFullScreenPage<void>(
+              state: state,
+              child: LiveTvPlayerScreen(
+                channels: extra['channels'] as List<GuideChannel>,
+                startIndex: extra['startIndex'] as int,
+              ),
             );
           },
         ),
@@ -340,7 +358,10 @@ final appRouter = GoRouter(
     // Playback
     GoRoute(
       path: Destinations.videoPlayer,
-      builder: (context, state) => const VideoPlayerScreen(),
+      pageBuilder: (context, state) => _opaqueFullScreenPage<void>(
+        state: state,
+        child: const VideoPlayerScreen(),
+      ),
     ),
     GoRoute(
       path: Destinations.audioPlayer,
