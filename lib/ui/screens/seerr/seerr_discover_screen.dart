@@ -705,6 +705,13 @@ class _GenreCardState extends State<_GenreCard> with FocusStateMixin {
     return Focus(
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
+      onKeyEvent: (_, event) {
+        if (!event.logicalKey.isSelectKey) return KeyEventResult.ignored;
+        if (event is KeyDownEvent) {
+          widget.onTap?.call();
+        }
+        return KeyEventResult.handled;
+      },
       onFocusChange: (focused) {
         setFocused(focused);
         if (focused) {
@@ -822,6 +829,13 @@ class _LogoCardState extends State<_LogoCard> with FocusStateMixin {
     return Focus(
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
+      onKeyEvent: (_, event) {
+        if (!event.logicalKey.isSelectKey) return KeyEventResult.ignored;
+        if (event is KeyDownEvent) {
+          widget.onTap?.call();
+        }
+        return KeyEventResult.handled;
+      },
       onFocusChange: (focused) {
         setFocused(focused);
         if (focused) {
