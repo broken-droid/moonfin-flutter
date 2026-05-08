@@ -125,14 +125,8 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
         title: Text(l10n.removeServer),
         content: Text(l10n.removeServerConfirmation(server.name)),
         actions: [
-          TextButton(
-            onPressed: () => ctx.pop(false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => ctx.pop(true),
-            child: Text(l10n.remove),
-          ),
+          TextButton(onPressed: () => ctx.pop(false), child: Text(l10n.cancel)),
+          TextButton(onPressed: () => ctx.pop(true), child: Text(l10n.remove)),
         ],
       ),
     );
@@ -157,27 +151,25 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
         softWrap: false,
         overflow: TextOverflow.fade,
       ),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 12,
-        ),
-      ).copyWith(
-        side: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.focused) ||
-              states.contains(WidgetState.hovered)) {
-            return const BorderSide(color: _kAccent, width: 2);
-          }
-          return BorderSide(color: Colors.white.withValues(alpha: 0.2));
-        }),
-        foregroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.focused) ||
-              states.contains(WidgetState.hovered)) {
-            return _kAccent;
-          }
-          return Colors.white.withValues(alpha: 0.8);
-        }),
-      ),
+      style:
+          OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          ).copyWith(
+            side: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.focused) ||
+                  states.contains(WidgetState.hovered)) {
+                return const BorderSide(color: _kAccent, width: 2);
+              }
+              return BorderSide(color: Colors.white.withValues(alpha: 0.2));
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.focused) ||
+                  states.contains(WidgetState.hovered)) {
+                return _kAccent;
+              }
+              return Colors.white.withValues(alpha: 0.8);
+            }),
+          ),
     );
   }
 
@@ -317,8 +309,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: _FocusableTile(
-        onTap: () =>
-            context.go('${Destinations.server}?serverId=${server.id}'),
+        onTap: () => context.go('${Destinations.server}?serverId=${server.id}'),
         onLongPress: () => _deleteServer(server),
         child: Row(
           children: [
@@ -489,6 +480,7 @@ class _AddServerDialogState extends State<_AddServerDialog> {
 
   bool _isConnecting = false;
   String? _errorMessage;
+  bool _dialogDismissed = false;
 
   @override
   void initState() {
@@ -507,6 +499,25 @@ class _AddServerDialogState extends State<_AddServerDialog> {
     super.dispose();
   }
 
+  void _dismissDialog({bool suppressNextPopRoute = false}) {
+    if (_dialogDismissed || !mounted) return;
+    _dialogDismissed = true;
+    if (suppressNextPopRoute) {
+      DialogBackSuppressor.markDismissed();
+    }
+
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
+      return;
+    }
+
+    final rootNavigator = Navigator.of(context, rootNavigator: true);
+    if (rootNavigator.canPop()) {
+      rootNavigator.pop();
+    }
+  }
+
   Future<void> _submit() async {
     final address = widget.controller.text.trim();
     if (address.isEmpty) return;
@@ -520,7 +531,7 @@ class _AddServerDialogState extends State<_AddServerDialog> {
       final server = await widget.serverRepo.addServer(address);
       if (!mounted) return;
       if (server != null) {
-        Navigator.of(context).pop();
+        _dismissDialog();
       } else {
         _showError(widget.l10n.unableToConnectToServer);
       }
@@ -541,7 +552,7 @@ class _AddServerDialogState extends State<_AddServerDialog> {
   }
 
   void _cancel() {
-    Navigator.of(context).pop();
+    _dismissDialog();
   }
 
   KeyEventResult _onDialogKey(FocusNode node, KeyEvent event) {
@@ -555,9 +566,10 @@ class _AddServerDialogState extends State<_AddServerDialog> {
         if (PlatformDetection.isTV &&
             (_tvFieldKey.currentState?.isKeyboardVisible ?? false)) {
           _tvFieldKey.currentState?.closeKeyboard();
+          _addressFocus.requestFocus();
           return KeyEventResult.handled;
         }
-        _cancel();
+        _dismissDialog(suppressNextPopRoute: true);
         return KeyEventResult.handled;
       }
       return KeyEventResult.ignored;
@@ -570,8 +582,7 @@ class _AddServerDialogState extends State<_AddServerDialog> {
     final onConnect = _connectFocus.hasFocus;
 
     if (onField) {
-      if (key == LogicalKeyboardKey.enter ||
-          key == LogicalKeyboardKey.select) {
+      if (key == LogicalKeyboardKey.enter || key == LogicalKeyboardKey.select) {
         _tvFieldKey.currentState?.openKeyboard();
         return KeyEventResult.handled;
       }
@@ -691,7 +702,11 @@ class _AddServerDialogState extends State<_AddServerDialog> {
       onPressed: _isConnecting ? null : _submit,
       style: _actionStyle(),
       child: _isConnecting
-          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
           : Text(widget.l10n.connect),
     );
 

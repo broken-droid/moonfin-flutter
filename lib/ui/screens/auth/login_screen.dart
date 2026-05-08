@@ -25,8 +25,14 @@ const _kAccent = Color(0xFF00A4DC);
 class LoginScreen extends StatefulWidget {
   final String serverId;
   final String? prefillUsername;
+  final bool hasPassword;
 
-  const LoginScreen({super.key, required this.serverId, this.prefillUsername});
+  const LoginScreen({
+    super.key,
+    required this.serverId,
+    this.prefillUsername,
+    this.hasPassword = true,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -63,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _quickConnectSecret;
 
   bool get _hasUsername => widget.prefillUsername != null;
+  bool get _hasPassword => widget.hasPassword;
 
   @override
   void initState() {
@@ -89,47 +96,41 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _setupFocusHandlers() {
-    _usernameFocus.onKeyEvent =
-        (node, event) {
-          if (_handleTvFieldOpen(event, _usernameFocus)) {
-            return KeyEventResult.handled;
-          }
-          return _verticalNav(
-            event,
-            up: _supportsQuickConnect ? _pwBtnFocus : null,
-            down: _passwordFocus,
-          );
-        };
-    _passwordFocus.onKeyEvent =
-        (node, event) {
-          if (_handleTvFieldOpen(event, _passwordFocus)) {
-            return KeyEventResult.handled;
-          }
-          return _verticalNav(
-            event,
-            up:
-                _hasUsername
-                    ? (_supportsQuickConnect ? _pwBtnFocus : null)
-                    : _usernameFocus,
-            down: _signInFocus,
-          );
-        };
+    _usernameFocus.onKeyEvent = (node, event) {
+      if (_handleTvFieldOpen(event, _usernameFocus)) {
+        return KeyEventResult.handled;
+      }
+      return _verticalNav(
+        event,
+        up: _supportsQuickConnect ? _pwBtnFocus : null,
+        down: _hasPassword ? _passwordFocus : _signInFocus,
+      );
+    };
+    _passwordFocus.onKeyEvent = (node, event) {
+      if (_handleTvFieldOpen(event, _passwordFocus)) {
+        return KeyEventResult.handled;
+      }
+      return _verticalNav(
+        event,
+        up: _hasUsername
+            ? (_supportsQuickConnect ? _pwBtnFocus : null)
+            : _usernameFocus,
+        down: _signInFocus,
+      );
+    };
   }
 
-  bool _handleTvFieldOpen(
-    KeyEvent event,
-    FocusNode focusNode,
-  ) {
+  bool _handleTvFieldOpen(KeyEvent event, FocusNode focusNode) {
     if (!PlatformDetection.isTV || _isLoading) return false;
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
     if (event.logicalKey.isBackKey) {
-      final tvFieldKey =
-          focusNode == _usernameFocus
-              ? _usernameTvFieldKey
-              : _passwordTvFieldKey;
+      final tvFieldKey = focusNode == _usernameFocus
+          ? _usernameTvFieldKey
+          : _passwordTvFieldKey;
       if (event is KeyDownEvent &&
           (tvFieldKey.currentState?.isKeyboardVisible ?? false)) {
         tvFieldKey.currentState?.closeKeyboard();
+        focusNode.requestFocus();
         return true;
       }
       return false;
@@ -221,11 +222,19 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            (_hasUsername ? _passwordFocus : _usernameFocus).requestFocus();
+            _focusCredentialEntry();
           }
         });
       }
     }
+  }
+
+  void _focusCredentialEntry() {
+    if (_hasUsername) {
+      (_hasPassword ? _passwordFocus : _signInFocus).requestFocus();
+      return;
+    }
+    _usernameFocus.requestFocus();
   }
 
   void _selectQuickConnect() {
@@ -246,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        (_hasUsername ? _passwordFocus : _usernameFocus).requestFocus();
+        _focusCredentialEntry();
       }
     });
   }
@@ -282,10 +291,12 @@ class _LoginScreenState extends State<LoginScreen> {
           'unknown error';
       final l10n = AppLocalizations.of(context);
       setState(() {
-        _errorMessage =
-            status == null
-                ? l10n.quickConnectUnavailableWithStatus(e.type.name, detail)
-                : l10n.quickConnectUnavailableWithStatus('$status, ${e.type.name}', detail);
+        _errorMessage = status == null
+            ? l10n.quickConnectUnavailableWithStatus(e.type.name, detail)
+            : l10n.quickConnectUnavailableWithStatus(
+                '$status, ${e.type.name}',
+                detail,
+              );
       });
     } catch (e) {
       if (!mounted) return;
@@ -331,6 +342,29 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _navigateBack() {
+    final server = _server;
+    if (server == null) {
+      context.go(Destinations.serverSelect);
+      return;
+    }
+    context.go('${Destinations.server}?serverId=${server.id}');
+  }
+
+  void _finishLoginWithError(String message) {
+    setState(() {
+      _isLoading = false;
+      _errorMessage = message;
+    });
+
+    if (!PlatformDetection.isTV) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      (_hasPassword ? _passwordFocus : _signInFocus).requestFocus();
+    });
+  }
+
   Future<void> _login() async {
     final username = _usernameController.text.trim();
     if (username.isEmpty || _client == null || _server == null) return;
@@ -364,32 +398,17 @@ class _LoginScreenState extends State<LoginScreen> {
             context.go(Destinations.home);
             return;
           }
-          setState(() {
-            _isLoading = false;
-            _errorMessage = l10n.loginFailed;
-          });
+          _finishLoginWithError(l10n.loginFailed);
         case ApiClientError(:final error):
-          setState(() {
-            _isLoading = false;
-            _errorMessage = error;
-          });
+          _finishLoginWithError(error);
         case ServerUnavailable():
-          setState(() {
-            _isLoading = false;
-            _errorMessage = l10n.serverUnavailable;
-          });
+          _finishLoginWithError(l10n.serverUnavailable);
         default:
-          setState(() {
-            _isLoading = false;
-            _errorMessage = l10n.loginFailed;
-          });
+          _finishLoginWithError(l10n.loginFailed);
       }
     } catch (_) {
       if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = AppLocalizations.of(context).loginFailed;
-      });
+      _finishLoginWithError(AppLocalizations.of(context).loginFailed);
     }
   }
 
@@ -401,43 +420,50 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final l10n = AppLocalizations.of(context);
 
-    return LoginScaffold(
-      maxWidth: 600,
-      header: Padding(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: Image.asset('assets/images/logo_and_text.png', height: 64),
-      ),
-      footer: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        height: PlatformDetection.isTV && _tvKeyboardVisible ? 280 : 0,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            l10n.signIn,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            l10n.connectingToServer(_server!.name),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.5),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _navigateBack();
+      },
+      child: LoginScaffold(
+        maxWidth: 600,
+        header: Padding(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: Image.asset('assets/images/logo_and_text.png', height: 64),
+        ),
+        footer: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          height: PlatformDetection.isTV && _tvKeyboardVisible ? 280 : 0,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.signIn,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-          ),
-          const SizedBox(height: 24),
-          if (_supportsQuickConnect) ...[
-            _buildToggleRow(),
+            const SizedBox(height: 4),
+            Text(
+              l10n.connectingToServer(_server!.name),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.white.withValues(alpha: 0.5),
+              ),
+            ),
             const SizedBox(height: 24),
-            if (_showQuickConnect)
-              _buildQuickConnectContent()
-            else
+            if (_supportsQuickConnect) ...[
+              _buildToggleRow(),
+              const SizedBox(height: 24),
+              if (_showQuickConnect)
+                _buildQuickConnectContent()
+              else
+                _buildCredentialsContent(),
+            ] else
               _buildCredentialsContent(),
-          ] else
-            _buildCredentialsContent(),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -475,22 +501,23 @@ class _LoginScreenState extends State<LoginScreen> {
       return FilledButton(
         focusNode: focusNode,
         onPressed: onPressed,
-        style: FilledButton.styleFrom(
-          backgroundColor: _kAccent,
-          foregroundColor: Colors.white,
-          minimumSize: const Size(120, 44),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-        ).copyWith(
-          side: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.focused)) {
-              return const BorderSide(color: Colors.white, width: 2);
-            }
-            return null;
-          }),
-        ),
+        style:
+            FilledButton.styleFrom(
+              backgroundColor: _kAccent,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(120, 44),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+            ).copyWith(
+              side: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.focused)) {
+                  return const BorderSide(color: Colors.white, width: 2);
+                }
+                return null;
+              }),
+            ),
         child: Text(label),
       );
     }
@@ -577,9 +604,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _buildActionButton(
           label: l10n.back,
           focusNode: _backFocus,
-          onPressed:
-              () =>
-                  context.go('${Destinations.server}?serverId=${_server!.id}'),
+          onPressed: _navigateBack,
         ),
       ],
     );
@@ -596,18 +621,24 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: _usernameController,
             focusNode: _usernameFocus,
             label: l10n.username,
-            textInputAction: TextInputAction.next,
+            textInputAction: _hasPassword
+                ? TextInputAction.next
+                : TextInputAction.done,
+            onSubmitted: (_) {
+              (_hasPassword ? _passwordFocus : _signInFocus).requestFocus();
+            },
           ),
           const SizedBox(height: 16),
         ],
-        _buildTextField(
-          controller: _passwordController,
-          focusNode: _passwordFocus,
-          label: l10n.password,
-          obscureText: true,
-          textInputAction: TextInputAction.done,
-          onSubmitted: (_) => _login(),
-        ),
+        if (_hasPassword)
+          _buildTextField(
+            controller: _passwordController,
+            focusNode: _passwordFocus,
+            label: l10n.password,
+            obscureText: true,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => _login(),
+          ),
         if (_errorMessage != null) ...[
           const SizedBox(height: 12),
           Text(
@@ -624,10 +655,7 @@ class _LoginScreenState extends State<LoginScreen> {
             _buildActionButton(
               label: l10n.back,
               focusNode: _backFocus,
-              onPressed:
-                  () => context.go(
-                    '${Destinations.server}?serverId=${_server!.id}',
-                  ),
+              onPressed: _navigateBack,
             ),
             _buildActionButton(
               label: l10n.signIn,
@@ -650,10 +678,9 @@ class _LoginScreenState extends State<LoginScreen> {
     ValueChanged<String>? onSubmitted,
   }) {
     if (PlatformDetection.isTV) {
-      final tvFieldKey =
-          identical(controller, _usernameController)
-              ? _usernameTvFieldKey
-              : _passwordTvFieldKey;
+      final tvFieldKey = identical(controller, _usernameController)
+          ? _usernameTvFieldKey
+          : _passwordTvFieldKey;
       return Focus(
         focusNode: focusNode,
         child: ListenableBuilder(
@@ -683,7 +710,7 @@ class _LoginScreenState extends State<LoginScreen> {
               textFieldType: obscureText
                   ? TextFieldType.password
                   : TextFieldType.other,
-                popParentOnKeyboardClose: false,
+              popParentOnKeyboardClose: false,
               onFieldSubmitted: onSubmitted,
               onVisibilityChanged: (visible) =>
                   _handleTvKeyboardVisibility(visible, tvFieldKey),
@@ -734,17 +761,16 @@ class _LoginScreenState extends State<LoginScreen> {
       style: _outlinedFocusStyle(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
       ),
-      child:
-          isLoading
-              ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-              : Text(label),
+      child: isLoading
+          ? const SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : Text(label),
     );
   }
 

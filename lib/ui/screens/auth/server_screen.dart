@@ -119,6 +119,17 @@ class _ServerScreenState extends State<ServerScreen> {
     }
   }
 
+  String _buildUserLoginRoute(Server server, _MergedUser user) {
+    return Uri(
+      path: Destinations.login,
+      queryParameters: {
+        'serverId': server.id,
+        'username': user.name,
+        if (!user.hasPassword) 'hasPassword': 'false',
+      },
+    ).toString();
+  }
+
   Future<void> _onUserTap(_MergedUser user) async {
     final server = _server;
     if (server == null) return;
@@ -133,9 +144,7 @@ class _ServerScreenState extends State<ServerScreen> {
         onVerify: pinUtil.verifyPin,
         onForgotPin: () {
           if (mounted) {
-            context.go(
-              '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
-            );
+            context.go(_buildUserLoginRoute(server, user));
           }
         },
       );
@@ -152,9 +161,7 @@ class _ServerScreenState extends State<ServerScreen> {
         return;
       }
       if (mounted) {
-        context.go(
-          '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
-        );
+        context.go(_buildUserLoginRoute(server, user));
       }
       return;
     }
@@ -172,17 +179,13 @@ class _ServerScreenState extends State<ServerScreen> {
         }
       }
       if (mounted) {
-        context.go(
-          '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
-        );
+        context.go(_buildUserLoginRoute(server, user));
       }
       return;
     }
 
     if (mounted) {
-      context.go(
-        '${Destinations.login}?serverId=${server.id}&username=${Uri.encodeComponent(user.name)}',
-      );
+      context.go(_buildUserLoginRoute(server, user));
     }
   }
 
@@ -197,7 +200,10 @@ class _ServerScreenState extends State<ServerScreen> {
     }
   }
 
-  Future<LoginState?> _tryPasswordlessAuth(Server server, _MergedUser user) async {
+  Future<LoginState?> _tryPasswordlessAuth(
+    Server server,
+    _MergedUser user,
+  ) async {
     final client = _clientFactory.getClient(
       serverId: server.id,
       serverType: server.serverType,
@@ -226,7 +232,8 @@ class _ServerScreenState extends State<ServerScreen> {
       return Scaffold(
         body: Center(
           child: Text(
-            _errorMessage ?? AppLocalizations.of(context).unableToConnectToServer,
+            _errorMessage ??
+                AppLocalizations.of(context).unableToConnectToServer,
             textAlign: TextAlign.center,
           ),
         ),
@@ -282,9 +289,8 @@ class _ServerScreenState extends State<ServerScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 OutlinedButton.icon(
-                  onPressed: () => context.go(
-                    '${Destinations.login}?serverId=${server.id}',
-                  ),
+                  onPressed: () =>
+                      context.go('${Destinations.login}?serverId=${server.id}'),
                   icon: const Icon(Icons.person, size: 18),
                   label: Text(l10n.addUser),
                   style: _focusableButtonStyle(context),
@@ -397,15 +403,14 @@ class _ServerScreenState extends State<ServerScreen> {
           bottom: 0,
           child: Center(
             child: IconButton(
-              onPressed:
-                  () => _scrollController.animateTo(
-                    (_scrollController.offset - 150).clamp(
-                      0,
-                      _scrollController.position.maxScrollExtent,
-                    ),
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  ),
+              onPressed: () => _scrollController.animateTo(
+                (_scrollController.offset - 150).clamp(
+                  0,
+                  _scrollController.position.maxScrollExtent,
+                ),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              ),
               icon: const Icon(
                 Icons.chevron_left,
                 color: Colors.white54,
@@ -421,15 +426,14 @@ class _ServerScreenState extends State<ServerScreen> {
           bottom: 0,
           child: Center(
             child: IconButton(
-              onPressed:
-                  () => _scrollController.animateTo(
-                    (_scrollController.offset + 150).clamp(
-                      0,
-                      _scrollController.position.maxScrollExtent,
-                    ),
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  ),
+              onPressed: () => _scrollController.animateTo(
+                (_scrollController.offset + 150).clamp(
+                  0,
+                  _scrollController.position.maxScrollExtent,
+                ),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              ),
               icon: const Icon(
                 Icons.chevron_right,
                 color: Colors.white54,
@@ -450,8 +454,9 @@ class _ServerScreenState extends State<ServerScreen> {
 
   Widget _buildUserCard(_MergedUser user, int index) {
     final hasFocus = ValueNotifier(false);
-    final focusNode =
-        index < _userFocusNodes.length ? _userFocusNodes[index] : FocusNode();
+    final focusNode = index < _userFocusNodes.length
+        ? _userFocusNodes[index]
+        : FocusNode();
 
     return ValueListenableBuilder<bool>(
       valueListenable: hasFocus,
@@ -477,29 +482,26 @@ class _ServerScreenState extends State<ServerScreen> {
                       Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border:
-                              focused
-                                  ? Border.all(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    width: 3,
-                                  )
-                                  : null,
+                          border: focused
+                              ? Border.all(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  width: 3,
+                                )
+                              : null,
                         ),
                         child: CircleAvatar(
                           radius: 36,
                           backgroundColor: Colors.white.withValues(alpha: 0.1),
-                          backgroundImage:
-                              user.imageTag != null
-                                  ? NetworkImage(_userImageUrl(user))
-                                  : null,
-                          child:
-                              user.imageTag == null
-                                  ? Icon(
-                                    Icons.person,
-                                    size: 32,
-                                    color: Colors.white.withValues(alpha: 0.6),
-                                  )
-                                  : null,
+                          backgroundImage: user.imageTag != null
+                              ? NetworkImage(_userImageUrl(user))
+                              : null,
+                          child: user.imageTag == null
+                              ? Icon(
+                                  Icons.person,
+                                  size: 32,
+                                  color: Colors.white.withValues(alpha: 0.6),
+                                )
+                              : null,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -509,10 +511,9 @@ class _ServerScreenState extends State<ServerScreen> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color:
-                              focused
-                                  ? Theme.of(context).colorScheme.primary
-                                  : null,
+                          color: focused
+                              ? Theme.of(context).colorScheme.primary
+                              : null,
                         ),
                       ),
                     ],

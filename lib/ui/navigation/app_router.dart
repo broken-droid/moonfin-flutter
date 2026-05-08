@@ -157,7 +157,13 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final serverId = state.uri.queryParameters['serverId'] ?? '';
         final username = state.uri.queryParameters['username'];
-        return LoginScreen(serverId: serverId, prefillUsername: username);
+        final hasPassword =
+            state.uri.queryParameters['hasPassword']?.toLowerCase() != 'false';
+        return LoginScreen(
+          serverId: serverId,
+          prefillUsername: username,
+          hasPassword: hasPassword,
+        );
       },
     ),
 
@@ -188,8 +194,8 @@ final appRouter = GoRouter(
         return LibraryBrowseScreen(
           libraryId: libraryId,
           includeItemTypes: includeItemTypes,
-          forceBookExperience: bookUiParam == '1' ||
-              bookUiParam?.toLowerCase() == 'true',
+          forceBookExperience:
+              bookUiParam == '1' || bookUiParam?.toLowerCase() == 'true',
         );
       },
       routes: [

@@ -137,13 +137,20 @@ class AuthRepository {
       _stateController.add(state);
       return state;
     }
+    if (statusCode == 500) {
+      const state = ApiClientError(
+        error: 'Server error (500) - authentication failed',
+      );
+      _stateController.add(state);
+      return state;
+    }
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout) {
       const state = ServerUnavailable();
       _stateController.add(state);
       return state;
     }
-    final detail = e.error?.toString() ?? e.message ?? 'unknown error';
+    final detail = statusCode != null ? 'HTTP $statusCode' : e.type.name;
     final state = ApiClientError(
       error: 'Connection failed (${e.type.name}): $detail',
     );
