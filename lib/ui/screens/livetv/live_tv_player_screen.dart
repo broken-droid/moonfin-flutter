@@ -17,6 +17,7 @@ import '../../../playback/media3_player_backend.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
+import '../../screensaver/screensaver_controller.dart';
 import '../../widgets/subtitle_preview.dart';
 
 class LiveTvPlayerScreen extends StatefulWidget {
@@ -38,6 +39,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
   final _client = GetIt.instance<MediaServerClient>();
   final _prefs = GetIt.instance<UserPreferences>();
+  final _screensaverController = GetIt.instance<ScreensaverController>();
 
   MediaKitPlayerBackend? get _activeMediaKitBackend {
     final backend = _manager.backend;
@@ -59,6 +61,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   GuideProgram? _currentProgram;
   Timer? _programRefreshTimer;
   StreamSubscription<PlayerBackend>? _backendSub;
+  StreamSubscription<bool>? _screensaverPlayingSub;
 
   final _overlayFocus = FocusNode();
   PlayerState get _state => _manager.state;
@@ -66,6 +69,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   @override
   void initState() {
     super.initState();
+    _screensaverController.setPlaybackActive(true);
     _currentIndex = widget.startIndex;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     SystemChrome.setPreferredOrientations([
@@ -77,6 +81,9 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
       if (!mounted) return;
       setState(() {});
     });
+    _screensaverPlayingSub = _state.playingStream.listen(
+      _screensaverController.setPlaybackActive,
+    );
     _playCurrentChannel();
     _scheduleHide();
     _startProgramRefresh();
@@ -84,9 +91,11 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
 
   @override
   void dispose() {
+    _screensaverController.setPlaybackActive(false);
     _hideTimer?.cancel();
     _programRefreshTimer?.cancel();
     _backendSub?.cancel();
+    _screensaverPlayingSub?.cancel();
     _overlayFocus.dispose();
     if (!_isStopping) {
       _manager.stop(userInitiated: false);
@@ -109,7 +118,11 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).failedToPlayChannel(channel.name))),
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).failedToPlayChannel(channel.name),
+            ),
+          ),
         );
       }
       return;
@@ -139,8 +152,8 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   }
 
   void _previousChannel() {
-    final prev = (_currentIndex - 1 + widget.channels.length) %
-        widget.channels.length;
+    final prev =
+        (_currentIndex - 1 + widget.channels.length) % widget.channels.length;
     _switchChannel(prev);
   }
 
@@ -247,7 +260,9 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   SubtitleViewConfiguration _buildSubtitleConfig() {
     final textColor = Color(_prefs.get(UserPreferences.subtitlesTextColor));
     final bgColor = Color(_prefs.get(UserPreferences.subtitlesBackgroundColor));
-    final strokeColor = Color(_prefs.get(UserPreferences.subtitleTextStrokeColor));
+    final strokeColor = Color(
+      _prefs.get(UserPreferences.subtitleTextStrokeColor),
+    );
     final prefSize = _prefs.get(UserPreferences.subtitlesTextSize);
     final fontWeight = _prefs.get(UserPreferences.subtitlesTextWeight);
     final offset = _prefs.get(UserPreferences.subtitlesOffsetPosition);
@@ -327,13 +342,13 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
             onVerticalDragEnd: PlatformDetection.isTV
                 ? null
                 : (details) {
-              if (details.primaryVelocity == null) return;
-              if (details.primaryVelocity! < -200) {
-                _nextChannel();
-              } else if (details.primaryVelocity! > 200) {
-                _previousChannel();
-              }
-            },
+                    if (details.primaryVelocity == null) return;
+                    if (details.primaryVelocity! < -200) {
+                      _nextChannel();
+                    } else if (details.primaryVelocity! > 200) {
+                      _previousChannel();
+                    }
+                  },
             behavior: HitTestBehavior.opaque,
             child: MouseRegion(
               cursor: PlatformDetection.useDesktopUi && !_infoVisible
@@ -372,9 +387,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
         PlaybackEnginePreference.media3;
     final prewarmMedia3 = _manager.backend == null && prefersMedia3;
     if (_activeMedia3Backend != null || prewarmMedia3) {
-      return const Positioned.fill(
-        child: Media3VideoView(fill: Colors.black),
-      );
+      return const Positioned.fill(child: Media3VideoView(fill: Colors.black));
     }
 
     final mediaKitBackend = _activeMediaKitBackend ?? _backend;
@@ -449,14 +462,19 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
             if (!PlatformDetection.useLeanbackUi)
               IconButton(
                 onPressed: _exitPlayback,
-                icon: const Icon(Icons.arrow_back, color: Colors.white,
-                    size: 24),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
             const SizedBox(width: AppSpacing.spaceSm),
             if (channel.number != null) ...[
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: AppColorScheme.accent,
                   borderRadius: BorderRadius.circular(4),
@@ -503,8 +521,11 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
             if (_currentProgram?.hasTimer == true)
               const Padding(
                 padding: EdgeInsets.only(left: AppSpacing.spaceSm),
-                child: Icon(Icons.fiber_manual_record,
-                    color: Colors.red, size: 14),
+                child: Icon(
+                  Icons.fiber_manual_record,
+                  color: Colors.red,
+                  size: 14,
+                ),
               ),
           ],
         ),
@@ -546,13 +567,13 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
           children: [
             if (program.episodeTitle != null)
               Padding(
-                padding:
-                    const EdgeInsets.only(bottom: AppSpacing.spaceXs),
+                padding: const EdgeInsets.only(bottom: AppSpacing.spaceXs),
                 child: Text(
                   program.episodeTitle!,
                   style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: AppTypography.fontSizeSm),
+                    color: Colors.white70,
+                    fontSize: AppTypography.fontSizeSm,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -562,8 +583,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
               child: LinearProgressIndicator(
                 value: progress,
                 backgroundColor: Colors.white24,
-                valueColor:
-                    AlwaysStoppedAnimation(AppColorScheme.accent),
+                valueColor: AlwaysStoppedAnimation(AppColorScheme.accent),
                 minHeight: 3,
               ),
             ),
@@ -574,14 +594,16 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
                 Text(
                   startTime,
                   style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: AppTypography.fontSizeXs),
+                    color: Colors.white54,
+                    fontSize: AppTypography.fontSizeXs,
+                  ),
                 ),
                 Text(
                   endTime,
                   style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: AppTypography.fontSizeXs),
+                    color: Colors.white54,
+                    fontSize: AppTypography.fontSizeXs,
+                  ),
                 ),
               ],
             ),

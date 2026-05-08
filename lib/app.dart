@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'data/services/app_update_service.dart';
@@ -23,6 +22,8 @@ import 'ui/widgets/mini_audio_player.dart';
 import 'ui/widgets/offline_banner.dart';
 import 'ui/widgets/app_update_dialog.dart';
 import 'ui/widgets/exit_confirmation_dialog.dart';
+import 'ui/screensaver/screensaver_controller.dart';
+import 'ui/screensaver/screensaver_overlay.dart';
 import 'util/app_distribution.dart';
 import 'util/app_exit.dart';
 import 'util/focus/dpad_keys.dart';
@@ -85,12 +86,14 @@ class _MoonfinAppState extends State<MoonfinApp> {
                 return const Locale('en');
               },
               builder: (context, child) {
-                var path = appRouter.routerDelegate.currentConfiguration.uri.path;
+                var path =
+                    appRouter.routerDelegate.currentConfiguration.uri.path;
                 try {
                   path = GoRouterState.of(context).uri.path;
                 } catch (_) {}
 
-                final hidePlayer = path.startsWith('/player/') ||
+                final hidePlayer =
+                    path.startsWith('/player/') ||
                     path == '/live-tv/player' ||
                     path == '/' ||
                     path == '/server-select' ||
@@ -104,18 +107,30 @@ class _MoonfinAppState extends State<MoonfinApp> {
                         child: _GlobalShortcutScope(
                           child: Material(
                             type: MaterialType.transparency,
-                            child: Column(
+                            child: Stack(
+                              fit: StackFit.expand,
                               children: [
-                                const OfflineBanner(),
-                                Expanded(
-                                  child: _ConnectivityListener(
-                                    child: child ?? const SizedBox.shrink(),
-                                  ),
+                                Column(
+                                  children: [
+                                    const OfflineBanner(),
+                                    Expanded(
+                                      child: _ConnectivityListener(
+                                        child: child ?? const SizedBox.shrink(),
+                                      ),
+                                    ),
+                                    if (!hidePlayer)
+                                      const RepaintBoundary(
+                                        child: MiniAudioPlayer(),
+                                      ),
+                                    if (!hidePlayer)
+                                      const RepaintBoundary(
+                                        child: CastMiniPlayer(),
+                                      ),
+                                  ],
                                 ),
-                                if (!hidePlayer)
-                                  const RepaintBoundary(child: MiniAudioPlayer()),
-                                if (!hidePlayer)
-                                  const RepaintBoundary(child: CastMiniPlayer()),
+                                const Positioned.fill(
+                                  child: ScreensaverOverlay(),
+                                ),
                               ],
                             ),
                           ),
@@ -145,6 +160,8 @@ class _GlobalShortcutScope extends StatefulWidget {
 class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     with WindowListener, WidgetsBindingObserver {
   final FocusNode _focusNode = FocusNode(debugLabel: 'GlobalShortcutScope');
+  final ScreensaverController _screensaverController =
+      GetIt.instance<ScreensaverController>();
   late final KeyEventCallback _hardwareKeyHandler;
   Timer? _geometrySaveTimer;
   bool _exitDialogShowing = false;
@@ -190,6 +207,14 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
   }
 
   bool _onHardwareKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent || event is KeyRepeatEvent) {
+      final wasVisible = _screensaverController.visible;
+      _screensaverController.notifyInteraction(canCancel: true);
+      if (wasVisible) {
+        return true;
+      }
+    }
+
     if (event is! KeyDownEvent) {
       return false;
     }
@@ -234,7 +259,9 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
       return true;
     }
 
-    if (PlatformDetection.isDesktop && ctrlPressed && key == LogicalKeyboardKey.keyQ) {
+    if (PlatformDetection.isDesktop &&
+        ctrlPressed &&
+        key == LogicalKeyboardKey.keyQ) {
       unawaited(windowManager.close());
       return true;
     }
@@ -244,8 +271,9 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
 
   Future<void> _showExitConfirmation() async {
     try {
-      final shouldConfirm =
-          GetIt.instance<UserPreferences>().get(UserPreferences.confirmExit);
+      final shouldConfirm = GetIt.instance<UserPreferences>().get(
+        UserPreferences.confirmExit,
+      );
       if (!shouldConfirm) {
         await AppExit.closeApp();
         return;
@@ -259,6 +287,15 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     } finally {
       _exitDialogShowing = false;
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final paused =
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached;
+    _screensaverController.activityPaused = paused;
   }
 
   @override
@@ -296,8 +333,10 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
 
   @override
   void onWindowEvent(String eventName) {
-    if (eventName == 'move' || eventName == 'resize' ||
-        eventName == 'moved' || eventName == 'resized') {
+    if (eventName == 'move' ||
+        eventName == 'resize' ||
+        eventName == 'moved' ||
+        eventName == 'resized') {
       _scheduleSaveGeometry();
     }
   }
@@ -310,8 +349,12 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     final key = event.logicalKey;
 
     if (key == LogicalKeyboardKey.enter || key == LogicalKeyboardKey.select) {
-      final targetContext = FocusManager.instance.primaryFocus?.context ?? context;
-      final activated = Actions.maybeInvoke(targetContext, const ActivateIntent());
+      final targetContext =
+          FocusManager.instance.primaryFocus?.context ?? context;
+      final activated = Actions.maybeInvoke(
+        targetContext,
+        const ActivateIntent(),
+      );
       return activated == null
           ? KeyEventResult.ignored
           : KeyEventResult.handled;
@@ -320,13 +363,22 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     return KeyEventResult.ignored;
   }
 
+  void _recordPointerInteraction() {
+    _screensaverController.notifyInteraction(canCancel: true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      autofocus: !kIsWeb,
-      focusNode: _focusNode,
-      onKeyEvent: _onKeyEvent,
-      child: widget.child,
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_) => _recordPointerInteraction(),
+      onPointerSignal: (_) => _recordPointerInteraction(),
+      child: Focus(
+        autofocus: !kIsWeb,
+        focusNode: _focusNode,
+        onKeyEvent: _onKeyEvent,
+        child: widget.child,
+      ),
     );
   }
 }
@@ -340,8 +392,7 @@ class _ConnectivityListener extends ConsumerStatefulWidget {
       _ConnectivityListenerState();
 }
 
-class _ConnectivityListenerState
-    extends ConsumerState<_ConnectivityListener>
+class _ConnectivityListenerState extends ConsumerState<_ConnectivityListener>
     with WidgetsBindingObserver {
   bool? _wasOnline;
   bool _didScheduleUpdateCheck = false;
@@ -357,9 +408,9 @@ class _ConnectivityListenerState
     final manager = ref.read(syncPlayManagerProvider);
     _syncPlayEventsSub = manager.uiEvents.listen(_handleSyncPlayEvent);
     if (GetIt.instance.isRegistered<DownloadService>()) {
-      _downloadErrorSub = GetIt.instance<DownloadService>()
-          .errors
-          .listen(_handleDownloadError);
+      _downloadErrorSub = GetIt.instance<DownloadService>().errors.listen(
+        _handleDownloadError,
+      );
     }
   }
 
@@ -396,7 +447,8 @@ class _ConnectivityListenerState
     });
   }
 
-  void _handleSyncPlayEvent(SyncPlayUiEvent event) {    if (!mounted) return;
+  void _handleSyncPlayEvent(SyncPlayUiEvent event) {
+    if (!mounted) return;
     switch (event) {
       case SyncPlayUserJoinedEvent(:final userName):
         ScaffoldMessenger.of(context).showSnackBar(
@@ -450,7 +502,8 @@ class _ConnectivityListenerState
 
   Future<void> _runDesktopUpdateCheck() async {
     try {
-      final update = await GetIt.instance<AppUpdateService>().checkForUpdateIfDue();
+      final update = await GetIt.instance<AppUpdateService>()
+          .checkForUpdateIfDue();
       if (!mounted || update == null) {
         return;
       }
@@ -466,7 +519,8 @@ class _ConnectivityListenerState
             label: l10n.download,
             onPressed: () {
               final navContext =
-                  appRouter.routerDelegate.navigatorKey.currentContext ?? context;
+                  appRouter.routerDelegate.navigatorKey.currentContext ??
+                  context;
               if (navContext.mounted) {
                 showAppUpdateDialog(navContext, update);
               }
@@ -487,9 +541,11 @@ class _ConnectivityListenerState
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(isOnline
-                ? 'Back online. Syncing progress...'
-                : 'You are offline.'),
+            content: Text(
+              isOnline
+                  ? 'Back online. Syncing progress...'
+                  : 'You are offline.',
+            ),
             duration: const Duration(seconds: 3),
           ),
         );

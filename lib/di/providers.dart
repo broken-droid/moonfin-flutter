@@ -13,16 +13,15 @@ import '../syncplay/syncplay_manager.dart';
 import '../syncplay/syncplay_runtime_coordinator.dart';
 import 'injection.dart';
 
-final deviceInfoProvider = Provider<DeviceInfo>(
-  (_) => getIt<DeviceInfo>(),
-);
+final deviceInfoProvider = Provider<DeviceInfo>((_) => getIt<DeviceInfo>());
 
 final mediaServerClientFactoryProvider = Provider<MediaServerClientFactory>(
   (_) => getIt<MediaServerClientFactory>(),
 );
 
-final activeServerClientProvider =
-    StateProvider<MediaServerClient?>((_) => null);
+final activeServerClientProvider = StateProvider<MediaServerClient?>(
+  (_) => null,
+);
 
 final playbackManagerProvider = Provider<PlaybackManager>(
   (_) => getIt<PlaybackManager>(),
@@ -52,8 +51,9 @@ final isAdminProvider = Provider<bool>((ref) {
   return userAsync.valueOrNull?.isAdministrator ?? false;
 });
 
-final connectivityServiceProvider =
-    ChangeNotifierProvider<ConnectivityService>((_) => getIt<ConnectivityService>());
+final connectivityServiceProvider = ChangeNotifierProvider<ConnectivityService>(
+  (_) => getIt<ConnectivityService>(),
+);
 
 final isOnlineProvider = Provider<bool>((ref) {
   return ref.watch(connectivityServiceProvider).isOnline;
@@ -63,8 +63,9 @@ final activeServerReachableProvider = Provider<bool>((ref) {
   return ref.watch(connectivityServiceProvider).canReachServer;
 });
 
-final syncServiceProvider =
-    ChangeNotifierProvider<SyncService>((_) => getIt<SyncService>());
+final syncServiceProvider = ChangeNotifierProvider<SyncService>(
+  (_) => getIt<SyncService>(),
+);
 
 final syncStateProvider = Provider<SyncState>((ref) {
   return ref.watch(syncServiceProvider).state;
@@ -74,13 +75,14 @@ final syncPlayManagerProvider = ChangeNotifierProvider<SyncPlayManager>(
   (_) => getIt<SyncPlayManager>(),
 );
 
-final syncPlayRuntimeCoordinatorProvider =
-    Provider<SyncPlayRuntimeCoordinator>((ref) {
-  final coordinator = SyncPlayRuntimeCoordinator(
-    ref.read(syncPlayManagerProvider),
-    ref.read(socketHandlerProvider),
-  );
-  coordinator.start(ref, activeServerClientProvider);
-  ref.onDispose(coordinator.stop);
-  return coordinator;
-});
+final syncPlayRuntimeCoordinatorProvider = Provider<SyncPlayRuntimeCoordinator>(
+  (ref) {
+    final coordinator = SyncPlayRuntimeCoordinator(
+      ref.read(syncPlayManagerProvider),
+      ref.read(socketHandlerProvider),
+    );
+    coordinator.start(ref, activeServerClientProvider);
+    ref.onDispose(coordinator.stop);
+    return coordinator;
+  },
+);

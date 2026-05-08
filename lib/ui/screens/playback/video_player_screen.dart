@@ -38,6 +38,7 @@ import '../../../util/audio_labels.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
+import '../../screensaver/screensaver_controller.dart';
 import '../../widgets/subtitle_preview.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
@@ -70,6 +71,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _pipService = GetIt.instance<PipService>();
   final _lifecycleHandler = GetIt.instance<PlaybackLifecycleHandler>();
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
+  final _screensaverController = GetIt.instance<ScreensaverController>();
   late MediaSegmentService _segmentService;
 
   PlayerBackend? get _activeBackend => _manager.backend;
@@ -132,6 +134,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   StreamSubscription? _pipChangedSub;
   StreamSubscription? _pipActionSub;
   StreamSubscription? _playingSub;
+  StreamSubscription<bool>? _screensaverPlayingSub;
   StreamSubscription? _bufferingSub;
   StreamSubscription<Map<String, dynamic>>? _castEventsSub;
   StreamSubscription<Map<String, dynamic>>? _dlnaEventsSub;
@@ -566,6 +569,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   @override
   void initState() {
     super.initState();
+    _screensaverController.setPlaybackActive(true);
     if (PlatformDetection.useNativeVideoSurface) {
       _subtitleActive = (_manager.subtitleStreamIndex ?? -1) >= 0;
     }
@@ -659,6 +663,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       }
     });
 
+    _screensaverPlayingSub = _state.playingStream.listen(
+      _screensaverController.setPlaybackActive,
+    );
+
     _media3ActivityActionSub = Media3PlayerBackend.activityActionStream.listen(
       _onMedia3ActivityAction,
       onError: (_) {},
@@ -698,6 +706,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   @override
   void dispose() {
+    _screensaverController.setPlaybackActive(false);
     WidgetsBinding.instance.removeObserver(this);
     _hideTimer?.cancel();
     _volumeOverlayTimer?.cancel();
@@ -728,6 +737,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _pipChangedSub?.cancel();
     _pipActionSub?.cancel();
     _playingSub?.cancel();
+    _screensaverPlayingSub?.cancel();
     _bufferingSub?.cancel();
     _castEventsSub?.cancel();
     _dlnaEventsSub?.cancel();
@@ -2076,9 +2086,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         // KeyUp for Back should be consumed to avoid a second route pop.
         return KeyEventResult.handled;
       }
-      if (PlatformDetection.isTV &&
-          _controlsVisible &&
-          !_isOsdLocked) {
+      if (PlatformDetection.isTV && _controlsVisible && !_isOsdLocked) {
         _scheduleHide();
       }
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
@@ -2169,7 +2177,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             return KeyEventResult.handled;
           }
           if (_controlsVisible) {
-            _suppressBackNavigation(duration: const Duration(milliseconds: 500));
+            _suppressBackNavigation(
+              duration: const Duration(milliseconds: 500),
+            );
             _hideTimer?.cancel();
             setState(() => _controlsVisible = false);
             return KeyEventResult.handled;
@@ -2415,7 +2425,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                       child: ColoredBox(color: Colors.black),
                     ),
                   _buildPausedDescriptionOverlay(),
-                  if (_controlsVisible && !_isOsdLocked && !hideOsdForPreroll) ...[
+                  if (_controlsVisible &&
+                      !_isOsdLocked &&
+                      !hideOsdForPreroll) ...[
                     _buildTopOverlay(context),
                     _buildBottomOverlay(context),
                     if (!PlatformDetection.useLeanbackUi)
@@ -2427,7 +2439,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   _buildBufferingIndicator(),
                   _buildVolumeOverlay(),
                   if (PlatformDetection.useMobileUi) _buildBrightnessOverlay(),
-                  if (PlatformDetection.useMobileUi) _buildDoubleTapSkipOverlay(),
+                  if (PlatformDetection.useMobileUi)
+                    _buildDoubleTapSkipOverlay(),
                   if (_isOsdLocked && !hideOsdForPreroll) _buildLockedOverlay(),
                   if (_skipSegment != null)
                     SkipSegmentOverlay(
@@ -2452,7 +2465,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                           : null,
                       timeoutMs: _prefs.get(UserPreferences.nextUpTimeout),
                       onPlayNext: _handleNextUpPlay,
-                        onDismiss: _handleNextUpCancel,
+                      onDismiss: _handleNextUpCancel,
                       focusNode: PlatformDetection.isTV
                           ? _tvNextUpPlayFocus
                           : null,

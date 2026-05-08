@@ -83,6 +83,7 @@ import '../screens/downloads/storage_management_screen.dart';
 import 'destinations.dart';
 import 'focus_route_observer.dart';
 import 'route_lifecycle_observer.dart';
+import '../screensaver/screensaver_route_observer.dart';
 
 const _authRoutes = {
   Destinations.startup,
@@ -110,14 +111,19 @@ CustomTransitionPage<T> _opaqueFullScreenPage<T>({
     barrierColor: Colors.black,
     transitionDuration: Duration.zero,
     reverseTransitionDuration: Duration.zero,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        child,
     child: child,
   );
 }
 
 final appRouter = GoRouter(
   initialLocation: Destinations.startup,
-  observers: [FocusRouteObserver(), routeLifecycleObserver],
+  observers: [
+    FocusRouteObserver(),
+    ScreensaverRouteObserver(),
+    routeLifecycleObserver,
+  ],
   redirect: (context, state) {
     final path = state.uri.path;
     if (_authRoutes.contains(path)) return null;

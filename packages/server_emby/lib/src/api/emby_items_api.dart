@@ -35,6 +35,8 @@ class EmbyItemsApi implements ItemsApi {
     List<String>? tags,
     List<String>? studios,
     DateTime? minPremiereDate,
+    String? maxOfficialRating,
+    bool? hasParentalRating,
   }) async {
     final userId = _getUserId();
     final response = await _dio.get(
@@ -62,12 +64,16 @@ class EmbyItemsApi implements ItemsApi {
         if (genreIds != null) 'GenreIds': genreIds.join(','),
         if (genres != null) 'Genres': genres.join(','),
         'IsFavorite': ?isFavorite,
-      'CollapseBoxSetItems': ?collapseBoxSetItems,
-      'EnableTotalRecordCount': ?enableTotalRecordCount,
-      'EnableImageTypes': ?enableImageTypes,        if (tags != null && tags.isNotEmpty) 'Tags': tags.join('|'),
+        'CollapseBoxSetItems': ?collapseBoxSetItems,
+        'EnableTotalRecordCount': ?enableTotalRecordCount,
+        'EnableImageTypes': ?enableImageTypes,
+        if (tags != null && tags.isNotEmpty) 'Tags': tags.join('|'),
         if (studios != null && studios.isNotEmpty) 'Studios': studios.join('|'),
         if (minPremiereDate != null)
-          'MinPremiereDate': minPremiereDate.toUtc().toIso8601String(),      },
+          'MinPremiereDate': minPremiereDate.toUtc().toIso8601String(),
+        'MaxOfficialRating': ?maxOfficialRating,
+        'HasParentalRating': ?hasParentalRating,
+      },
     );
     return response.data as Map<String, dynamic>;
   }
@@ -99,9 +105,7 @@ class EmbyItemsApi implements ItemsApi {
   }) async {
     final response = await _dio.get(
       '/Items/$itemId/Similar',
-      queryParameters: {
-        'Limit': ?limit,
-      },
+      queryParameters: {'Limit': ?limit},
     );
     return response.data as Map<String, dynamic>;
   }
@@ -114,13 +118,16 @@ class EmbyItemsApi implements ItemsApi {
     String? fields,
     bool? enableResumable,
   }) async {
-    final response = await _dio.get('/Shows/NextUp', queryParameters: {
-      'SeriesId': ?seriesId,
-      'ParentId': ?parentId,
-      'Limit': ?limit,
-      'Fields': ?fields,
-      'EnableResumable': ?enableResumable,
-    });
+    final response = await _dio.get(
+      '/Shows/NextUp',
+      queryParameters: {
+        'SeriesId': ?seriesId,
+        'ParentId': ?parentId,
+        'Limit': ?limit,
+        'Fields': ?fields,
+        'EnableResumable': ?enableResumable,
+      },
+    );
     return response.data as Map<String, dynamic>;
   }
 
@@ -180,10 +187,7 @@ class EmbyItemsApi implements ItemsApi {
   }) async {
     final response = await _dio.get(
       '/Shows/$seriesId/Episodes',
-      queryParameters: {
-        'SeasonId': ?seasonId,
-        'Fields': ?fields,
-      },
+      queryParameters: {'SeasonId': ?seasonId, 'Fields': ?fields},
     );
     return response.data as Map<String, dynamic>;
   }
@@ -207,12 +211,15 @@ class EmbyItemsApi implements ItemsApi {
   @override
   Future<Map<String, dynamic>> getPlaylists() async {
     final userId = _getUserId();
-    final response = await _dio.get('/Users/$userId/Items', queryParameters: {
-      'IncludeItemTypes': 'Playlist',
-      'Recursive': true,
-      'SortBy': 'SortName',
-      'SortOrder': 'Ascending',
-    });
+    final response = await _dio.get(
+      '/Users/$userId/Items',
+      queryParameters: {
+        'IncludeItemTypes': 'Playlist',
+        'Recursive': true,
+        'SortBy': 'SortName',
+        'SortOrder': 'Ascending',
+      },
+    );
     return response.data as Map<String, dynamic>;
   }
 
@@ -230,19 +237,22 @@ class EmbyItemsApi implements ItemsApi {
     String? nameLessThan,
     bool? isFavorite,
   }) async {
-    final response = await _dio.get('/Artists', queryParameters: {
-      'ParentId': ?parentId,
-      'UserId': ?userId,
-      'SortBy': ?sortBy,
-      'SortOrder': ?sortOrder,
-      'StartIndex': ?startIndex,
-      'Limit': ?limit,
-      'Recursive': ?recursive,
-      'Fields': ?fields,
-      'NameStartsWith': ?nameStartsWith,
-      'NameLessThan': ?nameLessThan,
-      'IsFavorite': ?isFavorite,
-    });
+    final response = await _dio.get(
+      '/Artists',
+      queryParameters: {
+        'ParentId': ?parentId,
+        'UserId': ?userId,
+        'SortBy': ?sortBy,
+        'SortOrder': ?sortOrder,
+        'StartIndex': ?startIndex,
+        'Limit': ?limit,
+        'Recursive': ?recursive,
+        'Fields': ?fields,
+        'NameStartsWith': ?nameStartsWith,
+        'NameLessThan': ?nameLessThan,
+        'IsFavorite': ?isFavorite,
+      },
+    );
     return response.data as Map<String, dynamic>;
   }
 
@@ -260,30 +270,36 @@ class EmbyItemsApi implements ItemsApi {
     String? nameLessThan,
     bool? isFavorite,
   }) async {
-    final response = await _dio.get('/Artists/AlbumArtists', queryParameters: {
-      'ParentId': ?parentId,
-      'UserId': ?userId,
-      'SortBy': ?sortBy,
-      'SortOrder': ?sortOrder,
-      'StartIndex': ?startIndex,
-      'Limit': ?limit,
-      'Recursive': ?recursive,
-      'Fields': ?fields,
-      'NameStartsWith': ?nameStartsWith,
-      'NameLessThan': ?nameLessThan,
-      'IsFavorite': ?isFavorite,
-    });
+    final response = await _dio.get(
+      '/Artists/AlbumArtists',
+      queryParameters: {
+        'ParentId': ?parentId,
+        'UserId': ?userId,
+        'SortBy': ?sortBy,
+        'SortOrder': ?sortOrder,
+        'StartIndex': ?startIndex,
+        'Limit': ?limit,
+        'Recursive': ?recursive,
+        'Fields': ?fields,
+        'NameStartsWith': ?nameStartsWith,
+        'NameLessThan': ?nameLessThan,
+        'IsFavorite': ?isFavorite,
+      },
+    );
     return response.data as Map<String, dynamic>;
   }
 
   @override
   Future<Map<String, dynamic>> getPlaylistItems(String playlistId) async {
-    final response = await _dio.get('/Playlists/$playlistId/Items', queryParameters: {
-      'Fields':
-          'BasicSyncInfo,PrimaryImageAspectRatio,RunTimeTicks,Artists,AlbumArtist,IndexNumber,MediaType,PlaylistItemId,BackdropImageTags,ParentBackdropImageTags,ParentBackdropItemId',
-      'EnableImageTypes': 'Primary,Backdrop',
-      'ImageTypeLimit': 1,
-    });
+    final response = await _dio.get(
+      '/Playlists/$playlistId/Items',
+      queryParameters: {
+        'Fields':
+            'BasicSyncInfo,PrimaryImageAspectRatio,RunTimeTicks,Artists,AlbumArtist,IndexNumber,MediaType,PlaylistItemId,BackdropImageTags,ParentBackdropImageTags,ParentBackdropItemId',
+        'EnableImageTypes': 'Primary,Backdrop',
+        'ImageTypeLimit': 1,
+      },
+    );
     return response.data as Map<String, dynamic>;
   }
 
@@ -292,25 +308,30 @@ class EmbyItemsApi implements ItemsApi {
     required String name,
     List<String>? itemIds,
   }) async {
-    final response = await _dio.post('/Playlists', data: {
-      'Name': name,
-      'Ids': ?itemIds,
-    });
+    final response = await _dio.post(
+      '/Playlists',
+      data: {'Name': name, 'Ids': ?itemIds},
+    );
     return response.data as Map<String, dynamic>;
   }
 
   @override
   Future<void> addToPlaylist(String playlistId, List<String> itemIds) async {
-    await _dio.post('/Playlists/$playlistId/Items', queryParameters: {
-      'Ids': itemIds.join(','),
-    });
+    await _dio.post(
+      '/Playlists/$playlistId/Items',
+      queryParameters: {'Ids': itemIds.join(',')},
+    );
   }
 
   @override
-  Future<void> removeFromPlaylist(String playlistId, List<String> entryIds) async {
-    await _dio.delete('/Playlists/$playlistId/Items', queryParameters: {
-      'EntryIds': entryIds.join(','),
-    });
+  Future<void> removeFromPlaylist(
+    String playlistId,
+    List<String> entryIds,
+  ) async {
+    await _dio.delete(
+      '/Playlists/$playlistId/Items',
+      queryParameters: {'EntryIds': entryIds.join(',')},
+    );
   }
 
   @override
@@ -319,14 +340,14 @@ class EmbyItemsApi implements ItemsApi {
     String playlistItemId,
     int newIndex,
   ) async {
-    await _dio.post('/Playlists/$playlistId/Items/$playlistItemId/Move/$newIndex');
+    await _dio.post(
+      '/Playlists/$playlistId/Items/$playlistItemId/Move/$newIndex',
+    );
   }
 
   @override
   Future<void> renamePlaylist(String playlistId, String name) async {
-    await _dio.post('/Playlists/$playlistId', data: {
-      'Name': name,
-    });
+    await _dio.post('/Playlists/$playlistId', data: {'Name': name});
   }
 
   @override
@@ -351,18 +372,21 @@ class EmbyItemsApi implements ItemsApi {
     String? fields,
     List<String>? includeItemTypes,
   }) async {
-    final response = await _dio.get('/Genres', queryParameters: {
-      'ParentId': ?parentId,
-      'UserId': ?userId,
-      'SortBy': ?sortBy,
-      'SortOrder': ?sortOrder,
-      'StartIndex': ?startIndex,
-      'Limit': ?limit,
-      'Recursive': ?recursive,
-      'Fields': ?fields,
-      if (includeItemTypes != null && includeItemTypes.isNotEmpty)
-        'IncludeItemTypes': includeItemTypes.join(','),
-    });
+    final response = await _dio.get(
+      '/Genres',
+      queryParameters: {
+        'ParentId': ?parentId,
+        'UserId': ?userId,
+        'SortBy': ?sortBy,
+        'SortOrder': ?sortOrder,
+        'StartIndex': ?startIndex,
+        'Limit': ?limit,
+        'Recursive': ?recursive,
+        'Fields': ?fields,
+        if (includeItemTypes != null && includeItemTypes.isNotEmpty)
+          'IncludeItemTypes': includeItemTypes.join(','),
+      },
+    );
     return response.data as Map<String, dynamic>;
   }
 
@@ -376,7 +400,10 @@ class EmbyItemsApi implements ItemsApi {
     if (data is Map<String, dynamic>) {
       final items = data['Items'] as List?;
       if (items == null) return const [];
-      return items.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList(growable: false);
+      return items
+          .whereType<Map>()
+          .map((e) => e.cast<String, dynamic>())
+          .toList(growable: false);
     }
     return const [];
   }
@@ -384,7 +411,9 @@ class EmbyItemsApi implements ItemsApi {
   @override
   Future<List<Map<String, dynamic>>> getLocalTrailers(String itemId) async {
     final userId = _getUserId();
-    final response = await _dio.get('/Users/$userId/Items/$itemId/LocalTrailers');
+    final response = await _dio.get(
+      '/Users/$userId/Items/$itemId/LocalTrailers',
+    );
     return _parseItemListResponse(response.data);
   }
 

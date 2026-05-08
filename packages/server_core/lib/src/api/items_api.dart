@@ -26,6 +26,8 @@ abstract class ItemsApi {
     List<String>? tags,
     List<String>? studios,
     DateTime? minPremiereDate,
+    String? maxOfficialRating,
+    bool? hasParentalRating,
   });
 
   Future<Map<String, dynamic>> getItem(String itemId);
@@ -62,7 +64,10 @@ abstract class ItemsApi {
     String? fields,
   });
 
-  Future<Map<String, dynamic>> getThemeMedia(String itemId, {bool inheritFromParent = true});
+  Future<Map<String, dynamic>> getThemeMedia(
+    String itemId, {
+    bool inheritFromParent = true,
+  });
 
   Future<Map<String, dynamic>> getPlaylists();
 
