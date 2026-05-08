@@ -631,14 +631,23 @@ class TvFocusHighlight extends StatefulWidget {
 }
 
 class _TvFocusHighlightState extends State<TvFocusHighlight> {
-  bool _focused = false;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode(debugLabel: 'TvFocusHighlightScope');
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   void _onFocusChange(bool focused) {
     if (focused) {
       _ensureFocusVisible(context);
-    }
-    if (_focused != focused && mounted) {
-      setState(() => _focused = focused);
     }
   }
 
@@ -646,24 +655,31 @@ class _TvFocusHighlightState extends State<TvFocusHighlight> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Focus(
+      focusNode: _focusNode,
       canRequestFocus: true,
       skipTraversal: true,
       descendantsAreFocusable: true,
       onFocusChange: _onFocusChange,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 90),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          color: _focused ? Colors.white : colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListTileTheme.merge(
-          textColor: _focused ? Colors.black87 : Colors.white,
-          iconColor: _focused ? Colors.black54 : Colors.white70,
-          titleTextStyle: _kSettingsTitleTextStyle,
-          subtitleTextStyle: _kSettingsSubtitleTextStyle,
-          child: Builder(builder: (ctx) => widget.builder(ctx, _focused)),
-        ),
+      child: AnimatedBuilder(
+        animation: _focusNode,
+        builder: (context, _) {
+          final focused = _focusNode.hasFocus;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 90),
+            curve: Curves.easeOut,
+            decoration: BoxDecoration(
+              color: focused ? Colors.white : colorScheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListTileTheme.merge(
+              textColor: focused ? Colors.black87 : Colors.white,
+              iconColor: focused ? Colors.black54 : Colors.white70,
+              titleTextStyle: _kSettingsTitleTextStyle,
+              subtitleTextStyle: _kSettingsSubtitleTextStyle,
+              child: Builder(builder: (ctx) => widget.builder(ctx, focused)),
+            ),
+          );
+        },
       ),
     );
   }

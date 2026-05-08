@@ -255,6 +255,8 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
     final resolvedTrailing =
         widget.trailing ?? (widget.onTap != null ? const Icon(Icons.chevron_right) : null);
     return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
       onKeyEvent: (_, event) {
         if (!event.logicalKey.isSelectKey) return KeyEventResult.ignored;
         if (event is KeyDownEvent) {
