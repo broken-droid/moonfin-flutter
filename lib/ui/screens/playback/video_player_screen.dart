@@ -1498,9 +1498,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       topTitle = [?episodeInfo, title].where((s) => s.isNotEmpty).join(' - ');
     }
 
-    final showClock =
-        _prefs.get(UserPreferences.clockBehavior) == ClockBehavior.always;
-
     await backend.setUiMetadata(
       hasPrevious: _queue.hasPrevious,
       hasNext: _queue.hasNext,
@@ -1509,7 +1506,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       skipForwardMs: _prefs.get(UserPreferences.skipForwardLength),
       topTitle: topTitle,
       topSubtitle: topSubtitle,
-      showClock: showClock,
+      showClock: false,
       zoomModeLabel: _zoomModeLabel(_zoomMode),
       streamInfoSections: streamInfoSections,
       hasCastCrew: hasCastCrew,
@@ -2857,7 +2854,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   size: 22,
                 ),
               ),
-            _buildClock(),
           ],
         ),
       ),
@@ -2921,28 +2917,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           overflow: TextOverflow.ellipsis,
         ),
       ],
-    );
-  }
-
-  Widget _buildClock() {
-    final behavior = _prefs.get(UserPreferences.clockBehavior);
-    if (behavior == ClockBehavior.never || behavior == ClockBehavior.inMenus) {
-      return const SizedBox.shrink();
-    }
-    return StreamBuilder(
-      stream: Stream.periodic(const Duration(seconds: 30)),
-      builder: (context, _) {
-        final now = DateTime.now();
-        final h = now.hour;
-        final m = now.minute.toString().padLeft(2, '0');
-        return Text(
-          '$h:$m',
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: AppTypography.fontSizeMd,
-          ),
-        );
-      },
     );
   }
 

@@ -23,7 +23,6 @@ enum DolbyVisionProfile7DirectPlayBehavior {
 enum ClockBehavior {
   always,
   inMenus,
-  inVideo,
   never,
 }
 

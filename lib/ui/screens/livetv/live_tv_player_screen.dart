@@ -506,8 +506,6 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
                 child: Icon(Icons.fiber_manual_record,
                     color: Colors.red, size: 14),
               ),
-            const SizedBox(width: AppSpacing.spaceMd),
-            _buildClock(),
           ],
         ),
       ),
@@ -590,29 +588,6 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildClock() {
-    final behavior = _prefs.get(UserPreferences.clockBehavior);
-    if (behavior == ClockBehavior.never ||
-        behavior == ClockBehavior.inMenus) {
-      return const SizedBox.shrink();
-    }
-    return StreamBuilder(
-      stream: Stream.periodic(const Duration(seconds: 30)),
-      builder: (context, _) {
-        final now = DateTime.now();
-        final h = now.hour;
-        final m = now.minute.toString().padLeft(2, '0');
-        return Text(
-          '$h:$m',
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: AppTypography.fontSizeMd,
-          ),
-        );
-      },
     );
   }
 

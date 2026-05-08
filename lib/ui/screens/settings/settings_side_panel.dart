@@ -532,7 +532,6 @@ class _GeneralStyleScreenState extends State<_GeneralStyleScreen> {
             labelOf: (v) => switch (v) {
               ClockBehavior.always => 'Always',
               ClockBehavior.inMenus => 'In Menus',
-              ClockBehavior.inVideo => 'In Video',
               ClockBehavior.never => 'Never',
             },
           ),
