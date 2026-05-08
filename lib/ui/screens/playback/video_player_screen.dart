@@ -1743,6 +1743,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     });
   }
 
+  void _handleNextUpCancel() {
+    _suppressBackNavigation(duration: const Duration(milliseconds: 500));
+    setState(() {
+      _showNextUp = false;
+      _nextUpDismissed = true;
+    });
+    unawaited(_exitPlayback());
+  }
+
   void _focusTvNextUpPlay({int attempt = 0}) {
     if (!PlatformDetection.isTV || !_showNextUp) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -2439,7 +2448,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                           : null,
                       timeoutMs: _prefs.get(UserPreferences.nextUpTimeout),
                       onPlayNext: _handleNextUpPlay,
-                      onDismiss: _handleNextUpDismiss,
+                        onDismiss: _handleNextUpCancel,
                       focusNode: PlatformDetection.isTV
                           ? _tvNextUpPlayFocus
                           : null,
