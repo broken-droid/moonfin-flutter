@@ -2070,13 +2070,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyUpEvent) {
+      final isBackKey =
+          event.logicalKey == LogicalKeyboardKey.goBack ||
+          event.logicalKey == LogicalKeyboardKey.escape ||
+          event.logicalKey == LogicalKeyboardKey.browserBack ||
+          event.logicalKey == LogicalKeyboardKey.backspace;
+      if (isBackKey) {
+        // KeyUp for Back should be consumed to avoid a second route pop.
+        return KeyEventResult.handled;
+      }
       if (PlatformDetection.isTV &&
           _controlsVisible &&
-          !_isOsdLocked &&
-          event.logicalKey != LogicalKeyboardKey.goBack &&
-          event.logicalKey != LogicalKeyboardKey.escape &&
-          event.logicalKey != LogicalKeyboardKey.browserBack &&
-          event.logicalKey != LogicalKeyboardKey.backspace) {
+          !_isOsdLocked) {
         _scheduleHide();
       }
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
@@ -2167,6 +2172,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             return KeyEventResult.handled;
           }
           if (_controlsVisible) {
+            _suppressBackNavigation(duration: const Duration(milliseconds: 500));
             _hideTimer?.cancel();
             setState(() => _controlsVisible = false);
             return KeyEventResult.handled;
@@ -2354,6 +2360,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           return;
         }
         if (_controlsVisible) {
+          _suppressBackNavigation(duration: const Duration(milliseconds: 500));
           _hideTimer?.cancel();
           setState(() => _controlsVisible = false);
           return;

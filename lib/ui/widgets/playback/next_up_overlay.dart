@@ -173,6 +173,15 @@ class _NextUpOverlayState extends State<NextUpOverlay>
                             setState(() => _dismissFocused = focused);
                           }
                         },
+                        onKeyEvent: (_, event) {
+                          if (event is KeyDownEvent &&
+                              (event.logicalKey == LogicalKeyboardKey.select ||
+                                  event.logicalKey == LogicalKeyboardKey.enter)) {
+                            widget.onDismiss();
+                            return KeyEventResult.handled;
+                          }
+                          return KeyEventResult.ignored;
+                        },
                         child: OutlinedButton(
                           onPressed: widget.onDismiss,
                           style: OutlinedButton.styleFrom(
