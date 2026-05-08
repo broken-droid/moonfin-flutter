@@ -18,6 +18,7 @@ class NativeVideoView extends StatefulWidget {
   final NativeVideoZoomMode zoomMode;
   final Color fill;
   final String videoOutput;
+  final bool hardwareDecodingEnabled;
   final VoidCallback? onVoReady;
 
   const NativeVideoView({
@@ -26,6 +27,7 @@ class NativeVideoView extends StatefulWidget {
     this.zoomMode = NativeVideoZoomMode.fit,
     this.fill = const Color(0xFF000000),
     this.videoOutput = 'mediacodec_embed',
+    this.hardwareDecodingEnabled = true,
     this.onVoReady,
   });
 
@@ -102,17 +104,17 @@ class _NativeVideoViewState extends State<NativeVideoView> {
 
   Future<void> _restoreSubtitleState({
     required String? sid,
-    required String? visibility,
   }) async {
     if (sid == null || sid.isEmpty) {
       return;
     }
     await _setProperty('sid', sid);
     await _setProperty('secondary-sid', 'no');
-    await _setProperty('sub-visibility', visibility == 'no' ? 'yes' : 'yes');
+    await _setProperty('sub-visibility', 'yes');
   }
 
-  static String _hwdecForVo(String vo) => vo == 'gpu' ? 'auto-copy' : 'mediacodec';
+  String _hwdecMode() =>
+      widget.hardwareDecodingEnabled ? 'auto-copy' : 'no';
 
   Future<void> _enqueueMutation(Future<void> Function() op) {
     _pendingOp = _pendingOp.then((_) => op()).catchError((_) {});
@@ -164,7 +166,6 @@ class _NativeVideoViewState extends State<NativeVideoView> {
       }
 
       final sidBefore = await _getProperty('sid');
-      final subVisibilityBefore = await _getProperty('sub-visibility');
 
       _surface = _SurfaceState(
         wid: wid,
@@ -175,7 +176,7 @@ class _NativeVideoViewState extends State<NativeVideoView> {
       _releaseWid = wid;
 
       await _setProperty('vo', 'null');
-      await _setProperty('hwdec', _hwdecForVo(widget.videoOutput));
+      await _setProperty('hwdec', _hwdecMode());
       await _applyZoomMode();
       await _setProperty('android-surface-size', '${width}x$height');
       await _setProperty('wid', wid.toString());
@@ -184,7 +185,6 @@ class _NativeVideoViewState extends State<NativeVideoView> {
       await _setPropertyReady('vo', widget.videoOutput);
       await _restoreSubtitleState(
         sid: sidBefore,
-        visibility: subVisibilityBefore,
       );
       if (widget.videoOutput == 'gpu') {
         widget.onVoReady?.call();
@@ -232,7 +232,9 @@ class _NativeVideoViewState extends State<NativeVideoView> {
 
     final zoomChanged = oldWidget.zoomMode != widget.zoomMode;
     final voChanged = oldWidget.videoOutput != widget.videoOutput;
-    if (!zoomChanged && !voChanged) return;
+    final hwdecChanged =
+        oldWidget.hardwareDecodingEnabled != widget.hardwareDecodingEnabled;
+    if (!zoomChanged && !voChanged && !hwdecChanged) return;
 
     unawaited(_enqueueMutation(() async {
       if (_surface == null) return;
@@ -243,23 +245,23 @@ class _NativeVideoViewState extends State<NativeVideoView> {
 
       if (voChanged) {
         final sidBefore = await _getProperty('sid');
-        final subVisibilityBefore = await _getProperty('sub-visibility');
 
         final s = _surface!;
         await _setProperty('vo', 'null');
-        await _setProperty('hwdec', _hwdecForVo(widget.videoOutput));
+        await _setProperty('hwdec', _hwdecMode());
         await _setProperty('android-surface-size', '${s.width}x${s.height}');
         await _setProperty('wid', s.wid.toString());
         await _setProperty('vid', 'auto');
         await _setPropertyReady('vo', widget.videoOutput);
         await _restoreSubtitleState(
           sid: sidBefore,
-          visibility: subVisibilityBefore,
         );
         if (widget.videoOutput == 'gpu') {
           widget.onVoReady?.call();
         }
         _surface = _surface?.copyWith(vo: widget.videoOutput);
+      } else if (hwdecChanged) {
+        await _setProperty('hwdec', _hwdecMode());
       }
     }));
   }

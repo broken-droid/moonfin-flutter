@@ -72,34 +72,27 @@ Future<bool> _showDeleteConfirmationDialog(
 }) async {
   final confirmed = await showFocusRestoringDialog<bool>(
     context: context,
-    builder:
-        (ctx) => AlertDialog(
-          backgroundColor: const Color(0xFF171717),
-          title: Text(
-            title,
-            style: const TextStyle(color: Colors.white),
+    builder: (ctx) => AlertDialog(
+      backgroundColor: const Color(0xFF171717),
+      title: Text(title, style: const TextStyle(color: Colors.white)),
+      content: Text(message, style: const TextStyle(color: Colors.white70)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: Text(
+            AppLocalizations.of(ctx).cancel,
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
           ),
-          content: Text(
-            message,
-            style: const TextStyle(color: Colors.white70),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(
-                AppLocalizations.of(ctx).cancel,
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
-              ),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFFD32F2F),
-              ),
-              child: Text(AppLocalizations.of(ctx).delete),
-            ),
-          ],
         ),
+        FilledButton(
+          onPressed: () => Navigator.pop(ctx, true),
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFFD32F2F),
+          ),
+          child: Text(AppLocalizations.of(ctx).delete),
+        ),
+      ],
+    ),
   );
 
   return confirmed == true;
@@ -110,14 +103,19 @@ class ItemDetailScreen extends StatefulWidget {
   final String? serverId;
   final bool autoPlay;
 
-  const ItemDetailScreen({super.key, required this.itemId, this.serverId, this.autoPlay = false});
+  const ItemDetailScreen({
+    super.key,
+    required this.itemId,
+    this.serverId,
+    this.autoPlay = false,
+  });
 
   @override
   State<ItemDetailScreen> createState() => _ItemDetailScreenState();
 }
 
 class _ItemDetailScreenState extends State<ItemDetailScreen>
-  with WidgetsBindingObserver {
+    with WidgetsBindingObserver {
   late final ItemDetailViewModel _viewModel;
   final _backgroundService = GetIt.instance<BackgroundService>();
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
@@ -132,8 +130,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
       <String, String>{};
   FocusNode? _initialContentFocusNode;
 
-  FocusNode _ensureInitialFocusNode() =>
-      _initialContentFocusNode ??= FocusNode(debugLabel: 'detailInitialContent');
+  FocusNode _ensureInitialFocusNode() => _initialContentFocusNode ??= FocusNode(
+    debugLabel: 'detailInitialContent',
+  );
 
   @override
   void initState() {
@@ -141,11 +140,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
     WidgetsBinding.instance.addObserver(this);
     _themeMusicService.registerDetailScreen(this);
     final factory = GetIt.instance<MediaServerClientFactory>();
-    final client =
-        widget.serverId != null
-            ? factory.getClientIfExists(widget.serverId!) ??
-                GetIt.instance<MediaServerClient>()
-            : GetIt.instance<MediaServerClient>();
+    final client = widget.serverId != null
+        ? factory.getClientIfExists(widget.serverId!) ??
+              GetIt.instance<MediaServerClient>()
+        : GetIt.instance<MediaServerClient>();
     _viewModel = ItemDetailViewModel(
       itemId: widget.itemId,
       serverId: widget.serverId,
@@ -227,13 +225,19 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
           ),
         );
         if (url != _backdropUrl) {
-          _backgroundService.setBackgroundUrl(url, context: BlurContext.details);
+          _backgroundService.setBackgroundUrl(
+            url,
+            context: BlurContext.details,
+          );
           setState(() => _backdropUrl = url);
         }
         return;
       }
 
-      _backgroundService.setBackground(focusedItem, context: BlurContext.details);
+      _backgroundService.setBackground(
+        focusedItem,
+        context: BlurContext.details,
+      );
       final nextUrl = _backgroundService.currentUrl;
       if (nextUrl != _backdropUrl) {
         setState(() => _backdropUrl = nextUrl);
@@ -286,7 +290,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
             const Icon(Icons.error_outline, color: Colors.white54, size: 48),
             const SizedBox(height: 16),
             Text(
-              _viewModel.errorMessage ?? AppLocalizations.of(context).failedToLoad,
+              _viewModel.errorMessage ??
+                  AppLocalizations.of(context).failedToLoad,
               style: const TextStyle(color: Colors.white54),
             ),
             const SizedBox(height: 16),
@@ -303,8 +308,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
         backdropUrl: _backdropUrl,
         selectedMediaSourceId: _selectedMediaSourceId,
         initialFocusNode: _ensureInitialFocusNode(),
-        onSelectedMediaSourceChanged:
-            (id) => setState(() => _selectedMediaSourceId = id),
+        onSelectedMediaSourceChanged: (id) =>
+            setState(() => _selectedMediaSourceId = id),
         onBackdropItemFocused: _onBackdropItemFocused,
         autoPlay: widget.autoPlay,
       ),
@@ -340,8 +345,12 @@ class _DetailContent extends StatefulWidget {
 class _DetailContentState extends State<_DetailContent> {
   late ScrollController _scrollController;
   late FocusNode _contentFocusNode;
-  final FocusNode _albumPlayFocusNode = FocusNode(debugLabel: 'albumPlayButton');
-  final FocusNode _firstTrackFocusNode = FocusNode(debugLabel: 'albumFirstTrack');
+  final FocusNode _albumPlayFocusNode = FocusNode(
+    debugLabel: 'albumPlayButton',
+  );
+  final FocusNode _firstTrackFocusNode = FocusNode(
+    debugLabel: 'albumFirstTrack',
+  );
   String? _tvAlbumPlayFocusAppliedForItemId;
 
   ItemDetailViewModel get viewModel => widget.viewModel;
@@ -411,20 +420,25 @@ class _DetailContentState extends State<_DetailContent> {
     final item = widget.viewModel.item!;
     _ensureTvAlbumPlayFocus(item);
     final isReadableBook = _isReadableBookItem(item);
-    final selectedMediaSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
-    final blurAmount =
-        widget.prefs.get(UserPreferences.detailsBackgroundBlurAmount).toDouble();
+    final selectedMediaSource = _selectedMediaSourceForItem(
+      item,
+      widget.selectedMediaSourceId,
+    );
+    final blurAmount = widget.prefs
+        .get(UserPreferences.detailsBackgroundBlurAmount)
+        .toDouble();
     final backdropEnabled = widget.prefs.get(UserPreferences.backdropEnabled);
     final navbarEnabled =
-      PlatformDetection.isTV &&
-      item.type != 'MusicAlbum' &&
-      item.type != 'Playlist' &&
-      NavigationLayout.focusNavbarNotifier.value != null;
+        PlatformDetection.isTV &&
+        item.type != 'MusicAlbum' &&
+        item.type != 'Playlist' &&
+        NavigationLayout.focusNavbarNotifier.value != null;
 
     return Focus(
       focusNode: _contentFocusNode,
       onKeyEvent: (node, event) {
-        if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.arrowUp) {
           final isAtTop = _scrollController.offset <= 0;
           if (isAtTop && navbarEnabled) {
             NavigationLayout.focusNavbarNotifier.value?.call();
@@ -439,9 +453,7 @@ class _DetailContentState extends State<_DetailContent> {
           if (isReadableBook)
             const Positioned.fill(
               child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Color(0xFF0F182A),
-                ),
+                decoration: BoxDecoration(color: Color(0xFF0F182A)),
               ),
             ),
           if (backdropEnabled && !isReadableBook)
@@ -453,10 +465,7 @@ class _DetailContentState extends State<_DetailContent> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0x000F182A),
-                      Color(0x440A1324),
-                    ],
+                    colors: [Color(0x000F182A), Color(0x440A1324)],
                   ),
                 ),
               ),
@@ -513,9 +522,10 @@ class _DetailContentState extends State<_DetailContent> {
       'MusicAlbum' || 'Playlist' => _buildAlbumContent(context, item),
       'BoxSet' => _buildBoxSetContent(context, item),
       'Photo' => _buildPhotoContent(item),
-      _ => _isReadableBookItem(item)
-          ? _buildBookContent(context, item)
-          : _buildMovieContent(context, item),
+      _ =>
+        _isReadableBookItem(item)
+            ? _buildBookContent(context, item)
+            : _buildMovieContent(context, item),
     };
   }
 
@@ -550,23 +560,22 @@ class _DetailContentState extends State<_DetailContent> {
           child: Wrap(
             spacing: 12,
             runSpacing: 8,
-            children:
-                exifEntries
-                    .map(
-                      (e) => Chip(
-                        label: Text(
-                          e,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white70,
-                          ),
-                        ),
-                        backgroundColor: Colors.white.withValues(alpha: 0.08),
-                        side: BorderSide.none,
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
+            children: exifEntries
+                .map(
+                  (e) => Chip(
+                    label: Text(
+                      e,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
                       ),
-                    )
-                    .toList(),
+                    ),
+                    backgroundColor: Colors.white.withValues(alpha: 0.08),
+                    side: BorderSide.none,
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                  ),
+                )
+                .toList(),
           ),
         ),
       ],
@@ -623,12 +632,11 @@ class _DetailContentState extends State<_DetailContent> {
 
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder:
-            (_) => _BookAuthorDetailScreen(
-              authorName: authorName,
-              authorPersonId: _bookAuthorPersonId(item),
-              serverId: item.serverId,
-            ),
+        builder: (_) => _BookAuthorDetailScreen(
+          authorName: authorName,
+          authorPersonId: _bookAuthorPersonId(item),
+          serverId: item.serverId,
+        ),
       ),
     );
   }
@@ -701,7 +709,9 @@ class _DetailContentState extends State<_DetailContent> {
                 ),
                 const SizedBox(height: 8),
                 InkWell(
-                  onTap: author != null ? () => _openBookAuthorDetails(context, item, author) : null,
+                  onTap: author != null
+                      ? () => _openBookAuthorDetails(context, item, author)
+                      : null,
                   borderRadius: BorderRadius.circular(6),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
@@ -743,9 +753,7 @@ class _DetailContentState extends State<_DetailContent> {
       _SectionHeader(title: l10n.overview),
       const SizedBox(height: 8),
       Text(
-        hasOverview
-            ? overview
-            : l10n.noOverviewAvailable,
+        hasOverview ? overview : l10n.noOverviewAvailable,
         style: const TextStyle(
           color: Color(0xFFD7E8F6),
           fontSize: 14,
@@ -763,7 +771,10 @@ class _DetailContentState extends State<_DetailContent> {
               .take(24)
               .map(
                 (genre) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: ThemeRegistry.active.borders.chipBackground,
                     borderRadius: BorderRadius.circular(999),
@@ -788,12 +799,12 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.moreLikeThis,
-            titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: ThemeRegistry.active.id == ThemeRegistry.neonPulseId
-                  ? AppColorScheme.onSurface
-                  : null,
-              fontWeight: FontWeight.w700,
-            ),
+          titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: ThemeRegistry.active.id == ThemeRegistry.neonPulseId
+                ? AppColorScheme.onSurface
+                : null,
+            fontWeight: FontWeight.w700,
+          ),
           builder: (_, ctrl) => _SimilarRow(
             items: viewModel.similar,
             imageApi: viewModel.imageApi,
@@ -1007,8 +1018,12 @@ class _DetailContentState extends State<_DetailContent> {
       ),
       if (viewModel.episodes.isNotEmpty) ...[
         () {
-          final currentIndex = viewModel.episodes.indexWhere((ep) => ep.id == item.id);
-          final nextEpisode = (currentIndex >= 0 && currentIndex < viewModel.episodes.length - 1)
+          final currentIndex = viewModel.episodes.indexWhere(
+            (ep) => ep.id == item.id,
+          );
+          final nextEpisode =
+              (currentIndex >= 0 &&
+                  currentIndex < viewModel.episodes.length - 1)
               ? viewModel.episodes[currentIndex + 1]
               : null;
           if (nextEpisode != null) {
@@ -1020,7 +1035,8 @@ class _DetailContentState extends State<_DetailContent> {
                   Text(
                     l10n.nextEpisode,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: ThemeRegistry.active.id == ThemeRegistry.neonPulseId
+                      color:
+                          ThemeRegistry.active.id == ThemeRegistry.neonPulseId
                           ? AppColorScheme.onSurface
                           : Colors.white,
                       fontWeight: FontWeight.bold,
@@ -1028,7 +1044,10 @@ class _DetailContentState extends State<_DetailContent> {
                       fontSize: _isCompact(context) ? 17 : null,
                     ),
                   ),
-                  _NextUpCard(episode: nextEpisode, imageApi: viewModel.imageApi),
+                  _NextUpCard(
+                    episode: nextEpisode,
+                    imageApi: viewModel.imageApi,
+                  ),
                 ],
               ),
             );
@@ -1117,15 +1136,15 @@ class _DetailContentState extends State<_DetailContent> {
       ),
     );
     if (!started) return;
-    if (!mounted) return;
-    this.context.push(Destinations.videoPlayer);
+    if (!context.mounted) return;
+    unawaited(context.push(Destinations.videoPlayer));
   }
 
   List<Widget> _buildChapterAndFeatureSections(
     BuildContext context,
-    AggregatedItem item,
-    {String? selectedMediaSourceId,}
-  ) {
+    AggregatedItem item, {
+    String? selectedMediaSourceId,
+  }) {
     final l10n = AppLocalizations.of(context);
     return [
       if (item.chapters.isNotEmpty) ...[
@@ -1135,15 +1154,9 @@ class _DetailContentState extends State<_DetailContent> {
           builder: (_, ctrl) => _ChaptersRow(
             item: item,
             imageApi: viewModel.imageApi,
-            onPlayFromChapter:
-                (position) => unawaited(
-                  _playFromChapter(
-                    context,
-                    item,
-                    position,
-                    selectedMediaSourceId,
-                  ),
-                ),
+            onPlayFromChapter: (position) => unawaited(
+              _playFromChapter(context, item, position, selectedMediaSourceId),
+            ),
             scrollController: ctrl,
           ),
         ),
@@ -1184,10 +1197,7 @@ class _DetailContentState extends State<_DetailContent> {
       ),
       if (hasBio) ...[
         const SizedBox(height: 24),
-        _ExpandableBiography(
-          text: item.overview!,
-          toggleFocusNode: firstFocus,
-        ),
+        _ExpandableBiography(text: item.overview!, toggleFocusNode: firstFocus),
       ],
       if (movies.isNotEmpty) ...[
         const SizedBox(height: 32),
@@ -1263,21 +1273,22 @@ class _DetailContentState extends State<_DetailContent> {
         isPlaylist && viewModel.canManagePlaylistTracks;
     final canDeleteItem = item.canDelete;
     final canDownloadAll =
-      _canUserDownload() &&
-      (item.type == 'MusicAlbum' ||
-      item.type == 'AudioBook' ||
-      (item.type == 'Playlist' &&
-        viewModel.tracks.isNotEmpty &&
-        viewModel.tracks.every(_isAudioItem)));
+        _canUserDownload() &&
+        (item.type == 'MusicAlbum' ||
+            item.type == 'AudioBook' ||
+            (item.type == 'Playlist' &&
+                viewModel.tracks.isNotEmpty &&
+                viewModel.tracks.every(_isAudioItem)));
     final canDeleteDownloaded =
-      item.type == 'MusicAlbum' || item.type == 'AudioBook';
+        item.type == 'MusicAlbum' || item.type == 'AudioBook';
     return [
       _AlbumHeader(
         item: item,
         imageApi: viewModel.imageApi,
         isAudiobook: isAudiobook,
-        onRenameRequested:
-            isPlaylist ? () => _showRenamePlaylistDialog(context, item) : null,
+        onRenameRequested: isPlaylist
+            ? () => _showRenamePlaylistDialog(context, item)
+            : null,
       ),
       const SizedBox(height: 16),
       _AlbumActions(
@@ -1290,8 +1301,7 @@ class _DetailContentState extends State<_DetailContent> {
           _firstTrackFocusNode.requestFocus();
         },
         showAddToPlaylist: !isPlaylist,
-        onDownloadAll:
-          canDownloadAll
+        onDownloadAll: canDownloadAll
             ? () => _downloadTrackList(
                 context,
                 item.name,
@@ -1299,16 +1309,18 @@ class _DetailContentState extends State<_DetailContent> {
                 itemLabel: isAudiobook ? 'chapters' : 'tracks',
               )
             : null,
-        onDeleteDownloaded:
-          canDeleteDownloaded
+        onDeleteDownloaded: canDeleteDownloaded
             ? () => _confirmDeleteDownloadedAlbum(context, item.name)
             : null,
-        onDeletePlaylist:
-            canDeleteItem ? () => _confirmDeleteServerItem(context, item) : null,
+        onDeletePlaylist: canDeleteItem
+            ? () => _confirmDeleteServerItem(context, item)
+            : null,
       ),
       if (viewModel.tracks.isNotEmpty) ...[
         const SizedBox(height: 24),
-        _SectionHeader(title: isAudiobook ? l10n.tableOfContents : l10n.tracklist),
+        _SectionHeader(
+          title: isAudiobook ? l10n.tableOfContents : l10n.tracklist,
+        ),
         const SizedBox(height: 12),
         _TrackList(
           tracks: viewModel.tracks,
@@ -1340,26 +1352,24 @@ class _DetailContentState extends State<_DetailContent> {
                 final mediaType = t.rawData['MediaType'] as String?;
                 return t.type == 'Audio' || mediaType == 'Audio';
               });
-              context.push(isAudio ? Destinations.audioPlayer : Destinations.videoPlayer);
+              context.push(
+                isAudio ? Destinations.audioPlayer : Destinations.videoPlayer,
+              );
             }());
           },
-          onReorder:
-              canManagePlaylistTracks
-                  ? (oldIndex, newIndex) =>
-                      viewModel.reorderPlaylistTrack(oldIndex, newIndex)
-                  : null,
-          onRemoveFromPlaylist:
-              canManagePlaylistTracks
-                  ? (track) => viewModel.removeTrackFromPlaylist(track)
-                  : null,
-          onMoveUp:
-              canManagePlaylistTracks
-                  ? (index) => viewModel.reorderPlaylistTrack(index, index - 1)
-                  : null,
-          onMoveDown:
-              canManagePlaylistTracks
-                  ? (index) => viewModel.reorderPlaylistTrack(index, index + 2)
-                  : null,
+          onReorder: canManagePlaylistTracks
+              ? (oldIndex, newIndex) =>
+                    viewModel.reorderPlaylistTrack(oldIndex, newIndex)
+              : null,
+          onRemoveFromPlaylist: canManagePlaylistTracks
+              ? (track) => viewModel.removeTrackFromPlaylist(track)
+              : null,
+          onMoveUp: canManagePlaylistTracks
+              ? (index) => viewModel.reorderPlaylistTrack(index, index - 1)
+              : null,
+          onMoveDown: canManagePlaylistTracks
+              ? (index) => viewModel.reorderPlaylistTrack(index, index + 2)
+              : null,
         ),
       ],
       const SizedBox(height: 48),
@@ -1368,7 +1378,9 @@ class _DetailContentState extends State<_DetailContent> {
 
   bool _isAudioItem(AggregatedItem item) {
     final mediaType = item.rawData['MediaType'] as String?;
-    return item.type == 'Audio' || item.type == 'AudioBook' || mediaType == 'Audio';
+    return item.type == 'Audio' ||
+        item.type == 'AudioBook' ||
+        mediaType == 'Audio';
   }
 
   void _downloadTrackList(
@@ -1376,15 +1388,12 @@ class _DetailContentState extends State<_DetailContent> {
     String title,
     List<AggregatedItem> tracks, {
     String itemLabel = 'items',
-  }
-  ) {
+  }) {
     final l10n = AppLocalizations.of(context);
     if (tracks.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(
-        SnackBar(content: Text(l10n.noItemsLoaded(itemLabel))),
-      );
+      ).showSnackBar(SnackBar(content: Text(l10n.noItemsLoaded(itemLabel))));
       return;
     }
 
@@ -1412,40 +1421,38 @@ class _DetailContentState extends State<_DetailContent> {
 
     final ok = await showFocusRestoringDialog<bool>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            backgroundColor: const Color(0xFF171717),
-            title: Text(
-              l10n.deleteDownloadedAlbum,
-              style: const TextStyle(color: Colors.white),
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF171717),
+        title: Text(
+          l10n.deleteDownloadedAlbum,
+          style: const TextStyle(color: Colors.white),
+        ),
+        content: Text(
+          l10n.deleteDownloadedTracksMessage(title),
+          style: const TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
             ),
-            content: Text(
-              l10n.deleteDownloadedTracksMessage(title),
-              style: const TextStyle(color: Colors.white70),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: Text(
-                  l10n.cancel,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
-                ),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFD32F2F),
-                ),
-                child: Text(l10n.delete),
-              ),
-            ],
           ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFD32F2F),
+            ),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
     );
     if (ok != true || !context.mounted) return;
 
-    final success = await GetIt.instance<DownloadService>().deleteDownloadedItems(
-      tracks,
-    );
+    final success = await GetIt.instance<DownloadService>()
+        .deleteDownloadedItems(tracks);
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -1468,9 +1475,7 @@ class _DetailContentState extends State<_DetailContent> {
     final confirmed = await _showDeleteConfirmationDialog(
       context,
       title: isPlaylist ? l10n.deletePlaylist : l10n.deleteItem,
-      message: isPlaylist
-          ? l10n.deletePlaylistMessage
-          : l10n.deleteItemMessage,
+      message: isPlaylist ? l10n.deletePlaylistMessage : l10n.deleteItemMessage,
     );
     if (!confirmed) return;
 
@@ -1481,9 +1486,7 @@ class _DetailContentState extends State<_DetailContent> {
       return;
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           isPlaylist ? l10n.failedToDeletePlaylist : l10n.failedToDeleteItem,
@@ -1500,34 +1503,33 @@ class _DetailContentState extends State<_DetailContent> {
     final controller = TextEditingController(text: item.name);
     final newName = await showFocusRestoringDialog<String>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            backgroundColor: const Color(0xFF171717),
-            title: Text(
-              l10n.renamePlaylist,
-              style: const TextStyle(color: Colors.white),
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF171717),
+        title: Text(
+          l10n.renamePlaylist,
+          style: const TextStyle(color: Colors.white),
+        ),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(hintText: l10n.playlistName),
+          onSubmitted: (_) => Navigator.pop(ctx, controller.text.trim()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
             ),
-            content: TextField(
-              controller: controller,
-              autofocus: true,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(hintText: l10n.playlistName),
-              onSubmitted: (_) => Navigator.pop(ctx, controller.text.trim()),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(
-                  l10n.cancel,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
-                ),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-                child: Text(l10n.save),
-              ),
-            ],
           ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
     );
     controller.dispose();
     if (newName == null || newName.isEmpty || newName == item.name) return;
@@ -1712,12 +1714,14 @@ class _HeaderSection extends StatelessWidget {
     final isMobile = !useDesktopLayout;
     final mediaType = item.rawData['MediaType'] as String?;
     final isMusicItem = item.type == 'Audio' || mediaType == 'Audio';
-    final showLyrics = useDesktopLayout && isMusicItem && viewModel.lyrics.isNotEmpty;
+    final showLyrics =
+        useDesktopLayout && isMusicItem && viewModel.lyrics.isNotEmpty;
     final isCollection = item.type == 'BoxSet';
 
     final infoColumn = Column(
-      crossAxisAlignment:
-          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (isEpisode && item.seriesName != null)
@@ -1762,26 +1766,25 @@ class _HeaderSection extends StatelessWidget {
         if (!isEpisode && item.logoImageTag != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child:
-                isMobile
-                    ? Center(
-                      child: LogoView(
-                        imageUrl: imageApi.getLogoImageUrl(
-                          item.id,
-                          tag: item.logoImageTag,
-                        ),
-                        maxHeight: 56,
-                        maxWidth: 240,
-                      ),
-                    )
-                    : LogoView(
+            child: isMobile
+                ? Center(
+                    child: LogoView(
                       imageUrl: imageApi.getLogoImageUrl(
                         item.id,
                         tag: item.logoImageTag,
                       ),
-                      maxHeight: 80,
-                      maxWidth: 350,
+                      maxHeight: 56,
+                      maxWidth: 240,
                     ),
+                  )
+                : LogoView(
+                    imageUrl: imageApi.getLogoImageUrl(
+                      item.id,
+                      tag: item.logoImageTag,
+                    ),
+                    maxHeight: 80,
+                    maxWidth: 350,
+                  ),
           )
         else
           Text(
@@ -1851,10 +1854,9 @@ class _HeaderSection extends StatelessWidget {
       ],
     );
 
-    final posterWidget =
-        isEpisode
-            ? _EpisodeThumbnail(item: item, imageApi: imageApi)
-            : _PosterImage(item: item, imageApi: imageApi);
+    final posterWidget = isEpisode
+        ? _EpisodeThumbnail(item: item, imageApi: imageApi)
+        : _PosterImage(item: item, imageApi: imageApi);
 
     final safeTop = MediaQuery.of(context).padding.top;
 
@@ -1891,10 +1893,16 @@ class _HeaderSection extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(48, safeTop + (isCollection ? 96 : 80), 48, isCollection ? 0 : 16),
+      padding: EdgeInsets.fromLTRB(
+        48,
+        safeTop + (isCollection ? 96 : 80),
+        48,
+        isCollection ? 0 : 16,
+      ),
       child: Row(
-        crossAxisAlignment:
-            isCollection ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+        crossAxisAlignment: isCollection
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.end,
         children: [
           Expanded(child: infoColumn),
           const SizedBox(width: 32),
@@ -1912,11 +1920,10 @@ class _LyricsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lines =
-        lyrics.lines
-            .map((line) => line.text.trim())
-            .where((line) => line.isNotEmpty)
-            .toList(growable: false);
+    final lines = lyrics.lines
+        .map((line) => line.text.trim())
+        .where((line) => line.isNotEmpty)
+        .toList(growable: false);
     if (lines.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -1983,9 +1990,7 @@ class _DownloadedBadgeState extends State<_DownloadedBadge> {
 
   Future<void> _check() async {
     final repo = GetIt.instance<OfflineRepository>();
-    final available = await repo.isAvailableOffline(
-      widget.itemId,
-    );
+    final available = await repo.isAvailableOffline(widget.itemId);
     if (mounted && available != _downloaded) {
       setState(() => _downloaded = available);
     }
@@ -2115,10 +2120,7 @@ class _PosterImage extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.fromBorderSide(
-                      BorderSide(
-                        color: AppColorScheme.accent,
-                        width: 1.5,
-                      ),
+                      BorderSide(color: AppColorScheme.accent, width: 1.5),
                     ),
                   ),
                 ),
@@ -2249,7 +2251,9 @@ class _MetadataRow extends StatelessWidget {
     if (item.type == 'Series') {
       final count = item.childCount;
       if (count != null) {
-        parts.add(_text(theme, AppLocalizations.of(context).seasonCount(count)));
+        parts.add(
+          _text(theme, AppLocalizations.of(context).seasonCount(count)),
+        );
       }
       final status = item.status;
       if (status != null) {
@@ -2295,10 +2299,12 @@ class _MetadataRow extends StatelessWidget {
     if (res != null) badges.add(res);
     final hdr = _hdrFromStreams(streams) ?? item.hdrType;
     if (hdr != null) badges.add(hdr);
-    final vcodec = _codecFromStreams(streams, 'Video') ?? item.videoCodec?.toUpperCase();
+    final vcodec =
+        _codecFromStreams(streams, 'Video') ?? item.videoCodec?.toUpperCase();
     if (vcodec != null) badges.add(vcodec);
-    final acodec = _audioLabelFromStreams(streams) ??
-      audioLabelFromProfileCodec(item.audioProfile, item.audioCodec);
+    final acodec =
+        _audioLabelFromStreams(streams) ??
+        audioLabelFromProfileCodec(item.audioProfile, item.audioCodec);
     if (acodec != null) badges.add(acodec);
     final layout = _channelLayoutFromStreams(streams) ?? item.channelLayout;
     if (layout != null) badges.add(layout);
@@ -2306,8 +2312,9 @@ class _MetadataRow extends StatelessWidget {
     final compact = !_useDesktopDetailLayout(context);
 
     return Column(
-      crossAxisAlignment:
-          compact ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: compact
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -2382,7 +2389,9 @@ class _MetadataRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
-        isEnded ? AppLocalizations.of(context).ended : AppLocalizations.of(context).continuing,
+        isEnded
+            ? AppLocalizations.of(context).ended
+            : AppLocalizations.of(context).continuing,
         style: theme.textTheme.labelSmall?.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.w600,
@@ -2447,7 +2456,8 @@ class _BookAuthorDetailScreen extends StatefulWidget {
   });
 
   @override
-  State<_BookAuthorDetailScreen> createState() => _BookAuthorDetailScreenState();
+  State<_BookAuthorDetailScreen> createState() =>
+      _BookAuthorDetailScreenState();
 }
 
 class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
@@ -2492,8 +2502,9 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
         : defaultClient;
   }
 
-  Future<List<_AuthorBookEntry>> _loadLibraryBooks(MediaServerClient client) async {
-
+  Future<List<_AuthorBookEntry>> _loadLibraryBooks(
+    MediaServerClient client,
+  ) async {
     try {
       final itemsApi = client.itemsApi;
       final rawItems = await _fetchBookItemsFromServer(itemsApi);
@@ -2509,14 +2520,17 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
           .toList();
 
       final filtered =
-          widget.authorPersonId != null && widget.authorPersonId!.trim().isNotEmpty
-              ? mapped
-              : mapped.where((item) => _bookMatchesAuthor(item)).toList();
+          widget.authorPersonId != null &&
+              widget.authorPersonId!.trim().isNotEmpty
+          ? mapped
+          : mapped.where((item) => _bookMatchesAuthor(item)).toList();
 
       return _dedupeAuthorBooks(
         filtered
-          .map((item) => _AuthorBookEntry.fromLibraryItem(item, client.imageApi))
-          .toList(),
+            .map(
+              (item) => _AuthorBookEntry.fromLibraryItem(item, client.imageApi),
+            )
+            .toList(),
       );
     } catch (_) {
       return const [];
@@ -2530,7 +2544,8 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
     String? biography;
     String? photoUrl;
 
-    if (widget.authorPersonId != null && widget.authorPersonId!.trim().isNotEmpty) {
+    if (widget.authorPersonId != null &&
+        widget.authorPersonId!.trim().isNotEmpty) {
       try {
         final personId = widget.authorPersonId!.trim();
         final person = await client.itemsApi.getItem(personId);
@@ -2556,7 +2571,8 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
           searchTerm: widget.authorName,
           limit: 12,
         );
-        final items = (peopleData['Items'] as List?)
+        final items =
+            (peopleData['Items'] as List?)
                 ?.whereType<Map>()
                 .map((m) => m.cast<String, dynamic>())
                 .toList() ??
@@ -2564,8 +2580,10 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
 
         final target = widget.authorName.trim().toLowerCase();
         final person = items.firstWhere(
-          (item) => ((item['Name'] as String?) ?? '').trim().toLowerCase() == target,
-          orElse: () => items.isNotEmpty ? items.first : const <String, dynamic>{},
+          (item) =>
+              ((item['Name'] as String?) ?? '').trim().toLowerCase() == target,
+          orElse: () =>
+              items.isNotEmpty ? items.first : const <String, dynamic>{},
         );
         final personId = (person['Id'] as String?)?.trim();
         if (personId != null && personId.isNotEmpty) {
@@ -2609,17 +2627,20 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
         startIndex: startIndex,
         limit: pageSize,
         searchTerm:
-          widget.authorPersonId == null || widget.authorPersonId!.trim().isEmpty
+            widget.authorPersonId == null ||
+                widget.authorPersonId!.trim().isEmpty
             ? widget.authorName
             : null,
         personIds:
-            widget.authorPersonId != null && widget.authorPersonId!.trim().isNotEmpty
-                ? [widget.authorPersonId!.trim()]
-                : null,
+            widget.authorPersonId != null &&
+                widget.authorPersonId!.trim().isNotEmpty
+            ? [widget.authorPersonId!.trim()]
+            : null,
         enableTotalRecordCount: true,
       );
 
-      final pageItems = (data['Items'] as List?)
+      final pageItems =
+          (data['Items'] as List?)
               ?.whereType<Map>()
               .map((m) => m.cast<String, dynamic>())
               .toList() ??
@@ -2646,7 +2667,8 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
     final direct = (item.rawData['Author'] as String?)?.trim().toLowerCase();
     if (direct == target) return true;
 
-    final authors = (item.rawData['Authors'] as List?)
+    final authors =
+        (item.rawData['Authors'] as List?)
             ?.whereType<String>()
             .map((name) => name.trim().toLowerCase())
             .toList() ??
@@ -2668,7 +2690,9 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
 
   String _bookIdentity(_AuthorBookEntry book) {
     final canonicalTitle = _canonicalBookTitle(book.title);
-    final yearBucket = book.year != null ? (book.year! ~/ 5).toString() : 'unknown';
+    final yearBucket = book.year != null
+        ? (book.year! ~/ 5).toString()
+        : 'unknown';
     return 'title:$canonicalTitle|year:$yearBucket';
   }
 
@@ -2677,12 +2701,17 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
     for (final book in books) {
       final key = _bookIdentity(book);
       final existing = deduped[key];
-      deduped[key] = existing == null ? book : _preferAuthorBook(existing, book);
+      deduped[key] = existing == null
+          ? book
+          : _preferAuthorBook(existing, book);
     }
     return deduped.values.toList();
   }
 
-  _AuthorBookEntry _preferAuthorBook(_AuthorBookEntry left, _AuthorBookEntry right) {
+  _AuthorBookEntry _preferAuthorBook(
+    _AuthorBookEntry left,
+    _AuthorBookEntry right,
+  ) {
     final leftScore = _authorBookScore(left);
     final rightScore = _authorBookScore(right);
     if (rightScore > leftScore) return right;
@@ -2710,8 +2739,15 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
   Widget build(BuildContext context) {
     final horizontalPadding = _isCompact(context) ? 16.0 : 48.0;
     final width = MediaQuery.sizeOf(context).width;
-    final crossAxisCount =
-      width >= 1500 ? 7 : width >= 1200 ? 6 : width >= 900 ? 5 : width >= 700 ? 4 : 3;
+    final crossAxisCount = width >= 1500
+        ? 7
+        : width >= 1200
+        ? 6
+        : width >= 900
+        ? 5
+        : width >= 700
+        ? 4
+        : 3;
     const gridSpacing = 10.0;
     final data = _data;
 
@@ -2723,81 +2759,90 @@ class _BookAuthorDetailScreenState extends State<_BookAuthorDetailScreen> {
         title: Text(AppLocalizations.of(context).authorDetails),
       ),
       body: SafeArea(
-        child:
-            _loading && data == null
-                ? const Center(
-                  child: CircularProgressIndicator(color: Color(0xFF32B9E8)),
-                )
-                : data == null
-                ? Center(
-                  child: Text(
-                    AppLocalizations.of(context).unableToLoadAuthorDetails,
-                    style: const TextStyle(color: Color(0xFFD7E8F6)),
-                  ),
-                )
-                : SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(horizontalPadding, 8, horizontalPadding, 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _AuthorHeader(name: data.authorName, photoUrl: data.photoUrl),
-                      const SizedBox(height: 20),
-                      _SectionHeader(title: AppLocalizations.of(context).biography),
-                      const SizedBox(height: 8),
-                      if (data.biography != null && data.biography!.trim().isNotEmpty)
-                        _ExpandableBiography(text: data.biography!)
-                      else
-                        Text(
-                          AppLocalizations.of(context).noBiographyAvailable,
-                          style: const TextStyle(
-                            color: Color(0xFFD7E8F6),
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
-                        ),
-                      const SizedBox(height: 28),
-                      _SectionHeader(title: AppLocalizations.of(context).books),
-                      const SizedBox(height: 8),
-                      if (data.books.isEmpty)
-                        Text(
-                          AppLocalizations.of(context).noBooksFound,
-                          style: const TextStyle(
-                            color: Color(0xFFD7E8F6),
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
-                        )
-                      else
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: data.books.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: crossAxisCount,
-                            mainAxisSpacing: gridSpacing,
-                            crossAxisSpacing: gridSpacing,
-                            childAspectRatio: 0.72,
-                          ),
-                          itemBuilder: (context, index) {
-                            final book = data.books[index];
-                            return _AuthorBookTile(
-                              book: book,
-                              onTap:
-                                  book.inLibrary && book.itemId != null
-                                      ? () => context.push(
-                                        Destinations.item(
-                                          book.itemId!,
-                                          serverId: widget.serverId,
-                                        ),
-                                      )
-                                      : null,
-                            );
-                          },
-                        ),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
+        child: _loading && data == null
+            ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFF32B9E8)),
+              )
+            : data == null
+            ? Center(
+                child: Text(
+                  AppLocalizations.of(context).unableToLoadAuthorDetails,
+                  style: const TextStyle(color: Color(0xFFD7E8F6)),
                 ),
+              )
+            : SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(
+                  horizontalPadding,
+                  8,
+                  horizontalPadding,
+                  24,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _AuthorHeader(
+                      name: data.authorName,
+                      photoUrl: data.photoUrl,
+                    ),
+                    const SizedBox(height: 20),
+                    _SectionHeader(
+                      title: AppLocalizations.of(context).biography,
+                    ),
+                    const SizedBox(height: 8),
+                    if (data.biography != null &&
+                        data.biography!.trim().isNotEmpty)
+                      _ExpandableBiography(text: data.biography!)
+                    else
+                      Text(
+                        AppLocalizations.of(context).noBiographyAvailable,
+                        style: const TextStyle(
+                          color: Color(0xFFD7E8F6),
+                          fontSize: 14,
+                          height: 1.5,
+                        ),
+                      ),
+                    const SizedBox(height: 28),
+                    _SectionHeader(title: AppLocalizations.of(context).books),
+                    const SizedBox(height: 8),
+                    if (data.books.isEmpty)
+                      Text(
+                        AppLocalizations.of(context).noBooksFound,
+                        style: const TextStyle(
+                          color: Color(0xFFD7E8F6),
+                          fontSize: 14,
+                          height: 1.5,
+                        ),
+                      )
+                    else
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: data.books.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          mainAxisSpacing: gridSpacing,
+                          crossAxisSpacing: gridSpacing,
+                          childAspectRatio: 0.72,
+                        ),
+                        itemBuilder: (context, index) {
+                          final book = data.books[index];
+                          return _AuthorBookTile(
+                            book: book,
+                            onTap: book.inLibrary && book.itemId != null
+                                ? () => context.push(
+                                    Destinations.item(
+                                      book.itemId!,
+                                      serverId: widget.serverId,
+                                    ),
+                                  )
+                                : null,
+                          );
+                        },
+                      ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -2822,11 +2867,7 @@ class _AuthorHeader extends StatelessWidget {
               width: 84,
               height: 84,
               child: photoUrl == null
-                  ? const Icon(
-                      Icons.person,
-                      size: 36,
-                      color: Color(0xFFE4F0FA),
-                    )
+                  ? const Icon(Icons.person, size: 36, color: Color(0xFFE4F0FA))
                   : CachedNetworkImage(
                       imageUrl: photoUrl!,
                       fit: BoxFit.cover,
@@ -3097,10 +3138,9 @@ class _AuthorBookEntry {
     ImageApi imageApi,
   ) {
     final tag = item.primaryImageTag;
-    final coverUrl =
-        tag == null
-            ? null
-            : imageApi.getPrimaryImageUrl(item.id, maxHeight: 300, tag: tag);
+    final coverUrl = tag == null
+        ? null
+        : imageApi.getPrimaryImageUrl(item.id, maxHeight: 300, tag: tag);
 
     return _AuthorBookEntry(
       title: item.name,
@@ -3133,7 +3173,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
   DownloadedItem? _offlineRow;
   List<DownloadedItem>? _offlineQueue;
   DownloadService? _downloadService;
-  final FocusNode _tvPlayFocusNode = FocusNode(debugLabel: 'detail_play_button');
+  final FocusNode _tvPlayFocusNode = FocusNode(
+    debugLabel: 'detail_play_button',
+  );
   String? _tvPlayFocusAppliedForItemId;
   bool _rowHasFocus = false;
 
@@ -3190,10 +3232,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final buttonWidth = compact ? 80.0 : 96.0;
     const spacing = 8.0;
     const horizontalPadding = 64.0;
-    
+
     final availableWidth = screenWidth - horizontalPadding;
-    final maxButtons = ((availableWidth + spacing) / (buttonWidth + spacing)).floor();
-    
+    final maxButtons = ((availableWidth + spacing) / (buttonWidth + spacing))
+        .floor();
+
     return maxButtons > 2 ? maxButtons : 2;
   }
 
@@ -3204,14 +3247,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final type = item.type;
 
     if (type == 'Season' || type == 'Series') {
-      final episodes =
-          type == 'Season'
-              ? await repo.getSeasonEpisodes(item.id)
-              : await repo.getSeriesEpisodes(item.id);
-      final playable =
-          episodes
-              .where((e) => e.downloadStatus == 2 && e.localFilePath != null)
-              .toList();
+      final episodes = type == 'Season'
+          ? await repo.getSeasonEpisodes(item.id)
+          : await repo.getSeriesEpisodes(item.id);
+      final playable = episodes
+          .where((e) => e.downloadStatus == 2 && e.localFilePath != null)
+          .toList();
       if (mounted) {
         setState(() {
           _offlineRow = playable.isNotEmpty ? playable.first : null;
@@ -3262,35 +3303,41 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final manager = GetIt.instance<PlaybackManager>();
     final queued = manager.queueService.currentItem;
     final resolution = manager.currentResolution;
-    if (queued?.id == item.id && resolution != null && resolution.mediaStreams.isNotEmpty) {
+    if (queued?.id == item.id &&
+        resolution != null &&
+        resolution.mediaStreams.isNotEmpty) {
       return resolution.mediaStreams;
     }
     return _mediaStreamsForItem(item, selectedSource);
   }
 
   void _openAudioSelector(BuildContext context, AggregatedItem item) {
-    final selectedSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
-    final streams = _streamsForTrackSelectors(item, selectedSource)
-        .where((s) => s['Type'] == 'Audio')
-        .toList();
+    final selectedSource = _selectedMediaSourceForItem(
+      item,
+      widget.selectedMediaSourceId,
+    );
+    final streams = _streamsForTrackSelectors(
+      item,
+      selectedSource,
+    ).where((s) => s['Type'] == 'Audio').toList();
     if (streams.length > 1) {
       _showAudioSelector(context, streams);
     }
   }
 
   void _openSubtitleSelector(BuildContext context, AggregatedItem item) {
-    final selectedSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
+    final selectedSource = _selectedMediaSourceForItem(
+      item,
+      widget.selectedMediaSourceId,
+    );
     final selectorStreams = _streamsForTrackSelectors(item, selectedSource);
     final subtitleStreams = selectorStreams
         .where((s) => s['Type'] == 'Subtitle')
         .toList();
-    final audioStreams = selectorStreams.where((s) => s['Type'] == 'Audio').toList();
-    _showSubtitleSelector(
-      context,
-      item,
-      subtitleStreams,
-      audioStreams,
-    );
+    final audioStreams = selectorStreams
+        .where((s) => s['Type'] == 'Audio')
+        .toList();
+    _showSubtitleSelector(context, item, subtitleStreams, audioStreams);
   }
 
   @override
@@ -3302,32 +3349,37 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final hasProgress =
         (item.playedPercentage ?? 0) > 0 ||
         (item.playbackPosition?.inMilliseconds ?? 0) > 0;
-    final selectedSource = _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
+    final selectedSource = _selectedMediaSourceForItem(
+      item,
+      widget.selectedMediaSourceId,
+    );
     final mediaStreams = _mediaStreamsForItem(item, selectedSource);
-    final audioStreams = mediaStreams.where((s) => s['Type'] == 'Audio').toList();
-    final subtitleStreams = mediaStreams.where((s) => s['Type'] == 'Subtitle').toList();
+    final audioStreams = mediaStreams
+        .where((s) => s['Type'] == 'Audio')
+        .toList();
+    final subtitleStreams = mediaStreams
+        .where((s) => s['Type'] == 'Subtitle')
+        .toList();
     final l10n = AppLocalizations.of(context);
 
     _ensureTvPlayFocus(item.id);
 
     var allButtons = <Widget>[
       _DetailActionButton(
-        label:
-            isPhoto
-                ? l10n.view
-                : isBook
-                ? (hasProgress ? l10n.resumeReading : l10n.read)
-                : hasProgress
-                ? l10n.resumeFrom(_formatResumePosition(item.playbackPosition))
-                : l10n.play,
-        icon:
-            isPhoto
-                ? Icons.photo
-                : isBook
-                ? Icons.menu_book
-                : Icons.play_arrow,
-              focusNode: PlatformDetection.isTV ? _tvPlayFocusNode : null,
-              autofocus: PlatformDetection.isTV,
+        label: isPhoto
+            ? l10n.view
+            : isBook
+            ? (hasProgress ? l10n.resumeReading : l10n.read)
+            : hasProgress
+            ? l10n.resumeFrom(_formatResumePosition(item.playbackPosition))
+            : l10n.play,
+        icon: isPhoto
+            ? Icons.photo
+            : isBook
+            ? Icons.menu_book
+            : Icons.play_arrow,
+        focusNode: PlatformDetection.isTV ? _tvPlayFocusNode : null,
+        autofocus: PlatformDetection.isTV,
         onPressed: () => _play(context, item, resume: !isPhoto && hasProgress),
       ),
       if (hasProgress && !isPhoto)
@@ -3338,9 +3390,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         ),
       if (_offlineRow != null)
         _DetailActionButton(
-          label: isBook
-              ? l10n.readOffline
-              : l10n.playOffline,
+          label: isBook ? l10n.readOffline : l10n.playOffline,
           icon: isBook ? Icons.menu_book : Icons.offline_pin,
           onPressed: () async {
             if (context.mounted) {
@@ -3401,14 +3451,14 @@ class _ActionButtonsState extends State<_ActionButtons> {
           activeColor: AppColorScheme.accent,
         ),
       _DetailActionButton(
-          label: isBook
-              ? (item.isPlayed ? l10n.finished : l10n.unread)
-              : (item.isPlayed ? l10n.watched : l10n.unwatched),
-          icon: item.isPlayed ? Icons.check_circle : Icons.check_circle_outline,
-          onPressed: viewModel.togglePlayed,
-          isActive: item.isPlayed,
-          activeColor: AppColorScheme.accent,
-        ),
+        label: isBook
+            ? (item.isPlayed ? l10n.finished : l10n.unread)
+            : (item.isPlayed ? l10n.watched : l10n.unwatched),
+        icon: item.isPlayed ? Icons.check_circle : Icons.check_circle_outline,
+        onPressed: viewModel.togglePlayed,
+        isActive: item.isPlayed,
+        activeColor: AppColorScheme.accent,
+      ),
       _DetailActionButton(
         label: item.isFavorite ? l10n.favorited : l10n.favorite,
         icon: Icons.favorite,
@@ -3420,12 +3470,17 @@ class _ActionButtonsState extends State<_ActionButtons> {
         _DetailActionButton(
           label: l10n.playlist,
           icon: Icons.playlist_add,
-          onPressed:
-              () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
+          onPressed: () =>
+              AddToPlaylistDialog.show(context, itemIds: [item.id]),
         ),
-      if (_isDownloadable(item.type) && _canUserDownload() && !PlatformDetection.isTV)
+      if (_isDownloadable(item.type) &&
+          _canUserDownload() &&
+          !PlatformDetection.isTV)
         _DownloadButton(item: item, viewModel: viewModel),
-      if (_isDownloadable(item.type) && _canUserDownload() && !PlatformDetection.isTV) _DeleteDownloadButton(item: item),
+      if (_isDownloadable(item.type) &&
+          _canUserDownload() &&
+          !PlatformDetection.isTV)
+        _DeleteDownloadButton(item: item),
       if (item.canDelete)
         _DetailActionButton(
           label: l10n.delete,
@@ -3438,10 +3493,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
         _DetailActionButton(
           label: l10n.goToSeries,
           icon: Icons.tv,
-          onPressed:
-              () => context.push(
-                Destinations.item(item.seriesId!, serverId: item.serverId),
-              ),
+          onPressed: () => context.push(
+            Destinations.item(item.seriesId!, serverId: item.serverId),
+          ),
         ),
       if ((GetIt.instance<UserRepository>().currentUser?.isAdministrator ??
               false) &&
@@ -3576,9 +3630,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
       if (Navigator.of(context).canPop()) {
         context.pop(true);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.itemDeleted)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.itemDeleted)));
       }
       return;
     }
@@ -3616,9 +3670,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
 
     final prefs = GetIt.instance<UserPreferences>();
-    final preferred = prefs
-        .get(UserPreferences.defaultAudioLanguage)
-        .trim();
+    final preferred = prefs.get(UserPreferences.defaultAudioLanguage).trim();
     if (preferred.isEmpty) {
       return null;
     }
@@ -3639,7 +3691,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     return null;
   }
 
-  int? _effectiveSubtitleStreamIndex(List<Map<String, dynamic>> subtitleStreams) {
+  int? _effectiveSubtitleStreamIndex(
+    List<Map<String, dynamic>> subtitleStreams,
+  ) {
     final active = _activePlaybackSubtitleIndex();
     if (active != null) {
       return active;
@@ -3648,16 +3702,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
       return _selectedSubtitleIndex;
     }
     final prefs = GetIt.instance<UserPreferences>();
-    final defaultToNone = prefs.get(
-      UserPreferences.subtitlesDefaultToNone,
-    );
+    final defaultToNone = prefs.get(UserPreferences.subtitlesDefaultToNone);
     if (defaultToNone) {
       return -1;
     }
 
-    final preferred = prefs
-        .get(UserPreferences.defaultSubtitleLanguage)
-        .trim();
+    final preferred = prefs.get(UserPreferences.defaultSubtitleLanguage).trim();
     if (preferred.isEmpty) {
       return null;
     }
@@ -3703,9 +3753,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final syncPlay = GetIt.instance<SyncPlayManager>();
     final groupName = syncPlay.state.groupName ?? 'group';
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Syncing playback to $groupName')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Syncing playback to $groupName')));
     }
   }
 
@@ -3775,6 +3825,46 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
   }
 
+  Future<bool> _pushPlayerRouteWhileStartingPlayback(
+    BuildContext context, {
+    required String destination,
+    required Future<bool> startupFuture,
+    bool reloadOnReturn = true,
+  }) async {
+    if (!context.mounted) return false;
+    final routeFuture = context.push(destination);
+
+    bool started;
+    try {
+      started = await startupFuture;
+    } catch (_) {
+      if (context.mounted) {
+        final route = ModalRoute.of(context);
+        if (route != null && !route.isCurrent) {
+          Navigator.of(context).pop();
+        }
+      }
+      rethrow;
+    }
+
+    if (!started) {
+      if (context.mounted) {
+        final route = ModalRoute.of(context);
+        if (route != null && !route.isCurrent) {
+          Navigator.of(context).pop();
+        }
+      }
+      return false;
+    }
+
+    if (!context.mounted) return false;
+    await routeFuture;
+    if (reloadOnReturn) {
+      viewModel.load();
+    }
+    return true;
+  }
+
   Future<void> _playInternal(
     BuildContext context,
     AggregatedItem item, {
@@ -3782,13 +3872,14 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }) async {
     final manager = GetIt.instance<PlaybackManager>();
     final mediaStreams = _mediaStreamsForCurrentSelection(item);
-    final audioStreams =
-      mediaStreams.where((s) => s['Type'] == 'Audio').toList();
-    final subtitleStreams =
-      mediaStreams.where((s) => s['Type'] == 'Subtitle').toList();
+    final audioStreams = mediaStreams
+        .where((s) => s['Type'] == 'Audio')
+        .toList();
+    final subtitleStreams = mediaStreams
+        .where((s) => s['Type'] == 'Subtitle')
+        .toList();
     final audioStreamIndex = _effectiveAudioStreamIndex(audioStreams);
-    final subtitleStreamIndex =
-      _effectiveSubtitleStreamIndex(subtitleStreams);
+    final subtitleStreamIndex = _effectiveSubtitleStreamIndex(subtitleStreams);
 
     if (item.type == 'Photo') {
       await context.push(Destinations.photo(item.id));
@@ -3801,7 +3892,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
           !BookReaderService.isSupportedExtension(extension)) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context).unsupportedBookFormat(extension))),
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).unsupportedBookFormat(extension),
+              ),
+            ),
           );
         }
         return;
@@ -3819,7 +3914,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         item.type == 'AudioBook' ||
         mediaType == 'Audio';
 
-    final started = await _runWithDolbyVisionStartupFallbackPrompt(
+    final startupFuture = _runWithDolbyVisionStartupFallbackPrompt(
       context,
       manager,
       () async {
@@ -3827,8 +3922,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
           case 'Series':
             final nextUp = viewModel.nextUp;
             if (nextUp == null) return;
-            final startPosition =
-                resume ? (nextUp.playbackPosition ?? Duration.zero) : Duration.zero;
+            final startPosition = resume
+                ? (nextUp.playbackPosition ?? Duration.zero)
+                : Duration.zero;
             final forceTranscode = await _shouldForceTranscodeForDolbyVision(
               context,
               [nextUp],
@@ -3845,17 +3941,15 @@ class _ActionButtonsState extends State<_ActionButtons> {
           case 'Season':
             final episodes = viewModel.episodes;
             if (episodes.isEmpty) return;
-            final startIndex =
-                resume
-                    ? episodes.indexWhere(
-                      (e) => (e.playedPercentage ?? 0) > 0 && !e.isPlayed,
-                    )
-                    : episodes.indexWhere((e) => !e.isPlayed);
+            final startIndex = resume
+                ? episodes.indexWhere(
+                    (e) => (e.playedPercentage ?? 0) > 0 && !e.isPlayed,
+                  )
+                : episodes.indexWhere((e) => !e.isPlayed);
             final idx = startIndex >= 0 ? startIndex : 0;
-            final startPosition =
-                resume
-                    ? (episodes[idx].playbackPosition ?? Duration.zero)
-                    : Duration.zero;
+            final startPosition = resume
+                ? (episodes[idx].playbackPosition ?? Duration.zero)
+                : Duration.zero;
             final forceTranscode = await _shouldForceTranscodeForDolbyVision(
               context,
               [episodes[idx]],
@@ -3875,10 +3969,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
             if (episodes.length > 1) {
               final startIndex = episodes.indexWhere((e) => e.id == item.id);
               final idx = startIndex >= 0 ? startIndex : 0;
-              final startPosition =
-                  resume
-                      ? (episodes[idx].playbackPosition ?? Duration.zero)
-                      : Duration.zero;
+              final startPosition = resume
+                  ? (episodes[idx].playbackPosition ?? Duration.zero)
+                  : Duration.zero;
               final forceTranscode = await _shouldForceTranscodeForDolbyVision(
                 context,
                 [episodes[idx]],
@@ -3931,28 +4024,28 @@ class _ActionButtonsState extends State<_ActionButtons> {
       },
     );
 
-    if (!started) return;
-
-    if (!context.mounted) return;
-    await context.push(
-      isAudio ? Destinations.audioPlayer : Destinations.videoPlayer,
+    await _pushPlayerRouteWhileStartingPlayback(
+      context,
+      destination: isAudio
+          ? Destinations.audioPlayer
+          : Destinations.videoPlayer,
+      startupFuture: startupFuture,
     );
-    viewModel.load();
   }
 
   Future<void> _castToDevice(BuildContext context, AggregatedItem item) {
     final mediaStreams = _mediaStreamsForCurrentSelection(item);
-    final audioStreams =
-        mediaStreams.where((s) => s['Type'] == 'Audio').toList();
-    final subtitleStreams =
-        mediaStreams.where((s) => s['Type'] == 'Subtitle').toList();
+    final audioStreams = mediaStreams
+        .where((s) => s['Type'] == 'Audio')
+        .toList();
+    final subtitleStreams = mediaStreams
+        .where((s) => s['Type'] == 'Subtitle')
+        .toList();
     final audioStreamIndex = _effectiveAudioStreamIndex(audioStreams);
-    final subtitleStreamIndex =
-        _effectiveSubtitleStreamIndex(subtitleStreams);
-    final positionTicks =
-        item.playbackPosition == null
-            ? null
-            : item.playbackPosition!.inMicroseconds * 10;
+    final subtitleStreamIndex = _effectiveSubtitleStreamIndex(subtitleStreams);
+    final positionTicks = item.playbackPosition == null
+        ? null
+        : item.playbackPosition!.inMicroseconds * 10;
     return showRemotePlayToSessionDialog(
       context,
       item: item,
@@ -3966,8 +4059,10 @@ class _ActionButtonsState extends State<_ActionButtons> {
   List<Map<String, dynamic>> _mediaStreamsForCurrentSelection(
     AggregatedItem item,
   ) {
-    final selectedSource =
-        _selectedMediaSourceForItem(item, widget.selectedMediaSourceId);
+    final selectedSource = _selectedMediaSourceForItem(
+      item,
+      widget.selectedMediaSourceId,
+    );
     return _mediaStreamsForItem(item, selectedSource);
   }
 
@@ -4038,7 +4133,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     return extraType == 'Trailer' || type == 'Trailer';
   }
 
-  AggregatedItem? _firstLocalTrailerFromFeatures(List<AggregatedItem> features) {
+  AggregatedItem? _firstLocalTrailerFromFeatures(
+    List<AggregatedItem> features,
+  ) {
     for (final feature in features) {
       if (_isTrailerFeatureItem(feature) && feature.id.isNotEmpty) {
         return feature;
@@ -4056,11 +4153,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         if (id == null || id.isEmpty) {
           continue;
         }
-        return AggregatedItem(
-          id: id,
-          serverId: item.serverId,
-          rawData: raw,
-        );
+        return AggregatedItem(id: id, serverId: item.serverId, rawData: raw);
       }
     } catch (_) {}
     return null;
@@ -4079,7 +4172,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         [localTrailer],
       );
       if (!context.mounted) return;
-      final started = await _runWithDolbyVisionStartupFallbackPrompt(
+      final startupFuture = _runWithDolbyVisionStartupFallbackPrompt(
         context,
         manager,
         () => manager.playItems(
@@ -4088,10 +4181,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
           enableDirectStream: !forceTranscode,
         ),
       );
-      if (!started) return;
-      if (!mounted) return;
-      await this.context.push(Destinations.videoPlayer);
-      viewModel.load();
+      await _pushPlayerRouteWhileStartingPlayback(
+        context,
+        destination: Destinations.videoPlayer,
+        startupFuture: startupFuture,
+      );
       return;
     }
 
@@ -4103,7 +4197,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     if (trailerUrl.isEmpty) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context).noPlayableTrailerFound)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context).noPlayableTrailerFound),
+        ),
       );
       return;
     }
@@ -4122,15 +4218,14 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final result = await TrackSelectorDialog.show(
       context,
       title: AppLocalizations.of(context).audioTrack,
-      options:
-          streams.map((s) {
-            final display =
-                s['DisplayTitle'] as String? ??
-                s['Language'] as String? ??
-                'Unknown';
-            final codec = s['Codec'] as String?;
-            return TrackOption(label: display, subtitle: codec?.toUpperCase());
-          }).toList(),
+      options: streams.map((s) {
+        final display =
+            s['DisplayTitle'] as String? ??
+            s['Language'] as String? ??
+            'Unknown';
+        final codec = s['Codec'] as String?;
+        return TrackOption(label: display, subtitle: codec?.toUpperCase());
+      }).toList(),
       selectedIndex: currentIdx >= 0 ? currentIdx : null,
     );
     if (result != null && result < streams.length) {
@@ -4156,10 +4251,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         !isAudio;
   }
 
-  String _remoteSubtitleErrorMessage(
-    Object error, {
-    required String action,
-  }) {
+  String _remoteSubtitleErrorMessage(Object error, {required String action}) {
     final l10n = AppLocalizations.of(context);
     if (error is DioException) {
       final status = error.response?.statusCode;
@@ -4173,8 +4265,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
       final data = error.response?.data;
       String? detail;
       if (data is Map) {
-        detail = (data['message'] ?? data['Message'] ?? data['error'] ?? data['Error'])
-            as String?;
+        detail =
+            (data['message'] ??
+                    data['Message'] ??
+                    data['error'] ??
+                    data['Error'])
+                as String?;
       } else if (data is String && data.trim().isNotEmpty) {
         detail = data.trim();
       }
@@ -4194,10 +4290,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     List<Map<String, dynamic>> subtitleStreams,
     List<Map<String, dynamic>> audioStreams,
   ) {
-    final preferred =
-        GetIt.instance<UserPreferences>()
-            .get(UserPreferences.defaultSubtitleLanguage)
-            .trim();
+    final preferred = GetIt.instance<UserPreferences>()
+        .get(UserPreferences.defaultSubtitleLanguage)
+        .trim();
     if (preferred.isNotEmpty) {
       return preferred;
     }
@@ -4237,7 +4332,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
       details.add('${rating.toStringAsFixed(1)}★');
     }
     if (downloadCount != null) {
-      details.add(AppLocalizations.of(context).downloadsCount(downloadCount.toInt()));
+      details.add(
+        AppLocalizations.of(context).downloadsCount(downloadCount.toInt()),
+      );
     }
     if (isHashMatch) {
       details.add(AppLocalizations.of(context).perfectMatch);
@@ -4324,9 +4421,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
       }
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            _remoteSubtitleErrorMessage(error, action: 'search'),
-          ),
+          content: Text(_remoteSubtitleErrorMessage(error, action: 'search')),
         ),
       );
       return;
@@ -4337,7 +4432,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
     if (results.isEmpty) {
       messenger.showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context).noRemoteSubtitlesFound(language))),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).noRemoteSubtitlesFound(language),
+          ),
+        ),
       );
       return;
     }
@@ -4345,18 +4444,17 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final result = await TrackSelectorDialog.show(
       context,
       title: AppLocalizations.of(context).downloadSubtitles,
-      options:
-          results.map((subtitle) {
-            final label =
-                subtitle['Name'] as String? ??
-                subtitle['Author'] as String? ??
-                'Subtitle';
-            final subtitleText = _remoteSubtitleOptionSubtitle(subtitle);
-            return TrackOption(
-              label: label,
-              subtitle: subtitleText.isNotEmpty ? subtitleText : null,
-            );
-          }).toList(),
+      options: results.map((subtitle) {
+        final label =
+            subtitle['Name'] as String? ??
+            subtitle['Author'] as String? ??
+            'Subtitle';
+        final subtitleText = _remoteSubtitleOptionSubtitle(subtitle);
+        return TrackOption(
+          label: label,
+          subtitle: subtitleText.isNotEmpty ? subtitleText : null,
+        );
+      }).toList(),
     );
 
     if (!context.mounted || result == null || result >= results.length) {
@@ -4366,7 +4464,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final subtitleId = results[result]['Id'] as String?;
     if (subtitleId == null || subtitleId.isEmpty) {
       messenger.showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context).selectedSubtitleInvalid)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context).selectedSubtitleInvalid),
+        ),
       );
       return;
     }
@@ -4400,7 +4500,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
         messenger.showSnackBar(
           SnackBar(
             content: Text(
-              AppLocalizations.of(context).subtitleDownloadedSelected(newStream['DisplayTitle'] as String? ?? newStream['Title'] as String? ?? newStream['Language'] as String? ?? 'Unknown'),
+              AppLocalizations.of(context).subtitleDownloadedSelected(
+                newStream['DisplayTitle'] as String? ??
+                    newStream['Title'] as String? ??
+                    newStream['Language'] as String? ??
+                    'Unknown',
+              ),
             ),
           ),
         );
@@ -4409,9 +4514,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
 
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            AppLocalizations.of(context).subtitleDownloadedPending,
-          ),
+          content: Text(AppLocalizations.of(context).subtitleDownloadedPending),
         ),
       );
     } catch (error) {
@@ -4420,9 +4523,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
       }
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            _remoteSubtitleErrorMessage(error, action: 'download'),
-          ),
+          content: Text(_remoteSubtitleErrorMessage(error, action: 'download')),
         ),
       );
     }
@@ -4438,11 +4539,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final effectiveSubtitleIndex = _effectiveSubtitleStreamIndex(streams);
     final currentIdx = effectiveSubtitleIndex != null
         ? (effectiveSubtitleIndex == -1
-            ? 0
-            : streams.indexWhere(
-                  (s) => s['Index'] == effectiveSubtitleIndex,
-                ) +
-                1)
+              ? 0
+              : streams.indexWhere(
+                      (s) => s['Index'] == effectiveSubtitleIndex,
+                    ) +
+                    1)
         : (streams.indexWhere((s) => s['IsDefault'] == true) + 1);
     final options = [
       TrackOption(label: AppLocalizations.of(context).none),
@@ -4490,29 +4591,28 @@ class _ActionButtonsState extends State<_ActionButtons> {
     BuildContext context,
     List<Map<String, dynamic>> sources,
   ) async {
-    final currentIdx =
-      widget.selectedMediaSourceId != null
+    final currentIdx = widget.selectedMediaSourceId != null
         ? sources.indexWhere((s) => s['Id'] == widget.selectedMediaSourceId)
-            : 0;
+        : 0;
     final result = await TrackSelectorDialog.show(
       context,
       title: AppLocalizations.of(context).selectVersion,
-      options:
-          sources.asMap().entries.map((entry) {
-            final s = entry.value;
-            final name =
-                s['Name'] as String? ?? AppLocalizations.of(context).versionNumber(entry.key + 1);
-            final bitrate = s['Bitrate'] as int?;
-            final container = s['Container'] as String?;
-            final subtitle = [
-              if (container != null) container.toUpperCase(),
-              if (bitrate != null) '${(bitrate / 1000000).toStringAsFixed(1)} Mbps',
-            ].join(' | ');
-            return TrackOption(
-              label: name,
-              subtitle: subtitle.isNotEmpty ? subtitle : null,
-            );
-          }).toList(),
+      options: sources.asMap().entries.map((entry) {
+        final s = entry.value;
+        final name =
+            s['Name'] as String? ??
+            AppLocalizations.of(context).versionNumber(entry.key + 1);
+        final bitrate = s['Bitrate'] as int?;
+        final container = s['Container'] as String?;
+        final subtitle = [
+          if (container != null) container.toUpperCase(),
+          if (bitrate != null) '${(bitrate / 1000000).toStringAsFixed(1)} Mbps',
+        ].join(' | ');
+        return TrackOption(
+          label: name,
+          subtitle: subtitle.isNotEmpty ? subtitle : null,
+        );
+      }).toList(),
       selectedIndex: currentIdx >= 0 ? currentIdx : 0,
     );
     if (result != null && result < sources.length) {
@@ -4547,11 +4647,10 @@ List<Map<String, dynamic>> _mediaStreamsForItem(
 ) {
   final rawStreams = mediaSource?['MediaStreams'];
   if (rawStreams is List) {
-    final parsed =
-        rawStreams
-            .whereType<Map>()
-            .map((e) => e.cast<String, dynamic>())
-            .toList(growable: false);
+    final parsed = rawStreams
+        .whereType<Map>()
+        .map((e) => e.cast<String, dynamic>())
+        .toList(growable: false);
     if (parsed.isNotEmpty) {
       return parsed;
     }
@@ -4665,10 +4764,7 @@ Future<bool> _runWithDolbyVisionStartupFallbackPrompt(
         hasUnsupportedProfile = true;
       }
       if (hasDolbyVision && hasUnsupportedProfile) {
-        return (
-          hasDolbyVision: true,
-          hasUnsupportedProfile: true,
-        );
+        return (hasDolbyVision: true, hasUnsupportedProfile: true);
       }
     }
   }
@@ -4717,17 +4813,17 @@ Future<_DolbyVisionPlayDecision?> _showDolbyVisionFallbackDecisionDialog(
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(dialogContext).pop(
-                    DolbyVisionFallbackBehavior.hdr10Fallback,
-                  );
+                  Navigator.of(
+                    dialogContext,
+                  ).pop(DolbyVisionFallbackBehavior.hdr10Fallback);
                 },
                 child: const Text('Play HDR10 fallback'),
               ),
               FilledButton(
                 onPressed: () {
-                  Navigator.of(dialogContext).pop(
-                    DolbyVisionFallbackBehavior.transcode,
-                  );
+                  Navigator.of(
+                    dialogContext,
+                  ).pop(DolbyVisionFallbackBehavior.transcode);
                 },
                 child: const Text('Request transcode'),
               ),
@@ -4761,8 +4857,7 @@ Future<bool> _shouldForceTranscodeForDolbyVisionQueue(
   final dvAnalysis = _analyzeDolbyVisionQueue(
     queue,
     mediaSourceId: mediaSourceId,
-    allowDolbyVisionProfile7ElDirectPlay:
-        allowDolbyVisionProfile7ElDirectPlay,
+    allowDolbyVisionProfile7ElDirectPlay: allowDolbyVisionProfile7ElDirectPlay,
   );
   if (!dvAnalysis.hasDolbyVision) {
     return false;
@@ -4800,7 +4895,10 @@ Future<bool> _shouldForceTranscodeForDolbyVisionQueue(
   return decision.forceTranscode;
 }
 
-Duration? _runtimeForItem(AggregatedItem item, Map<String, dynamic>? mediaSource) {
+Duration? _runtimeForItem(
+  AggregatedItem item,
+  Map<String, dynamic>? mediaSource,
+) {
   final ticks = mediaSource?['RunTimeTicks'];
   if (ticks is num && ticks > 0) {
     return Duration(microseconds: (ticks ~/ 10));
@@ -4808,7 +4906,11 @@ Duration? _runtimeForItem(AggregatedItem item, Map<String, dynamic>? mediaSource
   return item.runtime;
 }
 
-String? _endsAt(AggregatedItem item, Duration? runtime, {required bool use24Hour}) {
+String? _endsAt(
+  AggregatedItem item,
+  Duration? runtime, {
+  required bool use24Hour,
+}) {
   if (runtime == null) {
     return null;
   }
@@ -4816,7 +4918,8 @@ String? _endsAt(AggregatedItem item, Duration? runtime, {required bool use24Hour
   final Duration left;
   if (percentage != null && percentage > 0) {
     left = Duration(
-      microseconds: (runtime.inMicroseconds * (1.0 - percentage / 100.0)).round(),
+      microseconds: (runtime.inMicroseconds * (1.0 - percentage / 100.0))
+          .round(),
     );
   } else {
     left = runtime;
@@ -4871,10 +4974,15 @@ String? _audioLabelFromStreams(List<Map<String, dynamic>> streams) {
   final audio = streams.where((s) => s['Type'] == 'Audio').firstOrNull;
   if (audio == null) return null;
   return audioLabelFromProfileCodec(
-      audio['Profile'] as String?, audio['Codec'] as String?);
+    audio['Profile'] as String?,
+    audio['Codec'] as String?,
+  );
 }
 
-String? _codecFromStreams(List<Map<String, dynamic>> streams, String streamType) {
+String? _codecFromStreams(
+  List<Map<String, dynamic>> streams,
+  String streamType,
+) {
   final stream = streams.where((s) => s['Type'] == streamType).firstOrNull;
   final codec = stream?['Codec'] as String?;
   if (codec == null || codec.isEmpty) {
@@ -4913,10 +5021,11 @@ bool _isReadableBookItem(AggregatedItem item) {
 bool _isAudiobookCollectionItem(AggregatedItem item) {
   if (item.type == 'AudioBook') return true;
 
-  final genres = (item.rawData['Genres'] as List?)
-      ?.whereType<String>()
-      .map((g) => g.toLowerCase())
-      .toList() ??
+  final genres =
+      (item.rawData['Genres'] as List?)
+          ?.whereType<String>()
+          .map((g) => g.toLowerCase())
+          .toList() ??
       const <String>[];
   return genres.any((g) => g.contains('audiobook') || g.contains('audio book'));
 }
@@ -4950,12 +5059,17 @@ class _DownloadButtonState extends State<_DownloadButton> {
   bool _isOffline = false;
   DownloadService? _downloadService;
 
-  String _originalQualitySubtitle(AggregatedItem item, {required bool isMulti}) {
+  String _originalQualitySubtitle(
+    AggregatedItem item, {
+    required bool isMulti,
+  }) {
     if (isMulti) {
       return AppLocalizations.of(context).originalFilesNoReencoding;
     }
 
-    final mediaSource = item.mediaSources.isNotEmpty ? item.mediaSources.first : null;
+    final mediaSource = item.mediaSources.isNotEmpty
+        ? item.mediaSources.first
+        : null;
     final sizeBytes = sourceSizeBytes(item);
     final container = (mediaSource?['Container'] as String?)?.toUpperCase();
     final videoCodec = item.videoCodec?.toUpperCase();
@@ -5084,7 +5198,8 @@ class _DownloadButtonState extends State<_DownloadButton> {
 
   @override
   Widget build(BuildContext context) {
-    final downloadService = _downloadService ?? GetIt.instance<DownloadService>();
+    final downloadService =
+        _downloadService ?? GetIt.instance<DownloadService>();
     return ListenableBuilder(
       listenable: downloadService,
       builder: (context, _) {
@@ -5096,10 +5211,9 @@ class _DownloadButtonState extends State<_DownloadButton> {
         if (progress != null &&
             !progress.isComplete &&
             progress.error == null) {
-          final label =
-              progress.progress >= 0
-                  ? '${(progress.progress * 100).toInt()}%'
-                  : '${(progress.bytesReceived / 1048576).toStringAsFixed(1)} MB';
+          final label = progress.progress >= 0
+              ? '${(progress.progress * 100).toInt()}%'
+              : '${(progress.bytesReceived / 1048576).toStringAsFixed(1)} MB';
           return _DetailActionButton(
             label: label,
             icon: Icons.close,
@@ -5141,7 +5255,9 @@ class _DownloadButtonState extends State<_DownloadButton> {
         }
 
         return _DetailActionButton(
-          label: isMulti ? AppLocalizations.of(context).downloadAll : AppLocalizations.of(context).download,
+          label: isMulti
+              ? AppLocalizations.of(context).downloadAll
+              : AppLocalizations.of(context).download,
           icon: Icons.download,
           onPressed: () => _showQualityPicker(context, downloadService),
         );
@@ -5152,7 +5268,8 @@ class _DownloadButtonState extends State<_DownloadButton> {
   void _showQualityPicker(BuildContext context, DownloadService service) {
     final item = widget.item;
     final isMulti = item.type == 'Season' || item.type == 'Series';
-    final supportsTranscoding = item.type == 'Movie' || item.type == 'Episode' || isMulti;
+    final supportsTranscoding =
+        item.type == 'Movie' || item.type == 'Episode' || isMulti;
     final episodes = widget.viewModel.episodes;
 
     if (!isMulti && !supportsTranscoding) {
@@ -5166,7 +5283,9 @@ class _DownloadButtonState extends State<_DownloadButton> {
             for (final episode in episodes) {
               final width = episode.sourceVideoWidth;
               if (width == null) continue;
-              maxWidth = maxWidth == null || width > maxWidth ? width : maxWidth;
+              maxWidth = maxWidth == null || width > maxWidth
+                  ? width
+                  : maxWidth;
             }
             return maxWidth;
           })()
@@ -5185,56 +5304,55 @@ class _DownloadButtonState extends State<_DownloadButton> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder:
-          (context) => SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                  child: Text(
-                    isMulti ? AppLocalizations.of(context).downloadAllQuality : AppLocalizations.of(context).downloadQuality,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Text(
+                isMulti
+                    ? AppLocalizations.of(context).downloadAllQuality
+                    : AppLocalizations.of(context).downloadQuality,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                ...availableQualities.map(
-                  (quality) => ListTile(
-                    leading: Icon(
-                      quality.isTranscoded
-                          ? Icons.compress
-                          : Icons.file_copy_outlined,
-                      color: Colors.white70,
-                    ),
-                    title: Text(
-                      quality.label,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      _qualitySubtitle(
-                        item,
-                        quality,
-                        supportsTranscoding: supportsTranscoding,
-                        isMulti: isMulti,
-                        multiEstimateSubtitle: multiEstimateSubtitles[quality],
-                      ),
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.5),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _startDownload(context, service, quality);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
+              ),
             ),
-          ),
+            ...availableQualities.map(
+              (quality) => ListTile(
+                leading: Icon(
+                  quality.isTranscoded
+                      ? Icons.compress
+                      : Icons.file_copy_outlined,
+                  color: Colors.white70,
+                ),
+                title: Text(
+                  quality.label,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                subtitle: Text(
+                  _qualitySubtitle(
+                    item,
+                    quality,
+                    supportsTranscoding: supportsTranscoding,
+                    isMulti: isMulti,
+                    multiEstimateSubtitle: multiEstimateSubtitles[quality],
+                  ),
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _startDownload(context, service, quality);
+                },
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
     );
   }
 
@@ -5254,9 +5372,11 @@ class _DownloadButtonState extends State<_DownloadButton> {
       case 'Season':
         final episodes = widget.viewModel.episodes;
         if (episodes.isEmpty) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).noEpisodesLoaded)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context).noEpisodesLoaded),
+            ),
+          );
           return;
         }
         service.downloadItems(episodes, quality: quality);
@@ -5266,7 +5386,11 @@ class _DownloadButtonState extends State<_DownloadButton> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context).downloadingItem(item.name, quality.label)),
+        content: Text(
+          AppLocalizations.of(
+            context,
+          ).downloadingItem(item.name, quality.label),
+        ),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -5340,31 +5464,30 @@ class _DeleteDownloadButtonState extends State<_DeleteDownloadButton> {
 
     final confirmed = await showFocusRestoringDialog<bool>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            backgroundColor: const Color(0xFF1E1E1E),
-            title: Text(
-              AppLocalizations.of(ctx).deleteDownloadedFiles,
-              style: const TextStyle(color: Colors.white),
-            ),
-            content: Text(
-              AppLocalizations.of(ctx).deleteLocalFilesMessage(typeLabel),
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: Text(AppLocalizations.of(ctx).cancel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFFFF4757),
-                ),
-                child: Text(AppLocalizations.of(ctx).delete),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E1E),
+        title: Text(
+          AppLocalizations.of(ctx).deleteDownloadedFiles,
+          style: const TextStyle(color: Colors.white),
+        ),
+        content: Text(
+          AppLocalizations.of(ctx).deleteLocalFilesMessage(typeLabel),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(AppLocalizations.of(ctx).cancel),
           ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFFFF4757),
+            ),
+            child: Text(AppLocalizations.of(ctx).delete),
+          ),
+        ],
+      ),
     );
 
     if (confirmed == true && context.mounted) {
@@ -5414,8 +5537,8 @@ class _DetailActionButton extends StatefulWidget {
   State<_DetailActionButton> createState() => _DetailActionButtonState();
 }
 
-class _DetailActionButtonState extends State<_DetailActionButton> with FocusStateMixin {
-
+class _DetailActionButtonState extends State<_DetailActionButton>
+    with FocusStateMixin {
   void _scrollToTopOnFocus() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -5441,8 +5564,10 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
       if (!mounted) return;
       final primary = FocusManager.instance.primaryFocus;
       final inActionButtons =
-          primary?.context?.findAncestorWidgetOfExactType<_ActionButtons>() != null ||
-          primary?.context?.findAncestorWidgetOfExactType<_AlbumActions>() != null;
+          primary?.context?.findAncestorWidgetOfExactType<_ActionButtons>() !=
+              null ||
+          primary?.context?.findAncestorWidgetOfExactType<_AlbumActions>() !=
+              null;
       if (forward && !inActionButtons) {
         current.requestFocus();
       }
@@ -5453,8 +5578,11 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
-    final focusColor =
-        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
+    final focusColor = Color(
+      GetIt.instance<UserPreferences>()
+          .get(UserPreferences.focusColor)
+          .colorValue,
+    );
     final nodeHasFocus = widget.focusNode?.hasFocus ?? false;
     final showHighlight = showFocusBorder || nodeHasFocus;
 
@@ -5462,12 +5590,12 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
     final neonAccent = widget.neonAccentColor ?? AppColorScheme.onSurface;
     final iconColor = showHighlight
         ? (isNeon ? AppColorScheme.accent : AppColorScheme.onButtonFocused)
-      : (widget.isActive
-        ? (widget.activeColor ?? (isNeon ? neonAccent : Colors.white))
-        : (isNeon ? neonAccent : Colors.white));
+        : (widget.isActive
+              ? (widget.activeColor ?? (isNeon ? neonAccent : Colors.white))
+              : (isNeon ? neonAccent : Colors.white));
     final labelColor = showHighlight
-      ? (isNeon ? neonAccent : AppColorScheme.onButtonFocused)
-      : (isNeon ? neonAccent : Colors.white);
+        ? (isNeon ? neonAccent : AppColorScheme.onButtonFocused)
+        : (isNeon ? neonAccent : Colors.white);
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -5483,7 +5611,8 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
           }
         },
         onKeyEvent: (_, event) {
-          final isNavigationEvent = event is KeyDownEvent || event is KeyRepeatEvent;
+          final isNavigationEvent =
+              event is KeyDownEvent || event is KeyRepeatEvent;
           if (isNavigationEvent &&
               event.logicalKey == LogicalKeyboardKey.arrowRight) {
             _moveHorizontalFocus(forward: true);
@@ -5518,16 +5647,20 @@ class _DetailActionButtonState extends State<_DetailActionButton> with FocusStat
                   height: isMobile ? 44 : 52,
                   decoration: BoxDecoration(
                     color: showHighlight
-                      ? (isNeon ? Colors.transparent : AppColorScheme.buttonFocused)
+                        ? (isNeon
+                              ? Colors.transparent
+                              : AppColorScheme.buttonFocused)
                         : activeColor != null
-                            ? activeColor.withValues(alpha: isNeon ? 0.12 : 0.15)
-                            : (isNeon
-                                ? Colors.transparent
-                                : Colors.white.withValues(alpha: 0.08)),
+                        ? activeColor.withValues(alpha: isNeon ? 0.12 : 0.15)
+                        : (isNeon
+                              ? Colors.transparent
+                              : Colors.white.withValues(alpha: 0.08)),
                     border: showHighlight
                         ? Border.fromBorderSide(
                             ThemeRegistry.active.borders.focusBorder.copyWith(
-                              color: isNeon ? AppColorScheme.accent : focusColor,
+                              color: isNeon
+                                  ? AppColorScheme.accent
+                                  : focusColor,
                             ),
                           )
                         : null,
@@ -5585,7 +5718,12 @@ class _CastRow extends StatelessWidget {
   final String? serverId;
   final ScrollController? scrollController;
 
-  const _CastRow({required this.people, required this.imageApi, this.serverId, this.scrollController});
+  const _CastRow({
+    required this.people,
+    required this.imageApi,
+    this.serverId,
+    this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -5626,8 +5764,8 @@ class _CastRow extends StatelessWidget {
             isMobile: isMobile,
             onTap: personId != null
                 ? () => context.push(
-                      Destinations.item(personId, serverId: serverId),
-                    )
+                    Destinations.item(personId, serverId: serverId),
+                  )
                 : null,
           );
         },
@@ -5660,17 +5798,22 @@ class _CastPersonCard extends StatefulWidget {
 }
 
 class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
-
   @override
   Widget build(BuildContext context) {
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
-    final cardExpansion =
-        GetIt.instance<UserPreferences>().get(UserPreferences.cardFocusExpansion);
-    final focusColor =
-        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
+    final cardExpansion = GetIt.instance<UserPreferences>().get(
+      UserPreferences.cardFocusExpansion,
+    );
+    final focusColor = Color(
+      GetIt.instance<UserPreferences>()
+          .get(UserPreferences.focusColor)
+          .colorValue,
+    );
 
     return MouseRegion(
-      cursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+      cursor: widget.onTap != null
+          ? SystemMouseCursors.click
+          : MouseCursor.defer,
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
@@ -5700,7 +5843,9 @@ class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
                       border: showFocusBorder
                           ? Border.fromBorderSide(
                               ThemeRegistry.active.borders.focusBorder.copyWith(
-                                color: isNeon ? AppColorScheme.accent : focusColor,
+                                color: isNeon
+                                    ? AppColorScheme.accent
+                                    : focusColor,
                                 width: 1.5,
                               ),
                             )
@@ -5725,10 +5870,10 @@ class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
                   Text(
                     widget.name,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isNeon ? AppColorScheme.accent : Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: widget.isMobile ? 11 : null,
-                        ),
+                      color: isNeon ? AppColorScheme.accent : Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: widget.isMobile ? 11 : null,
+                    ),
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -5737,11 +5882,11 @@ class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
                     Text(
                       widget.role!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: isNeon
-                                ? AppColorScheme.onSurface
-                                : Colors.white.withValues(alpha: 0.6),
-                            fontSize: widget.isMobile ? 10 : 11,
-                          ),
+                        color: isNeon
+                            ? AppColorScheme.onSurface
+                            : Colors.white.withValues(alpha: 0.6),
+                        fontSize: widget.isMobile ? 10 : 11,
+                      ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -5791,19 +5936,18 @@ class _SimilarRow extends StatelessWidget {
           return MediaCard(
             title: item.name,
             titleColor: isNeon ? AppColorScheme.accent : null,
-            imageUrl:
-                item.primaryImageTag != null
-                    ? imageApi.getPrimaryImageUrl(
-                      item.id,
-                      maxHeight: isMobile ? 300 : 400,
-                      tag: item.primaryImageTag,
-                    )
-                    : null,
+            imageUrl: item.primaryImageTag != null
+                ? imageApi.getPrimaryImageUrl(
+                    item.id,
+                    maxHeight: isMobile ? 300 : 400,
+                    tag: item.primaryImageTag,
+                  )
+                : null,
             width: cardWidth,
             aspectRatio: ar,
             focusColor: isNeon
-              ? AppColorScheme.accent
-              : Color(prefs.get(UserPreferences.focusColor).colorValue),
+                ? AppColorScheme.accent
+                : Color(prefs.get(UserPreferences.focusColor).colorValue),
             cardFocusExpansion: cardExpansion,
             suppressFocusGlow: isNeon,
             isFavorite: item.isFavorite,
@@ -5811,10 +5955,9 @@ class _SimilarRow extends StatelessWidget {
             playedPercentage: item.playedPercentage,
             watchedBehavior: watchedBehavior,
             itemType: item.type,
-            onTap:
-                () => context.push(
-                  Destinations.item(item.id, serverId: item.serverId),
-                ),
+            onTap: () => context.push(
+              Destinations.item(item.id, serverId: item.serverId),
+            ),
           );
         },
       ),
@@ -5860,14 +6003,13 @@ class _FeaturesRow extends StatelessWidget {
             subtitleColor: isNeon
                 ? AppColorScheme.onSurface.withValues(alpha: 0.85)
                 : null,
-            imageUrl:
-                item.primaryImageTag != null
-                    ? imageApi.getPrimaryImageUrl(
-                      item.id,
-                      maxHeight: isMobile ? 300 : 400,
-                      tag: item.primaryImageTag,
-                    )
-                    : null,
+            imageUrl: item.primaryImageTag != null
+                ? imageApi.getPrimaryImageUrl(
+                    item.id,
+                    maxHeight: isMobile ? 300 : 400,
+                    tag: item.primaryImageTag,
+                  )
+                : null,
             width: cardWidth,
             aspectRatio: MediaCard.aspectRatioForType(item.type),
             focusColor: Color(prefs.get(UserPreferences.focusColor).colorValue),
@@ -5877,10 +6019,9 @@ class _FeaturesRow extends StatelessWidget {
             playedPercentage: item.playedPercentage,
             watchedBehavior: watchedBehavior,
             itemType: item.type,
-            onTap:
-                () => context.push(
-                  Destinations.item(item.id, serverId: item.serverId),
-                ),
+            onTap: () => context.push(
+              Destinations.item(item.id, serverId: item.serverId),
+            ),
           );
         },
       ),
@@ -5921,10 +6062,9 @@ class _ChaptersRow extends StatelessWidget {
           final chapter = chapters[index];
           final ticks = chapter['StartPositionTicks'] as int? ?? 0;
           final position = Duration(microseconds: ticks ~/ 10);
-          final name =
-              (chapter['Name'] as String?)?.trim().isNotEmpty == true
-                  ? (chapter['Name'] as String)
-                  : AppLocalizations.of(context).chapterNumber(index + 1);
+          final name = (chapter['Name'] as String?)?.trim().isNotEmpty == true
+              ? (chapter['Name'] as String)
+              : AppLocalizations.of(context).chapterNumber(index + 1);
           final imageTag = chapter['ImageTag'] as String?;
           final chapterImageUrl = imageApi.getChapterImageUrl(
             item.id,
@@ -5981,11 +6121,15 @@ class _ChapterListCard extends StatefulWidget {
   State<_ChapterListCard> createState() => _ChapterListCardState();
 }
 
-class _ChapterListCardState extends State<_ChapterListCard> with FocusStateMixin {
+class _ChapterListCardState extends State<_ChapterListCard>
+    with FocusStateMixin {
   @override
   Widget build(BuildContext context) {
-    final focusColor =
-        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
+    final focusColor = Color(
+      GetIt.instance<UserPreferences>()
+          .get(UserPreferences.focusColor)
+          .colorValue,
+    );
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -6012,19 +6156,18 @@ class _ChapterListCardState extends State<_ChapterListCard> with FocusStateMixin
                     position: DecorationPosition.foreground,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border:
-                          showFocusBorder
-                              ? Border.fromBorderSide(
-                                  ThemeRegistry.active.borders.focusBorder.copyWith(
-                                    color: focusColor,
-                                    width: 2,
-                                  ),
-                                )
-                              : Border.fromBorderSide(
-                                  ThemeRegistry.active.borders.cardBorder.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.1),
-                                  ),
-                                ),
+                      border: showFocusBorder
+                          ? Border.fromBorderSide(
+                              ThemeRegistry.active.borders.focusBorder.copyWith(
+                                color: focusColor,
+                                width: 2,
+                              ),
+                            )
+                          : Border.fromBorderSide(
+                              ThemeRegistry.active.borders.cardBorder.copyWith(
+                                color: Colors.white.withValues(alpha: 0.1),
+                              ),
+                            ),
                     ),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
@@ -6039,16 +6182,15 @@ class _ChapterListCardState extends State<_ChapterListCard> with FocusStateMixin
                             widget.chapterImageUrl,
                             fit: BoxFit.cover,
                             filterQuality: FilterQuality.high,
-                            errorBuilder:
-                                (_, _, _) => Container(
-                                  color: Colors.white.withValues(alpha: 0.08),
-                                  alignment: Alignment.center,
-                                  child: Icon(
-                                    Icons.movie,
-                                    size: widget.isMobile ? 22 : 26,
-                                    color: Colors.white.withValues(alpha: 0.4),
-                                  ),
-                                ),
+                            errorBuilder: (_, _, _) => Container(
+                              color: Colors.white.withValues(alpha: 0.08),
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.movie,
+                                size: widget.isMobile ? 22 : 26,
+                                color: Colors.white.withValues(alpha: 0.4),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -6104,10 +6246,9 @@ class _MetadataSection extends StatelessWidget {
     }
     if (item.studios.isNotEmpty) {
       final studioNames = item.studios.map((s) => s['Name'] as String).toList();
-      final display =
-          studioNames.length > 5
-              ? '${studioNames.take(5).join(', ')} ${l10n.studioMoreCount(studioNames.length - 5)}'
-              : studioNames.join(', ');
+      final display = studioNames.length > 5
+          ? '${studioNames.take(5).join(', ')} ${l10n.studioMoreCount(studioNames.length - 5)}'
+          : studioNames.join(', ');
       entries.add(MapEntry(l10n.studio, display));
     }
 
@@ -6115,10 +6256,9 @@ class _MetadataSection extends StatelessWidget {
 
     final isMobile = _isCompact(context);
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
-    final cellPadding =
-        isMobile
-            ? const EdgeInsets.symmetric(horizontal: 12, vertical: 10)
-            : const EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+    final cellPadding = isMobile
+        ? const EdgeInsets.symmetric(horizontal: 12, vertical: 10)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 14);
 
     return Container(
       decoration: BoxDecoration(
@@ -6135,114 +6275,114 @@ class _MetadataSection extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(12),
       ),
-      child:
-          isMobile
-              ? Wrap(
-                children:
-                    entries.asMap().entries.map((e) {
-                      final entry = e.value;
-                      return FractionallySizedBox(
-                        widthFactor: entries.length <= 2 ? 1.0 : 0.5,
-                        child: Padding(
-                          padding: cellPadding,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                entry.key,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.labelSmall?.copyWith(
-                                  color: isNeon
-                                      ? AppColorScheme.accent
-                                      : Colors.white.withValues(alpha: 0.4),
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 1.0,
-                                  fontSize: 10,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                entry.value,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodySmall?.copyWith(
-                                  color: isNeon
-                                      ? AppColorScheme.onSurface
-                                      : Colors.white.withValues(alpha: 0.9),
-                                  fontSize: 12,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-              )
-              : IntrinsicHeight(
-                child: Row(
-                  children: [
-                    ...entries.asMap().entries.map((e) {
-                      final index = e.key;
-                      final entry = e.value;
-                      return Expanded(
-                        child: Row(
-                          children: [
-                            if (index > 0)
-                              Container(
-                                width: 1,
+      child: isMobile
+          ? Wrap(
+              children: entries.asMap().entries.map((e) {
+                final entry = e.value;
+                return FractionallySizedBox(
+                  widthFactor: entries.length <= 2 ? 1.0 : 0.5,
+                  child: Padding(
+                    padding: cellPadding,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.key,
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
                                 color: isNeon
-                                    ? AppColorScheme.accent.withValues(alpha: 0.8)
-                                    : Colors.white.withValues(alpha: 0.08),
+                                    ? AppColorScheme.accent
+                                    : Colors.white.withValues(alpha: 0.4),
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 1.0,
+                                fontSize: 10,
                               ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 14,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      entry.key,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.labelSmall?.copyWith(
-                                        color: isNeon
-                                            ? AppColorScheme.accent
-                                            : Colors.white.withValues(alpha: 0.4),
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      entry.value,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall?.copyWith(
-                                        color: isNeon
-                                            ? AppColorScheme.onSurface
-                                            : Colors.white.withValues(alpha: 0.9),
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          entry.value,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: isNeon
+                                    ? AppColorScheme.onSurface
+                                    : Colors.white.withValues(alpha: 0.9),
+                                fontSize: 12,
+                              ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            )
+          : IntrinsicHeight(
+              child: Row(
+                children: [
+                  ...entries.asMap().entries.map((e) {
+                    final index = e.key;
+                    final entry = e.value;
+                    return Expanded(
+                      child: Row(
+                        children: [
+                          if (index > 0)
+                            Container(
+                              width: 1,
+                              color: isNeon
+                                  ? AppColorScheme.accent.withValues(alpha: 0.8)
+                                  : Colors.white.withValues(alpha: 0.08),
+                            ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    entry.key,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          color: isNeon
+                                              ? AppColorScheme.accent
+                                              : Colors.white.withValues(
+                                                  alpha: 0.4,
+                                                ),
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 1.0,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    entry.value,
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: isNeon
+                                              ? AppColorScheme.onSurface
+                                              : Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                        ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ],
-                ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
               ),
+            ),
     );
   }
 }
@@ -6339,10 +6479,9 @@ class _SeasonsRow extends StatelessWidget {
             unplayedCount: season.unplayedItemCount,
             watchedBehavior: watchedBehavior,
             itemType: season.type,
-            onTap:
-                () => context.push(
-                  Destinations.item(season.id, serverId: season.serverId),
-                ),
+            onTap: () => context.push(
+              Destinations.item(season.id, serverId: season.serverId),
+            ),
           );
         },
       ),
@@ -6355,7 +6494,11 @@ class _SeasonsRow extends StatelessWidget {
 
     String? primary(String? id, String? tag) {
       if (id == null || tag == null) return null;
-      return imageApi.getPrimaryImageUrl(id, maxHeight: primaryHeight, tag: tag);
+      return imageApi.getPrimaryImageUrl(
+        id,
+        maxHeight: primaryHeight,
+        tag: tag,
+      );
     }
 
     String? thumb(String? id, String? tag) {
@@ -6376,7 +6519,10 @@ class _SeasonsRow extends StatelessWidget {
     return primary(season.id, season.primaryImageTag) ??
         primary(season.seriesId, season.seriesPrimaryImageTag) ??
         primary(season.primaryImageItemId, season.primaryImageTagField) ??
-        primary(season.parentPrimaryImageItemId, season.parentPrimaryImageTag) ??
+        primary(
+          season.parentPrimaryImageItemId,
+          season.parentPrimaryImageTag,
+        ) ??
         thumb(season.id, season.thumbImageTag) ??
         backdrop(season.id, season.backdropImageTags) ??
         thumb(season.seriesId, season.seriesThumbImageTag) ??
@@ -6450,21 +6596,24 @@ class _EpisodeListCard extends StatefulWidget {
   State<_EpisodeListCard> createState() => _EpisodeListCardState();
 }
 
-class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin {
+class _EpisodeListCardState extends State<_EpisodeListCard>
+    with FocusStateMixin {
   @override
   Widget build(BuildContext context) {
     final ep = widget.episode;
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final epNum = ep.indexNumber;
     final runtime = ep.runtime;
-    final runtimeText =
-        runtime != null
-            ? (runtime.inHours > 0
-                ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
-                : '${runtime.inMinutes}m')
-            : null;
-    final focusColor =
-        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
+    final runtimeText = runtime != null
+        ? (runtime.inHours > 0
+              ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
+              : '${runtime.inMinutes}m')
+        : null;
+    final focusColor = Color(
+      GetIt.instance<UserPreferences>()
+          .get(UserPreferences.focusColor)
+          .colorValue,
+    );
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -6480,27 +6629,27 @@ class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin
           return KeyEventResult.ignored;
         },
         child: GestureDetector(
-          onTap: () => context.push(Destinations.item(ep.id, serverId: ep.serverId)),
+          onTap: () =>
+              context.push(Destinations.item(ep.id, serverId: ep.serverId)),
           child: Container(
             width: widget.isMobile ? 180.0 : 220.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border:
-                  widget.isCurrent
-                      ? Border.fromBorderSide(
-                          ThemeRegistry.active.borders.focusBorder.copyWith(
-                            color: AppColorScheme.accent,
-                            width: 2,
-                          ),
-                        )
-                      : showFocusBorder
-                          ? Border.fromBorderSide(
-                              ThemeRegistry.active.borders.focusBorder.copyWith(
-                                color: isNeon ? AppColorScheme.accent : focusColor,
-                                width: 1.5,
-                              ),
-                            )
-                          : null,
+              border: widget.isCurrent
+                  ? Border.fromBorderSide(
+                      ThemeRegistry.active.borders.focusBorder.copyWith(
+                        color: AppColorScheme.accent,
+                        width: 2,
+                      ),
+                    )
+                  : showFocusBorder
+                  ? Border.fromBorderSide(
+                      ThemeRegistry.active.borders.focusBorder.copyWith(
+                        color: isNeon ? AppColorScheme.accent : focusColor,
+                        width: 1.5,
+                      ),
+                    )
+                  : null,
             ),
             clipBehavior: Clip.antiAlias,
             child: Column(
@@ -6519,15 +6668,14 @@ class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin
                             tag: ep.primaryImageTag,
                           ),
                           fit: BoxFit.cover,
-                          errorWidget:
-                              (_, _, _) => Container(
-                                color: Colors.white.withValues(alpha: 0.05),
-                                child: const Icon(
-                                  Icons.movie,
-                                  color: Colors.white24,
-                                  size: 32,
-                                ),
-                              ),
+                          errorWidget: (_, _, _) => Container(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            child: const Icon(
+                              Icons.movie,
+                              color: Colors.white24,
+                              size: 32,
+                            ),
+                          ),
                         )
                       else
                         Container(
@@ -6560,25 +6708,27 @@ class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin
                       if (epNum != null)
                         Text(
                           'E$epNum',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(
-                            color: isNeon
-                                ? AppColorScheme.onSurface.withValues(alpha: 0.85)
-                                : Colors.white.withValues(alpha: 0.5),
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: isNeon
+                                    ? AppColorScheme.onSurface.withValues(
+                                        alpha: 0.85,
+                                      )
+                                    : Colors.white.withValues(alpha: 0.5),
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                       if (epNum != null) const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           ep.name,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(
-                            color: isNeon ? AppColorScheme.accent : Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: isNeon
+                                    ? AppColorScheme.accent
+                                    : Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -6587,13 +6737,14 @@ class _EpisodeListCardState extends State<_EpisodeListCard> with FocusStateMixin
                         const SizedBox(width: 4),
                         Text(
                           runtimeText,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(
-                            color: isNeon
-                                ? AppColorScheme.onSurface.withValues(alpha: 0.8)
-                                : Colors.white.withValues(alpha: 0.5),
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: isNeon
+                                    ? AppColorScheme.onSurface.withValues(
+                                        alpha: 0.8,
+                                      )
+                                    : Colors.white.withValues(alpha: 0.5),
+                              ),
                         ),
                       ],
                     ],
@@ -6619,7 +6770,6 @@ class _NextUpCard extends StatefulWidget {
 }
 
 class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
-
   @override
   Widget build(BuildContext context) {
     final episode = widget.episode;
@@ -6630,10 +6780,14 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
     final subtitle = [?label, episode.name].join(' - ');
 
     final isMobile = _isCompact(context);
-    final focusColor =
-        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
-    final cardExpansion =
-      GetIt.instance<UserPreferences>().get(UserPreferences.cardFocusExpansion);
+    final focusColor = Color(
+      GetIt.instance<UserPreferences>()
+          .get(UserPreferences.focusColor)
+          .colorValue,
+    );
+    final cardExpansion = GetIt.instance<UserPreferences>().get(
+      UserPreferences.cardFocusExpansion,
+    );
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -6643,16 +6797,17 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
           if (isActivateKey(event)) {
-            context.push(Destinations.item(episode.id, serverId: episode.serverId));
+            context.push(
+              Destinations.item(episode.id, serverId: episode.serverId),
+            );
             return KeyEventResult.handled;
           }
           return KeyEventResult.ignored;
         },
         child: GestureDetector(
-          onTap:
-              () => context.push(
-                Destinations.item(episode.id, serverId: episode.serverId),
-              ),
+          onTap: () => context.push(
+            Destinations.item(episode.id, serverId: episode.serverId),
+          ),
           child: AnimatedScale(
             scale: cardExpansion && showFocusBorder ? 1.02 : 1.0,
             duration: const Duration(milliseconds: 120),
@@ -6691,7 +6846,9 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
                             errorWidget: (_, _, _) => const SizedBox.shrink(),
                           ),
                         if ((episode.playedPercentage ?? 0) > 0)
-                          _EpisodeProgressBar(percentage: episode.playedPercentage!),
+                          _EpisodeProgressBar(
+                            percentage: episode.playedPercentage!,
+                          ),
                       ],
                     ),
                   ),
@@ -6703,10 +6860,13 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
                       children: [
                         Text(
                           subtitle,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: isNeon ? AppColorScheme.accent : Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                color: isNeon
+                                    ? AppColorScheme.accent
+                                    : Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -6714,11 +6874,12 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
                           const SizedBox(height: 4),
                           Text(
                             episode.overview!,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: isNeon
-                                  ? AppColorScheme.onSurface
-                                  : Colors.white.withValues(alpha: 0.7),
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: isNeon
+                                      ? AppColorScheme.onSurface
+                                      : Colors.white.withValues(alpha: 0.7),
+                                ),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -6754,24 +6915,26 @@ class _EpisodeCard extends StatefulWidget {
 }
 
 class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
-
   @override
   Widget build(BuildContext context) {
     final episode = widget.episode;
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final epNum = episode.indexNumber;
     final runtime = episode.runtime;
-    final runtimeText =
-        runtime != null
-            ? (runtime.inHours > 0
-                ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
-                : '${runtime.inMinutes}m')
-            : null;
+    final runtimeText = runtime != null
+        ? (runtime.inHours > 0
+              ? '${runtime.inHours}h ${runtime.inMinutes.remainder(60)}m'
+              : '${runtime.inMinutes}m')
+        : null;
 
-    final focusColor =
-        Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
-    final cardExpansion =
-      GetIt.instance<UserPreferences>().get(UserPreferences.cardFocusExpansion);
+    final focusColor = Color(
+      GetIt.instance<UserPreferences>()
+          .get(UserPreferences.focusColor)
+          .colorValue,
+    );
+    final cardExpansion = GetIt.instance<UserPreferences>().get(
+      UserPreferences.cardFocusExpansion,
+    );
     final isMobile = _isCompact(context);
 
     return MouseRegion(
@@ -6782,16 +6945,17 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
           if (isActivateKey(event)) {
-            context.push(Destinations.item(episode.id, serverId: episode.serverId));
+            context.push(
+              Destinations.item(episode.id, serverId: episode.serverId),
+            );
             return KeyEventResult.handled;
           }
           return KeyEventResult.ignored;
         },
         child: GestureDetector(
-          onTap:
-              () => context.push(
-                Destinations.item(episode.id, serverId: episode.serverId),
-              ),
+          onTap: () => context.push(
+            Destinations.item(episode.id, serverId: episode.serverId),
+          ),
           child: AnimatedScale(
             scale: cardExpansion && showFocusBorder ? 1.02 : 1.0,
             duration: const Duration(milliseconds: 120),
@@ -6802,15 +6966,14 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                     ? Colors.transparent
                     : Colors.white.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(8),
-                border:
-                    showFocusBorder
-                        ? Border.fromBorderSide(
-                            ThemeRegistry.active.borders.focusBorder.copyWith(
-                              color: isNeon ? AppColorScheme.accent : focusColor,
-                              width: 1.5,
-                            ),
-                          )
-                        : null,
+                border: showFocusBorder
+                    ? Border.fromBorderSide(
+                        ThemeRegistry.active.borders.focusBorder.copyWith(
+                          color: isNeon ? AppColorScheme.accent : focusColor,
+                          width: 1.5,
+                        ),
+                      )
+                    : null,
               ),
               clipBehavior: Clip.antiAlias,
               child: Row(
@@ -6828,15 +6991,14 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                               tag: episode.primaryImageTag,
                             ),
                             fit: BoxFit.cover,
-                            errorWidget:
-                                (_, _, _) => Container(
-                                  color: Colors.white.withValues(alpha: 0.05),
-                                  child: const Icon(
-                                    Icons.movie,
-                                    color: Colors.white24,
-                                    size: 32,
-                                  ),
-                                ),
+                            errorWidget: (_, _, _) => Container(
+                              color: Colors.white.withValues(alpha: 0.05),
+                              child: const Icon(
+                                Icons.movie,
+                                color: Colors.white24,
+                                size: 32,
+                              ),
+                            ),
                           )
                         else
                           Container(
@@ -6848,7 +7010,9 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                             ),
                           ),
                         if ((episode.playedPercentage ?? 0) > 0)
-                          _EpisodeProgressBar(percentage: episode.playedPercentage!),
+                          _EpisodeProgressBar(
+                            percentage: episode.playedPercentage!,
+                          ),
                         if (episode.isPlayed)
                           Positioned(
                             top: 6,
@@ -6879,13 +7043,17 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                       children: [
                         Text(
                           [
-                            if (epNum != null) AppLocalizations.of(context).episodeLabel(epNum),
+                            if (epNum != null)
+                              AppLocalizations.of(context).episodeLabel(epNum),
                             episode.name,
                           ].join(' - '),
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: isNeon ? AppColorScheme.accent : Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                color: isNeon
+                                    ? AppColorScheme.accent
+                                    : Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -6893,22 +7061,26 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                           const SizedBox(height: 2),
                           Text(
                             runtimeText,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: isNeon
-                                  ? AppColorScheme.onSurface.withValues(alpha: 0.8)
-                                  : Colors.white.withValues(alpha: 0.5),
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: isNeon
+                                      ? AppColorScheme.onSurface.withValues(
+                                          alpha: 0.8,
+                                        )
+                                      : Colors.white.withValues(alpha: 0.5),
+                                ),
                           ),
                         ],
                         if (episode.overview != null) ...[
                           const SizedBox(height: 4),
                           Text(
                             episode.overview!,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: isNeon
-                                  ? AppColorScheme.onSurface
-                                  : Colors.white.withValues(alpha: 0.7),
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: isNeon
+                                      ? AppColorScheme.onSurface
+                                      : Colors.white.withValues(alpha: 0.7),
+                                ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -6951,33 +7123,31 @@ class _PersonHeader extends StatelessWidget {
     final avatar = CircleAvatar(
       radius: avatarRadius,
       backgroundColor: Colors.white.withValues(alpha: 0.1),
-      backgroundImage:
-          imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
-      child:
-          imageUrl == null
-              ? Icon(
-                Icons.person,
-                color: Colors.white54,
-                size: isMobile ? 48 : 64,
-              )
-              : null,
+      backgroundImage: imageUrl != null
+          ? CachedNetworkImageProvider(imageUrl)
+          : null,
+      child: imageUrl == null
+          ? Icon(Icons.person, color: Colors.white54, size: isMobile ? 48 : 64)
+          : null,
     );
 
     final info = Column(
-      crossAxisAlignment:
-          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         if (!isMobile) const SizedBox(height: 16),
         Text(
           item.name,
-          style: (isMobile
-                  ? theme.textTheme.headlineSmall
-                  : theme.textTheme.headlineLarge)
-              ?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                shadows: _textShadows,
-              ),
+          style:
+              (isMobile
+                      ? theme.textTheme.headlineSmall
+                      : theme.textTheme.headlineLarge)
+                  ?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: _textShadows,
+                  ),
           textAlign: isMobile ? TextAlign.center : TextAlign.start,
         ),
         const SizedBox(height: 8),
@@ -6998,17 +7168,16 @@ class _PersonHeader extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(top: safeTop + (isMobile ? 60 : 80)),
-      child:
-          isMobile
-              ? Column(children: [avatar, const SizedBox(height: 16), info])
-              : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  avatar,
-                  const SizedBox(width: 32),
-                  Expanded(child: info),
-                ],
-              ),
+      child: isMobile
+          ? Column(children: [avatar, const SizedBox(height: 16), info])
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                avatar,
+                const SizedBox(width: 32),
+                Expanded(child: info),
+              ],
+            ),
     );
   }
 }
@@ -7240,14 +7409,13 @@ class _FilmographyRow extends StatelessWidget {
           return MediaCard(
             title: item.name,
             subtitle: year?.toString(),
-            imageUrl:
-                item.primaryImageTag != null
-                    ? imageApi.getPrimaryImageUrl(
-                      item.id,
-                      maxHeight: isMobile ? 300 : 400,
-                      tag: item.primaryImageTag,
-                    )
-                    : null,
+            imageUrl: item.primaryImageTag != null
+                ? imageApi.getPrimaryImageUrl(
+                    item.id,
+                    maxHeight: isMobile ? 300 : 400,
+                    tag: item.primaryImageTag,
+                  )
+                : null,
             width: cardWidth,
             aspectRatio: 2 / 3,
             focusColor: Color(prefs.get(UserPreferences.focusColor).colorValue),
@@ -7259,10 +7427,9 @@ class _FilmographyRow extends StatelessWidget {
             itemType: item.type,
             autofocus: index == 0 && firstFocusNode != null,
             focusNode: index == 0 ? firstFocusNode : null,
-            onTap:
-                () => context.push(
-                  Destinations.item(item.id, serverId: item.serverId),
-                ),
+            onTap: () => context.push(
+              Destinations.item(item.id, serverId: item.serverId),
+            ),
           );
         },
       ),
@@ -7294,33 +7461,35 @@ class _ArtistHeader extends StatelessWidget {
     final avatar = CircleAvatar(
       radius: avatarRadius,
       backgroundColor: Colors.white.withValues(alpha: 0.1),
-      backgroundImage:
-          imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
-      child:
-          imageUrl == null
-              ? Icon(
-                Icons.music_note,
-                color: Colors.white54,
-                size: isMobile ? 48 : 64,
-              )
-              : null,
+      backgroundImage: imageUrl != null
+          ? CachedNetworkImageProvider(imageUrl)
+          : null,
+      child: imageUrl == null
+          ? Icon(
+              Icons.music_note,
+              color: Colors.white54,
+              size: isMobile ? 48 : 64,
+            )
+          : null,
     );
 
     final info = Column(
-      crossAxisAlignment:
-          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         if (!isMobile) const SizedBox(height: 16),
         Text(
           item.name,
-          style: (isMobile
-                  ? theme.textTheme.headlineSmall
-                  : theme.textTheme.headlineLarge)
-              ?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                shadows: _textShadows,
-              ),
+          style:
+              (isMobile
+                      ? theme.textTheme.headlineSmall
+                      : theme.textTheme.headlineLarge)
+                  ?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: _textShadows,
+                  ),
           textAlign: isMobile ? TextAlign.center : TextAlign.start,
         ),
         if (item.genres.isNotEmpty) ...[
@@ -7338,17 +7507,16 @@ class _ArtistHeader extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(top: safeTop + (isMobile ? 60 : 80)),
-      child:
-          isMobile
-              ? Column(children: [avatar, const SizedBox(height: 16), info])
-              : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  avatar,
-                  const SizedBox(width: 32),
-                  Expanded(child: info),
-                ],
-              ),
+      child: isMobile
+          ? Column(children: [avatar, const SizedBox(height: 16), info])
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                avatar,
+                const SizedBox(width: 32),
+                Expanded(child: info),
+              ],
+            ),
     );
   }
 }
@@ -7375,42 +7543,42 @@ class _AlbumHeader extends StatelessWidget {
 
     final albumArt = ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child:
-          item.primaryImageTag != null
-              ? CachedNetworkImage(
-                imageUrl: imageApi.getPrimaryImageUrl(
-                  item.id,
-                  maxHeight: 400,
-                  tag: item.primaryImageTag,
-                ),
-                width: albumSize,
-                height: albumSize,
-                fit: BoxFit.cover,
-                errorWidget: (_, _, _) => _albumPlaceholder(albumSize),
-              )
-              : _albumPlaceholder(albumSize),
+      child: item.primaryImageTag != null
+          ? CachedNetworkImage(
+              imageUrl: imageApi.getPrimaryImageUrl(
+                item.id,
+                maxHeight: 400,
+                tag: item.primaryImageTag,
+              ),
+              width: albumSize,
+              height: albumSize,
+              fit: BoxFit.cover,
+              errorWidget: (_, _, _) => _albumPlaceholder(albumSize),
+            )
+          : _albumPlaceholder(albumSize),
     );
 
     final info = Column(
-      crossAxisAlignment:
-          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         if (!isMobile) const SizedBox(height: 16),
         GestureDetector(
           onTap: onRenameRequested,
           child: Text(
             item.name,
-            style: (isMobile
-                    ? theme.textTheme.headlineSmall
-                    : theme.textTheme.headlineLarge)
-                ?.copyWith(
-                  color:
-                      onRenameRequested != null
+            style:
+                (isMobile
+                        ? theme.textTheme.headlineSmall
+                        : theme.textTheme.headlineLarge)
+                    ?.copyWith(
+                      color: onRenameRequested != null
                           ? AppColorScheme.accent
                           : Colors.white,
-                  fontWeight: FontWeight.bold,
-                  shadows: _textShadows,
-                ),
+                      fontWeight: FontWeight.bold,
+                      shadows: _textShadows,
+                    ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             textAlign: isMobile ? TextAlign.center : TextAlign.start,
@@ -7420,10 +7588,9 @@ class _AlbumHeader extends StatelessWidget {
           const SizedBox(height: 4),
           GestureDetector(
             onTap: () {
-              final artistId =
-                  item.albumArtists.isNotEmpty
-                      ? item.albumArtists.first['Id'] as String?
-                      : null;
+              final artistId = item.albumArtists.isNotEmpty
+                  ? item.albumArtists.first['Id'] as String?
+                  : null;
               if (artistId != null) {
                 context.push(
                   Destinations.item(artistId, serverId: item.serverId),
@@ -7446,17 +7613,16 @@ class _AlbumHeader extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(top: safeTop + (isMobile ? 60 : 80)),
-      child:
-          isMobile
-              ? Column(children: [albumArt, const SizedBox(height: 16), info])
-              : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  albumArt,
-                  const SizedBox(width: 32),
-                  Expanded(child: info),
-                ],
-              ),
+      child: isMobile
+          ? Column(children: [albumArt, const SizedBox(height: 16), info])
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                albumArt,
+                const SizedBox(width: 32),
+                Expanded(child: info),
+              ],
+            ),
     );
   }
 
@@ -7482,7 +7648,11 @@ class _AlbumMeta extends StatelessWidget {
     if (item.productionYear != null) parts.add(item.productionYear.toString());
     final songCount = item.childCount ?? item.recursiveItemCount;
     if (songCount != null) {
-      parts.add(isAudiobook ? AppLocalizations.of(context).chapterCount(songCount) : AppLocalizations.of(context).trackCount(songCount));
+      parts.add(
+        isAudiobook
+            ? AppLocalizations.of(context).chapterCount(songCount)
+            : AppLocalizations.of(context).trackCount(songCount),
+      );
     }
     if (item.genres.isNotEmpty) {
       parts.add(item.genres.take(2).join(', '));
@@ -7616,8 +7786,8 @@ class _AlbumActions extends StatelessWidget {
             _DetailActionButton(
               label: l10n.playlist,
               icon: Icons.playlist_add,
-              onPressed:
-                  () => AddToPlaylistDialog.show(context, itemIds: [item.id]),
+              onPressed: () =>
+                  AddToPlaylistDialog.show(context, itemIds: [item.id]),
             ),
         ],
       ),
@@ -7657,24 +7827,22 @@ class _AlbumsRow extends StatelessWidget {
           return MediaCard(
             title: album.name,
             subtitle: album.productionYear?.toString(),
-            imageUrl:
-                album.primaryImageTag != null
-                    ? imageApi.getPrimaryImageUrl(
-                      album.id,
-                      maxHeight: isMobile ? 240 : 300,
-                      tag: album.primaryImageTag,
-                    )
-                    : null,
+            imageUrl: album.primaryImageTag != null
+                ? imageApi.getPrimaryImageUrl(
+                    album.id,
+                    maxHeight: isMobile ? 240 : 300,
+                    tag: album.primaryImageTag,
+                  )
+                : null,
             width: cardWidth,
             aspectRatio: 1.0,
             focusColor: Color(prefs.get(UserPreferences.focusColor).colorValue),
             cardFocusExpansion: cardExpansion,
             watchedBehavior: watchedBehavior,
             itemType: album.type,
-            onTap:
-                () => context.push(
-                  Destinations.item(album.id, serverId: album.serverId),
-                ),
+            onTap: () => context.push(
+              Destinations.item(album.id, serverId: album.serverId),
+            ),
           );
         },
       ),
@@ -7726,7 +7894,9 @@ class _TrackList extends StatelessWidget {
             track: track,
             focusNode: index == 0 ? firstTrackFocusNode : null,
             onArrowUp: index == 0 ? onFirstTrackUp : null,
-            onFocused: onTrackFocused == null ? null : () => onTrackFocused!(track),
+            onFocused: onTrackFocused == null
+                ? null
+                : () => onTrackFocused!(track),
             index: index + 1,
             totalCount: tracks.length,
             currentIndex: index,
@@ -7748,8 +7918,9 @@ class _TrackList extends StatelessWidget {
           track: tracks[index],
           focusNode: index == 0 ? firstTrackFocusNode : null,
           onArrowUp: index == 0 ? onFirstTrackUp : null,
-          onFocused:
-              onTrackFocused == null ? null : () => onTrackFocused!(tracks[index]),
+          onFocused: onTrackFocused == null
+              ? null
+              : () => onTrackFocused!(tracks[index]),
           index: index + 1,
           totalCount: tracks.length,
           currentIndex: index,
@@ -7843,7 +8014,8 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
         return KeyEventResult.handled;
       }
       if (key.isRightKey) {
-        if (widget.onMoveDown != null && widget.currentIndex < widget.totalCount - 1) {
+        if (widget.onMoveDown != null &&
+            widget.currentIndex < widget.totalCount - 1) {
           widget.onMoveDown!(widget.currentIndex);
           _keepTrackVisible();
         }
@@ -7896,10 +8068,9 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final runtime = widget.track.runtime;
-    final runtimeText =
-        runtime != null
-            ? '${runtime.inMinutes}:${(runtime.inSeconds % 60).toString().padLeft(2, '0')}'
-            : null;
+    final runtimeText = runtime != null
+        ? '${runtime.inMinutes}:${(runtime.inSeconds % 60).toString().padLeft(2, '0')}'
+        : null;
     final trackNumber = widget.track.indexNumber ?? widget.index;
     final activeColor = focusColor;
     final baseBackground = widget.index.isOdd
@@ -7922,7 +8093,9 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
         onKeyEvent: (_, event) => _handleTvKeys(event),
         child: GestureDetector(
           onTap: widget.onTap,
-          onLongPress: widget.reorderable ? null : () => _showTrackActions(context),
+          onLongPress: widget.reorderable
+              ? null
+              : () => _showTrackActions(context),
           behavior: HitTestBehavior.opaque,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 120),
@@ -7963,7 +8136,9 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
                         widget.track.name,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
-                          fontWeight: showFocusBorder ? FontWeight.w600 : FontWeight.w500,
+                          fontWeight: showFocusBorder
+                              ? FontWeight.w600
+                              : FontWeight.w500,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -8020,7 +8195,10 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
                       ),
                       splashRadius: 20,
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
                     ),
                     IconButton(
                       onPressed: widget.currentIndex < widget.totalCount - 1
@@ -8036,7 +8214,10 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
                       ),
                       splashRadius: 20,
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
                     ),
                   ],
                 ] else ...[
@@ -8047,7 +8228,9 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Icon(
                           Icons.drag_indicator,
-                          color: showFocusBorder ? Colors.white70 : Colors.white38,
+                          color: showFocusBorder
+                              ? Colors.white70
+                              : Colors.white38,
                           size: 18,
                         ),
                       ),
@@ -8088,22 +8271,23 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
       onPlay: widget.onTap,
       onPlayNext: () => manager.queueService.insertNext(widget.track),
       onAddToQueue: () => manager.queueService.addToQueue(widget.track),
-      onAddToPlaylist:
-          () => AddToPlaylistDialog.show(context, itemIds: [widget.track.id]),
-      onRemoveFromPlaylist:
-          widget.onRemoveFromPlaylist != null
-              ? () => widget.onRemoveFromPlaylist!(widget.track)
-              : null,
+      onAddToPlaylist: () =>
+          AddToPlaylistDialog.show(context, itemIds: [widget.track.id]),
+      onRemoveFromPlaylist: widget.onRemoveFromPlaylist != null
+          ? () => widget.onRemoveFromPlaylist!(widget.track)
+          : null,
       onMoveUp:
-          widget.reorderable && widget.onMoveUp != null && widget.currentIndex > 0
-              ? () => widget.onMoveUp!(widget.currentIndex)
-              : null,
+          widget.reorderable &&
+              widget.onMoveUp != null &&
+              widget.currentIndex > 0
+          ? () => widget.onMoveUp!(widget.currentIndex)
+          : null,
       onMoveDown:
           widget.reorderable &&
-                  widget.onMoveDown != null &&
-                  widget.currentIndex < widget.totalCount - 1
-              ? () => widget.onMoveDown!(widget.currentIndex)
-              : null,
+              widget.onMoveDown != null &&
+              widget.currentIndex < widget.totalCount - 1
+          ? () => widget.onMoveDown!(widget.currentIndex)
+          : null,
       onToggleFavorite: () {
         GetIt.instance<ItemMutationRepository>().setFavorite(
           widget.track.id,

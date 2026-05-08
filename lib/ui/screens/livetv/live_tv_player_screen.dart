@@ -53,6 +53,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   bool _infoVisible = true;
   Timer? _hideTimer;
   bool _isStopping = false;
+  bool _didRestoreSystemUiOnExit = false;
   bool _isSwitching = false;
 
   GuideProgram? _currentProgram;
@@ -90,8 +91,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
     if (!_isStopping) {
       _manager.stop(userInitiated: false);
     }
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setPreferredOrientations([]);
+    unawaited(_restoreSystemUiForExit());
     super.dispose();
   }
 
@@ -218,7 +218,15 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
     if (_isStopping) return;
     _isStopping = true;
     await _manager.stop(userInitiated: false);
+    await _restoreSystemUiForExit();
     if (mounted) Navigator.of(context).pop();
+  }
+
+  Future<void> _restoreSystemUiForExit() async {
+    if (_didRestoreSystemUiOnExit) return;
+    _didRestoreSystemUiOnExit = true;
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    await SystemChrome.setPreferredOrientations([]);
   }
 
   void _applySubtitleStyle() {
@@ -377,6 +385,7 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
           player: mediaKitBackend.player,
           fill: Colors.black,
           videoOutput: 'mediacodec_embed',
+          hardwareDecodingEnabled: _prefs.get(UserPreferences.hardwareDecoding),
         ),
       );
     }

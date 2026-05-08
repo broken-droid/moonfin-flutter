@@ -27,7 +27,9 @@ class _ParsedMpvConfCacheEntry {
 }
 
 class MediaKitPlayerBackend implements PlayerBackend {
-  static const Duration _linuxHwdecFirstFrameTimeout = Duration(seconds: 4);
+  static const Duration _linuxHwdecFirstFrameTimeout = Duration(
+    milliseconds: 1500,
+  );
   final Player _player;
   final VideoController? _videoController;
   final UserPreferences _prefs;
@@ -61,7 +63,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
         final type = item['type']?.toString();
         if (type != 'sub') continue;
         final idValue = item['id'];
-        final parsed = idValue is int ? idValue : int.tryParse(idValue?.toString() ?? '');
+        final parsed = idValue is int
+            ? idValue
+            : int.tryParse(idValue?.toString() ?? '');
         if (parsed != null && parsed > 0) {
           ids.add(parsed);
         }
@@ -121,7 +125,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   static bool get _useLibass =>
-      PlatformDetection.isDesktop || PlatformDetection.isAndroid || PlatformDetection.isIOS;
+      PlatformDetection.isDesktop ||
+      PlatformDetection.isAndroid ||
+      PlatformDetection.isIOS;
 
   static bool get _useNativeSurface => PlatformDetection.useNativeVideoSurface;
 
@@ -139,9 +145,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }) {
     final hwDecodingEnabled = prefs.get(UserPreferences.hardwareDecoding);
     final String? hwdec = hwDecodingEnabled
-        ? (_useNativeSurface
-            ? 'mediacodec'
-            : (PlatformDetection.isLinux ? 'auto-safe' : null))
+        ? (PlatformDetection.isAndroid && PlatformDetection.isTV
+              ? 'auto-copy'
+              : (PlatformDetection.isLinux ? 'auto-safe' : null))
         : 'no';
 
     final player = Player(
@@ -170,8 +176,16 @@ class MediaKitPlayerBackend implements PlayerBackend {
 
       if (_useNativeSurface) {
         _nativeSetProperty(platform, 'vo', 'null');
-        _nativeSetProperty(platform, 'hwdec', hwDecodingEnabled ? 'mediacodec' : 'no');
-        _nativeSetProperty(platform, 'hwdec-codecs', 'h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1');
+        _nativeSetProperty(
+          platform,
+          'hwdec',
+          hwDecodingEnabled ? 'auto-copy' : 'no',
+        );
+        _nativeSetProperty(
+          platform,
+          'hwdec-codecs',
+          'h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1',
+        );
         _nativeSetProperty(platform, 'vid', 'auto');
         _nativeSetProperty(platform, 'force-window', 'yes');
       }
@@ -206,6 +220,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
   bool get requiresStartupMediaReadyCheck => true;
 
   @override
+  bool get nativelyHandlesStartPosition => false;
+
+  @override
   bool get canRenderBitmapSubtitles =>
       PlatformDetection.isDesktop || PlatformDetection.isAndroid;
 
@@ -214,7 +231,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
   VideoController? get videoController => _videoController;
 
   @override
-  Map<String, dynamic> getDeviceProfile({bool useProgressiveTranscode = false}) {
+  Map<String, dynamic> getDeviceProfile({
+    bool useProgressiveTranscode = false,
+  }) {
     final maxBitrate = int.tryParse(_prefs.get(UserPreferences.maxBitrate));
     final ac3Enabled = _prefs.get(UserPreferences.ac3Enabled);
     final trueHdEnabled = _prefs.get(UserPreferences.trueHdEnabled);
@@ -225,7 +244,8 @@ class MediaKitPlayerBackend implements PlayerBackend {
       ac3Enabled: ac3Enabled,
       trueHdEnabled: trueHdEnabled,
       downMixAudio:
-          _prefs.get(UserPreferences.audioBehavior) == AudioBehavior.downmixToStereo,
+          _prefs.get(UserPreferences.audioBehavior) ==
+          AudioBehavior.downmixToStereo,
       maxResolution: maxResolution,
       pgsDirectPlay: _prefs.get(UserPreferences.pgsDirectPlay),
       assDirectPlay: _prefs.get(UserPreferences.assDirectPlay),
@@ -270,7 +290,10 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
-  Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero}) async {
+  Future<void> play(
+    dynamic mediaItem, {
+    Duration startPosition = Duration.zero,
+  }) async {
     final payload = mediaItem is Map ? mediaItem : const <String, dynamic>{};
     final url = mediaItem is String
         ? mediaItem
@@ -304,8 +327,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
       return;
     }
     try {
-      await _videoController!.waitUntilFirstFrameRendered
-          .timeout(_linuxHwdecFirstFrameTimeout);
+      await _videoController!.waitUntilFirstFrameRendered.timeout(
+        _linuxHwdecFirstFrameTimeout,
+      );
       return;
     } on TimeoutException {
       var hasVideoTrack = _player.state.tracks.video.isNotEmpty;
@@ -373,7 +397,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
         length: length,
       );
       final native = _player.platform as NativePlayer;
-      final unsafeAdvanced = _prefs.get(UserPreferences.customMpvConfUnsafeAdvanced);
+      final unsafeAdvanced = _prefs.get(
+        UserPreferences.customMpvConfUnsafeAdvanced,
+      );
 
       for (final parsed in parsedEntries) {
         final key = parsed.$1;
@@ -558,10 +584,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
     'input-conf',
   };
 
-  static const List<String> _deniedMpvPrefixes = [
-    'script-',
-    'ipc-',
-  ];
+  static const List<String> _deniedMpvPrefixes = ['script-', 'ipc-'];
 
   static const Set<String> _allowedMpvKeys = {
     'scale',
@@ -615,8 +638,9 @@ class MediaKitPlayerBackend implements PlayerBackend {
     }
     try {
       final supportDirectory = await getApplicationSupportDirectory();
-      final fontsDirectory =
-          Directory('${supportDirectory.path}/moonfin-subfonts');
+      final fontsDirectory = Directory(
+        '${supportDirectory.path}/moonfin-subfonts',
+      );
       await fontsDirectory.create(recursive: true);
 
       final fontFile = File('${fontsDirectory.path}/NotoSans-Regular.ttf');
@@ -733,7 +757,11 @@ class MediaKitPlayerBackend implements PlayerBackend {
         final speedValue = speed.toString();
         final setOk = await _tryNativeSetProperty(native, 'speed', speedValue);
         if (!setOk) {
-          await _tryNativeCommand(native, ['set_property', 'speed', speedValue]);
+          await _tryNativeCommand(native, [
+            'set_property',
+            'speed',
+            speedValue,
+          ]);
         }
         return;
       } catch (_) {}
@@ -749,7 +777,10 @@ class MediaKitPlayerBackend implements PlayerBackend {
       final tracks = _player.state.tracks.audio;
       AudioTrack? match;
       for (final t in tracks) {
-        if (t.id == id) { match = t; break; }
+        if (t.id == id) {
+          match = t;
+          break;
+        }
       }
       if (match != null) {
         await _player.setAudioTrack(match);
@@ -907,7 +938,11 @@ class MediaKitPlayerBackend implements PlayerBackend {
     try {
       final native = _player.platform as NativePlayer;
       if (textColor != null) {
-        await _nativeSetProperty(native, 'sub-color', _argbToMpvColor(textColor));
+        await _nativeSetProperty(
+          native,
+          'sub-color',
+          _argbToMpvColor(textColor),
+        );
       }
       if (backgroundColor != null) {
         await _nativeSetProperty(
@@ -940,8 +975,7 @@ class MediaKitPlayerBackend implements PlayerBackend {
   }
 
   @override
-  Future<void> setSubtitleRendererMode(SubtitleRendererMode mode) async {
-  }
+  Future<void> setSubtitleRendererMode(SubtitleRendererMode mode) async {}
 
   void _enableNativeSubtitleRendering() {
     Future.delayed(const Duration(milliseconds: 500), () async {

@@ -67,6 +67,12 @@ abstract class PlayerBackend {
   /// to avoid premature startup fallback.
   bool get requiresStartupMediaReadyCheck => true;
 
+  /// Whether this backend applies non-zero start positions during `play(...)`.
+  ///
+  /// Backends returning true should not run PlaybackManager's legacy
+  /// seek-while-paused startup fallback.
+  bool get nativelyHandlesStartPosition => false;
+
   bool get canRenderBitmapSubtitles;
 
   void dispose();

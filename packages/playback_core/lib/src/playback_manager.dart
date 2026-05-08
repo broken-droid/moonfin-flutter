@@ -22,7 +22,8 @@ class PlaybackManager {
   )?
   _backendSelector;
   bool Function(StreamResolutionResult resolution)? _transcodeSelector;
-  Duration Function(dynamic item, Duration startPosition)? _startPositionAdjuster;
+  Duration Function(dynamic item, Duration startPosition)?
+  _startPositionAdjuster;
   Future<PlaybackStartupRecoveryDecision> Function(
     PlaybackStartupFailureContext context,
   )?
@@ -43,6 +44,7 @@ class PlaybackManager {
   int? _maxBitrateOverrideMbps;
   DateTime? _playbackStartTime;
   bool _waitingForMedia = false;
+  SubtitleRendererMode _subtitleRendererMode = SubtitleRendererMode.native;
   bool _isAutoNexting = false;
   bool _isManualNexting = false;
   bool suppressAutoNext = false;
@@ -57,9 +59,16 @@ class PlaybackManager {
   int _playbackSessionToken = 0;
   Future<void>? _externalSubsLoaded;
   final _backendChangedController = StreamController<PlayerBackend>.broadcast();
+  final _bringupStateController =
+      StreamController<PlaybackBringupState>.broadcast();
+  PlaybackBringupState _bringupState = const PlaybackBringupState.idle();
 
   PlayerBackend? get backend => _backend;
-  Stream<PlayerBackend> get backendChangedStream => _backendChangedController.stream;
+  Stream<PlayerBackend> get backendChangedStream =>
+      _backendChangedController.stream;
+  PlaybackBringupState get bringupState => _bringupState;
+  Stream<PlaybackBringupState> get bringupStateStream =>
+      _bringupStateController.stream;
   StreamResolutionResult? get currentResolution => _currentResolution;
   int? get audioStreamIndex => _audioStreamIndex;
   int? get subtitleStreamIndex => _subtitleStreamIndex;
@@ -81,7 +90,8 @@ class PlaybackManager {
     final url = queueService.currentItem;
     if (url is! String) return const [];
     final meta = _offlineMetadataByUrl[url];
-    return (meta?['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+    return (meta?['MediaStreams'] as List?)?.cast<Map<String, dynamic>>() ??
+        const [];
   }
 
   Map<String, dynamic> _buildBackendMediaPayload({
@@ -96,14 +106,57 @@ class PlaybackManager {
       'mediaType':
           (resolvedMediaType == 'audio' || resolvedMediaType == 'video')
           ? resolvedMediaType
-          : MediaStreamResolver.detectMediaType(
-              mediaStreams,
-              fallbackUrl: url,
-            ),
+          : MediaStreamResolver.detectMediaType(mediaStreams, fallbackUrl: url),
       'normalizationGainDb':
           normalizationGainDb ??
           MediaStreamResolver.extractNormalizationGainDb(mediaStreams),
     };
+  }
+
+  String _traceItemId(dynamic item) {
+    try {
+      final dynamic dyn = item;
+      final id = dyn.id?.toString();
+      if (id != null && id.isNotEmpty) {
+        return id;
+      }
+    } catch (_) {}
+
+    if (item is Map) {
+      final id = item['Id'] ?? item['id'];
+      if (id != null) {
+        return id.toString();
+      }
+    }
+
+    return item.runtimeType.toString();
+  }
+
+  String _traceBackendName(PlayerBackend? backend) {
+    return backend?.runtimeType.toString() ?? 'none';
+  }
+
+  bool _hasNoActivePlayback(PlayerBackend? backend) {
+    final noBackendActivity =
+        backend == null ||
+        (!backend.isPlaying &&
+            !backend.isBuffering &&
+            backend.position <= Duration.zero &&
+            backend.buffer <= Duration.zero &&
+            backend.duration <= Duration.zero);
+
+    return !_isOfflinePlayback &&
+        queueService.currentItem == null &&
+        _currentResolution == null &&
+        _lastPlaybackResolution == null &&
+        _lastPlaybackItem == null &&
+        _playbackStartTime == null &&
+        noBackendActivity;
+  }
+
+  void _setBringupState(PlaybackBringupState state) {
+    _bringupState = state;
+    _bringupStateController.add(state);
   }
 
   void setBackend(PlayerBackend backend, {bool disposePrevious = true}) {
@@ -115,6 +168,7 @@ class PlaybackManager {
     _backend = backend;
     _retainedBackends.add(backend);
     _bindStreams(backend);
+    _subtitleRendererMode = SubtitleRendererMode.native;
     if (previous != null && !identical(previous, backend)) {
       unawaited(previous.stop());
     }
@@ -133,7 +187,9 @@ class PlaybackManager {
     _service = service;
   }
 
-  void setResolverConfigurator(Future<void> Function(dynamic item) configurator) {
+  void setResolverConfigurator(
+    Future<void> Function(dynamic item) configurator,
+  ) {
     _resolverConfigurator = configurator;
   }
 
@@ -141,7 +197,8 @@ class PlaybackManager {
     PlayerBackend Function(
       StreamResolutionResult resolution,
       PlayerBackend currentBackend,
-    )? selector,
+    )?
+    selector,
   ) {
     _backendSelector = selector;
   }
@@ -161,7 +218,8 @@ class PlaybackManager {
   void setStartupRecoveryDecider(
     Future<PlaybackStartupRecoveryDecision> Function(
       PlaybackStartupFailureContext context,
-    )? decider,
+    )?
+    decider,
   ) {
     _startupRecoveryDecider = decider;
   }
@@ -175,15 +233,19 @@ class PlaybackManager {
   /// Returning `true` indicates the action was handled and the backend call should
   /// be skipped. Used by SyncPlay to redirect local transport into a group request.
   Future<bool> Function(TransportAction action, {Duration? position})?
-      _transportInterceptor;
+  _transportInterceptor;
 
   void setTransportInterceptor(
-      Future<bool> Function(TransportAction action, {Duration? position})?
-          interceptor) {
+    Future<bool> Function(TransportAction action, {Duration? position})?
+    interceptor,
+  ) {
     _transportInterceptor = interceptor;
   }
 
-  Future<bool> _maybeIntercept(TransportAction action, {Duration? position}) async {
+  Future<bool> _maybeIntercept(
+    TransportAction action, {
+    Duration? position,
+  }) async {
     final interceptor = _transportInterceptor;
     if (interceptor == null) return false;
     try {
@@ -254,7 +316,12 @@ class PlaybackManager {
 
   void _onTrackCompleted(bool completed) {
     if (!completed) return;
-    if (_waitingForMedia || _isAutoNexting || _isManualNexting || suppressAutoNext) return;
+    if (_waitingForMedia ||
+        _isAutoNexting ||
+        _isManualNexting ||
+        suppressAutoNext) {
+      return;
+    }
     // Ignore completed events that fire during initial load/seek.
     if (_playbackStartTime != null &&
         DateTime.now().difference(_playbackStartTime!).inSeconds < 5) {
@@ -314,6 +381,17 @@ class PlaybackManager {
     _isAutoNexting = false;
     _isManualNexting = false;
     suppressAutoNext = false;
+    dynamic pendingItem;
+    if (items.isNotEmpty) {
+      pendingItem = items[startIndex.clamp(0, items.length - 1)];
+    }
+    _setBringupState(
+      PlaybackBringupState(
+        phase: PlaybackBringupPhase.stoppingPrevious,
+        itemId: pendingItem == null ? null : _traceItemId(pendingItem),
+        backend: _traceBackendName(_backend),
+      ),
+    );
     await _stopAndReportCurrent();
     _resetBackendSelectionLock();
     _audioStreamIndex = audioStreamIndex;
@@ -347,6 +425,7 @@ class PlaybackManager {
 
     final item = queueService.currentItem;
     if (item == null || _backend == null) {
+      _setBringupState(const PlaybackBringupState.idle());
       return;
     }
 
@@ -357,11 +436,20 @@ class PlaybackManager {
       setBackend(lockedBackend, disposePrevious: false);
     }
 
-    await _resetSubtitleRendererMode();
-
     _lastKnownPosition = Duration.zero;
     final sessionToken = ++_playbackSessionToken;
+    final itemId = _traceItemId(item);
+    _setBringupState(
+      PlaybackBringupState(
+        phase: PlaybackBringupPhase.resolving,
+        sessionToken: sessionToken,
+        itemId: itemId,
+        backend: _traceBackendName(_backend),
+      ),
+    );
     _externalSubsLoaded = null;
+
+    await _resetSubtitleRendererMode();
 
     if (_resolverConfigurator != null) {
       await _resolverConfigurator!(item);
@@ -371,8 +459,9 @@ class PlaybackManager {
       throw StateError('No MediaStreamResolver configured');
     }
 
-    final startTicks =
-        startPosition > Duration.zero ? startPosition.inMicroseconds * 10 : null;
+    final startTicks = startPosition > Duration.zero
+        ? startPosition.inMicroseconds * 10
+        : null;
 
     final forceTranscode = !enableDirectPlay && !enableDirectStream;
     final profile = _backend!.getDeviceProfile(
@@ -393,6 +482,15 @@ class PlaybackManager {
       mediaSourceId: _mediaSourceId,
       enableDirectPlay: enableDirectPlay,
       enableDirectStream: enableDirectStream,
+    );
+    _setBringupState(
+      PlaybackBringupState(
+        phase: PlaybackBringupPhase.opening,
+        sessionToken: sessionToken,
+        itemId: itemId,
+        backend: _traceBackendName(_backend),
+        playMethod: resolution.playMethod.name,
+      ),
     );
 
     if (!_backendSelectionLockedForSession) {
@@ -451,6 +549,15 @@ class PlaybackManager {
         startPosition: useNativeStart ? startPosition : Duration.zero,
       );
       if (_backend!.requiresStartupMediaReadyCheck) {
+        _setBringupState(
+          PlaybackBringupState(
+            phase: PlaybackBringupPhase.waitingForReady,
+            sessionToken: sessionToken,
+            itemId: itemId,
+            backend: _traceBackendName(_backend),
+            playMethod: resolution.playMethod.name,
+          ),
+        );
         mediaReady = await _waitForMediaReady(
           isTranscode: resolution.playMethod == StreamPlayMethod.transcode,
           timeout: _onlineStartupReadyTimeout,
@@ -500,6 +607,16 @@ class PlaybackManager {
           }
 
           if (decision == PlaybackStartupRecoveryDecision.abortPlayback) {
+            _setBringupState(
+              PlaybackBringupState(
+                phase: PlaybackBringupPhase.failed,
+                sessionToken: sessionToken,
+                itemId: itemId,
+                backend: _traceBackendName(_backend),
+                playMethod: resolution.playMethod.name,
+                error: 'startupRecoveryAborted',
+              ),
+            );
             throw const PlaybackStartupRecoveryAbortedException();
           }
         }
@@ -507,19 +624,50 @@ class PlaybackManager {
         await _playCurrentItem(
           startPosition: startPosition,
           enableDirectPlay: forceTranscodeFallback ? false : enableDirectPlay,
-          enableDirectStream: forceTranscodeFallback ? false : enableDirectStream,
+          enableDirectStream: forceTranscodeFallback
+              ? false
+              : enableDirectStream,
           allowStartupRecovery: false,
         );
         return;
       }
 
       if (startupError != null && startupStackTrace != null) {
+        _setBringupState(
+          PlaybackBringupState(
+            phase: PlaybackBringupPhase.failed,
+            sessionToken: sessionToken,
+            itemId: itemId,
+            backend: _traceBackendName(_backend),
+            playMethod: resolution.playMethod.name,
+            error: startupError.runtimeType.toString(),
+          ),
+        );
         Error.throwWithStackTrace(startupError, startupStackTrace);
       }
+      _setBringupState(
+        PlaybackBringupState(
+          phase: PlaybackBringupPhase.failed,
+          sessionToken: sessionToken,
+          itemId: itemId,
+          backend: _traceBackendName(_backend),
+          playMethod: resolution.playMethod.name,
+          error: 'mediaNotReady',
+        ),
+      );
       return;
     }
 
-    if (useNativeStart) {
+    if (useNativeStart && !_backend!.nativelyHandlesStartPosition) {
+      _setBringupState(
+        PlaybackBringupState(
+          phase: PlaybackBringupPhase.seekingResume,
+          sessionToken: sessionToken,
+          itemId: itemId,
+          backend: _traceBackendName(_backend),
+          playMethod: resolution.playMethod.name,
+        ),
+      );
       await _seekWhilePausedAndResume(startPosition);
     }
 
@@ -545,7 +693,8 @@ class PlaybackManager {
       }
     } else if (resolution.playMethod == StreamPlayMethod.transcode) {
       if (_subtitleStreamIndex != null && _subtitleStreamIndex != -1) {
-        final isBurnedIn = _isSubtitleBitmap(_subtitleStreamIndex!) &&
+        final isBurnedIn =
+            _isSubtitleBitmap(_subtitleStreamIndex!) &&
             !(_backend?.canRenderBitmapSubtitles ?? false);
         if (isBurnedIn) {
           _waitAndDisableSubtitles(sessionToken, force: true);
@@ -571,6 +720,15 @@ class PlaybackManager {
       subtitleStreamIndex: _subtitleStreamIndex,
     );
     _startProgressTimer();
+    _setBringupState(
+      PlaybackBringupState(
+        phase: PlaybackBringupPhase.ready,
+        sessionToken: sessionToken,
+        itemId: itemId,
+        backend: _traceBackendName(_backend),
+        playMethod: resolution.playMethod.name,
+      ),
+    );
   }
 
   void _startProgressTimer() {
@@ -627,7 +785,8 @@ class PlaybackManager {
 
     if (isReady()) return true;
 
-    final attempts = timeout.inMilliseconds ~/ _mediaReadyPollInterval.inMilliseconds;
+    final attempts =
+        timeout.inMilliseconds ~/ _mediaReadyPollInterval.inMilliseconds;
     for (var i = 0; i < attempts; i++) {
       await Future.delayed(_mediaReadyPollInterval);
       if (isReady()) return true;
@@ -638,7 +797,7 @@ class PlaybackManager {
 
   Future<void> _seekWhilePausedAndResume(Duration position) async {
     await _backend!.seekTo(position);
-    for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < 50; i++) {
       await Future.delayed(const Duration(milliseconds: 100));
       if ((_backend!.position - position).abs() < const Duration(seconds: 10)) {
         break;
@@ -716,12 +875,14 @@ class PlaybackManager {
   Future<void> changeAudioTrack(int streamIndex) async {
     _audioStreamIndex = streamIndex;
 
-    if (!_isOfflinePlayback && !(_backend?.supportsRuntimeTrackSelection ?? true)) {
+    if (!_isOfflinePlayback &&
+        !(_backend?.supportsRuntimeTrackSelection ?? true)) {
       await _reResolveAtCurrentPosition();
       return;
     }
 
-    if (_currentResolution?.playMethod == StreamPlayMethod.directPlay || _isOfflinePlayback) {
+    if (_currentResolution?.playMethod == StreamPlayMethod.directPlay ||
+        _isOfflinePlayback) {
       final mpvId = _mpvTrackIdForStream(streamIndex, 'Audio');
       if (mpvId != null) {
         await _backend?.setAudioTrack(mpvId);
@@ -733,16 +894,27 @@ class PlaybackManager {
     }
   }
 
-  static const _bitmapSubCodecs = {'pgs', 'pgssub', 'dvbsub', 'dvdsub', 'hdmv_pgs_subtitle', 'dvd_subtitle', 'dvb_subtitle', 'xsub'};
+  static const _bitmapSubCodecs = {
+    'pgs',
+    'pgssub',
+    'dvbsub',
+    'dvdsub',
+    'hdmv_pgs_subtitle',
+    'dvd_subtitle',
+    'dvb_subtitle',
+    'xsub',
+  };
   static const _assSubCodecs = {'ass', 'ssa'};
 
   bool _isSubtitleBitmap(int streamIndex) {
     final streams = _currentMediaStreams;
     if (streams.isEmpty) return false;
-    final sub = streams.where((s) => s['Type'] == 'Subtitle').firstWhere(
-      (s) => s['Index'] == streamIndex,
-      orElse: () => <String, dynamic>{},
-    );
+    final sub = streams
+        .where((s) => s['Type'] == 'Subtitle')
+        .firstWhere(
+          (s) => s['Index'] == streamIndex,
+          orElse: () => <String, dynamic>{},
+        );
     final codec = ((sub['Codec'] as String?) ?? '').toLowerCase();
     return _bitmapSubCodecs.contains(codec);
   }
@@ -801,7 +973,8 @@ class PlaybackManager {
         continue;
       }
 
-      if (deliveryUrl.startsWith('http://') || deliveryUrl.startsWith('https://')) {
+      if (deliveryUrl.startsWith('http://') ||
+          deliveryUrl.startsWith('https://')) {
         return deliveryUrl;
       }
 
@@ -816,13 +989,17 @@ class PlaybackManager {
       }
 
       final resolved = baseUri.resolve(deliveryUrl);
-      final hasApiKey = resolved.queryParameters.keys.any((k) => k.toLowerCase() == 'api_key');
+      final hasApiKey = resolved.queryParameters.keys.any(
+        (k) => k.toLowerCase() == 'api_key',
+      );
       final baseApiKeyEntry = baseUri.queryParameters.entries.firstWhere(
         (entry) => entry.key.toLowerCase() == 'api_key',
         orElse: () => const MapEntry('', ''),
       );
 
-      if (!hasApiKey && baseApiKeyEntry.key.isNotEmpty && baseApiKeyEntry.value.isNotEmpty) {
+      if (!hasApiKey &&
+          baseApiKeyEntry.key.isNotEmpty &&
+          baseApiKeyEntry.value.isNotEmpty) {
         final mergedParams = <String, String>{
           ...resolved.queryParameters,
           baseApiKeyEntry.key: baseApiKeyEntry.value,
@@ -846,11 +1023,19 @@ class PlaybackManager {
 
   Future<void> _applySubtitleRendererModeForStream(int streamIndex) async {
     final mode = _subtitleRendererModeForStream(streamIndex);
+    if (_subtitleRendererMode == mode) {
+      return;
+    }
     await _backend?.setSubtitleRendererMode(mode);
+    _subtitleRendererMode = mode;
   }
 
   Future<void> _resetSubtitleRendererMode() async {
+    if (_subtitleRendererMode == SubtitleRendererMode.native) {
+      return;
+    }
     await _backend?.setSubtitleRendererMode(SubtitleRendererMode.native);
+    _subtitleRendererMode = SubtitleRendererMode.native;
   }
 
   Future<void> changeSubtitleTrack(int streamIndex) async {
@@ -860,7 +1045,8 @@ class PlaybackManager {
 
     await _applySubtitleRendererModeForStream(streamIndex);
 
-    if (!_isOfflinePlayback && !(_backend?.supportsRuntimeTrackSelection ?? true)) {
+    if (!_isOfflinePlayback &&
+        !(_backend?.supportsRuntimeTrackSelection ?? true)) {
       final canRenderBitmap = _backend?.canRenderBitmapSubtitles ?? false;
       await _reResolveAtCurrentPosition(
         forceTranscode: isBitmap && !canRenderBitmap,
@@ -868,7 +1054,8 @@ class PlaybackManager {
       return;
     }
 
-    if (_currentResolution?.playMethod == StreamPlayMethod.directPlay || _isOfflinePlayback) {
+    if (_currentResolution?.playMethod == StreamPlayMethod.directPlay ||
+        _isOfflinePlayback) {
       final isExternal = _isSubtitleExternal(streamIndex);
       if (isBitmap && !(_backend?.canRenderBitmapSubtitles ?? false)) {
         await _backend?.disableSubtitleTrack();
@@ -946,7 +1133,8 @@ class PlaybackManager {
   Future<void> disableSubtitles() async {
     _subtitleStreamIndex = -1;
     await _resetSubtitleRendererMode();
-    if (!_isOfflinePlayback && !(_backend?.supportsRuntimeTrackSelection ?? true)) {
+    if (!_isOfflinePlayback &&
+        !(_backend?.supportsRuntimeTrackSelection ?? true)) {
       await _reResolveAtCurrentPosition();
       return;
     }
@@ -959,7 +1147,9 @@ class PlaybackManager {
     await _reResolveAtCurrentPosition(forceTranscode: mbps != null);
   }
 
-  Future<void> _reResolveAtCurrentPosition({bool forceTranscode = false}) async {
+  Future<void> _reResolveAtCurrentPosition({
+    bool forceTranscode = false,
+  }) async {
     final backendPos = _backend?.position ?? Duration.zero;
     final currentPos = Duration(
       microseconds: [
@@ -988,7 +1178,8 @@ class PlaybackManager {
     Duration? restorePosition,
   }) async {
     if (sessionToken != _playbackSessionToken) return;
-    final shouldRestore = restorePosition != null && restorePosition > Duration.zero;
+    final shouldRestore =
+        restorePosition != null && restorePosition > Duration.zero;
 
     if (_audioStreamIndex != null) {
       final mpvId = _mpvTrackIdForStream(_audioStreamIndex!, 'Audio');
@@ -1001,7 +1192,8 @@ class PlaybackManager {
       final isBitmap = _isSubtitleBitmap(_subtitleStreamIndex!);
       final canRenderBitmap = _backend?.canRenderBitmapSubtitles ?? false;
       if (isBitmap && !canRenderBitmap) {
-        if (_currentResolution?.playMethod == StreamPlayMethod.directPlay && !_isOfflinePlayback) {
+        if (_currentResolution?.playMethod == StreamPlayMethod.directPlay &&
+            !_isOfflinePlayback) {
           await _reResolveAtCurrentPosition(forceTranscode: true);
         }
       } else {
@@ -1062,7 +1254,9 @@ class PlaybackManager {
   void _waitAndDisableSubtitles(int sessionToken, {bool force = false}) {
     _backend?.waitForTracksReady().then((_) {
       if (sessionToken != _playbackSessionToken) return;
-      if (!force && _subtitleStreamIndex != null && _subtitleStreamIndex! >= 0) {
+      if (!force &&
+          _subtitleStreamIndex != null &&
+          _subtitleStreamIndex! >= 0) {
         return;
       }
       _backend?.disableSubtitleTrack();
@@ -1140,20 +1334,32 @@ class PlaybackManager {
     if (typeStreams.isEmpty) return null;
 
     if (type == 'Subtitle') {
-      final targetIdx = typeStreams.indexWhere((s) => s['Index'] == streamIndex);
+      final targetIdx = typeStreams.indexWhere(
+        (s) => s['Index'] == streamIndex,
+      );
       if (targetIdx < 0) return null;
       final target = typeStreams[targetIdx];
       final isExternal = target['IsExternal'] == true;
 
       if (isExternal) {
-        final embeddedCount = typeStreams.where((s) => s['IsExternal'] != true).length;
-        final externalStreams = typeStreams.where((s) => s['IsExternal'] == true).toList();
-        final externalPos = externalStreams.indexWhere((s) => s['Index'] == streamIndex);
+        final embeddedCount = typeStreams
+            .where((s) => s['IsExternal'] != true)
+            .length;
+        final externalStreams = typeStreams
+            .where((s) => s['IsExternal'] == true)
+            .toList();
+        final externalPos = externalStreams.indexWhere(
+          (s) => s['Index'] == streamIndex,
+        );
         if (externalPos < 0) return null;
         return embeddedCount + externalPos + 1;
       } else {
-        final embeddedStreams = typeStreams.where((s) => s['IsExternal'] != true).toList();
-        final embeddedPos = embeddedStreams.indexWhere((s) => s['Index'] == streamIndex);
+        final embeddedStreams = typeStreams
+            .where((s) => s['IsExternal'] != true)
+            .toList();
+        final embeddedPos = embeddedStreams.indexWhere(
+          (s) => s['Index'] == streamIndex,
+        );
         if (embeddedPos < 0) return null;
         return embeddedPos + 1;
       }
@@ -1198,9 +1404,9 @@ class PlaybackManager {
     _waitingForMedia = true;
     ++_playbackSessionToken;
     final offlineStreams =
-      (_offlineMetadataByUrl[url]?['MediaStreams'] as List?)
-        ?.cast<Map<String, dynamic>>() ??
-      const <Map<String, dynamic>>[];
+        (_offlineMetadataByUrl[url]?['MediaStreams'] as List?)
+            ?.cast<Map<String, dynamic>>() ??
+        const <Map<String, dynamic>>[];
     await _backend!.play(
       _buildBackendMediaPayload(url: url, mediaStreams: offlineStreams),
       startPosition: startPosition,
@@ -1223,8 +1429,21 @@ class PlaybackManager {
     final stopFuture = (() async {
       _playbackSessionToken++;
       _stopProgressTimer();
+      final backend = _backend;
+      if (_hasNoActivePlayback(backend)) {
+        if (!skipQueueChange) {
+          _forceTranscodeForQueue = false;
+          _resetBackendSelectionLock();
+          queueService.clear();
+          state.reset();
+          _setBringupState(const PlaybackBringupState.idle());
+        }
+        return;
+      }
       if (_isOfflinePlayback) {
         await _backend?.stop();
+        _playbackStartTime = null;
+        _waitingForMedia = false;
         if (!skipQueueChange) {
           await _onOfflineStop?.call();
           _isOfflinePlayback = false;
@@ -1234,6 +1453,7 @@ class PlaybackManager {
           _onOfflineAutoNext = null;
           queueService.clear();
           state.reset();
+          _setBringupState(const PlaybackBringupState.idle());
         }
         return;
       }
@@ -1257,11 +1477,14 @@ class PlaybackManager {
       _lastPlaybackItem = null;
       _lastPlaybackResolution = null;
       await _backend?.stop();
+      _playbackStartTime = null;
+      _waitingForMedia = false;
       if (!skipQueueChange) {
         _forceTranscodeForQueue = false;
         _resetBackendSelectionLock();
         queueService.clear();
         state.reset();
+        _setBringupState(const PlaybackBringupState.idle());
       }
     })();
 
@@ -1279,6 +1502,7 @@ class PlaybackManager {
     _stopProgressTimer();
     _disposeStreamSubs();
     _backendChangedController.close();
+    _bringupStateController.close();
     for (final backend in _retainedBackends.toList()) {
       backend.dispose();
     }
@@ -1314,4 +1538,41 @@ class PlaybackStartupRecoveryAbortedException implements Exception {
   @override
   String toString() =>
       'PlaybackStartupRecoveryAbortedException: startup fallback canceled by user';
+}
+
+enum PlaybackBringupPhase {
+  idle,
+  stoppingPrevious,
+  resolving,
+  opening,
+  waitingForReady,
+  seekingResume,
+  ready,
+  failed,
+}
+
+class PlaybackBringupState {
+  final PlaybackBringupPhase phase;
+  final int? sessionToken;
+  final String? itemId;
+  final String? backend;
+  final String? playMethod;
+  final String? error;
+
+  const PlaybackBringupState({
+    required this.phase,
+    this.sessionToken,
+    this.itemId,
+    this.backend,
+    this.playMethod,
+    this.error,
+  });
+
+  const PlaybackBringupState.idle()
+    : phase = PlaybackBringupPhase.idle,
+      sessionToken = null,
+      itemId = null,
+      backend = null,
+      playMethod = null,
+      error = null;
 }

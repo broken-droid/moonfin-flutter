@@ -5,6 +5,13 @@ class PlatformDetection {
   const PlatformDetection._();
 
   static const double _mobileFormFactorBreakpoint = 600;
+  static const Set<String> _modelsWithNativeSurfaceTransparencyDefect =
+      <String>{
+        'AFTMM',
+        'AFTKA',
+        'AFTKM',
+        'AFTKRT',
+      };
 
   static bool get isAndroid =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
@@ -235,5 +242,14 @@ class PlatformDetection {
   static bool get useDesktopUi => !_hasMobileFormFactor && !isTV;
   static bool get useMobileUi => _hasMobileFormFactor && !isTV;
 
-  static bool get useNativeVideoSurface => isAndroid && isTV;
+  static bool get useNativeVideoSurface =>
+      isAndroid && isTV && !_hasNativeSurfaceTransparencyDefect;
+
+  static bool get _hasNativeSurfaceTransparencyDefect {
+    final model = deviceModel?.trim().toUpperCase();
+    if (model == null || model.isEmpty) {
+      return false;
+    }
+    return _modelsWithNativeSurfaceTransparencyDefect.contains(model);
+  }
 }

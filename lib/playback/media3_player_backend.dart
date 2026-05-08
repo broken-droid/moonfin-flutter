@@ -112,16 +112,15 @@ class Media3PlayerBackend implements PlayerBackend {
         _requestedSubtitleRendererMode = _modeFromWire(
           map['subtitleRendererModeRequested'],
         );
-        if (_tracksReadyCompleter != null && !_tracksReadyCompleter!.isCompleted) {
+        if (_tracksReadyCompleter != null &&
+            !_tracksReadyCompleter!.isCompleted) {
           _tracksReadyCompleter!.complete();
         }
       case 'completed':
         _completed = _toBool(map['completed']);
         _completedStream.add(_completed);
       case 'subtitleRendererModeChanged':
-        _requestedSubtitleRendererMode = _modeFromWire(
-          map['requestedMode'],
-        );
+        _requestedSubtitleRendererMode = _modeFromWire(map['requestedMode']);
       case 'viewReady':
         if (_tracksReadyCompleter != null &&
             !_tracksReadyCompleter!.isCompleted &&
@@ -154,20 +153,24 @@ class Media3PlayerBackend implements PlayerBackend {
   }
 
   @override
-  Future<void> play(dynamic mediaItem, {Duration startPosition = Duration.zero}) async {
-    if (_disposed) return;
+  Future<void> play(
+    dynamic mediaItem, {
+    Duration startPosition = Duration.zero,
+  }) async {
     final payload = mediaItem is Map ? mediaItem : const <String, dynamic>{};
     final url = mediaItem is String
-      ? mediaItem
-      : payload['url']?.toString() ?? '';
-    if (url.isEmpty) return;
+        ? mediaItem
+        : payload['url']?.toString() ?? '';
+    if (_disposed || url.isEmpty) return;
 
     final mediaType = payload['mediaType']?.toString() ?? 'video';
-    final normalizationGainDb = (payload['normalizationGainDb'] as num?)?.toDouble();
+    final normalizationGainDb = (payload['normalizationGainDb'] as num?)
+        ?.toDouble();
     final headers = payload['headers'] is Map
-      ? (payload['headers'] as Map)
-        .map((key, value) => MapEntry(key.toString(), value.toString()))
-      : <String, String>{};
+        ? (payload['headers'] as Map).map(
+            (key, value) => MapEntry(key.toString(), value.toString()),
+          )
+        : <String, String>{};
 
     _completed = false;
     _tracksKnown = false;
@@ -250,7 +253,9 @@ class Media3PlayerBackend implements PlayerBackend {
   Stream<bool> get completedStream => _completedStream.stream;
 
   @override
-  Map<String, dynamic> getDeviceProfile({bool useProgressiveTranscode = false}) {
+  Map<String, dynamic> getDeviceProfile({
+    bool useProgressiveTranscode = false,
+  }) {
     final maxBitrate = int.tryParse(_prefs.get(UserPreferences.maxBitrate));
     final ac3Enabled = _prefs.get(UserPreferences.ac3Enabled);
     final trueHdEnabled = _prefs.get(UserPreferences.trueHdEnabled);
@@ -261,7 +266,8 @@ class Media3PlayerBackend implements PlayerBackend {
       ac3Enabled: ac3Enabled,
       trueHdEnabled: trueHdEnabled,
       downMixAudio:
-          _prefs.get(UserPreferences.audioBehavior) == AudioBehavior.downmixToStereo,
+          _prefs.get(UserPreferences.audioBehavior) ==
+          AudioBehavior.downmixToStereo,
       maxResolution: maxResolution,
       pgsDirectPlay: _prefs.get(UserPreferences.pgsDirectPlay),
       assDirectPlay: _prefs.get(UserPreferences.assDirectPlay),
@@ -453,15 +459,11 @@ class Media3PlayerBackend implements PlayerBackend {
   @override
   Future<void> setSubtitleRendererMode(SubtitleRendererMode mode) async {
     _requestedSubtitleRendererMode = mode;
-    await _invoke<void>('setSubtitleRendererMode', {
-      'mode': _modeToWire(mode),
-    });
+    await _invoke<void>('setSubtitleRendererMode', {'mode': _modeToWire(mode)});
   }
 
   Future<void> setZoomMode(String mode) async {
-    await _invoke<void>('setZoomMode', {
-      'mode': mode,
-    });
+    await _invoke<void>('setZoomMode', {'mode': mode});
   }
 
   String _modeToWire(SubtitleRendererMode mode) {
@@ -476,6 +478,9 @@ class Media3PlayerBackend implements PlayerBackend {
 
   @override
   bool get requiresStartupMediaReadyCheck => false;
+
+  @override
+  bool get nativelyHandlesStartPosition => true;
 
   @override
   bool get canRenderBitmapSubtitles => true;

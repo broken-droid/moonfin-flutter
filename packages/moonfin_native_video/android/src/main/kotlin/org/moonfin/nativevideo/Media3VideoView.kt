@@ -4,10 +4,12 @@ import android.app.ActivityManager
 import android.content.Context
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
 import android.view.SurfaceView
+import android.view.TextureView
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.getSystemService
@@ -51,6 +53,17 @@ class Media3VideoView(
     companion object {
         private const val TS_SEARCH_BYTES_LOW_RAM = TsExtractor.TS_PACKET_SIZE * 1800
         private const val TS_SEARCH_BYTES_DEFAULT = TsExtractor.DEFAULT_TIMESTAMP_SEARCH_BYTES
+        private val MODELS_WITH_SURFACE_TRANSPARENCY_DEFECT = setOf(
+            "AFTMM",
+            "AFTKA",
+            "AFTKM",
+            "AFTKRT",
+        )
+
+        private fun hasSurfaceTransparencyDefectModel(): Boolean {
+            val model = Build.MODEL?.trim()?.uppercase() ?: return false
+            return MODELS_WITH_SURFACE_TRANSPARENCY_DEFECT.contains(model)
+        }
     }
 
 
@@ -89,7 +102,12 @@ class Media3VideoView(
     }
 
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val surfaceView = SurfaceView(context)
+    private val useTextureView = hasSurfaceTransparencyDefectModel()
+    private val surfaceView: SurfaceView? = if (useTextureView) null else SurfaceView(context)
+    private val textureView: TextureView? = if (useTextureView) TextureView(context) else null
+    private val firstFrameCover = View(context).apply {
+        setBackgroundColor(Color.BLACK)
+    }
     private val subtitleView = SubtitleView(context)
     private val containerView: FrameLayout = FrameLayout(context).also { container ->
         container.setBackgroundColor(Color.BLACK)
@@ -102,7 +120,8 @@ class Media3VideoView(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT,
         )
-        container.addView(surfaceView, videoLayoutParams)
+        container.addView(activeVideoView(), videoLayoutParams)
+        container.addView(firstFrameCover, subtitleLayoutParams)
         container.addView(subtitleView, subtitleLayoutParams)
     }
     private val trackSelector = DefaultTrackSelector(context)
@@ -129,6 +148,8 @@ class Media3VideoView(
     private var currentMediaType: String = "video"
     private var isDisposed = false
     private val externalSubtitleConfigurations = mutableListOf<MediaItem.SubtitleConfiguration>()
+
+    private fun activeVideoView(): View = textureView ?: surfaceView!!
 
     private val listener = object : Player.Listener {
         @Suppress("DEPRECATION")
@@ -197,6 +218,10 @@ class Media3VideoView(
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             audioPipeline.normalizationGainDb = currentNormalizationGainDb
         }
+
+        override fun onRenderedFirstFrame() {
+            firstFrameCover.visibility = View.GONE
+        }
     }
 
     init {
@@ -248,7 +273,11 @@ class Media3VideoView(
                 assHandler.init(it)
             }
 
-        player.setVideoSurfaceView(surfaceView)
+        if (useTextureView) {
+            textureView?.let { player.setVideoTextureView(it) }
+        } else {
+            surfaceView?.let { player.setVideoSurfaceView(it) }
+        }
         containerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             applyVideoLayout()
         }
@@ -301,6 +330,7 @@ class Media3VideoView(
                 "stop" -> {
                     player.pause()
                     player.seekTo(0)
+                    firstFrameCover.visibility = View.VISIBLE
                     emitState()
                     result.success(null)
                 }
@@ -429,6 +459,7 @@ class Media3VideoView(
                 "stop" -> {
                     player.pause()
                     player.seekTo(0)
+                    firstFrameCover.visibility = View.VISIBLE
                     emitState()
                 }
 
@@ -545,6 +576,7 @@ class Media3VideoView(
         selectedSubtitleIsBitmap = false
         selectedExternalSubtitleUrl = null
         subtitleTrackEnabled = false
+        firstFrameCover.visibility = View.VISIBLE
         clearAssSubtitleScript()
         refreshSubtitleRendererMode()
         applyAudioAttributesForCurrentMediaType()
@@ -595,7 +627,7 @@ class Media3VideoView(
     }
 
     private fun applyVideoLayout() {
-        val currentParams = surfaceView.layoutParams as? FrameLayout.LayoutParams
+        val currentParams = activeVideoView().layoutParams as? FrameLayout.LayoutParams
         val layoutParams = currentParams ?: FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -677,7 +709,7 @@ class Media3VideoView(
         layoutParams.width = width
         layoutParams.height = height
         layoutParams.gravity = Gravity.CENTER
-        surfaceView.layoutParams = layoutParams
+        activeVideoView().layoutParams = layoutParams
     }
 
     private fun applySubtitleRendererMode(mode: SubtitleRendererMode) {
@@ -775,9 +807,9 @@ class Media3VideoView(
 
         externalSubtitleConfigurations.add(subtitleBuilder.build())
 
-        val isPlaying = player.isPlaying
+        val playWhenReady = player.playWhenReady
         val currentPosition = player.currentPosition
-        setMediaItem(currentPosition, playWhenReady = isPlaying)
+        setMediaItem(currentPosition, playWhenReady = playWhenReady)
     }
 
     private fun configureSubtitleStyle(args: Map<*, *>?) {
