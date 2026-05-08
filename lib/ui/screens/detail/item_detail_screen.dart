@@ -3499,7 +3499,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
         ),
       if ((GetIt.instance<UserRepository>().currentUser?.isAdministrator ??
               false) &&
-          GetIt.instance<MediaServerClient>().serverType == ServerType.jellyfin)
+          GetIt.instance<MediaServerClient>().serverType ==
+              ServerType.jellyfin &&
+          !PlatformDetection.isTV)
         _DetailActionButton(
           label: l10n.editMetadata,
           icon: Icons.edit_note,
