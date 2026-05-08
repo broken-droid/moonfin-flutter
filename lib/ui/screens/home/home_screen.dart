@@ -2417,14 +2417,28 @@ class _ContentRowsState extends State<_ContentRows>
         tag: item.seriesPrimaryImageTag,
       );
     }
-    if (item.primaryImageTag != null) {
+    return _resolvePrimaryImageUrl(item, imageApi, maxHeight: maxH);
+  }
+
+  static String? _resolvePrimaryImageUrl(
+    AggregatedItem item,
+    ImageApi imageApi, {
+    int? maxHeight,
+    int? maxWidth,
+  }) {
+    String? primary(String? id, String? tag) {
+      if (id == null || tag == null) return null;
       return imageApi.getPrimaryImageUrl(
-        item.id,
-        maxHeight: maxH,
-        tag: item.primaryImageTag,
+        id,
+        maxHeight: maxHeight,
+        maxWidth: maxWidth,
+        tag: tag,
       );
     }
-    return null;
+
+    return primary(item.id, item.primaryImageTag) ??
+        primary(item.primaryImageItemId, item.primaryImageTagField) ??
+        primary(item.parentPrimaryImageItemId, item.parentPrimaryImageTag);
   }
 
   static String? _resolveLandscapeImageUrl(
@@ -2449,14 +2463,7 @@ class _ContentRowsState extends State<_ContentRows>
         tag: parentTags.first,
       );
     }
-    if (item.primaryImageTag != null) {
-      return imageApi.getPrimaryImageUrl(
-        item.id,
-        maxWidth: maxW,
-        tag: item.primaryImageTag,
-      );
-    }
-    return null;
+    return _resolvePrimaryImageUrl(item, imageApi, maxWidth: maxW);
   }
 
   static ImageType _homeRowImageTypeForRow(HomeRow row, UserPreferences prefs) {
@@ -2539,8 +2546,11 @@ class _ContentRowsState extends State<_ContentRows>
 
     if (imageType == ImageType.banner) {
       final maxW = (height * 16 / 9 * 2).toInt();
-      if (isMyMediaRow && item.primaryImageTag != null) {
-        return imageApi.getPrimaryImageUrl(item.id, maxWidth: maxW, tag: item.primaryImageTag);
+      if (isMyMediaRow) {
+        final myMediaPrimary = _resolvePrimaryImageUrl(item, imageApi, maxWidth: maxW);
+        if (myMediaPrimary != null) {
+          return myMediaPrimary;
+        }
       }
       if (itemBannerTag != null) {
         return imageApi.getBannerImageUrl(item.id, maxWidth: maxW, tag: itemBannerTag);

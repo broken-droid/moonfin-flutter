@@ -863,6 +863,58 @@ class RowDataSource {
   ) async {
     final items = response['Items'];
     if (items is! List || items.isEmpty) return response;
+
+    Map<String, dynamic> mergeItemData(
+      Map<String, dynamic> rawItem,
+      Map<String, dynamic> enrichedItem,
+    ) {
+      final merged = <String, dynamic>{...rawItem, ...enrichedItem};
+
+      final rawImageTags = rawItem['ImageTags'];
+      final enrichedImageTags = enrichedItem['ImageTags'];
+      if (rawImageTags is Map || enrichedImageTags is Map) {
+        final rawTags =
+            rawImageTags is Map
+                ? rawImageTags.cast<String, dynamic>()
+                : const <String, dynamic>{};
+        final enrichedTags =
+            enrichedImageTags is Map
+                ? enrichedImageTags.cast<String, dynamic>()
+                : const <String, dynamic>{};
+        merged['ImageTags'] = {...rawTags, ...enrichedTags};
+      }
+
+      void restoreRawIfMissing(String key) {
+        final rawValue = rawItem[key];
+        final mergedValue = merged[key];
+        final missing =
+            mergedValue == null ||
+            (mergedValue is String && mergedValue.isEmpty) ||
+            (mergedValue is List && mergedValue.isEmpty);
+        if (missing && rawValue != null) {
+          merged[key] = rawValue;
+        }
+      }
+
+      for (final key in const [
+        'PrimaryImageTag',
+        'PrimaryImageItemId',
+        'ParentPrimaryImageTag',
+        'ParentPrimaryImageItemId',
+        'SeriesPrimaryImageTag',
+        'SeriesId',
+        'ParentThumbItemId',
+        'ParentThumbImageTag',
+        'BackdropImageTags',
+        'ParentBackdropItemId',
+        'ParentBackdropImageTags',
+      ]) {
+        restoreRawIfMissing(key);
+      }
+
+      return merged;
+    }
+
     final ids = <String>[];
     for (final raw in items) {
       if (raw is Map && raw['Id'] is String) {
@@ -888,7 +940,13 @@ class RowDataSource {
       for (final raw in items) {
         if (raw is Map && raw['Id'] is String) {
           final id = raw['Id'] as String;
-          merged.add(byId[id] ?? raw.cast<String, dynamic>());
+          final rawMap = raw.cast<String, dynamic>();
+          final enrichedMap = byId[id];
+          if (enrichedMap != null) {
+            merged.add(mergeItemData(rawMap, enrichedMap));
+          } else {
+            merged.add(rawMap);
+          }
         } else if (raw is Map) {
           merged.add(raw.cast<String, dynamic>());
         }
