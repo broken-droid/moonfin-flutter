@@ -311,9 +311,9 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         if (_infoVisible) {
-          _exitPlayback();
-        } else {
           _toggleInfo();
+        } else {
+          _exitPlayback();
         }
       },
       child: Scaffold(

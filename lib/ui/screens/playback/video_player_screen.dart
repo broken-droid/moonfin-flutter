@@ -2341,6 +2341,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _dismissSkipSegment();
           return;
         }
+        if (_dismissTopOverlayRouteIfAny()) {
+          return;
+        }
+        if (_controlsVisible) {
+          _hideTimer?.cancel();
+          setState(() => _controlsVisible = false);
+          return;
+        }
         _exitPlayback();
       },
       child: Scaffold(
