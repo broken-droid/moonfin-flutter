@@ -56,6 +56,7 @@ class DeviceProfileBuilder {
     int? maxBitrateMbps,
     bool ac3Enabled = true,
     bool trueHdEnabled = true,
+    bool dtsEnabled = true,
     bool downMixAudio = false,
     MaxVideoResolution maxResolution = MaxVideoResolution.auto,
     bool pgsDirectPlay = true,
@@ -102,6 +103,9 @@ class DeviceProfileBuilder {
               return false;
             }
             if (!trueHdEnabled && (codec == 'truehd' || codec == 'mlp')) {
+              return false;
+            }
+            if (!dtsEnabled && (codec == 'dts' || codec == 'dca')) {
               return false;
             }
             return true;

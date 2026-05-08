@@ -5009,16 +5009,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       stream['Profile'] as String?,
       stream['Codec'] as String?,
     );
-    final codec = ((stream['Codec'] as String?) ?? '').toUpperCase();
-    if (label == 'Atmos') {
-      return 'Atmos';
+    if (label != null) {
+      return switch (label) {
+        'EAC3' => 'E-AC3 (Dolby Digital Plus)',
+        'AC3' => 'AC3 (Dolby Digital)',
+        'TRUEHD' => 'TrueHD',
+        _ => label,
+      };
     }
-    return switch (codec) {
-      'EAC3' => 'E-AC3 (Dolby Digital Plus)',
-      'AC3' => 'AC3 (Dolby Digital)',
-      'TRUEHD' => 'TrueHD',
-      _ => codec,
-    };
+    return ((stream['Codec'] as String?) ?? '').toUpperCase();
   }
 
   String _formatChannels(int? channels) {

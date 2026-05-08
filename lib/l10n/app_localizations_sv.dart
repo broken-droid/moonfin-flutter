@@ -2091,7 +2091,14 @@ class AppLocalizationsSv extends AppLocalizations {
   String get ac3Passthrough => 'AC3 Passthrough';
 
   @override
+  String get dtsPassthrough => 'DTS Passthrough';
+
+  @override
   String get trueHdSupport => 'TrueHD Support';
+
+  @override
+  String get enableDtsPassthrough =>
+      'Bitstream DTS audio to AVR only; requires receiver support and DTS source track';
 
   @override
   String get enableTrueHdAudio =>

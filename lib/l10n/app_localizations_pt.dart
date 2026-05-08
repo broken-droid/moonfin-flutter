@@ -2111,7 +2111,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get ac3Passthrough => 'Passthrough AC3';
 
   @override
+  String get dtsPassthrough => 'DTS Passthrough';
+
+  @override
   String get trueHdSupport => 'Suporte a TrueHD';
+
+  @override
+  String get enableDtsPassthrough =>
+      'Bitstream DTS audio to AVR only; requires receiver support and DTS source track';
 
   @override
   String get enableTrueHdAudio =>

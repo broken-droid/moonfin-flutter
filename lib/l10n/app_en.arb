@@ -2966,9 +2966,17 @@
   "@ac3Passthrough": {
     "description": "Setting for AC3 passthrough"
   },
+  "dtsPassthrough": "DTS Passthrough",
+  "@dtsPassthrough": {
+    "description": "Setting for DTS passthrough"
+  },
   "trueHdSupport": "TrueHD Support",
   "@trueHdSupport": {
     "description": "Setting for TrueHD support"
+  },
+  "enableDtsPassthrough": "Bitstream DTS audio to AVR only; requires receiver support and DTS source track",
+  "@enableDtsPassthrough": {
+    "description": "Description for DTS passthrough"
   },
   "enableTrueHdAudio": "Enable TrueHD audio (may not work on all platforms)",
   "@enableTrueHdAudio": {

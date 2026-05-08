@@ -3728,11 +3728,23 @@ abstract class AppLocalizations {
   /// **'AC3 Passthrough'**
   String get ac3Passthrough;
 
+  /// Setting for DTS passthrough
+  ///
+  /// In en, this message translates to:
+  /// **'DTS Passthrough'**
+  String get dtsPassthrough;
+
   /// Setting for TrueHD support
   ///
   /// In en, this message translates to:
   /// **'TrueHD Support'**
   String get trueHdSupport;
+
+  /// Description for DTS passthrough
+  ///
+  /// In en, this message translates to:
+  /// **'Bitstream DTS audio to AVR only; requires receiver support and DTS source track'**
+  String get enableDtsPassthrough;
 
   /// Description for TrueHD support
   ///

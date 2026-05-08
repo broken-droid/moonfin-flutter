@@ -1872,6 +1872,7 @@ class _AudioPreferencesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: buildSettingsAppBar(context, const Text('Audio Preferences')),
       body: ListView(
@@ -1923,6 +1924,13 @@ class _AudioPreferencesScreen extends StatelessWidget {
             subtitle: 'Bitstream AC3 to external decoder',
             icon: Icons.speaker,
           ),
+          if (PlatformDetection.isAndroid && PlatformDetection.isTV)
+            SwitchPreferenceTile(
+              preference: UserPreferences.dtsEnabled,
+              title: l10n.dtsPassthrough,
+              subtitle: l10n.enableDtsPassthrough,
+              icon: Icons.audiotrack,
+            ),
           SwitchPreferenceTile(
             preference: UserPreferences.trueHdEnabled,
             title: 'TrueHD Support',

@@ -259,12 +259,14 @@ class Media3PlayerBackend implements PlayerBackend {
     final maxBitrate = int.tryParse(_prefs.get(UserPreferences.maxBitrate));
     final ac3Enabled = _prefs.get(UserPreferences.ac3Enabled);
     final trueHdEnabled = _prefs.get(UserPreferences.trueHdEnabled);
+    final dtsEnabled = _prefs.get(UserPreferences.dtsEnabled);
     final maxResolution = _prefs.get(UserPreferences.maxVideoResolution);
 
     return DeviceProfileBuilder.build(
       maxBitrateMbps: maxBitrate,
       ac3Enabled: ac3Enabled,
       trueHdEnabled: trueHdEnabled,
+      dtsEnabled: dtsEnabled,
       downMixAudio:
           _prefs.get(UserPreferences.audioBehavior) ==
           AudioBehavior.downmixToStereo,

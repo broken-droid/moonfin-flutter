@@ -264,6 +264,11 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: true,
   );
 
+  static final dtsEnabled = Preference(
+    key: 'pref_bitstream_dts',
+    defaultValue: true,
+  );
+
   static final customMpvConfEnabled = Preference(
     key: 'custom_mpv_conf_enabled',
     defaultValue: false,
