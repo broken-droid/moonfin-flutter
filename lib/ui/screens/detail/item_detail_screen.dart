@@ -345,6 +345,13 @@ class _DetailContent extends StatefulWidget {
 class _DetailContentState extends State<_DetailContent> {
   late ScrollController _scrollController;
   late FocusNode _contentFocusNode;
+  final Map<String, FocusNode> _sectionFocusNodes = <String, FocusNode>{};
+  final FocusNode _firstChapterFocusNode = FocusNode(
+    debugLabel: 'detailFirstChapter',
+  );
+  final FocusNode _firstFeatureFocusNode = FocusNode(
+    debugLabel: 'detailFirstFeature',
+  );
   final FocusNode _albumPlayFocusNode = FocusNode(
     debugLabel: 'albumPlayButton',
   );
@@ -361,6 +368,46 @@ class _DetailContentState extends State<_DetailContent> {
   ValueChanged<AggregatedItem>? get onBackdropItemFocused =>
       widget.onBackdropItemFocused;
   FocusNode? get initialFocusNode => widget.initialFocusNode;
+
+  FocusNode _sectionFocusNode(String debugLabel) {
+    return _sectionFocusNodes.putIfAbsent(
+      debugLabel,
+      () => FocusNode(debugLabel: debugLabel),
+    );
+  }
+
+  KeyEventResult _requestSectionFocus(FocusNode? target) {
+    if (target == null) {
+      return KeyEventResult.ignored;
+    }
+    if (target.context != null && target.canRequestFocus) {
+      target.requestFocus();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  KeyEventResult Function(int index, KeyEvent event)? _buildVerticalRowHandler({
+    FocusNode? upTarget,
+    FocusNode? downTarget,
+  }) {
+    if (!PlatformDetection.isTV ||
+        (upTarget == null && downTarget == null)) {
+      return null;
+    }
+    return (_, event) {
+      if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+        return KeyEventResult.ignored;
+      }
+      if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        return _requestSectionFocus(upTarget);
+      }
+      if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        return _requestSectionFocus(downTarget);
+      }
+      return KeyEventResult.ignored;
+    };
+  }
 
   @override
   void initState() {
@@ -410,6 +457,12 @@ class _DetailContentState extends State<_DetailContent> {
   void dispose() {
     _scrollController.dispose();
     _contentFocusNode.dispose();
+    for (final node in _sectionFocusNodes.values) {
+      node.dispose();
+    }
+    _sectionFocusNodes.clear();
+    _firstChapterFocusNode.dispose();
+    _firstFeatureFocusNode.dispose();
     _albumPlayFocusNode.dispose();
     _firstTrackFocusNode.dispose();
     super.dispose();
@@ -819,6 +872,24 @@ class _DetailContentState extends State<_DetailContent> {
 
   List<Widget> _buildMovieContent(BuildContext context, AggregatedItem item) {
     final l10n = AppLocalizations.of(context);
+    final hasChapters = item.chapters.isNotEmpty;
+    final hasFeatures = viewModel.features.isNotEmpty;
+    final hasCast = viewModel.actors.isNotEmpty;
+    final hasCollection = viewModel.parentCollectionItems.isNotEmpty;
+    final hasSimilar = viewModel.similar.isNotEmpty;
+    final castFocusNode = hasCast ? _sectionFocusNode('detailMovieCast') : null;
+    final collectionFocusNode = hasCollection
+        ? _sectionFocusNode('detailMovieCollection')
+        : null;
+    final similarFocusNode = hasSimilar
+        ? _sectionFocusNode('detailMovieSimilar')
+        : null;
+    final chapterFeatureLastNode = hasFeatures
+        ? _firstFeatureFocusNode
+        : (hasChapters ? _firstChapterFocusNode : null);
+    final chapterFeatureNextNode =
+        castFocusNode ?? collectionFocusNode ?? similarFocusNode;
+
     return [
       _ActionButtons(
         viewModel: viewModel,
@@ -834,6 +905,7 @@ class _DetailContentState extends State<_DetailContent> {
         context,
         item,
         selectedMediaSourceId: selectedMediaSourceId,
+        nextSectionFocusNode: chapterFeatureNextNode,
       ),
       if (viewModel.actors.isNotEmpty) ...[
         const SizedBox(height: 32),
@@ -850,6 +922,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
             scrollController: ctrl,
+            firstItemFocusNode: castFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: chapterFeatureLastNode,
+              downTarget: collectionFocusNode ?? similarFocusNode,
+            ),
           ),
         ),
       ],
@@ -862,6 +939,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: collectionFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: castFocusNode ?? chapterFeatureLastNode,
+              downTarget: similarFocusNode,
+            ),
           ),
         ),
       ],
@@ -880,6 +962,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: similarFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget:
+                  collectionFocusNode ?? castFocusNode ?? chapterFeatureLastNode,
+            ),
           ),
         ),
       ],
@@ -889,6 +976,19 @@ class _DetailContentState extends State<_DetailContent> {
 
   List<Widget> _buildSeriesContent(BuildContext context, AggregatedItem item) {
     final l10n = AppLocalizations.of(context);
+    final hasSeasons = viewModel.seasons.isNotEmpty;
+    final hasCast = viewModel.actors.isNotEmpty;
+    final hasSimilar = viewModel.similar.isNotEmpty;
+    final seasonsFocusNode = hasSeasons
+        ? _sectionFocusNode('detailSeriesSeasons')
+        : null;
+    final castFocusNode = hasCast
+        ? _sectionFocusNode('detailSeriesCast')
+        : null;
+    final similarFocusNode = hasSimilar
+        ? _sectionFocusNode('detailSeriesSimilar')
+        : null;
+
     return [
       _ActionButtons(
         viewModel: viewModel,
@@ -931,6 +1031,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: seasonsFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              downTarget: castFocusNode ?? similarFocusNode,
+            ),
           ),
         ),
       ],
@@ -949,6 +1053,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
             scrollController: ctrl,
+            firstItemFocusNode: castFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: seasonsFocusNode,
+              downTarget: similarFocusNode,
+            ),
           ),
         ),
       ],
@@ -967,6 +1076,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: similarFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: castFocusNode ?? seasonsFocusNode,
+            ),
           ),
         ),
       ],
@@ -1000,6 +1113,26 @@ class _DetailContentState extends State<_DetailContent> {
 
   List<Widget> _buildEpisodeContent(BuildContext context, AggregatedItem item) {
     final l10n = AppLocalizations.of(context);
+    final hasChapters = item.chapters.isNotEmpty;
+    final hasFeatures = viewModel.features.isNotEmpty;
+    final hasSeasonEpisodes = viewModel.episodes.isNotEmpty;
+    final hasCast = viewModel.actors.isNotEmpty;
+    final hasSimilar = viewModel.similar.isNotEmpty;
+    final episodesFocusNode = hasSeasonEpisodes
+        ? _sectionFocusNode('detailEpisodeSeasonEpisodes')
+        : null;
+    final castFocusNode = hasCast
+        ? _sectionFocusNode('detailEpisodeCast')
+        : null;
+    final similarFocusNode = hasSimilar
+        ? _sectionFocusNode('detailEpisodeSimilar')
+        : null;
+    final chapterFeatureLastNode = hasFeatures
+        ? _firstFeatureFocusNode
+        : (hasChapters ? _firstChapterFocusNode : null);
+    final chapterFeatureNextNode =
+        episodesFocusNode ?? castFocusNode ?? similarFocusNode;
+
     return [
       _ActionButtons(
         viewModel: viewModel,
@@ -1015,6 +1148,7 @@ class _DetailContentState extends State<_DetailContent> {
         context,
         item,
         selectedMediaSourceId: selectedMediaSourceId,
+        nextSectionFocusNode: chapterFeatureNextNode,
       ),
       if (viewModel.episodes.isNotEmpty) ...[
         () {
@@ -1068,6 +1202,11 @@ class _DetailContentState extends State<_DetailContent> {
             currentEpisodeId: item.id,
             imageApi: viewModel.imageApi,
             scrollController: ctrl,
+            firstItemFocusNode: episodesFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: chapterFeatureLastNode,
+              downTarget: castFocusNode ?? similarFocusNode,
+            ),
           ),
         ),
       ],
@@ -1086,6 +1225,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
             scrollController: ctrl,
+            firstItemFocusNode: castFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: episodesFocusNode ?? chapterFeatureLastNode,
+              downTarget: similarFocusNode,
+            ),
           ),
         ),
       ],
@@ -1104,6 +1248,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: similarFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget:
+                  castFocusNode ?? episodesFocusNode ?? chapterFeatureLastNode,
+            ),
           ),
         ),
       ],
@@ -1144,10 +1293,20 @@ class _DetailContentState extends State<_DetailContent> {
     BuildContext context,
     AggregatedItem item, {
     String? selectedMediaSourceId,
+    FocusNode? nextSectionFocusNode,
   }) {
     final l10n = AppLocalizations.of(context);
+    final hasChapters = item.chapters.isNotEmpty;
+    final hasFeatures = viewModel.features.isNotEmpty;
+    final chapterDownTarget = hasFeatures
+        ? _firstFeatureFocusNode
+        : nextSectionFocusNode;
+    final featureUpTarget = hasChapters
+        ? _firstChapterFocusNode
+      : null;
+
     return [
-      if (item.chapters.isNotEmpty) ...[
+      if (hasChapters) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.chapters,
@@ -1158,10 +1317,14 @@ class _DetailContentState extends State<_DetailContent> {
               _playFromChapter(context, item, position, selectedMediaSourceId),
             ),
             scrollController: ctrl,
+            firstItemFocusNode: _firstChapterFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              downTarget: chapterDownTarget,
+            ),
           ),
         ),
       ],
-      if (viewModel.features.isNotEmpty) ...[
+      if (hasFeatures) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.features,
@@ -1170,6 +1333,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: _firstFeatureFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: featureUpTarget,
+              downTarget: nextSectionFocusNode,
+            ),
           ),
         ),
       ],
@@ -1182,6 +1350,16 @@ class _DetailContentState extends State<_DetailContent> {
     final series = viewModel.filmographySeries;
     final firstFocus = initialFocusNode;
     final hasBio = item.overview != null && item.overview!.isNotEmpty;
+    final moviesFocusNode = movies.isNotEmpty
+        ? (hasBio
+              ? _sectionFocusNode('detailPersonMovies')
+              : (firstFocus ?? _sectionFocusNode('detailPersonMovies')))
+        : null;
+    final seriesFocusNode = series.isNotEmpty
+        ? ((hasBio || movies.isNotEmpty)
+              ? _sectionFocusNode('detailPersonSeries')
+              : (firstFocus ?? _sectionFocusNode('detailPersonSeries')))
+        : null;
 
     return [
       _PersonHeader(item: item, imageApi: viewModel.imageApi),
@@ -1208,7 +1386,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
-            firstFocusNode: hasBio ? null : firstFocus,
+            firstFocusNode: moviesFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              downTarget: seriesFocusNode,
+            ),
           ),
         ),
       ],
@@ -1221,7 +1402,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
-            firstFocusNode: (hasBio || movies.isNotEmpty) ? null : firstFocus,
+            firstFocusNode: seriesFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: moviesFocusNode,
+            ),
           ),
         ),
       ],
@@ -1231,6 +1415,15 @@ class _DetailContentState extends State<_DetailContent> {
 
   List<Widget> _buildArtistContent(BuildContext context, AggregatedItem item) {
     final l10n = AppLocalizations.of(context);
+    final hasAlbums = viewModel.albums.isNotEmpty;
+    final hasSimilar = viewModel.similar.isNotEmpty;
+    final albumsFocusNode = hasAlbums
+        ? _sectionFocusNode('detailArtistAlbums')
+        : null;
+    final similarFocusNode = hasSimilar
+        ? _sectionFocusNode('detailArtistSimilar')
+        : null;
+
     return [
       _ArtistHeader(item: item, imageApi: viewModel.imageApi),
       if (item.overview != null && item.overview!.isNotEmpty) ...[
@@ -1246,6 +1439,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: albumsFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              downTarget: similarFocusNode,
+            ),
           ),
         ),
       ],
@@ -1258,6 +1455,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: similarFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: albumsFocusNode,
+            ),
           ),
         ),
       ],
@@ -1567,6 +1768,18 @@ class _DetailContentState extends State<_DetailContent> {
             .toList()
           ..sort(releaseSort);
     final firstFocus = initialFocusNode;
+    final moviesFocusNode = movies.isNotEmpty
+        ? _sectionFocusNode('detailBoxSetMovies')
+        : null;
+    final seriesFocusNode = series.isNotEmpty
+        ? _sectionFocusNode('detailBoxSetSeries')
+        : null;
+    final otherFocusNode = other.isNotEmpty
+        ? _sectionFocusNode('detailBoxSetOther')
+        : null;
+    final castFocusNode = viewModel.actors.isNotEmpty
+        ? _sectionFocusNode('detailBoxSetCast')
+        : null;
 
     return [
       if (firstFocus != null) _NavbarFocusPoint(focusNode: firstFocus),
@@ -1583,6 +1796,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: moviesFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              downTarget: seriesFocusNode ?? otherFocusNode ?? castFocusNode,
+            ),
           ),
         ),
       ],
@@ -1595,6 +1812,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: seriesFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: moviesFocusNode,
+              downTarget: otherFocusNode ?? castFocusNode,
+            ),
           ),
         ),
       ],
@@ -1607,6 +1829,11 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             prefs: prefs,
             scrollController: ctrl,
+            firstItemFocusNode: otherFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: seriesFocusNode ?? moviesFocusNode,
+              downTarget: castFocusNode,
+            ),
           ),
         ),
       ],
@@ -1625,6 +1852,10 @@ class _DetailContentState extends State<_DetailContent> {
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
             scrollController: ctrl,
+            firstItemFocusNode: castFocusNode,
+            onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: otherFocusNode ?? seriesFocusNode ?? moviesFocusNode,
+            ),
           ),
         ),
       ],
@@ -5719,12 +5950,16 @@ class _CastRow extends StatelessWidget {
   final ImageApi imageApi;
   final String? serverId;
   final ScrollController? scrollController;
+  final FocusNode? firstItemFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _CastRow({
     required this.people,
     required this.imageApi,
     this.serverId,
     this.scrollController,
+    this.firstItemFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -5764,6 +5999,10 @@ class _CastRow extends StatelessWidget {
             role: role,
             imageUrl: imageUrl,
             isMobile: isMobile,
+            focusNode: index == 0 ? firstItemFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (event) => onItemKeyEvent!(index, event),
             onTap: personId != null
                 ? () => context.push(
                     Destinations.item(personId, serverId: serverId),
@@ -5783,6 +6022,8 @@ class _CastPersonCard extends StatefulWidget {
   final String? role;
   final String? imageUrl;
   final bool isMobile;
+  final FocusNode? focusNode;
+  final KeyEventResult Function(KeyEvent event)? onKeyEvent;
   final VoidCallback? onTap;
 
   const _CastPersonCard({
@@ -5792,6 +6033,8 @@ class _CastPersonCard extends StatefulWidget {
     required this.role,
     required this.imageUrl,
     required this.isMobile,
+    this.focusNode,
+    this.onKeyEvent,
     this.onTap,
   });
 
@@ -5819,8 +6062,13 @@ class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
+        focusNode: widget.focusNode,
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
+          final customResult = widget.onKeyEvent?.call(event);
+          if (customResult != null && customResult != KeyEventResult.ignored) {
+            return customResult;
+          }
           if (widget.onTap != null && isActivateKey(event)) {
             widget.onTap!();
             return KeyEventResult.handled;
@@ -5908,12 +6156,16 @@ class _SimilarRow extends StatelessWidget {
   final ImageApi imageApi;
   final UserPreferences prefs;
   final ScrollController? scrollController;
+  final FocusNode? firstItemFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _SimilarRow({
     required this.items,
     required this.imageApi,
     required this.prefs,
     this.scrollController,
+    this.firstItemFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -5957,6 +6209,10 @@ class _SimilarRow extends StatelessWidget {
             playedPercentage: item.playedPercentage,
             watchedBehavior: watchedBehavior,
             itemType: item.type,
+            focusNode: index == 0 ? firstItemFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (_, event) => onItemKeyEvent!(index, event),
             onTap: () => context.push(
               Destinations.item(item.id, serverId: item.serverId),
             ),
@@ -5972,12 +6228,16 @@ class _FeaturesRow extends StatelessWidget {
   final ImageApi imageApi;
   final UserPreferences prefs;
   final ScrollController? scrollController;
+  final FocusNode? firstItemFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _FeaturesRow({
     required this.items,
     required this.imageApi,
     required this.prefs,
     this.scrollController,
+    this.firstItemFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -6021,6 +6281,10 @@ class _FeaturesRow extends StatelessWidget {
             playedPercentage: item.playedPercentage,
             watchedBehavior: watchedBehavior,
             itemType: item.type,
+            focusNode: index == 0 ? firstItemFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (_, event) => onItemKeyEvent!(index, event),
             onTap: () => context.push(
               Destinations.item(item.id, serverId: item.serverId),
             ),
@@ -6036,12 +6300,16 @@ class _ChaptersRow extends StatelessWidget {
   final ImageApi imageApi;
   final ValueChanged<Duration> onPlayFromChapter;
   final ScrollController? scrollController;
+  final FocusNode? firstItemFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _ChaptersRow({
     required this.item,
     required this.imageApi,
     required this.onPlayFromChapter,
     this.scrollController,
+    this.firstItemFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -6081,6 +6349,10 @@ class _ChaptersRow extends StatelessWidget {
             chapterCardWidth: chapterCardWidth,
             isMobile: isMobile,
             position: position,
+            focusNode: index == 0 ? firstItemFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (event) => onItemKeyEvent!(index, event),
             onTap: () => onPlayFromChapter(position),
             formatDuration: _formatDuration,
           );
@@ -6106,6 +6378,8 @@ class _ChapterListCard extends StatefulWidget {
   final double chapterCardWidth;
   final bool isMobile;
   final Duration position;
+  final FocusNode? focusNode;
+  final KeyEventResult Function(KeyEvent event)? onKeyEvent;
   final VoidCallback onTap;
   final String Function(Duration) formatDuration;
 
@@ -6115,6 +6389,8 @@ class _ChapterListCard extends StatefulWidget {
     required this.chapterCardWidth,
     required this.isMobile,
     required this.position,
+    this.focusNode,
+    this.onKeyEvent,
     required this.onTap,
     required this.formatDuration,
   });
@@ -6138,8 +6414,13 @@ class _ChapterListCardState extends State<_ChapterListCard>
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
+        focusNode: widget.focusNode,
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
+          final customResult = widget.onKeyEvent?.call(event);
+          if (customResult != null && customResult != KeyEventResult.ignored) {
+            return customResult;
+          }
           if (isActivateKey(event)) {
             widget.onTap();
             return KeyEventResult.handled;
@@ -6436,12 +6717,16 @@ class _SeasonsRow extends StatelessWidget {
   final ImageApi imageApi;
   final UserPreferences prefs;
   final ScrollController? scrollController;
+  final FocusNode? firstItemFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _SeasonsRow({
     required this.seasons,
     required this.imageApi,
     required this.prefs,
     this.scrollController,
+    this.firstItemFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -6481,6 +6766,10 @@ class _SeasonsRow extends StatelessWidget {
             unplayedCount: season.unplayedItemCount,
             watchedBehavior: watchedBehavior,
             itemType: season.type,
+            focusNode: index == 0 ? firstItemFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (_, event) => onItemKeyEvent!(index, event),
             onTap: () => context.push(
               Destinations.item(season.id, serverId: season.serverId),
             ),
@@ -6547,12 +6836,16 @@ class _EpisodesRow extends StatelessWidget {
   final String currentEpisodeId;
   final ImageApi imageApi;
   final ScrollController? scrollController;
+  final FocusNode? firstItemFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _EpisodesRow({
     required this.episodes,
     required this.currentEpisodeId,
     required this.imageApi,
     this.scrollController,
+    this.firstItemFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -6574,6 +6867,10 @@ class _EpisodesRow extends StatelessWidget {
             isCurrent: isCurrent,
             imageApi: imageApi,
             isMobile: isMobile,
+            focusNode: index == 0 ? firstItemFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (event) => onItemKeyEvent!(index, event),
           );
         },
       ),
@@ -6586,12 +6883,16 @@ class _EpisodeListCard extends StatefulWidget {
   final bool isCurrent;
   final ImageApi imageApi;
   final bool isMobile;
+  final FocusNode? focusNode;
+  final KeyEventResult Function(KeyEvent event)? onKeyEvent;
 
   const _EpisodeListCard({
     required this.episode,
     required this.isCurrent,
     required this.imageApi,
     required this.isMobile,
+    this.focusNode,
+    this.onKeyEvent,
   });
 
   @override
@@ -6622,8 +6923,13 @@ class _EpisodeListCardState extends State<_EpisodeListCard>
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
+        focusNode: widget.focusNode,
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
+          final customResult = widget.onKeyEvent?.call(event);
+          if (customResult != null && customResult != KeyEventResult.ignored) {
+            return customResult;
+          }
           if (isActivateKey(event)) {
             context.push(Destinations.item(ep.id, serverId: ep.serverId));
             return KeyEventResult.handled;
@@ -7381,6 +7687,7 @@ class _FilmographyRow extends StatelessWidget {
   final UserPreferences prefs;
   final ScrollController? scrollController;
   final FocusNode? firstFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _FilmographyRow({
     required this.items,
@@ -7388,6 +7695,7 @@ class _FilmographyRow extends StatelessWidget {
     required this.prefs,
     this.scrollController,
     this.firstFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -7429,6 +7737,9 @@ class _FilmographyRow extends StatelessWidget {
             itemType: item.type,
             autofocus: index == 0 && firstFocusNode != null,
             focusNode: index == 0 ? firstFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (_, event) => onItemKeyEvent!(index, event),
             onTap: () => context.push(
               Destinations.item(item.id, serverId: item.serverId),
             ),
@@ -7802,12 +8113,16 @@ class _AlbumsRow extends StatelessWidget {
   final ImageApi imageApi;
   final UserPreferences prefs;
   final ScrollController? scrollController;
+  final FocusNode? firstItemFocusNode;
+  final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
   const _AlbumsRow({
     required this.albums,
     required this.imageApi,
     required this.prefs,
     this.scrollController,
+    this.firstItemFocusNode,
+    this.onItemKeyEvent,
   });
 
   @override
@@ -7842,6 +8157,10 @@ class _AlbumsRow extends StatelessWidget {
             cardFocusExpansion: cardExpansion,
             watchedBehavior: watchedBehavior,
             itemType: album.type,
+            focusNode: index == 0 ? firstItemFocusNode : null,
+            onKeyEvent: onItemKeyEvent == null
+                ? null
+                : (_, event) => onItemKeyEvent!(index, event),
             onTap: () => context.push(
               Destinations.item(album.id, serverId: album.serverId),
             ),
