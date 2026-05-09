@@ -62,6 +62,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   static final _camelCaseSpaceRe = RegExp(r'(?<=[a-z])(?=[A-Z])');
   static const _tvTemporarySpeed = 2.0;
   static const _tvTemporarySpeedHoldDelay = Duration(milliseconds: 420);
+  static const _seekPromptSuppressionDuration = Duration(milliseconds: 1200);
+  static const _seekDragPromptSuppressionDuration = Duration(seconds: 4);
 
   final _manager = GetIt.instance<PlaybackManager>();
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
@@ -126,6 +128,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   StreamSubscription<bool>? _screenLockSub;
   StreamSubscription<bool>? _completedSub;
   bool _isRestoringPosition = false;
+  DateTime? _suppressSeekPromptsUntil;
   bool _wasPlayingBeforeScreenLock = false;
   LogicalKeyboardKey? _tvTemporarySpeedHoldKey;
   bool _tvTemporarySpeedHoldActive = false;
@@ -1682,11 +1685,55 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         : (_state.isPlaying ? 'playing' : 'paused');
   }
 
+  bool _areSeekPromptsSuppressed() {
+    final until = _suppressSeekPromptsUntil;
+    if (until == null) return false;
+    return DateTime.now().isBefore(until);
+  }
+
+  void _suppressSeekPrompts({
+    Duration duration = _seekPromptSuppressionDuration,
+    bool dismissVisiblePrompts = true,
+  }) {
+    final until = DateTime.now().add(duration);
+    final currentUntil = _suppressSeekPromptsUntil;
+    if (currentUntil == null || until.isAfter(currentUntil)) {
+      _suppressSeekPromptsUntil = until;
+    }
+
+    if (!dismissVisiblePrompts || !mounted) return;
+
+    final hadSkipPrompt = _skipSegment != null;
+    final hadNextUpPrompt = _showNextUp;
+    if (!hadSkipPrompt && !hadNextUpPrompt) return;
+
+    setState(() {
+      if (hadSkipPrompt) {
+        _skipSegment = null;
+        _skipTo = null;
+      }
+      if (hadNextUpPrompt) {
+        _showNextUp = false;
+        _nextUpItem = null;
+      }
+    });
+
+    if (hadNextUpPrompt) {
+      _manager.suppressAutoNext = false;
+    }
+  }
+
   void _checkSegments(Duration position) {
     final result = _segmentService.checkPosition(position);
     if (result.shouldSkip && result.skipTo != null) {
       _manager.seekTo(result.skipTo!);
       _clearSkipSegment();
+      return;
+    }
+    if (_areSeekPromptsSuppressed()) {
+      if (_skipSegment != null) {
+        _clearSkipSegment();
+      }
       return;
     }
     if (result.shouldAsk && result.isNew && result.segment != null) {
@@ -1704,7 +1751,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   void _checkNextUp(Duration position) {
     final nextUpBehavior = _prefs.get(UserPreferences.nextUpBehavior);
-    if (nextUpBehavior == NextUpBehavior.disabled ||
+    if (_areSeekPromptsSuppressed() ||
+        nextUpBehavior == NextUpBehavior.disabled ||
         _nextUpDismissed ||
         _showNextUp) {
       return;
@@ -1966,6 +2014,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _seekRelative(int ms, {bool showControls = true}) {
+    _suppressSeekPrompts();
     final target = _state.position + Duration(milliseconds: ms);
     final clamped = Duration(
       milliseconds: target.inMilliseconds.clamp(
@@ -3316,6 +3365,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                             ),
                             max: durationMs,
                             onChangeStart: (v) {
+                              _suppressSeekPrompts(
+                                duration: _seekDragPromptSuppressionDuration,
+                              );
                               setState(() {
                                 _isSeeking = true;
                                 _seekValue = v;
@@ -3323,9 +3375,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                               _hideTimer?.cancel();
                             },
                             onChanged: (v) {
+                              _suppressSeekPrompts(
+                                duration: _seekDragPromptSuppressionDuration,
+                                dismissVisiblePrompts: false,
+                              );
                               setState(() => _seekValue = v);
                             },
                             onChangeEnd: (v) {
+                              _suppressSeekPrompts();
                               _isSeeking = false;
                               _manager.seekTo(
                                 Duration(milliseconds: v.round()),
@@ -4786,6 +4843,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       if (result == null || !mounted) return;
       final ch = chapters[result];
       final ticks = ch['StartPositionTicks'] as int? ?? 0;
+      _suppressSeekPrompts();
       _manager.seekTo(Duration(microseconds: ticks ~/ 10));
     }());
     _showControls();
