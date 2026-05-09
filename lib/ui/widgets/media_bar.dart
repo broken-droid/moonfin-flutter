@@ -779,9 +779,14 @@ class _MediaBarState extends State<MediaBar>
     const overlayColor = Colors.black;
     const overlayOpacity = 0.7;
     final currentItem = items.elementAtOrNull(_currentIndex);
-    
+
     final isMobile = PlatformDetection.useMobileUi;
     final isTablet = isMobile && MediaQuery.of(context).size.shortestSide >= 600;
+    final hasTvLeftSidebar =
+        PlatformDetection.isTV &&
+        widget.prefs.get(UserPreferences.navbarPosition) ==
+            NavbarPosition.left;
+    final logoLeftInset = 16.0 + (hasTvLeftSidebar ? 72.0 : 0.0);
     final navbarAtTop = isMobile &&
         (widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top);
     final toolbarInset = navbarAtTop ? MediaQuery.of(context).padding.top + 60.0 : 0.0;
@@ -838,7 +843,7 @@ class _MediaBarState extends State<MediaBar>
                 if (currentItem != null && currentItem.logoUrl != null && (!isMobile || isTablet))
                   Positioned(
                     top: MediaQuery.of(context).padding.top + 56,
-                    left: 16,
+                    left: logoLeftInset,
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
                       child: SizedBox(
