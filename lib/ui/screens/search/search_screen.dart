@@ -243,8 +243,9 @@ class _SearchScreenState extends State<SearchScreen> {
     final ready = await _ensureVoiceReady();
     if (!ready) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Voice search is unavailable.')),
+          SnackBar(content: Text(l10n.voiceSearchUnavailable)),
         );
       }
       return;

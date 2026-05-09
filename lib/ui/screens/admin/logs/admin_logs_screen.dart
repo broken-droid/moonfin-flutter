@@ -164,8 +164,8 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(999),
                         ),
-                        child: const Text(
-                          'LIVE',
+                        child: Text(
+                          AppLocalizations.of(context).liveBadge,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 10,

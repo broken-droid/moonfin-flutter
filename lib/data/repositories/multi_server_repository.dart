@@ -13,6 +13,8 @@ import '../models/home_row.dart';
 import '../services/media_server_client_factory.dart';
 import '../utils/latest_media_row_normalizer.dart';
 import '../utils/playlist_utils.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/current_app_localizations.dart';
 
 class ServerUserSession {
   final Server server;
@@ -53,6 +55,8 @@ class MultiServerRepository {
     this._clientFactory,
     this._sessionRepo,
   );
+
+  AppLocalizations get _l10n => currentAppLocalizations();
 
   ImageApi getImageApiForServer(String serverId) {
     final client = _clientFactory.getClientIfExists(serverId);
@@ -137,7 +141,9 @@ class MultiServerRepository {
             final name = data['Name'] as String? ?? '';
             return AggregatedLibrary(
               id: data['Id'] as String,
-              name: hasMultiple ? '$name (${session.server.name})' : name,
+              name: hasMultiple
+                  ? _l10n.libraryNameWithServer(name, session.server.name)
+                  : name,
               collectionType: data['CollectionType'] as String? ?? '',
               serverId: session.server.id,
             );
@@ -171,7 +177,7 @@ class MultiServerRepository {
 
     return HomeRow(
       id: 'resume',
-      title: 'Continue Watching',
+      title: _l10n.continueWatching,
       items: all.take(limit).toList(),
       rowType: HomeRowType.resume,
     );
@@ -198,7 +204,7 @@ class MultiServerRepository {
 
     return HomeRow(
       id: 'resumeAudio',
-      title: 'Continue Listening',
+      title: _l10n.continueListening,
       items: all.take(limit).toList(),
       rowType: HomeRowType.resumeAudio,
     );
@@ -225,7 +231,7 @@ class MultiServerRepository {
 
     return HomeRow(
       id: 'nextUp',
-      title: 'Next Up',
+      title: _l10n.nextUp,
       items: all.take(limit).toList(),
       rowType: HomeRowType.nextUp,
     );
@@ -258,7 +264,7 @@ class MultiServerRepository {
 
     return HomeRow(
       id: 'playlists',
-      title: 'Playlists',
+      title: _l10n.playlists,
       items: all.take(limit).toList(),
       rowType: HomeRowType.playlists,
     );
@@ -289,7 +295,7 @@ class MultiServerRepository {
           rowType == HomeRowType.libraryTilesSmall
               ? 'libraryTilesSmall'
               : 'libraryTiles',
-      title: 'My Media',
+      title: _l10n.myMedia,
       items: items,
       rowType: rowType,
     );
@@ -355,7 +361,7 @@ class MultiServerRepository {
               rows.add(
                 HomeRow(
                   id: 'latest_${session.server.id}_$id',
-                  title: 'Latest $displayName',
+                  title: _l10n.latestLibraryName(displayName),
                   items: items,
                   rowType: HomeRowType.latestMedia,
                 ),

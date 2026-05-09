@@ -5739,10 +5739,10 @@ class _DelayFooterState extends State<_DelayFooter> {
                   color: Colors.white,
                   size: 28,
                 ),
-                tooltip: '-100ms',
+                tooltip: l10n.delayMinusMs(100),
               ),
               Text(
-                '-100ms',
+                l10n.delayMinusMs(100),
                 style: const TextStyle(
                   color: Colors.white54,
                   fontSize: AppTypography.fontSizeXs,
@@ -5764,7 +5764,7 @@ class _DelayFooterState extends State<_DelayFooter> {
               ),
               const Spacer(),
               Text(
-                '+100ms',
+                l10n.delayPlusMs(100),
                 style: const TextStyle(
                   color: Colors.white54,
                   fontSize: AppTypography.fontSizeXs,
@@ -5777,7 +5777,7 @@ class _DelayFooterState extends State<_DelayFooter> {
                   color: Colors.white,
                   size: 28,
                 ),
-                tooltip: '+100ms',
+                tooltip: l10n.delayPlusMs(100),
               ),
             ],
           ),

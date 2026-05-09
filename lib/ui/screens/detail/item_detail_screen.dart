@@ -3984,11 +3984,14 @@ class _ActionButtonsState extends State<_ActionButtons> {
   void _watchWithGroup(BuildContext context, AggregatedItem item) {
     _play(context, item);
     final syncPlay = GetIt.instance<SyncPlayManager>();
-    final groupName = syncPlay.state.groupName ?? 'group';
+    final l10n = AppLocalizations.of(context);
+    final groupName = syncPlay.state.groupName ?? l10n.syncPlayGroupFallbackName;
     if (mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Syncing playback to $groupName')));
+      ).showSnackBar(
+        SnackBar(content: Text(l10n.syncPlaySyncingPlaybackToGroup(groupName))),
+      );
     }
   }
 
@@ -4916,23 +4919,21 @@ Future<PlaybackStartupRecoveryDecision>
 _showDolbyVisionDirectPlayStartupFailureDecisionDialog(
   BuildContext context,
 ) async {
+  final l10n = AppLocalizations.of(context);
   final retryWithTranscode = await showDialog<bool>(
     context: context,
     builder: (dialogContext) {
       return AlertDialog(
-        title: const Text('Dolby Vision Direct Play Failed'),
-        content: const Text(
-          'Direct play failed to start for this Dolby Vision stream. '
-          'Retry using server transcode?',
-        ),
+        title: Text(l10n.dolbyVisionDirectPlayFailedTitle),
+        content: Text(l10n.dolbyVisionDirectPlayFailedMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Retry with transcode'),
+            child: Text(l10n.retryWithTranscode),
           ),
         ],
       );
@@ -5011,6 +5012,7 @@ Future<bool> _runWithDolbyVisionStartupFallbackPrompt(
 Future<_DolbyVisionPlayDecision?> _showDolbyVisionFallbackDecisionDialog(
   BuildContext context,
 ) async {
+  final l10n = AppLocalizations.of(context);
   var rememberChoice = false;
 
   final choice = await showDialog<DolbyVisionFallbackBehavior>(
@@ -5019,15 +5021,12 @@ Future<_DolbyVisionPlayDecision?> _showDolbyVisionFallbackDecisionDialog(
       return StatefulBuilder(
         builder: (dialogContext, setDialogState) {
           return AlertDialog(
-            title: const Text('Dolby Vision Not Supported'),
+            title: Text(l10n.dolbyVisionNotSupportedTitle),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'This device cannot decode Dolby Vision content directly. '
-                  'Use HDR10 fallback or request server transcoding.',
-                ),
+                Text(l10n.dolbyVisionNotSupportedMessage),
                 const SizedBox(height: 12),
                 CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
@@ -5038,7 +5037,7 @@ Future<_DolbyVisionPlayDecision?> _showDolbyVisionFallbackDecisionDialog(
                       rememberChoice = value ?? false;
                     });
                   },
-                  title: const Text('Remember my choice'),
+                  title: Text(l10n.rememberMyChoice),
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
               ],
@@ -5050,7 +5049,7 @@ Future<_DolbyVisionPlayDecision?> _showDolbyVisionFallbackDecisionDialog(
                     dialogContext,
                   ).pop(DolbyVisionFallbackBehavior.hdr10Fallback);
                 },
-                child: const Text('Play HDR10 fallback'),
+                child: Text(l10n.playHdr10Fallback),
               ),
               FilledButton(
                 onPressed: () {
@@ -5058,7 +5057,7 @@ Future<_DolbyVisionPlayDecision?> _showDolbyVisionFallbackDecisionDialog(
                     dialogContext,
                   ).pop(DolbyVisionFallbackBehavior.transcode);
                 },
-                child: const Text('Request transcode'),
+                child: Text(l10n.requestTranscode),
               ),
             ],
           );

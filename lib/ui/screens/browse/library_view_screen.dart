@@ -17,6 +17,7 @@ import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../widgets/library_row.dart';
 import '../../widgets/media_card.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../util/home_row_title_localizer.dart';
 
 Color get _navyBackground => AppColorScheme.background;
 const _horizontalPadding = 60.0;
@@ -130,6 +131,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
     final cardExpansion = _prefs.get(UserPreferences.cardFocusExpansion);
+    final l10n = AppLocalizations.of(context);
 
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 32),
@@ -137,7 +139,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
       itemBuilder: (context, index) {
         final row = _vm.rows[index];
         return LibraryRow(
-          title: row.title,
+          title: localizeHomeRowTitle(row: row, l10n: l10n),
           children: row.items.map((item) {
             final ar = MediaCard.aspectRatioForType(item.type);
             final height = ar > 1

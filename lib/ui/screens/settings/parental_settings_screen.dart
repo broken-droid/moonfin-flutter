@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../widgets/settings/preference_binding.dart';
@@ -151,10 +152,11 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
   }
 
   Widget _buildContent(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final ratings = _effectiveRatings;
 
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Parental Controls')),
+      appBar: buildSettingsAppBar(context, Text(l10n.parentalControls)),
       body: ValueListenableBuilder<String>(
         valueListenable: _blockedRatings,
         builder: (context, blockedValue, _) {
@@ -164,12 +166,9 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
 
           return ListView(
             children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Text(
-                  'These ratings are from your library. On this account, '
-                  'block content with the following ratings:',
-                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Text(l10n.blockContentWithRatings),
               ),
               if (_loadingRatings)
                 const Padding(
@@ -181,8 +180,8 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     _ratingsError == null
-                        ? 'No content ratings found in your library.'
-                        : 'Could not load ratings from server.',
+                        ? l10n.noContentRatingsFound
+                        : l10n.couldNotLoadServerRatings,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 )
@@ -191,7 +190,7 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                     child: Text(
-                      'Could not refresh ratings from server. Showing saved ratings.',
+                      l10n.couldNotRefreshRatings,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.error,
                       ),

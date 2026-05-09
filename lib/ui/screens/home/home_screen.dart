@@ -43,6 +43,7 @@ import '../../navigation/home_refresh_bus.dart';
 import '../../widgets/bounded_network_image.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
 import '../../navigation/route_lifecycle_observer.dart';
+import '../../util/home_row_title_localizer.dart';
 import 'home_view_model.dart';
 
 Color get _homeBackground => AppColorScheme.background;
@@ -1793,28 +1794,12 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   String _localizedRowTitle(HomeRow row, AppLocalizations l10n) {
-    switch (row.id) {
-      case 'resume':
-        final merge = widget.prefs.get(UserPreferences.mergeContinueWatchingNextUp);
-        return merge ? l10n.continueWatchingAndNextUp : l10n.continueWatching;
-      case 'resumeAudio':
-        return l10n.continueListening;
-      case 'nextUp':
-        return l10n.nextUp;
-      case 'latestMedia':
-        return l10n.latestMedia;
-      case 'playlists':
-        return l10n.playlists;
-      case 'libraryTiles':
-      case 'libraryTilesSmall':
-        return l10n.myMedia;
-      case 'liveTv':
-        return l10n.liveTv;
-      case 'activeRecordings':
-        return l10n.activeRecordings;
-      default:
-        return row.title;
-    }
+    final merge = widget.prefs.get(UserPreferences.mergeContinueWatchingNextUp);
+    return localizeHomeRowTitle(
+      row: row,
+      l10n: l10n,
+      mergeContinueWatchingAndNextUp: merge,
+    );
   }
 
   @override

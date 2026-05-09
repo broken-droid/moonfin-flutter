@@ -75,14 +75,14 @@ class _AdminLiveTvScreenState extends State<AdminLiveTvScreen> {
     }
   }
 
-  String _display(Map<String, dynamic> item, List<String> keys, {String fallback = 'Unknown'}) {
+  String _display(Map<String, dynamic> item, List<String> keys, {String? fallback}) {
     for (final key in keys) {
       final value = item[key];
       if (value == null) continue;
       final text = value.toString().trim();
       if (text.isNotEmpty) return text;
     }
-    return fallback;
+    return fallback ?? AppLocalizations.of(context).unknown;
   }
 
   String _idOf(Map<String, dynamic> item) {
@@ -476,7 +476,7 @@ class _AdminLiveTvScreenState extends State<AdminLiveTvScreen> {
           controller: controller,
           decoration: InputDecoration(
             labelText: AppLocalizations.of(context).adminMappingJson,
-            hintText: '{"Mappings": [...] }',
+            hintText: AppLocalizations.of(context).adminMappingJsonHint,
             border: OutlineInputBorder(),
           ),
           minLines: 4,

@@ -4,6 +4,7 @@ import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../di/providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../syncplay/syncplay_manager.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/focus/request_initial_focus.dart';
@@ -37,10 +38,11 @@ class _SyncPlayScreenState extends ConsumerState<SyncPlayScreen> {
       RequestInitialFocus(child: _buildContent(context));
 
   Widget _buildContent(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final manager = ref.watch(syncPlayManagerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SyncPlay'),
+        title: Text(l10n.syncPlay),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -48,24 +50,27 @@ class _SyncPlayScreenState extends ConsumerState<SyncPlayScreen> {
           ),
         ],
       ),
-      body: _buildBody(context, manager),
+      body: _buildBody(context, manager, l10n),
     );
   }
 
-  Widget _buildBody(BuildContext context, SyncPlayManager manager) {
+  Widget _buildBody(
+    BuildContext context,
+    SyncPlayManager manager,
+    AppLocalizations l10n,
+  ) {
     if (!manager.syncPlayConfigured) {
-      return const _Message(
+      return _Message(
         icon: Icons.toggle_off,
-        title: 'SyncPlay disabled',
-        message: 'Enable SyncPlay in Settings to use synchronized playback.',
+        title: l10n.syncPlayDisabledTitle,
+        message: l10n.syncPlayDisabledMessage,
       );
     }
     if (!manager.syncPlayServerSupported) {
-      return const _Message(
+      return _Message(
         icon: Icons.cloud_off,
-        title: 'Server unsupported',
-        message:
-            'SyncPlay requires a Jellyfin server. The current server does not support it.',
+        title: l10n.syncPlayServerUnsupportedTitle,
+        message: l10n.syncPlayServerUnsupportedMessage,
       );
     }
     return ListView(
@@ -143,6 +148,7 @@ class _ActiveGroupSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = manager.state;
     return Card(
       child: Padding(
@@ -156,7 +162,7 @@ class _ActiveGroupSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    s.groupName ?? 'SyncPlay Group',
+                    s.groupName ?? l10n.syncPlayGroupFallbackName,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -165,8 +171,7 @@ class _ActiveGroupSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              '${s.participants.length} participant'
-              '${s.participants.length == 1 ? '' : 's'}',
+              l10n.syncPlayParticipantCount(s.participants.length),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 4),
@@ -181,17 +186,16 @@ class _ActiveGroupSection extends StatelessWidget {
             const Divider(height: 24),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Ignore wait'),
-              subtitle: const Text(
-                  "Don't hold the group up while this device buffers"),
+              title: Text(l10n.syncPlayIgnoreWait),
+              subtitle: Text(l10n.syncPlayIgnoreWaitSubtitle),
               value: manager.ignoreWaitEnabled,
               onChanged: (v) => manager.requestSetIgnoreWait(v),
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.repeat),
-              title: const Text('Repeat'),
-              subtitle: Text(_repeatLabel(s.repeatMode)),
+              title: Text(l10n.syncPlayRepeat),
+              subtitle: Text(_repeatLabel(s.repeatMode, l10n)),
               onTap: manager.cycleRepeatMode,
             ),
             ListTile(
@@ -201,18 +205,17 @@ class _ActiveGroupSection extends StatelessWidget {
                     ? Icons.shuffle_on_outlined
                     : Icons.shuffle,
               ),
-              title: const Text('Shuffle'),
+              title: Text(l10n.shuffle),
               subtitle: Text(s.shuffleMode == SyncPlayShuffleMode.shuffle
-                  ? 'Shuffled'
-                  : 'Sorted'),
+                  ? l10n.syncPlayShuffleModeShuffled
+                  : l10n.syncPlayShuffleModeSorted),
               onTap: manager.toggleShuffleMode,
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.queue_play_next),
-              title: const Text('Sync current playback queue'),
-              subtitle: const Text(
-                  'Replace the group queue with what is playing locally'),
+              title: Text(l10n.syncPlaySyncCurrentQueue),
+              subtitle: Text(l10n.syncPlaySyncCurrentQueueSubtitle),
               onTap: () => manager.syncCurrentPlaybackQueueToGroup(),
             ),
             const SizedBox(height: 8),
@@ -221,19 +224,22 @@ class _ActiveGroupSection extends StatelessWidget {
               child: FilledButton.tonalIcon(
                 onPressed: () => manager.leaveGroup(),
                 icon: const Icon(Icons.logout),
-                label: const Text('Leave group'),
+                label: Text(l10n.syncPlayLeaveGroup),
               ),
             ),
             if (s.queue.isNotEmpty) ...[
               const Divider(height: 24),
-              Text('Group queue',
-                  style: Theme.of(context).textTheme.titleSmall),
+              Text(
+                l10n.syncPlayGroupQueue,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
               const SizedBox(height: 8),
               ...List.generate(s.queue.length, (i) {
                 final item = s.queue[i];
                 final isCurrent = i == s.currentItemIndex;
-                final title = manager.itemTitleFor(item.itemId) ??
-                    'Item ${i + 1}';
+                final title =
+                    manager.itemTitleFor(item.itemId) ??
+                    l10n.syncPlayQueueItemFallback(i + 1);
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   dense: true,
@@ -267,16 +273,24 @@ class _ActiveGroupSection extends StatelessWidget {
                     },
                     itemBuilder: (_) => [
                       if (!isCurrent)
-                        const PopupMenuItem(
-                            value: 'play', child: Text('Play now')),
+                        PopupMenuItem(
+                          value: 'play',
+                          child: Text(l10n.syncPlayPlayNow),
+                        ),
                       if (i > 0)
-                        const PopupMenuItem(
-                            value: 'up', child: Text('Move up')),
+                        PopupMenuItem(
+                          value: 'up',
+                          child: Text(l10n.trackActionMoveUp),
+                        ),
                       if (i < s.queue.length - 1)
-                        const PopupMenuItem(
-                            value: 'down', child: Text('Move down')),
-                      const PopupMenuItem(
-                          value: 'remove', child: Text('Remove')),
+                        PopupMenuItem(
+                          value: 'down',
+                          child: Text(l10n.trackActionMoveDown),
+                        ),
+                      PopupMenuItem(
+                        value: 'remove',
+                        child: Text(l10n.remove),
+                      ),
                     ],
                   ),
                 );
@@ -288,10 +302,11 @@ class _ActiveGroupSection extends StatelessWidget {
     );
   }
 
-  String _repeatLabel(SyncPlayRepeatMode mode) => switch (mode) {
-        SyncPlayRepeatMode.repeatNone => 'Off',
-        SyncPlayRepeatMode.repeatOne => 'One',
-        SyncPlayRepeatMode.repeatAll => 'All',
+  String _repeatLabel(SyncPlayRepeatMode mode, AppLocalizations l10n) =>
+      switch (mode) {
+        SyncPlayRepeatMode.repeatNone => l10n.off,
+        SyncPlayRepeatMode.repeatOne => l10n.syncPlayRepeatOne,
+        SyncPlayRepeatMode.repeatAll => l10n.all,
       };
 }
 
@@ -301,11 +316,12 @@ class _GroupStateChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final (label, color) = switch (state) {
-      SyncPlayGroupState.idle => ('Idle', Colors.grey),
-      SyncPlayGroupState.waiting => ('Waiting', Colors.orange),
-      SyncPlayGroupState.paused => ('Paused', Colors.blueGrey),
-      SyncPlayGroupState.playing => ('Playing', Colors.green),
+      SyncPlayGroupState.idle => (l10n.syncPlayStateIdle, Colors.grey),
+      SyncPlayGroupState.waiting => (l10n.syncPlayStateWaiting, Colors.orange),
+      SyncPlayGroupState.paused => (l10n.syncPlayStatePaused, Colors.blueGrey),
+      SyncPlayGroupState.playing => (l10n.syncPlayStatePlaying, Colors.green),
     };
     return Chip(
       label: Text(label),
@@ -325,19 +341,22 @@ class _CreateGroupSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Create a new group',
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.syncPlayCreateNewGroup,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
-              decoration: const InputDecoration(
-                labelText: 'Group name',
+              decoration: InputDecoration(
+                labelText: l10n.syncPlayGroupName,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -349,7 +368,7 @@ class _CreateGroupSection extends StatelessWidget {
                     ? null
                     : () async {
                         final name = controller.text.trim().isEmpty
-                            ? 'My SyncPlay Group'
+                            ? l10n.syncPlayDefaultGroupName
                             : controller.text.trim();
                         await _confirmIfNeeded(
                           context,
@@ -358,7 +377,7 @@ class _CreateGroupSection extends StatelessWidget {
                         );
                       },
                 icon: const Icon(Icons.add),
-                label: const Text('Create group'),
+                label: Text(l10n.syncPlayCreateGroup),
               ),
             ),
           ],
@@ -374,6 +393,7 @@ class _AvailableGroupsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final groups = manager.availableGroups;
     return Card(
       child: Padding(
@@ -384,8 +404,10 @@ class _AvailableGroupsSection extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text('Available groups',
-                      style: Theme.of(context).textTheme.titleMedium),
+                  child: Text(
+                    l10n.syncPlayAvailableGroups,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
                 if (manager.isLoading)
                   const SizedBox(
@@ -397,9 +419,9 @@ class _AvailableGroupsSection extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             if (groups.isEmpty)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text('No groups available'),
+                child: Text(l10n.syncPlayNoGroupsAvailable),
               )
             else
               ...groups.map(
@@ -408,8 +430,9 @@ class _AvailableGroupsSection extends StatelessWidget {
                   leading: const Icon(Icons.group),
                   title: Text(g.groupName ?? g.groupId),
                   subtitle: Text(
-                      '${g.participants.length} participants • '
-                      '${g.state?.serverValue ?? 'Idle'}'),
+                    '${l10n.syncPlayParticipantCount(g.participants.length)} • '
+                    '${_syncPlayServerStateLabel(g.state?.serverValue, l10n)}',
+                  ),
                   trailing: const Icon(Icons.login),
                   enabled: !manager.isLoading,
                   onTap: () => _confirmIfNeeded(
@@ -426,6 +449,19 @@ class _AvailableGroupsSection extends StatelessWidget {
   }
 }
 
+String _syncPlayServerStateLabel(String? serverValue, AppLocalizations l10n) {
+  final normalized = serverValue?.trim().toLowerCase();
+  return switch (normalized) {
+    'idle' => l10n.syncPlayStateIdle,
+    'waiting' => l10n.syncPlayStateWaiting,
+    'paused' => l10n.syncPlayStatePaused,
+    'playing' => l10n.syncPlayStatePlaying,
+    _ => (serverValue == null || serverValue.trim().isEmpty)
+        ? l10n.syncPlayStateIdle
+        : serverValue.trim(),
+  };
+}
+
 Future<void> _confirmIfNeeded(
   BuildContext context,
   SyncPlayManager manager,
@@ -435,19 +471,19 @@ Future<void> _confirmIfNeeded(
     await action();
     return;
   }
+  final l10n = AppLocalizations.of(context);
   final proceed = await showFocusRestoringDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: const Text('Join SyncPlay group?'),
-      content: const Text(
-          'Joining a SyncPlay group may replace your current playback queue. Continue?'),
+      title: Text(l10n.syncPlayJoinGroupQuestion),
+      content: Text(l10n.syncPlayJoinGroupWarning),
       actions: [
         TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel')),
+            child: Text(l10n.cancel)),
         FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Join')),
+            child: Text(l10n.syncPlayJoin)),
       ],
     ),
   );

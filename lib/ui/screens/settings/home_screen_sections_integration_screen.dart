@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import '../../../data/services/kefin_tweaks_service.dart';
 import '../../../data/services/home_screen_sections_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../widgets/settings/settings_panel.dart';
 import 'home_sections_screen.dart';
 import 'settings_app_bar.dart';
@@ -54,6 +55,7 @@ class _HomeScreenSectionsIntegrationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final caps = _service.allCapabilities.toList();
     return Scaffold(
@@ -62,7 +64,7 @@ class _HomeScreenSectionsIntegrationScreenState
         const Text('Home Screen Sections'),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l10n.refresh,
             icon: _refreshing
                 ? const SizedBox(
                     width: 18,
@@ -79,15 +81,14 @@ class _HomeScreenSectionsIntegrationScreenState
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'Detect rows exposed by IAmParadox27\'s "Home Screen Sections" '
-              'plugin. Rows can be enabled and reordered below.',
+              l10n.homeScreenSectionsIntegrationDescription,
               style: theme.textTheme.bodyMedium,
             ),
           ),
           if (caps.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16),
-              child: Text('No Jellyfin servers reporting the plugin yet.'),
+              child: Text(l10n.homeScreenSectionsIntegrationNoServers),
             )
           else
             ...caps.map(_buildCapabilityTile),
@@ -95,9 +96,9 @@ class _HomeScreenSectionsIntegrationScreenState
           if (_canOpenHomeSections())
             ListTile(
               leading: const Icon(Icons.tune),
-              title: const Text('Open Home Sections'),
-              subtitle: const Text(
-                'Enable, disable, and reorder rows',
+              title: Text(l10n.integrationOpenHomeSections),
+              subtitle: Text(
+                l10n.integrationOpenHomeSectionsSubtitle,
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.pushSettingsScreen(
@@ -118,13 +119,14 @@ class _HomeScreenSectionsIntegrationScreenState
   }
 
   Widget _buildCapabilityTile(HomeScreenSectionsCapability cap) {
+    final l10n = AppLocalizations.of(context);
     final status = cap.installed
-        ? (cap.enabled ? 'Enabled' : 'Installed but disabled')
-        : 'Not installed';
+        ? (cap.enabled ? l10n.enabled : l10n.integrationInstalledButDisabled)
+        : l10n.integrationNotInstalled;
     final subtitle = StringBuffer(status);
     if (cap.pluginVersion != null) subtitle.write(' • v${cap.pluginVersion}');
     if (cap.sections.isNotEmpty) {
-      subtitle.write(' • ${cap.sections.length} section(s)');
+      subtitle.write(' • ${l10n.integrationSectionsCount(cap.sections.length)}');
     }
     if (cap.lastError != null && !cap.installed) {
       subtitle.write('\n${cap.lastError}');

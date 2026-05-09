@@ -15,6 +15,7 @@ import '../../navigation/destinations.dart';
 import '../../widgets/focus/focusable_toolbar_button.dart';
 import '../../widgets/focus/request_initial_focus.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../util/home_row_title_localizer.dart';
 
 Color get _navyBackground => AppColorScheme.background;
 const _cardSize = 140.0;
@@ -90,6 +91,7 @@ class _MusicBrowseScreenState extends State<MusicBrowseScreen> {
       RequestInitialFocus(child: _buildContent(context));
 
   Widget _buildContent(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: _navyBackground,
       body: Stack(
@@ -118,7 +120,7 @@ class _MusicBrowseScreenState extends State<MusicBrowseScreen> {
                               onRandomAlbum: _onRandomAlbum,
                             ),
                             ..._vm.rows.map((row) => _MusicItemRow(
-                                  title: row.title,
+                                  title: localizeHomeRowTitle(row: row, l10n: l10n),
                                   items: row.items,
                                   imageApi: _vm.imageApi,
                                   getSubtitle: _vm.getMusicSubtitle,

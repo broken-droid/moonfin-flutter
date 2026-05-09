@@ -52,7 +52,7 @@ class AboutScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.code),
             title: Text(l10n.sourceCode),
-            subtitle: const Text('https://github.com/Moonfin-Client/Mobile-Desktop'),
+            subtitle: Text(l10n.sourceCodeUrl),
             onTap: () => launchUrl(Uri.parse('https://github.com/Moonfin-Client/Mobile-Desktop')),
           ),
           if (AppDistribution.supportsInAppUpdates) ...[

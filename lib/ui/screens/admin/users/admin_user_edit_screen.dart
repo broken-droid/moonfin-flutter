@@ -126,7 +126,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.adminSaveFailed(_formatError(e)))),
+          SnackBar(content: Text(l10n.adminSaveFailed(_formatError(e, l10n)))),
         );
       }
     } finally {
@@ -134,7 +134,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
     }
   }
 
-  String _formatError(Object error) {
+  String _formatError(Object error, AppLocalizations l10n) {
     if (error is DioException) {
       final responseData = error.response?.data;
       if (responseData is Map<String, dynamic>) {
@@ -151,7 +151,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
 
       final status = error.response?.statusCode;
       if (status != null) {
-        return 'Server returned HTTP $status';
+        return l10n.adminServerReturnedHttp(status);
       }
     }
     return error.toString();
@@ -178,7 +178,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.adminSaveFailed(e.toString()))),
+          SnackBar(content: Text(l10n.adminSaveFailed(_formatError(e, l10n)))),
         );
       }
     } finally {
@@ -211,14 +211,14 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content:
-                Text(pw.isEmpty ? 'Password reset' : 'Password updated'),
+                Text(pw.isEmpty ? l10n.adminPasswordReset : l10n.adminPasswordUpdated),
           ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.adminFailed(e.toString()))),
+          SnackBar(content: Text(l10n.adminFailed(_formatError(e, l10n)))),
         );
       }
     } finally {
@@ -279,7 +279,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
               Text(
                 _user?.name?.isNotEmpty == true
                     ? _user!.name!
-                    : 'User Settings',
+                    : l10n.adminUserSettings,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],
@@ -311,14 +311,15 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
   }
 
   Widget _buildProfileTab() {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         TextFormField(
           controller: _nameController,
-          decoration: const InputDecoration(
-            labelText: 'Username',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: l10n.username,
+            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 24),
@@ -326,7 +327,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
           children: [
             FilledButton(
               onPressed: _saving ? null : _saveProfile,
-              child: const Text('Save Profile'),
+              child: Text(l10n.adminSaveProfile),
             ),
             const Spacer(),
             TextButton.icon(
@@ -339,7 +340,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
                 },
               ),
               icon: const Icon(Icons.delete),
-              label: const Text('Delete User'),
+              label: Text(l10n.adminDeleteUser),
               style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error),
             ),
@@ -350,53 +351,54 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
   }
 
   Widget _buildPermissionsTab() {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _sectionHeader('Admin'),
+        _sectionHeader(l10n.admin),
         if (_policy['IsAdministrator'] == true)
           Card(
             color: Theme.of(context).colorScheme.errorContainer,
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                'Administrators have complete access to all server features.',
+                l10n.adminFullAccessWarning,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.onErrorContainer),
               ),
             ),
           ),
-        _policySwitch('IsAdministrator', 'Administrator'),
-        _policySwitch('IsHidden', 'Hidden user'),
-        _policySwitch('IsDisabled', 'Disabled'),
-        _sectionHeader('Playback'),
-        _policySwitch('EnableMediaPlayback', 'Allow media playback'),
+        _policySwitch('IsAdministrator', l10n.administrator),
+        _policySwitch('IsHidden', l10n.adminHiddenUser),
+        _policySwitch('IsDisabled', l10n.disabled),
+        _sectionHeader(l10n.playback),
+        _policySwitch('EnableMediaPlayback', l10n.adminAllowMediaPlayback),
         _policySwitch(
-            'EnableAudioPlaybackTranscoding', 'Allow audio transcoding'),
+            'EnableAudioPlaybackTranscoding', l10n.adminAllowAudioTranscoding),
         _policySwitch(
-            'EnableVideoPlaybackTranscoding', 'Allow video transcoding'),
-        _policySwitch('EnablePlaybackRemuxing', 'Allow remuxing'),
+            'EnableVideoPlaybackTranscoding', l10n.adminAllowVideoTranscoding),
+        _policySwitch('EnablePlaybackRemuxing', l10n.adminAllowRemuxing),
         _policySwitch('ForceRemoteSourceTranscoding',
-            'Force remote source transcoding'),
-        _sectionHeader('Content'),
-        _policySwitch('EnableContentDeletion', 'Allow content deletion'),
+            l10n.adminForceRemoteTranscoding),
+        _sectionHeader(l10n.content),
+        _policySwitch('EnableContentDeletion', l10n.adminAllowContentDeletion),
         _policySwitch(
-            'EnableContentDownloading', 'Allow content downloading'),
-        _policySwitch('EnablePublicSharing', 'Allow public sharing'),
-        _sectionHeader('Sessions'),
+            'EnableContentDownloading', l10n.adminAllowContentDownloading),
+        _policySwitch('EnablePublicSharing', l10n.adminAllowPublicSharing),
+        _sectionHeader(l10n.sessions),
         _policySwitch('EnableRemoteControlOfOtherUsers',
-            'Allow remote control of other users'),
+            l10n.adminAllowRemoteControl),
         _policySwitch(
-            'EnableSharedDeviceControl', 'Allow shared device control'),
-        _policySwitch('EnableRemoteAccess', 'Allow remote access'),
+            'EnableSharedDeviceControl', l10n.adminAllowSharedDeviceControl),
+        _policySwitch('EnableRemoteAccess', l10n.adminAllowRemoteAccess),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: TextFormField(
             controller: _bitrateLimitController,
-            decoration: const InputDecoration(
-              labelText: 'Remote client bitrate limit (bps)',
-              border: OutlineInputBorder(),
-              helperText: 'Leave empty for no limit',
+            decoration: InputDecoration(
+              labelText: l10n.adminRemoteBitrateLimit,
+              border: const OutlineInputBorder(),
+              helperText: l10n.adminLeaveEmptyNoLimit,
             ),
             keyboardType: TextInputType.number,
           ),
@@ -405,29 +407,29 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: TextFormField(
             controller: _maxSessionsController,
-            decoration: const InputDecoration(
-              labelText: 'Max active sessions',
-              border: OutlineInputBorder(),
-              helperText: 'Leave empty for no limit',
+            decoration: InputDecoration(
+              labelText: l10n.adminMaxActiveSessions,
+              border: const OutlineInputBorder(),
+              helperText: l10n.adminLeaveEmptyNoLimit,
             ),
             keyboardType: TextInputType.number,
           ),
         ),
-        _sectionHeader('Features'),
-        _policySwitch('EnableLiveTvAccess', 'Allow Live TV access'),
+        _sectionHeader(l10n.features),
+        _policySwitch('EnableLiveTvAccess', l10n.adminAllowLiveTvAccess),
         _policySwitch(
-            'EnableLiveTvManagement', 'Allow Live TV management'),
+            'EnableLiveTvManagement', l10n.adminAllowLiveTvManagement),
         _policySwitch(
-            'EnableCollectionManagement', 'Allow collection management'),
+            'EnableCollectionManagement', l10n.adminAllowCollectionManagement),
         _policySwitch(
-            'EnableSubtitleManagement', 'Allow subtitle management'),
-        _policySwitch('EnableLyricManagement', 'Allow lyric management'),
+            'EnableSubtitleManagement', l10n.adminAllowSubtitleManagement),
+        _policySwitch('EnableLyricManagement', l10n.adminAllowLyricManagement),
         const SizedBox(height: 16),
         Align(
           alignment: Alignment.centerLeft,
           child: FilledButton(
             onPressed: _saving ? null : _savePolicy,
-            child: const Text('Save Permissions'),
+            child: Text(l10n.adminSavePermissions),
           ),
         ),
       ],
@@ -435,13 +437,14 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
   }
 
   Widget _buildAccessTab() {
+    final l10n = AppLocalizations.of(context);
     final enableAllFolders = _policy['EnableAllFolders'] as bool? ?? true;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _sectionHeader('Library Access'),
+        _sectionHeader(l10n.adminLibraryAccess),
         SwitchListTile(
-          title: const Text('Enable access to all libraries'),
+          title: Text(l10n.adminEnableAllLibraryAccess),
           value: enableAllFolders,
           onChanged: (v) => _togglePolicy('EnableAllFolders', v),
         ),
@@ -463,16 +466,16 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
           });
           }(),
         const Divider(height: 32),
-        _sectionHeader('Device & Channel Access'),
-        _policySwitch('EnableAllDevices', 'Enable access to all devices'),
+        _sectionHeader(l10n.adminDeviceAndChannelAccess),
+        _policySwitch('EnableAllDevices', l10n.adminEnableAllDevices),
         _policySwitch(
-            'EnableAllChannels', 'Enable access to all channels'),
+            'EnableAllChannels', l10n.adminEnableAllChannels),
         const SizedBox(height: 16),
         Align(
           alignment: Alignment.centerLeft,
           child: FilledButton(
             onPressed: _saving ? null : _savePolicy,
-            child: const Text('Save Access'),
+            child: Text(l10n.adminSaveAccess),
           ),
         ),
       ],
@@ -480,26 +483,27 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
   }
 
   Widget _buildPasswordTab() {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Change Password',
+        Text(l10n.adminChangePassword,
             style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 16),
         TextFormField(
           controller: _passwordController,
-          decoration: const InputDecoration(
-            labelText: 'New Password',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: l10n.adminNewPassword,
+            border: const OutlineInputBorder(),
           ),
           obscureText: true,
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _confirmPasswordController,
-          decoration: const InputDecoration(
-            labelText: 'Confirm Password',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: l10n.adminConfirmPassword,
+            border: const OutlineInputBorder(),
           ),
           obscureText: true,
         ),
@@ -508,7 +512,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
           children: [
             FilledButton(
               onPressed: _saving ? null : _savePassword,
-              child: const Text('Set Password'),
+              child: Text(l10n.adminSetPassword),
             ),
             const SizedBox(width: 12),
             OutlinedButton(
@@ -518,19 +522,18 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
                       final confirmed = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: const Text('Reset Password'),
-                          content: const Text(
-                              'This will remove the password. The user will be able to log in without a password.'),
+                          title: Text(l10n.adminResetPassword),
+                          content: Text(l10n.adminResetPasswordWarning),
                           actions: [
                             TextButton(
                               onPressed: () =>
                                   Navigator.of(ctx).pop(false),
-                              child: const Text('Cancel'),
+                              child: Text(l10n.cancel),
                             ),
                             FilledButton(
                               onPressed: () =>
                                   Navigator.of(ctx).pop(true),
-                              child: const Text('Reset'),
+                              child: Text(l10n.reset),
                             ),
                           ],
                         ),
@@ -541,7 +544,7 @@ class _AdminUserEditScreenState extends ConsumerState<AdminUserEditScreen>
                         await _savePassword();
                       }
                     },
-              child: const Text('Reset Password'),
+              child: Text(l10n.adminResetPassword),
             ),
           ],
         ),

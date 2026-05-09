@@ -9,6 +9,7 @@ import 'package:playback_core/playback_core.dart';
 import '../data/database/offline_database.dart';
 import '../data/services/offline_playback_tracker.dart';
 import '../data/services/storage_path_service.dart';
+import '../l10n/app_localizations.dart';
 import '../ui/navigation/destinations.dart';
 import 'offline_stream_resolver.dart';
 
@@ -21,8 +22,9 @@ Future<void> launchOfflinePlayback(
   final result = await resolver.resolve(item.itemId);
   if (result == null) {
     if (context.mounted) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('File not available')),
+        SnackBar(content: Text(l10n.offlineFileNotAvailable)),
       );
     }
     return;

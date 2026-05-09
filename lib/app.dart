@@ -70,7 +70,7 @@ class _MoonfinAppState extends State<MoonfinApp> {
           animation: _themeController,
           builder: (context, _) {
             return MaterialApp.router(
-              title: 'Moonfin',
+              onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
               theme: AppTheme.buildTheme(_themeController.activeSpec),
               routerConfig: appRouter,
               debugShowCheckedModeBanner: false,
@@ -420,18 +420,19 @@ class _ConnectivityListenerState extends ConsumerState<_ConnectivityListener>
 
   void _handleSyncPlayEvent(SyncPlayUiEvent event) {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
     switch (event) {
       case SyncPlayUserJoinedEvent(:final userName):
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('$userName joined SyncPlay group'),
+            content: Text(l10n.syncPlayUserJoinedGroup(userName)),
             duration: const Duration(seconds: 3),
           ),
         );
       case SyncPlayUserLeftEvent(:final userName):
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('$userName left SyncPlay group'),
+            content: Text(l10n.syncPlayUserLeftGroup(userName)),
             duration: const Duration(seconds: 3),
           ),
         );
@@ -442,16 +443,12 @@ class _ConnectivityListenerState extends ConsumerState<_ConnectivityListener>
           context: navContext,
           builder: (ctx) => AlertDialog(
             icon: const Icon(Icons.lock_outline_rounded),
-            title: const Text('SyncPlay access denied'),
-            content: const Text(
-              'You do not have access to one or more items in this SyncPlay '
-              'group. Ask the group owner to verify library permissions or '
-              'choose a different queue.',
-            ),
+            title: Text(l10n.syncPlayAccessDeniedTitle),
+            content: Text(l10n.syncPlayAccessDeniedMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('OK'),
+                child: Text(l10n.ok),
               ),
             ],
           ),

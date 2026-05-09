@@ -79,16 +79,14 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
       RequestInitialFocus(child: _buildContent(context));
 
   Widget _buildContent(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Library Visibility')),
+      appBar: buildSettingsAppBar(context, Text(l10n.libraryVisibility)),
       body: ListView(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              'Toggle home page visibility per library. '
-              'Restart Moonfin for changes to take effect.',
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(l10n.libraryVisibilityDescription),
           ),
           if (_isLoading)
             const Padding(

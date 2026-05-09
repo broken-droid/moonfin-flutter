@@ -60,13 +60,13 @@ class _AdminApiKeysScreenState extends State<AdminApiKeysScreen> {
     return (item['AccessToken'] ?? item['Key'] ?? item['Token'] ?? item['Id'] ?? '').toString();
   }
 
-  String _appName(Map<String, dynamic> item) {
+  String _appName(Map<String, dynamic> item, AppLocalizations l10n) {
     final value = item['AppName'] ?? item['App'] ?? item['Name'] ?? item['Client'];
     final text = (value ?? '').toString().trim();
-    return text.isEmpty ? 'Unknown App' : text;
+    return text.isEmpty ? l10n.adminUnknownApp : text;
   }
 
-  String _createdAt(Map<String, dynamic> item) {
+  String _createdAt(Map<String, dynamic> item, AppLocalizations l10n) {
     final raw = item['DateCreated'] ?? item['DateLastActivity'];
     if (raw is String && raw.isNotEmpty) {
       final dt = DateTime.tryParse(raw);
@@ -75,7 +75,7 @@ class _AdminApiKeysScreenState extends State<AdminApiKeysScreen> {
         return '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
       }
     }
-    return 'Unknown';
+    return l10n.unknown;
   }
 
   String _masked(String token) {
@@ -184,7 +184,7 @@ class _AdminApiKeysScreenState extends State<AdminApiKeysScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.adminRevokeApiKey),
-        content: Text(l10n.adminRevokeKeyConfirm(_appName(item))),
+        content: Text(l10n.adminRevokeKeyConfirm(_appName(item, l10n))),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -248,7 +248,7 @@ class _AdminApiKeysScreenState extends State<AdminApiKeysScreen> {
             children: [
               Expanded(
                 child: Text(
-                  'API Keys',
+                  l10n.adminApiKeysTitle,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
@@ -272,8 +272,13 @@ class _AdminApiKeysScreenState extends State<AdminApiKeysScreen> {
                     final token = _keyToken(item);
                     return ListTile(
                       leading: const Icon(Icons.vpn_key),
-                      title: Text(_appName(item)),
-                      subtitle: Text('Token: ${_masked(token)}\nCreated: ${_createdAt(item)}'),
+                      title: Text(_appName(item, l10n)),
+                      subtitle: Text(
+                        l10n.adminApiKeyTokenCreated(
+                          _masked(token),
+                          _createdAt(item, l10n),
+                        ),
+                      ),
                       isThreeLine: true,
                       trailing: IconButton(
                         tooltip: l10n.revoke,

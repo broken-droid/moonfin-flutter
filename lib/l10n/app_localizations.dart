@@ -812,6 +812,18 @@ abstract class AppLocalizations {
   /// **'Apply'**
   String get apply;
 
+  /// Action label to open a URL externally
+  ///
+  /// In en, this message translates to:
+  /// **'Open Link'**
+  String get openLink;
+
+  /// Instruction shown above a QR code
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with your phone'**
+  String get scanWithYourPhone;
+
   /// Title for audiobook genre picker panel
   ///
   /// In en, this message translates to:
@@ -2222,6 +2234,18 @@ abstract class AppLocalizations {
   /// **'Audio Delay'**
   String get audioDelay;
 
+  /// Label for decreasing playback delay in milliseconds
+  ///
+  /// In en, this message translates to:
+  /// **'-{value}ms'**
+  String delayMinusMs(int value);
+
+  /// Label for increasing playback delay in milliseconds
+  ///
+  /// In en, this message translates to:
+  /// **'+{value}ms'**
+  String delayPlusMs(int value);
+
   /// Title for subtitle delay adjuster
   ///
   /// In en, this message translates to:
@@ -3037,6 +3061,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Season {number}'**
   String seasonNumber(int number);
+
+  /// Compact season chip label
+  ///
+  /// In en, this message translates to:
+  /// **'S{number}'**
+  String seasonChip(int number);
 
   /// Label for special episodes
   ///
@@ -4508,6 +4538,12 @@ abstract class AppLocalizations {
   /// **'Library Visibility'**
   String get libraryVisibility;
 
+  /// Explanation shown on the library visibility settings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle home page visibility per library. Restart Moonfin for changes to take effect.'**
+  String get libraryVisibilityDescription;
+
   /// Toggle for showing library in navigation
   ///
   /// In en, this message translates to:
@@ -5371,6 +5407,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Source Code'**
   String get sourceCode;
+
+  /// Displayed source code repository URL
+  ///
+  /// In en, this message translates to:
+  /// **'https://github.com/Moonfin-Client/Mobile-Desktop'**
+  String get sourceCodeUrl;
 
   /// Button to check for updates
   ///
@@ -6560,6 +6602,12 @@ abstract class AppLocalizations {
   /// **'Vol +'**
   String get sessionVolumeUp;
 
+  /// No description provided for @uhd4k.
+  ///
+  /// In en, this message translates to:
+  /// **'4K'**
+  String get uhd4k;
+
   /// No description provided for @nowPlaying.
   ///
   /// In en, this message translates to:
@@ -7238,6 +7286,60 @@ abstract class AppLocalizations {
   /// **'Reset Password'**
   String get adminResetPassword;
 
+  /// No description provided for @adminPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset'**
+  String get adminPasswordReset;
+
+  /// No description provided for @adminPasswordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get adminPasswordUpdated;
+
+  /// No description provided for @adminUserSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'User Settings'**
+  String get adminUserSettings;
+
+  /// No description provided for @adminLibraryAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Library Access'**
+  String get adminLibraryAccess;
+
+  /// No description provided for @adminDeviceAndChannelAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Device & Channel Access'**
+  String get adminDeviceAndChannelAccess;
+
+  /// No description provided for @adminEnableAllDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable access to all devices'**
+  String get adminEnableAllDevices;
+
+  /// No description provided for @adminEnableAllChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable access to all channels'**
+  String get adminEnableAllChannels;
+
+  /// No description provided for @adminResetPasswordWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove the password. The user will be able to log in without a password.'**
+  String get adminResetPasswordWarning;
+
+  /// No description provided for @adminServerReturnedHttp.
+  ///
+  /// In en, this message translates to:
+  /// **'Server returned HTTP {status}'**
+  String adminServerReturnedHttp(int status);
+
   /// No description provided for @adminDeleteUserConfirm.
   ///
   /// In en, this message translates to:
@@ -7328,6 +7430,12 @@ abstract class AppLocalizations {
   /// **'Failed to load API keys'**
   String get adminApiKeysLoadFailed;
 
+  /// No description provided for @adminApiKeysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'API Keys'**
+  String get adminApiKeysTitle;
+
   /// No description provided for @adminCreateKey.
   ///
   /// In en, this message translates to:
@@ -7339,6 +7447,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No API keys found'**
   String get adminNoApiKeys;
+
+  /// No description provided for @adminUnknownApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown App'**
+  String get adminUnknownApp;
+
+  /// No description provided for @adminApiKeyTokenCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Token: {token}\\nCreated: {created}'**
+  String adminApiKeyTokenCreated(String token, String created);
 
   /// No description provided for @adminCreatingBackup.
   ///
@@ -8677,6 +8797,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mapping JSON'**
   String get adminMappingJson;
+
+  /// No description provided for @adminMappingJsonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: mappings JSON payload'**
+  String get adminMappingJsonHint;
 
   /// No description provided for @adminChannelMappingsUpdated.
   ///
@@ -10352,6 +10478,348 @@ abstract class AppLocalizations {
   /// **'SyncPlay'**
   String get syncPlay;
 
+  /// No description provided for @syncPlayDisabledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay disabled'**
+  String get syncPlayDisabledTitle;
+
+  /// No description provided for @syncPlayDisabledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable SyncPlay in Settings to use synchronized playback.'**
+  String get syncPlayDisabledMessage;
+
+  /// No description provided for @syncPlayServerUnsupportedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server unsupported'**
+  String get syncPlayServerUnsupportedTitle;
+
+  /// No description provided for @syncPlayServerUnsupportedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay requires a Jellyfin server. The current server does not support it.'**
+  String get syncPlayServerUnsupportedMessage;
+
+  /// No description provided for @syncPlayGroupFallbackName.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay Group'**
+  String get syncPlayGroupFallbackName;
+
+  /// No description provided for @syncPlayGroupTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay group'**
+  String get syncPlayGroupTooltip;
+
+  /// Participant count label shown in SyncPlay UI
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {# participant} other {# participants}}'**
+  String syncPlayParticipantCount(int count);
+
+  /// No description provided for @syncPlayIgnoreWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore wait'**
+  String get syncPlayIgnoreWait;
+
+  /// No description provided for @syncPlayIgnoreWaitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t hold the group up while this device buffers'**
+  String get syncPlayIgnoreWaitSubtitle;
+
+  /// No description provided for @syncPlayContinueLocallyNoWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue locally without waiting for slow members'**
+  String get syncPlayContinueLocallyNoWait;
+
+  /// No description provided for @syncPlayRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get syncPlayRepeat;
+
+  /// No description provided for @syncPlayRepeatOne.
+  ///
+  /// In en, this message translates to:
+  /// **'One'**
+  String get syncPlayRepeatOne;
+
+  /// No description provided for @syncPlayShuffleModeShuffled.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffled'**
+  String get syncPlayShuffleModeShuffled;
+
+  /// No description provided for @syncPlayShuffleModeSorted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorted'**
+  String get syncPlayShuffleModeSorted;
+
+  /// No description provided for @syncPlaySyncCurrentQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync current playback queue'**
+  String get syncPlaySyncCurrentQueue;
+
+  /// No description provided for @syncPlaySyncCurrentQueueSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace the group queue with what is playing locally'**
+  String get syncPlaySyncCurrentQueueSubtitle;
+
+  /// No description provided for @syncPlayLeaveGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave group'**
+  String get syncPlayLeaveGroup;
+
+  /// No description provided for @syncPlayGroupQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Group queue'**
+  String get syncPlayGroupQueue;
+
+  /// Fallback title for SyncPlay queue item when media title is unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'Item {index}'**
+  String syncPlayQueueItemFallback(int index);
+
+  /// No description provided for @syncPlayPlayNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Play now'**
+  String get syncPlayPlayNow;
+
+  /// No description provided for @syncPlayCreateNewGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new group'**
+  String get syncPlayCreateNewGroup;
+
+  /// No description provided for @syncPlayGroupName.
+  ///
+  /// In en, this message translates to:
+  /// **'Group name'**
+  String get syncPlayGroupName;
+
+  /// No description provided for @syncPlayDefaultGroupName.
+  ///
+  /// In en, this message translates to:
+  /// **'My SyncPlay Group'**
+  String get syncPlayDefaultGroupName;
+
+  /// No description provided for @syncPlayCreateGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Create group'**
+  String get syncPlayCreateGroup;
+
+  /// No description provided for @syncPlayAvailableGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Available groups'**
+  String get syncPlayAvailableGroups;
+
+  /// No description provided for @syncPlayNoGroupsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups available'**
+  String get syncPlayNoGroupsAvailable;
+
+  /// No description provided for @syncPlayJoinGroupQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Join SyncPlay group?'**
+  String get syncPlayJoinGroupQuestion;
+
+  /// No description provided for @syncPlayJoinGroupWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining a SyncPlay group may replace your current playback queue. Continue?'**
+  String get syncPlayJoinGroupWarning;
+
+  /// No description provided for @syncPlayJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get syncPlayJoin;
+
+  /// No description provided for @syncPlayStateIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'Idle'**
+  String get syncPlayStateIdle;
+
+  /// No description provided for @syncPlayStateWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get syncPlayStateWaiting;
+
+  /// No description provided for @syncPlayStatePaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get syncPlayStatePaused;
+
+  /// No description provided for @syncPlayStatePlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing'**
+  String get syncPlayStatePlaying;
+
+  /// Snackbar message when a user joins a SyncPlay group
+  ///
+  /// In en, this message translates to:
+  /// **'{userName} joined SyncPlay group'**
+  String syncPlayUserJoinedGroup(String userName);
+
+  /// Snackbar message when a user leaves a SyncPlay group
+  ///
+  /// In en, this message translates to:
+  /// **'{userName} left SyncPlay group'**
+  String syncPlayUserLeftGroup(String userName);
+
+  /// No description provided for @syncPlayAccessDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay access denied'**
+  String get syncPlayAccessDeniedTitle;
+
+  /// No description provided for @syncPlayAccessDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have access to one or more items in this SyncPlay group. Ask the group owner to verify library permissions or choose a different queue.'**
+  String get syncPlayAccessDeniedMessage;
+
+  /// Snackbar message shown when starting playback in a SyncPlay group
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing playback to {groupName}'**
+  String syncPlaySyncingPlaybackToGroup(String groupName);
+
+  /// No description provided for @voiceSearchUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice search is unavailable.'**
+  String get voiceSearchUnavailable;
+
+  /// No description provided for @dolbyVisionDirectPlayFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dolby Vision Direct Play Failed'**
+  String get dolbyVisionDirectPlayFailedTitle;
+
+  /// No description provided for @dolbyVisionDirectPlayFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct play failed to start for this Dolby Vision stream. Retry using server transcode?'**
+  String get dolbyVisionDirectPlayFailedMessage;
+
+  /// No description provided for @retryWithTranscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry with transcode'**
+  String get retryWithTranscode;
+
+  /// No description provided for @dolbyVisionNotSupportedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dolby Vision Not Supported'**
+  String get dolbyVisionNotSupportedTitle;
+
+  /// No description provided for @dolbyVisionNotSupportedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This device cannot decode Dolby Vision content directly. Use HDR10 fallback or request server transcoding.'**
+  String get dolbyVisionNotSupportedMessage;
+
+  /// No description provided for @rememberMyChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember my choice'**
+  String get rememberMyChoice;
+
+  /// No description provided for @playHdr10Fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Play HDR10 fallback'**
+  String get playHdr10Fallback;
+
+  /// No description provided for @requestTranscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Request transcode'**
+  String get requestTranscode;
+
+  /// No description provided for @homeScreenSectionsIntegrationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Detect rows exposed by IAmParadox27\'s \"Home Screen Sections\" plugin. Rows can be enabled and reordered below.'**
+  String get homeScreenSectionsIntegrationDescription;
+
+  /// No description provided for @homeScreenSectionsIntegrationNoServers.
+  ///
+  /// In en, this message translates to:
+  /// **'No Jellyfin servers reporting the plugin yet.'**
+  String get homeScreenSectionsIntegrationNoServers;
+
+  /// No description provided for @kefinTweaksIntegrationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Detect rows configured via ranaldsgift\'s \"KefinTweaks\" plugin. Custom sections, recently released, watch again, seasonal, and recently added in library are mirrored from the KefinTweaks configuration on each Jellyfin server.'**
+  String get kefinTweaksIntegrationDescription;
+
+  /// No description provided for @kefinTweaksIntegrationNoServers.
+  ///
+  /// In en, this message translates to:
+  /// **'No Jellyfin servers reporting KefinTweaks yet.'**
+  String get kefinTweaksIntegrationNoServers;
+
+  /// No description provided for @integrationOpenHomeSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Home Sections'**
+  String get integrationOpenHomeSections;
+
+  /// No description provided for @integrationOpenHomeSectionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable, disable, and reorder rows'**
+  String get integrationOpenHomeSectionsSubtitle;
+
+  /// No description provided for @integrationInstalledButDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed but disabled'**
+  String get integrationInstalledButDisabled;
+
+  /// No description provided for @integrationNotInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Not installed'**
+  String get integrationNotInstalled;
+
+  /// Plural label for number of sections discovered in integration status
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {# section} other {# sections}}'**
+  String integrationSectionsCount(int count);
+
+  /// Plural label for number of rows discovered in integration status
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {# row discovered} other {# rows discovered}}'**
+  String integrationRowsDiscoveredCount(int count);
+
   /// No description provided for @jellyseerr.
   ///
   /// In en, this message translates to:
@@ -10405,6 +10873,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You are offline. Only downloaded content is available.'**
   String get offlineNoInternet;
+
+  /// No description provided for @offlineFileNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'File not available'**
+  String get offlineFileNotAvailable;
 
   /// No description provided for @offlineSwitchServer.
   ///
@@ -11047,6 +11521,804 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go to Series'**
   String get contextMenuGoToSeries;
+
+  /// No description provided for @settingsAdministrationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access the server administration panel'**
+  String get settingsAdministrationSubtitle;
+
+  /// No description provided for @settingsAccountSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & Security'**
+  String get settingsAccountSecurity;
+
+  /// No description provided for @settingsAccountSecuritySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication, PIN code, and parental controls'**
+  String get settingsAccountSecuritySubtitle;
+
+  /// No description provided for @settingsPersonalization.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalization'**
+  String get settingsPersonalization;
+
+  /// No description provided for @settingsPersonalizationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme, navigation, home rows, and library visibility'**
+  String get settingsPersonalizationSubtitle;
+
+  /// No description provided for @settingsDynamicContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Dynamic Content'**
+  String get settingsDynamicContent;
+
+  /// No description provided for @settingsDynamicContentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Bar and visual overlays'**
+  String get settingsDynamicContentSubtitle;
+
+  /// No description provided for @settingsPlaybackSyncplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Playback & SyncPlay'**
+  String get settingsPlaybackSyncplay;
+
+  /// No description provided for @settingsPlaybackSyncplaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio/video settings, subtitles, downloads, and SyncPlay controls'**
+  String get settingsPlaybackSyncplaySubtitle;
+
+  /// No description provided for @settingsIntegrationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plugin sync, Seerr, ratings, and more'**
+  String get settingsIntegrationsSubtitle;
+
+  /// No description provided for @settingsAboutSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App version, legal information, and credits'**
+  String get settingsAboutSubtitle;
+
+  /// No description provided for @settingsAuthenticationSection.
+  ///
+  /// In en, this message translates to:
+  /// **'AUTHENTICATION'**
+  String get settingsAuthenticationSection;
+
+  /// No description provided for @settingsSortServersBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort Servers By'**
+  String get settingsSortServersBy;
+
+  /// No description provided for @settingsLastUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Used'**
+  String get settingsLastUsed;
+
+  /// No description provided for @settingsAlphabetical.
+  ///
+  /// In en, this message translates to:
+  /// **'Alphabetical'**
+  String get settingsAlphabetical;
+
+  /// No description provided for @settingsPrivacyAndSafetySection.
+  ///
+  /// In en, this message translates to:
+  /// **'PRIVACY & SAFETY'**
+  String get settingsPrivacyAndSafetySection;
+
+  /// No description provided for @settingsBlockedRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked Ratings'**
+  String get settingsBlockedRatings;
+
+  /// No description provided for @settingsGeneralStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'General Style'**
+  String get settingsGeneralStyle;
+
+  /// No description provided for @settingsGeneralStyleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme accents, backdrops, watched indicators, and theme music'**
+  String get settingsGeneralStyleSubtitle;
+
+  /// No description provided for @settingsHomePage.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Page'**
+  String get settingsHomePage;
+
+  /// No description provided for @settingsHomePageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sections, image types, overlays, and media previews'**
+  String get settingsHomePageSubtitle;
+
+  /// No description provided for @settingsLibrariesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Library visibility, folder view, and multi-server behavior'**
+  String get settingsLibrariesSubtitle;
+
+  /// No description provided for @settingsTwentyFourHourClock.
+  ///
+  /// In en, this message translates to:
+  /// **'24-Hour Clock'**
+  String get settingsTwentyFourHourClock;
+
+  /// No description provided for @settingsTwentyFourHourClockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use 24-hour time formatting wherever the clock is shown'**
+  String get settingsTwentyFourHourClockSubtitle;
+
+  /// No description provided for @settingsShowShuffleButtonInNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the shuffle button in the navigation bar'**
+  String get settingsShowShuffleButtonInNavigation;
+
+  /// No description provided for @settingsShowGenresButtonInNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the genres button in the navigation bar'**
+  String get settingsShowGenresButtonInNavigation;
+
+  /// No description provided for @settingsShowFavoritesButtonInNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the favorites button in the navigation bar'**
+  String get settingsShowFavoritesButtonInNavigation;
+
+  /// No description provided for @settingsShowLibrariesButtonInNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the libraries button in the navigation bar'**
+  String get settingsShowLibrariesButtonInNavigation;
+
+  /// No description provided for @settingsLibraryVisibilitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle home page visibility per library. Restart Moonfin for changes to take effect.'**
+  String get settingsLibraryVisibilitySubtitle;
+
+  /// No description provided for @settingsMediaBarAndLocalPreviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Bar & Local Previews'**
+  String get settingsMediaBarAndLocalPreviews;
+
+  /// No description provided for @settingsVisualOverlays.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual Overlays'**
+  String get settingsVisualOverlays;
+
+  /// No description provided for @settingsSeasonalSurprise.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal Surprise'**
+  String get settingsSeasonalSurprise;
+
+  /// No description provided for @settingsMetadataAndRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata & Ratings'**
+  String get settingsMetadataAndRatings;
+
+  /// No description provided for @settingsPluginScreenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Moonbase powers server-side integrations including additional rating sources, Seerr requests, and synced preferences.'**
+  String get settingsPluginScreenDescription;
+
+  /// No description provided for @settingsOfflineDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Downloads'**
+  String get settingsOfflineDownloads;
+
+  /// No description provided for @settingsHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get settingsHigh;
+
+  /// No description provided for @settingsLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get settingsLow;
+
+  /// No description provided for @settingsCustomPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Path'**
+  String get settingsCustomPath;
+
+  /// No description provided for @settingsEnterDownloadFolderPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter download folder path'**
+  String get settingsEnterDownloadFolderPath;
+
+  /// No description provided for @settingsConcurrentDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Concurrent Downloads'**
+  String get settingsConcurrentDownloads;
+
+  /// No description provided for @settingsConcurrentDownloadsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum number of items to download at once.'**
+  String get settingsConcurrentDownloadsDescription;
+
+  /// No description provided for @settingsAppInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'APP INFO'**
+  String get settingsAppInfo;
+
+  /// No description provided for @settingsReportAnIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Report an Issue'**
+  String get settingsReportAnIssue;
+
+  /// No description provided for @settingsReportAnIssueSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the issue tracker on GitHub'**
+  String get settingsReportAnIssueSubtitle;
+
+  /// No description provided for @settingsJoinDiscord.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Discord'**
+  String get settingsJoinDiscord;
+
+  /// No description provided for @settingsJoinDiscordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with the community'**
+  String get settingsJoinDiscordSubtitle;
+
+  /// No description provided for @settingsJoinTheDiscord.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the Discord'**
+  String get settingsJoinTheDiscord;
+
+  /// No description provided for @settingsSupportMoonfin.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Moonfin'**
+  String get settingsSupportMoonfin;
+
+  /// No description provided for @settingsSupportMoonfinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Star the project on GitHub or contribute'**
+  String get settingsSupportMoonfinSubtitle;
+
+  /// No description provided for @settingsLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'LEGAL'**
+  String get settingsLegal;
+
+  /// No description provided for @settingsLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get settingsLicenses;
+
+  /// No description provided for @settingsOpenSourceLicenseNotices.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source license notices'**
+  String get settingsOpenSourceLicenseNotices;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsPrivacyPolicySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How Moonfin handles your data'**
+  String get settingsPrivacyPolicySubtitle;
+
+  /// No description provided for @settingsCheckForUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get settingsCheckForUpdates;
+
+  /// No description provided for @settingsCheckForUpdatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for the latest Moonfin release'**
+  String get settingsCheckForUpdatesSubtitle;
+
+  /// No description provided for @settingsPoweredByFlutter.
+  ///
+  /// In en, this message translates to:
+  /// **'Powered by Flutter'**
+  String get settingsPoweredByFlutter;
+
+  /// Plural label for number of license notices
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one {# license notice} other {# license notices}}'**
+  String settingsLicenseNoticesCount(int count);
+
+  /// No description provided for @settingsBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Both'**
+  String get settingsBoth;
+
+  /// No description provided for @settingsShuffleContentTypeFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle Content Type Filter'**
+  String get settingsShuffleContentTypeFilter;
+
+  /// No description provided for @settingsVideoPlaybackPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Playback Preferences'**
+  String get settingsVideoPlaybackPreferences;
+
+  /// No description provided for @settingsVideoPlaybackPreferencesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Core video engine and streaming quality settings'**
+  String get settingsVideoPlaybackPreferencesSubtitle;
+
+  /// No description provided for @settingsAudioPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio Preferences'**
+  String get settingsAudioPreferences;
+
+  /// No description provided for @settingsAudioPreferencesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio tracks, processing, and passthrough options'**
+  String get settingsAudioPreferencesSubtitle;
+
+  /// No description provided for @settingsAutomationAndQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation & Queue'**
+  String get settingsAutomationAndQueue;
+
+  /// No description provided for @settingsAutomationAndQueueSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automated playback and sequencing'**
+  String get settingsAutomationAndQueueSubtitle;
+
+  /// No description provided for @settingsOfflineDownloadsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download quality, storage limits, and queue size'**
+  String get settingsOfflineDownloadsSubtitle;
+
+  /// No description provided for @settingsSyncplaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronization logic for group sessions'**
+  String get settingsSyncplaySubtitle;
+
+  /// No description provided for @settingsAdvancedOptionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialized player features. Use with caution, as some options may cause playback issues'**
+  String get settingsAdvancedOptionsSubtitle;
+
+  /// No description provided for @settingsSkipIntrosAndOutros.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip Intros and Outros?'**
+  String get settingsSkipIntrosAndOutros;
+
+  /// No description provided for @settingsPromptUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Prompt User'**
+  String get settingsPromptUser;
+
+  /// No description provided for @settingsSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get settingsSkip;
+
+  /// No description provided for @settingsDoNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Do Nothing'**
+  String get settingsDoNothing;
+
+  /// No description provided for @settingsMaxBitrateDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Cap the streaming bitrate. Content above this threshold will be transcoded to fit.'**
+  String get settingsMaxBitrateDescription;
+
+  /// No description provided for @settingsMaxResolutionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.'**
+  String get settingsMaxResolutionDescription;
+
+  /// No description provided for @settingsPlayerZoomDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How video should be scaled to fit the screen.'**
+  String get settingsPlayerZoomDescription;
+
+  /// No description provided for @settingsPlaybackEngineAndroidTv.
+  ///
+  /// In en, this message translates to:
+  /// **'Playback Engine (Android TV)'**
+  String get settingsPlaybackEngineAndroidTv;
+
+  /// No description provided for @settingsPlaybackEngineAndroidTvDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the default playback engine on Android TV devices. Changes apply to the next playback session.'**
+  String get settingsPlaybackEngineAndroidTvDescription;
+
+  /// No description provided for @settingsPlaybackEngineMedia3Recommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Media3 (recommended)'**
+  String get settingsPlaybackEngineMedia3Recommended;
+
+  /// No description provided for @settingsPlaybackEngineMpvLegacy.
+  ///
+  /// In en, this message translates to:
+  /// **'mpv (legacy)'**
+  String get settingsPlaybackEngineMpvLegacy;
+
+  /// No description provided for @settingsDolbyVisionFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Dolby Vision Fallback'**
+  String get settingsDolbyVisionFallback;
+
+  /// No description provided for @settingsDolbyVisionFallbackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.'**
+  String get settingsDolbyVisionFallbackDescription;
+
+  /// No description provided for @settingsAskEachTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask each time'**
+  String get settingsAskEachTime;
+
+  /// No description provided for @settingsPreferHdr10Fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer HDR10 fallback'**
+  String get settingsPreferHdr10Fallback;
+
+  /// No description provided for @settingsPreferServerTranscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer server transcode'**
+  String get settingsPreferServerTranscode;
+
+  /// No description provided for @settingsDolbyVisionProfile7DirectPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Dolby Vision Profile 7 Direct Play'**
+  String get settingsDolbyVisionProfile7DirectPlay;
+
+  /// No description provided for @settingsDolbyVisionProfile7DirectPlayDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.'**
+  String get settingsDolbyVisionProfile7DirectPlayDescription;
+
+  /// No description provided for @settingsAutoAftkrtEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto (AFTKRT enabled)'**
+  String get settingsAutoAftkrtEnabled;
+
+  /// No description provided for @settingsEnabledOnThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled on this device'**
+  String get settingsEnabledOnThisDevice;
+
+  /// No description provided for @settingsDisabledPreferTranscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled (prefer transcode)'**
+  String get settingsDisabledPreferTranscode;
+
+  /// No description provided for @settingsResumeRewindDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?'**
+  String get settingsResumeRewindDescription;
+
+  /// No description provided for @settingsUnpauseRewindDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'When resuming playback after pressing the pause button, how many seconds should be rewound?'**
+  String get settingsUnpauseRewindDescription;
+
+  /// No description provided for @settingsSkipBackLengthDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How many seconds to jump back after pressing the rewind button.'**
+  String get settingsSkipBackLengthDescription;
+
+  /// No description provided for @settingsOneSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'1 second'**
+  String get settingsOneSecond;
+
+  /// No description provided for @settingsThreeSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'3 seconds'**
+  String get settingsThreeSeconds;
+
+  /// No description provided for @settingsFortyFiveSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'45 seconds'**
+  String get settingsFortyFiveSeconds;
+
+  /// No description provided for @settingsSixtySeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'60 seconds'**
+  String get settingsSixtySeconds;
+
+  /// No description provided for @settingsSkipForwardLengthDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How many seconds to jump forward after pressing the fast forward button.'**
+  String get settingsSkipForwardLengthDescription;
+
+  /// No description provided for @settingsBitstreamAc3ToExternalDecoder.
+  ///
+  /// In en, this message translates to:
+  /// **'Bitstream AC3 to external decoder'**
+  String get settingsBitstreamAc3ToExternalDecoder;
+
+  /// No description provided for @settingsCinemaMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Cinema Mode'**
+  String get settingsCinemaMode;
+
+  /// No description provided for @settingsCinemaModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Play trailers/prerolls before a main feature'**
+  String get settingsCinemaModeSubtitle;
+
+  /// No description provided for @settingsNextUpBehaviorDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.'**
+  String get settingsNextUpBehaviorDescription;
+
+  /// No description provided for @settingsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Short'**
+  String get settingsShort;
+
+  /// No description provided for @settingsLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Long'**
+  String get settingsLong;
+
+  /// No description provided for @settingsVeryLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Long'**
+  String get settingsVeryLong;
+
+  /// No description provided for @settingsVideoStartDelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Start Delay'**
+  String get settingsVideoStartDelay;
+
+  /// Milliseconds duration label
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ms'**
+  String settingsMillisecondsValue(int value);
+
+  /// No description provided for @settingsLiveTvDirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Live TV Direct'**
+  String get settingsLiveTvDirect;
+
+  /// No description provided for @settingsLiveTvDirectSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable direct play for Live TV'**
+  String get settingsLiveTvDirectSubtitle;
+
+  /// No description provided for @settingsOpenGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Groups'**
+  String get settingsOpenGroups;
+
+  /// No description provided for @settingsOpenGroupsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create, join, or manage SyncPlay groups'**
+  String get settingsOpenGroupsSubtitle;
+
+  /// No description provided for @settingsSyncplayEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay Enabled'**
+  String get settingsSyncplayEnabled;
+
+  /// No description provided for @settingsSyncplayEnabledSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable group watching features'**
+  String get settingsSyncplayEnabledSubtitle;
+
+  /// No description provided for @settingsSyncplayButton.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay Button'**
+  String get settingsSyncplayButton;
+
+  /// No description provided for @settingsSyncplayButtonSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the SyncPlay button on the navigation bar'**
+  String get settingsSyncplayButtonSubtitle;
+
+  /// No description provided for @settingsSyncplayAdvancedCorrection.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Correction'**
+  String get settingsSyncplayAdvancedCorrection;
+
+  /// No description provided for @settingsSyncplayAdvancedCorrectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable fine-grained sync logic'**
+  String get settingsSyncplayAdvancedCorrectionSubtitle;
+
+  /// No description provided for @settingsSyncplaySyncCorrection.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Correction'**
+  String get settingsSyncplaySyncCorrection;
+
+  /// No description provided for @settingsSyncplaySyncCorrectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically adjust playback to stay in sync'**
+  String get settingsSyncplaySyncCorrectionSubtitle;
+
+  /// No description provided for @settingsSyncplaySpeedToSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed to Sync'**
+  String get settingsSyncplaySpeedToSync;
+
+  /// No description provided for @settingsSyncplaySpeedToSyncSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use playback speed adjustment to sync'**
+  String get settingsSyncplaySpeedToSyncSubtitle;
+
+  /// No description provided for @settingsSyncplaySkipToSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip to Sync'**
+  String get settingsSyncplaySkipToSync;
+
+  /// No description provided for @settingsSyncplaySkipToSyncSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use seeking to sync'**
+  String get settingsSyncplaySkipToSyncSubtitle;
+
+  /// No description provided for @settingsSyncplayMinimumSpeedDelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Speed Delay'**
+  String get settingsSyncplayMinimumSpeedDelay;
+
+  /// No description provided for @settingsSyncplayMaximumSpeedDelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum Speed Delay'**
+  String get settingsSyncplayMaximumSpeedDelay;
+
+  /// No description provided for @settingsSyncplaySpeedDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed Duration'**
+  String get settingsSyncplaySpeedDuration;
+
+  /// No description provided for @settingsSyncplayMinimumSkipDelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Skip Delay'**
+  String get settingsSyncplayMinimumSkipDelay;
+
+  /// No description provided for @settingsSyncplayExtraOffset.
+  ///
+  /// In en, this message translates to:
+  /// **'SyncPlay Extra Offset'**
+  String get settingsSyncplayExtraOffset;
+
+  /// No description provided for @onNow.
+  ///
+  /// In en, this message translates to:
+  /// **'On Now'**
+  String get onNow;
+
+  /// No description provided for @collections.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections'**
+  String get collections;
+
+  /// No description provided for @lastPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Played'**
+  String get lastPlayed;
+
+  /// Library name display with server suffix for multi-server views
+  ///
+  /// In en, this message translates to:
+  /// **'{libraryName} ({serverName})'**
+  String libraryNameWithServer(String libraryName, String serverName);
+
+  /// Row title for latest media in a specific library
+  ///
+  /// In en, this message translates to:
+  /// **'Latest {libraryName}'**
+  String latestLibraryName(String libraryName);
 }
 
 class _AppLocalizationsDelegate

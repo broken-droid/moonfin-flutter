@@ -9,6 +9,7 @@ import '../../../data/models/home_row.dart';
 import '../../../data/repositories/multi_server_repository.dart';
 import '../../../data/services/row_data_source.dart';
 import '../../../data/viewmodels/media_bar_view_model.dart';
+import '../../../l10n/current_app_localizations.dart';
 import '../../../preference/home_section_config.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
@@ -111,13 +112,7 @@ class HomeViewModel extends ChangeNotifier {
         if (cfg.isBuiltin && merge && cfg.type == HomeSectionType.nextUp) continue;
         final placeholder = _placeholderForConfig(cfg);
         if (placeholder != null) {
-          if (cfg.isBuiltin && merge && cfg.type == HomeSectionType.resume) {
-            placeholders.add(placeholder.copyWith(
-              title: 'Continue Watching & Next Up',
-            ));
-          } else {
-            placeholders.add(placeholder);
-          }
+          placeholders.add(placeholder);
         }
       }
       _rows = placeholders;
@@ -177,9 +172,7 @@ class HomeViewModel extends ChangeNotifier {
       final resumePlaceholder = _placeholderForSection(HomeSectionType.resume);
       if (resumePlaceholder != null && !_rows.any((r) => r.id == 'resume')) {
         _rows = List.of(_rows);
-        _rows.insert(0, resumePlaceholder.copyWith(
-          title: 'Continue Watching & Next Up',
-        ));
+        _rows.insert(0, resumePlaceholder);
         notifyListeners();
       }
     }
@@ -365,6 +358,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<List<HomeRow>> _loadSection(HomeSectionType section) async {
+    final l10n = currentAppLocalizations();
     switch (section) {
       case HomeSectionType.resume:
         return [_multiServerEnabled
@@ -396,11 +390,11 @@ class HomeViewModel extends ChangeNotifier {
             : await _dataSource.loadLibraryTiles(_serverId, HomeRowType.libraryTilesSmall)];
       case HomeSectionType.liveTv:
         final rows = <HomeRow>[
-          const HomeRow(
+          HomeRow(
             id: 'liveTv',
-            title: 'Live TV',
+            title: l10n.liveTv,
             rowType: HomeRowType.liveTv,
-            items: [],
+            items: const [],
           ),
         ];
         try {
@@ -410,9 +404,9 @@ class HomeViewModel extends ChangeNotifier {
         return rows;
       case HomeSectionType.activeRecordings:
         return [
-          const HomeRow(
+          HomeRow(
             id: 'activeRecordings',
-            title: 'Active Recordings',
+            title: l10n.activeRecordings,
             rowType: HomeRowType.activeRecordings,
           ),
         ];
@@ -475,40 +469,41 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   HomeRow? _placeholderForSection(HomeSectionType section) {
+    final l10n = currentAppLocalizations();
     switch (section) {
       case HomeSectionType.resume:
-        return const HomeRow(
-          id: 'resume', title: 'Continue Watching',
+        return HomeRow(
+          id: 'resume', title: l10n.continueWatching,
           rowType: HomeRowType.resume, isLoading: true,
         );
       case HomeSectionType.resumeAudio:
-        return const HomeRow(
-          id: 'resumeAudio', title: 'Continue Listening',
+        return HomeRow(
+          id: 'resumeAudio', title: l10n.continueListening,
           rowType: HomeRowType.resumeAudio, isLoading: true,
         );
       case HomeSectionType.nextUp:
-        return const HomeRow(
-          id: 'nextUp', title: 'Next Up',
+        return HomeRow(
+          id: 'nextUp', title: l10n.nextUp,
           rowType: HomeRowType.nextUp, isLoading: true,
         );
       case HomeSectionType.latestMedia:
-        return const HomeRow(
-          id: 'latestMedia', title: 'Latest Media',
+        return HomeRow(
+          id: 'latestMedia', title: l10n.latestMedia,
           rowType: HomeRowType.latestMedia, isLoading: true,
         );
       case HomeSectionType.playlists:
-        return const HomeRow(
-          id: 'playlists', title: 'Playlists',
+        return HomeRow(
+          id: 'playlists', title: l10n.playlists,
           rowType: HomeRowType.playlists, isLoading: true,
         );
       case HomeSectionType.libraryTilesSmall:
-        return const HomeRow(
-          id: 'libraryTiles', title: 'My Media',
+        return HomeRow(
+          id: 'libraryTiles', title: l10n.myMedia,
           rowType: HomeRowType.libraryTiles, isLoading: true,
         );
       case HomeSectionType.libraryButtons:
-        return const HomeRow(
-          id: 'libraryTilesSmall', title: 'My Media',
+        return HomeRow(
+          id: 'libraryTilesSmall', title: l10n.myMedia,
           rowType: HomeRowType.libraryTilesSmall, isLoading: true,
         );
       case HomeSectionType.liveTv:

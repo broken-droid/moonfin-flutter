@@ -1911,7 +1911,7 @@ class _RequestDialogState extends State<_RequestDialog> {
             if (widget.vm.canRequest4k)
               SwitchListTile(
                 title:
-                    const Text('4K', style: TextStyle(color: Colors.white)),
+                    Text(l10n.uhd4k, style: const TextStyle(color: Colors.white)),
                 value: _is4k,
                 onChanged: (v) => setState(() {
                   _is4k = v;
@@ -1972,7 +1972,7 @@ class _RequestDialogState extends State<_RequestDialog> {
               final alreadyRequested = requested.contains(num);
               final selected = _selectedSeasons.contains(num);
               return FilterChip(
-                label: Text('S$num',
+                label: Text(l10n.seasonChip(num),
                     style: TextStyle(
                       fontSize: 13,
                       color: alreadyRequested

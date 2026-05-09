@@ -278,7 +278,7 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
     return Scaffold(
       appBar: buildSettingsAppBar(
         context,
-        const Text('Media Bar & Local Previews'),
+        Text(l10n.settingsMediaBarAndLocalPreviews),
       ),
       body: ListView(
         children: [
@@ -354,7 +354,7 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.episodePreviewEnabled,
-            title: 'Media Preview',
+            title: l10n.episodePreview,
             subtitle: l10n.episodePreviewDescription,
             icon: Icons.ondemand_video,
           ),

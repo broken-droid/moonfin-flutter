@@ -83,13 +83,14 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final showAdmin = !PlatformDetection.isTV && ref.watch(isAdminProvider);
     final entries = <_PanelEntry>[
       if (showAdmin)
         _PanelEntry(
           icon: Icons.admin_panel_settings,
-          title: 'Administration',
-          subtitle: 'Access the server administration panel',
+          title: l10n.administration,
+          subtitle: l10n.settingsAdministrationSubtitle,
           focusNode: _firstFocusNode,
           onTap: () {
             Navigator.of(context, rootNavigator: true).pop();
@@ -98,42 +99,42 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
         ),
       _PanelEntry(
         icon: Icons.lock,
-        title: 'Account & Security',
-        subtitle: 'Authentication, PIN code, and parental controls',
+        title: l10n.settingsAccountSecurity,
+        subtitle: l10n.settingsAccountSecuritySubtitle,
         focusNode: showAdmin ? null : _firstFocusNode,
         onTap: () =>
             context.pushSettingsScreen(const _AuthenticationCategoryScreen()),
       ),
       _PanelEntry(
         icon: Icons.palette,
-        title: 'Personalization',
-        subtitle: 'Theme, navigation, home rows, and library visibility',
+        title: l10n.settingsPersonalization,
+        subtitle: l10n.settingsPersonalizationSubtitle,
         onTap: () =>
             context.pushSettingsScreen(const _CustomizationCategoryScreen()),
       ),
       _PanelEntry(
         icon: Icons.featured_play_list,
-        title: 'Dynamic Content',
-        subtitle: 'Media Bar and visual overlays',
+        title: l10n.settingsDynamicContent,
+        subtitle: l10n.settingsDynamicContentSubtitle,
         onTap: () => context.pushSettingsScreen(const _PluginCategoryScreen()),
       ),
       _PanelEntry(
         icon: Icons.play_circle,
-        title: 'Playback & SyncPlay',
-        subtitle: 'Audio/video settings, subtitles, downloads, and SyncPlay controls',
+        title: l10n.settingsPlaybackSyncplay,
+        subtitle: l10n.settingsPlaybackSyncplaySubtitle,
         onTap: () =>
             context.pushSettingsScreen(const _PlaybackCategoryScreen()),
       ),
       _PanelEntry(
         icon: Icons.hub,
-        title: 'Integrations',
-        subtitle: 'Plugin sync, Seerr, ratings, and more',
+        title: l10n.integrations,
+        subtitle: l10n.settingsIntegrationsSubtitle,
         onTap: () => context.pushSettingsScreen(const _IntegrationsScreen()),
       ),
       _PanelEntry(
         icon: Icons.info_outline,
-        title: 'About',
-        subtitle: 'App version, legal information, and credits',
+        title: l10n.aboutTitle,
+        subtitle: l10n.settingsAboutSubtitle,
         onTap: () => context.pushSettingsScreen(const _AboutCategoryScreen()),
       ),
     ];
@@ -153,7 +154,7 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
                 icon: const Icon(Icons.close),
               ),
           automaticallyImplyLeading: false,
-          title: const Text('Settings'),
+          title: Text(l10n.settings),
         ),
         body: ListView(
           children: [
@@ -367,56 +368,57 @@ class _AuthenticationCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Account & Security')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsAccountSecurity)),
       body: ListView(
         children: [
-          const _SectionHeader('AUTHENTICATION'),
+          _SectionHeader(l10n.settingsAuthenticationSection),
           EnumPreferenceTile<UserSelectBehavior>(
             preference: UserPreferences.autoLoginUserBehavior,
-            title: 'Auto Sign In',
+            title: l10n.autoLogin,
             icon: Icons.person,
             labelOf: (v) => switch (v) {
-              UserSelectBehavior.disabled => 'Disabled',
-              UserSelectBehavior.lastUser => 'Last User',
-              UserSelectBehavior.specificUser => 'Specific User',
+              UserSelectBehavior.disabled => l10n.disabled,
+              UserSelectBehavior.lastUser => l10n.lastUser,
+              UserSelectBehavior.specificUser => l10n.specificUser,
             },
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.alwaysAuthenticate,
-            title: 'Always Authenticate?',
-            subtitle: 'Require the account password every time the app opens',
+            title: l10n.alwaysAuthenticate,
+            subtitle: l10n.requirePasswordWithToken,
             icon: Icons.lock,
           ),
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.pin),
-            title: const Text('PIN Code Protection'),
-            subtitle: const Text('Set a required numeric PIN to access this account'),
+            title: Text(l10n.pinCode),
+            subtitle: Text(l10n.requirePinToAccess),
             onTap: () =>
                 context.pushSettingsScreen(const PinCodeSettingsScreen()),
           ),
           EnumPreferenceTile<UserSortBy>(
             preference: AuthenticationPreferences.sortBy,
-            title: 'Sort Servers By',
+            title: l10n.settingsSortServersBy,
             icon: Icons.swap_horiz,
             labelOf: (v) => switch (v) {
-              UserSortBy.lastUsed => 'Last Used',
-              UserSortBy.alphabetical => 'Alphabetical',
+              UserSortBy.lastUsed => l10n.settingsLastUsed,
+              UserSortBy.alphabetical => l10n.settingsAlphabetical,
             },
           ),
-          const _SectionHeader('PRIVACY & SAFETY'),
+          _SectionHeader(l10n.settingsPrivacyAndSafetySection),
           _TvSettingsListTile(
             leading: const Icon(Icons.family_restroom),
-            title: const Text('Blocked Ratings'),
-            subtitle: const Text('Hide content from the selected parental ratings'),
+            title: Text(l10n.settingsBlockedRatings),
+            subtitle: Text(l10n.contentRatingRestrictions),
             onTap: () =>
                 context.pushSettingsScreen(const ParentalSettingsScreen()),
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.confirmExit,
-            title: 'Exit Confirmation',
-            subtitle: 'Show a confirmation prompt before closing Moonfin',
+            title: l10n.confirmExit,
+            subtitle: l10n.showConfirmationBeforeExiting,
             icon: Icons.exit_to_app,
           ),
           ],
@@ -430,44 +432,37 @@ class _CustomizationCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Personalization')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsPersonalization)),
       body: ListView(
         children: [
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.style),
-            title: const Text('General Style'),
-            subtitle: const Text(
-              'Theme accents, backdrops, watched indicators, and theme music',
-            ),
+            title: Text(l10n.settingsGeneralStyle),
+            subtitle: Text(l10n.settingsGeneralStyleSubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _GeneralStyleScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.view_sidebar),
-            title: const Text('Navigation'),
-            subtitle: const Text(
-              'Navbar position, color, opacity, and toolbar buttons',
-            ),
+            title: Text(l10n.navigation),
+            subtitle: Text(l10n.navbarStyleToolbarAppearance),
             onTap: () =>
                 context.pushSettingsScreen(const _NavigationCategoryScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.home),
-            title: const Text('Home Page'),
-            subtitle: const Text(
-              'Sections, image types, overlays, and media previews',
-            ),
+            title: Text(l10n.settingsHomePage),
+            subtitle: Text(l10n.settingsHomePageSubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _HomePageCategoryScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.video_library),
-            title: const Text('Libraries'),
-            subtitle: const Text(
-              'Library visibility, folder view, and multi-server behavior',
-            ),
+            title: Text(l10n.libraries),
+            subtitle: Text(l10n.settingsLibrariesSubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _LibrariesCategoryScreen()),
           ),
@@ -508,7 +503,7 @@ class _GeneralStyleScreenState extends State<_GeneralStyleScreen> {
     final bottomPad = PlatformDetection.isTV ? 96.0 : 24.0;
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('General Style')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsGeneralStyle)),
       body: FocusScope(
         node: _generalStyleScope,
         child: ListView(
@@ -523,43 +518,43 @@ class _GeneralStyleScreenState extends State<_GeneralStyleScreen> {
             ),
             EnumPreferenceTile<AppTheme>(
             preference: UserPreferences.focusColor,
-            title: 'Focus Border Color',
+            title: l10n.focusBorderColor,
             icon: Icons.border_color,
             labelOf: (v) => _formatCamelCaseLabel(v.name),
           ),
             EnumPreferenceTile<ClockBehavior>(
             preference: UserPreferences.clockBehavior,
-            title: 'Clock Display',
+            title: l10n.clockDisplay,
             icon: Icons.access_time,
             labelOf: (v) => switch (v) {
-              ClockBehavior.always => 'Always',
-              ClockBehavior.inMenus => 'In Menus',
-              ClockBehavior.never => 'Never',
+              ClockBehavior.always => l10n.always,
+              ClockBehavior.inMenus => l10n.inMenus,
+              ClockBehavior.never => l10n.never,
             },
           ),
             SwitchPreferenceTile(
             preference: UserPreferences.use24HourClock,
-            title: '24-Hour Clock',
-            subtitle: 'Use 24-hour time formatting wherever the clock is shown',
+            title: l10n.settingsTwentyFourHourClock,
+            subtitle: l10n.settingsTwentyFourHourClockSubtitle,
             icon: Icons.schedule,
           ),
             if (!PlatformDetection.useMobileUi)
               SwitchPreferenceTile(
               preference: UserPreferences.cardFocusExpansion,
-              title: 'Card Focus Expansion',
-              subtitle: 'Cards grow slightly when focused',
+              title: l10n.focusExpansionAnimation,
+              subtitle: l10n.scaleFocusedCards,
               icon: Icons.zoom_in,
             ),
             SwitchPreferenceTile(
             preference: UserPreferences.backdropEnabled,
-            title: 'Show Backdrops',
-            subtitle: 'Show fanart in the background of detail pages',
+            title: l10n.backgroundBackdrops,
+            subtitle: l10n.showBackdropImages,
             icon: Icons.photo,
             onChanged: _pushPersonalizationSync,
           ),
             SliderPreferenceTile(
             preference: UserPreferences.browsingBackgroundBlurAmount,
-            title: 'Browsing Blur',
+            title: l10n.browsingBackgroundBlur,
             icon: Icons.blur_circular,
             min: 0,
             max: 25,
@@ -569,7 +564,7 @@ class _GeneralStyleScreenState extends State<_GeneralStyleScreen> {
           ),
             SliderPreferenceTile(
             preference: UserPreferences.detailsBackgroundBlurAmount,
-            title: 'Details Blur',
+            title: l10n.detailsBackgroundBlur,
             icon: Icons.blur_on,
             min: 0,
             max: 25,
@@ -579,25 +574,25 @@ class _GeneralStyleScreenState extends State<_GeneralStyleScreen> {
           ),
             EnumPreferenceTile<WatchedIndicatorBehavior>(
             preference: UserPreferences.watchedIndicatorBehavior,
-            title: 'Watched Indicators',
+            title: l10n.watchedIndicators,
             icon: Icons.check_circle,
             labelOf: (v) => switch (v) {
-              WatchedIndicatorBehavior.always => 'Always',
-              WatchedIndicatorBehavior.hideUnwatched => 'Hide Unwatched',
-              WatchedIndicatorBehavior.episodesOnly => 'Episodes Only',
-              WatchedIndicatorBehavior.never => 'Never',
+              WatchedIndicatorBehavior.always => l10n.always,
+              WatchedIndicatorBehavior.hideUnwatched => l10n.hideUnwatched,
+              WatchedIndicatorBehavior.episodesOnly => l10n.episodesOnly,
+              WatchedIndicatorBehavior.never => l10n.never,
             },
           ),
             SwitchPreferenceTile(
             preference: UserPreferences.themeMusicEnabled,
-            title: 'Theme Music',
-            subtitle: 'Play theme songs while browsing media detail pages',
+            title: l10n.themeMusic,
+            subtitle: l10n.playThemeMusicOnDetailPages,
             icon: Icons.music_note,
             onChanged: _pushPersonalizationSync,
           ),
             SliderPreferenceTile(
             preference: UserPreferences.themeMusicVolume,
-            title: 'Theme Music Volume',
+            title: l10n.themeMusicVolume,
             icon: Icons.volume_down,
             min: 0,
             max: 100,
@@ -617,17 +612,18 @@ class _NavigationCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Navigation')),
+      appBar: buildSettingsAppBar(context, Text(l10n.navigation)),
       body: ListView(
         children: [
           EnumPreferenceTile<NavbarPosition>(
             preference: UserPreferences.navbarPosition,
-            title: 'Navbar Position',
+            title: l10n.navigationStyle,
             icon: Icons.view_sidebar,
             labelOf: (v) => switch (v) {
-              NavbarPosition.top => 'Top',
-              NavbarPosition.left => 'Left',
+              NavbarPosition.top => l10n.topBar,
+              NavbarPosition.left => l10n.leftSidebar,
             },
             onChanged: () {
               final pos = GetIt.instance<UserPreferences>()
@@ -639,7 +635,7 @@ class _NavigationCategoryScreen extends StatelessWidget {
           _NavbarColorPickerTile(onChanged: _pushPersonalizationSync),
           SliderPreferenceTile(
             preference: UserPreferences.navbarOpacity,
-            title: 'Navbar Opacity',
+            title: l10n.navbarOpacity,
             icon: Icons.opacity,
             min: 0,
             max: 100,
@@ -648,30 +644,30 @@ class _NavigationCategoryScreen extends StatelessWidget {
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.showShuffleButton,
-            title: 'Shuffle Button',
-            subtitle: 'Show the shuffle button in the navigation bar',
+            title: l10n.showShuffleButton,
+            subtitle: l10n.settingsShowShuffleButtonInNavigation,
             icon: Icons.shuffle,
             onChanged: _pushPersonalizationSync,
           ),
           _ShuffleContentTypePickerTile(onChanged: _pushPersonalizationSync),
           SwitchPreferenceTile(
             preference: UserPreferences.showGenresButton,
-            title: 'Genres Button',
-            subtitle: 'Show the genres button in the navigation bar',
+            title: l10n.showGenresButton,
+            subtitle: l10n.settingsShowGenresButtonInNavigation,
             icon: Icons.theater_comedy,
             onChanged: _pushPersonalizationSync,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.showFavoritesButton,
-            title: 'Favorites Button',
-            subtitle: 'Show the favorites button in the navigation bar',
+            title: l10n.showFavoritesButton,
+            subtitle: l10n.settingsShowFavoritesButtonInNavigation,
             icon: Icons.favorite,
             onChanged: _pushPersonalizationSync,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.showLibrariesInToolbar,
-            title: 'Libraries Button',
-            subtitle: 'Show the libraries button in the navigation bar',
+            title: l10n.showLibrariesInToolbar,
+            subtitle: l10n.settingsShowLibrariesButtonInNavigation,
             icon: Icons.video_library,
             onChanged: _pushPersonalizationSync,
           ),
@@ -686,61 +682,62 @@ class _HomePageCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Home Page')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsHomePage)),
       body: ListView(
         children: [
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.list),
-            title: const Text('Home Sections'),
-            subtitle: const Text('Configure which rows appear on the home screen'),
+            title: Text(l10n.homeSections),
+            subtitle: Text(l10n.reorderToggleHomeRows),
             onTap: () => context.pushSettingsScreen(
               const HomeSectionsScreen(showGeneralOptions: false),
             ),
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.mergeContinueWatchingNextUp,
-            title: 'Merge Continue Watching',
-            subtitle: 'Combine Continue Watching and Next Up into one row',
+            title: l10n.mergeContinueWatchingAndNextUp,
+            subtitle: l10n.combineBothRows,
             icon: Icons.merge_type,
             onChanged: _pushPersonalizationSync,
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.photo_library),
-            title: const Text('Home Row Image Type'),
-            subtitle: const Text('Per-row image type override'),
+            title: Text(l10n.perRowImageTypeSelection),
+            subtitle: Text(l10n.configureImageTypeForEachRow),
             onTap: () =>
                 context.pushSettingsScreen(const HomeRowsImageTypeScreen()),
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.seriesThumbnailsEnabled,
-            title: 'Series Thumbnails',
-            subtitle: 'If thumbnails are selected in Home Row Image, show series instead of episode thumbnails.',
+            title: l10n.seriesThumbnails,
+            subtitle: l10n.seriesThumbnailsDescription,
             icon: Icons.image_aspect_ratio,
           ),
           EnumPreferenceTile<PosterSize>(
             preference: UserPreferences.posterSize,
-            title: 'Image Size',
+            title: l10n.posterSize,
             icon: Icons.photo_size_select_large,
             labelOf: (v) => switch (v) {
-              PosterSize.small => 'Small',
-              PosterSize.medium => 'Medium',
-              PosterSize.large => 'Large',
-              PosterSize.extraLarge => 'Extra Large',
+              PosterSize.small => l10n.small,
+              PosterSize.medium => l10n.medium,
+              PosterSize.large => l10n.large,
+              PosterSize.extraLarge => l10n.extraLarge,
             },
             onChanged: _pushPersonalizationSync,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.homeRowInfoOverlay,
-            title: 'Home Row Overlay',
-            subtitle: 'Show descriptive overlay for the selected item',
+            title: l10n.homeRowInfoOverlay,
+            subtitle: l10n.showTitleMetadataOnHomeRows,
             icon: Icons.info_outline,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.themeMusicOnHomeRows,
-            title: 'Play Theme Music on Home Page',
-            subtitle: 'Also play theme music while browsing the home screen',
+            title: l10n.themeMusicOnHomeRows,
+            subtitle: l10n.playWhenBrowsingHomeScreen,
             icon: Icons.queue_music,
             onChanged: _pushPersonalizationSync,
           ),
@@ -755,31 +752,29 @@ class _LibrariesCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Libraries')),
+      appBar: buildSettingsAppBar(context, Text(l10n.libraries)),
       body: ListView(
         children: [
           _TvSettingsListTile(
             leading: const Icon(Icons.visibility),
-            title: const Text('Library Visibility'),
-            subtitle: const Text(
-              'Toggle home page visibility per library. '
-              'Restart Moonfin for changes to take effect.',
-            ),
+            title: Text(l10n.libraryVisibility),
+            subtitle: Text(l10n.settingsLibraryVisibilitySubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const LibraryVisibilityScreen()),
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.enableFolderView,
-            title: 'Folder View',
-            subtitle: 'Enable browsing by file system structure',
+            title: l10n.enableFolderView,
+            subtitle: l10n.showFolderBrowsingOption,
             icon: Icons.folder,
             onChanged: _pushPersonalizationSync,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.enableMultiServerLibraries,
-            title: 'Multi-Server Libraries',
-            subtitle: 'Combine items from multiple servers in a single view',
+            title: l10n.multiServerLibraries,
+            subtitle: l10n.showLibrariesFromAllServers,
             icon: Icons.dns,
             onChanged: _pushPersonalizationSync,
           ),
@@ -794,24 +789,23 @@ class _PluginCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Dynamic Content')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsDynamicContent)),
       body: ListView(
         children: [
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.featured_play_list),
-            title: const Text('Media Bar & Local Previews'),
-            subtitle: const Text(
-              'Spotlight carousel, content filters, and auto-advance',
-            ),
+            title: Text(l10n.settingsMediaBarAndLocalPreviews),
+            subtitle: Text(l10n.featuredContentAppearance),
             onTap: () =>
                 context.pushSettingsScreen(const MediaBarSettingsScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.auto_awesome),
-            title: const Text('Visual Overlays'),
-            subtitle: const Text('Seasonal effects'),
+            title: Text(l10n.settingsVisualOverlays),
+            subtitle: Text(l10n.seasonalEffects),
             onTap: () =>
                 context.pushSettingsScreen(const _VisualOverlaysScreen()),
           ),
@@ -826,20 +820,21 @@ class _VisualOverlaysScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Visual Overlays')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsVisualOverlays)),
       body: ListView(
         children: [
           StringPickerPreferenceTile(
             preference: UserPreferences.seasonalSurprise,
-            title: 'Seasonal Surprise',
+            title: l10n.settingsSeasonalSurprise,
             icon: Icons.auto_awesome,
-            options: const {
-              'none': 'None',
-              'snow': 'Snow',
-              'fireworks': 'Fireworks',
-              'confetti': 'Confetti',
-              'leaves': 'Leaves',
+            options: {
+              'none': l10n.none,
+              'snow': l10n.snow,
+              'fireworks': l10n.fireworks,
+              'confetti': l10n.confetti,
+              'leaves': l10n.fallingLeaves,
             },
           ),
         ],
@@ -869,8 +864,9 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Integrations')),
+      appBar: buildSettingsAppBar(context, Text(l10n.integrations)),
       body: FocusScope(
         node: _integrationsScope,
         autofocus: true,
@@ -879,19 +875,15 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
             _TvSettingsListTile(
               autofocus: true,
               leading: const Icon(Icons.extension),
-              title: const Text('Plugin'),
-              subtitle: const Text(
-                'Moonbase status, sync profiles, and plugin sync controls',
-              ),
+              title: Text(l10n.pluginLabel),
+              subtitle: Text(l10n.serverSyncAndPluginStatus),
               onTap: () =>
                   context.pushSettingsScreen(const _PluginScreen()),
             ),
             _TvSettingsListTile(
               leading: const Icon(Icons.star),
-              title: const Text('Metadata & Ratings'),
-              subtitle: const Text(
-                'Rating sources, display options, and API keys',
-              ),
+              title: Text(l10n.settingsMetadataAndRatings),
+              subtitle: Text(l10n.mdbListTmdbRatingSources),
               onTap: () =>
                   context.pushSettingsScreen(const _MetadataRatingsScreen()),
             ),
@@ -901,10 +893,8 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
                 width: 24,
                 height: 24,
               ),
-              title: const Text('Seerr'),
-              subtitle: const Text(
-                'Enable and configure Seerr for media request management',
-              ),
+              title: Text(l10n.seerr),
+              subtitle: Text(l10n.mediaRequestIntegration),
               onTap: () => context.pushSettingsScreen(const SeerrConfigScreen()),
             ),
             _TvSettingsListTile(
@@ -914,9 +904,7 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
                 height: 24,
               ),
               title: const Text('Home Screen Sections'),
-              subtitle: const Text(
-                'Detect and configure the Home Screen Sections plugin',
-              ),
+              subtitle: Text(l10n.homeScreenSectionsIntegrationDescription),
               onTap: () => context.pushSettingsScreen(
                 const HomeScreenSectionsIntegrationScreen(),
               ),
@@ -928,9 +916,7 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
                 height: 24,
               ),
               title: const Text('KefinTweaks'),
-              subtitle: const Text(
-                'Mirror home rows from the KefinTweaks front-end plugin',
-              ),
+              subtitle: Text(l10n.kefinTweaksIntegrationDescription),
               onTap: () => context.pushSettingsScreen(
                 const KefinTweaksIntegrationScreen(),
               ),
@@ -965,8 +951,9 @@ class _PluginScreenState extends State<_PluginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Plugin')),
+      appBar: buildSettingsAppBar(context, Text(l10n.pluginLabel)),
       body: FocusScope(
         node: _pluginScope,
         autofocus: true,
@@ -991,8 +978,7 @@ class _PluginScreenState extends State<_PluginScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Moonbase powers server-side integrations including additional '
-                        'rating sources, Seerr requests, and synced preferences.',
+                        l10n.settingsPluginScreenDescription,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -1032,9 +1018,9 @@ class _MetadataRatingsScreenState extends State<_MetadataRatingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar:
-          buildSettingsAppBar(context, const Text('Metadata & Ratings')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsMetadataAndRatings)),
       body: FocusScope(
         node: _metadataScope,
         autofocus: true,
@@ -1042,36 +1028,36 @@ class _MetadataRatingsScreenState extends State<_MetadataRatingsScreen> {
           children: [
             SwitchPreferenceTile(
               preference: UserPreferences.enableAdditionalRatings,
-              title: 'Fetch Additional Ratings',
-              subtitle: 'Pull scores from IMDb, Rotten Tomatoes, and more',
+              title: l10n.additionalRatings,
+              subtitle: l10n.showMdbListAndTmdbRatings,
               icon: Icons.star,
               onChanged: _pushPersonalizationSync,
             ),
             _TvSettingsListTile(
               leading: const Icon(Icons.reorder),
-              title: const Text('Enabled Rating Sources'),
-              subtitle: const Text('Configure providers and display order'),
+              title: Text(l10n.ratingSources),
+              subtitle: Text(l10n.ratingSourcesDescription),
               onTap: () =>
                   context.pushSettingsScreen(const RatingsConfigScreen()),
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.enableEpisodeRatings,
-              title: 'Show Episode Ratings',
-              subtitle: 'Show ratings for individual episodes',
+              title: l10n.episodeRatings,
+              subtitle: l10n.showRatingsOnEpisodes,
               icon: Icons.stars,
               onChanged: _pushPersonalizationSync,
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.showRatingLabels,
-              title: 'Show Rating Text Labels',
-              subtitle: 'Show text labels in addition to source icons',
+              title: l10n.ratingLabels,
+              subtitle: l10n.showLabelsNextToIcons,
               icon: Icons.label,
               onChanged: _pushPersonalizationSync,
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.showRatingBadges,
-              title: 'Show Rating Badges',
-              subtitle: 'Show rating score badges on cards',
+              title: l10n.ratingBadges,
+              subtitle: l10n.showDecorativeBadges,
               icon: Icons.style,
               onChanged: _pushPersonalizationSync,
             ),
@@ -1104,9 +1090,9 @@ class _OfflineDownloadsScreenState extends State<_OfflineDownloadsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar:
-          buildSettingsAppBar(context, const Text('Offline Downloads')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsOfflineDownloads)),
       body: FocusScope(
         node: _offlineScope,
         autofocus: true,
@@ -1114,42 +1100,42 @@ class _OfflineDownloadsScreenState extends State<_OfflineDownloadsScreen> {
           children: [
             StringPickerPreferenceTile(
               preference: UserPreferences.defaultDownloadQuality,
-              title: 'Default Download Quality',
+              title: l10n.defaultDownloadQuality,
               icon: Icons.high_quality,
-              options: const {
-                'original': 'Original',
-                'high': 'High',
-                'medium': 'Medium',
-                'low': 'Low',
+              options: {
+                'original': l10n.original,
+                'high': l10n.settingsHigh,
+                'medium': l10n.medium,
+                'low': l10n.settingsLow,
               },
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.downloadWifiOnly,
-              title: 'WiFi Only',
-              subtitle: 'Only allow downloads when connected to WiFi',
+              title: l10n.wifiOnlyDownloads,
+              subtitle: l10n.onlyDownloadOnWifi,
               icon: Icons.wifi,
             ),
             SliderPreferenceTile(
               preference: UserPreferences.downloadStorageLimitMb,
-              title: 'Storage Limit',
+              title: l10n.storageLimit,
               icon: Icons.storage,
               min: 0,
               max: 102400,
               divisions: 100,
               labelOf: (v) => v == 0
-                  ? 'No limit'
-                  : '${(v / 1024).toStringAsFixed(1)} GB',
+                  ? l10n.noLimit
+                  : l10n.gbValue((v / 1024).toStringAsFixed(1)),
             ),
             _EditableStringPreferenceTile(
               preference: UserPreferences.customDownloadPath,
-              title: 'Custom Path',
+              title: l10n.settingsCustomPath,
               icon: Icons.folder_open,
-              hintText: 'Enter download folder path',
+              hintText: l10n.settingsEnterDownloadFolderPath,
             ),
             IntPickerPreferenceTile(
               preference: UserPreferences.downloadConcurrentCount,
-              title: 'Concurrent Downloads',
-              description: 'Maximum number of items to download at once.',
+              title: l10n.settingsConcurrentDownloads,
+              description: l10n.settingsConcurrentDownloadsDescription,
               icon: Icons.queue,
               options: const {
                 1: '1',
@@ -1175,8 +1161,9 @@ class _AboutCategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appVersion = GetIt.instance<DeviceInfo>().appVersion;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('About')),
+      appBar: buildSettingsAppBar(context, Text(l10n.aboutTitle)),
       body: ListView(
         children: [
           const SizedBox(height: 24),
@@ -1189,17 +1176,17 @@ class _AboutCategoryScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Center(
             child: Text(
-              'Version $appVersion',
+              l10n.versionValue(appVersion),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
           const SizedBox(height: 16),
           const Divider(),
-          const _SectionHeader('APP INFO'),
+          _SectionHeader(l10n.settingsAppInfo),
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.info_outline),
-            title: const Text('Version'),
+            title: Text(l10n.version),
             subtitle: Text(appVersion),
             trailing: const SizedBox.shrink(),
             onTap: () {},
@@ -1208,10 +1195,8 @@ class _AboutCategoryScreen extends StatelessWidget {
             const _CheckForUpdatesTile(),
           _TvSettingsListTile(
             leading: const Icon(Icons.code),
-            title: const Text('Source Code'),
-            subtitle: const Text(
-              'github.com/Moonfin-Client/Mobile-Desktop',
-            ),
+            title: Text(l10n.sourceCode),
+            subtitle: Text(l10n.sourceCodeUrl),
             onTap: () => launchUrl(
               Uri.parse(
                 'https://github.com/Moonfin-Client/Mobile-Desktop',
@@ -1221,10 +1206,8 @@ class _AboutCategoryScreen extends StatelessWidget {
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.bug_report),
-            title: const Text('Report an Issue'),
-            subtitle: const Text(
-              'Open the issue tracker on GitHub',
-            ),
+            title: Text(l10n.settingsReportAnIssue),
+            subtitle: Text(l10n.settingsReportAnIssueSubtitle),
             onTap: () => launchUrl(
               Uri.parse(
                 'https://github.com/Moonfin-Client/Mobile-Desktop/issues',
@@ -1234,33 +1217,31 @@ class _AboutCategoryScreen extends StatelessWidget {
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.forum),
-            title: const Text('Join Discord'),
-            subtitle: const Text('Chat with the community'),
+            title: Text(l10n.settingsJoinDiscord),
+            subtitle: Text(l10n.settingsJoinDiscordSubtitle),
             onTap: () => showQrOrLaunch(
               context,
               url: 'https://discord.gg/u7ny4Rnxze',
-              title: 'Join the Discord',
+              title: l10n.settingsJoinTheDiscord,
             ),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.favorite),
-            title: const Text('Support Moonfin'),
-            subtitle: const Text(
-              'Star the project on GitHub or contribute',
-            ),
+            title: Text(l10n.settingsSupportMoonfin),
+            subtitle: Text(l10n.settingsSupportMoonfinSubtitle),
             onTap: () => showSupportDialog(context),
           ),
-          const _SectionHeader('LEGAL'),
+          _SectionHeader(l10n.settingsLegal),
           _TvSettingsListTile(
             leading: const Icon(Icons.description),
-            title: const Text('Licenses'),
-            subtitle: const Text('Open-source license notices'),
+            title: Text(l10n.settingsLicenses),
+            subtitle: Text(l10n.settingsOpenSourceLicenseNotices),
             onTap: () => context.pushSettingsScreen(const _LicensesScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.privacy_tip),
-            title: const Text('Privacy Policy'),
-            subtitle: const Text('How Moonfin handles your data'),
+            title: Text(l10n.settingsPrivacyPolicy),
+            subtitle: Text(l10n.settingsPrivacyPolicySubtitle),
             onTap: () => launchUrl(
               Uri.parse(
                 'https://github.com/Moonfin-Client/Mobile-Desktop/blob/main/PRIVACY_POLICY.md',
@@ -1294,6 +1275,7 @@ class _CheckForUpdatesTileState extends State<_CheckForUpdatesTile> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return _TvSettingsListTile(
       leading: _checking
           ? const SizedBox(
@@ -1302,8 +1284,8 @@ class _CheckForUpdatesTileState extends State<_CheckForUpdatesTile> {
               child: CircularProgressIndicator(strokeWidth: 2),
             )
           : const Icon(Icons.system_update_alt),
-      title: const Text('Check for Updates'),
-      subtitle: const Text('Check for the latest Moonfin release'),
+      title: Text(l10n.settingsCheckForUpdates),
+      subtitle: Text(l10n.settingsCheckForUpdatesSubtitle),
       onTap: _checking ? null : _check,
     );
   }
@@ -1379,10 +1361,11 @@ class _LicensesScreenState extends State<_LicensesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return RequestInitialFocus(
       targetNode: PlatformDetection.isTV ? _firstLicenseFocusNode : null,
       child: Scaffold(
-        appBar: buildSettingsAppBar(context, const Text('Licenses')),
+        appBar: buildSettingsAppBar(context, Text(l10n.settingsLicenses)),
         body: FutureBuilder<List<_LicensePackageData>>(
           future: _licensesFuture,
           builder: (context, snapshot) {
@@ -1394,11 +1377,11 @@ class _LicensesScreenState extends State<_LicensesScreen> {
             return ListView(
               children: [
                 const SizedBox(height: 16),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
-                    'Powered by Flutter',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    l10n.settingsPoweredByFlutter,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1412,9 +1395,7 @@ class _LicensesScreenState extends State<_LicensesScreen> {
                     leading: const Icon(Icons.description_outlined),
                     title: Text(entry.packageName),
                     subtitle: Text(
-                      entry.blocks.length == 1
-                          ? '1 license notice'
-                          : '${entry.blocks.length} license notices',
+                      l10n.settingsLicenseNoticesCount(entry.blocks.length),
                     ),
                     onTap: () => context.pushSettingsScreen(
                       _LicenseDetailScreen(entry: entry),
@@ -1526,66 +1507,59 @@ class _PlaybackCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Playback & SyncPlay')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsPlaybackSyncplay)),
       body: ListView(
         children: [
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.play_circle),
-            title: const Text('Video Playback Preferences'),
-            subtitle: const Text(
-              'Core video engine and streaming quality settings',
-            ),
+            title: Text(l10n.settingsVideoPlaybackPreferences),
+            subtitle: Text(l10n.settingsVideoPlaybackPreferencesSubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _VideoPlaybackScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.volume_up),
-            title: const Text('Audio Preferences'),
-            subtitle: const Text(
-              'Audio tracks, processing, and passthrough options',
-            ),
+            title: Text(l10n.settingsAudioPreferences),
+            subtitle: Text(l10n.settingsAudioPreferencesSubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _AudioPreferencesScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.subtitles),
-            title: const Text('Subtitles'),
-            subtitle: const Text('Formatting, timing, and rendering options'),
+            title: Text(l10n.subtitles),
+            subtitle: Text(l10n.languageSizeAppearance),
             onTap: () =>
                 context.pushSettingsScreen(const SubtitleSettingsScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.queue_play_next),
-            title: const Text('Automation & Queue'),
-            subtitle: const Text('Automated playback and sequencing'),
+            title: Text(l10n.settingsAutomationAndQueue),
+            subtitle: Text(l10n.settingsAutomationAndQueueSubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _AutomationQueueScreen()),
           ),
           if (!PlatformDetection.isTV)
             _TvSettingsListTile(
               leading: const Icon(Icons.download),
-              title: const Text('Offline Downloads'),
-              subtitle: const Text(
-                'Download quality, storage limits, and queue size',
-              ),
+              title: Text(l10n.settingsOfflineDownloads),
+              subtitle: Text(l10n.settingsOfflineDownloadsSubtitle),
               onTap: () =>
                   context.pushSettingsScreen(const _OfflineDownloadsScreen()),
             ),
           _TvSettingsListTile(
             leading: const Icon(Icons.groups),
-            title: const Text('SyncPlay'),
-            subtitle: const Text('Synchronization logic for group sessions'),
+            title: Text(l10n.syncPlay),
+            subtitle: Text(l10n.settingsSyncplaySubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _SyncPlaySettingsScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('Advanced Options'),
-            subtitle: const Text(
-              'Specialized player features. Use with caution, as some options may cause playback issues',
-            ),
+            title: Text(l10n.advancedOptions),
+            subtitle: Text(l10n.settingsAdvancedOptionsSubtitle),
             onTap: () =>
                 context.pushSettingsScreen(const _AdvancedOptionsScreen()),
           ),
@@ -1600,38 +1574,37 @@ class _VideoPlaybackScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: buildSettingsAppBar(
         context,
-        const Text('Video Playback Preferences'),
+        Text(l10n.settingsVideoPlaybackPreferences),
       ),
       body: ListView(
         children: [
           StringPickerPreferenceTile(
             preference: UserPreferences.mediaSegmentActions,
-            title: 'Skip Intros and Outros?',
+            title: l10n.settingsSkipIntrosAndOutros,
             icon: Icons.content_cut,
-            options: const {
-              'intro:askToSkip,outro:askToSkip': 'Prompt User',
-              'intro:skip,outro:skip': 'Skip',
-              'intro:doNothing,outro:doNothing': 'Do Nothing',
+            options: {
+              'intro:askToSkip,outro:askToSkip': l10n.settingsPromptUser,
+              'intro:skip,outro:skip': l10n.settingsSkip,
+              'intro:doNothing,outro:doNothing': l10n.settingsDoNothing,
             },
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.showDescriptionOnPause,
-            title: 'Show Description on Pause',
-            subtitle: 'Show video description overlay while paused',
+            title: l10n.showDescriptionOnPause,
+            subtitle: l10n.dimVideoShowOverview,
             icon: Icons.pause_circle_outline,
           ),
           StringPickerPreferenceTile(
             preference: UserPreferences.maxBitrate,
-            title: 'Max Bitrate',
-            description:
-                'Cap the streaming bitrate. Content above this threshold '
-                'will be transcoded to fit.',
+            title: l10n.maxStreamingBitrate,
+            description: l10n.settingsMaxBitrateDescription,
             icon: Icons.network_check,
-            options: const {
-              'auto': 'Auto',
+            options: {
+              'auto': l10n.auto,
               '200': '200 Mbps',
               '120': '120 Mbps',
               '80': '80 Mbps',
@@ -1645,13 +1618,11 @@ class _VideoPlaybackScreen extends StatelessWidget {
           ),
           EnumPreferenceTile<MaxVideoResolution>(
             preference: UserPreferences.maxVideoResolution,
-            title: 'Max Resolution',
-            description:
-                'Limit the maximum resolution the player will request. '
-                'Higher-resolution content will be transcoded down.',
+            title: l10n.maxResolution,
+            description: l10n.settingsMaxResolutionDescription,
             icon: Icons.high_quality,
             labelOf: (v) => switch (v) {
-              MaxVideoResolution.auto => 'Auto',
+              MaxVideoResolution.auto => l10n.auto,
               MaxVideoResolution.res480p => '480p',
               MaxVideoResolution.res720p => '720p',
               MaxVideoResolution.res1080p => '1080p',
@@ -1660,151 +1631,141 @@ class _VideoPlaybackScreen extends StatelessWidget {
           ),
           EnumPreferenceTile<ZoomMode>(
             preference: UserPreferences.playerZoomMode,
-            title: 'Player Zoom',
-            description:
-                'How video should be scaled to fit the screen.',
+            title: l10n.playerZoomMode,
+            description: l10n.settingsPlayerZoomDescription,
             icon: Icons.zoom_out_map,
             labelOf: (v) => switch (v) {
-              ZoomMode.fit => 'Fit',
-              ZoomMode.autoCrop => 'Auto Crop',
-              ZoomMode.stretch => 'Stretch',
+              ZoomMode.fit => l10n.fit,
+              ZoomMode.autoCrop => l10n.autoCrop,
+              ZoomMode.stretch => l10n.stretch,
             },
           ),
           if (PlatformDetection.isAndroid && PlatformDetection.isTV)
             EnumPreferenceTile<PlaybackEnginePreference>(
               preference: UserPreferences.playbackEnginePreference,
-              title: 'Playback Engine (Android TV)',
-              description:
-                  'Choose the default playback engine on Android TV devices. '
-                  'Changes apply to the next playback session.',
+              title: l10n.settingsPlaybackEngineAndroidTv,
+              description: l10n.settingsPlaybackEngineAndroidTvDescription,
               icon: Icons.video_settings,
               labelOf: (v) => switch (v) {
-                PlaybackEnginePreference.media3 => 'Media3 (recommended)',
-                PlaybackEnginePreference.mpv => 'mpv (legacy)',
+                PlaybackEnginePreference.media3 =>
+                  l10n.settingsPlaybackEngineMedia3Recommended,
+                PlaybackEnginePreference.mpv => l10n.settingsPlaybackEngineMpvLegacy,
               },
             ),
           if (PlatformDetection.isAndroid && PlatformDetection.isTV)
             EnumPreferenceTile<DolbyVisionFallbackBehavior>(
               preference: UserPreferences.dolbyVisionFallbackBehavior,
-              title: 'Dolby Vision Fallback',
-              description:
-                  'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.',
+              title: l10n.settingsDolbyVisionFallback,
+              description: l10n.settingsDolbyVisionFallbackDescription,
               icon: Icons.hdr_strong,
               labelOf: (v) => switch (v) {
-                DolbyVisionFallbackBehavior.ask => 'Ask each time',
-                DolbyVisionFallbackBehavior.hdr10Fallback => 'Prefer HDR10 fallback',
-                DolbyVisionFallbackBehavior.transcode => 'Prefer server transcode',
+                DolbyVisionFallbackBehavior.ask => l10n.settingsAskEachTime,
+                DolbyVisionFallbackBehavior.hdr10Fallback =>
+                  l10n.settingsPreferHdr10Fallback,
+                DolbyVisionFallbackBehavior.transcode =>
+                  l10n.settingsPreferServerTranscode,
               },
             ),
           if (PlatformDetection.isAndroid && PlatformDetection.isTV)
             EnumPreferenceTile<DolbyVisionProfile7DirectPlayBehavior>(
               preference: UserPreferences.dolbyVisionProfile7DirectPlayBehavior,
-              title: 'Dolby Vision Profile 7 Direct Play',
-              description:
-                  'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.',
+              title: l10n.settingsDolbyVisionProfile7DirectPlay,
+              description: l10n.settingsDolbyVisionProfile7DirectPlayDescription,
               icon: Icons.movie_filter,
               labelOf: (v) => switch (v) {
                 DolbyVisionProfile7DirectPlayBehavior.auto =>
-                  'Auto (AFTKRT enabled)',
+                  l10n.settingsAutoAftkrtEnabled,
                 DolbyVisionProfile7DirectPlayBehavior.enabled =>
-                  'Enabled on this device',
+                  l10n.settingsEnabledOnThisDevice,
                 DolbyVisionProfile7DirectPlayBehavior.disabled =>
-                  'Disabled (prefer transcode)',
+                  l10n.settingsDisabledPreferTranscode,
               },
             ),
           SwitchPreferenceTile(
             preference: UserPreferences.hardwareDecoding,
-            title: 'Hardware Decoding',
-            subtitle: 'Use GPU for video decoding if available',
+            title: l10n.hardwareDecoding,
+            subtitle: l10n.hardwareDecodingSubtitle,
             icon: Icons.memory,
           ),
           EnumPreferenceTile<RefreshRateSwitchingBehavior>(
             preference: UserPreferences.refreshRateSwitchingBehavior,
-            title: 'Refresh Rate Switching',
+            title: l10n.refreshRateSwitching,
             icon: Icons.speed,
             labelOf: (v) => switch (v) {
-              RefreshRateSwitchingBehavior.disabled => 'Disabled',
-              RefreshRateSwitchingBehavior.scaleOnTv => 'Scale on TV',
-              RefreshRateSwitchingBehavior.scaleOnDevice => 'Scale on Device',
+              RefreshRateSwitchingBehavior.disabled => l10n.disabled,
+              RefreshRateSwitchingBehavior.scaleOnTv => l10n.scaleOnTv,
+              RefreshRateSwitchingBehavior.scaleOnDevice => l10n.scaleOnDevice,
             },
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.trickPlayEnabled,
-            title: 'Trick Play',
-            subtitle: 'Show thumbnails while scrubbing (if available)',
+            title: l10n.trickPlay,
+            subtitle: l10n.showPreviewThumbnailsWhenSeeking,
             icon: Icons.image_search,
           ),
           if (PlatformDetection.useMobileUi)
             SwitchPreferenceTile(
               preference: UserPreferences.osdLockEnabled,
-              title: 'Mobile Lock Button',
-              subtitle: 'Show a lock button during playback',
+              title: l10n.osdLockButton,
+              subtitle: l10n.osdLockButtonDescription,
               icon: Icons.lock,
             ),
           StringPickerPreferenceTile(
             preference: UserPreferences.resumeSubtractDuration,
-            title: 'Resume Rewind',
-            description:
-                'When resuming playback (from Continue Watching or a media '
-                'item page), how many seconds should be rewound?',
+            title: l10n.resumeRewind,
+            description: l10n.settingsResumeRewindDescription,
             icon: Icons.replay,
-            options: const {
-              '0': 'Disabled',
-              '5': '5 seconds',
-              '10': '10 seconds',
-              '15': '15 seconds',
-              '30': '30 seconds',
+            options: {
+              '0': l10n.disabled,
+              '5': l10n.fiveSeconds,
+              '10': l10n.tenSeconds,
+              '15': l10n.fifteenSeconds,
+              '30': l10n.thirtySeconds,
             },
           ),
           IntPickerPreferenceTile(
             preference: UserPreferences.unpauseRewindDuration,
-            title: 'Unpause Rewind',
-            description:
-                'When resuming playback after pressing the pause button, '
-                'how many seconds should be rewound?',
+            title: l10n.unpauseRewind,
+            description: l10n.settingsUnpauseRewindDescription,
             icon: Icons.replay_circle_filled,
-            options: const {
-              0: 'Disabled',
-              5000: '5 seconds',
-              10000: '10 seconds',
-              15000: '15 seconds',
-              30000: '30 seconds',
+            options: {
+              0: l10n.disabled,
+              5000: l10n.fiveSeconds,
+              10000: l10n.tenSeconds,
+              15000: l10n.fifteenSeconds,
+              30000: l10n.thirtySeconds,
             },
           ),
           IntPickerPreferenceTile(
             preference: UserPreferences.skipBackLength,
-            title: 'Skip Back Length',
-            description:
-                'How many seconds to jump back after pressing the rewind '
-                'button.',
+            title: l10n.skipBackLength,
+            description: l10n.settingsSkipBackLengthDescription,
             icon: Icons.fast_rewind,
-            options: const {
-              1000: '1 second',
-              3000: '3 seconds',
-              5000: '5 seconds',
-              10000: '10 seconds',
-              15000: '15 seconds',
-              30000: '30 seconds',
-              45000: '45 seconds',
-              60000: '60 seconds',
+            options: {
+              1000: l10n.settingsOneSecond,
+              3000: l10n.settingsThreeSeconds,
+              5000: l10n.fiveSeconds,
+              10000: l10n.tenSeconds,
+              15000: l10n.fifteenSeconds,
+              30000: l10n.thirtySeconds,
+              45000: l10n.settingsFortyFiveSeconds,
+              60000: l10n.settingsSixtySeconds,
             },
           ),
           IntPickerPreferenceTile(
             preference: UserPreferences.skipForwardLength,
-            title: 'Skip Forward Length',
-            description:
-                'How many seconds to jump forward after pressing the fast '
-                'forward button.',
+            title: l10n.skipForwardLength,
+            description: l10n.settingsSkipForwardLengthDescription,
             icon: Icons.fast_forward,
-            options: const {
-              1000: '1 second',
-              3000: '3 seconds',
-              5000: '5 seconds',
-              10000: '10 seconds',
-              15000: '15 seconds',
-              30000: '30 seconds',
-              45000: '45 seconds',
-              60000: '60 seconds',
+            options: {
+              1000: l10n.settingsOneSecond,
+              3000: l10n.settingsThreeSeconds,
+              5000: l10n.fiveSeconds,
+              10000: l10n.tenSeconds,
+              15000: l10n.fifteenSeconds,
+              30000: l10n.thirtySeconds,
+              45000: l10n.settingsFortyFiveSeconds,
+              60000: l10n.settingsSixtySeconds,
             },
           ),
         ],
@@ -1820,54 +1781,54 @@ class _AudioPreferencesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Audio Preferences')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsAudioPreferences)),
       body: ListView(
         children: [
           SwitchPreferenceTile(
             preference: UserPreferences.audioNightMode,
-            title: 'Audio Night Mode',
-            subtitle: 'Reduce dynamic range for late night listening',
+            title: l10n.nightMode,
+            subtitle: l10n.compressDynamicRange,
             icon: Icons.nights_stay,
           ),
           StringPickerPreferenceTile(
             preference: UserPreferences.defaultAudioLanguage,
-            title: 'Default Audio Language',
+            title: l10n.defaultAudioLanguage,
             icon: Icons.language,
-            options: const {
-              'auto': 'Auto',
-              'eng': 'English',
-              'spa': 'Spanish',
-              'fra': 'French',
-              'deu': 'German',
-              'ita': 'Italian',
-              'por': 'Portuguese',
-              'jpn': 'Japanese',
-              'kor': 'Korean',
-              'zho': 'Chinese',
-              'rus': 'Russian',
-              'ara': 'Arabic',
-              'hin': 'Hindi',
-              'nld': 'Dutch',
-              'swe': 'Swedish',
-              'nor': 'Norwegian',
-              'dan': 'Danish',
-              'fin': 'Finnish',
-              'pol': 'Polish',
+            options: {
+              'auto': l10n.autoServerDefault,
+              'eng': l10n.english,
+              'spa': l10n.spanish,
+              'fra': l10n.french,
+              'deu': l10n.german,
+              'ita': l10n.italian,
+              'por': l10n.portuguese,
+              'jpn': l10n.japanese,
+              'kor': l10n.korean,
+              'zho': l10n.chinese,
+              'rus': l10n.russian,
+              'ara': l10n.arabic,
+              'hin': l10n.hindi,
+              'nld': l10n.dutch,
+              'swe': l10n.swedish,
+              'nor': l10n.norwegian,
+              'dan': l10n.danish,
+              'fin': l10n.finnish,
+              'pol': l10n.polish,
             },
           ),
           EnumPreferenceTile<AudioBehavior>(
             preference: UserPreferences.audioBehavior,
-            title: 'Audio Behavior',
+            title: l10n.audioBehavior,
             icon: Icons.surround_sound,
             labelOf: (v) => switch (v) {
-              AudioBehavior.directStream => 'Direct Stream',
-              AudioBehavior.downmixToStereo => 'Downmix',
+              AudioBehavior.directStream => l10n.directStream,
+              AudioBehavior.downmixToStereo => l10n.downmixToStereo,
             },
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.ac3Enabled,
-            title: 'AC3 Passthrough',
-            subtitle: 'Bitstream AC3 to external decoder',
+            title: l10n.ac3Passthrough,
+            subtitle: l10n.settingsBitstreamAc3ToExternalDecoder,
             icon: Icons.speaker,
           ),
           if (PlatformDetection.isAndroid && PlatformDetection.isTV)
@@ -1879,8 +1840,8 @@ class _AudioPreferencesScreen extends StatelessWidget {
             ),
           SwitchPreferenceTile(
             preference: UserPreferences.trueHdEnabled,
-            title: 'TrueHD Support',
-            subtitle: 'Enable TrueHD/HD audio passthrough',
+            title: l10n.trueHdSupport,
+            subtitle: l10n.enableTrueHdAudio,
             icon: Icons.graphic_eq,
           ),
         ],
@@ -1894,55 +1855,53 @@ class _AutomationQueueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Automation & Queue')),
+      appBar: buildSettingsAppBar(context, Text(l10n.settingsAutomationAndQueue)),
       body: ListView(
         children: [
           SwitchPreferenceTile(
             preference: UserPreferences.cinemaModeEnabled,
-            title: 'Cinema Mode',
-            subtitle: 'Play trailers/prerolls before a main feature',
+            title: l10n.settingsCinemaMode,
+            subtitle: l10n.settingsCinemaModeSubtitle,
             icon: Icons.movie_filter,
           ),
           SwitchPreferenceTile(
             preference: UserPreferences.mediaQueuingEnabled,
-            title: 'Episode Queuing',
-            subtitle: 'Automatically queue subsequent episodes',
+            title: l10n.mediaQueuing,
+            subtitle: l10n.autoQueueNextEpisodes,
             icon: Icons.queue,
           ),
           EnumPreferenceTile<NextUpBehavior>(
             preference: UserPreferences.nextUpBehavior,
-            title: 'Enable Next Up Prompt',
-            description:
-                'Extended shows a full card with episode artwork and '
-                'description. Minimal shows a compact countdown overlay. '
-                'Disabled hides the prompt entirely.',
+            title: l10n.nextUpBehavior,
+            description: l10n.settingsNextUpBehaviorDescription,
             icon: Icons.skip_next,
             labelOf: (v) => switch (v) {
-              NextUpBehavior.extended => 'Extended',
-              NextUpBehavior.minimal => 'Minimal',
-              NextUpBehavior.disabled => 'Disabled',
+              NextUpBehavior.extended => l10n.extended,
+              NextUpBehavior.minimal => l10n.minimal,
+              NextUpBehavior.disabled => l10n.disabled,
             },
           ),
           SliderPreferenceTile(
             preference: UserPreferences.nextUpTimeout,
-            title: 'Next Up Prompt Timeout',
+            title: l10n.nextUpTimeout,
             icon: Icons.timer,
             min: 0,
             max: 30000,
             divisions: 30,
-            labelOf: (v) => '${(v / 1000).toStringAsFixed(1)}s',
+            labelOf: (v) => l10n.secondsValue((v / 1000).round()),
           ),
           EnumPreferenceTile<StillWatchingBehavior>(
             preference: UserPreferences.stillWatchingBehavior,
-            title: 'Enable Still Watching Prompt',
+            title: l10n.stillWatchingPrompt,
             icon: Icons.visibility,
             labelOf: (v) => switch (v) {
-              StillWatchingBehavior.short_ => 'Short',
-              StillWatchingBehavior.medium => 'Medium',
-              StillWatchingBehavior.long_ => 'Long',
-              StillWatchingBehavior.veryLong => 'Very Long',
-              StillWatchingBehavior.disabled => 'Off',
+              StillWatchingBehavior.short_ => l10n.settingsShort,
+              StillWatchingBehavior.medium => l10n.medium,
+              StillWatchingBehavior.long_ => l10n.settingsLong,
+              StillWatchingBehavior.veryLong => l10n.settingsVeryLong,
+              StillWatchingBehavior.disabled => l10n.off,
             },
           ),
         ],
@@ -1973,8 +1932,9 @@ class _AdvancedOptionsScreenState extends State<_AdvancedOptionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('Advanced Options')),
+      appBar: buildSettingsAppBar(context, Text(l10n.advancedOptions)),
       body: FocusScope(
         node: _advancedScope,
         autofocus: true,
@@ -1982,37 +1942,37 @@ class _AdvancedOptionsScreenState extends State<_AdvancedOptionsScreen> {
           children: [
             SliderPreferenceTile(
               preference: UserPreferences.videoStartDelay,
-              title: 'Video Start Delay',
+              title: l10n.settingsVideoStartDelay,
               icon: Icons.schedule,
               min: 0,
               max: 5000,
               divisions: 20,
-              labelOf: (v) => '$v ms',
+              labelOf: (v) => l10n.settingsMillisecondsValue(v.round()),
             ),
             if (!PlatformDetection.isTV && !PlatformDetection.isIOS) ...[
               SwitchPreferenceTile(
                 preference: UserPreferences.customMpvConfEnabled,
-                title: 'Custom MPV Conf',
-                subtitle: 'Use a custom mpv.conf file',
+                title: l10n.enableCustomMpvConf,
+                subtitle: l10n.applyMpvConfBeforePlayback,
                 icon: Icons.tune,
               ),
               _EditableStringPreferenceTile(
                 preference: UserPreferences.customMpvConfPath,
-                title: 'MPV Conf Path',
+                title: l10n.customMpvConfPath,
                 icon: Icons.description,
-                hintText: 'Path to custom mpv.conf',
+                hintText: l10n.pathToMpvConf,
               ),
               SwitchPreferenceTile(
                 preference: UserPreferences.customMpvConfUnsafeAdvanced,
-                title: 'Unsafe MPV Options',
-                subtitle: 'Allow unsafe advanced options in MPV conf',
+                title: l10n.unsafeAdvancedMpvOptions,
+                subtitle: l10n.unsafeMpvOptionsDescription,
                 icon: Icons.warning_amber,
               ),
             ],
             SwitchPreferenceTile(
               preference: UserPreferences.liveTvDirectPlayEnabled,
-              title: 'Live TV Direct',
-              subtitle: 'Enable direct play for Live TV',
+              title: l10n.settingsLiveTvDirect,
+              subtitle: l10n.settingsLiveTvDirectSubtitle,
               icon: Icons.live_tv,
             ),
           ],
@@ -2081,8 +2041,9 @@ class _SyncPlaySettingsScreenState extends State<_SyncPlaySettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final bottomPad = PlatformDetection.isTV ? 96.0 : 24.0;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, const Text('SyncPlay')),
+      appBar: buildSettingsAppBar(context, Text(l10n.syncPlay)),
       body: FocusScope(
         node: _syncPlayScope,
         autofocus: true,
@@ -2091,8 +2052,8 @@ class _SyncPlaySettingsScreenState extends State<_SyncPlaySettingsScreen> {
           children: [
             _TvSettingsListTile(
               leading: const Icon(Icons.group_work),
-              title: const Text('Open Groups'),
-              subtitle: const Text('Create, join, or manage SyncPlay groups'),
+              title: Text(l10n.settingsOpenGroups),
+              subtitle: Text(l10n.settingsOpenGroupsSubtitle),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => const SyncPlayScreen(),
@@ -2102,70 +2063,70 @@ class _SyncPlaySettingsScreenState extends State<_SyncPlaySettingsScreen> {
             const Divider(),
             SwitchPreferenceTile(
               preference: UserPreferences.syncPlayEnabled,
-              title: 'SyncPlay Enabled',
-              subtitle: 'Enable group watching features',
+              title: l10n.settingsSyncplayEnabled,
+              subtitle: l10n.settingsSyncplayEnabledSubtitle,
               icon: Icons.groups,
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.showSyncPlayButton,
-              title: 'SyncPlay Button',
-              subtitle: 'Show the SyncPlay button on the navigation bar',
+              title: l10n.settingsSyncplayButton,
+              subtitle: l10n.settingsSyncplayButtonSubtitle,
               icon: Icons.toggle_on,
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.syncPlayAdvancedCorrectionEnabled,
-              title: 'Advanced Correction',
-              subtitle: 'Enable fine-grained sync logic',
+              title: l10n.settingsSyncplayAdvancedCorrection,
+              subtitle: l10n.settingsSyncplayAdvancedCorrectionSubtitle,
               icon: Icons.tune,
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.syncPlayEnableSyncCorrection,
-              title: 'Sync Correction',
-              subtitle: 'Automatically adjust playback to stay in sync',
+              title: l10n.settingsSyncplaySyncCorrection,
+              subtitle: l10n.settingsSyncplaySyncCorrectionSubtitle,
               icon: Icons.sync,
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.syncPlayUseSpeedToSync,
-              title: 'Speed to Sync',
-              subtitle: 'Use playback speed adjustment to sync',
+              title: l10n.settingsSyncplaySpeedToSync,
+              subtitle: l10n.settingsSyncplaySpeedToSyncSubtitle,
               icon: Icons.speed,
             ),
             SwitchPreferenceTile(
               preference: UserPreferences.syncPlayUseSkipToSync,
-              title: 'Skip to Sync',
-              subtitle: 'Use seeking to sync',
+              title: l10n.settingsSyncplaySkipToSync,
+              subtitle: l10n.settingsSyncplaySkipToSyncSubtitle,
               icon: Icons.skip_next,
             ),
             _DoubleSliderTile(
-              title: 'Minimum Speed Delay',
+              title: l10n.settingsSyncplayMinimumSpeedDelay,
               icon: Icons.timer,
               binding: _minDelaySpeed,
               min: 0,
               max: 5000,
             ),
             _DoubleSliderTile(
-              title: 'Maximum Speed Delay',
+              title: l10n.settingsSyncplayMaximumSpeedDelay,
               icon: Icons.timer,
               binding: _maxDelaySpeed,
               min: 0,
               max: 15000,
             ),
             _DoubleSliderTile(
-              title: 'Speed Duration',
+              title: l10n.settingsSyncplaySpeedDuration,
               icon: Icons.schedule,
               binding: _speedDuration,
               min: 100,
               max: 5000,
             ),
             _DoubleSliderTile(
-              title: 'Minimum Skip Delay',
+              title: l10n.settingsSyncplayMinimumSkipDelay,
               icon: Icons.timer,
               binding: _minDelaySkip,
               min: 0,
               max: 15000,
             ),
             _DoubleSliderTile(
-              title: 'SyncPlay Extra Offset',
+              title: l10n.settingsSyncplayExtraOffset,
               icon: Icons.schedule,
               binding: _extraOffset,
               min: -2000,
@@ -2218,19 +2179,20 @@ class _EditableStringPreferenceTileState extends State<_EditableStringPreference
       builder: (_, value, _) => _TvSettingsListTile(
         leading: Icon(widget.icon),
         title: Text(widget.title),
-        subtitle: Text(_displaySubtitle(value)),
+        subtitle: Text(_displaySubtitle(context, value)),
         onTap: () => _showEditor(context, value),
       ),
     );
   }
 
-  String _displaySubtitle(String value) {
+  String _displaySubtitle(BuildContext context, String value) {
     final trimmed = value.trim();
-    if (trimmed.isEmpty) return 'Not set';
+    if (trimmed.isEmpty) return AppLocalizations.of(context).notSet;
     return trimmed;
   }
 
   Future<void> _showEditor(BuildContext context, String current) async {
+    final l10n = AppLocalizations.of(context);
     final controller = TextEditingController(text: current);
     final next = await showFocusRestoringDialog<String>(
       context: context,
@@ -2244,11 +2206,11 @@ class _EditableStringPreferenceTileState extends State<_EditableStringPreference
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: const Text('Save'),
+            child: Text(l10n.save),
           ),
         ],
       ),
@@ -2372,7 +2334,7 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${value.round()} ms',
+                    AppLocalizations.of(context).settingsMillisecondsValue(value.round()),
                     style: TextStyle(
                       color: _outerFocused ? Colors.black54 : Colors.white70,
                     ),
@@ -2405,20 +2367,20 @@ class _NavbarColorPickerTile extends StatefulWidget {
 }
 
 class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
-  static const _labels = <String, String>{
-    'gray': 'Gray',
-    'black': 'Black',
-    'dark_blue': 'Dark Blue',
-    'purple': 'Purple',
-    'teal': 'Teal',
-    'navy': 'Navy',
-    'charcoal': 'Charcoal',
-    'brown': 'Brown',
-    'dark_red': 'Dark Red',
-    'dark_green': 'Dark Green',
-    'slate': 'Slate',
-    'indigo': 'Indigo',
-  };
+  static const _keys = <String>[
+    'gray',
+    'black',
+    'dark_blue',
+    'purple',
+    'teal',
+    'navy',
+    'charcoal',
+    'brown',
+    'dark_red',
+    'dark_green',
+    'slate',
+    'indigo',
+  ];
 
   static const _swatches = <String, int>{
     'gray': 0xFF6B7280,
@@ -2457,16 +2419,31 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
   Color _swatchBorder(Color color) =>
       color.computeLuminance() > 0.8 ? Colors.black38 : Colors.white24;
 
-  String _labelFor(String key) => _labels[key] ?? _formatCamelCaseLabel(key);
+  String _labelFor(String key, AppLocalizations l10n) => switch (key) {
+    'gray' => l10n.gray,
+    'black' => l10n.black,
+    'dark_blue' => l10n.darkBlue,
+    'purple' => l10n.purple,
+    'teal' => l10n.teal,
+    'navy' => l10n.navy,
+    'charcoal' => l10n.charcoal,
+    'brown' => l10n.brown,
+    'dark_red' => l10n.darkRed,
+    'dark_green' => l10n.darkGreen,
+    'slate' => l10n.slate,
+    'indigo' => l10n.indigo,
+    _ => _formatCamelCaseLabel(key),
+  };
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ValueListenableBuilder<String>(
       valueListenable: _binding,
       builder: (context, value, _) => _TvSettingsListTile(
         leading: const Icon(Icons.palette),
-        title: const Text('Navbar Color'),
-        subtitle: Text(_labelFor(value)),
+        title: Text(l10n.navbarColor),
+        subtitle: Text(_labelFor(value, l10n)),
         trailing: Container(
           width: 18,
           height: 18,
@@ -2486,8 +2463,8 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
   }
 
   Future<void> _showPicker(BuildContext context, String current) async {
-    final entries = _labels.entries.toList();
-    final selectedIndex = entries.indexWhere((e) => e.key == current);
+    final l10n = AppLocalizations.of(context);
+    final selectedIndex = _keys.indexWhere((e) => e == current);
     final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
     final result = await showFocusRestoringDialog<String>(
       context: context,
@@ -2506,12 +2483,12 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
             return KeyEventResult.ignored;
           },
           child: SimpleDialog(
-            title: const Text('Navbar Color'),
-            children: entries.asMap().entries.map((entry) {
+            title: Text(l10n.navbarColor),
+            children: _keys.asMap().entries.map((entry) {
               final i = entry.key;
-              final e = entry.value;
-              final selected = e.key == current;
-              final swatch = _swatchColor(e.key);
+              final key = entry.value;
+              final selected = key == current;
+              final swatch = _swatchColor(key);
               return TvFocusHighlight(
                 builder: (_, _) => ListTile(
                   autofocus: i == autofocusIndex,
@@ -2528,9 +2505,9 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
                       ),
                     ),
                   ),
-                  title: Text(e.value),
+                  title: Text(_labelFor(key, l10n)),
                   trailing: selected ? const Icon(Icons.check) : null,
-                  onTap: () => Navigator.pop(ctx, e.key),
+                  onTap: () => Navigator.pop(ctx, key),
                 ),
               );
             }).toList(),
@@ -2557,11 +2534,7 @@ class _ShuffleContentTypePickerTile extends StatefulWidget {
 
 class _ShuffleContentTypePickerTileState
     extends State<_ShuffleContentTypePickerTile> {
-  static const _labels = <String, String>{
-    'movies': 'Movies',
-    'tvshows': 'TV Shows',
-    'both': 'Both',
-  };
+  static const _labels = <String>{'movies', 'tvshows', 'both'};
   static const _fallbackKey = 'both';
 
   late final PreferenceBinding<String> _binding;
@@ -2582,12 +2555,18 @@ class _ShuffleContentTypePickerTileState
     super.dispose();
   }
 
-  String _normalize(String key) => _labels.containsKey(key) ? key : _fallbackKey;
+  String _normalize(String key) => _labels.contains(key) ? key : _fallbackKey;
 
-  String _label(String key) => _labels[_normalize(key)] ?? 'Both';
+  String _label(String key, AppLocalizations l10n) => switch (_normalize(key)) {
+    'movies' => l10n.movies,
+    'tvshows' => l10n.tvShows,
+    'both' => l10n.settingsBoth,
+    _ => l10n.settingsBoth,
+  };
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ValueListenableBuilder<String>(
       valueListenable: _binding,
       builder: (context, value, _) {
@@ -2601,8 +2580,8 @@ class _ShuffleContentTypePickerTileState
         }
         return _TvSettingsListTile(
           leading: const Icon(Icons.shuffle),
-          title: const Text('Shuffle Content Type Filter'),
-          subtitle: Text(_label(normalized)),
+          title: Text(l10n.settingsShuffleContentTypeFilter),
+          subtitle: Text(_label(normalized, l10n)),
           onTap: () => _showPicker(context, normalized),
         );
       },
@@ -2612,9 +2591,10 @@ class _ShuffleContentTypePickerTileState
   Future<void> _showPicker(BuildContext context, String current) async {
     if (_pickerOpen) return;
     _pickerOpen = true;
-    final entries = _labels.entries.toList();
+    final l10n = AppLocalizations.of(context);
+    final entries = _labels.toList();
     final normalizedCurrent = _normalize(current);
-    final selectedIndex = entries.indexWhere((e) => e.key == normalizedCurrent);
+    final selectedIndex = entries.indexWhere((e) => e == normalizedCurrent);
     final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
     try {
       final result = await showFocusRestoringDialog<String>(
@@ -2636,17 +2616,17 @@ class _ShuffleContentTypePickerTileState
             child: FocusScope(
               autofocus: true,
               child: SimpleDialog(
-                title: const Text('Shuffle Content Type Filter'),
+                title: Text(l10n.settingsShuffleContentTypeFilter),
                 children: entries.asMap().entries.map((entry) {
                   final i = entry.key;
-                  final e = entry.value;
-                  final selected = e.key == normalizedCurrent;
+                  final value = entry.value;
+                  final selected = value == normalizedCurrent;
                   return TvFocusHighlight(
                     builder: (_, _) => ListTile(
                       autofocus: i == autofocusIndex,
-                      title: Text(e.value),
+                      title: Text(_label(value, l10n)),
                       trailing: selected ? const Icon(Icons.check) : null,
-                      onTap: () => Navigator.pop(ctx, e.key),
+                      onTap: () => Navigator.pop(ctx, value),
                     ),
                   );
                 }).toList(),

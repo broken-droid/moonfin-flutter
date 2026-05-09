@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../syncplay/syncplay_manager.dart';
 import '../overlay_sheet.dart';
 
@@ -25,12 +26,13 @@ class SyncPlayPlayerButton extends StatelessWidget {
     return ListenableBuilder(
       listenable: _manager,
       builder: (context, _) {
+        final l10n = AppLocalizations.of(context);
         if (!_manager.state.enabled) return const SizedBox.shrink();
         return SizedBox(
           width: extent,
           height: extent,
           child: IconButton(
-            tooltip: 'SyncPlay group',
+            tooltip: l10n.syncPlayGroupTooltip,
             onPressed: () => _showSheet(context),
             icon: Icon(Icons.groups_rounded,
                 color: Colors.white, size: size),
@@ -50,6 +52,7 @@ class SyncPlayPlayerButton extends StatelessWidget {
         return ListenableBuilder(
           listenable: _manager,
           builder: (ctx, _) {
+            final l10n = AppLocalizations.of(ctx);
             final state = _manager.state;
             return SafeArea(
               child: Padding(
@@ -62,21 +65,21 @@ class SyncPlayPlayerButton extends StatelessWidget {
                       leading: const Icon(Icons.groups_rounded,
                           color: Colors.white),
                       title: Text(
-                        state.groupName ?? 'SyncPlay group',
+                        state.groupName ?? l10n.syncPlayGroupFallbackName,
                         style: const TextStyle(color: Colors.white),
                       ),
                       subtitle: Text(
-                        '${state.participants.length} participant${state.participants.length == 1 ? '' : 's'}',
+                        l10n.syncPlayParticipantCount(state.participants.length),
                         style: const TextStyle(color: Colors.white70),
                       ),
                     ),
                     SwitchListTile(
                       value: _manager.ignoreWaitEnabled,
                       onChanged: (v) => _manager.requestSetIgnoreWait(v),
-                      title: const Text('Ignore wait',
+                      title: Text(l10n.syncPlayIgnoreWait,
                           style: TextStyle(color: Colors.white)),
-                      subtitle: const Text(
-                        'Continue locally without waiting for slow members',
+                      subtitle: Text(
+                        l10n.syncPlayContinueLocallyNoWait,
                         style: TextStyle(color: Colors.white70),
                       ),
                     ),
@@ -109,7 +112,7 @@ class SyncPlayPlayerButton extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.logout_rounded,
                           color: Colors.redAccent),
-                      title: const Text('Leave group',
+                      title: Text(l10n.syncPlayLeaveGroup,
                           style: TextStyle(color: Colors.redAccent)),
                       onTap: () async {
                         Navigator.of(ctx).pop();

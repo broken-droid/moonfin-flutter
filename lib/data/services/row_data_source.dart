@@ -7,6 +7,8 @@ import 'package:dio/dio.dart';
 
 import '../../preference/home_section_config.dart';
 import '../../preference/user_preferences.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/current_app_localizations.dart';
 import '../models/aggregated_item.dart';
 import '../models/home_row.dart';
 import '../utils/latest_media_row_normalizer.dart';
@@ -38,6 +40,7 @@ class RowDataSource {
   RowDataSource(this._client);
 
   ImageApi get imageApi => _client.imageApi;
+  AppLocalizations get _l10n => currentAppLocalizations();
 
   Future<HomeRow> loadOnNow(String serverId) async {
     final response = await _client.liveTvApi.getRecommendedPrograms(
@@ -45,7 +48,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'liveTvOnNow',
-      title: 'On Now',
+      title: _l10n.onNow,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.liveTvOnNow,
@@ -59,7 +62,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'resume',
-      title: 'Continue Watching',
+      title: _l10n.continueWatching,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.resume,
@@ -73,7 +76,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'resumeAudio',
-      title: 'Continue Listening',
+      title: _l10n.continueListening,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.resumeAudio,
@@ -87,7 +90,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'nextUp',
-      title: 'Next Up',
+      title: _l10n.nextUp,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.nextUp,
@@ -101,7 +104,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'resume',
-      title: 'Continue Watching',
+      title: _l10n.continueWatching,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.resume,
@@ -114,7 +117,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'nextUp',
-      title: 'Next Up',
+      title: _l10n.nextUp,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.nextUp,
@@ -143,7 +146,7 @@ class RowDataSource {
     );
     return HomeRow(
       id: 'latest_$parentId',
-      title: 'Latest $libraryName',
+      title: _l10n.latestLibraryName(libraryName),
       items: items,
       rowType: HomeRowType.latestMedia,
       totalCount: items.length,
@@ -160,7 +163,7 @@ class RowDataSource {
     );
     var row = _buildRow(
       id: 'playlists',
-      title: 'Playlists',
+      title: _l10n.playlists,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.playlists,
@@ -185,7 +188,7 @@ class RowDataSource {
           rowType == HomeRowType.libraryTilesSmall
               ? 'libraryTilesSmall'
               : 'libraryTiles',
-      title: 'My Media',
+      title: _l10n.myMedia,
       response: response,
       serverId: serverId,
       rowType: rowType,
@@ -200,7 +203,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'resume_$parentId',
-      title: 'Continue Watching',
+      title: _l10n.continueWatching,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.resume,
@@ -214,7 +217,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'nextUp_$parentId',
-      title: 'Next Up',
+      title: _l10n.nextUp,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.nextUp,
@@ -237,7 +240,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'favorites_$parentId',
-      title: 'Favorites',
+      title: _l10n.favorites,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.latestMedia,
@@ -258,7 +261,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'collections_$parentId',
-      title: 'Collections',
+      title: _l10n.collections,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.latestMedia,
@@ -281,7 +284,7 @@ class RowDataSource {
     );
     return _buildRow(
       id: 'lastPlayed_$parentId',
-      title: 'Last Played',
+      title: _l10n.lastPlayed,
       response: response,
       serverId: serverId,
       rowType: HomeRowType.latestMedia,

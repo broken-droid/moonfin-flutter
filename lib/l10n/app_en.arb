@@ -536,6 +536,14 @@
   "@apply": {
     "description": "Button label to apply selected options"
   },
+  "openLink": "Open Link",
+  "@openLink": {
+    "description": "Action label to open a URL externally"
+  },
+  "scanWithYourPhone": "Scan with your phone",
+  "@scanWithYourPhone": {
+    "description": "Instruction shown above a QR code"
+  },
   "audiobookGenres": "Audiobook Genres",
   "@audiobookGenres": {
     "description": "Title for audiobook genre picker panel"
@@ -1777,6 +1785,24 @@
   "@audioDelay": {
     "description": "Title for audio delay adjuster"
   },
+  "delayMinusMs": "-{value}ms",
+  "@delayMinusMs": {
+    "description": "Label for decreasing playback delay in milliseconds",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "delayPlusMs": "+{value}ms",
+  "@delayPlusMs": {
+    "description": "Label for increasing playback delay in milliseconds",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
   "subtitleDelay": "Subtitle Delay",
   "@subtitleDelay": {
     "description": "Title for subtitle delay adjuster"
@@ -2460,6 +2486,15 @@
   "seasonNumber": "Season {number}",
   "@seasonNumber": {
     "description": "Season label with number",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "seasonChip": "S{number}",
+  "@seasonChip": {
+    "description": "Compact season chip label",
     "placeholders": {
       "number": {
         "type": "int"
@@ -3526,6 +3561,10 @@
   "@libraryVisibility": {
     "description": "Section title for library visibility"
   },
+  "libraryVisibilityDescription": "Toggle home page visibility per library. Restart Moonfin for changes to take effect.",
+  "@libraryVisibilityDescription": {
+    "description": "Explanation shown on the library visibility settings screen"
+  },
   "showInNavigation": "Show in navigation",
   "@showInNavigation": {
     "description": "Toggle for showing library in navigation"
@@ -4147,6 +4186,10 @@
   "@sourceCode": {
     "description": "Link to source code"
   },
+  "sourceCodeUrl": "https://github.com/Moonfin-Client/Mobile-Desktop",
+  "@sourceCodeUrl": {
+    "description": "Displayed source code repository URL"
+  },
   "checkForUpdatesNow": "Check for Updates Now",
   "@checkForUpdatesNow": {
     "description": "Button to check for updates"
@@ -4708,6 +4751,7 @@
   "sessionNext": "Next",
   "sessionVolumeDown": "Vol \u2013",
   "sessionVolumeUp": "Vol +",
+  "uhd4k": "4K",
   "nowPlaying": "Now Playing",
   "volume": "Volume",
   "actions": "Actions",
@@ -4938,6 +4982,22 @@
   "adminConfirmPassword": "Confirm Password",
   "adminSetPassword": "Set Password",
   "adminResetPassword": "Reset Password",
+  "adminPasswordReset": "Password reset",
+  "adminPasswordUpdated": "Password updated",
+  "adminUserSettings": "User Settings",
+  "adminLibraryAccess": "Library Access",
+  "adminDeviceAndChannelAccess": "Device & Channel Access",
+  "adminEnableAllDevices": "Enable access to all devices",
+  "adminEnableAllChannels": "Enable access to all channels",
+  "adminResetPasswordWarning": "This will remove the password. The user will be able to log in without a password.",
+  "adminServerReturnedHttp": "Server returned HTTP {status}",
+  "@adminServerReturnedHttp": {
+    "placeholders": {
+      "status": {
+        "type": "int"
+      }
+    }
+  },
 
   "adminDeleteUserConfirm": "Are you sure you want to delete {name}?",
   "@adminDeleteUserConfirm": {
@@ -4985,8 +5045,21 @@
     }
   },
   "adminApiKeysLoadFailed": "Failed to load API keys",
+  "adminApiKeysTitle": "API Keys",
   "adminCreateKey": "Create Key",
   "adminNoApiKeys": "No API keys found",
+  "adminUnknownApp": "Unknown App",
+  "adminApiKeyTokenCreated": "Token: {token}\\nCreated: {created}",
+  "@adminApiKeyTokenCreated": {
+    "placeholders": {
+      "token": {
+        "type": "String"
+      },
+      "created": {
+        "type": "String"
+      }
+    }
+  },
 
   "adminCreatingBackup": "Creating backup...",
   "adminBackupCreated": "Backup created successfully",
@@ -5485,6 +5558,7 @@
   },
   "adminSetChannelMappings": "Set Channel Mappings",
   "adminMappingJson": "Mapping JSON",
+  "adminMappingJsonHint": "Example: mappings JSON payload",
   "adminChannelMappingsUpdated": "Channel mappings updated",
   "adminMappingsUpdateFailed": "Failed to update mappings: {error}",
   "@adminMappingsUpdateFailed": {
@@ -5993,6 +6067,105 @@
   "folders": "Folders",
   "libraries": "Libraries",
   "syncPlay": "SyncPlay",
+  "syncPlayDisabledTitle": "SyncPlay disabled",
+  "syncPlayDisabledMessage": "Enable SyncPlay in Settings to use synchronized playback.",
+  "syncPlayServerUnsupportedTitle": "Server unsupported",
+  "syncPlayServerUnsupportedMessage": "SyncPlay requires a Jellyfin server. The current server does not support it.",
+  "syncPlayGroupFallbackName": "SyncPlay Group",
+  "syncPlayGroupTooltip": "SyncPlay group",
+  "syncPlayParticipantCount": "{count, plural, one {# participant} other {# participants}}",
+  "@syncPlayParticipantCount": {
+    "description": "Participant count label shown in SyncPlay UI",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "syncPlayIgnoreWait": "Ignore wait",
+  "syncPlayIgnoreWaitSubtitle": "Don't hold the group up while this device buffers",
+  "syncPlayContinueLocallyNoWait": "Continue locally without waiting for slow members",
+  "syncPlayRepeat": "Repeat",
+  "syncPlayRepeatOne": "One",
+  "syncPlayShuffleModeShuffled": "Shuffled",
+  "syncPlayShuffleModeSorted": "Sorted",
+  "syncPlaySyncCurrentQueue": "Sync current playback queue",
+  "syncPlaySyncCurrentQueueSubtitle": "Replace the group queue with what is playing locally",
+  "syncPlayLeaveGroup": "Leave group",
+  "syncPlayGroupQueue": "Group queue",
+  "syncPlayQueueItemFallback": "Item {index}",
+  "@syncPlayQueueItemFallback": {
+    "description": "Fallback title for SyncPlay queue item when media title is unavailable",
+    "placeholders": {
+      "index": {"type": "int"}
+    }
+  },
+  "syncPlayPlayNow": "Play now",
+  "syncPlayCreateNewGroup": "Create a new group",
+  "syncPlayGroupName": "Group name",
+  "syncPlayDefaultGroupName": "My SyncPlay Group",
+  "syncPlayCreateGroup": "Create group",
+  "syncPlayAvailableGroups": "Available groups",
+  "syncPlayNoGroupsAvailable": "No groups available",
+  "syncPlayJoinGroupQuestion": "Join SyncPlay group?",
+  "syncPlayJoinGroupWarning": "Joining a SyncPlay group may replace your current playback queue. Continue?",
+  "syncPlayJoin": "Join",
+  "syncPlayStateIdle": "Idle",
+  "syncPlayStateWaiting": "Waiting",
+  "syncPlayStatePaused": "Paused",
+  "syncPlayStatePlaying": "Playing",
+  "syncPlayUserJoinedGroup": "{userName} joined SyncPlay group",
+  "@syncPlayUserJoinedGroup": {
+    "description": "Snackbar message when a user joins a SyncPlay group",
+    "placeholders": {
+      "userName": {"type": "String"}
+    }
+  },
+  "syncPlayUserLeftGroup": "{userName} left SyncPlay group",
+  "@syncPlayUserLeftGroup": {
+    "description": "Snackbar message when a user leaves a SyncPlay group",
+    "placeholders": {
+      "userName": {"type": "String"}
+    }
+  },
+  "syncPlayAccessDeniedTitle": "SyncPlay access denied",
+  "syncPlayAccessDeniedMessage": "You do not have access to one or more items in this SyncPlay group. Ask the group owner to verify library permissions or choose a different queue.",
+  "syncPlaySyncingPlaybackToGroup": "Syncing playback to {groupName}",
+  "@syncPlaySyncingPlaybackToGroup": {
+    "description": "Snackbar message shown when starting playback in a SyncPlay group",
+    "placeholders": {
+      "groupName": {"type": "String"}
+    }
+  },
+  "voiceSearchUnavailable": "Voice search is unavailable.",
+  "dolbyVisionDirectPlayFailedTitle": "Dolby Vision Direct Play Failed",
+  "dolbyVisionDirectPlayFailedMessage": "Direct play failed to start for this Dolby Vision stream. Retry using server transcode?",
+  "retryWithTranscode": "Retry with transcode",
+  "dolbyVisionNotSupportedTitle": "Dolby Vision Not Supported",
+  "dolbyVisionNotSupportedMessage": "This device cannot decode Dolby Vision content directly. Use HDR10 fallback or request server transcoding.",
+  "rememberMyChoice": "Remember my choice",
+  "playHdr10Fallback": "Play HDR10 fallback",
+  "requestTranscode": "Request transcode",
+  "homeScreenSectionsIntegrationDescription": "Detect rows exposed by IAmParadox27's \"Home Screen Sections\" plugin. Rows can be enabled and reordered below.",
+  "homeScreenSectionsIntegrationNoServers": "No Jellyfin servers reporting the plugin yet.",
+  "kefinTweaksIntegrationDescription": "Detect rows configured via ranaldsgift's \"KefinTweaks\" plugin. Custom sections, recently released, watch again, seasonal, and recently added in library are mirrored from the KefinTweaks configuration on each Jellyfin server.",
+  "kefinTweaksIntegrationNoServers": "No Jellyfin servers reporting KefinTweaks yet.",
+  "integrationOpenHomeSections": "Open Home Sections",
+  "integrationOpenHomeSectionsSubtitle": "Enable, disable, and reorder rows",
+  "integrationInstalledButDisabled": "Installed but disabled",
+  "integrationNotInstalled": "Not installed",
+  "integrationSectionsCount": "{count, plural, one {# section} other {# sections}}",
+  "@integrationSectionsCount": {
+    "description": "Plural label for number of sections discovered in integration status",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "integrationRowsDiscoveredCount": "{count, plural, one {# row discovered} other {# rows discovered}}",
+  "@integrationRowsDiscoveredCount": {
+    "description": "Plural label for number of rows discovered in integration status",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
   "jellyseerr": "Jellyseerr",
   "seeAll": "See All",
   "noItems": "No items",
@@ -6004,6 +6177,7 @@
 
   "offlineServerUnavailable": "Connected to the internet, but the current server is unavailable.",
   "offlineNoInternet": "You are offline. Only downloaded content is available.",
+  "offlineFileNotAvailable": "File not available",
   "offlineSwitchServer": "Switch Server",
   "offlineSavedMedia": "Saved Media",
 
@@ -6229,5 +6403,173 @@
   "contextMenuGoToSeries": "Go to Series",
   "@contextMenuGoToSeries": {
     "description": "Context menu action to navigate to the parent series of an episode"
+  },
+  "settingsAdministrationSubtitle": "Access the server administration panel",
+  "settingsAccountSecurity": "Account & Security",
+  "settingsAccountSecuritySubtitle": "Authentication, PIN code, and parental controls",
+  "settingsPersonalization": "Personalization",
+  "settingsPersonalizationSubtitle": "Theme, navigation, home rows, and library visibility",
+  "settingsDynamicContent": "Dynamic Content",
+  "settingsDynamicContentSubtitle": "Media Bar and visual overlays",
+  "settingsPlaybackSyncplay": "Playback & SyncPlay",
+  "settingsPlaybackSyncplaySubtitle": "Audio/video settings, subtitles, downloads, and SyncPlay controls",
+  "settingsIntegrationsSubtitle": "Plugin sync, Seerr, ratings, and more",
+  "settingsAboutSubtitle": "App version, legal information, and credits",
+  "settingsAuthenticationSection": "AUTHENTICATION",
+  "settingsSortServersBy": "Sort Servers By",
+  "settingsLastUsed": "Last Used",
+  "settingsAlphabetical": "Alphabetical",
+  "settingsPrivacyAndSafetySection": "PRIVACY & SAFETY",
+  "settingsBlockedRatings": "Blocked Ratings",
+  "settingsGeneralStyle": "General Style",
+  "settingsGeneralStyleSubtitle": "Theme accents, backdrops, watched indicators, and theme music",
+  "settingsHomePage": "Home Page",
+  "settingsHomePageSubtitle": "Sections, image types, overlays, and media previews",
+  "settingsLibrariesSubtitle": "Library visibility, folder view, and multi-server behavior",
+  "settingsTwentyFourHourClock": "24-Hour Clock",
+  "settingsTwentyFourHourClockSubtitle": "Use 24-hour time formatting wherever the clock is shown",
+  "settingsShowShuffleButtonInNavigation": "Show the shuffle button in the navigation bar",
+  "settingsShowGenresButtonInNavigation": "Show the genres button in the navigation bar",
+  "settingsShowFavoritesButtonInNavigation": "Show the favorites button in the navigation bar",
+  "settingsShowLibrariesButtonInNavigation": "Show the libraries button in the navigation bar",
+  "settingsLibraryVisibilitySubtitle": "Toggle home page visibility per library. Restart Moonfin for changes to take effect.",
+  "settingsMediaBarAndLocalPreviews": "Media Bar & Local Previews",
+  "settingsVisualOverlays": "Visual Overlays",
+  "settingsSeasonalSurprise": "Seasonal Surprise",
+  "settingsMetadataAndRatings": "Metadata & Ratings",
+  "settingsPluginScreenDescription": "Moonbase powers server-side integrations including additional rating sources, Seerr requests, and synced preferences.",
+  "settingsOfflineDownloads": "Offline Downloads",
+  "settingsHigh": "High",
+  "settingsLow": "Low",
+  "settingsCustomPath": "Custom Path",
+  "settingsEnterDownloadFolderPath": "Enter download folder path",
+  "settingsConcurrentDownloads": "Concurrent Downloads",
+  "settingsConcurrentDownloadsDescription": "Maximum number of items to download at once.",
+  "settingsAppInfo": "APP INFO",
+  "settingsReportAnIssue": "Report an Issue",
+  "settingsReportAnIssueSubtitle": "Open the issue tracker on GitHub",
+  "settingsJoinDiscord": "Join Discord",
+  "settingsJoinDiscordSubtitle": "Chat with the community",
+  "settingsJoinTheDiscord": "Join the Discord",
+  "settingsSupportMoonfin": "Support Moonfin",
+  "settingsSupportMoonfinSubtitle": "Star the project on GitHub or contribute",
+  "settingsLegal": "LEGAL",
+  "settingsLicenses": "Licenses",
+  "settingsOpenSourceLicenseNotices": "Open-source license notices",
+  "settingsPrivacyPolicy": "Privacy Policy",
+  "settingsPrivacyPolicySubtitle": "How Moonfin handles your data",
+  "settingsCheckForUpdates": "Check for Updates",
+  "settingsCheckForUpdatesSubtitle": "Check for the latest Moonfin release",
+  "settingsPoweredByFlutter": "Powered by Flutter",
+  "settingsLicenseNoticesCount": "{count, plural, one {# license notice} other {# license notices}}",
+  "@settingsLicenseNoticesCount": {
+    "description": "Plural label for number of license notices",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsBoth": "Both",
+  "settingsShuffleContentTypeFilter": "Shuffle Content Type Filter",
+  "settingsVideoPlaybackPreferences": "Video Playback Preferences",
+  "settingsVideoPlaybackPreferencesSubtitle": "Core video engine and streaming quality settings",
+  "settingsAudioPreferences": "Audio Preferences",
+  "settingsAudioPreferencesSubtitle": "Audio tracks, processing, and passthrough options",
+  "settingsAutomationAndQueue": "Automation & Queue",
+  "settingsAutomationAndQueueSubtitle": "Automated playback and sequencing",
+  "settingsOfflineDownloadsSubtitle": "Download quality, storage limits, and queue size",
+  "settingsSyncplaySubtitle": "Synchronization logic for group sessions",
+  "settingsAdvancedOptionsSubtitle": "Specialized player features. Use with caution, as some options may cause playback issues",
+  "settingsSkipIntrosAndOutros": "Skip Intros and Outros?",
+  "settingsPromptUser": "Prompt User",
+  "settingsSkip": "Skip",
+  "settingsDoNothing": "Do Nothing",
+  "settingsMaxBitrateDescription": "Cap the streaming bitrate. Content above this threshold will be transcoded to fit.",
+  "settingsMaxResolutionDescription": "Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.",
+  "settingsPlayerZoomDescription": "How video should be scaled to fit the screen.",
+  "settingsPlaybackEngineAndroidTv": "Playback Engine (Android TV)",
+  "settingsPlaybackEngineAndroidTvDescription": "Choose the default playback engine on Android TV devices. Changes apply to the next playback session.",
+  "settingsPlaybackEngineMedia3Recommended": "Media3 (recommended)",
+  "settingsPlaybackEngineMpvLegacy": "mpv (legacy)",
+  "settingsDolbyVisionFallback": "Dolby Vision Fallback",
+  "settingsDolbyVisionFallbackDescription": "Behavior for Dolby Vision titles on devices without Dolby Vision decoding.",
+  "settingsAskEachTime": "Ask each time",
+  "settingsPreferHdr10Fallback": "Prefer HDR10 fallback",
+  "settingsPreferServerTranscode": "Prefer server transcode",
+  "settingsDolbyVisionProfile7DirectPlay": "Dolby Vision Profile 7 Direct Play",
+  "settingsDolbyVisionProfile7DirectPlayDescription": "Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.",
+  "settingsAutoAftkrtEnabled": "Auto (AFTKRT enabled)",
+  "settingsEnabledOnThisDevice": "Enabled on this device",
+  "settingsDisabledPreferTranscode": "Disabled (prefer transcode)",
+  "settingsResumeRewindDescription": "When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?",
+  "settingsUnpauseRewindDescription": "When resuming playback after pressing the pause button, how many seconds should be rewound?",
+  "settingsSkipBackLengthDescription": "How many seconds to jump back after pressing the rewind button.",
+  "settingsOneSecond": "1 second",
+  "settingsThreeSeconds": "3 seconds",
+  "settingsFortyFiveSeconds": "45 seconds",
+  "settingsSixtySeconds": "60 seconds",
+  "settingsSkipForwardLengthDescription": "How many seconds to jump forward after pressing the fast forward button.",
+  "settingsBitstreamAc3ToExternalDecoder": "Bitstream AC3 to external decoder",
+  "settingsCinemaMode": "Cinema Mode",
+  "settingsCinemaModeSubtitle": "Play trailers/prerolls before a main feature",
+  "settingsNextUpBehaviorDescription": "Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.",
+  "settingsShort": "Short",
+  "settingsLong": "Long",
+  "settingsVeryLong": "Very Long",
+  "settingsVideoStartDelay": "Video Start Delay",
+  "settingsMillisecondsValue": "{value} ms",
+  "@settingsMillisecondsValue": {
+    "description": "Milliseconds duration label",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLiveTvDirect": "Live TV Direct",
+  "settingsLiveTvDirectSubtitle": "Enable direct play for Live TV",
+  "settingsOpenGroups": "Open Groups",
+  "settingsOpenGroupsSubtitle": "Create, join, or manage SyncPlay groups",
+  "settingsSyncplayEnabled": "SyncPlay Enabled",
+  "settingsSyncplayEnabledSubtitle": "Enable group watching features",
+  "settingsSyncplayButton": "SyncPlay Button",
+  "settingsSyncplayButtonSubtitle": "Show the SyncPlay button on the navigation bar",
+  "settingsSyncplayAdvancedCorrection": "Advanced Correction",
+  "settingsSyncplayAdvancedCorrectionSubtitle": "Enable fine-grained sync logic",
+  "settingsSyncplaySyncCorrection": "Sync Correction",
+  "settingsSyncplaySyncCorrectionSubtitle": "Automatically adjust playback to stay in sync",
+  "settingsSyncplaySpeedToSync": "Speed to Sync",
+  "settingsSyncplaySpeedToSyncSubtitle": "Use playback speed adjustment to sync",
+  "settingsSyncplaySkipToSync": "Skip to Sync",
+  "settingsSyncplaySkipToSyncSubtitle": "Use seeking to sync",
+  "settingsSyncplayMinimumSpeedDelay": "Minimum Speed Delay",
+  "settingsSyncplayMaximumSpeedDelay": "Maximum Speed Delay",
+  "settingsSyncplaySpeedDuration": "Speed Duration",
+  "settingsSyncplayMinimumSkipDelay": "Minimum Skip Delay",
+  "settingsSyncplayExtraOffset": "SyncPlay Extra Offset",
+  "onNow": "On Now",
+  "collections": "Collections",
+  "lastPlayed": "Last Played",
+  "libraryNameWithServer": "{libraryName} ({serverName})",
+  "@libraryNameWithServer": {
+    "description": "Library name display with server suffix for multi-server views",
+    "placeholders": {
+      "libraryName": {
+        "type": "String"
+      },
+      "serverName": {
+        "type": "String"
+      }
+    }
+  },
+  "latestLibraryName": "Latest {libraryName}",
+  "@latestLibraryName": {
+    "description": "Row title for latest media in a specific library",
+    "placeholders": {
+      "libraryName": {
+        "type": "String"
+      }
+    }
   }
 }

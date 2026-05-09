@@ -1085,7 +1085,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
     final result = await showGeneralDialog<List<String>>(
       context: context,
       barrierDismissible: true,
-      barrierLabel: 'Close subject panel',
+      barrierLabel: AppLocalizations.of(context).close,
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 260),
       pageBuilder: (context, _, _) => const SizedBox.shrink(),
@@ -1173,7 +1173,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () => Navigator.of(context).pop(temp.toList()),
-                              child: const Text('Apply'),
+                              child: Text(AppLocalizations.of(context).apply),
                             ),
                           ),
                         ],
