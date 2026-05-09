@@ -510,10 +510,13 @@ class _LiveTvGuideScreenState extends State<LiveTvGuideScreen> {
       onFocusChange: (focused) {
         if (focused) _scrollToRow(index);
       },
-      builder: (_) => Container(
+      builder: (focused) => Container(
         height: _kRowHeight,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
+          color: focused
+              ? AppColorScheme.accent.withValues(alpha: 0.24)
+              : Colors.transparent,
           border: Border(
             bottom: ThemeRegistry.active.borders.cardBorder,
           ),
@@ -910,7 +913,6 @@ class _GuideProgramRow extends StatefulWidget {
 
 class _GuideProgramRowState extends State<_GuideProgramRow> {
   final List<FocusNode> _focusNodes = [];
-  int? _focusedIndex;
 
   @override
   void initState() {
@@ -923,9 +925,6 @@ class _GuideProgramRowState extends State<_GuideProgramRow> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.programs.length != widget.programs.length) {
       _syncFocusNodes();
-      if (_focusedIndex != null && _focusedIndex! >= widget.programs.length) {
-        _focusedIndex = widget.programs.isEmpty ? null : widget.programs.length - 1;
-      }
     }
   }
 
@@ -1012,7 +1011,6 @@ class _GuideProgramRowState extends State<_GuideProgramRow> {
     if (width <= 0) return const SizedBox.shrink();
 
     final isLive = now.isAfter(program.startDate) && now.isBefore(program.endDate);
-    final isFocused = _focusedIndex == index;
 
     return Positioned(
       left: left,
@@ -1025,93 +1023,96 @@ class _GuideProgramRowState extends State<_GuideProgramRow> {
         onKeyEvent: (node, event) => _handleProgramKeyEvent(index, node, event),
         onFocusChange: (focused) {
           if (!focused) return;
-          if (_focusedIndex != index) {
-            setState(() => _focusedIndex = index);
-          }
           widget.onProgramFocused(left, width);
         },
         borderRadius: BorderRadius.circular(4),
-        builder: (_) => Container(
-          margin: const EdgeInsets.only(right: 1),
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-          decoration: BoxDecoration(
-            color: isFocused
-                ? AppColorScheme.accent.withValues(alpha: 0.25)
-                : isLive
-                    ? AppColorScheme.accent.withValues(alpha: 0.2)
-                    : const Color(0xFF1E1E1E),
-            borderRadius: BorderRadius.circular(4),
-            border: isFocused
-                ? Border.fromBorderSide(
-                    ThemeRegistry.active.borders.focusBorder.copyWith(
-                      color: AppColorScheme.accent,
-                    ),
-                  )
-                : isLive
-                    ? Border.fromBorderSide(
-                        ThemeRegistry.active.borders.focusBorder.copyWith(
-                          color: AppColorScheme.accent.withValues(alpha: 0.5),
-                        ),
-                      )
-                    : null,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  if (isLive)
-                    Container(
-                      margin: const EdgeInsets.only(right: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(2),
+        builder: (focused) {
+          final backgroundColor = focused
+              ? AppColorScheme.accent.withValues(alpha: 0.32)
+              : isLive
+                  ? const Color(0xFF2A1B1B)
+                  : const Color(0xFF1E1E1E);
+          final border = focused
+              ? Border.fromBorderSide(
+                  ThemeRegistry.active.borders.focusBorder.copyWith(
+                    color: Colors.white,
+                    width: 2,
+                  ),
+                )
+              : isLive
+                  ? Border.fromBorderSide(
+                      ThemeRegistry.active.borders.cardBorder.copyWith(
+                        color: Colors.red.withValues(alpha: 0.8),
                       ),
+                    )
+                  : null;
+
+          return Container(
+            margin: const EdgeInsets.only(right: 1),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(4),
+              border: border,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    if (isLive)
+                      Container(
+                        margin: const EdgeInsets.only(right: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context).liveBadge,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    if (program.hasTimer)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 4),
+                        child: Icon(Icons.fiber_manual_record, color: Colors.red, size: 10),
+                      ),
+                    Expanded(
                       child: Text(
-                        AppLocalizations.of(context).liveBadge,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        program.name,
+                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  if (program.hasTimer)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 4),
-                      child: Icon(Icons.fiber_manual_record, color: Colors.red, size: 10),
-                    ),
-                  Expanded(
-                    child: Text(
-                      program.name,
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  ],
+                ),
+                if (width > 80)
+                  Text(
+                    '${widget.formatTime(program.startDate)} – ${widget.formatTime(program.endDate)}',
+                    style: const TextStyle(color: Colors.white38, fontSize: 10),
+                    maxLines: 1,
+                  ),
+                if (isLive)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: LinearProgressIndicator(
+                      value: program.progressAt(now),
+                      backgroundColor: Colors.white12,
+                      valueColor: const AlwaysStoppedAnimation(Colors.redAccent),
+                      minHeight: 2,
                     ),
                   ),
-                ],
-              ),
-              if (width > 80)
-                Text(
-                  '${widget.formatTime(program.startDate)} – ${widget.formatTime(program.endDate)}',
-                  style: const TextStyle(color: Colors.white38, fontSize: 10),
-                  maxLines: 1,
-                ),
-              if (isLive)
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: LinearProgressIndicator(
-                    value: program.progressAt(now),
-                    backgroundColor: Colors.white12,
-                    valueColor: AlwaysStoppedAnimation(AppColorScheme.accent),
-                    minHeight: 2,
-                  ),
-                ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
