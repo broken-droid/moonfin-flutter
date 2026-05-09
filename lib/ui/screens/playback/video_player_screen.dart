@@ -46,6 +46,7 @@ import '../../widgets/playback/skip_segment_overlay.dart';
 import '../../widgets/playback/next_up_overlay.dart';
 import '../../widgets/playback/still_watching_dialog.dart';
 import '../../widgets/syncplay/syncplay_player_button.dart';
+import '../../../syncplay/syncplay_manager.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../playback/media3_player_backend.dart';
 
@@ -59,6 +60,8 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     with WidgetsBindingObserver {
   static final _camelCaseSpaceRe = RegExp(r'(?<=[a-z])(?=[A-Z])');
+  static const _tvTemporarySpeed = 2.0;
+  static const _tvTemporarySpeedHoldDelay = Duration(milliseconds: 420);
 
   final _manager = GetIt.instance<PlaybackManager>();
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
@@ -72,6 +75,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _lifecycleHandler = GetIt.instance<PlaybackLifecycleHandler>();
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
   final _screensaverController = GetIt.instance<ScreensaverController>();
+  final SyncPlayManager? _syncPlayManager =
+      GetIt.instance.isRegistered<SyncPlayManager>()
+          ? GetIt.instance<SyncPlayManager>()
+          : null;
   late MediaSegmentService _segmentService;
 
   PlayerBackend? get _activeBackend => _manager.backend;
@@ -112,6 +119,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   bool _didHandleBackgroundSuspend = false;
   bool _videoWasDisabledByLifecycle = false;
   Timer? _tvBackgroundExitTimer;
+  Timer? _tvTemporarySpeedHoldTimer;
   DateTime? _suppressBackNavigationUntil;
   bool _isPlayerMutationInFlight = false;
   Duration? _positionBeforeScreenLock;
@@ -119,6 +127,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   StreamSubscription<bool>? _completedSub;
   bool _isRestoringPosition = false;
   bool _wasPlayingBeforeScreenLock = false;
+  LogicalKeyboardKey? _tvTemporarySpeedHoldKey;
+  bool _tvTemporarySpeedHoldActive = false;
+  double? _tvTemporarySpeedRestoreSpeed;
 
   MediaSegment? _skipSegment;
   Duration? _skipTo;
@@ -708,6 +719,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   void dispose() {
     _screensaverController.setPlaybackActive(false);
     WidgetsBinding.instance.removeObserver(this);
+    _cancelTvTemporarySpeedHold();
     _hideTimer?.cancel();
     _volumeOverlayTimer?.cancel();
     _brightnessOverlayTimer?.cancel();
@@ -955,6 +967,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState lifecycleState) {
+    if (lifecycleState != AppLifecycleState.resumed) {
+      _cancelTvTemporarySpeedHold();
+    }
     switch (lifecycleState) {
       case AppLifecycleState.inactive:
         if (PlatformDetection.isIOS) {
@@ -1815,6 +1830,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   Future<void> _exitPlayback() async {
     if (_isStopping) return;
     _isStopping = true;
+    _cancelTvTemporarySpeedHold();
     _pipService.enableAutoPiP(false);
     await _manager.stop(userInitiated: false);
     if (PlatformDetection.useDesktopUi &&
@@ -1984,6 +2000,109 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _resumeWithConfiguredRewind();
   }
 
+  bool _isTvTemporarySpeedKey(LogicalKeyboardKey key) {
+    return key == LogicalKeyboardKey.mediaPause ||
+        key == LogicalKeyboardKey.mediaPlayPause;
+  }
+
+  bool _canUseTvTemporarySpeedHold() {
+    if (!PlatformDetection.isTV) return false;
+    if (_castService.activeKind != null) return false;
+    if (_isCurrentPreroll) return false;
+    if (_isOsdLocked) return false;
+    if (!_state.isPlaying) return false;
+    if (_syncPlayManager?.state.enabled == true) return false;
+    return true;
+  }
+
+  KeyEventResult _handleTvTemporarySpeedKeyDownOrRepeat(KeyEvent event) {
+    final key = event.logicalKey;
+    if (!_isTvTemporarySpeedKey(key)) {
+      return KeyEventResult.ignored;
+    }
+
+    if (event is KeyRepeatEvent) {
+      return KeyEventResult.handled;
+    }
+
+    if (!_canUseTvTemporarySpeedHold()) {
+      return KeyEventResult.ignored;
+    }
+
+    _tvTemporarySpeedHoldTimer?.cancel();
+    _tvTemporarySpeedHoldKey = key;
+    _tvTemporarySpeedHoldActive = false;
+    _tvTemporarySpeedRestoreSpeed = null;
+    _tvTemporarySpeedHoldTimer = Timer(_tvTemporarySpeedHoldDelay, () {
+      unawaited(_activateTvTemporarySpeedHold(key));
+    });
+    return KeyEventResult.handled;
+  }
+
+  KeyEventResult _handleTvTemporarySpeedKeyUp(KeyUpEvent event) {
+    final key = event.logicalKey;
+    if (!_isTvTemporarySpeedKey(key) || _tvTemporarySpeedHoldKey != key) {
+      return KeyEventResult.ignored;
+    }
+
+    final didTriggerHold = _tvTemporarySpeedHoldActive;
+    _tvTemporarySpeedHoldTimer?.cancel();
+    _tvTemporarySpeedHoldTimer = null;
+    _tvTemporarySpeedHoldKey = null;
+
+    if (didTriggerHold) {
+      _cancelTvTemporarySpeedHold();
+      return KeyEventResult.handled;
+    }
+
+    if (key == LogicalKeyboardKey.mediaPause) {
+      _manager.pause();
+    } else {
+      _togglePlayPause();
+    }
+    _showControls();
+    _focusTvPrimaryButton();
+    return KeyEventResult.handled;
+  }
+
+  Future<void> _activateTvTemporarySpeedHold(LogicalKeyboardKey key) async {
+    if (!mounted || _tvTemporarySpeedHoldKey != key) return;
+    if (!_canUseTvTemporarySpeedHold()) return;
+
+    _tvTemporarySpeedHoldActive = true;
+    _tvTemporarySpeedRestoreSpeed ??= _state.playbackSpeed;
+
+    if ((_state.playbackSpeed - _tvTemporarySpeed).abs() < 0.001) {
+      return;
+    }
+
+    try {
+      await _manager.setPlaybackSpeed(_tvTemporarySpeed);
+    } catch (_) {}
+  }
+
+  Future<void> _restoreTvTemporarySpeed(double speed) async {
+    try {
+      await _manager.setPlaybackSpeed(speed);
+    } catch (_) {}
+  }
+
+  void _cancelTvTemporarySpeedHold() {
+    _tvTemporarySpeedHoldTimer?.cancel();
+    _tvTemporarySpeedHoldTimer = null;
+    _tvTemporarySpeedHoldKey = null;
+
+    final shouldRestore = _tvTemporarySpeedHoldActive;
+    final restoreSpeed = _tvTemporarySpeedRestoreSpeed;
+
+    _tvTemporarySpeedHoldActive = false;
+    _tvTemporarySpeedRestoreSpeed = null;
+
+    if (shouldRestore && restoreSpeed != null) {
+      unawaited(_restoreTvTemporarySpeed(restoreSpeed));
+    }
+  }
+
   int _accelerateSeekStep(int baseMs, KeyEvent event) {
     final key = event.logicalKey;
     if (event is KeyDownEvent) {
@@ -2077,6 +2196,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyUpEvent) {
+      final temporarySpeedResult = _handleTvTemporarySpeedKeyUp(event);
+      if (temporarySpeedResult != KeyEventResult.ignored) {
+        return temporarySpeedResult;
+      }
       final isBackKey =
           event.logicalKey == LogicalKeyboardKey.goBack ||
           event.logicalKey == LogicalKeyboardKey.escape ||
@@ -2097,6 +2220,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
+    }
+
+    if (PlatformDetection.isTV) {
+      final temporarySpeedResult = _handleTvTemporarySpeedKeyDownOrRepeat(
+        event,
+      );
+      if (temporarySpeedResult != KeyEventResult.ignored) {
+        return temporarySpeedResult;
+      }
     }
 
     final primaryFocus = FocusManager.instance.primaryFocus;
