@@ -17,7 +17,6 @@ import '../../../playback/media3_player_backend.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
-import '../../screensaver/screensaver_controller.dart';
 import '../../widgets/subtitle_preview.dart';
 
 class LiveTvPlayerScreen extends StatefulWidget {
@@ -39,7 +38,6 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
   final _client = GetIt.instance<MediaServerClient>();
   final _prefs = GetIt.instance<UserPreferences>();
-  final _screensaverController = GetIt.instance<ScreensaverController>();
 
   MediaKitPlayerBackend? get _activeMediaKitBackend {
     final backend = _manager.backend;
@@ -61,7 +59,6 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   GuideProgram? _currentProgram;
   Timer? _programRefreshTimer;
   StreamSubscription<PlayerBackend>? _backendSub;
-  StreamSubscription<bool>? _screensaverPlayingSub;
 
   final _overlayFocus = FocusNode();
   PlayerState get _state => _manager.state;
@@ -69,7 +66,6 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _screensaverController.setPlaybackActive(true);
     _currentIndex = widget.startIndex;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     SystemChrome.setPreferredOrientations([
@@ -81,9 +77,6 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
       if (!mounted) return;
       setState(() {});
     });
-    _screensaverPlayingSub = _state.playingStream.listen(
-      _screensaverController.setPlaybackActive,
-    );
     _playCurrentChannel();
     _scheduleHide();
     _startProgramRefresh();
@@ -91,11 +84,9 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
 
   @override
   void dispose() {
-    _screensaverController.setPlaybackActive(false);
     _hideTimer?.cancel();
     _programRefreshTimer?.cancel();
     _backendSub?.cancel();
-    _screensaverPlayingSub?.cancel();
     _overlayFocus.dispose();
     if (!_isStopping) {
       _manager.stop(userInitiated: false);

@@ -23,7 +23,6 @@ import 'ui/widgets/offline_banner.dart';
 import 'ui/widgets/app_update_dialog.dart';
 import 'ui/widgets/exit_confirmation_dialog.dart';
 import 'ui/screensaver/screensaver_controller.dart';
-import 'ui/screensaver/screensaver_overlay.dart';
 import 'util/app_distribution.dart';
 import 'util/app_exit.dart';
 import 'util/focus/dpad_keys.dart';
@@ -107,30 +106,22 @@ class _MoonfinAppState extends State<MoonfinApp> {
                         child: _GlobalShortcutScope(
                           child: Material(
                             type: MaterialType.transparency,
-                            child: Stack(
-                              fit: StackFit.expand,
+                            child: Column(
                               children: [
-                                Column(
-                                  children: [
-                                    const OfflineBanner(),
-                                    Expanded(
-                                      child: _ConnectivityListener(
-                                        child: child ?? const SizedBox.shrink(),
-                                      ),
-                                    ),
-                                    if (!hidePlayer)
-                                      const RepaintBoundary(
-                                        child: MiniAudioPlayer(),
-                                      ),
-                                    if (!hidePlayer)
-                                      const RepaintBoundary(
-                                        child: CastMiniPlayer(),
-                                      ),
-                                  ],
+                                const OfflineBanner(),
+                                Expanded(
+                                  child: _ConnectivityListener(
+                                    child: child ?? const SizedBox.shrink(),
+                                  ),
                                 ),
-                                const Positioned.fill(
-                                  child: ScreensaverOverlay(),
-                                ),
+                                if (!hidePlayer)
+                                  const RepaintBoundary(
+                                    child: MiniAudioPlayer(),
+                                  ),
+                                if (!hidePlayer)
+                                  const RepaintBoundary(
+                                    child: CastMiniPlayer(),
+                                  ),
                               ],
                             ),
                           ),
@@ -207,14 +198,6 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
   }
 
   bool _onHardwareKeyEvent(KeyEvent event) {
-    if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      final wasVisible = _screensaverController.visible;
-      _screensaverController.notifyInteraction(canCancel: true);
-      if (wasVisible) {
-        return true;
-      }
-    }
-
     if (event is! KeyDownEvent) {
       return false;
     }
@@ -291,10 +274,7 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final paused =
-        state == AppLifecycleState.paused ||
-        state == AppLifecycleState.hidden ||
-        state == AppLifecycleState.detached;
+    final paused = state != AppLifecycleState.resumed;
     _screensaverController.activityPaused = paused;
   }
 
@@ -363,22 +343,13 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     return KeyEventResult.ignored;
   }
 
-  void _recordPointerInteraction() {
-    _screensaverController.notifyInteraction(canCancel: true);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      behavior: HitTestBehavior.translucent,
-      onPointerDown: (_) => _recordPointerInteraction(),
-      onPointerSignal: (_) => _recordPointerInteraction(),
-      child: Focus(
-        autofocus: !kIsWeb,
-        focusNode: _focusNode,
-        onKeyEvent: _onKeyEvent,
-        child: widget.child,
-      ),
+    return Focus(
+      autofocus: !kIsWeb,
+      focusNode: _focusNode,
+      onKeyEvent: _onKeyEvent,
+      child: widget.child,
     );
   }
 }

@@ -40,7 +40,6 @@ import '../../data/viewmodels/media_bar_view_model.dart';
 import '../../data/viewmodels/seerr_discover_view_model.dart';
 import '../../preference/seerr_preferences.dart';
 import '../../preference/user_preferences.dart';
-import '../../ui/screensaver/screensaver_content_service.dart';
 import '../../ui/screensaver/screensaver_controller.dart';
 import '../../ui/screens/home/home_view_model.dart';
 
@@ -65,7 +64,6 @@ void resetUserScopedSingletons() {
   unregister<TmdbRepository>();
   unregister<MdbListRepository>();
   unregister<RowDataSource>();
-  unregister<ScreensaverContentService>();
   unregister<ItemMutationRepository>();
   unregister<SearchRepository>();
   unregister<UserViewsRepository>();
@@ -87,7 +85,7 @@ void registerAppModule() {
         AppUpdateService(_getIt<PreferenceStore>(), _getIt<UserPreferences>()),
   );
   _getIt.registerLazySingleton(
-    () => ScreensaverController(_getIt<UserPreferences>()),
+    () => ScreensaverController(),
     dispose: (controller) => controller.dispose(),
   );
   _getIt.registerLazySingleton(() => const NativeCastChannel());
@@ -162,12 +160,6 @@ void _registerUserScopedSingletons() {
   _getIt.registerLazySingleton(() => ItemMutationRepository(_getIt()));
   _getIt.registerLazySingleton(
     () => RowDataSource(_getIt<MediaServerClient>()),
-  );
-  _getIt.registerLazySingleton(
-    () => ScreensaverContentService(
-      _getIt<MediaServerClient>(),
-      _getIt<UserPreferences>(),
-    ),
   );
   _getIt.registerLazySingleton(
     () => MdbListRepository(_getIt<MediaServerClient>()),

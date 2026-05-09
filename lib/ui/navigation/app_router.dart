@@ -83,7 +83,6 @@ import '../screens/downloads/storage_management_screen.dart';
 import 'destinations.dart';
 import 'focus_route_observer.dart';
 import 'route_lifecycle_observer.dart';
-import '../screensaver/screensaver_route_observer.dart';
 
 const _authRoutes = {
   Destinations.startup,
@@ -121,7 +120,6 @@ final appRouter = GoRouter(
   initialLocation: Destinations.startup,
   observers: [
     FocusRouteObserver(),
-    ScreensaverRouteObserver(),
     routeLifecycleObserver,
   ],
   redirect: (context, state) {

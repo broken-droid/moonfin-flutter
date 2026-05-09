@@ -38,7 +38,6 @@ import '../../../util/audio_labels.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
-import '../../screensaver/screensaver_controller.dart';
 import '../../widgets/subtitle_preview.dart';
 import '../../widgets/remote_play_to_session_dialog.dart';
 import '../../widgets/track_selector_dialog.dart';
@@ -76,7 +75,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _pipService = GetIt.instance<PipService>();
   final _lifecycleHandler = GetIt.instance<PlaybackLifecycleHandler>();
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
-  final _screensaverController = GetIt.instance<ScreensaverController>();
   final SyncPlayManager? _syncPlayManager =
       GetIt.instance.isRegistered<SyncPlayManager>()
           ? GetIt.instance<SyncPlayManager>()
@@ -148,7 +146,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   StreamSubscription? _pipChangedSub;
   StreamSubscription? _pipActionSub;
   StreamSubscription? _playingSub;
-  StreamSubscription<bool>? _screensaverPlayingSub;
   StreamSubscription? _bufferingSub;
   StreamSubscription<Map<String, dynamic>>? _castEventsSub;
   StreamSubscription<Map<String, dynamic>>? _dlnaEventsSub;
@@ -583,7 +580,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   @override
   void initState() {
     super.initState();
-    _screensaverController.setPlaybackActive(true);
     if (PlatformDetection.useNativeVideoSurface) {
       _subtitleActive = (_manager.subtitleStreamIndex ?? -1) >= 0;
     }
@@ -677,10 +673,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       }
     });
 
-    _screensaverPlayingSub = _state.playingStream.listen(
-      _screensaverController.setPlaybackActive,
-    );
-
     _media3ActivityActionSub = Media3PlayerBackend.activityActionStream.listen(
       _onMedia3ActivityAction,
       onError: (_) {},
@@ -720,7 +712,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   @override
   void dispose() {
-    _screensaverController.setPlaybackActive(false);
     WidgetsBinding.instance.removeObserver(this);
     _cancelTvTemporarySpeedHold();
     _hideTimer?.cancel();
@@ -752,7 +743,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _pipChangedSub?.cancel();
     _pipActionSub?.cancel();
     _playingSub?.cancel();
-    _screensaverPlayingSub?.cancel();
     _bufferingSub?.cancel();
     _castEventsSub?.cancel();
     _dlnaEventsSub?.cancel();

@@ -352,40 +352,6 @@ class UserPreferences extends ChangeNotifier {
     key: 'subtitles_default_to_none',
     defaultValue: false,
   );
-  static final screensaverInAppEnabled = Preference(
-    key: 'screensaver_inapp_enabled',
-    defaultValue: true,
-  );
-
-  static final screensaverMode = Preference(
-    key: 'pref_screensaver_mode',
-    defaultValue: 'library',
-  );
-
-  static final screensaverDimmingLevel = Preference(
-    key: 'pref_screensaver_dimming_level',
-    defaultValue: 0,
-  );
-
-  static final screensaverInAppTimeout = Preference(
-    key: 'screensaver_inapp_timeout',
-    defaultValue: 300000,
-  );
-
-  static final screensaverAgeRatingMax = Preference(
-    key: 'screensaver_agerating_max',
-    defaultValue: 13,
-  );
-
-  static final screensaverAgeRatingRequired = Preference(
-    key: 'screensaver_agerating_required',
-    defaultValue: true,
-  );
-
-  static final screensaverShowClock = Preference(
-    key: 'screensaver_show_clock',
-    defaultValue: true,
-  );
   static final mediaSegmentActions = Preference(
     key: 'media_segment_actions',
     defaultValue: 'intro:askToSkip,outro:askToSkip',
