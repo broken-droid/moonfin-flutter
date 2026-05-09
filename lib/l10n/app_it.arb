@@ -164,11 +164,11 @@
   "@ok": {
     "description": "Generic OK button label"
   },
-  "settingsAppearanceTheme": "App Theme",
+  "settingsAppearanceTheme": "Tema dell'app",
   "@settingsAppearanceTheme": {
     "description": "Title for the theme selection screen and theme settings entry"
   },
-  "settingsAppearanceThemeSubtitle": "Switch between Moonfin and Neon Pulse without restarting the app",
+  "settingsAppearanceThemeSubtitle": "Passa da Moonfin a Neon Pulse senza riavviare l'app",
   "@settingsAppearanceThemeSubtitle": {
     "description": "Subtitle for the theme selection screen and theme settings entry"
   },
@@ -176,7 +176,7 @@
   "@themeMoonfin": {
     "description": "Display name for the Moonfin theme"
   },
-  "themeMoonfinSubtitle": "Current Moonfin look you've all come to love",
+  "themeMoonfinSubtitle": "Look attuale Moonfin che tutti avete imparato ad amare",
   "@themeMoonfinSubtitle": {
     "description": "Preview description for the Moonfin theme"
   },
@@ -184,7 +184,7 @@
   "@themeNeonPulse": {
     "description": "Display name for the Neon Pulse theme"
   },
-  "themeNeonPulseSubtitle": "Synthwave styling with magenta glow, cyan text, and stronger chrome contrast",
+  "themeNeonPulseSubtitle": "Stile Synthwave con bagliore magenta, testo ciano e contrasto cromato più forte",
   "@themeNeonPulseSubtitle": {
     "description": "Preview description for the Neon Pulse theme"
   },
@@ -293,7 +293,7 @@
   "@noItemsFound": {
     "description": "Empty state when no items match the current view"
   },
-  "home": "Home",
+  "home": "Casa",
   "@home": {
     "description": "Home navigation tooltip"
   },
@@ -838,7 +838,7 @@
   "@librivoxPage": {
     "description": "Button label for LibriVox external link"
   },
-  "internetArchive": "Internet Archive",
+  "internetArchive": "Archivio Internet",
   "@internetArchive": {
     "description": "Button label for Internet Archive external link"
   },
@@ -1103,11 +1103,11 @@
   "@version": {
     "description": "Action button label for version/media source selection"
   },
-  "cast": "Cast",
+  "cast": "Lancio",
   "@cast": {
     "description": "Action button label for casting to a device"
   },
-  "trailer": "Trailer",
+  "trailer": "Rimorchio",
   "@trailer": {
     "description": "Action button label for trailer playback"
   },
@@ -1743,7 +1743,7 @@
   "@auto": {
     "description": "Label for automatic bitrate selection"
   },
-  "bitrateValueMbps": "{mbps} Mbps",
+  "bitrateValueMbps": "{mbps}Mbps",
   "@bitrateValueMbps": {
     "description": "Bitrate option label in Mbps",
     "placeholders": {
@@ -1808,7 +1808,7 @@
   "@container": {
     "description": "Stream info label for media container"
   },
-  "bitrate": "Bitrate",
+  "bitrate": "Velocità in bit",
   "@bitrate": {
     "description": "Stream info label for bitrate"
   },
@@ -2137,7 +2137,7 @@
   "@noChannelsFound": {
     "description": "Empty state when no TV channels match the filter"
   },
-  "liveBadge": "LIVE",
+  "liveBadge": "VIVERE",
   "@liveBadge": {
     "description": "Badge label shown on currently airing programs"
   },
@@ -2219,7 +2219,7 @@
       }
     }
   },
-  "no": "No",
+  "no": "NO",
   "@no": {
     "description": "Negative dialog button label"
   },
@@ -2521,7 +2521,7 @@
   "@images": {
     "description": "Storage breakdown label for images"
   },
-  "database": "Database",
+  "database": "Banca dati",
   "@database": {
     "description": "Storage breakdown label for database"
   },
@@ -2821,7 +2821,7 @@
   "@scaleOnDevice": {
     "description": "Refresh rate option: scale on device"
   },
-  "trickPlay": "Trick Play",
+  "trickPlay": "Gioco di trucchi",
   "@trickPlay": {
     "description": "Setting for trick play thumbnails"
   },
@@ -2905,7 +2905,7 @@
   "@arabic": {
     "description": "Language: Arabic"
   },
-  "hindi": "Hindi",
+  "hindi": "hindi",
   "@hindi": {
     "description": "Language: Hindi"
   },
@@ -2973,11 +2973,11 @@
   "@unsafeMpvOptionsDescription": {
     "description": "Description for unsafe mpv options"
   },
-  "hardwareDecoding": "Hardware decoding",
+  "hardwareDecoding": "Decodifica hardware",
   "@hardwareDecoding": {
     "description": "Label for hardware decoding toggle"
   },
-  "hardwareDecodingSubtitle": "May improve performance but can cause playback issues on some devices.",
+  "hardwareDecodingSubtitle": "Può migliorare le prestazioni ma può causare problemi di riproduzione su alcuni dispositivi.",
   "@hardwareDecodingSubtitle": {
     "description": "Description for hardware decoding toggle"
   },
@@ -3102,17 +3102,9 @@
   "@subtitleSize": {
     "description": "Setting for subtitle size"
   },
-  "textColor": "Colore Testo",
-  "@textColor": {
-    "description": "Setting for text color"
-  },
   "backgroundColor": "Colore Sfondo",
   "@backgroundColor": {
     "description": "Setting for background color"
-  },
-  "strokeColor": "Colore Bordo",
-  "@strokeColor": {
-    "description": "Setting for stroke color"
   },
   "verticalOffset": "Offset Verticale",
   "@verticalOffset": {
@@ -3429,7 +3421,7 @@
   "@thumbnailLabel": {
     "description": "Image type: thumbnail"
   },
-  "bannerLabel": "Banner",
+  "bannerLabel": "Stendardo",
   "@bannerLabel": {
     "description": "Image type: banner"
   },
@@ -3734,7 +3726,7 @@
   "@removePinProtection": {
     "description": "Description for remove PIN"
   },
-  "screensaver": "Screensaver",
+  "screensaver": "Salvaschermo",
   "@screensaver": {
     "description": "Settings title for screensaver"
   },
@@ -3762,7 +3754,7 @@
   "@clock": {
     "description": "Screensaver mode: clock"
   },
-  "timeout": "Timeout",
+  "timeout": "Tempo scaduto",
   "@timeout": {
     "description": "Setting for timeout"
   },
@@ -3828,7 +3820,7 @@
   "@tmdb": {
     "description": "Rating source: TMDB"
   },
-  "metacritic": "Metacritic",
+  "metacritic": "Metacritico",
   "@metacritic": {
     "description": "Rating source: Metacritic"
   },
@@ -3900,7 +3892,7 @@
   "@ratingSourcesDescription": {
     "description": "Description for rating sources"
   },
-  "pluginLabel": "Plugin",
+  "pluginLabel": "Collegare",
   "@pluginLabel": {
     "description": "Settings title for plugin"
   },
@@ -4414,7 +4406,7 @@
   "permissions": "Permessi",
   "processing": "Elaborazione",
   "profile": "Profilo",
-  "provider": "Provider",
+  "provider": "Fornitore",
   "refresh": "Aggiorna",
   "remote": "Remoto",
   "rename": "Rinomina",
@@ -4431,24 +4423,24 @@
   "stop": "Ferma",
   "streaming": "Streaming",
   "time": "Ora",
-  "trickplay": "Trickplay",
+  "trickplay": "Trucchi",
   "uninstall": "Disinstalla",
   "up": "Su",
   "update": "Aggiorna",
   "upload": "Carica",
   "unmute": "Riattiva Audio",
   "mute": "Silenzia",
-  "branding": "Branding",
-  "adminDrawerDashboard": "Dashboard",
+  "branding": "Marchio",
+  "adminDrawerDashboard": "Pannello di controllo",
   "adminDrawerAnalytics": "Analisi",
   "adminDrawerSettings": "Impostazioni",
-  "adminDrawerBranding": "Branding",
+  "adminDrawerBranding": "Marchio",
   "adminDrawerUsers": "Utenti",
   "adminDrawerLibraries": "Librerie",
   "adminDrawerTranscoding": "Transcodifica",
   "adminDrawerResume": "Ripresa",
   "adminDrawerStreaming": "Streaming",
-  "adminDrawerTrickplay": "Trickplay",
+  "adminDrawerTrickplay": "Trucchi",
   "adminDrawerDevices": "Dispositivi",
   "adminDrawerActivity": "Attività",
   "adminDrawerNetworking": "Rete",
@@ -4544,8 +4536,8 @@
   "sessionRewind": "Riavvolgi",
   "sessionForward": "Avanti",
   "sessionNext": "Successivo",
-  "sessionVolumeDown": "Vol –",
-  "sessionVolumeUp": "Vol +",
+  "sessionVolumeDown": "volume –",
+  "sessionVolumeUp": "Vol+",
   "nowPlaying": "In Riproduzione",
   "volume": "Volume",
   "actions": "Azioni",
@@ -5252,8 +5244,8 @@
   "adminRemoteIpFilter": "Filtro IP Remoto",
   "adminRemoteIpFilterEntries": "Filtro IP remoto",
   "adminCertificatePath": "Percorso certificato",
-  "whitelist": "Whitelist",
-  "blacklist": "Blacklist",
+  "whitelist": "Lista bianca",
+  "blacklist": "Lista nera",
   "notSet": "Non impostato",
   "adminMetadataSaved": "Metadati salvati",
   "adminMetadataLoadFailed": "Impossibile caricare i metadati: {error}",
@@ -5479,7 +5471,7 @@
       }
     }
   },
-  "adminPrePaddingDisplay": "Pre-padding: {minutes} min",
+  "adminPrePaddingDisplay": "Pre-imbottitura: {minutes} min",
   "@adminPrePaddingDisplay": {
     "placeholders": {
       "minutes": {
@@ -5487,7 +5479,7 @@
       }
     }
   },
-  "adminPostPaddingDisplay": "Post-padding: {minutes} min",
+  "adminPostPaddingDisplay": "Post-imbottitura: {minutes} min",
   "@adminPostPaddingDisplay": {
     "placeholders": {
       "minutes": {
@@ -5580,7 +5572,7 @@
   "adminMetadataFieldOfficialRating": "Classificazione ufficiale",
   "adminMetadataFieldCommunityRating": "Valutazione comunità",
   "adminMetadataFieldCriticRating": "Valutazione critica",
-  "adminMetadataFieldTagline": "Tagline",
+  "adminMetadataFieldTagline": "Slogan",
   "adminMetadataFieldOverview": "Panoramica",
   "adminMetadataGenres": "Generi",
   "adminMetadataTags": "Tag",
@@ -5595,10 +5587,10 @@
   "adminMetadataImagePrimary": "Principale",
   "adminMetadataImageBackdrop": "Sfondo",
   "adminMetadataImageLogo": "Logo",
-  "adminMetadataImageBanner": "Banner",
+  "adminMetadataImageBanner": "Stendardo",
   "adminMetadataImageThumb": "Miniatura",
   "adminMetadataRecursive": "Ricorsivo",
-  "adminMetadataProvider": "Provider",
+  "adminMetadataProvider": "Fornitore",
   "adminMetadataImageUpdated": "Immagine {imageType} aggiornata",
   "@adminMetadataImageUpdated": {
     "placeholders": {
@@ -5720,7 +5712,7 @@
   },
   "adminPluginDetailDetails": "Dettagli",
   "adminPluginDetailDeveloper": "Sviluppatore",
-  "adminPluginDetailRepository": "Repository",
+  "adminPluginDetailRepository": "Deposito",
   "adminPluginDetailBundled": "Incluso",
   "adminPluginDetailEnablePlugin": "Abilita Plugin",
   "adminPluginDetailRestartRequired": "È necessario un riavvio del server per rendere effettive le modifiche.",
@@ -5784,10 +5776,10 @@
   "adminNetworkingAddressHint": "es. 192.168.1.0/24",
   "adminNetworkingKnownProxies": "Proxy conosciuti",
   "adminNetworkingProxyHint": "es. 10.0.0.1",
-  "adminNetworkingWhitelist": "Whitelist",
-  "adminNetworkingBlacklist": "Blacklist",
+  "adminNetworkingWhitelist": "Lista bianca",
+  "adminNetworkingBlacklist": "Lista nera",
   "adminNetworkingAddEntry": "Aggiungi voce",
-  "adminBrandingTitle": "Branding",
+  "adminBrandingTitle": "Marchio",
   "adminBrandingLoginDisclaimer": "Disclaimer accesso",
   "adminBrandingLoginDisclaimerHint": "HTML visualizzato sotto il modulo di accesso",
   "adminBrandingCustomCss": "CSS Personalizzato",
@@ -6156,7 +6148,7 @@
   "posterImageType": "Tipo Immagine",
   "imageTypePoster": "Poster",
   "imageTypeThumbnail": "Miniatura",
-  "imageTypeBanner": "Banner",
+  "imageTypeBanner": "Stendardo",
   "playlistAddFailed": "Impossibile aggiungere alla playlist",
   "playlistCreateFailed": "Impossibile creare la playlist",
   "playlistNew": "Nuova Playlist",
@@ -6212,7 +6204,7 @@
   "@playerTooltipCastControls": {
     "description": "Tooltip label for active cast controls button in player"
   },
-  "playerTooltipPlaybackQuality": "Bitrate",
+  "playerTooltipPlaybackQuality": "Velocità in bit",
   "@playerTooltipPlaybackQuality": {
     "description": "Tooltip label for playback quality/bitrate control in player"
   },
@@ -6240,5 +6232,489 @@
   "contextMenuMarkUnwatched": "Segna come non visto",
   "contextMenuAddToFavorites": "Aggiungi ai preferiti",
   "contextMenuRemoveFromFavorites": "Rimuovi dai preferiti",
-  "contextMenuGoToSeries": "Vai alla serie"
+  "contextMenuGoToSeries": "Vai alla serie",
+  "openLink": "Apri collegamento",
+  "scanWithYourPhone": "Scansiona con il tuo telefono",
+  "delayMinusMs": "-{value}ms",
+  "delayPlusMs": "+{value}ms",
+  "seasonChip": "S{number}",
+  "dtsPassthrough": "Passaggio DTS",
+  "enableDtsPassthrough": "Solo audio DTS bitstream su AVR; richiede il supporto del ricevitore e la traccia sorgente DTS",
+  "unpauseRewind": "Riattiva la pausa e riavvolgi",
+  "textFillColor": "Colore riempimento testo",
+  "textStrokeColor": "Colore del tratto del testo",
+  "subtitleCustomization": "Personalizzazione dei sottotitoli",
+  "subtitleCustomizationDescription": "Personalizza l'aspetto dei sottotitoli",
+  "subtitlePreviewText": "La veloce volpe marrone salta sopra il cane pigro",
+  "libraryVisibilityDescription": "Attiva/disattiva la visibilità della home page per libreria. Riavvia Moonfin affinché le modifiche abbiano effetto.",
+  "sourceCodeUrl": "https://github.com/Moonfin-Client/Mobile-Desktop",
+  "updateAvailableTitle": "v{version} Disponibile",
+  "readReleaseNotes": "Leggi le note di rilascio",
+  "downloadingUpdate": "Download dell'aggiornamento in corso...",
+  "updateDownloadFailed": "Download dell'aggiornamento non riuscito. Per favore riprova.",
+  "openReleasesPage": "Apri la pagina delle versioni",
+  "notRequestedStatus": "Non richiesto",
+  "blocklistedStatus": "Bloccato",
+  "deletedStatus": "Eliminato",
+  "tmdbScore": "Punteggio TMDB",
+  "releaseDateLabel": "Data di rilascio",
+  "firstAirDateLabel": "Prima data in onda",
+  "revenueLabel": "Reddito",
+  "runtimeLabel": "Durata",
+  "budgetLabel": "Bilancio",
+  "originalLanguageLabel": "Lingua originale",
+  "seasonsLabel": "Stagioni",
+  "episodesLabel": "Episodi",
+  "uhd4k": "4K",
+  "adminPasswordReset": "Reimpostazione della password",
+  "adminPasswordUpdated": "Password aggiornata",
+  "adminUserSettings": "Impostazioni utente",
+  "adminLibraryAccess": "Accesso alla biblioteca",
+  "adminDeviceAndChannelAccess": "Accesso al dispositivo e al canale",
+  "adminEnableAllDevices": "Abilita l'accesso a tutti i dispositivi",
+  "adminEnableAllChannels": "Abilita l'accesso a tutti i canali",
+  "adminResetPasswordWarning": "Ciò rimuoverà la password. L'utente potrà accedere senza password.",
+  "adminServerReturnedHttp": "Il server ha restituito HTTP {status}",
+  "adminApiKeysTitle": "Chiavi API",
+  "adminUnknownApp": "Applicazione sconosciuta",
+  "adminApiKeyTokenCreated": "Gettone: {token}\\nCreato: {created}",
+  "adminMappingJsonHint": "Esempio: mappature del payload JSON",
+  "syncPlayDisabledTitle": "SyncPlay disabilitato",
+  "syncPlayDisabledMessage": "Abilita SyncPlay in Impostazioni per utilizzare la riproduzione sincronizzata.",
+  "syncPlayServerUnsupportedTitle": "Server non supportato",
+  "syncPlayServerUnsupportedMessage": "SyncPlay richiede un server Jellyfin. Il server attuale non lo supporta.",
+  "syncPlayGroupFallbackName": "SyncPlay Gruppo",
+  "syncPlayGroupTooltip": "SyncPlay gruppo",
+  "syncPlayParticipantCount": "{count, plural, one {# participant} other {# participants}}",
+  "syncPlayIgnoreWait": "Ignora l'attesa",
+  "syncPlayIgnoreWaitSubtitle": "Non trattenere il gruppo mentre questo dispositivo effettua il buffering",
+  "syncPlayContinueLocallyNoWait": "Continua localmente senza aspettare i membri lenti",
+  "syncPlayRepeat": "Ripetere",
+  "syncPlayRepeatOne": "Uno",
+  "syncPlayShuffleModeShuffled": "Mescolato",
+  "syncPlayShuffleModeSorted": "Ordinato",
+  "syncPlaySyncCurrentQueue": "Sincronizza la coda di riproduzione corrente",
+  "syncPlaySyncCurrentQueueSubtitle": "Sostituisci la coda del gruppo con ciò che viene riprodotto localmente",
+  "syncPlayLeaveGroup": "Lascia il gruppo",
+  "syncPlayGroupQueue": "Coda di gruppo",
+  "syncPlayQueueItemFallback": "Articolo {index}",
+  "syncPlayPlayNow": "Gioca ora",
+  "syncPlayCreateNewGroup": "Crea un nuovo gruppo",
+  "syncPlayGroupName": "Nome del gruppo",
+  "syncPlayDefaultGroupName": "Il mio gruppo SyncPlay",
+  "syncPlayCreateGroup": "Crea gruppo",
+  "syncPlayAvailableGroups": "Gruppi disponibili",
+  "syncPlayNoGroupsAvailable": "Nessun gruppo disponibile",
+  "syncPlayJoinGroupQuestion": "Partecipare al gruppo SyncPlay?",
+  "syncPlayJoinGroupWarning": "L'adesione a un gruppo SyncPlay potrebbe sostituire la coda di riproduzione corrente. Continuare?",
+  "syncPlayJoin": "Giuntura",
+  "syncPlayStateIdle": "Oziare",
+  "syncPlayStateWaiting": "In attesa",
+  "syncPlayStatePaused": "In pausa",
+  "syncPlayStatePlaying": "Giocando",
+  "syncPlayUserJoinedGroup": "{userName} si è unito al gruppo SyncPlay",
+  "syncPlayUserLeftGroup": "{userName} ha lasciato il gruppo SyncPlay",
+  "syncPlayAccessDeniedTitle": "SyncPlay accesso negato",
+  "syncPlayAccessDeniedMessage": "Non hai accesso a uno o più elementi in questo gruppo SyncPlay. Chiedi al proprietario del gruppo di verificare le autorizzazioni della libreria o di scegliere una coda diversa.",
+  "syncPlaySyncingPlaybackToGroup": "Sincronizzazione della riproduzione su {groupName}",
+  "voiceSearchUnavailable": "La ricerca vocale non è disponibile.",
+  "dolbyVisionDirectPlayFailedTitle": "Dolby Vision Riproduzione diretta non riuscita",
+  "dolbyVisionDirectPlayFailedMessage": "Impossibile avviare la riproduzione diretta per questo flusso Dolby Vision. Riprovare a utilizzare la transcodifica del server?",
+  "retryWithTranscode": "Riprovare con la transcodifica",
+  "dolbyVisionNotSupportedTitle": "Dolby Vision Non supportato",
+  "dolbyVisionNotSupportedMessage": "Questo dispositivo non può decodificare direttamente il contenuto Dolby Vision. Utilizza HDR10 fallback o richiedi la transcodifica del server.",
+  "rememberMyChoice": "Ricorda la mia scelta",
+  "playHdr10Fallback": "Riproduci HDR10 riserva",
+  "requestTranscode": "Richiedi la transcodifica",
+  "homeScreenSectionsIntegrationDescription": "Rileva le righe esposte dal plugin \"Sezioni schermata iniziale\" di IAmParadox27. Le righe possono essere abilitate e riordinate di seguito.",
+  "homeScreenSectionsIntegrationNoServers": "Nessun server Jellyfin segnala ancora il plug-in.",
+  "kefinTweaksIntegrationDescription": "Rileva le righe configurate tramite il plugin \"KefinTweaks\" di ranaldsgift. Le sezioni personalizzate, rilasciate di recente, guarda di nuovo, stagionali e aggiunte di recente nella libreria vengono rispecchiate dalla configurazione KefinTweaks su ciascun server Jellyfin.",
+  "kefinTweaksIntegrationNoServers": "Nessun server Jellyfin segnala ancora KefinTweaks.",
+  "integrationOpenHomeSections": "Apri le sezioni Home",
+  "integrationOpenHomeSectionsSubtitle": "Abilita, disabilita e riordina le righe",
+  "integrationInstalledButDisabled": "Installato ma disabilitato",
+  "integrationNotInstalled": "Non installato",
+  "integrationSectionsCount": "{count, plural, one {# section} other {# sections}}",
+  "integrationRowsDiscoveredCount": "{count, plural, one {# row discovered} other {# rows discovered}}",
+  "offlineFileNotAvailable": "File non disponibile",
+  "playerTooltipLockLandscape": "Blocca il paesaggio",
+  "playerTooltipUnlockOrientation": "Consenti rotazione",
+  "settingsAdministrationSubtitle": "Accedi al pannello di amministrazione del server",
+  "settingsAccountSecurity": "Conto e sicurezza",
+  "settingsAccountSecuritySubtitle": "Autenticazione, codice PIN e controllo genitori",
+  "settingsPersonalization": "Personalizzazione",
+  "settingsPersonalizationSubtitle": "Tema, navigazione, righe home e visibilità della libreria",
+  "settingsDynamicContent": "Contenuto dinamico",
+  "settingsDynamicContentSubtitle": "Barra multimediale e sovrapposizioni visive",
+  "settingsPlaybackSyncplay": "Riproduzione e SyncPlay",
+  "settingsPlaybackSyncplaySubtitle": "Impostazioni audio/video, sottotitoli, download e controlli SyncPlay",
+  "settingsIntegrationsSubtitle": "Sincronizzazione dei plugin, Seerr, valutazioni e altro ancora",
+  "settingsAboutSubtitle": "Versione dell'app, informazioni legali e crediti",
+  "settingsAuthenticationSection": "AUTENTICAZIONE",
+  "settingsSortServersBy": "Ordina server per",
+  "settingsLastUsed": "Ultimo utilizzo",
+  "settingsAlphabetical": "Alfabetico",
+  "settingsPrivacyAndSafetySection": "PRIVACY E SICUREZZA",
+  "settingsBlockedRatings": "Valutazioni bloccate",
+  "settingsGeneralStyle": "Stile generale",
+  "settingsGeneralStyleSubtitle": "Accenti del tema, sfondi, indicatori osservati e musica a tema",
+  "settingsHomePage": "Pagina iniziale",
+  "settingsHomePageSubtitle": "Sezioni, tipi di immagine, sovrapposizioni e anteprime multimediali",
+  "settingsLibrariesSubtitle": "Visibilità della libreria, visualizzazione delle cartelle e comportamento multi-server",
+  "settingsTwentyFourHourClock": "Orologio 24 ore",
+  "settingsTwentyFourHourClockSubtitle": "Utilizza la formattazione dell'ora a 24 ore ovunque venga visualizzato l'orologio",
+  "settingsShowShuffleButtonInNavigation": "Mostra il pulsante di riproduzione casuale nella barra di navigazione",
+  "settingsShowGenresButtonInNavigation": "Mostra il pulsante dei generi nella barra di navigazione",
+  "settingsShowFavoritesButtonInNavigation": "Mostra il pulsante dei preferiti nella barra di navigazione",
+  "settingsShowLibrariesButtonInNavigation": "Mostra il pulsante delle librerie nella barra di navigazione",
+  "settingsLibraryVisibilitySubtitle": "Attiva/disattiva la visibilità della home page per libreria. Riavvia Moonfin affinché le modifiche abbiano effetto.",
+  "settingsMediaBarAndLocalPreviews": "Barra multimediale e anteprime locali",
+  "settingsVisualOverlays": "Sovrapposizioni visive",
+  "settingsSeasonalSurprise": "Sorpresa stagionale",
+  "settingsMetadataAndRatings": "Metadati e valutazioni",
+  "settingsPluginScreenDescription": "Moonbase alimenta le integrazioni lato server, incluse fonti di valutazione aggiuntive, richieste Seerr e preferenze sincronizzate.",
+  "settingsOfflineDownloads": "Download offline",
+  "settingsHigh": "Alto",
+  "settingsLow": "Basso",
+  "settingsCustomPath": "Percorso personalizzato",
+  "settingsEnterDownloadFolderPath": "Inserisci il percorso della cartella di download",
+  "settingsConcurrentDownloads": "Download simultanei",
+  "settingsConcurrentDownloadsDescription": "Numero massimo di elementi da scaricare contemporaneamente.",
+  "settingsAppInfo": "INFORMAZIONI SULL'APP",
+  "settingsReportAnIssue": "Segnala un problema",
+  "settingsReportAnIssueSubtitle": "Apri il monitoraggio dei problemi su GitHub",
+  "settingsJoinDiscord": "Unisciti a Discord",
+  "settingsJoinDiscordSubtitle": "Chatta con la comunità",
+  "settingsJoinTheDiscord": "Unisciti all'Discord",
+  "settingsSupportMoonfin": "Supporto Moonfin",
+  "settingsSupportMoonfinSubtitle": "Speciali il progetto su GitHub o contribuisci",
+  "settingsLegal": "LEGALE",
+  "settingsLicenses": "Licenze",
+  "settingsOpenSourceLicenseNotices": "Avvisi sulla licenza open source",
+  "settingsPrivacyPolicy": "politica sulla riservatezza",
+  "settingsPrivacyPolicySubtitle": "Come Moonfin gestisce i tuoi dati",
+  "settingsCheckForUpdates": "Controlla gli aggiornamenti",
+  "settingsCheckForUpdatesSubtitle": "Controlla la versione più recente Moonfin",
+  "settingsPoweredByFlutter": "Alimentato da Flutter",
+  "settingsLicenseNoticesCount": "{count, plural, one {# license notice} other {# license notices}}",
+  "settingsBoth": "Entrambi",
+  "settingsShuffleContentTypeFilter": "Filtro del tipo di contenuto casuale",
+  "settingsVideoPlaybackPreferences": "Preferenze di riproduzione video",
+  "settingsVideoPlaybackPreferencesSubtitle": "Motore video principale e impostazioni della qualità dello streaming",
+  "settingsAudioPreferences": "Preferenze audio",
+  "settingsAudioPreferencesSubtitle": "Tracce audio, elaborazione e opzioni passthrough",
+  "settingsAutomationAndQueue": "Automazione e coda",
+  "settingsAutomationAndQueueSubtitle": "Riproduzione e sequenziamento automatizzati",
+  "settingsOfflineDownloadsSubtitle": "Qualità del download, limiti di archiviazione e dimensioni della coda",
+  "settingsSyncplaySubtitle": "Logica di sincronizzazione per sessioni di gruppo",
+  "settingsAdvancedOptionsSubtitle": "Funzionalità del giocatore specializzato. Utilizzare con cautela poiché alcune opzioni potrebbero causare problemi di riproduzione",
+  "settingsSkipIntrosAndOutros": "Saltare intro e outro?",
+  "settingsPromptUser": "Richiedi all'utente",
+  "settingsSkip": "Saltare",
+  "settingsDoNothing": "Non fare nulla",
+  "settingsMaxBitrateDescription": "Limita il bitrate dello streaming. Il contenuto al di sopra di questa soglia verrà transcodificato per adattarsi.",
+  "settingsMaxResolutionDescription": "Limita la risoluzione massima richiesta dal giocatore. Il contenuto ad alta risoluzione verrà transcodificato.",
+  "settingsPlayerZoomDescription": "Come ridimensionare il video per adattarlo allo schermo.",
+  "settingsPlaybackEngineAndroidTv": "Motore di riproduzione (TV Android)",
+  "settingsPlaybackEngineAndroidTvDescription": "Scegli il motore di riproduzione predefinito sui dispositivi Android TV. Le modifiche si applicano alla successiva sessione di riproduzione.",
+  "settingsPlaybackEngineMedia3Recommended": "Media3 (consigliato)",
+  "settingsPlaybackEngineMpvLegacy": "mpv (precedente)",
+  "settingsDolbyVisionFallback": "Dolby Vision Fallback",
+  "settingsDolbyVisionFallbackDescription": "Comportamento dei titoli Dolby Vision su dispositivi senza decodifica Dolby Vision.",
+  "settingsAskEachTime": "Chiedi ogni volta",
+  "settingsPreferHdr10Fallback": "Preferisci HDR10 fallback",
+  "settingsPreferServerTranscode": "Preferisci la transcodifica del server",
+  "settingsDolbyVisionProfile7DirectPlay": "Dolby Vision Profilo 7 Riproduzione diretta",
+  "settingsDolbyVisionProfile7DirectPlayDescription": "Controlla se i flussi del livello di miglioramento Dolby Vision profilo 7 devono dirigere la riproduzione.",
+  "settingsAutoAftkrtEnabled": "Automatico (AFTKRT abilitato)",
+  "settingsEnabledOnThisDevice": "Abilitato su questo dispositivo",
+  "settingsDisabledPreferTranscode": "Disabilitato (preferisci la transcodifica)",
+  "settingsResumeRewindDescription": "Quando si riprende la riproduzione (da Continua a guardare o dalla pagina di un elemento multimediale), quanti secondi devono essere riavvolti?",
+  "settingsUnpauseRewindDescription": "Quando si riprende la riproduzione dopo aver premuto il pulsante di pausa, quanti secondi devono essere riavvolti?",
+  "settingsSkipBackLengthDescription": "Quanti secondi tornare indietro dopo aver premuto il pulsante di riavvolgimento.",
+  "settingsOneSecond": "1 secondo",
+  "settingsThreeSeconds": "3 secondi",
+  "settingsFortyFiveSeconds": "45 secondi",
+  "settingsSixtySeconds": "60 secondi",
+  "settingsSkipForwardLengthDescription": "Quanti secondi per saltare in avanti dopo aver premuto il pulsante di avanzamento veloce.",
+  "settingsBitstreamAc3ToExternalDecoder": "Bitstream AC3 a decoder esterno",
+  "settingsCinemaMode": "Modalità cinema",
+  "settingsCinemaModeSubtitle": "Riproduci trailer/preroll prima di un film principale",
+  "settingsNextUpBehaviorDescription": "Esteso mostra una scheda completa con grafica e descrizione dell'episodio. Minimal mostra una sovrapposizione compatta del conto alla rovescia. Disabilitato nasconde completamente il prompt.",
+  "settingsShort": "Corto",
+  "settingsLong": "Lungo",
+  "settingsVeryLong": "Molto lungo",
+  "settingsVideoStartDelay": "Ritardo avvio video",
+  "settingsMillisecondsValue": "{value}ms",
+  "settingsLiveTvDirect": "Diretta TV in diretta",
+  "settingsLiveTvDirectSubtitle": "Abilita la riproduzione diretta per la TV in diretta",
+  "settingsOpenGroups": "Gruppi aperti",
+  "settingsOpenGroupsSubtitle": "Crea, unisciti o gestisci gruppi SyncPlay",
+  "settingsSyncplayEnabled": "SyncPlay Abilitato",
+  "settingsSyncplayEnabledSubtitle": "Abilita le funzionalità di visione di gruppo",
+  "settingsSyncplayButton": "Pulsante SyncPlay",
+  "settingsSyncplayButtonSubtitle": "Mostra il pulsante SyncPlay sulla barra di navigazione",
+  "settingsSyncplayAdvancedCorrection": "Correzione avanzata",
+  "settingsSyncplayAdvancedCorrectionSubtitle": "Abilita la logica di sincronizzazione a grana fine",
+  "settingsSyncplaySyncCorrection": "Correzione della sincronizzazione",
+  "settingsSyncplaySyncCorrectionSubtitle": "Regola automaticamente la riproduzione per rimanere sincronizzata",
+  "settingsSyncplaySpeedToSync": "Velocità di sincronizzazione",
+  "settingsSyncplaySpeedToSyncSubtitle": "Utilizzare la regolazione della velocità di riproduzione per sincronizzare",
+  "settingsSyncplaySkipToSync": "Passa alla sincronizzazione",
+  "settingsSyncplaySkipToSyncSubtitle": "Utilizza la ricerca per sincronizzare",
+  "settingsSyncplayMinimumSpeedDelay": "Ritardo di velocità minima",
+  "settingsSyncplayMaximumSpeedDelay": "Ritardo velocità massima",
+  "settingsSyncplaySpeedDuration": "Durata della velocità",
+  "settingsSyncplayMinimumSkipDelay": "Ritardo minimo di salto",
+  "settingsSyncplayExtraOffset": "SyncPlay Offset extra",
+  "onNow": "Adesso",
+  "collections": "Collezioni",
+  "lastPlayed": "Ultimo giocato",
+  "libraryNameWithServer": "{libraryName} ({serverName})",
+  "latestLibraryName": "Ultimi {libraryName}",
+  "@openLink": {
+    "description": "Action label to open a URL externally"
+  },
+  "@scanWithYourPhone": {
+    "description": "Instruction shown above a QR code"
+  },
+  "@delayMinusMs": {
+    "description": "Label for decreasing playback delay in milliseconds",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "@delayPlusMs": {
+    "description": "Label for increasing playback delay in milliseconds",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "@seasonChip": {
+    "description": "Compact season chip label",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "@dtsPassthrough": {
+    "description": "Setting for DTS passthrough"
+  },
+  "@enableDtsPassthrough": {
+    "description": "Description for DTS passthrough"
+  },
+  "@unpauseRewind": {
+    "description": "Setting for rewinding a little when resuming from pause"
+  },
+  "@textFillColor": {
+    "description": "Setting for subtitle text fill color"
+  },
+  "@textStrokeColor": {
+    "description": "Setting for subtitle text stroke color"
+  },
+  "@subtitleCustomization": {
+    "description": "Title of the subtitle customization screen"
+  },
+  "@subtitleCustomizationDescription": {
+    "description": "Subtitle for the subtitle customization tile"
+  },
+  "@subtitlePreviewText": {
+    "description": "Sample text shown in the subtitle live preview"
+  },
+  "@libraryVisibilityDescription": {
+    "description": "Explanation shown on the library visibility settings screen"
+  },
+  "@sourceCodeUrl": {
+    "description": "Displayed source code repository URL"
+  },
+  "@updateAvailableTitle": {
+    "description": "Title of the update dialog showing the new version",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@readReleaseNotes": {
+    "description": "Option to read the release notes in a browser"
+  },
+  "@downloadingUpdate": {
+    "description": "Label shown while an update is being downloaded"
+  },
+  "@updateDownloadFailed": {
+    "description": "Error shown when the update download fails"
+  },
+  "@openReleasesPage": {
+    "description": "Option to open the GitHub releases page in a browser (Linux)"
+  },
+  "@notRequestedStatus": {
+    "description": "Request status label when no request exists"
+  },
+  "@blocklistedStatus": {
+    "description": "Request status label for blocklisted media"
+  },
+  "@deletedStatus": {
+    "description": "Request status label for deleted media"
+  },
+  "@tmdbScore": {
+    "description": "Stat label for TMDB user score"
+  },
+  "@releaseDateLabel": {
+    "description": "Stat label for release date"
+  },
+  "@firstAirDateLabel": {
+    "description": "Stat label for first air date"
+  },
+  "@revenueLabel": {
+    "description": "Stat label for revenue"
+  },
+  "@runtimeLabel": {
+    "description": "Stat label for runtime"
+  },
+  "@budgetLabel": {
+    "description": "Stat label for budget"
+  },
+  "@originalLanguageLabel": {
+    "description": "Stat label for original language"
+  },
+  "@seasonsLabel": {
+    "description": "Stat label for number of seasons"
+  },
+  "@episodesLabel": {
+    "description": "Stat label for number of episodes"
+  },
+  "@adminServerReturnedHttp": {
+    "placeholders": {
+      "status": {
+        "type": "int"
+      }
+    }
+  },
+  "@adminApiKeyTokenCreated": {
+    "placeholders": {
+      "token": {
+        "type": "String"
+      },
+      "created": {
+        "type": "String"
+      }
+    }
+  },
+  "@syncPlayParticipantCount": {
+    "description": "Participant count label shown in SyncPlay UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@syncPlayQueueItemFallback": {
+    "description": "Fallback title for SyncPlay queue item when media title is unavailable",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "@syncPlayUserJoinedGroup": {
+    "description": "Snackbar message when a user joins a SyncPlay group",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@syncPlayUserLeftGroup": {
+    "description": "Snackbar message when a user leaves a SyncPlay group",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@syncPlaySyncingPlaybackToGroup": {
+    "description": "Snackbar message shown when starting playback in a SyncPlay group",
+    "placeholders": {
+      "groupName": {
+        "type": "String"
+      }
+    }
+  },
+  "@integrationSectionsCount": {
+    "description": "Plural label for number of sections discovered in integration status",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@integrationRowsDiscoveredCount": {
+    "description": "Plural label for number of rows discovered in integration status",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@playerTooltipLockLandscape": {
+    "description": "Tooltip label for locking landscape orientation in player"
+  },
+  "@playerTooltipUnlockOrientation": {
+    "description": "Tooltip label for unlocking orientation lock in player"
+  },
+  "@contextMenuMarkWatched": {
+    "description": "Context menu action to mark an item as watched"
+  },
+  "@contextMenuMarkUnwatched": {
+    "description": "Context menu action to mark an item as unwatched"
+  },
+  "@contextMenuAddToFavorites": {
+    "description": "Context menu action to add an item to favorites"
+  },
+  "@contextMenuRemoveFromFavorites": {
+    "description": "Context menu action to remove an item from favorites"
+  },
+  "@contextMenuGoToSeries": {
+    "description": "Context menu action to navigate to the parent series of an episode"
+  },
+  "@settingsLicenseNoticesCount": {
+    "description": "Plural label for number of license notices",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@settingsMillisecondsValue": {
+    "description": "Milliseconds duration label",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "@libraryNameWithServer": {
+    "description": "Library name display with server suffix for multi-server views",
+    "placeholders": {
+      "libraryName": {
+        "type": "String"
+      },
+      "serverName": {
+        "type": "String"
+      }
+    }
+  },
+  "@latestLibraryName": {
+    "description": "Row title for latest media in a specific library",
+    "placeholders": {
+      "libraryName": {
+        "type": "String"
+      }
+    }
+  }
 }
