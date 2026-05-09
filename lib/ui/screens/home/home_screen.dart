@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:moonfin_native_video/moonfin_native_video.dart';
+import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart' hide ImageType;
 
 import '../../../data/models/aggregated_item.dart';
@@ -17,6 +19,8 @@ import '../../../data/services/background_service.dart';
 import '../../../data/services/theme_music_service.dart';
 import '../../../data/services/media_server_client_factory.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../playback/inline_preview_engine.dart';
+import '../../../playback/media3_player_backend.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
@@ -504,16 +508,21 @@ class _ContentRowsState extends State<_ContentRows>
     with WidgetsBindingObserver {
   final _scrollController = ScrollController();
   final _mediaBarFocusNode = FocusNode(debugLabel: 'home_media_bar_focus');
+  final _playbackManager = GetIt.instance<PlaybackManager>();
+  final _media3PreviewBackend = GetIt.instance<Media3PlayerBackend>();
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
   final Map<int, GlobalKey> _rowKeys = {};
   final Map<int, GlobalKey> _rowContainerKeys = {};
   int? _activeFocusedRowIndex;
   Timer? _previewDelayTimer;
   Timer? _previewStopTimer;
+  StreamSubscription<bool>? _mainPlaybackSub;
   Player? _previewPlayer;
   VideoController? _previewController;
   int _previewRequestId = 0;
+  bool _mainPlaybackActive = false;
   bool _previewReady = false;
+  bool _previewUsingMedia3 = false;
   double _scrollOffset = 0;
   double _previewStartScrollOffset = 0;
   bool _isScrolledToTop = true;
@@ -531,6 +540,7 @@ class _ContentRowsState extends State<_ContentRows>
   bool _verticalNavInFlight = false;
   bool _chromeFocusActive = false;
   String? _activePreviewKey;
+  late bool _lastMedia3PreviewPreference;
   List<double> _rowTopOffsets = [];
   double _overlayBottom = 0;
   static const _previewScrollThreshold = 150.0;
@@ -594,6 +604,53 @@ class _ContentRowsState extends State<_ContentRows>
     return UserPreferences.isMediaBarModeEnabled(mode);
   }
 
+  bool _useMedia3InlinePreview() {
+    return usesMedia3ForInlinePreview(widget.prefs);
+  }
+
+  void _onPreviewPrefsChanged() {
+    if (!mounted) return;
+
+    final useMedia3 = _useMedia3InlinePreview();
+    if (useMedia3 != _lastMedia3PreviewPreference) {
+      _lastMedia3PreviewPreference = useMedia3;
+      _finishSharedPreview(releaseResources: true);
+      return;
+    }
+
+    if (_activePreviewKey == null) {
+      return;
+    }
+
+    final previewAudioEnabled = widget.prefs.get(
+      UserPreferences.previewAudioEnabled,
+    );
+    final previewVolume = kIsWeb ? 0.0 : (previewAudioEnabled ? 100.0 : 0.0);
+
+    if (_previewUsingMedia3) {
+      unawaited(_media3PreviewBackend.setVolume(previewVolume));
+      return;
+    }
+
+    final player = _previewPlayer;
+    if (player != null) {
+      unawaited(player.setVolume(previewVolume));
+    }
+  }
+
+  void _onMainPlaybackChanged(bool isPlaying) {
+    if (isPlaying && _previewUsingMedia3 && _activePreviewKey != null) {
+      return;
+    }
+    if (_mainPlaybackActive == isPlaying) {
+      return;
+    }
+    _mainPlaybackActive = isPlaying;
+    if (isPlaying) {
+      _finishSharedPreview(releaseResources: true);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -602,6 +659,12 @@ class _ContentRowsState extends State<_ContentRows>
     appRouter.routerDelegate.addListener(_onRouteChanged);
     FocusManager.instance.addListener(_onGlobalFocusChanged);
     SettingsPanel.isOpenNotifier.addListener(_onSettingsPanelOpenChanged);
+    _lastMedia3PreviewPreference = _useMedia3InlinePreview();
+    widget.prefs.addListener(_onPreviewPrefsChanged);
+    _mainPlaybackActive = _playbackManager.state.isPlaying;
+    _mainPlaybackSub = _playbackManager.state.playingStream.listen(
+      _onMainPlaybackChanged,
+    );
     if (!_isMediaBarEnabledByMode()) {
       _infoRevealed = true;
     }
@@ -617,6 +680,8 @@ class _ContentRowsState extends State<_ContentRows>
     _scrollController.dispose();
     _scrollIdleTimer?.cancel();
     _mediaBarFocusNode.dispose();
+    _mainPlaybackSub?.cancel();
+    widget.prefs.removeListener(_onPreviewPrefsChanged);
     _rowKeys.clear();
     _disposeSharedPreview();
     super.dispose();
@@ -714,7 +779,8 @@ class _ContentRowsState extends State<_ContentRows>
   void _schedulePreview(AggregatedItem item, {required Duration delay}) {
     if (!widget.prefs.get(UserPreferences.episodePreviewEnabled) ||
         !_supportsEpisodePreview(item) ||
-        _chromeFocusActive) {
+        _chromeFocusActive ||
+        _mainPlaybackActive) {
       return;
     }
 
@@ -758,6 +824,10 @@ class _ContentRowsState extends State<_ContentRows>
     if (!kIsWeb) {
       _previewPlayer?.stop();
     }
+    if (_previewUsingMedia3) {
+      _previewUsingMedia3 = false;
+      unawaited(_media3PreviewBackend.stop());
+    }
     if (releaseResources || kIsWeb) {
       _previewPlayer?.dispose();
       _previewPlayer = null;
@@ -783,7 +853,7 @@ class _ContentRowsState extends State<_ContentRows>
   }
 
   Future<void> _startSharedPreview(AggregatedItem item, String previewKey) async {
-    if (_chromeFocusActive) {
+    if (_chromeFocusActive || _mainPlaybackActive) {
       _finishSharedPreview(releaseResources: true);
       return;
     }
@@ -796,6 +866,10 @@ class _ContentRowsState extends State<_ContentRows>
       _previewController = null;
     } else {
       _previewPlayer?.stop();
+    }
+    if (_previewUsingMedia3) {
+      await _media3PreviewBackend.stop();
+      _previewUsingMedia3 = false;
     }
     _themeMusicService.setExternalAudioActive(true);
 
@@ -810,20 +884,7 @@ class _ContentRowsState extends State<_ContentRows>
         return;
       }
 
-      final player = _ensureSharedPreviewPlayer();
       final seekPosition = _previewSeekPosition(target);
-
-      final previewAudioEnabled = widget.prefs.get(
-        UserPreferences.previewAudioEnabled,
-      );
-      final previewVolume = kIsWeb
-          ? 0.0
-          : (previewAudioEnabled ? 100.0 : 0.0);
-      await player.setVolume(previewVolume);
-      if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
-        return;
-      }
-
       final previewUrl = _buildPreviewUrl(client, target, seekPosition);
       final previewUri = Uri.tryParse(previewUrl);
       if (previewUri == null ||
@@ -833,21 +894,51 @@ class _ContentRowsState extends State<_ContentRows>
         return;
       }
 
-      await player.open(Media(previewUrl));
-      if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
-        return;
-      }
-
-      if (previewAudioEnabled) {
-        await player.setVolume(100.0);
+      final previewAudioEnabled = widget.prefs.get(
+        UserPreferences.previewAudioEnabled,
+      );
+      final previewVolume = kIsWeb
+          ? 0.0
+          : (previewAudioEnabled ? 100.0 : 0.0);
+      final useMedia3 = _useMedia3InlinePreview();
+      if (useMedia3) {
+        _previewUsingMedia3 = true;
+        await _media3PreviewBackend.setVolume(previewVolume);
         if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
           return;
         }
-      }
 
-      await player.setPlaylistMode(PlaylistMode.loop);
-      if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
-        return;
+        await _media3PreviewBackend.play(<String, dynamic>{
+          'url': previewUrl,
+          'mediaType': 'video',
+        });
+        if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
+          return;
+        }
+      } else {
+        _previewUsingMedia3 = false;
+        final player = _ensureSharedPreviewPlayer();
+        await player.setVolume(previewVolume);
+        if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
+          return;
+        }
+
+        await player.open(Media(previewUrl));
+        if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
+          return;
+        }
+
+        if (previewAudioEnabled) {
+          await player.setVolume(100.0);
+          if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
+            return;
+          }
+        }
+
+        await player.setPlaylistMode(PlaylistMode.loop);
+        if (!mounted || requestId != _previewRequestId || _activePreviewKey != previewKey) {
+          return;
+        }
       }
 
       _previewStopTimer = Timer(const Duration(seconds: 30), () {
@@ -2316,6 +2407,7 @@ class _ContentRowsState extends State<_ContentRows>
             width: width,
             aspectRatio: ar,
             showVideo: showPreviewVideo,
+            useMedia3: showPreviewVideo && _previewUsingMedia3,
             controller: _previewController,
             isFocused: isFocused,
             focusColor: focusColor,
@@ -2680,6 +2772,7 @@ class _PreviewCardShell extends StatelessWidget {
   final double width;
   final double aspectRatio;
   final bool showVideo;
+  final bool useMedia3;
   final VideoController? controller;
   final bool isFocused;
   final Color focusColor;
@@ -2689,6 +2782,7 @@ class _PreviewCardShell extends StatelessWidget {
     required this.width,
     required this.aspectRatio,
     required this.showVideo,
+    required this.useMedia3,
     required this.controller,
     required this.isFocused,
     required this.focusColor,
@@ -2696,7 +2790,26 @@ class _PreviewCardShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!showVideo || controller == null) {
+    if (!showVideo) {
+      return card;
+    }
+
+    final Widget? previewSurface;
+    if (useMedia3) {
+      previewSurface = const Media3VideoView(fill: Colors.black);
+    } else if (controller != null) {
+      previewSurface = Video(
+        controller: controller!,
+        controls: NoVideoControls,
+        fit: BoxFit.cover,
+        pauseUponEnteringBackgroundMode: false,
+        fill: Colors.black,
+      );
+    } else {
+      previewSurface = null;
+    }
+
+    if (previewSurface == null) {
       return card;
     }
 
@@ -2716,13 +2829,7 @@ class _PreviewCardShell extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   child: ColoredBox(
                     color: Colors.black,
-                    child: Video(
-                      controller: controller!,
-                      controls: NoVideoControls,
-                      fit: BoxFit.cover,
-                      pauseUponEnteringBackgroundMode: false,
-                      fill: Colors.black,
-                    ),
+                      child: previewSurface,
                   ),
                 ),
               ),

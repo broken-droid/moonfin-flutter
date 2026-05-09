@@ -10,6 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:jellyfin_design/jellyfin_design.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:moonfin_native_video/moonfin_native_video.dart';
+import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../data/models/media_bar_slide_item.dart';
@@ -23,6 +25,8 @@ import '../../preference/user_preferences.dart';
 import '../navigation/destinations.dart';
 import '../../util/platform_detection.dart';
 import '../../l10n/app_localizations.dart';
+import '../../playback/inline_preview_engine.dart';
+import '../../playback/media3_player_backend.dart';
 import 'bounded_network_image.dart';
 import 'rating_display.dart';
 import 'web_youtube_trailer.dart';
@@ -63,6 +67,8 @@ class _MediaBarState extends State<MediaBar>
 
   final _pageController = PageController();
   final _backgroundService = GetIt.instance<BackgroundService>();
+  final _playbackManager = GetIt.instance<PlaybackManager>();
+  final _media3TrailerBackend = GetIt.instance<Media3PlayerBackend>();
   RouteInformationProvider? _routeInformationProvider;
   bool _isHomeRouteActive = true;
 
@@ -79,17 +85,22 @@ class _MediaBarState extends State<MediaBar>
 
   Player? _trailerPlayer;
   VideoController? _trailerController;
+  StreamSubscription<bool>? _mainPlaybackSub;
   StreamSubscription<bool>? _trailerCompletedSub;
+  StreamSubscription<bool>? _media3TrailerCompletedSub;
   Timer? _trailerRevealTimer;
   double _trailerVideoOpacity = 0.0;
   String? _activeTrailerItemId;
   int _trailerResolveId = 0;
   bool _trailerRevealArmed = false;
   bool _isTrailerPlaying = false;
+  bool _mainPlaybackActive = false;
+  bool _trailerUsingMedia3 = false;
   String? _activeYouTubeVideoId;
   String? _pendingYouTubeVideoId;
   String? _lastSyncedMakdBackdropUrl;
   late bool _lastHardwareDecodingEnabled;
+  late bool _lastUseMedia3TrailerEngine;
   late final AnimationController _makdKenBurnsController;
   late final Animation<double> _makdKenBurnsScale;
 
@@ -109,6 +120,11 @@ class _MediaBarState extends State<MediaBar>
     _makdKenBurnsController.forward();
     _lastHardwareDecodingEnabled = widget.prefs.get(
       UserPreferences.hardwareDecoding,
+    );
+    _lastUseMedia3TrailerEngine = _useMedia3TrailerEngine();
+    _mainPlaybackActive = _playbackManager.state.isPlaying;
+    _mainPlaybackSub = _playbackManager.state.playingStream.listen(
+      _onMainPlaybackChanged,
     );
     widget.viewModel.addListener(_onStateChanged);
     widget.prefs.addListener(_onPrefsChanged);
@@ -131,6 +147,7 @@ class _MediaBarState extends State<MediaBar>
   void dispose() {
     _autoAdvanceTimer?.cancel();
     _trailerRevealTimer?.cancel();
+    _mainPlaybackSub?.cancel();
     _disposeTrailerPlayer();
     _makdKenBurnsController.dispose();
     _pageController.dispose();
@@ -139,6 +156,23 @@ class _MediaBarState extends State<MediaBar>
     WidgetsBinding.instance.removeObserver(this);
     _routeInformationProvider?.removeListener(_onRouteChanged);
     super.dispose();
+  }
+
+  bool _useMedia3TrailerEngine() {
+    return usesMedia3ForInlinePreview(widget.prefs);
+  }
+
+  void _onMainPlaybackChanged(bool isPlaying) {
+    if (isPlaying && _trailerUsingMedia3 && _activeTrailerItemId != null) {
+      return;
+    }
+    if (_mainPlaybackActive == isPlaying) {
+      return;
+    }
+    _mainPlaybackActive = isPlaying;
+    if (isPlaying) {
+      _cancelTrailerPreview();
+    }
   }
 
   @override
@@ -279,6 +313,15 @@ class _MediaBarState extends State<MediaBar>
       return;
     }
 
+    final useMedia3Trailer = _useMedia3TrailerEngine();
+    final trailerEngineChanged =
+        useMedia3Trailer != _lastUseMedia3TrailerEngine;
+    if (trailerEngineChanged) {
+      _lastUseMedia3TrailerEngine = useMedia3Trailer;
+      _cancelTrailerPreview();
+      _disposeTrailerPlayer();
+    }
+
     final trailerPreviewEnabled = widget.prefs.get(
       UserPreferences.mediaBarTrailerPreview,
     );
@@ -299,6 +342,9 @@ class _MediaBarState extends State<MediaBar>
       if (!hardwareDecodingChanged) {
         _cancelTrailerPreview();
       }
+    } else if (_trailerUsingMedia3) {
+      final audioEnabled = widget.prefs.get(UserPreferences.previewAudioEnabled);
+      _media3TrailerBackend.setVolume(audioEnabled ? 100 : 0);
     } else if (_trailerPlayer != null) {
       final audioEnabled = widget.prefs.get(UserPreferences.previewAudioEnabled);
       _trailerPlayer?.setVolume(audioEnabled ? 100 : 0);
@@ -430,6 +476,7 @@ class _MediaBarState extends State<MediaBar>
     }
     if (!widget.prefs.get(UserPreferences.mediaBarTrailerPreview)) return;
     if (!_isHomeRouteActive) return;
+    if (_mainPlaybackActive) return;
     if (_activeTrailerItemId == item.itemId && _trailerVideoOpacity > 0) return;
 
     _trailerRevealTimer?.cancel();
@@ -446,14 +493,22 @@ class _MediaBarState extends State<MediaBar>
 
   void _cancelTrailerPreview() {
     final wasTrailerPlaying = _isTrailerPlaying;
+    final wasUsingMedia3 = _trailerUsingMedia3;
     _trailerRevealTimer?.cancel();
     _trailerResolveId++;
     _trailerRevealArmed = false;
     _isTrailerPlaying = false;
-    _trailerPlayer?.stop();
+    if (_trailerUsingMedia3) {
+      _trailerUsingMedia3 = false;
+      unawaited(_media3TrailerBackend.stop());
+    } else {
+      _trailerPlayer?.stop();
+    }
     _activeTrailerItemId = null;
     _pendingYouTubeVideoId = null;
-    if (_activeYouTubeVideoId != null || _trailerVideoOpacity != 0.0) {
+    if (_activeYouTubeVideoId != null ||
+        _trailerVideoOpacity != 0.0 ||
+        wasUsingMedia3) {
       setState(() {
         _activeYouTubeVideoId = null;
         _trailerVideoOpacity = 0.0;
@@ -466,6 +521,7 @@ class _MediaBarState extends State<MediaBar>
 
   Future<void> _prepareTrailerPreview(
       MediaBarSlideItem item, int resolveId) async {
+    if (_mainPlaybackActive) return;
     final client = _clientForServer(item.serverId);
     String? streamUrl;
     bool useYouTubeHeaders = false;
@@ -529,15 +585,34 @@ class _MediaBarState extends State<MediaBar>
     if (streamUrl == null) return;
 
     try {
-      final player = _ensureTrailerPlayer();
-      await player.setVolume(0);
-      if (!mounted || resolveId != _trailerResolveId) return;
+      final useMedia3 = _useMedia3TrailerEngine() && !webOnly;
+      if (useMedia3) {
+        _media3TrailerCompletedSub ??= _media3TrailerBackend.completedStream
+            .listen(_onTrailerCompleted);
+        _trailerUsingMedia3 = true;
+        await _media3TrailerBackend.setVolume(0);
+        if (!mounted || resolveId != _trailerResolveId) return;
 
-      final media = useYouTubeHeaders
-          ? Media(streamUrl, httpHeaders: YouTubeStreamResolver.youtubeHeaders)
-          : Media(streamUrl);
-      await player.open(media).timeout(_openTimeout);
-      if (!mounted || resolveId != _trailerResolveId) return;
+        final payload = <String, dynamic>{
+          'url': streamUrl,
+          'mediaType': 'video',
+          if (useYouTubeHeaders)
+            'headers': YouTubeStreamResolver.youtubeHeaders,
+        };
+        await _media3TrailerBackend.play(payload).timeout(_openTimeout);
+        if (!mounted || resolveId != _trailerResolveId) return;
+      } else {
+        _trailerUsingMedia3 = false;
+        final player = _ensureTrailerPlayer();
+        await player.setVolume(0);
+        if (!mounted || resolveId != _trailerResolveId) return;
+
+        final media = useYouTubeHeaders
+            ? Media(streamUrl, httpHeaders: YouTubeStreamResolver.youtubeHeaders)
+            : Media(streamUrl);
+        await player.open(media).timeout(_openTimeout);
+        if (!mounted || resolveId != _trailerResolveId) return;
+      }
 
       setState(() {
         _activeTrailerItemId = item.itemId;
@@ -571,6 +646,23 @@ class _MediaBarState extends State<MediaBar>
     if (_activeYouTubeVideoId != null) {
       _isTrailerPlaying = true;
       _autoAdvanceTimer?.cancel();
+      if (_trailerVideoOpacity != 1) {
+        setState(() => _trailerVideoOpacity = 1);
+      }
+      return;
+    }
+
+    if (_trailerUsingMedia3) {
+      final audioEnabled = widget.prefs.get(UserPreferences.previewAudioEnabled);
+      await _media3TrailerBackend.setVolume(audioEnabled ? 100 : 0);
+      if (!mounted || resolveId != _trailerResolveId) return;
+
+      await _media3TrailerBackend.resume();
+      if (!mounted || resolveId != _trailerResolveId) return;
+
+      _isTrailerPlaying = true;
+      _autoAdvanceTimer?.cancel();
+
       if (_trailerVideoOpacity != 1) {
         setState(() => _trailerVideoOpacity = 1);
       }
@@ -629,6 +721,12 @@ class _MediaBarState extends State<MediaBar>
   void _disposeTrailerPlayer() {
     _trailerCompletedSub?.cancel();
     _trailerCompletedSub = null;
+    _media3TrailerCompletedSub?.cancel();
+    _media3TrailerCompletedSub = null;
+    if (_trailerUsingMedia3) {
+      _trailerUsingMedia3 = false;
+      unawaited(_media3TrailerBackend.stop());
+    }
     _trailerPlayer?.stop();
     _trailerPlayer?.dispose();
     _trailerPlayer = null;
@@ -1246,19 +1344,21 @@ class _MediaBarState extends State<MediaBar>
 
   List<Widget> _buildVideoOverlays() {
     return [
-      if (_trailerController != null)
+      if (_trailerUsingMedia3 || _trailerController != null)
         Positioned.fill(
           child: IgnorePointer(
             child: AnimatedOpacity(
               opacity: _trailerVideoOpacity,
               duration: const Duration(milliseconds: 800),
-              child: Video(
-                controller: _trailerController!,
-                controls: NoVideoControls,
-                fit: BoxFit.cover,
-                pauseUponEnteringBackgroundMode: false,
-                fill: Colors.transparent,
-              ),
+              child: _trailerUsingMedia3
+                  ? const Media3VideoView(fill: Colors.transparent)
+                  : Video(
+                      controller: _trailerController!,
+                      controls: NoVideoControls,
+                      fit: BoxFit.cover,
+                      pauseUponEnteringBackgroundMode: false,
+                      fill: Colors.transparent,
+                    ),
             ),
           ),
         ),
