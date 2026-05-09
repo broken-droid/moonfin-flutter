@@ -418,7 +418,6 @@ class _MediaBarState extends State<MediaBar>
   }
 
   void _handleFocusChange(bool focused) {
-    _setPaused(focused);
     if (focused) {
       _lastFocusReceivedAt = DateTime.now();
     }
