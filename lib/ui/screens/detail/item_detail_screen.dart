@@ -382,6 +382,18 @@ class _DetailContentState extends State<_DetailContent> {
     }
     if (target.context != null && target.canRequestFocus) {
       target.requestFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final targetContext = target.context;
+        if (targetContext == null) return;
+        Scrollable.ensureVisible(
+          targetContext,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          alignment: 0.2,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      });
       return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
