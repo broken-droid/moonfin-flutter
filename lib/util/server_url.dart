@@ -15,23 +15,23 @@ String normalizeServerBaseUrl(String input) {
   }
 
   final normalizedPath = _normalizeServerPath(uri.pathSegments);
-  final normalized = uri.replace(
-    path: normalizedPath,
-    query: null,
-    fragment: null,
-  );
-
+  
   if (hasScheme) {
-    return _stripTrailingSlash(normalized.toString());
+    var result = '${uri.scheme}://${uri.host}';
+    if (uri.hasPort && uri.port != 80 && uri.port != 443) {
+      result += ':${uri.port}';
+    }
+    result += normalizedPath;
+    return _stripTrailingSlash(result);
   }
 
-  if (normalized.host.isEmpty) {
+  if (uri.host.isEmpty) {
     return _stripTrailingSlash(trimmed);
   }
 
-  final authority = normalized.hasPort
-      ? '${normalized.host}:${normalized.port}'
-      : normalized.host;
+  final authority = uri.hasPort && uri.port != 80 && uri.port != 443
+      ? '${uri.host}:${uri.port}'
+      : uri.host;
 
   return _stripTrailingSlash(
     normalizedPath.isEmpty ? authority : '$authority$normalizedPath',

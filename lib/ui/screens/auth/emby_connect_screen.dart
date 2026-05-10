@@ -1,15 +1,11 @@
 import 'package:custom_tv_text_field/custom_tv_text_field.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:server_core/server_core.dart';
 
-import '../../../auth/models/user.dart';
-import '../../../auth/repositories/server_repository.dart';
-import '../../../auth/repositories/session_repository.dart';
-import '../../../auth/store/authentication_store.dart';
+import '../../../auth/repositories/emby_connect_repository.dart';
 import '../../../data/services/emby_connect_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../util/platform_detection.dart';
@@ -22,7 +18,6 @@ import '../../widgets/focus/request_initial_focus.dart';
 enum _EmbyConnectPhase {
   credentials,
   authenticating,
-  loadingServers,
   serverList,
   connectingToServer,
 }
@@ -41,16 +36,12 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   final _passwordFocus = FocusNode();
   final _usernameTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _passwordTvFieldKey = GlobalKey<CustomTVTextFieldState>();
-  final _serverRepo = GetIt.instance<ServerRepository>();
-  final _authStore = GetIt.instance<AuthenticationStore>();
-  final _connectService = EmbyConnectService(
-    deviceInfo: GetIt.instance<DeviceInfo>(),
-  );
+  final _connectRepository = GetIt.instance<EmbyConnectRepository>();
 
   _EmbyConnectPhase _phase = _EmbyConnectPhase.credentials;
   List<EmbyConnectServer> _servers = const [];
   String? _errorMessage;
-  String? _connectUserId;
+  EmbyConnectAuthSession? _session;
   bool _tvKeyboardVisible = false;
 
   @override
@@ -72,52 +63,30 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
     });
 
     try {
-      final auth = await _connectService.authenticate(
+      final result = await _connectRepository.authenticateAndLoadServers(
         username: username,
         password: _passwordController.text,
       );
+      final session = result.session;
 
-      if (auth.accessToken.isEmpty || auth.user.id.isEmpty) {
+      if (!result.isSuccess || session == null) {
         if (!mounted) return;
         setState(() {
           _phase = _EmbyConnectPhase.credentials;
-          _errorMessage = AppLocalizations.of(context).invalidEmbyConnectCredentials;
+          _errorMessage = _messageForFailure(result.failure);
         });
         return;
       }
 
-      _connectUserId = auth.user.id;
+      _session = session;
+      _servers = session.servers;
 
       if (!mounted) return;
-      setState(() => _phase = _EmbyConnectPhase.loadingServers);
-
-      final servers = await _connectService.getServers(
-        connectUserId: auth.user.id,
-        connectAccessToken: auth.accessToken,
-      );
-
-      if (!mounted) return;
-
-      if (servers.isEmpty) {
-        setState(() {
-          _phase = _EmbyConnectPhase.credentials;
-          _errorMessage = AppLocalizations.of(context).noLinkedServers;
-        });
-        return;
-      }
-
-      _servers = servers;
       if (_servers.length == 1) {
         await _connectToServer(_servers.first);
       } else {
         setState(() => _phase = _EmbyConnectPhase.serverList);
       }
-    } on DioException catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _phase = _EmbyConnectPhase.credentials;
-        _errorMessage = _dioMessage(e);
-      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -128,100 +97,75 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   }
 
   Future<void> _connectToServer(EmbyConnectServer server) async {
-    final connectUserId = _connectUserId;
+    final session = _session;
     final username = _usernameController.text.trim();
-    if (connectUserId == null || username.isEmpty) return;
+    if (session == null || username.isEmpty) return;
 
     setState(() {
       _phase = _EmbyConnectPhase.connectingToServer;
       _errorMessage = null;
     });
 
-    Object? lastError;
-
-    final l10n = AppLocalizations.of(context);
-    for (final address in server.candidateAddresses) {
-      try {
-        final exchange = await _connectService.exchange(
-          serverAddress: address,
-          connectUserId: connectUserId,
-          accessKey: server.accessKey,
-        );
-
-        if (exchange.localUserId.isEmpty || exchange.accessToken.isEmpty) {
-          lastError = l10n.invalidServerExchangeResponse;
-          continue;
-        }
-
-        final connectedServer = await _serverRepo.addServer(
-          exchange.resolvedBaseUrl,
-        );
-        if (connectedServer == null) {
-          lastError = l10n.unableToConnectTo(exchange.resolvedBaseUrl);
-          continue;
-        }
-
-        await _authStore.putUser(
-          PrivateUser(
-            id: exchange.localUserId,
-            name: username,
-            serverId: connectedServer.id,
-            accessToken: exchange.accessToken,
-            lastUsed: DateTime.now(),
-          ),
-        );
-
-        final switched = await GetIt.instance<SessionRepository>()
-            .switchCurrentSession(
-          serverId: connectedServer.id,
-          userId: exchange.localUserId,
-          username: username,
-        );
-
-        if (!mounted) return;
-        if (switched) {
-          context.go(Destinations.home);
-        } else {
-          context.go('${Destinations.server}?serverId=${connectedServer.id}');
-        }
-        return;
-      } on DioException catch (e) {
-        lastError = _exchangeDioMessage(e);
-      } catch (e) {
-        lastError = e;
-      }
-    }
+    final result = await _connectRepository.connectToServer(
+      session: session,
+      server: server,
+      fallbackUsername: username,
+    );
 
     if (!mounted) return;
+
+    if (result.isSuccess && result.success != null) {
+      if (result.success!.switched) {
+        context.go(Destinations.home);
+      } else {
+        context.go('${Destinations.server}?serverId=${result.success!.serverId}');
+      }
+      return;
+    }
+
     setState(() {
       _phase = _EmbyConnectPhase.serverList;
-      _errorMessage =
-          lastError?.toString() ?? l10n.unableToConnectTo(server.name);
+      _errorMessage = _messageForFailure(
+        result.failure,
+        fallbackTarget: server.name,
+      );
     });
   }
 
-  String _dioMessage(DioException e) {
+  String _messageForFailure(
+    EmbyConnectFailure? failure, {
+    String? fallbackTarget,
+  }) {
     final l10n = AppLocalizations.of(context);
-    final statusCode = e.response?.statusCode;
-    if (statusCode == 400 || statusCode == 401) {
-      return l10n.invalidEmbyConnectLogin;
+    if (failure == null) {
+      return fallbackTarget == null
+          ? l10n.embyConnectNetworkError
+          : l10n.unableToConnectTo(fallbackTarget);
     }
-    if (statusCode != null) {
-      return '${l10n.embyConnectNetworkError} (HTTP $statusCode)';
-    }
-    return e.message ?? l10n.embyConnectNetworkError;
-  }
 
-  String _exchangeDioMessage(DioException e) {
-    final l10n = AppLocalizations.of(context);
-    final statusCode = e.response?.statusCode;
-    if (statusCode == 404) {
-      return l10n.embyConnectExchangeNotSupported;
+    switch (failure.reason) {
+      case EmbyConnectFailureReason.invalidCredentials:
+        return l10n.invalidEmbyConnectLogin;
+      case EmbyConnectFailureReason.invalidAuthResponse:
+        return l10n.invalidEmbyConnectCredentials;
+      case EmbyConnectFailureReason.noLinkedServers:
+        return l10n.noLinkedServers;
+      case EmbyConnectFailureReason.exchangeUnsupported:
+        return l10n.embyConnectExchangeNotSupported;
+      case EmbyConnectFailureReason.invalidExchangeResponse:
+        return l10n.invalidServerExchangeResponse;
+      case EmbyConnectFailureReason.noReachableAddress:
+        return l10n.noReachableAddress;
+      case EmbyConnectFailureReason.unableToConnectServer:
+        return l10n.unableToConnectTo(failure.detail ?? fallbackTarget ?? '');
+      case EmbyConnectFailureReason.network:
+        if (failure.statusCode != null) {
+          return '${l10n.embyConnectNetworkError} (HTTP ${failure.statusCode})';
+        }
+        return l10n.embyConnectNetworkError;
+      case EmbyConnectFailureReason.unknown:
+        return failure.detail ?? l10n.embyConnectNetworkError;
     }
-    if (statusCode != null) {
-      return '${l10n.embyConnectNetworkError} (HTTP $statusCode)';
-    }
-    return e.message ?? l10n.embyConnectNetworkError;
   }
 
   void _resetAfterError() {
@@ -307,8 +251,6 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
       case _EmbyConnectPhase.credentials:
       case _EmbyConnectPhase.authenticating:
         return _buildCredentialsView();
-      case _EmbyConnectPhase.loadingServers:
-        return _buildLoadingView(AppLocalizations.of(context).loadingLinkedServers);
       case _EmbyConnectPhase.serverList:
         return _buildServerListView();
       case _EmbyConnectPhase.connectingToServer:

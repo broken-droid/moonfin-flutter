@@ -159,6 +159,11 @@ class ServerRepository {
         redirects++;
       }
 
+      if (response.data is! Map<String, dynamic>) {
+        throw FormatException(
+          'Invalid server response: expected JSON object, got ${response.data.runtimeType}',
+        );
+      }
       final data = response.data as Map<String, dynamic>;
       final productName = data['ProductName'] as String?;
       final version = data['Version'] as String?;

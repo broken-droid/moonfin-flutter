@@ -171,10 +171,8 @@ class EmbyConnectService {
     final normalized = serverAddress.endsWith('/') ? serverAddress : '$serverAddress/';
     final base = Uri.parse(normalized);
 
-    // Try the canonical path first (standard Emby servers).
     yield base.resolve('Connect/Exchange');
 
-    // Fall back to the /emby prefix path for servers with a base path.
     final root = base.replace(path: '/', query: '', fragment: '');
     yield root.resolve('emby/Connect/Exchange');
   }
@@ -205,10 +203,14 @@ class EmbyConnectAuthResult {
   const EmbyConnectAuthResult({required this.accessToken, required this.user});
 
   factory EmbyConnectAuthResult.fromJson(Map<String, dynamic> json) {
+    final rawUser = json['User'] ?? json['user'];
     return EmbyConnectAuthResult(
-      accessToken: json['AccessToken'] as String? ?? '',
+      accessToken:
+          json['AccessToken'] as String? ??
+          json['accessToken'] as String? ??
+          '',
       user: EmbyConnectUser.fromJson(
-        (json['User'] as Map?)?.cast<String, dynamic>() ??
+        (rawUser as Map?)?.cast<String, dynamic>() ??
             const <String, dynamic>{},
       ),
     );
@@ -223,8 +225,8 @@ class EmbyConnectUser {
 
   factory EmbyConnectUser.fromJson(Map<String, dynamic> json) {
     return EmbyConnectUser(
-      id: json['Id'] as String? ?? '',
-      name: json['Name'] as String? ?? '',
+      id: json['Id'] as String? ?? json['UserId'] as String? ?? '',
+      name: json['Name'] as String? ?? json['Username'] as String? ?? '',
     );
   }
 }
@@ -262,25 +264,37 @@ class EmbyConnectServer {
   }
 
   Iterable<String> _normalizedCandidates(String value) sync* {
-    final sanitized = value.endsWith('/') ? value.substring(0, value.length - 1) : value;
+    var sanitized = value.endsWith('/') ? value.substring(0, value.length - 1) : value;
+
+    try {
+      final uri = Uri.parse(sanitized);
+      sanitized = uri.replace(query: '', fragment: '').toString();
+      if (sanitized.endsWith('/')) {
+        sanitized = sanitized.substring(0, sanitized.length - 1);
+      }
+    } catch (_) {}
 
     if (sanitized.startsWith('http://') || sanitized.startsWith('https://')) {
       yield sanitized;
       return;
     }
 
-    // Emby Connect can return host:port without scheme; try both transports.
     yield 'https://$sanitized';
     yield 'http://$sanitized';
   }
 
   factory EmbyConnectServer.fromJson(Map<String, dynamic> json) {
     return EmbyConnectServer(
-      accessKey: json['AccessKey'] as String? ?? '',
+      accessKey:
+          json['AccessKey'] as String? ??
+          json['ConnectAccessKey'] as String? ??
+          json['UserAccessToken'] as String? ??
+          '',
       systemId: json['SystemId'] as String? ?? '',
       name: json['Name'] as String? ?? '',
-      url: json['Url'] as String?,
-      localAddress: json['LocalAddress'] as String?,
+      url: json['Url'] as String? ?? json['Address'] as String?,
+      localAddress:
+          json['LocalAddress'] as String? ?? json['LocalAddress1'] as String?,
     );
   }
 }
