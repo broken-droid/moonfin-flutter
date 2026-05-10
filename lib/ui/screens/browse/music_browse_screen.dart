@@ -11,6 +11,7 @@ import '../../../data/services/row_data_source.dart';
 import '../../../data/viewmodels/music_browse_view_model.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../ui/mixins/focus_state_mixin.dart';
+import '../../../util/focus/dpad_keys.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/focus/focusable_toolbar_button.dart';
 import '../../widgets/focus/request_initial_focus.dart';
@@ -244,10 +245,11 @@ class _MusicViewsRow extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 100,
+          height: 112,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+            clipBehavior: Clip.none,
+            padding: const EdgeInsets.fromLTRB(_horizontalPadding, 6, _horizontalPadding, 8),
             children: [
               _ViewButton(
                 icon: Icons.album,
@@ -316,45 +318,55 @@ class _ViewButtonState extends State<_ViewButton> with FocusStateMixin {
       onExit: (_) => setHovered(false),
       child: Focus(
         onFocusChange: (hasFocus) => setFocused(hasFocus),
+        onKeyEvent: (_, event) {
+          if (isActivateKey(event)) {
+            widget.onTap();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: GestureDetector(
           onTap: widget.onTap,
-          child: AnimatedScale(
-            scale: cardExpansion && showFocusBorder ? 1.05 : 1.0,
-            duration: const Duration(milliseconds: 120),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              width: _cardSize,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: Colors.white.withAlpha(focused ? 51 : 20),
-                borderRadius: BorderRadius.circular(8),
-                border: showFocusBorder
-                    ? Border.fromBorderSide(
-                        ThemeRegistry.active.borders.focusBorder.copyWith(
-                          color: focusColor,
-                          width: 1.5,
-                        ),
-                      )
-                    : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    widget.icon,
-                    size: 32,
-                    color: Colors.white.withAlpha(focused ? 255 : 153),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    widget.label,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: focused ? FontWeight.w600 : FontWeight.normal,
-                      color: Colors.white.withAlpha(focused ? 255 : 179),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 2),
+            child: AnimatedScale(
+              scale: cardExpansion && showFocusBorder ? 1.05 : 1.0,
+              duration: const Duration(milliseconds: 120),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                width: _cardSize,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(focused ? 51 : 20),
+                  borderRadius: BorderRadius.circular(8),
+                  border: showFocusBorder
+                      ? Border.fromBorderSide(
+                          ThemeRegistry.active.borders.focusBorder.copyWith(
+                            color: focusColor,
+                            width: 1.5,
+                          ),
+                        )
+                      : null,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      widget.icon,
+                      size: 32,
+                      color: Colors.white.withAlpha(focused ? 255 : 153),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.label,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: focused ? FontWeight.w600 : FontWeight.normal,
+                        color: Colors.white.withAlpha(focused ? 255 : 179),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -403,11 +415,12 @@ class _MusicItemRow extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: _cardSize + 50,
+          height: _cardSize + 62,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
             padding:
-                const EdgeInsets.only(left: _horizontalPadding, right: 24),
+                const EdgeInsets.fromLTRB(_horizontalPadding, 8, 24, 10),
             itemCount: items.length,
             separatorBuilder: (_, _) => const SizedBox(width: _cardSpacing),
             itemBuilder: (_, i) {
@@ -465,70 +478,80 @@ class _MusicSquareCardState extends State<_MusicSquareCard> with FocusStateMixin
             setFocused(hasFocus);
             if (hasFocus) widget.onFocus?.call();
           },
+          onKeyEvent: (_, event) {
+            if (isActivateKey(event)) {
+              widget.onTap?.call();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
           child: GestureDetector(
             onTap: widget.onTap,
-            child: AnimatedScale(
-              scale: cardExpansion && showFocusBorder ? 1.08 : 1.0,
-              duration: const Duration(milliseconds: 150),
-              child: AnimatedOpacity(
-                opacity: showFocusBorder ? 1.0 : 0.75,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 2),
+              child: AnimatedScale(
+                scale: cardExpansion && showFocusBorder ? 1.08 : 1.0,
                 duration: const Duration(milliseconds: 150),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        border: showFocusBorder
-                            ? Border.fromBorderSide(
-                                ThemeRegistry.active.borders.focusBorder.copyWith(
-                                  color: focusColor,
-                                  width: 1.5,
-                                ),
-                              )
-                            : null,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: Container(
-                          width: _cardSize,
-                          height: _cardSize,
-                          color: Colors.white.withAlpha(focused ? 20 : 15),
-                          child: widget.imageUrl != null
-                              ? CachedNetworkImage(
-                                  imageUrl: widget.imageUrl!,
-                                  fit: BoxFit.cover,
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 200),
-                                  errorWidget: (_, _, _) =>
-                                      _albumPlaceholder(),
+                child: AnimatedOpacity(
+                  opacity: showFocusBorder ? 1.0 : 0.75,
+                  duration: const Duration(milliseconds: 150),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          border: showFocusBorder
+                              ? Border.fromBorderSide(
+                                  ThemeRegistry.active.borders.focusBorder.copyWith(
+                                    color: focusColor,
+                                    width: 1.5,
+                                  ),
                                 )
-                              : _albumPlaceholder(),
+                              : null,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: Container(
+                            width: _cardSize,
+                            height: _cardSize,
+                            color: Colors.white.withAlpha(focused ? 20 : 15),
+                            child: widget.imageUrl != null
+                                ? CachedNetworkImage(
+                                    imageUrl: widget.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    fadeInDuration:
+                                        const Duration(milliseconds: 200),
+                                    errorWidget: (_, _, _) =>
+                                        _albumPlaceholder(),
+                                  )
+                                : _albumPlaceholder(),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    Text(
-                      widget.subtitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.white.withAlpha(128),
+                      Text(
+                        widget.subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.white.withAlpha(128),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
