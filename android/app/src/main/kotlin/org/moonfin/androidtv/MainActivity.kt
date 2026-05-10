@@ -19,6 +19,7 @@ import android.os.Looper
 import android.os.Process
 import android.os.PowerManager
 import android.provider.Settings
+import android.speech.RecognizerIntent
 import android.util.Rational
 import android.view.Display
 import androidx.core.content.FileProvider
@@ -59,6 +60,7 @@ class MainActivity : AudioServiceActivity() {
     private var pendingCastListener: SessionManagerListener<CastSession>? = null
     private var castMediaListener: RemoteMediaClient.Listener? = null
     private var castProgressListener: RemoteMediaClient.ProgressListener? = null
+    private var pendingTvVoiceSearchResult: MethodChannel.Result? = null
 
     companion object {
         private const val CHANNEL = "org.moonfin.androidtv/pip"
@@ -70,6 +72,29 @@ class MainActivity : AudioServiceActivity() {
         private const val DISMISS_DELAY_MS = 300L
         private const val PLATFORM_CHANNEL = "org.moonfin.androidtv/platform"
         private const val UPDATE_CHANNEL = "org.moonfin.androidtv/update"
+        private const val REQUEST_TV_VOICE_SEARCH = 19041
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_TV_VOICE_SEARCH) {
+            val pendingResult = pendingTvVoiceSearchResult
+            pendingTvVoiceSearchResult = null
+
+            if (pendingResult != null) {
+                if (resultCode != RESULT_OK) {
+                    pendingResult.success("")
+                } else {
+                    val spokenText = data
+                        ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                        ?.firstOrNull()
+                        ?.trim()
+                        .orEmpty()
+                    pendingResult.success(spokenText)
+                }
+            }
+            return
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun getDisplayHdrTypes(): List<String> {
@@ -145,6 +170,55 @@ class MainActivity : AudioServiceActivity() {
                 }
                 "mediaCodecCapabilities" -> {
                     result.success(MediaCodecCapabilities.query())
+                }
+                "startTvVoiceSearch" -> {
+                    if (pendingTvVoiceSearchResult != null) {
+                        result.error(
+                            "VOICE_SEARCH_IN_PROGRESS",
+                            "Voice search is already in progress.",
+                            null,
+                        )
+                        return@setMethodCallHandler
+                    }
+
+                    val localeId = call.argument<String>("localeId")
+                    val localeTag = localeId
+                        ?.trim()
+                        ?.replace('_', '-')
+                        ?.takeIf { it.isNotEmpty() }
+
+                    val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                        putExtra(
+                            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
+                        )
+                        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
+                        putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                        if (localeTag != null) {
+                            putExtra(RecognizerIntent.EXTRA_LANGUAGE, localeTag)
+                            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, localeTag)
+                        }
+                    }
+
+                    if (intent.resolveActivity(packageManager) == null) {
+                        result.error(
+                            "VOICE_SEARCH_UNAVAILABLE",
+                            "No speech recognizer is available on this device.",
+                            null,
+                        )
+                        return@setMethodCallHandler
+                    }
+
+                    pendingTvVoiceSearchResult = result
+                    runCatching { startActivityForResult(intent, REQUEST_TV_VOICE_SEARCH) }
+                        .onFailure { error ->
+                            pendingTvVoiceSearchResult = null
+                            result.error(
+                                "VOICE_SEARCH_FAILED",
+                                error.message ?: "Failed to launch voice search.",
+                                null,
+                            )
+                        }
                 }
                 "exitApp" -> {
                     result.success(true)

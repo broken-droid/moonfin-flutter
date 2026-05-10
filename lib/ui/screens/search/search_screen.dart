@@ -33,6 +33,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  static const _platformChannel = MethodChannel('org.moonfin.androidtv/platform');
   final _searchController = TextEditingController();
   final _voiceFocus = FocusNode();
   final _searchFocus = FocusNode();
@@ -229,6 +230,37 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _toggleTvVoiceSearch() async {
     final localeCode = _voiceLocaleCode(context);
+
+    if (PlatformDetection.isAndroid) {
+      if (_isVoiceListening) return;
+      if (mounted) {
+        setState(() {
+          _isVoiceListening = true;
+        });
+      }
+
+      try {
+        final recognized = await _platformChannel.invokeMethod<String>(
+          'startTvVoiceSearch',
+          <String, Object?>{'localeId': localeCode},
+        );
+        if (!mounted) return;
+        setState(() {
+          _isVoiceListening = false;
+        });
+        final query = recognized?.trim() ?? '';
+        if (query.isNotEmpty) {
+          _applyVoiceSearchResult(query);
+        }
+        return;
+      } catch (_) {
+        if (mounted) {
+          setState(() {
+            _isVoiceListening = false;
+          });
+        }
+      }
+    }
 
     if (_isVoiceListening) {
       await _speechToText.stop();
