@@ -1021,6 +1021,7 @@ class _SidebarItem extends StatefulWidget {
 class _SidebarItemState extends State<_SidebarItem> {
   final _prefs = GetIt.instance<UserPreferences>();
   late final FocusNode _focusNode;
+  late final VoidCallback _focusListener;
   bool _isFocused = false;
   bool _isHovered = false;
 
@@ -1031,13 +1032,16 @@ class _SidebarItemState extends State<_SidebarItem> {
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
     _isFocused = _focusNode.hasFocus;
-    _focusNode.addListener(
-      () => setState(() => _isFocused = _focusNode.hasFocus),
-    );
+    _focusListener = () {
+      if (!mounted) return;
+      setState(() => _isFocused = _focusNode.hasFocus);
+    };
+    _focusNode.addListener(_focusListener);
   }
 
   @override
   void dispose() {
+    _focusNode.removeListener(_focusListener);
     if (widget.focusNode == null) {
       _focusNode.dispose();
     }
