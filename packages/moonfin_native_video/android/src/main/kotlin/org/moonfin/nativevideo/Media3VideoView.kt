@@ -570,6 +570,7 @@ class Media3VideoView(
             ?.toMap()
             ?: emptyMap()
 
+        resetTrackSelectionsForNewSource()
         externalSubtitleConfigurations.clear()
         selectedSubtitleCodec = null
         selectedSubtitleIsExternal = false
@@ -582,6 +583,15 @@ class Media3VideoView(
         applyAudioAttributesForCurrentMediaType()
         audioPipeline.normalizationGainDb = currentNormalizationGainDb
         setMediaItem(startPositionMs, playWhenReady = false)
+    }
+
+    private fun resetTrackSelectionsForNewSource() {
+        trackSelector.parameters = trackSelector.parameters
+            .buildUpon()
+            .clearOverrides()
+            .setTrackTypeDisabled(C.TRACK_TYPE_AUDIO, false)
+            .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+            .build()
     }
 
     private fun applyAudioAttributesForCurrentMediaType() {
@@ -869,18 +879,24 @@ class Media3VideoView(
         }
         val entry = entries[oneBasedIndex - 1]
 
-        val override = TrackSelectionOverride(entry.group, listOf(entry.trackIndex))
+        return try {
+            val override = TrackSelectionOverride(entry.group, listOf(entry.trackIndex))
 
-        trackSelector.parameters = trackSelector.parameters
-            .buildUpon()
-            .setTrackTypeDisabled(trackType, false)
-            .clearOverridesOfType(trackType)
-            .addOverride(override)
-            .build()
+            trackSelector.parameters = trackSelector.parameters
+                .buildUpon()
+                .setTrackTypeDisabled(trackType, false)
+                .clearOverridesOfType(trackType)
+                .addOverride(override)
+                .build()
 
-        emitTracksChanged()
-        emitState()
-        return true
+            emitTracksChanged()
+            emitState()
+            true
+        } catch (_: Throwable) {
+            emitTracksChanged()
+            emitState()
+            false
+        }
     }
 
     private fun collectTracks(trackType: Int): List<TrackEntry> {
