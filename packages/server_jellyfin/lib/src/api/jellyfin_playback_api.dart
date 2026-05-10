@@ -23,6 +23,14 @@ class JellyfinPlaybackApi implements PlaybackApi {
   }
 
   @override
+  Future<void> closeLiveStream(String liveStreamId) async {
+    await _dio.post(
+      '/LiveStreams/Close',
+      queryParameters: {'LiveStreamId': liveStreamId},
+    );
+  }
+
+  @override
   Future<Map<String, dynamic>> getPlaybackInfo(
     String itemId, {
     Map<String, dynamic>? requestBody,

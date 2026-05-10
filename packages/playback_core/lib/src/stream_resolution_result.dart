@@ -23,6 +23,7 @@ class ExternalSubtitle {
 class StreamResolutionResult {
   final String streamUrl;
   final String mediaSourceId;
+  final String? liveStreamId;
   final String? playSessionId;
   final StreamPlayMethod playMethod;
   final String mediaType;
@@ -34,6 +35,7 @@ class StreamResolutionResult {
   const StreamResolutionResult({
     required this.streamUrl,
     required this.mediaSourceId,
+    this.liveStreamId,
     this.playSessionId,
     required this.playMethod,
     this.mediaType = 'video',

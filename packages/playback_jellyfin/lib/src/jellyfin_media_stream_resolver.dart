@@ -88,6 +88,7 @@ class JellyfinMediaStreamResolver implements MediaStreamResolver {
     return StreamResolutionResult(
       streamUrl: url,
       mediaSourceId: source.id,
+      liveStreamId: source.liveStreamId,
       playSessionId: info.playSessionId,
       playMethod: playMethod,
       mediaType: mediaType,
