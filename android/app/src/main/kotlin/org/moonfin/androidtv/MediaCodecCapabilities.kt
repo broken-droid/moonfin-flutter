@@ -117,7 +117,6 @@ object MediaCodecCapabilities {
     )
 
     private val modelsWithDoViHdr10PlusBug = setOf(
-        "AFTKRT",
         "AFTKA",
         "AFTKM",
     )

@@ -5,7 +5,6 @@ class KnownDefects {
   const KnownDefects._();
 
   static const Set<String> modelsWithDoViHdr10PlusBug = <String>{
-    'AFTKRT',
     'AFTKA',
     'AFTKM',
   };

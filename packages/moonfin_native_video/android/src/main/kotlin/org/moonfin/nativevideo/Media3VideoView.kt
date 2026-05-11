@@ -53,17 +53,6 @@ class Media3VideoView(
     companion object {
         private const val TS_SEARCH_BYTES_LOW_RAM = TsExtractor.TS_PACKET_SIZE * 1800
         private const val TS_SEARCH_BYTES_DEFAULT = TsExtractor.DEFAULT_TIMESTAMP_SEARCH_BYTES
-        private val MODELS_WITH_SURFACE_TRANSPARENCY_DEFECT = setOf(
-            "AFTMM",
-            "AFTKA",
-            "AFTKM",
-            "AFTKRT",
-        )
-
-        private fun hasSurfaceTransparencyDefectModel(): Boolean {
-            val model = Build.MODEL?.trim()?.uppercase() ?: return false
-            return MODELS_WITH_SURFACE_TRANSPARENCY_DEFECT.contains(model)
-        }
     }
 
 
@@ -102,9 +91,12 @@ class Media3VideoView(
     }
 
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val useTextureView = hasSurfaceTransparencyDefectModel()
-    private val surfaceView: SurfaceView? = if (useTextureView) null else SurfaceView(context)
-    private val textureView: TextureView? = if (useTextureView) TextureView(context) else null
+    private val useSurfaceView = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+    private val videoView: View = if (useSurfaceView) {
+        SurfaceView(context)
+    } else {
+        TextureView(context)
+    }
     private val firstFrameCover = View(context).apply {
         setBackgroundColor(Color.BLACK)
     }
@@ -120,7 +112,7 @@ class Media3VideoView(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT,
         )
-        container.addView(activeVideoView(), videoLayoutParams)
+        container.addView(videoView, videoLayoutParams)
         container.addView(firstFrameCover, subtitleLayoutParams)
         container.addView(subtitleView, subtitleLayoutParams)
     }
@@ -147,9 +139,8 @@ class Media3VideoView(
     private var currentNormalizationGainDb: Float? = null
     private var currentMediaType: String = "video"
     private var isDisposed = false
+    private var firstFrameRendered = false
     private val externalSubtitleConfigurations = mutableListOf<MediaItem.SubtitleConfiguration>()
-
-    private fun activeVideoView(): View = textureView ?: surfaceView!!
 
     private val listener = object : Player.Listener {
         @Suppress("DEPRECATION")
@@ -166,6 +157,15 @@ class Media3VideoView(
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
+            if (
+                playbackState == Player.STATE_READY &&
+                !firstFrameRendered &&
+                firstFrameCover.visibility == View.VISIBLE &&
+                videoWidthPx > 0 &&
+                videoHeightPx > 0
+            ) {
+                revealVideo()
+            }
             emitState()
             if (playbackState == Player.STATE_ENDED) {
                 Media3Bridge.emitEvent(
@@ -220,7 +220,7 @@ class Media3VideoView(
         }
 
         override fun onRenderedFirstFrame() {
-            firstFrameCover.visibility = View.GONE
+            revealVideo()
         }
     }
 
@@ -273,10 +273,10 @@ class Media3VideoView(
                 assHandler.init(it)
             }
 
-        if (useTextureView) {
-            textureView?.let { player.setVideoTextureView(it) }
+        if (useSurfaceView) {
+            player.setVideoSurfaceView(videoView as SurfaceView)
         } else {
-            surfaceView?.let { player.setVideoSurfaceView(it) }
+            player.setVideoTextureView(videoView as TextureView)
         }
         containerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             applyVideoLayout()
@@ -577,12 +577,21 @@ class Media3VideoView(
         selectedSubtitleIsBitmap = false
         selectedExternalSubtitleUrl = null
         subtitleTrackEnabled = false
+        firstFrameRendered = false
         firstFrameCover.visibility = View.VISIBLE
         clearAssSubtitleScript()
         refreshSubtitleRendererMode()
         applyAudioAttributesForCurrentMediaType()
         audioPipeline.normalizationGainDb = currentNormalizationGainDb
         setMediaItem(startPositionMs, playWhenReady = false)
+    }
+
+    private fun revealVideo() {
+        if (firstFrameRendered) {
+            return
+        }
+        firstFrameRendered = true
+        firstFrameCover.visibility = View.GONE
     }
 
     private fun resetTrackSelectionsForNewSource() {
@@ -637,7 +646,7 @@ class Media3VideoView(
     }
 
     private fun applyVideoLayout() {
-        val currentParams = activeVideoView().layoutParams as? FrameLayout.LayoutParams
+        val currentParams = videoView.layoutParams as? FrameLayout.LayoutParams
         val layoutParams = currentParams ?: FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -719,7 +728,7 @@ class Media3VideoView(
         layoutParams.width = width
         layoutParams.height = height
         layoutParams.gravity = Gravity.CENTER
-        activeVideoView().layoutParams = layoutParams
+        videoView.layoutParams = layoutParams
     }
 
     private fun applySubtitleRendererMode(mode: SubtitleRendererMode) {
@@ -727,7 +736,6 @@ class Media3VideoView(
             SubtitleRendererMode.NATIVE,
             SubtitleRendererMode.ASS_OVERLAY,
             -> {
-                // ASS/SSA is handled by ass-media in the native text/cue pipeline.
                 subtitleView.visibility = View.VISIBLE
                 subtitleView.setApplyEmbeddedStyles(true)
                 subtitleView.setApplyEmbeddedFontSizes(true)
@@ -864,8 +872,6 @@ class Media3VideoView(
             .setUri(url)
             .setSubtitleConfigurations(subtitleConfigurations)
             .build()
-
-        // Use MediaItem APIs so the player's ass-media-enabled MediaSourceFactory remains in effect.
         player.setMediaItem(mediaItem, startPositionMs)
         player.prepare()
         player.playWhenReady = playWhenReady
