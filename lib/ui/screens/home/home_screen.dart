@@ -425,7 +425,7 @@ class _Backdrop extends StatelessWidget {
       imageUrl: url,
       duration: BackgroundService.transitionDuration,
       imageBuilder: (imageUrl) {
-        final image = _blurredImage(imageUrl, blurAmount);
+        final image = _blurredImage(context, imageUrl, blurAmount);
         if (!useMakdBackdropFx) {
           return image;
         }
@@ -461,12 +461,21 @@ class _Backdrop extends StatelessWidget {
     );
   }
 
-  Widget _blurredImage(String imageUrl, double blur) {
+  Widget _blurredImage(BuildContext context, String imageUrl, double blur) {
+    final viewportWidth = MediaQuery.sizeOf(context).width;
+    final pixelRatio = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 2.0);
+    final targetPxWidth = (blur > 0
+            ? viewportWidth * pixelRatio * 0.6
+            : viewportWidth * pixelRatio)
+        .round();
+    final maxWidth = targetPxWidth < 480
+        ? 480
+        : (targetPxWidth > 1280 ? 1280 : targetPxWidth);
     final image = BoundedNetworkImage(
       imageUrl: imageUrl,
       scale: blur > 0 ? 0.3 : 1.0,
       minWidth: 320,
-      maxWidth: blur > 0 ? 640 : 1280,
+      maxWidth: maxWidth,
       errorBuilder: (_, _, _) => const SizedBox.shrink(),
     );
     if (blur <= 0) return image;
@@ -2355,12 +2364,16 @@ class _ContentRowsState extends State<_ContentRows>
                   : posterSize.portraitHeight.toDouble()) *
               platformScale;
           final width = height * ar;
+          final requestScale = MediaQuery.devicePixelRatioOf(
+            context,
+          ).clamp(1.0, 2.0);
           final imageUrl = _resolveRowImageUrl(
             item,
             widget.viewModel.imageApiForServer(item.serverId),
             height,
             rowImageType,
             useSeriesThumbs,
+            requestScale,
             isMyMediaRow: row.rowType == HomeRowType.libraryTiles,
           );
           final previewKey = _previewKeyFor(item);
@@ -2497,8 +2510,9 @@ class _ContentRowsState extends State<_ContentRows>
     ImageApi imageApi,
     double height,
     bool useSeriesThumbs,
+    double requestScale,
   ) {
-    final maxH = (height * 2).toInt();
+    final maxH = (height * requestScale).toInt();
     if (useSeriesThumbs &&
         item.type == 'Episode' &&
         item.seriesId != null &&
@@ -2537,8 +2551,9 @@ class _ContentRowsState extends State<_ContentRows>
     AggregatedItem item,
     ImageApi imageApi,
     double height,
+    double requestScale,
   ) {
-    final maxW = (height * 16 / 9 * 2).toInt();
+    final maxW = (height * 16 / 9 * requestScale).toInt();
     if (item.backdropImageTags.isNotEmpty) {
       return imageApi.getBackdropImageUrl(
         item.id,
@@ -2617,6 +2632,7 @@ class _ContentRowsState extends State<_ContentRows>
     double height,
     ImageType imageType,
     bool useSeriesThumbs,
+    double requestScale,
     {bool isMyMediaRow = false}
   ) {
     final itemThumbTag = _tagForType(item, 'Thumb');
@@ -2630,6 +2646,7 @@ class _ContentRowsState extends State<_ContentRows>
         imageApi,
         height,
         imageType,
+        requestScale,
       );
       if (seriesImage != null) {
         return seriesImage;
@@ -2637,7 +2654,7 @@ class _ContentRowsState extends State<_ContentRows>
     }
 
     if (imageType == ImageType.banner) {
-      final maxW = (height * 16 / 9 * 2).toInt();
+      final maxW = (height * 16 / 9 * requestScale).toInt();
       if (isMyMediaRow) {
         final myMediaPrimary = _resolvePrimaryImageUrl(item, imageApi, maxWidth: maxW);
         if (myMediaPrimary != null) {
@@ -2653,11 +2670,11 @@ class _ContentRowsState extends State<_ContentRows>
       if (item.backdropImageTags.isNotEmpty) {
         return imageApi.getBackdropImageUrl(item.id, maxWidth: maxW, tag: item.backdropImageTags.first);
       }
-      return _resolveImageUrl(item, imageApi, height, useSeriesThumbs);
+      return _resolveImageUrl(item, imageApi, height, useSeriesThumbs, requestScale);
     }
 
     if (imageType == ImageType.thumb) {
-      final maxW = (height * 16 / 9 * 2).toInt();
+      final maxW = (height * 16 / 9 * requestScale).toInt();
       if (itemThumbTag != null) {
         return imageApi.getThumbImageUrl(item.id, maxWidth: maxW, tag: itemThumbTag);
       }
@@ -2674,10 +2691,10 @@ class _ContentRowsState extends State<_ContentRows>
           tag: item.parentBackdropImageTags.first,
         );
       }
-      return _resolveLandscapeImageUrl(item, imageApi, height);
+      return _resolveLandscapeImageUrl(item, imageApi, height, requestScale);
     }
 
-    return _resolveImageUrl(item, imageApi, height, useSeriesThumbs);
+    return _resolveImageUrl(item, imageApi, height, useSeriesThumbs, requestScale);
   }
 
   static String? _resolveSeriesImageForRowType(
@@ -2685,9 +2702,10 @@ class _ContentRowsState extends State<_ContentRows>
     ImageApi imageApi,
     double height,
     ImageType imageType,
+    double requestScale,
   ) {
-    final maxW = (height * 16 / 9 * 2).toInt();
-    final maxH = (height * 2).toInt();
+    final maxW = (height * 16 / 9 * requestScale).toInt();
+    final maxH = (height * requestScale).toInt();
     final seriesId = item.seriesId;
     final seriesPrimaryTag = item.seriesPrimaryImageTag;
     final parentThumbItemId = item.rawData['ParentThumbItemId'] as String?;

@@ -20,6 +20,8 @@ Color get _navyBackground => AppColorScheme.background;
 const _horizontalPadding = 60.0;
 const _mobileHorizontalPadding = 16.0;
 const _kCompactBreakpoint = 600.0;
+const _initialArtworkBatch = 12;
+const _backgroundArtworkConcurrency = 6;
 
 bool _isCompact(BuildContext context) =>
     PlatformDetection.useMobileUi ||
@@ -81,7 +83,7 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
         sortBy: 'SortName',
         sortOrder: 'Ascending',
         recursive: true,
-        fields: 'PrimaryImageAspectRatio,ItemCounts',
+        fields: 'ItemCounts',
       );
 
       final items = (response['Items'] as List?) ?? [];
@@ -109,17 +111,23 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
   }
 
   Future<void> _loadArtwork() async {
-    const visibleLimit = 12;
     final includeType = _includeType;
-    final toLoad = _genres.take(visibleLimit);
+    final toLoad = _genres.take(_initialArtworkBatch).toList();
     await Future.wait(
       toLoad.map((genre) => _loadGenreArtwork(genre, includeType)),
     );
-    
-    if (!_disposed && _genres.length > visibleLimit) {
-      final remaining = _genres.skip(visibleLimit).toList();
-      for (final genre in remaining) {
-        unawaited(_loadGenreArtwork(genre, includeType));
+
+    if (!_disposed && _genres.length > _initialArtworkBatch) {
+      final remaining = _genres.skip(_initialArtworkBatch).toList();
+      for (
+        var i = 0;
+        i < remaining.length && !_disposed;
+        i += _backgroundArtworkConcurrency
+      ) {
+        final batch = remaining.skip(i).take(_backgroundArtworkConcurrency);
+        await Future.wait(
+          batch.map((genre) => _loadGenreArtwork(genre, includeType)),
+        );
       }
     }
   }
@@ -140,9 +148,8 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
         sortBy: 'Random',
         sortOrder: 'Ascending',
         recursive: true,
-        limit: 20,
-        fields:
-            'PrimaryImageAspectRatio,PrimaryImageTag,ImageTags,BackdropImageTags',
+        limit: 6,
+        fields: 'PrimaryImageTag,ImageTags,BackdropImageTags',
         enableImageTypes: 'Primary,Backdrop',
       );
       final items = (response['Items'] as List?) ?? [];
@@ -157,6 +164,7 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
           if (hasPrimaryTag) {
             final primaryUrl = _client.imageApi.getPrimaryImageUrl(
               item['Id'] as String,
+              maxWidth: _genreCardRequestMaxWidth(),
             );
             genre.imageUrl = primaryUrl;
             genre.backdropUrl ??= primaryUrl;
@@ -169,6 +177,7 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
           final first = items.first as Map<String, dynamic>;
           final primaryUrl = _client.imageApi.getPrimaryImageUrl(
             first['Id'] as String,
+            maxWidth: _genreCardRequestMaxWidth(),
           );
           genre.imageUrl = primaryUrl;
           genre.backdropUrl ??= primaryUrl;
@@ -219,36 +228,63 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
     final primaryTag = item['PrimaryImageTag'] as String?;
     final thumbTag = _tagForType(item, 'Thumb');
     final bannerTag = _tagForType(item, 'Banner');
+    final maxWidth = _genreCardRequestMaxWidth();
     final resolvedBackdropUrl = backdropUrl ?? _backdropUrlFor(item);
 
     return switch (imageType) {
       ImageType.poster =>
         primaryTag != null
-            ? _client.imageApi.getPrimaryImageUrl(itemId, tag: primaryTag)
+            ? _client.imageApi.getPrimaryImageUrl(
+                itemId,
+                tag: primaryTag,
+                maxWidth: maxWidth,
+              )
             : thumbTag != null
-            ? _client.imageApi.getThumbImageUrl(itemId, tag: thumbTag)
+            ? _client.imageApi.getThumbImageUrl(
+                itemId,
+                tag: thumbTag,
+                maxWidth: maxWidth,
+              )
             : resolvedBackdropUrl,
       ImageType.thumb =>
         thumbTag != null
-            ? _client.imageApi.getThumbImageUrl(itemId, tag: thumbTag)
+            ? _client.imageApi.getThumbImageUrl(
+                itemId,
+                tag: thumbTag,
+                maxWidth: maxWidth,
+              )
             : resolvedBackdropUrl ??
                   (primaryTag != null
                       ? _client.imageApi.getPrimaryImageUrl(
                           itemId,
                           tag: primaryTag,
+                          maxWidth: maxWidth,
                         )
                       : null),
       ImageType.banner =>
         bannerTag != null
-            ? _client.imageApi.getBannerImageUrl(itemId, tag: bannerTag)
+            ? _client.imageApi.getBannerImageUrl(
+                itemId,
+                tag: bannerTag,
+                maxWidth: maxWidth,
+              )
             : resolvedBackdropUrl ??
                   (primaryTag != null
                       ? _client.imageApi.getPrimaryImageUrl(
                           itemId,
                           tag: primaryTag,
+                          maxWidth: maxWidth,
                         )
                       : null),
     };
+  }
+
+  int _genreCardRequestMaxWidth() {
+    final requestScale = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 2.0);
+    final widthPx = (_cardWidth() * requestScale).round();
+    if (widthPx < 160) return 160;
+    if (widthPx > 720) return 720;
+    return widthPx;
   }
 
   double _cardWidth() {

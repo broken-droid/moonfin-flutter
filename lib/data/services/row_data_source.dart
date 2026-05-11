@@ -25,17 +25,17 @@ class RowDataSource {
       'OfficialRating,RunTimeTicks,ProductionYear,SeriesName,'
       'ParentIndexNumber,IndexNumber,Status,ImageTags,BackdropImageTags,'
       'ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,'
-      'ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,ProviderIds,'
-      'ParentLogoItemId,ParentLogoImageTag,MediaStreams';
-    static const _fallbackFields =
+      'ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,'
+      'ParentLogoItemId,ParentLogoImageTag';
+  static const _fallbackFields =
       'Type,UserData,OfficialRating,RunTimeTicks,ProductionYear,SeriesName,'
       'ParentIndexNumber,IndexNumber,ImageTags,BackdropImageTags,'
       'ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,'
       'ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,'
-      'ParentLogoItemId,ParentLogoImageTag,MediaStreams';
-    static const _minimalFields =
+      'ParentLogoItemId,ParentLogoImageTag';
+  static const _minimalFields =
       'Type,UserData,RunTimeTicks,ProductionYear,ImageTags,BackdropImageTags,'
-      'ParentBackdropItemId,ParentBackdropImageTags,SeriesId,MediaStreams';
+      'ParentBackdropItemId,ParentBackdropImageTags,SeriesId';
 
   RowDataSource(this._client);
 

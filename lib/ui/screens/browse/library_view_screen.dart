@@ -122,7 +122,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
   }
 
   Widget _buildBody() {
-    if (_vm.isLoading) {
+    if (_vm.isLoading && _vm.rows.isEmpty) {
       return Center(
         child: CircularProgressIndicator(color: AppColorScheme.accent),
       );
@@ -147,7 +147,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
     final cardExpansion = _prefs.get(UserPreferences.cardFocusExpansion);
     final l10n = AppLocalizations.of(context);
 
-    return ListView.builder(
+    final listView = ListView.builder(
       padding: const EdgeInsets.only(bottom: 32),
       itemCount: _vm.rows.length,
       itemBuilder: (context, index) {
@@ -191,6 +191,26 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
           }).toList(),
         );
       },
+    );
+
+    if (!_vm.isLoading) {
+      return listView;
+    }
+
+    return Stack(
+      children: [
+        Positioned.fill(child: listView),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: LinearProgressIndicator(
+            minHeight: 2,
+            color: AppColorScheme.accent,
+            backgroundColor: AppColorScheme.onSurface.withValues(alpha: 0.15),
+          ),
+        ),
+      ],
     );
   }
 }

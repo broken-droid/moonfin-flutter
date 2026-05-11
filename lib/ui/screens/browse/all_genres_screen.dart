@@ -191,37 +191,64 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
     final primaryTag = item['PrimaryImageTag'] as String?;
     final thumbTag = _tagForType(item, 'Thumb');
     final bannerTag = _tagForType(item, 'Banner');
+    final maxWidth = _genreCardRequestMaxWidth();
     final resolvedBackdropUrl = backdropUrl ?? _backdropUrlFor(item);
 
     return switch (imageType) {
       ImageType.poster =>
         primaryTag != null
-            ? _client.imageApi.getPrimaryImageUrl(itemId, tag: primaryTag)
+            ? _client.imageApi.getPrimaryImageUrl(
+                itemId,
+                tag: primaryTag,
+                maxWidth: maxWidth,
+              )
             : resolvedBackdropUrl ??
                   (thumbTag != null
-                      ? _client.imageApi.getThumbImageUrl(itemId, tag: thumbTag)
+                      ? _client.imageApi.getThumbImageUrl(
+                          itemId,
+                          tag: thumbTag,
+                          maxWidth: maxWidth,
+                        )
                       : null),
       ImageType.thumb =>
         thumbTag != null
-            ? _client.imageApi.getThumbImageUrl(itemId, tag: thumbTag)
+            ? _client.imageApi.getThumbImageUrl(
+                itemId,
+                tag: thumbTag,
+                maxWidth: maxWidth,
+              )
             : resolvedBackdropUrl ??
                   (primaryTag != null
                       ? _client.imageApi.getPrimaryImageUrl(
                           itemId,
                           tag: primaryTag,
+                          maxWidth: maxWidth,
                         )
                       : null),
       ImageType.banner =>
         bannerTag != null
-            ? _client.imageApi.getBannerImageUrl(itemId, tag: bannerTag)
+            ? _client.imageApi.getBannerImageUrl(
+                itemId,
+                tag: bannerTag,
+                maxWidth: maxWidth,
+              )
             : resolvedBackdropUrl ??
                   (primaryTag != null
                       ? _client.imageApi.getPrimaryImageUrl(
                           itemId,
                           tag: primaryTag,
+                          maxWidth: maxWidth,
                         )
                       : null),
     };
+  }
+
+  int _genreCardRequestMaxWidth() {
+    final requestScale = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 2.0);
+    final widthPx = (_cardWidth() * requestScale).round();
+    if (widthPx < 160) return 160;
+    if (widthPx > 720) return 720;
+    return widthPx;
   }
 
   double _cardWidth() {

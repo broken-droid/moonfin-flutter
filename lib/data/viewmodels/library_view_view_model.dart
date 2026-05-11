@@ -42,6 +42,7 @@ class LibraryViewViewModel extends ChangeNotifier {
 
   Future<void> load() async {
     _isLoading = true;
+    _rows = [];
     notifyListeners();
 
     try {
@@ -51,20 +52,41 @@ class LibraryViewViewModel extends ChangeNotifier {
     } catch (_) {
     }
 
-    try {
-      final rows = await _loadRowsForType();
-      _rows = rows.where((r) => r.items.isNotEmpty).toList();
-    } catch (_) {
+    final orderedRows = <int, HomeRow>{};
+    final rowLoads = _rowLoadsForType();
+    final tasks = <Future<void>>[];
+
+    for (var i = 0; i < rowLoads.length; i++) {
+      final index = i;
+      tasks.add(() async {
+        try {
+          final row = await rowLoads[index];
+          if (row.items.isNotEmpty) {
+            orderedRows[index] = row;
+            _rows = _orderedRows(orderedRows);
+            notifyListeners();
+          }
+        } catch (_) {
+        }
+      }());
     }
+
+    await Future.wait(tasks);
 
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<List<HomeRow>> _loadRowsForType() async {
+  List<HomeRow> _orderedRows(Map<int, HomeRow> rowsByIndex) {
+    final sortedEntries = rowsByIndex.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    return sortedEntries.map((entry) => entry.value).toList(growable: false);
+  }
+
+  List<Future<HomeRow>> _rowLoadsForType() {
     switch (_collectionType) {
       case 'movies':
-        return Future.wait([
+        return [
           _dataSource.loadLibraryResume(libraryId, _serverId),
           _dataSource.loadLatestMedia(
             libraryId,
@@ -75,9 +97,9 @@ class LibraryViewViewModel extends ChangeNotifier {
           _dataSource.loadLibraryFavorites(libraryId, _serverId,
               includeItemTypes: ['Movie']),
           _dataSource.loadLibraryCollections(libraryId, _serverId),
-        ]);
+        ];
       case 'tvshows':
-        return Future.wait([
+        return [
           _dataSource.loadLibraryResume(libraryId, _serverId),
           _dataSource.loadLibraryNextUp(libraryId, _serverId),
           _dataSource.loadLatestMedia(
@@ -88,9 +110,9 @@ class LibraryViewViewModel extends ChangeNotifier {
           ),
           _dataSource.loadLibraryFavorites(libraryId, _serverId,
               includeItemTypes: ['Series']),
-        ]);
+        ];
       case 'music':
-        return Future.wait([
+        return [
           _dataSource.loadLatestMedia(
             libraryId,
             _libraryName,
@@ -115,9 +137,9 @@ class LibraryViewViewModel extends ChangeNotifier {
               includeItemTypes: ['MusicAlbum'],
               sortBy: 'DateCreated',
               sortOrder: 'Descending'),
-        ]);
+        ];
       default:
-        return Future.wait([
+        return [
           _dataSource.loadLatestMedia(
             libraryId,
             _libraryName,
@@ -125,7 +147,7 @@ class LibraryViewViewModel extends ChangeNotifier {
             _collectionType,
           ),
           _dataSource.loadLibraryFavorites(libraryId, _serverId),
-        ]);
+        ];
     }
   }
 

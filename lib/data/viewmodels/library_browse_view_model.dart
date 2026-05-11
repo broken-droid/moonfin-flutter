@@ -19,7 +19,7 @@ class LibraryBrowseViewModel extends ChangeNotifier {
   final String? overrideName;
   final List<String>? includeItemTypes;
 
-  static const _pageSize = 80;
+  static const _pageSize = 48;
   static const _firstPageSize = 36;
   static const _browseFields =
       'PrimaryImageAspectRatio,SortName,Type,IsFolder,UserData,CommunityRating,OfficialRating,RunTimeTicks,ProductionYear,ImageTags,BackdropImageTags,ParentBackdropItemId,ParentBackdropImageTags,ParentThumbItemId,ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag';
@@ -277,7 +277,8 @@ class LibraryBrowseViewModel extends ChangeNotifier {
           includeTypes = ['Playlist'];
           break;
         case 'boxsets':
-          recursive = false;
+          includeTypes = ['BoxSet'];
+          recursive = true;
           break;
         default:
           collapseBoxSets = false;
