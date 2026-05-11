@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../util/platform_detection.dart';
+import '../../../util/focus/dpad_keys.dart';
 import 'preference_tiles.dart';
 
 class SettingsPanel extends StatelessWidget {
@@ -87,20 +89,36 @@ class _SettingsNavigatorState extends State<_SettingsNavigator> {
     return FocusScope(
       node: _trapScope,
       autofocus: true,
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, _) {
-          if (didPop) return;
+      child: Focus(
+        onKeyEvent: (_, event) {
+          if (!event.logicalKey.isContextMenuKey) {
+            return KeyEventResult.ignored;
+          }
+          if (event is! KeyDownEvent) {
+            return KeyEventResult.handled;
+          }
           if (_navKey.currentState?.canPop() ?? false) {
             _navKey.currentState!.pop();
           } else {
-            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.of(context, rootNavigator: true).maybePop();
           }
+          return KeyEventResult.handled;
         },
-        child: Navigator(
-          key: _navKey,
-          onGenerateRoute: (_) =>
-              MaterialPageRoute(builder: (_) => widget.initial),
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, _) {
+            if (didPop) return;
+            if (_navKey.currentState?.canPop() ?? false) {
+              _navKey.currentState!.pop();
+            } else {
+              Navigator.of(context, rootNavigator: true).maybePop();
+            }
+          },
+          child: Navigator(
+            key: _navKey,
+            onGenerateRoute: (_) =>
+                MaterialPageRoute(builder: (_) => widget.initial),
+          ),
         ),
       ),
     );

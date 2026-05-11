@@ -53,6 +53,13 @@ class SettingsSidePanel extends ConsumerStatefulWidget {
 class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
   final _firstFocusNode = FocusNode(debugLabel: 'TvSettingsPanelFirstItem');
 
+  void _closeSettingsPanel() {
+    final rootNavigator = Navigator.of(context, rootNavigator: true);
+    if (rootNavigator.canPop()) {
+      rootNavigator.pop();
+    }
+  }
+
   void _requestInitialFocus({int attempt = 0}) {
     if (!mounted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -93,7 +100,7 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
           subtitle: l10n.settingsAdministrationSubtitle,
           focusNode: _firstFocusNode,
           onTap: () {
-            Navigator.of(context, rootNavigator: true).pop();
+            _closeSettingsPanel();
             context.navigateTopLevel(Destinations.admin);
           },
         ),
@@ -139,28 +146,21 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
       ),
     ];
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        Navigator.of(context, rootNavigator: true).pop();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: PlatformDetection.isTV
-              ? null
-              : IconButton(
-                onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-                icon: const Icon(Icons.close),
-              ),
-          automaticallyImplyLeading: false,
-          title: Text(l10n.settings),
-        ),
-        body: ListView(
-          children: [
-            for (final entry in entries) _PanelEntryTile(entry: entry),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        leading: PlatformDetection.isTV
+            ? null
+            : IconButton(
+              onPressed: _closeSettingsPanel,
+              icon: const Icon(Icons.close),
+            ),
+        automaticallyImplyLeading: false,
+        title: Text(l10n.settings),
+      ),
+      body: ListView(
+        children: [
+          for (final entry in entries) _PanelEntryTile(entry: entry),
+        ],
       ),
     );
   }
