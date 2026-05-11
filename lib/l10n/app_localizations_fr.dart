@@ -1946,6 +1946,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get focusExpansionAnimation => 'Animation d’agrandissement du focus';
 
   @override
+  String get desktopUiScale => 'Desktop UI Scale';
+
+  @override
   String get scaleFocusedCards =>
       'Agrandir les cartes et vignettes focalisées ou survolées';
 

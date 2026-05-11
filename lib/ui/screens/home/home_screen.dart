@@ -1753,11 +1753,17 @@ class _ContentRowsState extends State<_ContentRows>
     }
   }
 
-  double _libraryRowExtent(double rowHeight) => rowHeight + 34;
+  double _libraryRowExtent(double rowHeight, {double metadataScale = 1.0}) =>
+      rowHeight + (34 * metadataScale);
+
+  double _desktopUiScaleFactor() {
+    if (!PlatformDetection.useDesktopUi) return 1.0;
+    return widget.prefs.get(UserPreferences.desktopUiScale).scaleFactor;
+  }
 
   double _squarePosterSide(PosterSize posterSize) {
-    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
-    return posterSize.portraitHeight.toDouble() * tvScale;
+    final platformScale = PlatformDetection.isTV ? 0.8 : _desktopUiScaleFactor();
+    return posterSize.portraitHeight.toDouble() * platformScale;
   }
 
   double _estimatedRowExtent(
@@ -1765,32 +1771,34 @@ class _ContentRowsState extends State<_ContentRows>
     PosterSize posterSize,
     UserPreferences prefs,
   ) {
+    final desktopScale = _desktopUiScaleFactor();
+    final metadataScale = PlatformDetection.useDesktopUi ? desktopScale : 1.0;
     if (row.isLoading) {
-      return _libraryRowExtent(220);
+      return _libraryRowExtent(220 * metadataScale, metadataScale: metadataScale);
     }
 
     if (row.rowType == HomeRowType.liveTv ||
         row.rowType == HomeRowType.libraryTilesSmall) {
       final squarePosterSide = _squarePosterSide(posterSize);
-      final rowHeight = squarePosterSide + 56;
-      return _libraryRowExtent(rowHeight);
+      final rowHeight = squarePosterSide + (56 * metadataScale);
+      return _libraryRowExtent(rowHeight, metadataScale: metadataScale);
     }
 
     final rowImageType = _homeRowImageTypeForRow(row, prefs);
-    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
-    var maxCardHeight = 220.0;
+    final platformScale = PlatformDetection.isTV ? 0.8 : desktopScale;
+    var maxCardHeight = 220.0 * metadataScale;
     for (final item in row.items) {
       final aspectRatio = _aspectRatioForRowItem(item, row, rowImageType);
       final imageHeight = (aspectRatio > 1
           ? posterSize.landscapeHeight.toDouble()
-          : posterSize.portraitHeight.toDouble()) * tvScale;
-      final cardHeight = imageHeight + 46;
+          : posterSize.portraitHeight.toDouble()) * platformScale;
+      final cardHeight = imageHeight + (46 * metadataScale);
       if (cardHeight > maxCardHeight) {
         maxCardHeight = cardHeight;
       }
     }
 
-    return _libraryRowExtent(maxCardHeight);
+    return _libraryRowExtent(maxCardHeight, metadataScale: metadataScale);
   }
 
   double _overlayRowShift({
@@ -1917,6 +1925,7 @@ class _ContentRowsState extends State<_ContentRows>
     final showInfoOverlay = prefs.get(UserPreferences.homeRowInfoOverlay);
     final safeTop = MediaQuery.of(context).padding.top;
     final listTopPadding = includeMediaBar || showInfoOverlay ? 0.0 : safeTop + 56;
+    final desktopScale = _desktopUiScaleFactor();
     final navbarIsTop = widget.prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top;
     final navbarIsLeft = !navbarIsTop;
     final navbarHeight = navbarIsTop && !(PlatformDetection.isTV && includeMediaBar)
@@ -1929,7 +1938,10 @@ class _ContentRowsState extends State<_ContentRows>
     final navbarLeftInset = navbarIsTop ? 16.0 : 56.0;
     final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
     final infoTopPadding = safeTop + navbarHeight + 8;
-    final infoAreaHeight = InfoArea.fixedHeight(isMobile: PlatformDetection.useMobileUi);
+    final infoAreaHeight = InfoArea.fixedHeight(
+      isMobile: PlatformDetection.useMobileUi,
+      desktopScale: desktopScale,
+    );
     final infoBottomPadding = includeMediaBar ? 20.0 : 8.0;
     // Reserve the info band height up-front so revealing/hiding the InfoArea
     // overlay (a Stack child) does not shift row positions in the ListView.
@@ -2133,8 +2145,11 @@ class _ContentRowsState extends State<_ContentRows>
     required List<HomeRow> rows,
   }) {
     final l10n = AppLocalizations.of(context);
+    final metadataScale = PlatformDetection.useDesktopUi
+        ? _desktopUiScaleFactor()
+        : 1.0;
     final squarePosterSide = _squarePosterSide(posterSize);
-    final rowHeight = squarePosterSide + 56;
+    final rowHeight = squarePosterSide + (56 * metadataScale);
     final actions = <_LiveTvAction>[
       _LiveTvAction(Icons.tv_rounded, l10n.guide, Destinations.liveTvGuide),
       _LiveTvAction(Icons.fiber_manual_record_rounded, l10n.recordings,
@@ -2199,8 +2214,11 @@ class _ContentRowsState extends State<_ContentRows>
     required List<HomeRow> rows,
   }) {
     final l10n = AppLocalizations.of(context);
+    final metadataScale = PlatformDetection.useDesktopUi
+        ? _desktopUiScaleFactor()
+        : 1.0;
     final squarePosterSide = _squarePosterSide(posterSize);
-    final rowHeight = squarePosterSide + 56;
+    final rowHeight = squarePosterSide + (56 * metadataScale);
     return _buildTitledRow(
       key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
@@ -2264,7 +2282,9 @@ class _ContentRowsState extends State<_ContentRows>
   }) {
     final suppressFocusGlow = ThemeRegistry.active.borders.focusGlow.isNotEmpty;
     final rowImageType = _homeRowImageTypeForRow(row, prefs);
-    final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
+    final desktopScale = _desktopUiScaleFactor();
+    final metadataScale = PlatformDetection.useDesktopUi ? desktopScale : 1.0;
+    final platformScale = PlatformDetection.isTV ? 0.8 : desktopScale;
 
     double maxCardHeight = 0;
     double firstCardWidth = 0;
@@ -2273,8 +2293,8 @@ class _ContentRowsState extends State<_ContentRows>
       final height = (ar > 1
               ? posterSize.landscapeHeight.toDouble()
               : posterSize.portraitHeight.toDouble()) *
-          tvScale;
-      final cardHeight = height + 46;
+          platformScale;
+      final cardHeight = height + (46 * metadataScale);
       if (cardHeight > maxCardHeight) maxCardHeight = cardHeight;
       if (firstCardWidth == 0) firstCardWidth = height * ar;
     }
@@ -2282,12 +2302,12 @@ class _ContentRowsState extends State<_ContentRows>
     return _buildTitledRow(
       key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
-      height: maxCardHeight + 10,
+      height: maxCardHeight + (10 * metadataScale),
       child: LockedFocusRow<AggregatedItem>(
         key: _rowKey(rowIndex),
         items: row.items,
         hubKey: _hubKeyForRow(row),
-        height: maxCardHeight + 10,
+        height: maxCardHeight + (10 * metadataScale),
         itemExtent: firstCardWidth,
         itemSpacing: 12,
         leadingPadding: 0,
@@ -2333,7 +2353,7 @@ class _ContentRowsState extends State<_ContentRows>
           final height = (ar > 1
                   ? posterSize.landscapeHeight.toDouble()
                   : posterSize.portraitHeight.toDouble()) *
-              tvScale;
+              platformScale;
           final width = height * ar;
           final imageUrl = _resolveRowImageUrl(
             item,

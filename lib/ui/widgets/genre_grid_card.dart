@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:moonfin_design/moonfin_design.dart';
 
+import '../../preference/user_preferences.dart';
+import '../../util/platform_detection.dart';
 import 'bounded_network_image.dart';
 import 'marquee_text.dart';
 import '../../util/focus/dpad_keys.dart';
@@ -52,6 +55,31 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
         widget.focusColor ?? Theme.of(context).colorScheme.primary;
     final showMarquee = hovered || focused;
     final imageUrl = widget.genre.imageUrl ?? widget.genre.backdropUrl;
+    final desktopScale = PlatformDetection.useDesktopUi
+        ? GetIt.instance<UserPreferences>()
+            .get(UserPreferences.desktopUiScale)
+            .scaleFactor
+        : 1.0;
+    final titleStyle = TextStyle(
+      fontSize: 16 * desktopScale,
+      fontWeight: FontWeight.w600,
+      color: AppColorScheme.onSurface,
+    );
+    final subtitleStyle = TextStyle(
+      fontSize: 12 * desktopScale,
+      color: AppColorScheme.onSurface.withAlpha(178),
+    );
+    final textScaler = MediaQuery.textScalerOf(context);
+
+    double lineHeightFor(TextStyle style, {int lines = 1}) {
+      final fontSize = style.fontSize ?? 12;
+      final height = style.height ?? 1.2;
+      return (textScaler.scale(fontSize) * height * lines) + 2;
+    }
+
+    final titleMaxLines = widget.centerTitle ? 2 : 1;
+    final titleHeight = lineHeightFor(titleStyle, lines: titleMaxLines);
+    final subtitleHeight = lineHeightFor(subtitleStyle);
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) {
@@ -113,9 +141,9 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                       ),
                     ),
                     Positioned(
-                      left: 12,
-                      right: 12,
-                      bottom: 10,
+                      left: 12 * desktopScale,
+                      right: 12 * desktopScale,
+                      bottom: 10 * desktopScale,
                       child: Column(
                         crossAxisAlignment: widget.centerTitle
                             ? CrossAxisAlignment.center
@@ -123,53 +151,35 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(
-                            height: 20,
+                            height: titleHeight,
                             child: showMarquee
                                 ? MarqueeText(
                                     text: widget.genre.name,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColorScheme.onSurface,
-                                    ),
+                                    style: titleStyle,
                                   )
                                 : Text(
                                     widget.genre.name,
-                                    maxLines: widget.centerTitle ? 2 : 1,
+                                    maxLines: titleMaxLines,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: widget.centerTitle
                                         ? TextAlign.center
                                         : TextAlign.start,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColorScheme.onSurface,
-                                    ),
+                                    style: titleStyle,
                                   ),
                           ),
                           if (widget.genre.itemCount > 0)
                             SizedBox(
-                              height: 16,
+                              height: subtitleHeight,
                               child: showMarquee
                                   ? MarqueeText(
                                       text: '${widget.genre.itemCount} items',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColorScheme.onSurface.withAlpha(
-                                          178,
-                                        ),
-                                      ),
+                                      style: subtitleStyle,
                                     )
                                   : Text(
                                       '${widget.genre.itemCount} items',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColorScheme.onSurface.withAlpha(
-                                          178,
-                                        ),
-                                      ),
+                                      style: subtitleStyle,
                                     ),
                             ),
                         ],

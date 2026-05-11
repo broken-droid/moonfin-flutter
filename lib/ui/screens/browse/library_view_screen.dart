@@ -11,6 +11,7 @@ import '../../../data/services/background_service.dart';
 import '../../../data/services/row_data_source.dart';
 import '../../../data/viewmodels/library_view_view_model.dart';
 import '../../../preference/user_preferences.dart';
+import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/focus/request_initial_focus.dart';
 import '../../widgets/fullscreen_backdrop_switcher.dart';
@@ -73,12 +74,18 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
     _backgroundService.setBackground(item, context: BlurContext.browsing);
   }
 
+  double _desktopUiScaleFactor() {
+    if (!PlatformDetection.useDesktopUi) return 1.0;
+    return _prefs.get(UserPreferences.desktopUiScale).scaleFactor;
+  }
+
   @override
   Widget build(BuildContext context) =>
       RequestInitialFocus(child: _buildContent(context));
 
   Widget _buildContent(BuildContext context) {
     final hasBackdrop = _backdropUrl != null;
+    final desktopScale = _desktopUiScaleFactor();
     return Scaffold(
       backgroundColor: _navyBackground,
       body: Stack(
@@ -99,6 +106,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
             children: [
               _LibraryViewHeader(
                 libraryName: _vm.libraryName,
+                desktopScale: desktopScale,
                 onHome: () => context.go(Destinations.home),
                 onBrowse: () =>
                     context.push(Destinations.library(widget.libraryId)),
@@ -132,6 +140,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
     }
 
     final posterSize = _prefs.get(UserPreferences.posterSize);
+    final desktopScale = _desktopUiScaleFactor();
     final watchedBehavior = _prefs.get(UserPreferences.watchedIndicatorBehavior);
     final suppressFocusGlow = ThemeRegistry.active.borders.focusGlow.isNotEmpty;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
@@ -147,9 +156,10 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
           title: localizeHomeRowTitle(row: row, l10n: l10n),
           children: row.items.map((item) {
             final ar = MediaCard.aspectRatioForType(item.type);
-            final height = ar > 1
+            final baseHeight = ar > 1
                 ? posterSize.landscapeHeight.toDouble()
                 : posterSize.portraitHeight.toDouble();
+            final height = baseHeight * desktopScale;
             final width = height * ar;
             final imageUrl = item.primaryImageTag != null
                 ? _vm.imageApi.getPrimaryImageUrl(
@@ -187,12 +197,14 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
 
 class _LibraryViewHeader extends StatelessWidget {
   final String libraryName;
+  final double desktopScale;
   final VoidCallback onHome;
   final VoidCallback onBrowse;
   final VoidCallback onGenres;
 
   const _LibraryViewHeader({
     required this.libraryName,
+    required this.desktopScale,
     required this.onHome,
     required this.onBrowse,
     required this.onGenres,
@@ -200,41 +212,46 @@ class _LibraryViewHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scale = PlatformDetection.useDesktopUi ? desktopScale : 1.0;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          _horizontalPadding, 20, _horizontalPadding, 8),
+      padding: EdgeInsets.fromLTRB(
+        _horizontalPadding * scale,
+        20 * scale,
+        _horizontalPadding * scale,
+        8 * scale,
+      ),
       child: Row(
         children: [
           IconButton(
             icon: Icon(
               Icons.home,
               color: AppColorScheme.onSurface.withValues(alpha: 0.7),
-              size: 22,
+              size: 22 * scale,
             ),
             onPressed: onHome,
             tooltip: AppLocalizations.of(context).home,
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12 * scale),
           Text(
             libraryName,
             style: TextStyle(
-              fontSize: 26,
+              fontSize: 26 * scale,
               fontWeight: FontWeight.w300,
               color: AppColorScheme.onSurface,
             ),
           ),
           const Spacer(),
           TextButton.icon(
-            icon: const Icon(Icons.grid_view, size: 18),
+            icon: Icon(Icons.grid_view, size: 18 * scale),
             label: Text(AppLocalizations.of(context).browseAll),
             style: TextButton.styleFrom(
               foregroundColor: AppColorScheme.onSurface.withValues(alpha: 0.7),
             ),
             onPressed: onBrowse,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8 * scale),
           TextButton.icon(
-            icon: const Icon(Icons.category, size: 18),
+            icon: Icon(Icons.category, size: 18 * scale),
             label: Text(AppLocalizations.of(context).genres),
             style: TextButton.styleFrom(
               foregroundColor: AppColorScheme.onSurface.withValues(alpha: 0.7),

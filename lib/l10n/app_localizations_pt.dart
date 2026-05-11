@@ -1931,6 +1931,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get focusExpansionAnimation => 'Animação de Expansão do Foco';
 
   @override
+  String get desktopUiScale => 'Desktop UI Scale';
+
+  @override
   String get scaleFocusedCards =>
       'Redimensionar cards focados ou com cursor sobre eles';
 

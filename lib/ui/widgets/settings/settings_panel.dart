@@ -4,6 +4,7 @@ import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../util/platform_detection.dart';
 import '../../../util/focus/dpad_keys.dart';
+import '../overlay_sheet.dart';
 import 'preference_tiles.dart';
 
 class SettingsPanel extends StatelessWidget {
@@ -78,11 +79,26 @@ class _SettingsNavigatorState extends State<_SettingsNavigator> {
     debugLabel: 'SettingsPanelTrap',
     traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
   );
+  bool _rootDismissInProgress = false;
 
   @override
   void dispose() {
     _trapScope.dispose();
     super.dispose();
+  }
+
+  void _handleBackDismiss() {
+    final navigator = _navKey.currentState;
+    if (navigator != null && navigator.canPop()) {
+      navigator.pop();
+      return;
+    }
+    if (_rootDismissInProgress || !mounted) {
+      return;
+    }
+    _rootDismissInProgress = true;
+    DialogBackSuppressor.markDismissed();
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   @override
@@ -98,22 +114,14 @@ class _SettingsNavigatorState extends State<_SettingsNavigator> {
           if (event is! KeyDownEvent) {
             return KeyEventResult.handled;
           }
-          if (_navKey.currentState?.canPop() ?? false) {
-            _navKey.currentState!.pop();
-          } else {
-            Navigator.of(context, rootNavigator: true).maybePop();
-          }
+          _handleBackDismiss();
           return KeyEventResult.handled;
         },
         child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
             if (didPop) return;
-            if (_navKey.currentState?.canPop() ?? false) {
-              _navKey.currentState!.pop();
-            } else {
-              Navigator.of(context, rootNavigator: true).maybePop();
-            }
+            _handleBackDismiss();
           },
           child: Navigator(
             key: _navKey,

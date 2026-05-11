@@ -17,15 +17,26 @@ class InfoArea extends StatelessWidget {
 
   const InfoArea({super.key, this.item});
 
-  static double fixedHeight({required bool isMobile}) {
-    return isMobile ? 184.0 : 212.0;
+  static double fixedHeight({
+    required bool isMobile,
+    double desktopScale = 1.0,
+  }) {
+    return isMobile ? 184.0 : 212.0 * desktopScale;
   }
 
   @override
   Widget build(BuildContext context) {
     final item = this.item;
     final isMobile = PlatformDetection.useMobileUi;
-    final fixedHeight = InfoArea.fixedHeight(isMobile: isMobile);
+    final desktopScale = PlatformDetection.useDesktopUi
+        ? GetIt.instance<UserPreferences>()
+              .get(UserPreferences.desktopUiScale)
+              .scaleFactor
+        : 1.0;
+    final fixedHeight = InfoArea.fixedHeight(
+      isMobile: isMobile,
+      desktopScale: desktopScale,
+    );
 
     if (item == null) {
       return SizedBox(width: double.infinity, height: fixedHeight);

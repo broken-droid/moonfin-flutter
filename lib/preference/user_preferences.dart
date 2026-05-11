@@ -48,6 +48,12 @@ class UserPreferences extends ChangeNotifier {
     values: PosterSize.values,
   );
 
+  static final desktopUiScale = EnumPreference(
+    key: 'pref_desktop_ui_scale',
+    defaultValue: DesktopUiScale.medium,
+    values: DesktopUiScale.values,
+  );
+
   static final cardFocusExpansion = Preference(
     key: 'pref_card_focus_expansion',
     defaultValue: true,

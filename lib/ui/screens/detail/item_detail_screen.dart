@@ -65,6 +65,12 @@ bool _useDesktopDetailLayout(BuildContext context) {
       (PlatformDetection.useMobileUi && isLandscape && size.width >= 700);
 }
 
+double _desktopUiScale({UserPreferences? prefs}) {
+  if (!PlatformDetection.useDesktopUi) return 1.0;
+  final effectivePrefs = prefs ?? GetIt.instance<UserPreferences>();
+  return effectivePrefs.get(UserPreferences.desktopUiScale).scaleFactor;
+}
+
 Future<bool> _showDeleteConfirmationDialog(
   BuildContext context, {
   required String title,
@@ -2282,9 +2288,10 @@ class _PosterImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = !_useDesktopDetailLayout(context);
+    final desktopScale = _desktopUiScale();
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
-    final w = isMobile ? 120.0 : 165.0;
-    final h = isMobile ? 180.0 : 248.0;
+    final w = isMobile ? 120.0 : 165.0 * desktopScale;
+    final h = isMobile ? 180.0 : 248.0 * desktopScale;
 
     if (item.primaryImageTag == null) return SizedBox(width: w, height: h);
 
@@ -2298,7 +2305,7 @@ class _PosterImage extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: imageApi.getPrimaryImageUrl(
                 item.id,
-                maxHeight: isMobile ? 360 : 500,
+                maxHeight: isMobile ? 360 : (500 * desktopScale).round(),
                 tag: item.primaryImageTag,
               ),
               width: w,
@@ -2385,8 +2392,9 @@ class _EpisodeThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = !_useDesktopDetailLayout(context);
-    final w = isMobile ? 200.0 : 280.0;
-    final h = isMobile ? 113.0 : 158.0;
+    final desktopScale = _desktopUiScale();
+    final w = isMobile ? 200.0 : 280.0 * desktopScale;
+    final h = isMobile ? 113.0 : 158.0 * desktopScale;
 
     if (item.primaryImageTag == null) return SizedBox(width: w, height: h);
 
@@ -2400,7 +2408,7 @@ class _EpisodeThumbnail extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: imageApi.getPrimaryImageUrl(
                 item.id,
-                maxWidth: isMobile ? 400 : 560,
+                maxWidth: isMobile ? 400 : (560 * desktopScale).round(),
                 tag: item.primaryImageTag,
               ),
               width: w,
@@ -3472,7 +3480,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
   int _calculateMaxVisibleButtons(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final compact = !_useDesktopDetailLayout(context);
-    final buttonWidth = compact ? 80.0 : 96.0;
+    final desktopScale = _desktopUiScale();
+    final buttonWidth = compact ? 80.0 : 108.0 * desktopScale;
     const spacing = 8.0;
     const horizontalPadding = 64.0;
 
@@ -3777,6 +3786,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
 
     final compact = !_useDesktopDetailLayout(context);
+    final desktopScale = _desktopUiScale();
+    final buttonSpacing = compact ? 8.0 : 10.0 * desktopScale;
+    final buttonRunSpacing = compact ? 12.0 : 14.0 * desktopScale;
     final maxVisible = _calculateMaxVisibleButtons(context);
     final needsOverflow = compact && allButtons.length > maxVisible;
 
@@ -3784,8 +3796,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
     if (!needsOverflow) {
       rowContent = Center(
         child: Wrap(
-          spacing: 8,
-          runSpacing: 12,
+          spacing: buttonSpacing,
+          runSpacing: buttonRunSpacing,
           alignment: WrapAlignment.center,
           children: allButtons,
         ),
@@ -3798,8 +3810,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Wrap(
-              spacing: 8,
-              runSpacing: 12,
+              spacing: buttonSpacing,
+              runSpacing: buttonRunSpacing,
               alignment: WrapAlignment.center,
               children: [
                 ...primaryButtons,
@@ -3811,10 +3823,10 @@ class _ActionButtonsState extends State<_ActionButtons> {
               ],
             ),
             if (_expanded) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: buttonRunSpacing),
               Wrap(
-                spacing: 8,
-                runSpacing: 12,
+                spacing: buttonSpacing,
+                runSpacing: buttonRunSpacing,
                 alignment: WrapAlignment.center,
                 children: extraButtons,
               ),
@@ -5821,6 +5833,7 @@ class _DetailActionButtonState extends State<_DetailActionButton>
   @override
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
+    final desktopScale = _desktopUiScale();
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final focusColor = Color(
       GetIt.instance<UserPreferences>()
@@ -5882,13 +5895,13 @@ class _DetailActionButtonState extends State<_DetailActionButton>
         child: GestureDetector(
           onTap: widget.onPressed,
           child: SizedBox(
-            width: isMobile ? 80 : 96,
+            width: isMobile ? 80 : 108 * desktopScale,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: isMobile ? 44 : 52,
-                  height: isMobile ? 44 : 52,
+                  width: isMobile ? 44 : 58 * desktopScale,
+                  height: isMobile ? 44 : 58 * desktopScale,
                   decoration: BoxDecoration(
                     color: showHighlight
                         ? (isNeon
@@ -5908,15 +5921,17 @@ class _DetailActionButtonState extends State<_DetailActionButton>
                             ),
                           )
                         : null,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(
+                      isMobile ? 14 : 15 * desktopScale,
+                    ),
                   ),
                   child: Icon(
                     widget.icon,
                     color: iconColor,
-                    size: isMobile ? 22 : 24,
+                    size: isMobile ? 22 : 27 * desktopScale,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: isMobile ? 6 : 8 * desktopScale),
                 Text(
                   widget.label,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -5976,17 +5991,19 @@ class _CastRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
-    final cardWidth = isMobile ? 80.0 : 100.0;
-    final avatarRadius = isMobile ? 35.0 : 45.0;
+    final desktopScale = _desktopUiScale();
+    final cardWidth = isMobile ? 80.0 : 100.0 * desktopScale;
+    final avatarRadius = isMobile ? 35.0 : 45.0 * desktopScale;
 
     return SizedBox(
-      height: isMobile ? 158 : 178,
+      height: isMobile ? 158 : 178 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
         itemCount: people.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 12 : 16),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 12 : 16 * desktopScale),
         itemBuilder: (context, index) {
           final person = people[index];
           final name = person['Name'] as String? ?? '';
@@ -5998,7 +6015,7 @@ class _CastRow extends StatelessWidget {
           if (personId != null && tag != null) {
             imageUrl = imageApi.getPrimaryImageUrl(
               personId,
-              maxHeight: isMobile ? 140 : 200,
+              maxHeight: isMobile ? 140 : (200 * desktopScale).round(),
               tag: tag,
             );
           }
@@ -6185,16 +6202,18 @@ class _SimilarRow extends StatelessWidget {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final isMobile = _isCompact(context);
-    final cardWidth = isMobile ? 120.0 : 150.0;
+    final desktopScale = _desktopUiScale(prefs: prefs);
+    final cardWidth = isMobile ? 120.0 : 150.0 * desktopScale;
 
     return SizedBox(
-      height: isMobile ? 228 : 282,
+      height: isMobile ? 228 : 282 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(6, 10, 6, 4),
         itemCount: items.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 8 : 12 * desktopScale),
         itemBuilder: (context, index) {
           final item = items[index];
           final ar = MediaCard.aspectRatioForType(item.type);
@@ -6204,7 +6223,7 @@ class _SimilarRow extends StatelessWidget {
             imageUrl: item.primaryImageTag != null
                 ? imageApi.getPrimaryImageUrl(
                     item.id,
-                    maxHeight: isMobile ? 300 : 400,
+                    maxHeight: isMobile ? 300 : (400 * desktopScale).round(),
                     tag: item.primaryImageTag,
                   )
                 : null,
@@ -6257,16 +6276,18 @@ class _FeaturesRow extends StatelessWidget {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final isMobile = _isCompact(context);
-    final cardWidth = isMobile ? 140.0 : 170.0;
+    final desktopScale = _desktopUiScale(prefs: prefs);
+    final cardWidth = isMobile ? 140.0 : 170.0 * desktopScale;
 
     return SizedBox(
-      height: isMobile ? 230 : 280,
+      height: isMobile ? 230 : 280 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
         itemCount: items.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 8 : 12 * desktopScale),
         itemBuilder: (context, index) {
           final item = items[index];
           return MediaCard(
@@ -6279,7 +6300,7 @@ class _FeaturesRow extends StatelessWidget {
             imageUrl: item.primaryImageTag != null
                 ? imageApi.getPrimaryImageUrl(
                     item.id,
-                    maxHeight: isMobile ? 300 : 400,
+                    maxHeight: isMobile ? 300 : (400 * desktopScale).round(),
                     tag: item.primaryImageTag,
                   )
                 : null,
@@ -6327,18 +6348,20 @@ class _ChaptersRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final chapters = item.chapters;
     final isMobile = _isCompact(context);
-    final chapterCardWidth = isMobile ? 220.0 : 280.0;
+    final desktopScale = _desktopUiScale();
+    final chapterCardWidth = isMobile ? 220.0 : 280.0 * desktopScale;
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     final chapterImageWidth = (chapterCardWidth * devicePixelRatio).ceil();
 
     return SizedBox(
-      height: isMobile ? 180 : 210,
+      height: isMobile ? 180 : 210 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
         itemCount: chapters.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 8 : 12 * desktopScale),
         itemBuilder: (context, index) {
           final chapter = chapters[index];
           final ticks = chapter['StartPositionTicks'] as int? ?? 0;
@@ -6746,16 +6769,18 @@ class _SeasonsRow extends StatelessWidget {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final isMobile = _isCompact(context);
-    final cardWidth = isMobile ? 120.0 : 150.0;
+    final desktopScale = _desktopUiScale(prefs: prefs);
+    final cardWidth = isMobile ? 120.0 : 150.0 * desktopScale;
 
     return SizedBox(
-      height: isMobile ? 230 : 290,
+      height: isMobile ? 230 : 290 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
         itemCount: seasons.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 8 : 12 * desktopScale),
         itemBuilder: (context, index) {
           final season = seasons[index];
           return MediaCard(
@@ -6791,8 +6816,9 @@ class _SeasonsRow extends StatelessWidget {
   }
 
   String? _seasonImageUrl(AggregatedItem season, {required bool isMobile}) {
-    final primaryHeight = isMobile ? 300 : 400;
-    final secondaryWidth = isMobile ? 200 : 260;
+    final desktopScale = _desktopUiScale(prefs: prefs);
+    final primaryHeight = isMobile ? 300 : (400 * desktopScale).round();
+    final secondaryWidth = isMobile ? 200 : (260 * desktopScale).round();
 
     String? primary(String? id, String? tag) {
       if (id == null || tag == null) return null;
@@ -6862,14 +6888,16 @@ class _EpisodesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
+    final desktopScale = _desktopUiScale();
 
     return SizedBox(
-      height: isMobile ? 150 : 180,
+      height: isMobile ? 150 : 180 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: episodes.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 8 : 12 * desktopScale),
         itemBuilder: (context, index) {
           final ep = episodes[index];
           final isCurrent = ep.id == currentEpisodeId;
@@ -6916,6 +6944,7 @@ class _EpisodeListCardState extends State<_EpisodeListCard>
   Widget build(BuildContext context) {
     final ep = widget.episode;
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+    final desktopScale = _desktopUiScale();
     final epNum = ep.indexNumber;
     final runtime = ep.runtime;
     final runtimeText = runtime != null
@@ -6951,7 +6980,7 @@ class _EpisodeListCardState extends State<_EpisodeListCard>
           onTap: () =>
               context.push(Destinations.item(ep.id, serverId: ep.serverId)),
           child: Container(
-            width: widget.isMobile ? 180.0 : 220.0,
+            width: widget.isMobile ? 180.0 : 220.0 * desktopScale,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               border: widget.isCurrent
@@ -6975,7 +7004,7 @@ class _EpisodeListCardState extends State<_EpisodeListCard>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: widget.isMobile ? 100 : 124,
+                  height: widget.isMobile ? 100 : 124 * desktopScale,
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -6983,7 +7012,9 @@ class _EpisodeListCardState extends State<_EpisodeListCard>
                         CachedNetworkImage(
                           imageUrl: widget.imageApi.getPrimaryImageUrl(
                             ep.id,
-                            maxHeight: 250,
+                            maxHeight: widget.isMobile
+                                ? 250
+                                : (250 * desktopScale).round(),
                             tag: ep.primaryImageTag,
                           ),
                           fit: BoxFit.cover,
@@ -7093,6 +7124,7 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
   Widget build(BuildContext context) {
     final episode = widget.episode;
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+    final desktopScale = _desktopUiScale();
     final s = episode.parentIndexNumber;
     final e = episode.indexNumber;
     final label = s != null && e != null ? 'S${s}E$e' : null;
@@ -7131,7 +7163,7 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
             scale: cardExpansion && showFocusBorder ? 1.02 : 1.0,
             duration: const Duration(milliseconds: 120),
             child: Container(
-              height: isMobile ? 100.0 : 120.0,
+              height: isMobile ? 100.0 : 120.0 * desktopScale,
               decoration: BoxDecoration(
                 color: isNeon
                     ? Colors.transparent
@@ -7150,7 +7182,7 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
               child: Row(
                 children: [
                   SizedBox(
-                    width: isMobile ? 178.0 : 213.0,
+                    width: isMobile ? 178.0 : 213.0 * desktopScale,
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -7158,7 +7190,9 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
                           CachedNetworkImage(
                             imageUrl: widget.imageApi.getPrimaryImageUrl(
                               episode.id,
-                              maxHeight: 240,
+                              maxHeight: isMobile
+                                  ? 240
+                                  : (240 * desktopScale).round(),
                               tag: episode.primaryImageTag,
                             ),
                             fit: BoxFit.cover,
@@ -7171,7 +7205,7 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: isMobile ? 16 : 16 * desktopScale),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -7206,13 +7240,13 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  const Icon(
+                  SizedBox(width: isMobile ? 16 : 16 * desktopScale),
+                  Icon(
                     Icons.play_circle_outline,
                     color: Colors.white54,
-                    size: 40,
+                    size: isMobile ? 40 : 40 * desktopScale,
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: isMobile ? 16 : 16 * desktopScale),
                 ],
               ),
             ),
@@ -7238,6 +7272,7 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
   Widget build(BuildContext context) {
     final episode = widget.episode;
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+    final desktopScale = _desktopUiScale();
     final epNum = episode.indexNumber;
     final runtime = episode.runtime;
     final runtimeText = runtime != null
@@ -7279,7 +7314,7 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
             scale: cardExpansion && showFocusBorder ? 1.02 : 1.0,
             duration: const Duration(milliseconds: 120),
             child: Container(
-              height: isMobile ? 90.0 : 110.0,
+              height: isMobile ? 90.0 : 110.0 * desktopScale,
               decoration: BoxDecoration(
                 color: isNeon
                     ? Colors.transparent
@@ -7298,7 +7333,7 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
               child: Row(
                 children: [
                   SizedBox(
-                    width: isMobile ? 160.0 : 196.0,
+                    width: isMobile ? 160.0 : 196.0 * desktopScale,
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -7306,7 +7341,9 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                           CachedNetworkImage(
                             imageUrl: widget.imageApi.getPrimaryImageUrl(
                               episode.id,
-                              maxHeight: 220,
+                              maxHeight: isMobile
+                                  ? 220
+                                  : (220 * desktopScale).round(),
                               tag: episode.primaryImageTag,
                             ),
                             fit: BoxFit.cover,
@@ -7354,7 +7391,7 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: isMobile ? 16 : 16 * desktopScale),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -7407,7 +7444,7 @@ class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: isMobile ? 12 : 12 * desktopScale),
                 ],
               ),
             ),
@@ -7714,15 +7751,17 @@ class _FilmographyRow extends StatelessWidget {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final isMobile = _isCompact(context);
-    final cardWidth = isMobile ? 120.0 : 150.0;
+    final desktopScale = _desktopUiScale(prefs: prefs);
+    final cardWidth = isMobile ? 120.0 : 150.0 * desktopScale;
 
     return SizedBox(
-      height: isMobile ? 220 : 280,
+      height: isMobile ? 220 : 280 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 8 : 12 * desktopScale),
         itemBuilder: (context, index) {
           final item = items[index];
           final year = item.productionYear;
@@ -7733,7 +7772,7 @@ class _FilmographyRow extends StatelessWidget {
             imageUrl: item.primaryImageTag != null
                 ? imageApi.getPrimaryImageUrl(
                     item.id,
-                    maxHeight: isMobile ? 300 : 400,
+                    maxHeight: isMobile ? 300 : (400 * desktopScale).round(),
                     tag: item.primaryImageTag,
                   )
                 : null,
@@ -7863,7 +7902,8 @@ class _AlbumHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final isMobile = _isCompact(context);
     final safeTop = MediaQuery.of(context).padding.top;
-    final albumSize = isMobile ? 150.0 : 200.0;
+    final desktopScale = _desktopUiScale();
+    final albumSize = isMobile ? 150.0 : 200.0 * desktopScale;
 
     final albumArt = ClipRRect(
       borderRadius: BorderRadius.circular(8),
@@ -8141,15 +8181,17 @@ class _AlbumsRow extends StatelessWidget {
     final watchedBehavior = prefs.get(UserPreferences.watchedIndicatorBehavior);
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final isMobile = _isCompact(context);
-    final cardWidth = isMobile ? 120.0 : 150.0;
+    final desktopScale = _desktopUiScale(prefs: prefs);
+    final cardWidth = isMobile ? 120.0 : 150.0 * desktopScale;
 
     return SizedBox(
-      height: isMobile ? 180 : 220,
+      height: isMobile ? 180 : 220 * desktopScale,
       child: ListView.separated(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: albums.length,
-        separatorBuilder: (_, _) => SizedBox(width: isMobile ? 8 : 12),
+        separatorBuilder: (_, _) =>
+            SizedBox(width: isMobile ? 8 : 12 * desktopScale),
         itemBuilder: (context, index) {
           final album = albums[index];
           return MediaCard(
@@ -8158,7 +8200,7 @@ class _AlbumsRow extends StatelessWidget {
             imageUrl: album.primaryImageTag != null
                 ? imageApi.getPrimaryImageUrl(
                     album.id,
-                    maxHeight: isMobile ? 240 : 300,
+                    maxHeight: isMobile ? 240 : (300 * desktopScale).round(),
                     tag: album.primaryImageTag,
                   )
                 : null,

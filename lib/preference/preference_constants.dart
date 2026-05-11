@@ -62,6 +62,16 @@ enum PosterSize {
   final int landscapeHeight;
 }
 
+enum DesktopUiScale {
+  small(0.9),
+  medium(1.0),
+  large(1.15),
+  extraLarge(1.3);
+
+  const DesktopUiScale(this.scaleFactor);
+  final double scaleFactor;
+}
+
 enum RefreshRateSwitchingBehavior {
   disabled,
   scaleOnTv,

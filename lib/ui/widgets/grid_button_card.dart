@@ -58,6 +58,9 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
       ? focusedForeground
       : AppColorScheme.onButtonNormal;
     final scale = widget.cardFocusExpansion && effectiveFocused ? 1.05 : 1.0;
+    final sizeScale =
+      (widget.width < widget.height ? widget.width : widget.height) / 160.0;
+    final visualScale = sizeScale.clamp(0.8, 1.4);
 
     final inner = GestureDetector(
       onTap: widget.onTap,
@@ -85,7 +88,7 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
             children: [
               Icon(
                 widget.icon,
-                size: 36,
+                size: 36 * visualScale,
                 color: foregroundColor,
               ),
               const SizedBox(height: AppSpacing.spaceSm),
@@ -93,7 +96,7 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
                 widget.label,
                 style: TextStyle(
                   color: foregroundColor,
-                  fontSize: 14,
+                  fontSize: 14 * visualScale,
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,

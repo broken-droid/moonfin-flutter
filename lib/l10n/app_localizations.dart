@@ -3380,6 +3380,12 @@ abstract class AppLocalizations {
   /// **'Focus Expansion Animation'**
   String get focusExpansionAnimation;
 
+  /// Setting for desktop UI scale
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop UI Scale'**
+  String get desktopUiScale;
+
   /// Description for focus expansion animation
   ///
   /// In en, this message translates to:

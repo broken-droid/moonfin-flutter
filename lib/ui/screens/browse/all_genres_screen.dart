@@ -90,7 +90,7 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
 
         startIndex += pageItems.length;
         if (pageItems.length < _genresPageSize) break;
-        if (total != null && startIndex >= total!) break;
+        if (total != null && startIndex >= total) break;
       }
 
       _genres = items.map((g) {
@@ -226,11 +226,12 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
 
   double _cardWidth() {
     final posterSize = _prefs.get(UserPreferences.posterSize);
-    return switch (_imageType) {
+    final baseWidth = switch (_imageType) {
       ImageType.thumb => posterSize.landscapeHeight * (16 / 9),
       ImageType.banner => posterSize.landscapeHeight * (16 / 9),
       ImageType.poster => posterSize.portraitHeight * (2 / 3),
     };
+    return baseWidth * _desktopUiScaleFactor();
   }
 
   double _cardAspectRatio() {
@@ -239,6 +240,11 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
       ImageType.banner => 16 / 9,
       ImageType.poster => 2 / 3,
     };
+  }
+
+  double _desktopUiScaleFactor() {
+    if (!PlatformDetection.useDesktopUi) return 1.0;
+    return _prefs.get(UserPreferences.desktopUiScale).scaleFactor;
   }
 
   Future<void> _showSettingsDialog() async {
@@ -277,6 +283,7 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
 
   Widget _buildContent(BuildContext context) {
     final isMobile = _isCompact(context);
+    final desktopScale = _desktopUiScaleFactor();
     final hasBackdrop = !isMobile && _backdropUrl != null;
     return Scaffold(
       backgroundColor: _navyBackground,
@@ -308,20 +315,24 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
                   children: [
                     FocusableToolbarButton(
                       icon: Icons.home,
+                      size: 42 * desktopScale,
+                      iconSize: 24 * desktopScale,
                       tooltip: AppLocalizations.of(context).home,
                       onTap: () => context.go(Destinations.home),
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4 * desktopScale),
                     FocusableToolbarButton(
                       icon: Icons.settings,
+                      size: 42 * desktopScale,
+                      iconSize: 24 * desktopScale,
                       tooltip: AppLocalizations.of(context).displaySettings,
                       onTap: _showSettingsDialog,
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12 * desktopScale),
                     Text(
                       AppLocalizations.of(context).allGenres,
                       style: TextStyle(
-                        fontSize: 26,
+                        fontSize: 26 * desktopScale,
                         fontWeight: FontWeight.w300,
                         color: AppColorScheme.onSurface,
                       ),
@@ -358,8 +369,9 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobile = _isCompact(context);
-        final hPad = isMobile ? 16.0 : _horizontalPadding;
-        const spacing = 16.0;
+        final desktopScale = _desktopUiScaleFactor();
+        final hPad = isMobile ? 16.0 : _horizontalPadding * desktopScale;
+        final spacing = 16.0 * desktopScale;
         final minColumns = isMobile ? 1 : 2;
         final maxColumns = isMobile ? 4 : 8;
         final crossAxisCount =

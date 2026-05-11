@@ -1918,6 +1918,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get focusExpansionAnimation => 'Odak Genişletme Animasyonu';
 
   @override
+  String get desktopUiScale => 'Desktop UI Scale';
+
+  @override
   String get scaleFocusedCards =>
       'Ölçek odaklı veya fareyle üzerine gelinen kartlar ve kutucuklar';
 

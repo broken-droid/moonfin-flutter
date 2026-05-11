@@ -1931,6 +1931,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get focusExpansionAnimation => 'Animazione Espansione Focus';
 
   @override
+  String get desktopUiScale => 'Desktop UI Scale';
+
+  @override
   String get scaleFocusedCards =>
       'Ingrandisci le schede e i riquadri in focus o hover';
 

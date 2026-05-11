@@ -713,6 +713,13 @@ bool _isCompact(BuildContext context) =>
     PlatformDetection.useMobileUi ||
     MediaQuery.sizeOf(context).width < _kCompactBreakpoint;
 
+double _desktopUiScaleFactor() {
+  if (!PlatformDetection.useDesktopUi) return 1.0;
+  return GetIt.instance<UserPreferences>()
+      .get(UserPreferences.desktopUiScale)
+      .scaleFactor;
+}
+
 enum _BookMediaTab { books, audiobooks }
 
 enum _BookOrganizeMode { all, author, genre }
@@ -3556,15 +3563,17 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
   }
 
   double _cardWidth() {
+    final desktopScale = _desktopUiScaleFactor();
     if (_vm.isMusicBrowse || _vm.isPlaylistBrowse) {
-      return _vm.posterSize.portraitHeight.toDouble();
+      return _vm.posterSize.portraitHeight.toDouble() * desktopScale;
     }
     final posterSize = _vm.posterSize;
-    return switch (_vm.imageType) {
+    final baseWidth = switch (_vm.imageType) {
       ImageType.thumb => posterSize.landscapeHeight * (16 / 9),
       ImageType.banner => posterSize.landscapeHeight * (16 / 9),
       ImageType.poster => posterSize.portraitHeight * (2 / 3),
     };
+    return baseWidth * desktopScale;
   }
 
   double _selectedImageAspectRatio() {
@@ -3971,7 +3980,10 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
         final hasSubtitles = _vm.items.any(
           (item) => (_cardSubtitle(item)?.isNotEmpty ?? false),
         );
-        final textHeight = hasSubtitles ? 38.0 : 22.0;
+        final desktopTextScale = PlatformDetection.useDesktopUi
+            ? MediaQuery.textScalerOf(context).scale(1.0)
+            : 1.0;
+        final textHeight = (hasSubtitles ? 42.0 : 24.0) * desktopTextScale;
         final childAspectRatio = cellWidth / (cellWidth / ar + textHeight);
 
         return CustomScrollView(
@@ -4134,7 +4146,7 @@ class _LibraryBrowseScreenState extends State<LibraryBrowseScreen>
             (constraints.maxWidth - hPad * 2 - (crossAxisCount - 1) * spacing) /
                 crossAxisCount;
         const cardRatio = 2 / 3;
-        const textHeight = 40.0;
+        final textHeight = 44.0 * _desktopUiScaleFactor();
         final childAspectRatio = cellWidth / (cellWidth / cardRatio + textHeight);
 
         return CustomScrollView(
@@ -4338,6 +4350,7 @@ class _LibraryHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
+    final desktopScale = _desktopUiScaleFactor();
     final size = MediaQuery.sizeOf(context);
     final isLandscape = size.width > size.height;
     final isCompactLandscape = isMobile && isLandscape;
@@ -4346,7 +4359,7 @@ class _LibraryHeader extends StatelessWidget {
       !isBookBrowse && sortBy == LibrarySortBy.name && (!isMobile || isCompactLandscape);
     final showBelowAlpha = !isBookBrowse && sortBy == LibrarySortBy.name && isCompactPortrait;
     final topPad = isMobile ? MediaQuery.of(context).padding.top : 0.0;
-    final hPad = isMobile ? 16.0 : _horizontalPadding;
+    final hPad = isMobile ? 16.0 : _horizontalPadding * desktopScale;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(hPad, topPad, hPad, 4),
@@ -4360,18 +4373,18 @@ class _LibraryHeader extends StatelessWidget {
               Text(
                 libraryName,
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 26 * desktopScale,
                   fontWeight: isBookBrowse ? FontWeight.w600 : FontWeight.w300,
                   color: isBookBrowse ? const Color(0xFFF3E3CF) : Colors.white,
                   letterSpacing: isBookBrowse ? 0.4 : 0,
                 ),
               ),
               if (totalCount > 0) ...[
-                const SizedBox(width: 12),
+                SizedBox(width: 12 * desktopScale),
                 Text(
                   '$totalCount Items',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12 * desktopScale,
                     color: isBookBrowse
                         ? const Color(0xFFE5C9A3)
                         : Colors.white.withAlpha(102),
@@ -4400,41 +4413,41 @@ class _LibraryHeader extends StatelessWidget {
               if (PlatformDetection.isTV)
                 FocusableToolbarButton(
                   icon: Icons.home,
-                  size: 30,
-                  iconSize: 20,
+                  size: 30 * desktopScale,
+                  iconSize: 20 * desktopScale,
                   unfocusedIconAlpha: 128,
                   onTap: () => context.go(Destinations.home),
                 )
               else
                 FocusableToolbarButton(
                   icon: Icons.arrow_back,
-                  size: 30,
-                  iconSize: 20,
+                  size: 30 * desktopScale,
+                  iconSize: 20 * desktopScale,
                   unfocusedIconAlpha: 128,
                   onTap: onBack,
                 ),
               if (!isBookBrowse) ...[
-                const SizedBox(width: 2),
+                SizedBox(width: 2 * desktopScale),
                 FocusableToolbarButton(
                   icon: Icons.sort,
-                  size: 30,
-                  iconSize: 20,
+                  size: 30 * desktopScale,
+                  iconSize: 20 * desktopScale,
                   unfocusedIconAlpha: 128,
                   onTap: onSort,
                 ),
               ],
               if (!isMusicBrowse && !isBookBrowse) ...[
-                const SizedBox(width: 2),
+                SizedBox(width: 2 * desktopScale),
                 FocusableToolbarButton(
                   icon: Icons.settings,
-                  size: 30,
-                  iconSize: 20,
+                  size: 30 * desktopScale,
+                  iconSize: 20 * desktopScale,
                   unfocusedIconAlpha: 128,
                   onTap: onSettings,
                 ),
               ],
               if (showInlineAlpha) ...[
-                const SizedBox(width: 10),
+                SizedBox(width: 10 * desktopScale),
                 Expanded(
                   child: _AlphaPickerBar(
                     selected: letterFilter,
@@ -4492,7 +4505,8 @@ class _FocusedItemHud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hudHeight = showLabels ? 105.0 : 86.0;
+    final hudHeight =
+        (showLabels ? 105.0 : 86.0) * _desktopUiScaleFactor();
     return SizedBox(
       height: hudHeight,
       child: AnimatedSwitcher(
@@ -4694,6 +4708,7 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
     with FocusStateMixin {
   @override
   Widget build(BuildContext context) {
+    final desktopScale = _desktopUiScaleFactor();
     final focusColor = Color(
       GetIt.instance<UserPreferences>()
           .get(UserPreferences.focusColor)
@@ -4716,8 +4731,8 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
           onTap: widget.onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 120),
-            width: 30,
-            height: 30,
+            width: 30 * desktopScale,
+            height: 30 * desktopScale,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: widget.isSelected ? Colors.white.withAlpha(26) : null,
@@ -4734,7 +4749,7 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
             child: Text(
               widget.label,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 15 * desktopScale,
                 fontWeight: widget.isSelected
                     ? FontWeight.w700
                     : FontWeight.w500,

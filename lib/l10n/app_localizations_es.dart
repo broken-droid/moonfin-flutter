@@ -1939,6 +1939,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get focusExpansionAnimation => 'Animación de expansión al enfocar';
 
   @override
+  String get desktopUiScale => 'Desktop UI Scale';
+
+  @override
   String get scaleFocusedCards => 'Escalar tarjetas enfocadas';
 
   @override

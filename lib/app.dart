@@ -99,7 +99,7 @@ class _MoonfinAppState extends State<MoonfinApp> {
                     path == '/server' ||
                     path == '/login';
 
-                return Overlay(
+                final overlay = Overlay(
                   initialEntries: [
                     OverlayEntry(
                       builder: (context) => InputModeTracker(
@@ -129,6 +129,24 @@ class _MoonfinAppState extends State<MoonfinApp> {
                       ),
                     ),
                   ],
+                );
+
+                if (!PlatformDetection.useDesktopUi) {
+                  return overlay;
+                }
+
+                return ListenableBuilder(
+                  listenable: _prefs,
+                  builder: (context, _) {
+                    final scale =
+                        _prefs.get(UserPreferences.desktopUiScale).scaleFactor;
+                    return MediaQuery(
+                      data: MediaQuery.of(
+                        context,
+                      ).copyWith(textScaler: TextScaler.linear(scale)),
+                      child: overlay,
+                    );
+                  },
                 );
               },
             );

@@ -147,6 +147,22 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final baseTextStyle =
+        Theme.of(context).textTheme.bodySmall ?? const TextStyle(fontSize: 12);
+    final subtitleColor =
+        widget.subtitleColor ?? Theme.of(context).colorScheme.onSurface.withAlpha(153);
+    final titleStyle = baseTextStyle.copyWith(color: widget.titleColor);
+    final subtitleStyle = baseTextStyle.copyWith(color: subtitleColor);
+    final textScaler = MediaQuery.textScalerOf(context);
+
+    double lineHeightFor(TextStyle style) {
+      final fontSize = style.fontSize ?? 12;
+      final height = style.height ?? 1.2;
+      return (textScaler.scale(fontSize) * height) + 2;
+    }
+
+    final titleLineHeight = lineHeightFor(titleStyle);
+    final subtitleLineHeight = lineHeightFor(subtitleStyle);
     final externallyDriven = widget.externalIsFocused != null;
     final hasNodeFocus = widget.focusNode?.hasFocus ?? false;
     final effectiveFocused = externallyDriven
@@ -192,53 +208,33 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
             if (widget.title != null) ...[
               const SizedBox(height: 6),
               SizedBox(
-                height: 16,
+                height: titleLineHeight,
                 child: showMarquee
                     ? MarqueeText(
                         text: widget.title!,
-                        style:
-                            (Theme.of(context).textTheme.bodySmall ??
-                                    const TextStyle())
-                                .copyWith(color: widget.titleColor),
+                        style: titleStyle,
                       )
                     : Text(
                         widget.title!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: widget.titleColor,
-                        ),
+                        style: titleStyle,
                       ),
               ),
             ],
             if (widget.subtitle != null)
               SizedBox(
-                height: 16,
+                height: subtitleLineHeight,
                 child: showMarquee
                     ? MarqueeText(
                         text: widget.subtitle!,
-                        style:
-                            (Theme.of(context).textTheme.bodySmall ??
-                                    const TextStyle())
-                                .copyWith(
-                                  color:
-                                      widget.subtitleColor ??
-                                      Theme.of(
-                                        context,
-                                      ).colorScheme.onSurface.withAlpha(153),
-                                ),
+                        style: subtitleStyle,
                       )
                     : Text(
                         widget.subtitle!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color:
-                              widget.subtitleColor ??
-                              Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withAlpha(153),
-                        ),
+                        style: subtitleStyle,
                       ),
               ),
           ],

@@ -252,16 +252,19 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
   }
 
   double _cardWidth() {
+    final desktopScale = _desktopUiScaleFactor();
     if (_collectionType == 'music') {
-      return _prefs.get(UserPreferences.posterSize).portraitHeight.toDouble();
+      return _prefs.get(UserPreferences.posterSize).portraitHeight.toDouble() *
+          desktopScale;
     }
 
     final posterSize = _prefs.get(UserPreferences.posterSize);
-    return switch (_imageType) {
+    final baseWidth = switch (_imageType) {
       ImageType.thumb => posterSize.landscapeHeight * (16 / 9),
       ImageType.banner => posterSize.landscapeHeight * (16 / 9),
       ImageType.poster => posterSize.portraitHeight * (2 / 3),
     };
+    return baseWidth * desktopScale;
   }
 
   double _cardAspectRatio() {
@@ -287,6 +290,11 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
       default:
         return null;
     }
+  }
+
+  double _desktopUiScaleFactor() {
+    if (!PlatformDetection.useDesktopUi) return 1.0;
+    return _prefs.get(UserPreferences.desktopUiScale).scaleFactor;
   }
 
   @override
@@ -351,10 +359,11 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
       builder: (context, constraints) {
         final isMobile = _isCompact(context);
         final isMusic = _collectionType == 'music';
+        final desktopScale = _desktopUiScaleFactor();
         final horizontalPadding = isMobile
             ? _mobileHorizontalPadding
-            : _horizontalPadding;
-        const spacing = 16.0;
+            : _horizontalPadding * desktopScale;
+        final spacing = 16.0 * desktopScale;
         final minColumns = isMobile ? 1 : 2;
         final maxColumns = isMobile ? 4 : 8;
         final crossAxisCount =
@@ -423,10 +432,15 @@ class _GenresHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = _isCompact(context);
+    final desktopScale = PlatformDetection.useDesktopUi
+        ? GetIt.instance<UserPreferences>()
+            .get(UserPreferences.desktopUiScale)
+            .scaleFactor
+        : 1.0;
     final topPadding = isMobile ? MediaQuery.of(context).padding.top : 8.0;
     final horizontalPadding = isMobile
         ? _mobileHorizontalPadding
-        : _horizontalPadding;
+        : _horizontalPadding * desktopScale;
     return Padding(
       padding: EdgeInsets.fromLTRB(
         horizontalPadding,
@@ -442,7 +456,7 @@ class _GenresHeader extends StatelessWidget {
               icon: Icon(
                 Icons.home,
                 color: AppColorScheme.onSurface.withValues(alpha: 0.7),
-                size: 22,
+                size: 22 * desktopScale,
               ),
               onPressed: () => context.go(Destinations.home),
               tooltip: AppLocalizations.of(context).home,
@@ -452,16 +466,16 @@ class _GenresHeader extends StatelessWidget {
               icon: Icon(
                 Icons.arrow_back,
                 color: AppColorScheme.onSurface.withValues(alpha: 0.7),
-                size: 22,
+                size: 22 * desktopScale,
               ),
               onPressed: onBack,
               tooltip: AppLocalizations.of(context).back,
             ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12 * desktopScale),
           Text(
             AppLocalizations.of(context).libraryGenresTitle(libraryName),
             style: TextStyle(
-              fontSize: 26,
+              fontSize: 26 * desktopScale,
               fontWeight: FontWeight.w300,
               color: AppColorScheme.onSurface,
             ),

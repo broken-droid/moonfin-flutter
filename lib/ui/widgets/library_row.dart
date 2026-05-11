@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../preference/user_preferences.dart';
 import '../../util/platform_detection.dart';
 import 'horizontal_scroll_section.dart';
 
@@ -29,13 +31,24 @@ class _LibraryRowState extends State<LibraryRow> {
     final l10n = AppLocalizations.of(context);
     final hasItems = widget.children.isNotEmpty;
     final showControls = hasItems && PlatformDetection.useDesktopUi;
+    final desktopScale = PlatformDetection.useDesktopUi
+        ? GetIt.instance<UserPreferences>()
+            .get(UserPreferences.desktopUiScale)
+            .scaleFactor
+        : 1.0;
+    final rowHeight = (widget.rowHeight ?? 220) * desktopScale;
     return HorizontalScrollSection(
       title: widget.title,
       titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
         color: AppColorScheme.onSurface,
         fontWeight: FontWeight.w700,
       ),
-      headerPadding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
+      headerPadding: EdgeInsets.fromLTRB(
+        16 * desktopScale,
+        16 * desktopScale,
+        8 * desktopScale,
+        8 * desktopScale,
+      ),
       contentSpacing: 0,
       trailing: widget.onSeeAll == null
           ? null
@@ -45,14 +58,20 @@ class _LibraryRowState extends State<LibraryRow> {
             ),
       showControls: showControls,
       builder: (_, scrollController) => SizedBox(
-        height: (widget.rowHeight ?? 220) + 10,
+        height: rowHeight + (10 * desktopScale),
         child: hasItems
             ? ListView.separated(
                 controller: scrollController,
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                padding: EdgeInsets.fromLTRB(
+                  20 * desktopScale,
+                  5 * desktopScale,
+                  20 * desktopScale,
+                  5 * desktopScale,
+                ),
                 itemCount: widget.children.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 12),
+                separatorBuilder: (_, _) =>
+                    SizedBox(width: 12 * desktopScale),
                 itemBuilder: (_, i) => widget.children[i],
               )
             : Center(

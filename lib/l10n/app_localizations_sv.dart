@@ -1929,6 +1929,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get focusExpansionAnimation => 'Focus Expansion Animation';
 
   @override
+  String get desktopUiScale => 'Desktop UI Scale';
+
+  @override
   String get scaleFocusedCards =>
       'Skala fokuserade eller svävade kort och brickor';
 
