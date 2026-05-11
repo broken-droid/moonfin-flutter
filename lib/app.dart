@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/gestures.dart' show kBackMouseButton, kForwardMouseButton;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -168,11 +169,19 @@ class _GlobalShortcutScope extends StatefulWidget {
 
 class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     with WindowListener, WidgetsBindingObserver {
+  static const _maxRouteHistoryEntries = 200;
+  static const _mouseThumbNavDebounce = Duration(milliseconds: 180);
+
   final FocusNode _focusNode = FocusNode(debugLabel: 'GlobalShortcutScope');
   final ScreensaverController _screensaverController =
       GetIt.instance<ScreensaverController>();
+  final bool _trackMouseThumbHistory = PlatformDetection.isDesktop || kIsWeb;
+  final List<String> _routeHistory = [];
   late final KeyEventCallback _hardwareKeyHandler;
   Timer? _geometrySaveTimer;
+  int _routeHistoryIndex = -1;
+  DateTime? _lastMouseThumbNavAt;
+  String? _pendingRouteHistoryLocation;
   bool _exitDialogShowing = false;
 
   @override
@@ -180,9 +189,166 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     super.initState();
     _hardwareKeyHandler = _onHardwareKeyEvent;
     HardwareKeyboard.instance.addHandler(_hardwareKeyHandler);
+    if (_trackMouseThumbHistory) {
+      appRouter.routerDelegate.addListener(_onRouterStateChanged);
+      _onRouterStateChanged();
+    }
     WidgetsBinding.instance.addObserver(this);
     if (PlatformDetection.isDesktop) {
       windowManager.addListener(this);
+    }
+  }
+
+  String _currentRouteLocation() {
+    return appRouter.routerDelegate.currentConfiguration.uri.toString();
+  }
+
+  void _onRouterStateChanged() {
+    final location = _currentRouteLocation();
+    if (_pendingRouteHistoryLocation != null) {
+      final expected = _pendingRouteHistoryLocation!;
+      _pendingRouteHistoryLocation = null;
+      if (location == expected) {
+        return;
+      }
+    }
+
+    if (_routeHistoryIndex >= 0 &&
+        _routeHistoryIndex < _routeHistory.length &&
+        _routeHistory[_routeHistoryIndex] == location) {
+      return;
+    }
+
+    if (_routeHistory.isEmpty) {
+      _routeHistory.add(location);
+      _routeHistoryIndex = 0;
+      return;
+    }
+
+    final previousIndex = _routeHistoryIndex - 1;
+    if (previousIndex >= 0 && _routeHistory[previousIndex] == location) {
+      _routeHistoryIndex = previousIndex;
+      return;
+    }
+
+    final nextIndex = _routeHistoryIndex + 1;
+    if (nextIndex < _routeHistory.length &&
+        _routeHistory[nextIndex] == location) {
+      _routeHistoryIndex = nextIndex;
+      return;
+    }
+
+    if (_routeHistoryIndex < _routeHistory.length - 1) {
+      _routeHistory.removeRange(_routeHistoryIndex + 1, _routeHistory.length);
+    }
+
+    _routeHistory.add(location);
+    _routeHistoryIndex = _routeHistory.length - 1;
+    if (_routeHistory.length > _maxRouteHistoryEntries) {
+      final overflow = _routeHistory.length - _maxRouteHistoryEntries;
+      _routeHistory.removeRange(0, overflow);
+      _routeHistoryIndex -= overflow;
+    }
+  }
+
+  bool _canRouteHistoryForward() {
+    return _routeHistoryIndex >= 0 && _routeHistoryIndex < _routeHistory.length - 1;
+  }
+
+  void _navigateRouteHistory(int delta) {
+    final next = _routeHistoryIndex + delta;
+    if (next < 0 || next >= _routeHistory.length) {
+      return;
+    }
+    _routeHistoryIndex = next;
+    final target = _routeHistory[next];
+    _pendingRouteHistoryLocation = target;
+    appRouter.go(target);
+  }
+
+  bool _hasPagelessRouteOnTop(NavigatorState navigatorState) {
+    var hasPagelessRouteOnTop = false;
+    navigatorState.popUntil((route) {
+      hasPagelessRouteOnTop = route.settings is! Page;
+      return true;
+    });
+    return hasPagelessRouteOnTop;
+  }
+
+  bool _handleMouseBackNavigation() {
+    if (_isPlayerRoute()) {
+      return false;
+    }
+
+    final navigatorState = appRouter.routerDelegate.navigatorKey.currentState;
+    if (navigatorState != null && _hasPagelessRouteOnTop(navigatorState)) {
+      unawaited(navigatorState.maybePop());
+      return true;
+    }
+
+    if (appRouter.canPop()) {
+      appRouter.pop();
+      return true;
+    }
+
+    if (!_exitDialogShowing) {
+      _exitDialogShowing = true;
+      unawaited(_showExitConfirmation());
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _handleMouseForwardNavigation() {
+    if (_isPlayerRoute()) {
+      return false;
+    }
+
+    if (_canRouteHistoryForward()) {
+      _navigateRouteHistory(1);
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _canHandleMouseThumbNavigation() {
+    if (_pendingRouteHistoryLocation != null) {
+      return false;
+    }
+
+    final now = DateTime.now();
+    if (_lastMouseThumbNavAt != null &&
+        now.difference(_lastMouseThumbNavAt!) < _mouseThumbNavDebounce) {
+      return false;
+    }
+
+    _lastMouseThumbNavAt = now;
+    return true;
+  }
+
+  void _onPointerDown(PointerDownEvent event) {
+    if (!_trackMouseThumbHistory) {
+      return;
+    }
+
+    final isBackPressed = (event.buttons & kBackMouseButton) != 0;
+    final isForwardPressed = (event.buttons & kForwardMouseButton) != 0;
+    if (isBackPressed == isForwardPressed) {
+      return;
+    }
+    if (!_canHandleMouseThumbNavigation()) {
+      return;
+    }
+
+    if (isBackPressed) {
+      _handleMouseBackNavigation();
+      return;
+    }
+    if (isForwardPressed) {
+      _handleMouseForwardNavigation();
+      return;
     }
   }
 
@@ -192,12 +358,7 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     if (_isPlayerRoute()) return false;
     final navigatorState = appRouter.routerDelegate.navigatorKey.currentState;
     if (navigatorState == null) return false;
-    bool hasPagelessRouteOnTop = false;
-    navigatorState.popUntil((route) {
-      hasPagelessRouteOnTop = route.settings is! Page;
-      return true;
-    });
-    if (hasPagelessRouteOnTop) {
+    if (_hasPagelessRouteOnTop(navigatorState)) {
       await navigatorState.maybePop();
       return true;
     }
@@ -302,6 +463,9 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     if (PlatformDetection.isDesktop) {
       windowManager.removeListener(this);
     }
+    if (_trackMouseThumbHistory) {
+      appRouter.routerDelegate.removeListener(_onRouterStateChanged);
+    }
     WidgetsBinding.instance.removeObserver(this);
     HardwareKeyboard.instance.removeHandler(_hardwareKeyHandler);
     _focusNode.dispose();
@@ -363,11 +527,15 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      autofocus: !kIsWeb,
-      focusNode: _focusNode,
-      onKeyEvent: _onKeyEvent,
-      child: widget.child,
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: _onPointerDown,
+      child: Focus(
+        autofocus: !kIsWeb,
+        focusNode: _focusNode,
+        onKeyEvent: _onKeyEvent,
+        child: widget.child,
+      ),
     );
   }
 }
