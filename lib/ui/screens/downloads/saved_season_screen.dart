@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
@@ -37,7 +37,7 @@ class SavedSeasonScreen extends ConsumerWidget {
     final seasonName = seasonAsync.valueOrNull?.name ?? AppLocalizations.of(context).season;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +48,10 @@ class SavedSeasonScreen extends ConsumerWidget {
                 data: (episodes) => _buildEpisodeList(context, episodes),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (_, _) => Center(
-                  child: Text(AppLocalizations.of(context).errorLoadingEpisodes, style: const TextStyle(color: Colors.redAccent)),
+                  child: Text(
+                    AppLocalizations.of(context).errorLoadingEpisodes,
+                    style: TextStyle(color: AppColorScheme.statusRequested),
+                  ),
                 ),
               ),
             ),
@@ -65,13 +68,17 @@ class SavedSeasonScreen extends ConsumerWidget {
         children: [
           if (!PlatformDetection.isTV)
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: Icon(Icons.arrow_back, color: AppColorScheme.onSurface),
               onPressed: () => context.pop(),
             ),
           const SizedBox(width: 8),
           Text(
             title,
-            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: AppColorScheme.onSurface,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -83,7 +90,7 @@ class SavedSeasonScreen extends ConsumerWidget {
       return Center(
         child: Text(
           AppLocalizations.of(context).noDownloadedEpisodes,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+          style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }
@@ -110,7 +117,10 @@ class SavedSeasonScreen extends ConsumerWidget {
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.delete, style: const TextStyle(color: Colors.redAccent)),
+            child: Text(
+              l10n.delete,
+              style: TextStyle(color: AppColorScheme.statusRequested),
+            ),
           ),
         ],
       ),
@@ -176,7 +186,8 @@ class _EpisodeRow extends StatelessWidget {
                         child: LinearProgressIndicator(
                           value: progress.clamp(0.0, 1.0),
                           minHeight: 3,
-                          backgroundColor: Colors.white.withValues(alpha: 0.15),
+                          backgroundColor:
+                              AppColorScheme.onSurface.withValues(alpha: 0.15),
                           valueColor: AlwaysStoppedAnimation(AppColorScheme.accent),
                         ),
                       ),
@@ -191,20 +202,30 @@ class _EpisodeRow extends StatelessWidget {
                 children: [
                   Text(
                     _episodeLabel(context),
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.5),
+                      fontSize: 12,
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     episode.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   if (durationMin != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       AppLocalizations.of(context).durationMinutes(durationMin),
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 12),
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.4),
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                   if (overview.isNotEmpty) ...[
@@ -213,7 +234,10 @@ class _EpisodeRow extends StatelessWidget {
                       overview,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 12),
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.6),
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ],

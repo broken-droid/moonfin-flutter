@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide RepeatMode;
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 
@@ -203,7 +203,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                 child: Image.file(
                   File(localPoster),
                   fit: BoxFit.cover,
-                  color: Colors.black54,
+                  color: AppColorScheme.scrim.withValues(alpha: 0.54),
                   colorBlendMode: BlendMode.darken,
                 ),
               ),
@@ -215,7 +215,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                 child: CachedNetworkImage(
                   imageUrl: artUrl,
                   fit: BoxFit.cover,
-                  color: Colors.black54,
+                  color: AppColorScheme.scrim.withValues(alpha: 0.54),
                   colorBlendMode: BlendMode.darken,
                 ),
               ),
@@ -372,7 +372,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: const [
                         BoxShadow(
-                          color: Colors.black45,
+                          color: AppColors.black,
                           blurRadius: 30,
                           offset: Offset(0, 10),
                         ),
@@ -398,10 +398,10 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                 const SizedBox(height: AppSpacing.spaceXl),
                 Text(
                   item?.name ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppColorScheme.onSurface,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -412,7 +412,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                   _artistLine(item),
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -424,7 +424,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                     item!.album!,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -442,8 +442,12 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   Widget _artPlaceholder() {
     return Container(
       color: AppColorScheme.surfaceVariant,
-      child: const Center(
-        child: Icon(Icons.music_note, size: 64, color: Colors.white38),
+      child: Center(
+        child: Icon(
+          Icons.music_note,
+          size: 64,
+          color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+        ),
       ),
     );
   }
@@ -451,7 +455,11 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   Widget _queueArtPlaceholder() {
     return Container(
       color: AppColorScheme.surfaceVariant,
-      child: const Icon(Icons.music_note, size: 24, color: Colors.white38),
+      child: Icon(
+        Icons.music_note,
+        size: 24,
+        color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+      ),
     );
   }
 
@@ -573,8 +581,8 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                   builder: (context, ticks, _) => ListTile(
                     title: Text(
                       l10n.castControlsTitle(label),
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -582,7 +590,9 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                         ? Text(
                             '${stateVal[0].toUpperCase()}${stateVal.substring(1)}'
                             ' · ${_formatDuration(Duration(microseconds: ticks ~/ 10))}',
-                            style: const TextStyle(color: Colors.white54),
+                            style: TextStyle(
+                              color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+                            ),
                           )
                         : null,
                   ),
@@ -591,18 +601,28 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
             ),
             if (kind == CastTargetKind.googleCast || kind == CastTargetKind.dlna)
               ListTile(
-                leading: const Icon(Icons.volume_up_rounded, color: Colors.white),
-                title: Text(l10n.deviceVolume, style: const TextStyle(color: Colors.white)),
+                leading: Icon(Icons.volume_up_rounded, color: AppColorScheme.onSurface),
+                title: Text(
+                  l10n.deviceVolume,
+                  style: TextStyle(color: AppColorScheme.onSurface),
+                ),
                 subtitle: ValueListenableBuilder<double?>(
                   valueListenable: _castService.remoteVolumeNotifier,
                   builder: (context, vol, _) => vol == null
-                      ? Text(l10n.unavailable, style: const TextStyle(color: Colors.white54))
+                      ? Text(
+                          l10n.unavailable,
+                          style: TextStyle(
+                            color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+                          ),
+                        )
                       : SliderTheme(
                           data: SliderTheme.of(context).copyWith(
                             activeTrackColor: AppColorScheme.accent,
-                            inactiveTrackColor: Colors.white24,
-                            thumbColor: Colors.white,
-                            overlayColor: Colors.white24,
+                            inactiveTrackColor:
+                                AppColorScheme.onSurface.withValues(alpha: 0.24),
+                            thumbColor: AppColorScheme.onSurface,
+                            overlayColor:
+                                AppColorScheme.onSurface.withValues(alpha: 0.24),
                           ),
                           child: Slider(
                             value: vol.clamp(0.0, 1.0),
@@ -618,29 +638,34 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                       ? const SizedBox.shrink()
                       : Text(
                           '${(vol * 100).round()}%',
-                          style: const TextStyle(color: Colors.white70),
+                          style: TextStyle(
+                            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                          ),
                         ),
                 ),
               ),
             ListTile(
-              leading: const Icon(Icons.play_arrow_rounded, color: Colors.white),
-              title: Text(l10n.play, style: const TextStyle(color: Colors.white)),
+              leading: Icon(Icons.play_arrow_rounded, color: AppColorScheme.onSurface),
+              title: Text(l10n.play, style: TextStyle(color: AppColorScheme.onSurface)),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _runCastAction((k) => _castService.play(k));
               },
             ),
             ListTile(
-              leading: const Icon(Icons.pause_rounded, color: Colors.white),
-              title: Text(l10n.pause, style: const TextStyle(color: Colors.white)),
+              leading: Icon(Icons.pause_rounded, color: AppColorScheme.onSurface),
+              title: Text(l10n.pause, style: TextStyle(color: AppColorScheme.onSurface)),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _runCastAction((k) => _castService.pause(k));
               },
             ),
             ListTile(
-              leading: const Icon(Icons.sync_rounded, color: Colors.white),
-              title: Text(l10n.syncPosition, style: const TextStyle(color: Colors.white)),
+              leading: Icon(Icons.sync_rounded, color: AppColorScheme.onSurface),
+              title: Text(
+                l10n.syncPosition,
+                style: TextStyle(color: AppColorScheme.onSurface),
+              ),
               onTap: () {
                 Navigator.of(ctx).pop();
                 final positionTicks = _state.position.inMicroseconds * 10;
@@ -648,8 +673,11 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.stop_rounded, color: Colors.white),
-              title: Text(l10n.stopCast(label), style: const TextStyle(color: Colors.white)),
+              leading: Icon(Icons.stop_rounded, color: AppColorScheme.onSurface),
+              title: Text(
+                l10n.stopCast(label),
+                style: TextStyle(color: AppColorScheme.onSurface),
+              ),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _runCastAction((k) => _castService.stop(k));
@@ -667,7 +695,10 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       icon: Icon(
         isFav ? Icons.favorite : Icons.favorite_border,
         size: 28,
-        color: isFav ? AppColorScheme.accent : Colors.white.withValues(alpha: 0.7),
+        color:
+            isFav
+                ? AppColorScheme.accent
+                : AppColorScheme.onSurface.withValues(alpha: 0.7),
       ),
       onPressed: () => _toggleFavorite(item),
     );
@@ -689,7 +720,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
               overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
               activeTrackColor: AppColorScheme.accent,
-              inactiveTrackColor: Colors.white24,
+              inactiveTrackColor: AppColorScheme.onSurface.withValues(alpha: 0.24),
               thumbColor: AppColorScheme.accent,
               overlayColor: AppColorScheme.accent.withValues(alpha: 0.2),
             ),
@@ -712,14 +743,14 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                   _formatDuration(pos),
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.6),
+                    color: AppColorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 Text(
                   _formatDuration(dur),
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.6),
+                    color: AppColorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -746,12 +777,16 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
               size: 24,
               color: isShuffled
                   ? AppColorScheme.accent
-                  : Colors.white.withValues(alpha: 0.7),
+                  : AppColorScheme.onSurface.withValues(alpha: 0.7),
             ),
             onPressed: () => _manager.toggleShuffle(),
           ),
           IconButton(
-            icon: const Icon(Icons.skip_previous, size: 36, color: Colors.white),
+            icon: Icon(
+              Icons.skip_previous,
+              size: 36,
+              color: AppColorScheme.onSurface,
+            ),
             onPressed: () => _manager.previous(),
           ),
           Container(
@@ -763,7 +798,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
               icon: Icon(
                 isPlaying ? Icons.pause : Icons.play_arrow,
                 size: 36,
-                color: Colors.white,
+                color: AppColorScheme.onSurface,
               ),
               onPressed: () {
                 if (isPlaying) {
@@ -775,7 +810,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.skip_next, size: 36, color: Colors.white),
+            icon: Icon(Icons.skip_next, size: 36, color: AppColorScheme.onSurface),
             onPressed: () => _manager.next(),
           ),
           IconButton(
@@ -786,7 +821,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
               size: 24,
               color: repeatMode != RepeatMode.none
                   ? AppColorScheme.accent
-                  : Colors.white.withValues(alpha: 0.7),
+                  : AppColorScheme.onSurface.withValues(alpha: 0.7),
             ),
             onPressed: () => _manager.toggleRepeat(),
           ),
@@ -801,7 +836,10 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
 
     if (items.isEmpty) {
       return Center(
-        child: Text(AppLocalizations.of(context).queueIsEmpty, style: const TextStyle(color: Colors.white54)),
+        child: Text(
+          AppLocalizations.of(context).queueIsEmpty,
+          style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.54)),
+        ),
       );
     }
 
@@ -833,7 +871,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
           title: Text(
             item?.name ?? AppLocalizations.of(context).trackNumber(index + 1),
             style: TextStyle(
-              color: isCurrent ? AppColorScheme.accent : Colors.white,
+              color: isCurrent ? AppColorScheme.accent : AppColorScheme.onSurface,
               fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
             ),
             maxLines: 1,
@@ -843,7 +881,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
             _artistLine(item),
             style: TextStyle(
               fontSize: 12,
-              color: Colors.white.withValues(alpha: 0.5),
+              color: AppColorScheme.onSurface.withValues(alpha: 0.5),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

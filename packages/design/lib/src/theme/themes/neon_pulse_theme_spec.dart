@@ -6,6 +6,10 @@ const neonPulseThemeSpec = ThemeSpec(
   id: 'neon_pulse',
   displayName: 'Neon Pulse',
   brightness: Brightness.dark,
+  fontFamily: 'NeonPulseDisplay',
+  textGlow: [Shadow(color: Color(0x6600E5FF), blurRadius: 8)],
+  navColorCycle: [Color(0xFFFF2E92), Color(0xFF00E5FF)],
+  transparentNavbarSurface: true,
   colors: ThemeColorTokens(
     background: Color(0xFF0B0420),
     onBackground: Color(0xFF00E5FF),
@@ -55,5 +59,6 @@ const neonPulseThemeSpec = ThemeSpec(
         blurRadius: 5,
       ),
     ],
+    navBorder: BorderSide(color: Color(0xCCFF2E92), width: 1.0),
   ),
 );

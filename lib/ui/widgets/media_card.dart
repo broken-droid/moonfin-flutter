@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../preference/preference_constants.dart';
 import '../../util/focus/dpad_keys.dart';
@@ -389,9 +389,9 @@ class _CardImage extends StatelessWidget {
                   Positioned(
                     top: _showSeerrMediaTypeBadge ? 28 : 4,
                     left: 4,
-                    child: const Icon(
+                    child: Icon(
                       Icons.favorite,
-                      color: Colors.red,
+                      color: AppColorScheme.recordingActive,
                       size: 18,
                     ),
                   ),
@@ -419,9 +419,9 @@ class _CardImage extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: playedPercentage! / 100,
                         minHeight: 6,
-                        backgroundColor: Colors.black54,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Color(0xFF00A4DC),
+                        backgroundColor: AppColorScheme.scrim.withValues(alpha: 0.54),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColorScheme.accent,
                         ),
                       ),
                     ),
@@ -479,18 +479,20 @@ class _CardImage extends StatelessWidget {
   Widget _buildSeerrMediaTypeBadge() {
     final type = seerrMediaType?.toLowerCase();
     final isMovie = type == 'movie';
+    final badgeColor = isMovie
+        ? AppColorScheme.mediaTypeBadgeMovie
+        : AppColorScheme.mediaTypeBadgeShow;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: (isMovie ? const Color(0xFF3B82F6) : const Color(0xFF8B5CF6))
-            .withValues(alpha: 0.85),
+        color: badgeColor.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         child: Text(
           isMovie ? 'MOVIE' : 'SERIES',
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColorScheme.onSurface,
             fontSize: 10,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.8,
@@ -503,57 +505,58 @@ class _CardImage extends StatelessWidget {
   Widget _buildSeerrStatusIndicator() {
     if (seerrStatus == 5) {
       return _buildStatusCircle(
-        borderColor: const Color(0xFF22C55E),
-        icon: const Icon(
+        borderColor: AppColorScheme.statusAvailable,
+        icon: Icon(
           Icons.check_rounded,
           size: 12,
-          color: Color(0xFF22C55E),
+          color: AppColorScheme.statusAvailable,
         ),
       );
     }
 
     if (seerrStatus == 4) {
       return _buildStatusCircle(
-        fillColor: const Color(0xFF22C55E),
-        icon: const Icon(Icons.remove_rounded, size: 13, color: Colors.white),
+        fillColor: AppColorScheme.statusAvailable,
+        icon: Icon(Icons.remove_rounded, size: 13, color: AppColorScheme.onSurface),
       );
     }
 
     if (seerrStatus == 3) {
       return _buildStatusCircle(
-        borderColor: const Color(0xFF9333EA),
-        icon: const Icon(
+        borderColor: AppColorScheme.statusRequested,
+        icon: Icon(
           Icons.schedule_rounded,
           size: 12,
-          color: Color(0xFF9333EA),
+          color: AppColorScheme.statusRequested,
         ),
       );
     }
 
     return _buildStatusCircle(
-      borderColor: const Color(0xFFEAB308),
-      icon: const Icon(
+      borderColor: AppColorScheme.statusPending,
+      icon: Icon(
         Icons.schedule_rounded,
         size: 12,
-        color: Color(0xFFEAB308),
+        color: AppColorScheme.statusPending,
       ),
     );
   }
 
   Widget _buildStatusCircle({
     required Widget icon,
-    Color fillColor = Colors.white,
+    Color? fillColor,
     Color? borderColor,
   }) {
+    final effectiveFillColor = fillColor ?? AppColorScheme.onSurface;
     return Container(
       width: 20,
       height: 20,
       decoration: BoxDecoration(
-        color: fillColor,
+        color: effectiveFillColor,
         shape: BoxShape.circle,
         border: Border.fromBorderSide(
           ThemeRegistry.active.borders.chipBorder.copyWith(
-            color: borderColor ?? fillColor,
+            color: borderColor ?? effectiveFillColor,
             width: 1.5,
           ),
         ),
@@ -565,14 +568,14 @@ class _CardImage extends StatelessWidget {
 
   Widget _buildWatchedIndicator() {
     if (isPlayed) {
-      return const DecoratedBox(
+      return DecoratedBox(
         decoration: BoxDecoration(
-          color: Color(0xFF00A4DC),
+          color: AppColorScheme.badgeWatched,
           shape: BoxShape.circle,
         ),
         child: Padding(
           padding: EdgeInsets.all(2),
-          child: Icon(Icons.check, color: Colors.white, size: 12),
+          child: Icon(Icons.check, color: AppColorScheme.onSurface, size: 12),
         ),
       );
     }
@@ -580,13 +583,13 @@ class _CardImage extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
         decoration: BoxDecoration(
-          color: const Color(0xFF00A4DC),
+          color: AppColorScheme.badgeUnplayed,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
           '$unplayedCount',
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColorScheme.onSurface,
             fontSize: 10,
             fontWeight: FontWeight.bold,
           ),
@@ -608,7 +611,7 @@ class _PlaceholderIcon extends StatelessWidget {
       child: Icon(
         MediaCard.iconForType(itemType),
         size: 32,
-        color: Colors.white38,
+        color: AppColorScheme.onSurface.withValues(alpha: 0.38),
       ),
     );
   }

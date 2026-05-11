@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart' hide ImageType;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -275,7 +275,9 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
               ? IconTheme(
                   data: IconThemeData(
                     size: 22,
-                    color: focused ? Colors.black54 : Colors.white70,
+                    color: focused
+                        ? AppColors.black.withValues(alpha: 0.54)
+                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                   child: widget.leading!,
                 )
@@ -284,7 +286,9 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: focused ? Colors.black87 : Colors.white,
+              color: focused
+                  ? AppColors.black.withValues(alpha: 0.87)
+                  : AppColorScheme.onSurface,
             ),
             child: widget.title,
           ),
@@ -292,7 +296,9 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
               ? DefaultTextStyle.merge(
                   style: TextStyle(
                     fontSize: 12,
-                    color: focused ? Colors.black54 : Colors.white70,
+                    color: focused
+                        ? AppColors.black.withValues(alpha: 0.54)
+                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                   child: widget.subtitle!,
                 )
@@ -301,7 +307,9 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
               ? IconTheme(
                   data: IconThemeData(
                     size: 20,
-                    color: focused ? Colors.black54 : Colors.white70,
+                    color: focused
+                        ? AppColors.black.withValues(alpha: 0.54)
+                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                   child: resolvedTrailing,
                 )
@@ -2312,12 +2320,18 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
         duration: const Duration(milliseconds: 90),
         curve: Curves.easeOut,
         decoration: BoxDecoration(
-          color: _outerFocused ? Colors.white : colorScheme.surfaceContainerLow,
+          color: _outerFocused
+              ? AppColorScheme.onSurface
+              : colorScheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(12),
         ),
         child: ListTileTheme.merge(
-          textColor: _outerFocused ? Colors.black87 : Colors.white,
-          iconColor: _outerFocused ? Colors.black54 : Colors.white70,
+          textColor: _outerFocused
+              ? AppColors.black.withValues(alpha: 0.87)
+              : AppColorScheme.onSurface,
+          iconColor: _outerFocused
+              ? AppColors.black.withValues(alpha: 0.54)
+              : AppColorScheme.onSurface.withValues(alpha: 0.7),
           titleTextStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -2336,7 +2350,9 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
                   Text(
                     AppLocalizations.of(context).settingsMillisecondsValue(value.round()),
                     style: TextStyle(
-                      color: _outerFocused ? Colors.black54 : Colors.white70,
+                      color: _outerFocused
+                          ? AppColors.black.withValues(alpha: 0.54)
+                          : AppColorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   Slider(
@@ -2417,7 +2433,9 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
   Color _swatchColor(String key) => Color(_swatches[key] ?? 0xFF6B7280);
 
   Color _swatchBorder(Color color) =>
-      color.computeLuminance() > 0.8 ? Colors.black38 : Colors.white24;
+      color.computeLuminance() > 0.8
+        ? AppColors.black.withValues(alpha: 0.38)
+        : AppColorScheme.onSurface.withValues(alpha: 0.24);
 
   String _labelFor(String key, AppLocalizations l10n) => switch (key) {
     'gray' => l10n.gray,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../util/focus/dpad_keys.dart';
 import 'focus/focus_theme.dart';
@@ -156,9 +157,11 @@ class OverlaySheetController {
     AlignmentGeometry alignment = Alignment.center,
     FocusNode? initialFocusNode,
     bool barrierDismissible = true,
-    Color barrierColor = const Color(0xB3000000),
+    Color? barrierColor,
     Duration animationDuration = const Duration(milliseconds: 200),
   }) {
+    final effectiveBarrierColor =
+        barrierColor ?? AppColorScheme.scrim.withValues(alpha: 0.7);
     final overlay = Overlay.of(context, rootOverlay: true);
     final completer = Completer<T?>();
     final previousFocus = FocusManager.instance.primaryFocus;
@@ -171,7 +174,7 @@ class OverlaySheetController {
         alignment: alignment,
         initialFocusNode: initialFocusNode,
         barrierDismissible: barrierDismissible,
-        barrierColor: barrierColor,
+        barrierColor: effectiveBarrierColor,
         animationDuration: animationDuration,
         onClosed: () {
           entry.remove();

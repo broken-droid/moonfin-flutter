@@ -49,6 +49,16 @@ class AppColorScheme {
   static Color get recordingActive => ThemeRegistry.active.colors.recordingActive;
   static Color get recordingScheduled => ThemeRegistry.active.colors.recordingScheduled;
 
+    // Semantic status and badges
+    static Color get statusAvailable => ThemeRegistry.active.semantic.statusAvailable;
+    static Color get statusRequested => ThemeRegistry.active.semantic.statusRequested;
+    static Color get statusPending => ThemeRegistry.active.semantic.statusPending;
+    static Color get statusDownloading => ThemeRegistry.active.semantic.statusDownloading;
+    static Color get mediaTypeBadgeMovie =>
+      ThemeRegistry.active.semantic.mediaTypeBadgeMovie;
+    static Color get mediaTypeBadgeShow =>
+      ThemeRegistry.active.semantic.mediaTypeBadgeShow;
+
   // Focus border presets
   static const Map<String, Color> focusBorderPresets = {
     'White': AppColors.white,

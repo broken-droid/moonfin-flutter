@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import '../../../util/focus/dpad_keys.dart';
@@ -146,7 +147,12 @@ class _SwitchPreferenceTileState extends State<SwitchPreferenceTile> {
         valueListenable: _binding,
         builder: (context, value, _) => SwitchListTile(
           secondary: widget.iconBuilder != null
-              ? widget.iconBuilder!(24, focused ? Colors.black54 : (Theme.of(context).iconTheme.color ?? Colors.white))
+            ? widget.iconBuilder!(
+              24,
+              focused
+                ? AppColors.black.withValues(alpha: 0.54)
+                : (Theme.of(context).iconTheme.color ?? AppColorScheme.onSurface),
+            )
               : widget.icon != null
                   ? Icon(widget.icon)
                   : null,
@@ -367,12 +373,16 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
         duration: const Duration(milliseconds: 90),
         curve: Curves.easeOut,
         decoration: BoxDecoration(
-          color: _outerFocused ? Colors.white : colorScheme.surfaceContainerLow,
+          color: _outerFocused ? AppColorScheme.onSurface : colorScheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(12),
         ),
         child: ListTileTheme.merge(
-          textColor: _outerFocused ? Colors.black87 : Colors.white,
-          iconColor: _outerFocused ? Colors.black54 : Colors.white70,
+          textColor: _outerFocused
+              ? AppColors.black.withValues(alpha: 0.87)
+              : AppColorScheme.onSurface,
+          iconColor: _outerFocused
+              ? AppColors.black.withValues(alpha: 0.54)
+              : AppColorScheme.onSurface.withValues(alpha: 0.7),
           titleTextStyle: _kSettingsTitleTextStyle,
           subtitleTextStyle: _kSettingsSubtitleTextStyle,
           child: ValueListenableBuilder<int>(
@@ -390,7 +400,9 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
                         widget.labelOf!(value),
                         style: TextStyle(
                           fontSize: _kSettingsSubtitleTextStyle.fontSize,
-                          color: _outerFocused ? Colors.black54 : Colors.white70,
+                          color: _outerFocused
+                              ? AppColors.black.withValues(alpha: 0.54)
+                              : AppColorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     Slider(
@@ -632,6 +644,7 @@ class TvFocusHighlight extends StatefulWidget {
 
 class _TvFocusHighlightState extends State<TvFocusHighlight> {
   late final FocusNode _focusNode;
+  bool _focused = false;
 
   @override
   void initState() {
@@ -646,6 +659,7 @@ class _TvFocusHighlightState extends State<TvFocusHighlight> {
   }
 
   void _onFocusChange(bool focused) {
+    setState(() => _focused = focused);
     if (focused) {
       _ensureFocusVisible(context);
     }
@@ -660,26 +674,24 @@ class _TvFocusHighlightState extends State<TvFocusHighlight> {
       skipTraversal: true,
       descendantsAreFocusable: true,
       onFocusChange: _onFocusChange,
-      child: AnimatedBuilder(
-        animation: _focusNode,
-        builder: (context, _) {
-          final focused = _focusNode.hasFocus;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 90),
-            curve: Curves.easeOut,
-            decoration: BoxDecoration(
-              color: focused ? Colors.white : colorScheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ListTileTheme.merge(
-              textColor: focused ? Colors.black87 : Colors.white,
-              iconColor: focused ? Colors.black54 : Colors.white70,
-              titleTextStyle: _kSettingsTitleTextStyle,
-              subtitleTextStyle: _kSettingsSubtitleTextStyle,
-              child: Builder(builder: (ctx) => widget.builder(ctx, focused)),
-            ),
-          );
-        },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 90),
+        curve: Curves.easeOut,
+        decoration: BoxDecoration(
+          color: _focused ? AppColorScheme.onSurface : colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: ListTileTheme.merge(
+          textColor: _focused
+              ? AppColors.black.withValues(alpha: 0.87)
+              : AppColorScheme.onSurface,
+          iconColor: _focused
+              ? AppColors.black.withValues(alpha: 0.54)
+              : AppColorScheme.onSurface.withValues(alpha: 0.7),
+          titleTextStyle: _kSettingsTitleTextStyle,
+          subtitleTextStyle: _kSettingsSubtitleTextStyle,
+          child: Builder(builder: (ctx) => widget.builder(ctx, _focused)),
+        ),
       ),
     );
   }

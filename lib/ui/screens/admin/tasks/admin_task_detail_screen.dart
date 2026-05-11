@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../providers/admin_user_providers.dart';
@@ -104,7 +105,7 @@ class _AdminTaskDetailScreenState
                       color: isRunning
                           ? theme.colorScheme.primary
                           : isCancelling
-                              ? Colors.orange
+                          ? AppColorScheme.statusPending
                               : theme.colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 8),
@@ -236,12 +237,12 @@ class _LastExecutionCard extends StatelessWidget {
     Color statusColor;
     switch (result.status) {
       case 'Completed':
-        statusColor = Colors.green;
+        statusColor = AppColorScheme.statusAvailable;
       case 'Failed':
         statusColor = theme.colorScheme.error;
       case 'Cancelled':
       case 'Aborted':
-        statusColor = Colors.orange;
+        statusColor = AppColorScheme.statusPending;
       default:
         statusColor = theme.colorScheme.onSurfaceVariant;
     }

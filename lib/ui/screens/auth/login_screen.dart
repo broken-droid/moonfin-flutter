@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -20,7 +21,7 @@ import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
 import '../../widgets/login_scaffold.dart';
 
-const _kAccent = Color(0xFF00A4DC);
+final _kAccent = AppColorScheme.accent;
 
 class LoginScreen extends StatefulWidget {
   final String serverId;
@@ -70,6 +71,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool get _hasUsername => widget.prefillUsername != null;
   bool get _hasPassword => widget.hasPassword;
+  bool get _isMoonfin => ThemeRegistry.active.id == ThemeRegistry.moonfinId;
+
+  Color _loginForeground(double alpha) {
+    return (_isMoonfin ? Colors.white : AppColorScheme.onSurface).withValues(
+      alpha: alpha,
+    );
+  }
+
+  Color get _loginForegroundSolid {
+    return _isMoonfin ? Colors.white : AppColorScheme.onSurface;
+  }
+
+  Color get _loginErrorColor {
+    return _isMoonfin ? const Color(0xFFef4444) : AppColorScheme.statusRequested;
+  }
 
   @override
   void initState() {
@@ -449,21 +465,21 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               l10n.connectingToServer(_server!.name),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.5),
+                color: _loginForeground(0.5),
               ),
             ),
             const SizedBox(height: 24),
             if (_supportsQuickConnect) ...[
-              _buildToggleRow(),
-              const SizedBox(height: 24),
-              if (_showQuickConnect)
-                _buildQuickConnectContent()
-              else
+                _buildToggleRow(),
+                const SizedBox(height: 24),
+                if (_showQuickConnect)
+                  _buildQuickConnectContent()
+                else
+                  _buildCredentialsContent(),
+              ] else
                 _buildCredentialsContent(),
-            ] else
-              _buildCredentialsContent(),
-          ],
-        ),
+            ],
+          ),
       ),
     );
   }
@@ -501,23 +517,22 @@ class _LoginScreenState extends State<LoginScreen> {
       return FilledButton(
         focusNode: focusNode,
         onPressed: onPressed,
-        style:
-            FilledButton.styleFrom(
-              backgroundColor: _kAccent,
-              foregroundColor: Colors.white,
-              minimumSize: const Size(120, 44),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ).copyWith(
-              side: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.focused)) {
-                  return const BorderSide(color: Colors.white, width: 2);
-                }
-                return null;
-              }),
-            ),
+        style: FilledButton.styleFrom(
+          backgroundColor: _kAccent,
+          foregroundColor: _loginForegroundSolid,
+          minimumSize: const Size(120, 44),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ).copyWith(
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.focused)) {
+              return BorderSide(color: _loginForegroundSolid, width: 2);
+            }
+            return null;
+          }),
+        ),
         child: Text(label),
       );
     }
@@ -533,19 +548,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   ButtonStyle _outlinedFocusStyle({required EdgeInsetsGeometry padding}) {
     return OutlinedButton.styleFrom(
-      foregroundColor: Colors.white.withValues(alpha: 0.8),
+      foregroundColor: _loginForeground(0.8),
       padding: padding,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     ).copyWith(
       side: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused)) {
-          return const BorderSide(color: _kAccent, width: 2);
+          return BorderSide(color: _kAccent, width: 2);
         }
-        return BorderSide(color: Colors.white.withValues(alpha: 0.2));
+        return BorderSide(color: _loginForeground(0.2));
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused)) return _kAccent;
-        return Colors.white.withValues(alpha: 0.8);
+        return _loginForeground(0.8);
       }),
     );
   }
@@ -558,7 +573,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Text(
           l10n.quickConnectInstruction,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.white.withValues(alpha: 0.7),
+            color: _loginForeground(0.7),
           ),
           textAlign: TextAlign.center,
         ),
@@ -567,7 +582,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Text(
             _formatCode(_quickConnectCode!),
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.bold,
               letterSpacing: 8,
@@ -588,7 +603,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Text(
             l10n.waitingForAuthorization,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.5),
+              color: _loginForeground(0.5),
             ),
           ),
         ] else
@@ -597,7 +612,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 16),
           Text(
             _errorMessage!,
-            style: const TextStyle(color: Color(0xFFef4444)),
+            style: TextStyle(color: _loginErrorColor),
           ),
         ],
         const SizedBox(height: 24),
@@ -643,7 +658,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 12),
           Text(
             _errorMessage!,
-            style: const TextStyle(color: Color(0xFFef4444)),
+            style: TextStyle(color: _loginErrorColor),
           ),
         ],
         const SizedBox(height: 24),
@@ -694,18 +709,18 @@ class _LoginScreenState extends State<LoginScreen> {
               hint: label,
               filled: true,
               fillColor: focused
-                  ? Colors.white
-                  : Colors.white.withValues(alpha: 0.08),
+                  ? _loginForegroundSolid
+                  : _loginForeground(0.08),
               borderRadius: 12,
-              borderColor: Colors.white.withValues(alpha: 0.1),
+              borderColor: _loginForeground(0.1),
               focusedBorderColor: _kAccent,
               hintStyle: TextStyle(
                 color: focused
-                    ? Colors.black.withValues(alpha: 0.5)
-                    : Colors.white.withValues(alpha: 0.5),
+                    ? AppColors.black.withValues(alpha: 0.5)
+                    : _loginForeground(0.5),
               ),
               textStyle: TextStyle(
-                color: focused ? Colors.black : Colors.white,
+                color: focused ? AppColors.black : _loginForegroundSolid,
               ),
               textFieldType: obscureText
                   ? TextFieldType.password
@@ -727,23 +742,29 @@ class _LoginScreenState extends State<LoginScreen> {
       textInputAction: textInputAction,
       enabled: !_isLoading,
       onSubmitted: onSubmitted,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: _loginForegroundSolid),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+        labelStyle: TextStyle(
+          color: _loginForeground(0.5),
+        ),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.08),
+        fillColor: _loginForeground(0.08),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: BorderSide(
+            color: _loginForeground(0.1),
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: BorderSide(
+            color: _loginForeground(0.1),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _kAccent, width: 2),
+          borderSide: BorderSide(color: _kAccent, width: 2),
         ),
       ),
     );
@@ -761,16 +782,17 @@ class _LoginScreenState extends State<LoginScreen> {
       style: _outlinedFocusStyle(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
       ),
-      child: isLoading
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            )
-          : Text(label),
+      child:
+          isLoading
+              ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: _loginForegroundSolid,
+                ),
+              )
+              : Text(label),
     );
   }
 

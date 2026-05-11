@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart' hide ImageType;
 
 import '../../../data/models/aggregated_library.dart';
@@ -114,13 +115,17 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
         TvFocusHighlight(
           builder: (_, focused) => SwitchListTile(
             secondary: Icon(Icons.visibility,
-                color: focused ? Colors.black54 : null),
+                color: focused
+                    ? AppColors.black.withValues(alpha: 0.54)
+                    : null),
             title: Text(
               l10n.showInNavigation,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: focused ? Colors.black87 : Colors.white,
+                color: focused
+                    ? AppColors.black.withValues(alpha: 0.87)
+                    : AppColorScheme.onSurface,
               ),
             ),
             value: !config.myMediaExcludes.contains(lib.id),
@@ -130,13 +135,17 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
         TvFocusHighlight(
           builder: (_, focused) => SwitchListTile(
             secondary: Icon(Icons.new_releases,
-                color: focused ? Colors.black54 : null),
+                color: focused
+                    ? AppColors.black.withValues(alpha: 0.54)
+                    : null),
             title: Text(
               l10n.showInLatestMedia,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: focused ? Colors.black87 : Colors.white,
+                color: focused
+                    ? AppColors.black.withValues(alpha: 0.87)
+                    : AppColorScheme.onSurface,
               ),
             ),
             value: !config.latestItemsExcludes.contains(lib.id),

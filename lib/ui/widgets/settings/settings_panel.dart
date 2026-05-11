@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../util/platform_detection.dart';
 import '../../../util/focus/dpad_keys.dart';
@@ -19,7 +20,7 @@ class SettingsPanel extends StatelessWidget {
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Settings',
-      barrierColor: Colors.black54,
+      barrierColor: AppColorScheme.scrim.withValues(alpha: 0.54),
       transitionDuration: const Duration(milliseconds: 220),
       pageBuilder: (_, anim, _) => SettingsPanel(child: content),
       transitionBuilder: (context, anim, secondAnim, child) {

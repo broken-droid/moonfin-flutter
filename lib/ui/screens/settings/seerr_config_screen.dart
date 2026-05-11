@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/repositories/seerr_repository.dart';
@@ -275,7 +276,7 @@ class _SeerrReorderableTileState extends State<_SeerrReorderableTile> {
     final colorScheme = Theme.of(context).colorScheme;
     final bg = _focused
         ? colorScheme.primary.withValues(alpha: 0.18)
-        : Colors.transparent;
+      : Colors.transparent;
 
     return Focus(
       focusNode: widget.focusNode,

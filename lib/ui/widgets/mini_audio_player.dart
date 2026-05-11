@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 
@@ -184,7 +184,7 @@ class _ProgressSliverState extends State<_ProgressSliver> {
 
     return LinearProgressIndicator(
       value: value,
-      backgroundColor: Colors.white12,
+      backgroundColor: AppColorScheme.onSurface.withValues(alpha: 0.12),
       color: AppColorScheme.accent,
       minHeight: 2,
     );
@@ -217,8 +217,12 @@ class _ArtThumbnail extends StatelessWidget {
   static Widget _placeholder() {
     return Container(
       color: AppColorScheme.surfaceVariant,
-      child: const Center(
-        child: Icon(Icons.music_note, size: 22, color: Colors.white38),
+      child: Center(
+        child: Icon(
+          Icons.music_note,
+          size: 22,
+          color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+        ),
       ),
     );
   }
@@ -240,8 +244,8 @@ class _TrackInfo extends StatelessWidget {
       children: [
         Text(
           item.name,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColorScheme.onSurface,
             fontSize: 13,
             fontWeight: FontWeight.w600,
           ),
@@ -253,7 +257,7 @@ class _TrackInfo extends StatelessWidget {
           Text(
             artist,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: AppColorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 12,
             ),
             maxLines: 1,
@@ -284,19 +288,19 @@ class _TransportButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-          icon: const Icon(Icons.skip_previous, size: 24, color: Colors.white),
+          icon: Icon(Icons.skip_previous, size: 24, color: AppColorScheme.onSurface),
           onPressed: onPrev,
         ),
         IconButton(
           icon: Icon(
             isPlaying ? Icons.pause : Icons.play_arrow,
             size: 28,
-            color: Colors.white,
+            color: AppColorScheme.onSurface,
           ),
           onPressed: onPlayPause,
         ),
         IconButton(
-          icon: const Icon(Icons.skip_next, size: 24, color: Colors.white),
+          icon: Icon(Icons.skip_next, size: 24, color: AppColorScheme.onSurface),
           onPressed: onNext,
         ),
       ],

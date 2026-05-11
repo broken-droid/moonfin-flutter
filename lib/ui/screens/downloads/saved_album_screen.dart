@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
@@ -32,7 +32,7 @@ class SavedAlbumScreen extends ConsumerWidget {
     final audio = ref.watch(downloadedAudioProvider);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: SafeArea(
         child: audio.when(
           data: (items) {
@@ -52,7 +52,9 @@ class SavedAlbumScreen extends ConsumerWidget {
                     children: [
                       Text(
                         AppLocalizations.of(context).tracksCount(tracks.length),
-                        style: const TextStyle(color: Colors.white70),
+                        style: TextStyle(
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
                       ),
                       const Spacer(),
                       FilledButton.icon(
@@ -84,7 +86,7 @@ class SavedAlbumScreen extends ConsumerWidget {
                       );
                     },
                     separatorBuilder: (_, _) => Divider(
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.06),
                       height: 1,
                     ),
                     itemCount: tracks.length,
@@ -97,7 +99,7 @@ class SavedAlbumScreen extends ConsumerWidget {
           error: (e, _) => Center(
             child: Text(
               AppLocalizations.of(context).failedToLoadAlbum(e.toString()),
-              style: const TextStyle(color: Colors.redAccent),
+              style: TextStyle(color: AppColorScheme.statusRequested),
               textAlign: TextAlign.center,
             ),
           ),
@@ -152,7 +154,7 @@ class _Header extends StatelessWidget {
         children: [
           if (!PlatformDetection.isTV)
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: Icon(Icons.arrow_back, color: AppColorScheme.onSurface),
               onPressed: () => context.pop(),
             ),
           const SizedBox(width: 8),
@@ -161,8 +163,8 @@ class _Header extends StatelessWidget {
               albumName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColorScheme.onSurface,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -187,11 +189,18 @@ class _EmptyAlbumState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.album_outlined, size: 64, color: Colors.white38),
+            Icon(
+              Icons.album_outlined,
+              size: 64,
+              color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+            ),
             const SizedBox(height: 16),
             Text(
               AppLocalizations.of(context).noDownloadedTracksForAlbum(albumName),
-              style: const TextStyle(color: Colors.white70, fontSize: 16),
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                fontSize: 16,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -266,7 +275,7 @@ class _OfflineTrackTileState extends State<_OfflineTrackTile> with FocusStateMix
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
+                  color: AppColorScheme.onSurface,
                   fontWeight: showFocusBorder ? FontWeight.w600 : FontWeight.w500,
                 ),
               ),
@@ -274,14 +283,16 @@ class _OfflineTrackTileState extends State<_OfflineTrackTile> with FocusStateMix
                 AppLocalizations.of(context).trackNumber(widget.trackNumber),
                 style: TextStyle(
                   color: showFocusBorder
-                      ? Colors.white.withValues(alpha: 0.8)
-                      : Colors.white54,
+                      ? AppColorScheme.onSurface.withValues(alpha: 0.8)
+                      : AppColorScheme.onSurface.withValues(alpha: 0.54),
                   fontSize: 12,
                 ),
               ),
               trailing: Icon(
                 Icons.play_arrow,
-                color: showFocusBorder ? Colors.white : Colors.white70,
+                color: showFocusBorder
+                    ? AppColorScheme.onSurface
+                    : AppColorScheme.onSurface.withValues(alpha: 0.7),
               ),
               onTap: widget.onTap,
             ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
@@ -44,7 +45,7 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
     final storage = ref.watch(storageUsedProvider);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -64,14 +65,14 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
         children: [
           if (!PlatformDetection.isTV)
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: Icon(Icons.arrow_back, color: AppColorScheme.onSurface),
               onPressed: () => context.canPop() ? context.pop() : context.go(Destinations.home),
             ),
           const SizedBox(width: 8),
           Text(
             AppLocalizations.of(context).savedMedia,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: AppColorScheme.onSurface,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -82,14 +83,21 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
           storage.when(
             data: (bytes) => Text(
               _formatBytes(bytes),
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13),
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.6),
+                fontSize: 13,
+              ),
             ),
             loading: () => const SizedBox.shrink(),
             error: (_, _) => const SizedBox.shrink(),
           ),
           const SizedBox(width: 4),
           IconButton(
-            icon: Icon(Icons.settings, color: Colors.white.withValues(alpha: 0.6), size: 20),
+            icon: Icon(
+              Icons.settings,
+              color: AppColorScheme.onSurface.withValues(alpha: 0.6),
+              size: 20,
+            ),
             onPressed: () => context.push(Destinations.storageManagement),
           ),
         ],
@@ -111,10 +119,12 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
                 label: Text(_filterLabel(f)),
                 selected: selected,
                 onSelected: (_) => setState(() => _filter = f),
-                selectedColor: Colors.white.withValues(alpha: 0.2),
-                backgroundColor: Colors.white.withValues(alpha: 0.06),
+                selectedColor: AppColorScheme.onSurface.withValues(alpha: 0.2),
+                backgroundColor: AppColorScheme.onSurface.withValues(alpha: 0.06),
                 labelStyle: TextStyle(
-                  color: selected ? Colors.white : Colors.white70,
+                  color: selected
+                      ? AppColorScheme.onSurface
+                      : AppColorScheme.onSurface.withValues(alpha: 0.7),
                   fontSize: 13,
                 ),
                 side: BorderSide.none,
@@ -201,17 +211,26 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.download_outlined, size: 64, color: Colors.white.withValues(alpha: 0.2)),
+          Icon(
+            Icons.download_outlined,
+            size: 64,
+            color: AppColorScheme.onSurface.withValues(alpha: 0.2),
+          ),
           const SizedBox(height: 16),
           Text(
             hasSavedMedia ? AppLocalizations.of(context).noMediaInFilter : AppLocalizations.of(context).noDownloadedMediaYet,
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 16),
+            style: TextStyle(
+              color: AppColorScheme.onSurface.withValues(alpha: 0.5),
+              fontSize: 16,
+            ),
           ),
           if (isOnline) ...[
             const SizedBox(height: 16),
             OutlinedButton(
               onPressed: () => context.go(Destinations.home),
-              style: OutlinedButton.styleFrom(foregroundColor: Colors.white70),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColorScheme.onSurface.withValues(alpha: 0.7),
+              ),
               child: Text(AppLocalizations.of(context).browseLibrary),
             ),
           ],
@@ -225,8 +244,8 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         title,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: AppColorScheme.onSurface,
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
@@ -349,7 +368,10 @@ class _SavedMediaScreenState extends ConsumerState<SavedMediaScreen> {
               Navigator.pop(ctx);
               await _deleteItem(item);
             },
-            child: Text(l10n.delete, style: const TextStyle(color: Colors.redAccent)),
+            child: Text(
+              l10n.delete,
+              style: TextStyle(color: AppColorScheme.statusRequested),
+            ),
           ),
         ],
       ),
@@ -434,14 +456,17 @@ class _DownloadedCard extends StatelessWidget {
             title ?? item.name,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+            style: TextStyle(color: AppColorScheme.onSurface, fontSize: 12),
           ),
           if (subtitle != null)
             Text(
               subtitle!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: Colors.white54, fontSize: 11),
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+                fontSize: 11,
+              ),
             ),
         ],
       ),

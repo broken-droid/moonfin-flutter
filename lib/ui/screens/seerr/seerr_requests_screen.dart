@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/repositories/seerr_repository.dart';
 import '../../../data/services/seerr/seerr_api_models.dart';
@@ -69,7 +69,7 @@ class _SeerrRequestsScreenState extends State<SeerrRequestsScreen> {
 
   Widget _buildContent(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: NavigationLayout(
         showBackButton: true,
         child: _buildBody(),
@@ -95,7 +95,12 @@ class _SeerrRequestsScreenState extends State<SeerrRequestsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(s.error!, style: const TextStyle(color: Colors.white70)),
+            Text(
+              s.error!,
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(onPressed: vm.load, child: Text(l10n.retry)),
           ],
@@ -105,7 +110,10 @@ class _SeerrRequestsScreenState extends State<SeerrRequestsScreen> {
 
     if (s.requests.isEmpty) {
       return Center(
-        child: Text(l10n.noRequests, style: const TextStyle(color: Colors.white54)),
+        child: Text(
+          l10n.noRequests,
+          style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.54)),
+        ),
       );
     }
 
@@ -172,7 +180,7 @@ class _RequestCard extends StatelessWidget {
     final date = request.createdAt?.split('T').first ?? '';
 
     return Card(
-      color: Colors.white.withValues(alpha: 0.08),
+      color: AppColorScheme.onSurface.withValues(alpha: 0.08),
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
@@ -191,9 +199,12 @@ class _RequestCard extends StatelessWidget {
                         height: double.infinity,
                       )
                     : Container(
-                        color: Colors.white10,
-                        child: const Icon(Icons.movie,
-                            color: Colors.white24, size: 40),
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.1),
+                        child: Icon(
+                          Icons.movie,
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.24),
+                          size: 40,
+                        ),
                       ),
               ),
               Expanded(
@@ -204,8 +215,8 @@ class _RequestCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: AppColorScheme.onSurface,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
@@ -215,8 +226,10 @@ class _RequestCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         request.type.toUpperCase(),
-                        style: const TextStyle(
-                            color: Colors.white54, fontSize: 11),
+                        style: TextStyle(
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+                          fontSize: 11,
+                        ),
                       ),
                       const Spacer(),
                       Row(
@@ -224,9 +237,13 @@ class _RequestCard extends StatelessWidget {
                           _StatusChip(request: request),
                           const Spacer(),
                           if (date.isNotEmpty)
-                            Text(date,
-                                style: const TextStyle(
-                                    color: Colors.white38, fontSize: 11)),
+                            Text(
+                              date,
+                              style: TextStyle(
+                                color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+                                fontSize: 11,
+                              ),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 4),
@@ -235,19 +252,23 @@ class _RequestCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               l10n.requestedByName(requester),
-                              style: const TextStyle(
-                                  color: Colors.white54, fontSize: 12),
+                              style: TextStyle(
+                                color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+                                fontSize: 12,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (canManage &&
                               request.status == SeerrRequest.statusPending) ...[
                             if (isActioning)
-                              const SizedBox(
+                              SizedBox(
                                 width: 18,
                                 height: 18,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Colors.white54),
+                                  strokeWidth: 2,
+                                  color: AppColorScheme.onSurface,
+                                ),
                               )
                             else ...[
                               IconButton(

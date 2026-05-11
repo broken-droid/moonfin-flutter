@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../data/models/aggregated_library.dart';
@@ -158,11 +158,11 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildHeader(l10n),
-              Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+              Container(height: 1, color: AppColorScheme.onSurface.withValues(alpha: 0.08)),
               const SizedBox(height: 8),
               Flexible(child: _buildContent(l10n)),
               const SizedBox(height: 4),
-              Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+              Container(height: 1, color: AppColorScheme.onSurface.withValues(alpha: 0.08)),
               const SizedBox(height: 4),
               FocusableDialogRow(
                 label: l10n.cancel,
@@ -189,10 +189,10 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
               _ShuffleMode.libraries => l10n.shuffleSelectLibrary,
               _ShuffleMode.genres => l10n.shuffleSelectGenre,
             },
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColorScheme.onSurface,
             ),
           ),
         ],
@@ -249,7 +249,9 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
                   child: Center(
                     child: Text(
                       l10n.shuffleNoLibraries,
-                      style: const TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -292,7 +294,9 @@ class _ShuffleOptionsDialogState extends State<ShuffleOptionsDialog> {
                   child: Center(
                     child: Text(
                       l10n.shuffleNoGenres,
-                      style: const TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -378,7 +382,9 @@ class _BackButtonState extends State<_BackButton> {
               '\u276E',
               style: TextStyle(
                 fontSize: 16,
-                color: _isFocused ? focusColor : Colors.white.withValues(alpha: 0.6),
+                color: _isFocused
+                    ? focusColor
+                    : AppColorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),

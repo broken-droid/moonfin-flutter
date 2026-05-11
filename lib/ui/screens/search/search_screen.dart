@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:server_core/server_core.dart';
 import 'package:voice_search/voice_search.dart';
@@ -373,7 +373,7 @@ class _SearchScreenState extends State<SearchScreen> {
           minRadius: 22,
           maxRadius: 26,
           activeWidgetColor: const Color(0xFF8B1A1A),
-          inactiveWidgetColor: const Color(0xFF2A323D),
+          inactiveWidgetColor: AppColorScheme.surfaceVariant,
           activeIcon: Icons.mic,
           inactiveIcon: Icons.mic_none,
           borderColor: ThemeRegistry.active.borders.chipBorder.color,
@@ -386,10 +386,10 @@ class _SearchScreenState extends State<SearchScreen> {
     final hasFocus = _voiceFocus.hasFocus;
     final backgroundColor = _isVoiceListening
       ? const Color(0xFF8B1A1A)
-      : (hasFocus ? Colors.white : const Color(0xFF2A323D));
+      : (hasFocus ? AppColorScheme.buttonFocused : AppColorScheme.surfaceVariant);
     final iconColor = _isVoiceListening
-      ? Colors.white
-      : (hasFocus ? Colors.black : Colors.white);
+      ? AppColorScheme.onAccent
+      : (hasFocus ? AppColorScheme.onButtonFocused : AppColorScheme.onSurface);
 
     return Focus(
       focusNode: _voiceFocus,
@@ -432,17 +432,21 @@ class _SearchScreenState extends State<SearchScreen> {
       ? _searchFocus.hasFocus
       : _searchInputFocus.hasFocus;
     final searchBackgroundColor = searchHasFocus
-      ? Colors.white
-      : const Color(0xFF2A323D);
-    final searchTextColor = searchHasFocus ? Colors.black : Colors.white;
+      ? AppColorScheme.buttonFocused
+      : AppColorScheme.surfaceVariant;
+    final searchTextColor = searchHasFocus
+      ? AppColorScheme.onButtonFocused
+      : AppColorScheme.onSurface;
     final searchHintColor = searchHasFocus
-      ? Colors.black.withAlpha(153)
-      : Colors.white.withAlpha(128);
-    final searchIconColor = searchHasFocus ? Colors.black : Colors.white70;
+      ? AppColorScheme.onButtonFocused.withAlpha(153)
+      : AppColorScheme.onSurface.withAlpha(128);
+    final searchIconColor = searchHasFocus
+      ? AppColorScheme.onButtonFocused
+      : AppColorScheme.onSurface.withValues(alpha: 0.7);
     const searchBorderRadius = 28.0;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: NavigationLayout(
         showBackButton: true,
         child: SafeArea(
@@ -484,8 +488,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 filled: true,
                                 fillColor: searchBackgroundColor,
                                 borderRadius: searchBorderRadius,
-                                borderColor: Colors.transparent,
-                                focusedBorderColor: Colors.transparent,
+                                borderColor: AppColorScheme.scrim.withValues(alpha: 0),
+                                focusedBorderColor: AppColorScheme.scrim.withValues(alpha: 0),
                                 borderWidth: 0,
                                 focusedBorderWidth: 0,
                                 contentPadding: const EdgeInsets.symmetric(
@@ -588,7 +592,10 @@ class _SearchScreenState extends State<SearchScreen> {
         return Center(
           child: Text(
             AppLocalizations.of(context).noResultsForQuery(_vm.query),
-            style: TextStyle(color: Colors.white.withAlpha(179), fontSize: 16),
+            style: TextStyle(
+              color: AppColorScheme.onSurface.withAlpha(179),
+              fontSize: 16,
+            ),
           ),
         );
       case SearchState.ready:

@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/models/aggregated_item.dart';
@@ -128,7 +128,7 @@ class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
 
   Widget _buildContent(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: NavigationLayout(
         showBackButton: true,
         child: SafeArea(
@@ -157,9 +157,13 @@ class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
         children: [
           for (int i = 0; i < _vm.breadcrumbs.length; i++) ...[
             if (i > 0)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4),
-                child: Icon(Icons.chevron_right, color: Colors.white38, size: 18),
+                child: Icon(
+                  Icons.chevron_right,
+                  color: AppColorScheme.onSurface,
+                  size: 18,
+                ),
               ),
             Builder(builder: (context) {
               final isLast = i == _vm.breadcrumbs.length - 1;
@@ -172,8 +176,8 @@ class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
                   : null,
               style: TextButton.styleFrom(
                 foregroundColor: !isLast
-                    ? Colors.blue
-                    : Colors.white,
+                    ? AppColorScheme.accent
+                    : AppColorScheme.onSurface,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 minimumSize: Size.zero,
               ),
@@ -197,14 +201,18 @@ class _FolderBrowseScreenState extends State<FolderBrowseScreen> {
         return Center(
           child: Text(
             AppLocalizations.of(context).failedToLoadFolderError(_vm.errorMessage),
-            style: TextStyle(color: Colors.white.withAlpha(179)),
+            style: TextStyle(
+              color: AppColorScheme.onSurface.withAlpha(179),
+            ),
           ),
         );
       case FolderBrowseState.ready when _vm.items.isEmpty:
         return Center(
           child: Text(
             AppLocalizations.of(context).thisFolderIsEmpty,
-            style: TextStyle(color: Colors.white.withAlpha(179)),
+            style: TextStyle(
+              color: AppColorScheme.onSurface.withAlpha(179),
+            ),
           ),
         );
       case FolderBrowseState.ready:
@@ -313,7 +321,7 @@ class _FolderGridCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(20),
+                  color: AppColorScheme.onSurface.withAlpha(20),
                   border: Border.fromBorderSide(ThemeRegistry.active.borders.chipBorder),
                 ),
                 child: Stack(
@@ -324,17 +332,31 @@ class _FolderGridCard extends StatelessWidget {
                         imageUrl: imageUrl!,
                         fit: BoxFit.cover,
                         errorWidget: (_, _, _) =>
-                            Center(child: Icon(icon, color: Colors.white70, size: 30)),
+                            Center(
+                              child: Icon(
+                                icon,
+                                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                                size: 30,
+                              ),
+                            ),
                       )
                     else
                       Center(
-                        child: Icon(icon, color: Colors.white70, size: 30),
+                        child: Icon(
+                          icon,
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                          size: 30,
+                        ),
                       ),
                     if (isFolder)
-                      const Positioned(
+                      Positioned(
                         right: 6,
                         bottom: 6,
-                        child: Icon(Icons.chevron_right, color: Colors.white70, size: 18),
+                        child: Icon(
+                          Icons.chevron_right,
+                          color: AppColorScheme.onSurface,
+                          size: 18,
+                        ),
                       ),
                   ],
                 ),
@@ -344,14 +366,20 @@ class _FolderGridCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             item.name,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            style: TextStyle(
+              color: AppColorScheme.onSurface,
+              fontSize: 14,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           if (subtitle != null)
             Text(
               subtitle!,
-              style: TextStyle(color: Colors.white.withAlpha(128), fontSize: 12),
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withAlpha(128),
+                fontSize: 12,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

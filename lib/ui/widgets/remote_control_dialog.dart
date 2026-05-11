@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../data/services/socket_handler.dart';
@@ -299,7 +299,9 @@ class _RemoteControlSheetState extends State<_RemoteControlSheet> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Material(
-        color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.4) : Colors.transparent,
+        color: isSelected
+            ? theme.colorScheme.primaryContainer.withValues(alpha: 0.4)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),

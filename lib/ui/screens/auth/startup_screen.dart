@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import '../../../auth/repositories/server_repository.dart';
@@ -14,12 +15,6 @@ import '../../navigation/destinations.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/pin_entry_dialog.dart';
 import '../../widgets/focus/request_initial_focus.dart';
-
-const _kGradientColors = [
-  Color(0xFF0a0a0a),
-  Color(0xFF1a1a2e),
-  Color(0xFF16213e),
-];
 
 class StartupScreen extends StatefulWidget {
   final bool bootstrapActiveSession;
@@ -145,13 +140,18 @@ class _StartupScreenState extends State<StartupScreen>
       RequestInitialFocus(child: _buildContent(context));
 
   Widget _buildContent(BuildContext context) {
+    final gradientColors = [
+      AppColorScheme.background,
+      AppColorScheme.surfaceVariant,
+      AppColorScheme.surface,
+    ];
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: _kGradientColors,
+            colors: gradientColors,
           ),
         ),
         child: Center(
@@ -170,7 +170,7 @@ class _StartupScreenState extends State<StartupScreen>
                   width: 24,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: const Color(0xFF00A4DC).withValues(alpha: 0.7),
+                    color: AppColorScheme.accent.withValues(alpha: 0.7),
                   ),
                 ),
               ],

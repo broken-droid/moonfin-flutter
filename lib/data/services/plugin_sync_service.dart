@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
@@ -243,6 +244,8 @@ class PluginSyncService extends ChangeNotifier {
         return;
       }
 
+      await _refreshCustomThemes(client);
+
       final resolved = await _fetchResolvedProfile(client, _profileName);
       if (resolved == null) {
         await _applyFallbackHomeRows();
@@ -323,6 +326,8 @@ class PluginSyncService extends ChangeNotifier {
     if (!supportedProfiles.contains(profile)) return false;
     if (!_pluginAvailable) return false;
 
+    await _refreshCustomThemes(client);
+
     final resolved = await _fetchResolvedProfile(client, profile);
     if (resolved == null) {
       return false;
@@ -385,9 +390,71 @@ class PluginSyncService extends ChangeNotifier {
     return null;
   }
 
+  Future<dynamic> _fetchThemesPayload(MediaServerClient client) async {
+    final headers = _authHeaders(client);
+    if (headers == null) return null;
+
+    try {
+      final response = await _dio.get(
+        '${client.baseUrl}/Moonfin/Themes',
+        options: Options(headers: headers),
+      );
+      return response.data;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Iterable<dynamic> _extractThemeObjects(dynamic payload) {
+    if (payload is List) {
+      return payload;
+    }
+    if (payload is Map) {
+      final map = payload.cast<String, dynamic>();
+      final themes = map['themes'];
+      if (themes is List) {
+        return themes;
+      }
+      final items = map['items'];
+      if (items is List) {
+        return items;
+      }
+      final values = map.values.whereType<Map>().toList();
+      if (values.isNotEmpty) {
+        return values;
+      }
+    }
+    return const [];
+  }
+
+  Future<void> _refreshCustomThemes(MediaServerClient client) async {
+    final payload = await _fetchThemesPayload(client);
+    final objects = _extractThemeObjects(payload);
+
+    final specs = <ThemeSpec>[];
+    for (final entry in objects) {
+      if (entry is! Map) continue;
+      try {
+        specs.add(ThemeSpec.fromJson(entry.cast<String, dynamic>()));
+      } catch (_) {
+        // Ignore malformed theme entries from the plugin response.
+      }
+    }
+
+    ThemeRegistry.replaceCustomThemes(specs);
+
+    final customThemeId = _prefs.get(UserPreferences.customThemeId);
+    if (customThemeId.isNotEmpty &&
+        !ThemeRegistry.availableThemes.containsKey(customThemeId)) {
+      _store.set(UserPreferences.customThemeId, '');
+      _prefs.notifyPreferenceChanged();
+    }
+  }
+
   Future<void> _applyServerSettings(Map<String, dynamic> resolved) async {
     _applyString(resolved, 'visualTheme', UserPreferences.visualTheme,
       enumValues: prefs.VisualThemeId.values);
+    _applyString(resolved, 'customThemeId', UserPreferences.customThemeId);
     _applyString(resolved, 'navbarPosition', UserPreferences.navbarPosition,
         enumValues: prefs.NavbarPosition.values);
     _applyBool(resolved, 'showClock', UserPreferences.showClock);
@@ -686,6 +753,7 @@ class PluginSyncService extends ChangeNotifier {
     final mediaBarEnabled = UserPreferences.isMediaBarModeEnabled(mediaBarMode);
     return {
       'visualTheme': _prefs.get(UserPreferences.visualTheme).name,
+      'customThemeId': _prefs.get(UserPreferences.customThemeId),
       'navbarPosition': _prefs.get(UserPreferences.navbarPosition).name,
       'showClock': _prefs.get(UserPreferences.showClock),
       'use24HourClock': _prefs.get(UserPreferences.use24HourClock),

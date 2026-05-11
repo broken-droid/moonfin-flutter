@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:moonfin/preference/user_preferences.dart';
 
 class FocusableDialogRow extends StatefulWidget {
@@ -48,8 +49,8 @@ class _FocusableDialogRowState extends State<FocusableDialogRow> {
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
     final showActive = _isFocused || _isHovered;
     final baseColor = widget.dimmed
-        ? Colors.white.withValues(alpha: 0.5)
-        : Colors.white.withValues(alpha: 0.8);
+      ? AppColorScheme.onSurface.withValues(alpha: 0.5)
+      : AppColorScheme.onSurface.withValues(alpha: 0.8);
     final color = showActive ? focusColor : baseColor;
 
     return Focus(

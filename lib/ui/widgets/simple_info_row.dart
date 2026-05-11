@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../data/models/aggregated_item.dart';
 
-const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
+final _textShadows = [
+  Shadow(blurRadius: 4, color: AppColors.black.withValues(alpha: 0.54)),
+];
 
 class SimpleInfoRow extends StatelessWidget {
   final AggregatedItem item;
@@ -75,7 +77,7 @@ class SimpleInfoRow extends StatelessWidget {
     return Text(
       value,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.8),
+        color: AppColorScheme.onSurface.withValues(alpha: 0.8),
             shadows: _textShadows,
           ),
     );
@@ -85,7 +87,7 @@ class SimpleInfoRow extends StatelessWidget {
     return Text(
       ' \u2022 ',
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.5),
+        color: AppColorScheme.onSurface.withValues(alpha: 0.5),
             shadows: _textShadows,
           ),
     );
@@ -119,7 +121,7 @@ class SimpleInfoRow extends StatelessWidget {
         Text(
           rating.toStringAsFixed(1),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.8),
+                color: AppColorScheme.onSurface.withValues(alpha: 0.8),
                 shadows: _textShadows,
               ),
         ),

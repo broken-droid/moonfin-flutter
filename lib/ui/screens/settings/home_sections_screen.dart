@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/services/home_screen_sections_service.dart';
@@ -516,7 +517,9 @@ class _HomeSectionTileState extends State<_HomeSectionTile> {
         duration: const Duration(milliseconds: 90),
         curve: Curves.easeOut,
         decoration: BoxDecoration(
-          color: _focused ? Colors.white : colorScheme.surfaceContainerLow,
+          color: _focused
+              ? AppColorScheme.onSurface
+              : colorScheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(12),
         ),
         child: ListTile(
@@ -525,15 +528,19 @@ class _HomeSectionTileState extends State<_HomeSectionTile> {
           leading: Icon(
             widget.enabled ? Icons.check_box : Icons.check_box_outline_blank,
             color: _focused
-                ? Colors.black54
-                : (widget.enabled ? colorScheme.primary : Colors.white70),
+                ? AppColors.black.withValues(alpha: 0.54)
+                : (widget.enabled
+                    ? colorScheme.primary
+                    : AppColorScheme.onSurface.withValues(alpha: 0.7)),
           ),
           title: Text(
             widget.label,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: _focused ? Colors.black87 : Colors.white,
+              color: _focused
+                  ? AppColors.black.withValues(alpha: 0.87)
+                  : AppColorScheme.onSurface,
             ),
           ),
           trailing: Row(
@@ -541,10 +548,14 @@ class _HomeSectionTileState extends State<_HomeSectionTile> {
             children: [
               if (!widget.isFirst)
                 Icon(Icons.arrow_left, size: 18,
-                    color: _focused ? Colors.black54 : Colors.white70),
+                    color: _focused
+                        ? AppColors.black.withValues(alpha: 0.54)
+                        : AppColorScheme.onSurface.withValues(alpha: 0.7)),
               if (!widget.isLast)
                 Icon(Icons.arrow_right, size: 18,
-                    color: _focused ? Colors.black54 : Colors.white70),
+                    color: _focused
+                        ? AppColors.black.withValues(alpha: 0.54)
+                        : AppColorScheme.onSurface.withValues(alpha: 0.7)),
             ],
           ),
         ),

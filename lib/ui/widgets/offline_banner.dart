@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../di/providers.dart';
 import '../../l10n/app_localizations.dart';
@@ -75,22 +76,22 @@ class _OfflineBannerState extends ConsumerState<OfflineBanner> {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        color: Colors.orange.shade900.withValues(alpha: 0.9),
+        color: AppColorScheme.statusPending.withValues(alpha: 0.9),
         child: Row(
           children: [
-            const Icon(Icons.cloud_off, color: Colors.white, size: 18),
+            Icon(Icons.cloud_off, color: AppColorScheme.onSurface, size: 18),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 bannerText,
-                style: const TextStyle(color: Colors.white, fontSize: 13),
+                style: TextStyle(color: AppColorScheme.onSurface, fontSize: 13),
               ),
             ),
             if (showAction)
               TextButton(
                 onPressed: action,
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColorScheme.onSurface,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                 ),
                 child: Text(actionLabel),

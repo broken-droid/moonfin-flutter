@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/models/aggregated_item.dart';
@@ -106,9 +106,9 @@ class _MusicBrowseScreenState extends State<MusicBrowseScreen> {
               ),
               Expanded(
                 child: _vm.isLoading
-                    ? const Center(
+                    ? Center(
                         child: CircularProgressIndicator(
-                          color: Color(0xFF00A4DC),
+                          color: AppColorScheme.accent,
                         ),
                       )
                     : RefreshIndicator(
@@ -161,10 +161,10 @@ class _MusicHeader extends StatelessWidget {
           Center(
             child: Text(
               libraryName,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w300,
-                color: Colors.white,
+                color: AppColorScheme.onSurface,
               ),
             ),
           ),
@@ -180,10 +180,10 @@ class _MusicHeader extends StatelessWidget {
                         focusedItem!.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: AppColorScheme.onSurface,
                         ),
                       ),
                       if (focusedItem!.productionYear != null)
@@ -191,7 +191,7 @@ class _MusicHeader extends StatelessWidget {
                           '${focusedItem!.productionYear}',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.white.withAlpha(179),
+                            color: AppColorScheme.onSurface.withAlpha(179),
                           ),
                         ),
                     ],
@@ -240,7 +240,7 @@ class _MusicViewsRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColorScheme.onSurface,
             ),
           ),
         ),
@@ -327,46 +327,43 @@ class _ViewButtonState extends State<_ViewButton> with FocusStateMixin {
         },
         child: GestureDetector(
           onTap: widget.onTap,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 2),
-            child: AnimatedScale(
-              scale: cardExpansion && showFocusBorder ? 1.05 : 1.0,
-              duration: const Duration(milliseconds: 120),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: _cardSize,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(focused ? 51 : 20),
-                  borderRadius: BorderRadius.circular(8),
-                  border: showFocusBorder
-                      ? Border.fromBorderSide(
-                          ThemeRegistry.active.borders.focusBorder.copyWith(
-                            color: focusColor,
-                            width: 1.5,
-                          ),
-                        )
-                      : null,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      widget.icon,
-                      size: 32,
-                      color: Colors.white.withAlpha(focused ? 255 : 153),
+          child: AnimatedScale(
+            scale: cardExpansion && showFocusBorder ? 1.05 : 1.0,
+            duration: const Duration(milliseconds: 120),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: _cardSize,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: AppColorScheme.onSurface.withAlpha(focused ? 51 : 20),
+                borderRadius: BorderRadius.circular(8),
+                border: showFocusBorder
+                    ? Border.fromBorderSide(
+                        ThemeRegistry.active.borders.focusBorder.copyWith(
+                          color: focusColor,
+                          width: 1.5,
+                        ),
+                      )
+                    : null,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    widget.icon,
+                    size: 32,
+                    color: AppColorScheme.onSurface.withAlpha(focused ? 255 : 153),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: focused ? FontWeight.w600 : FontWeight.normal,
+                      color: AppColorScheme.onSurface.withAlpha(focused ? 255 : 179),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.label,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: focused ? FontWeight.w600 : FontWeight.normal,
-                        color: Colors.white.withAlpha(focused ? 255 : 179),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -407,10 +404,10 @@ class _MusicItemRow extends StatelessWidget {
               _horizontalPadding, 16, _horizontalPadding, 8),
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColorScheme.onSurface,
             ),
           ),
         ),
@@ -492,66 +489,62 @@ class _MusicSquareCardState extends State<_MusicSquareCard> with FocusStateMixin
               child: AnimatedScale(
                 scale: cardExpansion && showFocusBorder ? 1.08 : 1.0,
                 duration: const Duration(milliseconds: 150),
-                child: AnimatedOpacity(
-                  opacity: showFocusBorder ? 1.0 : 0.75,
-                  duration: const Duration(milliseconds: 150),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          border: showFocusBorder
-                              ? Border.fromBorderSide(
-                                  ThemeRegistry.active.borders.focusBorder.copyWith(
-                                    color: focusColor,
-                                    width: 1.5,
-                                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        border: showFocusBorder
+                            ? Border.fromBorderSide(
+                                ThemeRegistry.active.borders.focusBorder.copyWith(
+                                  color: focusColor,
+                                  width: 1.5,
+                                ),
+                              )
+                            : null,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Container(
+                          width: _cardSize,
+                          height: _cardSize,
+                          color: AppColorScheme.onSurface.withAlpha(focused ? 20 : 15),
+                          child: widget.imageUrl != null
+                              ? CachedNetworkImage(
+                                  imageUrl: widget.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  fadeInDuration:
+                                      const Duration(milliseconds: 200),
+                                  errorWidget: (_, _, _) =>
+                                      _albumPlaceholder(),
                                 )
-                              : null,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: Container(
-                            width: _cardSize,
-                            height: _cardSize,
-                            color: Colors.white.withAlpha(focused ? 20 : 15),
-                            child: widget.imageUrl != null
-                                ? CachedNetworkImage(
-                                    imageUrl: widget.imageUrl!,
-                                    fit: BoxFit.cover,
-                                    fadeInDuration:
-                                        const Duration(milliseconds: 200),
-                                    errorWidget: (_, _, _) =>
-                                        _albumPlaceholder(),
-                                  )
-                                : _albumPlaceholder(),
-                          ),
+                              : _albumPlaceholder(),
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        widget.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: AppColorScheme.onSurface,
                       ),
-                      Text(
-                        widget.subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.white.withAlpha(128),
-                        ),
+                    ),
+                    Text(
+                      widget.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColorScheme.onSurface.withAlpha(128),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -566,7 +559,7 @@ class _MusicSquareCardState extends State<_MusicSquareCard> with FocusStateMixin
       child: Icon(
         Icons.album,
         size: 48,
-        color: Colors.white.withAlpha(51),
+          color: AppColorScheme.onSurface.withAlpha(51),
       ),
     );
   }
@@ -589,7 +582,7 @@ class _StatusBar extends StatelessWidget {
             libraryName,
             style: TextStyle(
               fontSize: 11,
-              color: Colors.white.withAlpha(77),
+              color: AppColorScheme.onSurface.withAlpha(77),
             ),
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -118,22 +118,22 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
                   children: [
                     Text(
                       AppLocalizations.of(ctx).playlistNew,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: AppColorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 16),
                     TextField(
                       controller: _nameController,
                       autofocus: true,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: AppColorScheme.onSurface),
                       decoration: InputDecoration(
                         hintText: AppLocalizations.of(ctx).playlistName,
-                        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
+                        hintStyle: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.4)),
                         filled: true,
-                        fillColor: Colors.white.withValues(alpha: 0.08),
+                        fillColor: AppColorScheme.onSurface.withValues(alpha: 0.08),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
@@ -152,7 +152,7 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
                           onPressed: () => Navigator.pop(ctx),
                           child: Text(
                             AppLocalizations.of(ctx).cancel,
-                            style: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                            style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.6)),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -198,15 +198,15 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.addToPlaylist,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: AppColorScheme.onSurface,
                   ),
                 ),
               ),
             ),
-            Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+            Container(height: 1, color: AppColorScheme.onSurface.withValues(alpha: 0.08)),
             const SizedBox(height: 8),
             FocusableDialogRow(
               icon: Icons.add,
@@ -229,7 +229,7 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
                 padding: const EdgeInsets.all(24),
                 child: Text(
                   l10n.playlistNoneFound,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+                  style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.5)),
                 ),
               )
             else
@@ -249,7 +249,7 @@ class _AddToPlaylistDialogState extends State<AddToPlaylistDialog> {
                 ),
               ),
             const SizedBox(height: 4),
-            Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+            Container(height: 1, color: AppColorScheme.onSurface.withValues(alpha: 0.08)),
             const SizedBox(height: 4),
             FocusableDialogRow(
               label: l10n.cancel,

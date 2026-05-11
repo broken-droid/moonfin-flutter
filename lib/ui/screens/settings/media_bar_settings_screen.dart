@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
@@ -302,7 +303,7 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
               'assets/icons/clapperboard.png',
               width: 24,
               height: 24,
-              color: Colors.white,
+              color: AppColorScheme.onSurface,
               fit: BoxFit.contain,
             ),
             title: Text(l10n.sourceLibraries),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/services/plugin_sync_service.dart';
@@ -362,7 +362,11 @@ class _ProfileSyncSection extends StatelessWidget {
                   selected: selected == profile,
                   showCheckmark: false,
                   avatar: currentDeviceProfile == profile
-                      ? const Icon(Icons.circle, size: 10, color: Colors.green)
+                      ? Icon(
+                          Icons.circle,
+                          size: 10,
+                          color: AppColorScheme.statusAvailable,
+                        )
                       : null,
                   label: Text(profileLabel(profile)),
                   side: borders.chipBorder,

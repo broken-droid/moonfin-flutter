@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import '../../../preference/user_preferences.dart';
@@ -198,12 +198,18 @@ class _SubtitleCustomizationScreenState
           duration: const Duration(milliseconds: 90),
           curve: Curves.easeOut,
           decoration: BoxDecoration(
-            color: focused ? Colors.white : colorScheme.surfaceContainerLow,
+            color: focused
+                ? AppColorScheme.onSurface
+                : colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12),
           ),
           child: ListTileTheme.merge(
-            textColor: focused ? Colors.black87 : Colors.white,
-            iconColor: focused ? Colors.black54 : Colors.white70,
+            textColor: focused
+                ? AppColors.black.withValues(alpha: 0.87)
+                : AppColorScheme.onSurface,
+            iconColor: focused
+                ? AppColors.black.withValues(alpha: 0.54)
+                : AppColorScheme.onSurface.withValues(alpha: 0.7),
             child: ListTile(
               focusColor: Colors.transparent,
               hoverColor: Colors.transparent,

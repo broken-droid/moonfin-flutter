@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,7 +35,7 @@ Future<void> showQrOrLaunch(
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColorScheme.onSurface,
             borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.all(12),
@@ -42,18 +43,32 @@ Future<void> showQrOrLaunch(
             data: url,
             version: QrVersions.auto,
             size: 180,
-            backgroundColor: Colors.white,
+            backgroundColor: AppColorScheme.onSurface,
+            eyeStyle: QrEyeStyle(
+              eyeShape: QrEyeShape.square,
+              color: AppColorScheme.background,
+            ),
+            dataModuleStyle: QrDataModuleStyle(
+              dataModuleShape: QrDataModuleShape.square,
+              color: AppColorScheme.background,
+            ),
           ),
         ),
         const SizedBox(height: 16),
         Text(
           AppLocalizations.of(ctx).scanWithYourPhone,
-          style: const TextStyle(color: Colors.white70, fontSize: 13),
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+            fontSize: 13,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           url,
-          style: const TextStyle(color: Colors.white54, fontSize: 11),
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+            fontSize: 11,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
@@ -63,11 +78,15 @@ Future<void> showQrOrLaunch(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Row(
               children: [
-                const Icon(Icons.open_in_browser, size: 22, color: Colors.white70),
+                Icon(
+                  Icons.open_in_browser,
+                  size: 22,
+                  color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                ),
                 const SizedBox(width: 16),
                 Text(
                   AppLocalizations.of(ctx).openLink,
-                  style: const TextStyle(fontSize: 15, color: Colors.white),
+                  style: TextStyle(fontSize: 15, color: AppColorScheme.onSurface),
                 ),
               ],
             ),

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/models/aggregated_item.dart';
@@ -122,13 +122,18 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
 
     if (_vm.rows.isEmpty) {
       return Center(
-        child: Text(AppLocalizations.of(context).noItemsFound, style: const TextStyle(color: Colors.white70)),
+        child: Text(
+          AppLocalizations.of(context).noItemsFound,
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
       );
     }
 
     final posterSize = _prefs.get(UserPreferences.posterSize);
     final watchedBehavior = _prefs.get(UserPreferences.watchedIndicatorBehavior);
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+    final suppressFocusGlow = ThemeRegistry.active.borders.focusGlow.isNotEmpty;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
     final cardExpansion = _prefs.get(UserPreferences.cardFocusExpansion);
     final l10n = AppLocalizations.of(context);
@@ -167,7 +172,7 @@ class _LibraryViewScreenState extends State<LibraryViewScreen> {
               itemType: item.type,
               focusColor: focusColor,
               cardFocusExpansion: cardExpansion,
-              suppressFocusGlow: isNeon,
+              suppressFocusGlow: suppressFocusGlow,
               onFocus: () => _onItemFocused(item),
               onHoverStart: () => _onItemFocused(item),
               onHoverEnd: () => _vm.setFocusedItem(null),
@@ -201,31 +206,39 @@ class _LibraryViewHeader extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.home, color: Colors.white70, size: 22),
+            icon: Icon(
+              Icons.home,
+              color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+              size: 22,
+            ),
             onPressed: onHome,
             tooltip: AppLocalizations.of(context).home,
           ),
           const SizedBox(width: 12),
           Text(
             libraryName,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w300,
-              color: Colors.white,
+              color: AppColorScheme.onSurface,
             ),
           ),
           const Spacer(),
           TextButton.icon(
             icon: const Icon(Icons.grid_view, size: 18),
             label: Text(AppLocalizations.of(context).browseAll),
-            style: TextButton.styleFrom(foregroundColor: Colors.white70),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColorScheme.onSurface.withValues(alpha: 0.7),
+            ),
             onPressed: onBrowse,
           ),
           const SizedBox(width: 8),
           TextButton.icon(
             icon: const Icon(Icons.category, size: 18),
             label: Text(AppLocalizations.of(context).genres),
-            style: TextButton.styleFrom(foregroundColor: Colors.white70),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColorScheme.onSurface.withValues(alpha: 0.7),
+            ),
             onPressed: onGenres,
           ),
         ],

@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 /// A logo display widget with a drop shadow that follows the image shape.
 class LogoView extends StatelessWidget {
@@ -54,7 +55,7 @@ class LogoView extends StatelessWidget {
             child: Image(
               image: provider,
               fit: BoxFit.contain,
-              color: Colors.black.withValues(alpha: 0.6),
+              color: AppColorScheme.scrim.withValues(alpha: 0.6),
               colorBlendMode: BlendMode.srcATop,
               errorBuilder: (_, _, _) => const SizedBox.shrink(),
             ),

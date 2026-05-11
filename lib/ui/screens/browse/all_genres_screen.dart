@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart' hide ImageType;
 
 import '../../../data/services/background_service.dart';
@@ -323,7 +323,7 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w300,
-                        color: Colors.white,
+                        color: AppColorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -346,7 +346,12 @@ class _AllGenresScreenState extends State<AllGenresScreen> {
 
     if (_genres.isEmpty) {
       return Center(
-        child: Text(AppLocalizations.of(context).noGenresFound, style: const TextStyle(color: Colors.white70)),
+        child: Text(
+          AppLocalizations.of(context).noGenresFound,
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
       );
     }
 

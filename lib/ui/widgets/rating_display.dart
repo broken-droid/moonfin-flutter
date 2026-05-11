@@ -2,11 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../data/services/rating_icon_provider.dart';
 
-const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
+final _textShadows = [
+  Shadow(blurRadius: 4, color: AppColors.black.withValues(alpha: 0.54)),
+];
 const _coreRatingSources = {'tomatoes', 'stars'};
 
 class RatingsRow extends StatelessWidget {
@@ -110,7 +112,6 @@ class _SingleRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final media = MediaQuery.of(context);
     final isLargeLayout = media.size.width >= 1000 ||
         (media.orientation == Orientation.landscape && media.size.width >= 700);
@@ -146,7 +147,7 @@ class _SingleRating extends StatelessWidget {
             Text(
               valueText,
               style: TextStyle(
-                color: Colors.white,
+                color: AppColorScheme.onSurface,
                 fontSize: valueFontSize,
                 fontWeight: FontWeight.w700,
                 height: 1,
@@ -159,9 +160,7 @@ class _SingleRating extends StatelessWidget {
           Text(
             labelText,
             style: TextStyle(
-              color: isNeon
-                  ? AppColorScheme.onSurface
-                  : Colors.white.withValues(alpha: 0.72),
+              color: AppColorScheme.onSurface,
               fontSize: labelFontSize,
               fontWeight: FontWeight.w500,
               height: 1.1,
@@ -175,21 +174,19 @@ class _SingleRating extends StatelessWidget {
       return ratingContent;
     }
 
+    final chipBorder = ThemeRegistry.active.borders.chipBorder;
+    final badgeBorder = chipBorder.color.a > 0.5
+        ? Border.fromBorderSide(chipBorder.copyWith(color: AppColorScheme.accent))
+        : null;
     final badge = Container(
       padding: EdgeInsets.symmetric(
         horizontal: isLargeLayout ? 8 : 6,
         vertical: isLargeLayout ? 4 : 3,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: kIsWeb ? 0.45 : 0.08),
+        color: AppColorScheme.scrim.withValues(alpha: kIsWeb ? 0.45 : 0.08),
         borderRadius: BorderRadius.circular(4),
-        border: isNeon
-            ? Border.fromBorderSide(
-                ThemeRegistry.active.borders.chipBorder.copyWith(
-                  color: AppColorScheme.accent,
-                ),
-              )
-            : null,
+        border: badgeBorder,
       ),
       child: ratingContent,
     );
@@ -209,15 +206,9 @@ class _SingleRating extends StatelessWidget {
             vertical: isLargeLayout ? 4 : 3,
           ),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.08),
+            color: AppColorScheme.onSurface.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(4),
-            border: isNeon
-                ? Border.fromBorderSide(
-                    ThemeRegistry.active.borders.chipBorder.copyWith(
-                      color: AppColorScheme.accent,
-                    ),
-                  )
-                : null,
+            border: badgeBorder,
           ),
           child: ratingContent,
         ),

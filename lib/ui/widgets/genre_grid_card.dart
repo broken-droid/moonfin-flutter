@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import 'bounded_network_image.dart';
 import 'marquee_text.dart';
@@ -48,7 +48,6 @@ class GenreGridCard extends StatefulWidget {
 class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
   @override
   Widget build(BuildContext context) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final borderColor =
         widget.focusColor ?? Theme.of(context).colorScheme.primary;
     final showMarquee = hovered || focused;
@@ -79,22 +78,11 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
             duration: const Duration(milliseconds: 150),
             child: DecoratedBox(
               position: DecorationPosition.foreground,
-              decoration: isNeon
-                  ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: showFocusBorder
-                          ? Border.fromBorderSide(
-                              ThemeRegistry.active.borders.focusBorder.copyWith(
-                                color: borderColor,
-                              ),
-                            )
-                          : null,
-                    )
-                  : FocusTheme.focusDecoration(
-                      isFocused: showFocusBorder,
-                      radius: 10,
-                      color: borderColor,
-                    ),
+              decoration: FocusTheme.focusDecoration(
+                isFocused: showFocusBorder,
+                radius: 10,
+                color: borderColor,
+              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Stack(
@@ -119,7 +107,7 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withAlpha(180),
+                            AppColorScheme.scrim.withAlpha(180),
                           ],
                         ),
                       ),
@@ -139,10 +127,10 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                             child: showMarquee
                                 ? MarqueeText(
                                     text: widget.genre.name,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.white,
+                                      color: AppColorScheme.onSurface,
                                     ),
                                   )
                                 : Text(
@@ -152,10 +140,10 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                                     textAlign: widget.centerTitle
                                         ? TextAlign.center
                                         : TextAlign.start,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.white,
+                                      color: AppColorScheme.onSurface,
                                     ),
                                   ),
                           ),
@@ -167,7 +155,9 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                                       text: '${widget.genre.itemCount} items',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.white.withAlpha(178),
+                                        color: AppColorScheme.onSurface.withAlpha(
+                                          178,
+                                        ),
                                       ),
                                     )
                                   : Text(
@@ -176,7 +166,9 @@ class _GenreGridCardState extends State<GenreGridCard> with FocusStateMixin {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.white.withAlpha(178),
+                                        color: AppColorScheme.onSurface.withAlpha(
+                                          178,
+                                        ),
                                       ),
                                     ),
                             ),

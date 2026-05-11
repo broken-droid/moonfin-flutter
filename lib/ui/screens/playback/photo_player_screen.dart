@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../data/models/aggregated_item.dart';
@@ -153,7 +153,7 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: GestureDetector(
         onTap: _toggleControls,
         child: Stack(
@@ -177,8 +177,12 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
     final item = _items[_currentIndex];
     final url = _getImageUrl(item);
     if (url == null) {
-      return const Center(
-        child: Icon(Icons.broken_image, color: Colors.white38, size: 64),
+      return Center(
+        child: Icon(
+          Icons.broken_image,
+          color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+          size: 64,
+        ),
       );
     }
 
@@ -196,9 +200,9 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
               placeholder: (_, _) => Center(
               child: CircularProgressIndicator(color: AppColorScheme.accent),
             ),
-            errorWidget: (_, _, _) => const Icon(
+            errorWidget: (_, _, _) => Icon(
               Icons.broken_image,
-              color: Colors.white38,
+              color: AppColorScheme.onSurface,
               size: 64,
             ),
           ),
@@ -224,17 +228,23 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
               right: 16,
               bottom: 16,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black54, Colors.transparent],
+                colors: [
+                  AppColorScheme.scrim,
+                  Colors.transparent,
+                ],
               ),
             ),
             child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: AppColorScheme.onSurface,
+                  ),
                   onPressed: () {
                     if (context.canPop()) {
                       context.pop();
@@ -245,8 +255,8 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
                 Expanded(
                   child: Text(
                     item?.name ?? '',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -257,7 +267,10 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
                 if (_items.length > 1)
                   Text(
                     AppLocalizations.of(context).photoCountOf(_currentIndex + 1, _items.length),
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                      fontSize: 14,
+                    ),
                   ),
               ],
             ),
@@ -274,32 +287,43 @@ class _PhotoPlayerScreenState extends State<PhotoPlayerScreen> {
               right: 16,
               top: 16,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Colors.black54, Colors.transparent],
+                colors: [
+                  AppColorScheme.scrim,
+                  Colors.transparent,
+                ],
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.skip_previous, color: Colors.white, size: 32),
+                  icon: Icon(
+                    Icons.skip_previous,
+                    color: AppColorScheme.onSurface,
+                    size: 32,
+                  ),
                   onPressed: _items.length > 1 ? _previous : null,
                 ),
                 const SizedBox(width: 24),
                 IconButton(
                   icon: Icon(
                     _isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
+                    color: AppColorScheme.onSurface,
                     size: 40,
                   ),
                   onPressed: _items.length > 1 ? _toggleSlideshow : null,
                 ),
                 const SizedBox(width: 24),
                 IconButton(
-                  icon: const Icon(Icons.skip_next, color: Colors.white, size: 32),
+                  icon: Icon(
+                    Icons.skip_next,
+                    color: AppColorScheme.onSurface,
+                    size: 32,
+                  ),
                   onPressed: _items.length > 1 ? _next : null,
                 ),
               ],

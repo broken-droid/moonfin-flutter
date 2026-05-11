@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/repositories/seerr_repository.dart';
 import '../../../data/services/seerr/seerr_api_models.dart';
@@ -18,7 +18,7 @@ import '../../widgets/focus/request_initial_focus.dart';
 
 const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
 Color get _navyBackground => AppColorScheme.background;
-const _seerrAccent = Color(0xFF6366F1);
+Color get _seerrAccent => AppColorScheme.statusDownloading;
 const _horizontalPadding = 60.0;
 const _kCompactBreakpoint = 600.0;
 
@@ -139,7 +139,7 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
     final l10n = AppLocalizations.of(context);
     final vm = _vm;
     if (_initializing || vm == null || vm.state.isLoading) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(color: _seerrAccent),
       );
     }
@@ -151,7 +151,12 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(s.error!, style: const TextStyle(color: Colors.white70)),
+            Text(
+              s.error!,
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => vm.load(),
@@ -169,7 +174,12 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
     final l10n = AppLocalizations.of(context);
     if (s.items.isEmpty) {
       return Center(
-        child: Text(l10n.noResults, style: const TextStyle(color: Colors.white70)),
+        child: Text(
+          l10n.noResults,
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
       );
     }
 
@@ -218,7 +228,8 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
                   final cardExpansion = GetIt.instance<UserPreferences>()
                       .get(UserPreferences.cardFocusExpansion);
                   final resolvedFocusColor = Color(focusColor);
-                  final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+                    final suppressFocusGlow =
+                      ThemeRegistry.active.borders.focusGlow.isNotEmpty;
                   return MediaCard(
                     title: item.displayTitle,
                     subtitle: _cardSubtitle(item, l10n),
@@ -232,7 +243,7 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
                     seerrStatus: item.mediaInfo?.status,
                     focusColor: resolvedFocusColor,
                     cardFocusExpansion: cardExpansion,
-                    suppressFocusGlow: isNeon,
+                    suppressFocusGlow: suppressFocusGlow,
                     onFocus:
                         isMobile
                             ? null
@@ -257,7 +268,7 @@ class _SeerrBrowseScreenState extends State<SeerrBrowseScreen> {
               ),
             ),
             if (s.isLoadingMore)
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 24),
                   child: Center(
@@ -344,10 +355,10 @@ class _SeerrBrowseHeader extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w300,
-                  color: Colors.white,
+                  color: AppColorScheme.onSurface,
                 ),
               ),
             ],
@@ -421,10 +432,10 @@ class _FocusedItemHud extends StatelessWidget {
                       item!.displayTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: AppColorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -456,7 +467,7 @@ class _MetadataRow extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.star, size: 14, color: Color(0xFFFFC107)),
+            const Icon(Icons.star, size: 14, color: AppColors.orange500),
             const SizedBox(width: 2),
             _infoText(item.voteAverage!.toStringAsFixed(1)),
           ],
@@ -466,7 +477,7 @@ class _MetadataRow extends StatelessWidget {
 
     final status = item.mediaInfo?.status;
     if (status == 4 || status == 5) {
-      children.add(_statusBadge(l10n.seerrAvailableStatus, const Color(0xFF22C55E)));
+      children.add(_statusBadge(l10n.seerrAvailableStatus, AppColorScheme.statusAvailable));
     } else if (status == 2 || status == 3) {
       children.add(_statusBadge(l10n.seerrRequestedStatus, _seerrAccent));
     }
@@ -490,7 +501,7 @@ class _MetadataRow extends StatelessWidget {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: Colors.white.withAlpha(179),
+        color: AppColorScheme.onSurface.withAlpha(179),
       ),
     );
   }
@@ -504,10 +515,10 @@ class _MetadataRow extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w900,
-          color: Colors.white,
+          color: AppColorScheme.onSurface,
         ),
       ),
     );
@@ -542,7 +553,9 @@ class _SeerrFilterChips extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: selected ? _seerrAccent : Colors.white.withAlpha(20),
+          color: selected
+              ? _seerrAccent
+              : AppColorScheme.onSurface.withAlpha(20),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Text(
@@ -550,7 +563,9 @@ class _SeerrFilterChips extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-            color: selected ? Colors.white : Colors.white.withAlpha(179),
+            color: selected
+                ? AppColorScheme.onSurface
+                : AppColorScheme.onSurface.withAlpha(179),
           ),
         ),
       ),
@@ -652,7 +667,9 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
             height: 34,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: widget.isSelected ? Colors.white.withAlpha(26) : null,
+              color: widget.isSelected
+                  ? AppColorScheme.onSurface.withAlpha(26)
+                  : null,
               borderRadius: BorderRadius.circular(4),
               border:
                   showFocusBorder
@@ -673,7 +690,7 @@ class _AlphaLetterButtonState extends State<_AlphaLetterButton>
                 color:
                     widget.isSelected
                         ? _seerrAccent
-                        : Colors.white.withAlpha(140),
+                        : AppColorScheme.onSurface.withAlpha(140),
               ),
             ),
           ),
@@ -712,7 +729,9 @@ class _ToolbarButtonState extends State<_ToolbarButton> with FocusStateMixin {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: focused ? Colors.white : Colors.transparent,
+              color: focused
+                  ? AppColorScheme.buttonFocused
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(6),
               border: showFocusBorder
                   ? Border.fromBorderSide(
@@ -726,7 +745,9 @@ class _ToolbarButtonState extends State<_ToolbarButton> with FocusStateMixin {
             child: Icon(
               widget.icon,
               size: 28,
-              color: focused ? Colors.black : Colors.white.withAlpha(128),
+              color: focused
+                  ? AppColorScheme.onButtonFocused
+                  : AppColorScheme.onSurface.withAlpha(128),
             ),
           ),
         ),
@@ -757,11 +778,17 @@ class _SeerrBrowseStatusBar extends StatelessWidget {
         children: [
           Text(
             filterLabel,
-            style: TextStyle(fontSize: 11, color: Colors.white.withAlpha(77)),
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColorScheme.onSurface.withAlpha(77),
+            ),
           ),
           Text(
             l10n.itemsCount(itemCount),
-            style: TextStyle(fontSize: 13, color: Colors.white.withAlpha(115)),
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColorScheme.onSurface.withAlpha(115),
+            ),
           ),
         ],
       ),
@@ -805,7 +832,7 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
       380.0,
     );
     return Dialog(
-      backgroundColor: const Color(0xE6141414),
+      backgroundColor: AppColorScheme.surface.withValues(alpha: 0.9),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: ThemeRegistry.active.borders.chipBorder,
@@ -820,14 +847,14 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: Text(
                 l10n.sortBy,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColorScheme.onSurface,
                 ),
               ),
             ),
-            Divider(color: Colors.white.withAlpha(20)),
+            Divider(color: AppColorScheme.onSurface.withAlpha(20)),
             for (final option in seerrSortOptions)
               _radioTile(
                 label: option.label,
@@ -861,7 +888,9 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
                 shape: BoxShape.circle,
                 border: Border.fromBorderSide(
                   ThemeRegistry.active.borders.chipBorder.copyWith(
-                    color: selected ? _seerrAccent : Colors.white.withAlpha(128),
+                    color: selected
+                        ? _seerrAccent
+                        : AppColorScheme.onSurface.withAlpha(128),
                     width: 2,
                   ),
                 ),
@@ -873,9 +902,9 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
                         child: Container(
                           width: 8,
                           height: 8,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white,
+                            color: AppColorScheme.onSurface,
                           ),
                         ),
                       )
@@ -887,7 +916,9 @@ class _SeerrSortDialogState extends State<_SeerrSortDialog> {
                 label,
                 style: TextStyle(
                   fontSize: 15,
-                  color: selected ? Colors.white : Colors.white.withAlpha(179),
+                  color: selected
+                      ? AppColorScheme.onSurface
+                      : AppColorScheme.onSurface.withAlpha(179),
                 ),
               ),
             ),
@@ -913,7 +944,7 @@ class _SeerrSettingsDialog extends StatelessWidget {
     );
 
     return Dialog(
-      backgroundColor: const Color(0xE6141414),
+      backgroundColor: AppColorScheme.surface.withValues(alpha: 0.9),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: ThemeRegistry.active.borders.chipBorder,
@@ -928,10 +959,10 @@ class _SeerrSettingsDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: Text(
                 l10n.seerrSettings,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColorScheme.onSurface,
                 ),
               ),
             ),
@@ -939,13 +970,13 @@ class _SeerrSettingsDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
               child: Text(
                 l10n.posterSize,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white70,
+                  color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ),
-            Divider(color: Colors.white.withAlpha(20)),
+            Divider(color: AppColorScheme.onSurface.withAlpha(20)),
             for (final option in PosterSize.values)
               _settingsRadioTile(
                 label: _posterSizeLabel(option, l10n),
@@ -988,7 +1019,9 @@ class _SeerrSettingsDialog extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.fromBorderSide(
                   ThemeRegistry.active.borders.chipBorder.copyWith(
-                    color: selected ? _seerrAccent : Colors.white.withAlpha(128),
+                    color: selected
+                        ? _seerrAccent
+                        : AppColorScheme.onSurface.withAlpha(128),
                     width: 2,
                   ),
                 ),
@@ -1000,9 +1033,9 @@ class _SeerrSettingsDialog extends StatelessWidget {
                         child: Container(
                           width: 8,
                           height: 8,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white,
+                            color: AppColorScheme.onSurface,
                           ),
                         ),
                       )
@@ -1014,7 +1047,9 @@ class _SeerrSettingsDialog extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 15,
-                  color: selected ? Colors.white : Colors.white.withAlpha(179),
+                  color: selected
+                      ? AppColorScheme.onSurface
+                      : AppColorScheme.onSurface.withAlpha(179),
                 ),
               ),
             ),

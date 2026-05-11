@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../data/models/aggregated_library.dart';
@@ -56,7 +57,7 @@ class _FolderViewScreenState extends State<FolderViewScreen> {
 
   Widget _buildContent(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: NavigationLayout(
         showBackButton: true,
         child: SafeArea(
@@ -70,7 +71,9 @@ class _FolderViewScreenState extends State<FolderViewScreen> {
                 return Center(
                   child: Text(
                     AppLocalizations.of(context).failedToLoadLibraries,
-                    style: TextStyle(color: Colors.white.withAlpha(179)),
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface.withAlpha(179),
+                    ),
                   ),
                 );
               }
@@ -80,7 +83,9 @@ class _FolderViewScreenState extends State<FolderViewScreen> {
                 return Center(
                   child: Text(
                     AppLocalizations.of(context).noLibrariesFound,
-                    style: TextStyle(color: Colors.white.withAlpha(179)),
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface.withAlpha(179),
+                    ),
                   ),
                 );
               }
@@ -93,16 +98,22 @@ class _FolderViewScreenState extends State<FolderViewScreen> {
                   return ListTile(
                     leading: Icon(
                       _iconForCollection(lib.collectionType),
-                      color: Colors.white70,
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                       size: 28,
                     ),
                     title: Text(
                       lib.name,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface,
+                        fontSize: 16,
+                      ),
                     ),
                     subtitle: Text(
                       lib.collectionType.isNotEmpty ? lib.collectionType : AppLocalizations.of(context).library,
-                      style: TextStyle(color: Colors.white.withAlpha(128), fontSize: 13),
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface.withAlpha(128),
+                        fontSize: 13,
+                      ),
                     ),
                     onTap: () => context.push(Destinations.folder(lib.id)),
                   );

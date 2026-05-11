@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/repositories/seerr_repository.dart';
 import '../../../data/services/seerr/seerr_api_models.dart';
@@ -82,7 +82,7 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
 
   Widget _buildScreenContent(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: NavigationLayout(
         showBackButton: true,
         child: _buildBody(),
@@ -108,7 +108,12 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(s.error!, style: const TextStyle(color: Colors.white70)),
+            Text(
+              s.error!,
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadPerson,
@@ -158,7 +163,7 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
                       Text(
                         person.name,
                         style: theme.textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
+                          color: AppColorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -167,7 +172,9 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
                         Text(
                           person.knownForDepartment!,
                           style: theme.textTheme.bodyMedium
-                              ?.copyWith(color: Colors.white60),
+                              ?.copyWith(
+                                color: AppColorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
                         ),
                       ],
                       const SizedBox(height: 8),
@@ -198,8 +205,12 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
     return Container(
       width: 120,
       height: 120,
-      color: Colors.grey[800],
-      child: const Icon(Icons.person, color: Colors.white38, size: 48),
+      color: AppColorScheme.surface,
+      child: Icon(
+        Icons.person,
+        color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+        size: 48,
+      ),
     );
   }
 
@@ -228,7 +239,11 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
 
     return Text(
       parts.join('\n'),
-      style: const TextStyle(color: Colors.white54, fontSize: 13, height: 1.4),
+      style: TextStyle(
+        color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+        fontSize: 13,
+        height: 1.4,
+      ),
     );
   }
 
@@ -244,7 +259,10 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
             style: Theme.of(context)
                 .textTheme
                 .titleMedium
-                ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                ?.copyWith(
+                  color: AppColorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -252,7 +270,7 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
             maxLines: _bioExpanded ? null : 4,
             overflow: _bioExpanded ? null : TextOverflow.ellipsis,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: AppColorScheme.onSurface.withValues(alpha: 0.85),
               fontSize: 14,
               height: 1.5,
             ),
@@ -262,8 +280,8 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
             onTap: () => setState(() => _bioExpanded = !_bioExpanded),
             child: Text(
               _bioExpanded ? l10n.showLess : l10n.showMore,
-              style: const TextStyle(
-                color: Color(0xFF6366F1),
+              style: TextStyle(
+                color: AppColorScheme.accent,
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
               ),
@@ -276,7 +294,7 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
 
   Widget _buildCreditsRow(
       String title, List<SeerrDiscoverItem> items, bool isCast) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+    final suppressFocusGlow = ThemeRegistry.active.borders.focusGlow.isNotEmpty;
     final focusColor =
         Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
     final cardExpansion =
@@ -298,7 +316,7 @@ class _SeerrPersonScreenState extends State<SeerrPersonScreen> {
                 seerrStatus: item.mediaInfo?.status,
                 focusColor: focusColor,
                 cardFocusExpansion: cardExpansion,
-                suppressFocusGlow: isNeon,
+                suppressFocusGlow: suppressFocusGlow,
                 onTap: () {
                   final mediaType = item.mediaType ?? 'movie';
                   context.push(

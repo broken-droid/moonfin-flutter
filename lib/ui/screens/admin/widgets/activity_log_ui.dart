@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -73,8 +74,12 @@ String activityTimeAgo(DateTime date, AppLocalizations l10n, {bool compact = tru
     case 'warning':
     case 'warn':
       return (
-        Colors.orange,
-        const Icon(Icons.warning_amber, size: 15, color: Colors.orange),
+        AppColorScheme.statusPending,
+        Icon(
+          Icons.warning_amber,
+          size: 15,
+          color: AppColorScheme.statusPending,
+        ),
       );
     case 'information':
       return (

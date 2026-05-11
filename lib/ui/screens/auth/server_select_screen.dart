@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../auth/models/server.dart';
@@ -19,7 +20,7 @@ import '../../widgets/login_scaffold.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/server_type_icon.dart';
 
-const _kAccent = Color(0xFF00A4DC);
+final _kAccent = AppColorScheme.accent;
 
 class ServerSelectScreen extends StatefulWidget {
   const ServerSelectScreen({super.key});
@@ -41,6 +42,17 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
 
   final List<DiscoveredServer> _discoveredServers = [];
   bool _isDiscovering = false;
+  bool get _isMoonfin => ThemeRegistry.active.id == ThemeRegistry.moonfinId;
+
+  Color _loginForeground(double alpha) {
+    return (_isMoonfin ? Colors.white : AppColorScheme.onSurface).withValues(
+      alpha: alpha,
+    );
+  }
+
+  Color get _loginErrorColor {
+    return _isMoonfin ? const Color(0xFFef4444) : AppColorScheme.statusRequested;
+  }
 
   @override
   void initState() {
@@ -151,25 +163,27 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
         softWrap: false,
         overflow: TextOverflow.fade,
       ),
-      style:
-          OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-          ).copyWith(
-            side: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.focused) ||
-                  states.contains(WidgetState.hovered)) {
-                return const BorderSide(color: _kAccent, width: 2);
-              }
-              return BorderSide(color: Colors.white.withValues(alpha: 0.2));
-            }),
-            foregroundColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.focused) ||
-                  states.contains(WidgetState.hovered)) {
-                return _kAccent;
-              }
-              return Colors.white.withValues(alpha: 0.8);
-            }),
-          ),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 12,
+        ),
+      ).copyWith(
+        side: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.focused) ||
+              states.contains(WidgetState.hovered)) {
+            return BorderSide(color: _kAccent, width: 2);
+          }
+          return BorderSide(color: _loginForeground(0.2));
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.focused) ||
+              states.contains(WidgetState.hovered)) {
+            return _kAccent;
+          }
+          return _loginForeground(0.8);
+        }),
+      ),
     );
   }
 
@@ -188,7 +202,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
         child: Text(
           l10n.appVersionFooter(_deviceInfo.appVersion),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.4),
+            color: _loginForeground(0.4),
           ),
           textAlign: TextAlign.center,
         ),
@@ -236,7 +250,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
               child: Text(
                 l10n.noneFound,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: _loginForeground(0.4),
                   fontSize: 14,
                 ),
               ),
@@ -257,7 +271,10 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 _errorMessage!,
-                style: const TextStyle(color: Color(0xFFef4444), fontSize: 14),
+                style: TextStyle(
+                  color: _loginErrorColor,
+                  fontSize: 14,
+                ),
               ),
             ),
           const SizedBox(height: 16),
@@ -316,7 +333,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
             ServerTypeIcon(
               serverType: server.serverType,
               size: 24,
-              color: Colors.white.withValues(alpha: 0.7),
+              color: _loginForeground(0.7),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -327,14 +344,14 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
                     server.name,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: _loginForeground(0.9),
                     ),
                   ),
                   Text(
                     '${server.address} • ${server.version}',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: _loginForeground(0.5),
                     ),
                   ),
                 ],
@@ -356,7 +373,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
             ServerTypeIcon(
               serverType: server.serverType,
               size: 24,
-              color: Colors.white.withValues(alpha: 0.7),
+              color: _loginForeground(0.7),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -367,14 +384,14 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
                     server.name,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: _loginForeground(0.9),
                     ),
                   ),
                   Text(
                     server.address,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: _loginForeground(0.5),
                     ),
                   ),
                 ],
@@ -424,14 +441,19 @@ class _FocusableTile extends StatefulWidget {
 
 class _FocusableTileState extends State<_FocusableTile> {
   bool _focused = false;
+  bool get _isMoonfin => ThemeRegistry.active.id == ThemeRegistry.moonfinId;
+
+  Color _tileIdleColor() {
+    return _isMoonfin
+        ? Colors.white.withValues(alpha: 0.05)
+        : AppColorScheme.onSurface.withValues(alpha: 0.05);
+  }
 
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(12);
     return Material(
-      color: _focused
-          ? _kAccent.withValues(alpha: 0.18)
-          : Colors.white.withValues(alpha: 0.05),
+      color: _focused ? _kAccent.withValues(alpha: 0.18) : _tileIdleColor(),
       borderRadius: radius,
       child: InkWell(
         borderRadius: radius,
@@ -481,6 +503,17 @@ class _AddServerDialogState extends State<_AddServerDialog> {
   bool _isConnecting = false;
   String? _errorMessage;
   bool _dialogDismissed = false;
+  bool get _isMoonfin => ThemeRegistry.active.id == ThemeRegistry.moonfinId;
+
+  Color _dialogForeground(double alpha) {
+    return (_isMoonfin ? Colors.white : AppColorScheme.onSurface).withValues(
+      alpha: alpha,
+    );
+  }
+
+  Color get _dialogForegroundSolid {
+    return _isMoonfin ? Colors.white : AppColorScheme.onSurface;
+  }
 
   @override
   void initState() {
@@ -619,16 +652,16 @@ class _AddServerDialogState extends State<_AddServerDialog> {
       side: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||
             states.contains(WidgetState.hovered)) {
-          return const BorderSide(color: _kAccent, width: 2);
+          return BorderSide(color: _kAccent, width: 2);
         }
-        return BorderSide(color: Colors.white.withValues(alpha: 0.2));
+        return BorderSide(color: _dialogForeground(0.2));
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||
             states.contains(WidgetState.hovered)) {
           return _kAccent;
         }
-        return Colors.white.withValues(alpha: 0.85);
+        return _dialogForeground(0.85);
       }),
     );
   }
@@ -654,21 +687,21 @@ class _AddServerDialogState extends State<_AddServerDialog> {
                   keyboardType: KeyboardType.alphabetic,
                   filled: true,
                   fillColor: focused
-                      ? Colors.white
-                      : Colors.white.withValues(alpha: 0.08),
+                      ? _dialogForegroundSolid
+                      : _dialogForeground(0.08),
                   borderColor: Theme.of(context).colorScheme.outline,
                   focusedBorderColor: _kAccent,
                   hintStyle: TextStyle(
                     color: focused
-                        ? Colors.black.withValues(alpha: 0.5)
-                        : Colors.white.withValues(alpha: 0.5),
+                        ? AppColors.black.withValues(alpha: 0.5)
+                        : _dialogForeground(0.5),
                   ),
                   textStyle: TextStyle(
-                    color: focused ? Colors.black : Colors.white,
+                    color: focused ? AppColors.black : _dialogForegroundSolid,
                   ),
                   prefixIcon: Icon(
                     Icons.dns,
-                    color: focused ? Colors.black : Colors.white,
+                    color: focused ? AppColors.black : _dialogForegroundSolid,
                   ),
                   popParentOnKeyboardClose: false,
                   onFieldSubmitted: (_) => _submit(),

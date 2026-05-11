@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 import 'package:server_core/server_core.dart';
 
@@ -208,7 +209,9 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
                       hoverColor: Colors.transparent,
                       leading: IconTheme(
                         data: IconThemeData(
-                          color: focused ? Colors.black54 : Colors.white70,
+                          color: focused
+                              ? AppColors.black.withValues(alpha: 0.54)
+                              : AppColorScheme.onSurface.withValues(alpha: 0.7),
                           size: 24,
                         ),
                         child: Icon(
@@ -219,7 +222,9 @@ class _ParentalSettingsScreenState extends State<ParentalSettingsScreen> {
                       ),
                       title: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: focused ? Colors.black87 : Colors.white,
+                          color: focused
+                              ? AppColors.black.withValues(alpha: 0.87)
+                              : AppColorScheme.onSurface,
                         ),
                         child: Text(rating),
                       ),

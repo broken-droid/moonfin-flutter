@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../data/models/aggregated_item.dart';
@@ -115,30 +115,30 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
               ListTile(
                 title: Text(
                   l10n.castKindControls(_kindLabel(l10n)),
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                  style: TextStyle(color: AppColorScheme.onSurface, fontWeight: FontWeight.w600),
                 ),
                 subtitle: stateVal != null
                     ? Text(
                         '${stateVal[0].toUpperCase()}${stateVal.substring(1)}'
                         ' · ${_formatDuration(Duration(microseconds: positionTicks ~/ 10))}',
-                        style: const TextStyle(color: Colors.white54),
+                        style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.54)),
                       )
                     : null,
               ),
               if (_kind == CastTargetKind.googleCast || _kind == CastTargetKind.dlna)
                 ListTile(
-                  leading: const Icon(Icons.volume_up_rounded, color: Colors.white),
-                  title: Text(l10n.castDeviceVolume, style: const TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.volume_up_rounded, color: AppColorScheme.onSurface),
+                  title: Text(l10n.castDeviceVolume, style: TextStyle(color: AppColorScheme.onSurface)),
                   subtitle: volume == null
-                      ? Text(l10n.castVolumeUnavailable, style: const TextStyle(color: Colors.white54))
+                      ? Text(l10n.castVolumeUnavailable, style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.54)))
                       : ValueListenableBuilder<double?>(
                           valueListenable: _castService.remoteVolumeNotifier,
                           builder: (context, vol, _) => SliderTheme(
                             data: SliderTheme.of(context).copyWith(
                               activeTrackColor: AppColorScheme.accent,
-                              inactiveTrackColor: Colors.white24,
-                              thumbColor: Colors.white,
-                              overlayColor: Colors.white24,
+                              inactiveTrackColor: AppColorScheme.onSurface.withValues(alpha: 0.24),
+                              thumbColor: AppColorScheme.onSurface,
+                              overlayColor: AppColorScheme.onSurface.withValues(alpha: 0.24),
                             ),
                             child: Slider(
                               value: (vol ?? 0).clamp(0.0, 1.0),
@@ -159,29 +159,29 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
                           valueListenable: _castService.remoteVolumeNotifier,
                           builder: (context, vol, _) => Text(
                             '${((vol ?? 0) * 100).round()}%',
-                            style: const TextStyle(color: Colors.white70),
+                            style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.7)),
                           ),
                         ),
                 ),
               ListTile(
-                leading: const Icon(Icons.play_arrow_rounded, color: Colors.white),
-                title: Text(l10n.play, style: const TextStyle(color: Colors.white)),
+                leading: Icon(Icons.play_arrow_rounded, color: AppColorScheme.onSurface),
+                title: Text(l10n.play, style: TextStyle(color: AppColorScheme.onSurface)),
                 onTap: () {
                   Navigator.of(ctx).pop();
                   _doAction(() => _castService.play(_kind));
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.pause_rounded, color: Colors.white),
-                title: Text(l10n.pause, style: const TextStyle(color: Colors.white)),
+                leading: Icon(Icons.pause_rounded, color: AppColorScheme.onSurface),
+                title: Text(l10n.pause, style: TextStyle(color: AppColorScheme.onSurface)),
                 onTap: () {
                   Navigator.of(ctx).pop();
                   _doAction(() => _castService.pause(_kind));
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.stop_rounded, color: Colors.white),
-                title: Text(l10n.castStopKind(_kindLabel(l10n)), style: const TextStyle(color: Colors.white)),
+                leading: Icon(Icons.stop_rounded, color: AppColorScheme.onSurface),
+                title: Text(l10n.castStopKind(_kindLabel(l10n)), style: TextStyle(color: AppColorScheme.onSurface)),
                 onTap: () {
                   Navigator.of(ctx).pop();
                   _doAction(() => _castService.stop(_kind));
@@ -228,8 +228,8 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
                 padding: const EdgeInsets.all(AppSpacing.spaceLg),
                 child: Text(
                   audio ? l10n.audioLabel : l10n.subtitlesLabel,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColorScheme.onSurface,
                     fontSize: AppTypography.fontSizeLg,
                     fontWeight: FontWeight.w600,
                   ),
@@ -259,13 +259,15 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
                       ].join(' · ');
 
                       return ListTile(
-                        title: Text(label, style: const TextStyle(color: Colors.white)),
+                        title: Text(label, style: TextStyle(color: AppColorScheme.onSurface)),
                         subtitle: subtitle.isNotEmpty
                             ? Text(subtitle,
-                                style: const TextStyle(color: Colors.white54))
+                            style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.54)))
                             : null,
-                        leading: const Icon(Icons.radio_button_unchecked,
-                            color: Colors.white38),
+                        leading: Icon(
+                          Icons.radio_button_unchecked,
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+                        ),
                         onTap: () {
                           Navigator.pop(sheetCtx);
                           final positionTicks =
@@ -333,13 +335,13 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
                       children: [
-                        Icon(_kindIcon, color: Colors.white70, size: 18),
+                        Icon(_kindIcon, color: AppColorScheme.onSurface.withValues(alpha: 0.7), size: 18),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             title,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: AppColorScheme.onSurface,
                               fontSize: AppTypography.fontSizeSm,
                               fontWeight: FontWeight.w500,
                             ),
@@ -354,7 +356,7 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
                             return IconButton(
                               icon: Icon(
                                 isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                color: Colors.white,
+                                color: AppColorScheme.onSurface,
                               ),
                               onPressed: () => isPlaying
                                   ? _doAction(() => _castService.pause(_kind))
@@ -363,16 +365,16 @@ class _CastMiniPlayerContentState extends State<_CastMiniPlayerContent> {
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.stop_rounded, color: Colors.white),
+                          icon: Icon(Icons.stop_rounded, color: AppColorScheme.onSurface),
                           onPressed: () => _doAction(() => _castService.stop(_kind)),
                         ),
                         if (_kind == CastTargetKind.jellyfinSession) ...[
                           IconButton(
-                            icon: const Icon(Icons.subtitles_outlined, color: Colors.white),
+                            icon: Icon(Icons.subtitles_outlined, color: AppColorScheme.onSurface),
                             onPressed: () => _showTrackSelector(audio: false),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.audiotrack_outlined, color: Colors.white),
+                            icon: Icon(Icons.audiotrack_outlined, color: AppColorScheme.onSurface),
                             onPressed: () => _showTrackSelector(audio: true),
                           ),
                         ],
@@ -413,7 +415,7 @@ class _SeekSliver extends StatelessWidget {
     if (durationTicks <= 0) {
       return LinearProgressIndicator(
         value: null,
-        backgroundColor: Colors.white12,
+        backgroundColor: AppColorScheme.onSurface.withValues(alpha: 0.12),
         color: AppColorScheme.accent,
         minHeight: 2,
       );
@@ -434,7 +436,7 @@ class _SeekSliver extends StatelessWidget {
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
               overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
               activeTrackColor: AppColorScheme.accent,
-              inactiveTrackColor: Colors.white12,
+              inactiveTrackColor: AppColorScheme.onSurface.withValues(alpha: 0.12),
               thumbColor: AppColorScheme.accent,
               overlayColor: AppColorScheme.accent.withValues(alpha: 0.2),
             ),

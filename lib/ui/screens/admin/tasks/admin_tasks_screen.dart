@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../navigation/destinations.dart';
@@ -323,8 +324,8 @@ class _TaskRow extends StatelessWidget {
       );
     }
     if (task.state == 'Cancelling') {
-      return const Icon(Icons.stop_circle_outlined,
-          color: Colors.orange, size: 22);
+      return Icon(Icons.stop_circle_outlined,
+          color: AppColorScheme.statusPending, size: 22);
     }
     final result = task.lastExecutionResult;
     if (result == null) {
@@ -355,12 +356,12 @@ class _TaskRow extends StatelessWidget {
   Color _resultColor(String status, ThemeData theme) {
     switch (status) {
       case 'Completed':
-        return Colors.green;
+        return AppColorScheme.statusAvailable;
       case 'Failed':
         return theme.colorScheme.error;
       case 'Cancelled':
       case 'Aborted':
-        return Colors.orange;
+        return AppColorScheme.statusPending;
       default:
         return theme.colorScheme.onSurfaceVariant;
     }

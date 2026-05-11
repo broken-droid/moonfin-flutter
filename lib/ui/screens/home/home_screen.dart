@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:moonfin_native_video/moonfin_native_video.dart';
@@ -390,15 +390,15 @@ class _GradientScrim extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DecoratedBox(
+    return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xAA000000),
-            Color(0x44000000),
-            Color(0xBB000000),
+            AppColorScheme.scrim.withValues(alpha: 0.67),
+            AppColorScheme.scrim.withValues(alpha: 0.27),
+            AppColorScheme.scrim.withValues(alpha: 0.73),
           ],
           stops: [0.0, 0.3, 1.0],
         ),
@@ -449,7 +449,7 @@ class _Backdrop extends StatelessWidget {
                 image,
                 DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.26),
+                    color: AppColorScheme.scrim.withValues(alpha: 0.26),
                   ),
                   child: const SizedBox.expand(),
                 ),
@@ -2262,7 +2262,7 @@ class _ContentRowsState extends State<_ContentRows>
     required bool useSeriesThumbs,
     required AppLocalizations l10n,
   }) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+    final suppressFocusGlow = ThemeRegistry.active.borders.focusGlow.isNotEmpty;
     final rowImageType = _homeRowImageTypeForRow(row, prefs);
     final tvScale = PlatformDetection.isTV ? 0.8 : 1.0;
 
@@ -2352,10 +2352,6 @@ class _ContentRowsState extends State<_ContentRows>
           final card = MediaCard(
             title: item.name,
             subtitle: item.subtitle,
-            titleColor: isNeon ? AppColorScheme.accent : null,
-            subtitleColor: isNeon
-                ? AppColorScheme.onSurface.withValues(alpha: 0.85)
-                : null,
             imageUrl: imageUrl,
             width: width,
             aspectRatio: ar,
@@ -2365,11 +2361,11 @@ class _ContentRowsState extends State<_ContentRows>
             playedPercentage: item.playedPercentage,
             watchedBehavior: watchedBehavior,
             itemType: item.type,
-            focusColor: isNeon ? AppColorScheme.accent : focusColor,
+            focusColor: focusColor,
             cardFocusExpansion: cardExpansion && !showPreviewVideo,
             externalIsFocused: isFocused,
             suppressImageFocusBorder: showPreviewVideo,
-            suppressFocusGlow: isNeon,
+            suppressFocusGlow: suppressFocusGlow,
             onHoverStart: () {
               unawaited(_revealAndScrollToPinnedInfo());
               widget.onItemSelected(item);
@@ -2423,7 +2419,6 @@ class _ContentRowsState extends State<_ContentRows>
     required double height,
     required Widget child,
   }) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     return Column(
       key: key,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2434,7 +2429,7 @@ class _ContentRowsState extends State<_ContentRows>
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: isNeon ? AppColorScheme.onSurface : null,
+                  color: AppColorScheme.onSurface,
                   fontWeight: FontWeight.w600,
                 ),
           ),
@@ -2828,8 +2823,8 @@ class _PreviewCardShell extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: ColoredBox(
-                    color: Colors.black,
-                      child: previewSurface,
+                    color: AppColorScheme.background,
+                    child: previewSurface,
                   ),
                 ),
               ),

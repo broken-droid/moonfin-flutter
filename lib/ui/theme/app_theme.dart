@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 class AppTheme {
   const AppTheme._();
 
   static TextTheme _buildTextTheme(ThemeSpec spec) {
     final c = spec.colors;
-    final isNeon = spec.id == ThemeRegistry.neonPulseId;
     final base = ThemeData(
       brightness: spec.brightness,
-      fontFamily: isNeon ? 'NeonPulseDisplay' : null,
+      fontFamily: spec.fontFamily,
     ).textTheme;
-    if (!isNeon) {
+    if (spec.textGlow.isEmpty) {
       return base;
     }
 
-    const neonShadows = [
-      Shadow(color: Color(0x99FF2E92), blurRadius: 6),
-    ];
+    final themedShadows = spec.textGlow;
 
     TextStyle? neonDisplay(TextStyle? style) {
       if (style == null) return null;
       return style.copyWith(
-        fontFamily: 'NeonPulseDisplay',
         color: c.accent,
-        shadows: neonShadows,
+        shadows: themedShadows,
         letterSpacing: (style.letterSpacing ?? 0) + 0.4,
       );
     }
@@ -58,11 +54,10 @@ class AppTheme {
 
   static ThemeData buildTheme(ThemeSpec spec) {
     final c = spec.colors;
-    final isNeon = spec.id == ThemeRegistry.neonPulseId;
     return ThemeData(
       useMaterial3: true,
       brightness: spec.brightness,
-      fontFamily: isNeon ? 'NeonPulseDisplay' : null,
+      fontFamily: spec.fontFamily,
       colorScheme: ColorScheme.dark(
         primary: c.accent,
         secondary: JellyfinTokens.colors.secondary,

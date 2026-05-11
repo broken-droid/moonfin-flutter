@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../auth/models/server.dart';
@@ -210,10 +210,10 @@ class _AccountDialogState extends State<_AccountDialog> {
                     Expanded(
                       child: Text(
                         l10n.switchUser,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: AppColorScheme.onSurface,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -227,7 +227,10 @@ class _AccountDialogState extends State<_AccountDialog> {
                   ],
                 ),
               ),
-              Container(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+              Container(
+                height: 1,
+                color: AppColorScheme.onSurface.withValues(alpha: 0.08),
+              ),
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -469,7 +472,7 @@ Future<String?> _promptQuickConnectCode(BuildContext context) async {
       backgroundColor: AppColorScheme.surface.withValues(alpha: 0.9),
       title: Text(
         l10n.quickConnect,
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: AppColorScheme.onSurface),
       ),
       content: TextField(
         controller: controller,
@@ -479,10 +482,12 @@ Future<String?> _promptQuickConnectCode(BuildContext context) async {
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(8),
         ],
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: AppColorScheme.onSurface),
         decoration: InputDecoration(
           hintText: l10n.quickConnectEnterCode,
-          hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+          hintStyle: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.5),
+          ),
         ),
         onSubmitted: (_) {
           final value = normalizedCode();
@@ -569,21 +574,21 @@ class _CircleActionButtonState extends State<_CircleActionButton> {
             color: enabled
                 ? (_focused
                       ? widget.focusColor.withValues(alpha: 0.16)
-                      : Colors.white.withValues(alpha: 0.06))
-                : Colors.white.withValues(alpha: 0.04),
+                      : AppColorScheme.onSurface.withValues(alpha: 0.06))
+                : AppColorScheme.onSurface.withValues(alpha: 0.04),
             border: Border.fromBorderSide(
               _focused
                   ? focusBorder.copyWith(color: widget.focusColor)
                   : baseBorder.copyWith(
-                      color: Colors.white.withValues(alpha: 0.12),
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.12),
                     ),
             ),
           ),
           child: Icon(
             widget.icon,
             color: enabled
-                ? (_focused ? widget.focusColor : Colors.white)
-                : Colors.white.withValues(alpha: 0.45),
+                ? (_focused ? widget.focusColor : AppColorScheme.onSurface)
+                : AppColorScheme.onSurface.withValues(alpha: 0.45),
             size: 22,
           ),
         ),
@@ -650,18 +655,18 @@ class _ActionButtonState extends State<_ActionButton> {
             color: enabled
                 ? (_focused
                       ? widget.focusColor.withValues(alpha: 0.16)
-                      : Colors.white.withValues(alpha: 0.08))
-                : Colors.white.withValues(alpha: 0.05),
+                      : AppColorScheme.onSurface.withValues(alpha: 0.08))
+                : AppColorScheme.onSurface.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.fromBorderSide(
               enabled
                   ? (_focused
                         ? focusBorder.copyWith(color: widget.focusColor)
                         : baseBorder.copyWith(
-                            color: Colors.white.withValues(alpha: 0.12),
+                            color: AppColorScheme.onSurface.withValues(alpha: 0.12),
                           ))
                   : baseBorder.copyWith(
-                      color: Colors.white.withValues(alpha: 0.08),
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.08),
                     ),
             ),
             boxShadow: _focused
@@ -681,8 +686,8 @@ class _ActionButtonState extends State<_ActionButton> {
                 fontSize: 17,
                 fontWeight: FontWeight.w500,
                 color: enabled
-                    ? (_focused ? widget.focusColor : Colors.white)
-                    : Colors.white.withValues(alpha: 0.45),
+                    ? (_focused ? widget.focusColor : AppColorScheme.onSurface)
+                    : AppColorScheme.onSurface.withValues(alpha: 0.45),
               ),
             ),
           ),
@@ -747,7 +752,7 @@ class _AccountCardState extends State<_AccountCard> {
     final highlighted = _focused || widget.active;
     final borderColor = highlighted
         ? widget.focusColor
-        : Colors.white.withValues(alpha: 0.15);
+        : AppColorScheme.onSurface.withValues(alpha: 0.15);
 
     return Focus(
       focusNode: _focusNode,
@@ -776,13 +781,13 @@ class _AccountCardState extends State<_AccountCard> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: borderColor, width: 3),
-                    color: const Color(0xFF2A2A2A),
+                    color: AppColorScheme.surfaceVariant,
                   ),
                   child: ClipOval(
                     child: _avatarFailed || widget.avatarUrl == null
                         ? Icon(
                             Icons.person,
-                            color: Colors.white.withValues(alpha: 0.55),
+                            color: AppColorScheme.onSurface.withValues(alpha: 0.55),
                             size: 68,
                           )
                         : Image.network(
@@ -799,7 +804,7 @@ class _AccountCardState extends State<_AccountCard> {
                               }
                               return Icon(
                                 Icons.person,
-                                color: Colors.white.withValues(alpha: 0.55),
+                                color: AppColorScheme.onSurface.withValues(alpha: 0.55),
                                 size: 68,
                               );
                             },
@@ -812,10 +817,10 @@ class _AccountCardState extends State<_AccountCard> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -826,7 +831,7 @@ class _AccountCardState extends State<_AccountCard> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.45),
+                    color: AppColorScheme.onSurface.withValues(alpha: 0.45),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -888,10 +893,10 @@ class _AddUserCardState extends State<_AddUserCard> {
   Widget build(BuildContext context) {
     final borderColor = _focused
         ? widget.focusColor
-        : Colors.white.withValues(alpha: 0.25);
+      : AppColorScheme.onSurface.withValues(alpha: 0.25);
     final bg = _focused
         ? widget.focusColor.withValues(alpha: 0.14)
-        : Colors.white.withValues(alpha: 0.06);
+      : AppColorScheme.onSurface.withValues(alpha: 0.06);
 
     return Focus(
       focusNode: _focusNode,
@@ -925,7 +930,9 @@ class _AddUserCardState extends State<_AddUserCard> {
                   child: Icon(
                     Icons.add,
                     size: 48,
-                    color: _focused ? widget.focusColor : Colors.white54,
+                    color: _focused
+                        ? widget.focusColor
+                        : AppColorScheme.onSurface.withValues(alpha: 0.54),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -934,10 +941,10 @@ class _AddUserCardState extends State<_AddUserCard> {
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColorScheme.onSurface,
                   ),
                 ),
               ],

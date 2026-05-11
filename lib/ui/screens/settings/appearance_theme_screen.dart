@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../theme/app_theme_controller.dart';
 import 'settings_app_bar.dart';
@@ -22,7 +21,21 @@ class AppearanceThemeScreen extends StatelessWidget {
       body: ListenableBuilder(
         listenable: prefs,
         builder: (context, _) {
-          final selected = prefs.get(UserPreferences.visualTheme);
+          final selectedBuiltIn = prefs.get(UserPreferences.visualTheme);
+          final selectedCustomId = prefs.get(UserPreferences.customThemeId);
+          final selectedThemeId = selectedCustomId.isNotEmpty
+              ? selectedCustomId
+              : AppThemeController.builtInThemeIdFor(selectedBuiltIn);
+          final themes = ThemeRegistry.availableThemes.values.toList()
+            ..sort((a, b) {
+              final aRank = _themeSortRank(a.id);
+              final bRank = _themeSortRank(b.id);
+              if (aRank != bRank) return aRank.compareTo(bRank);
+              return a.displayName.toLowerCase().compareTo(
+                b.displayName.toLowerCase(),
+              );
+            });
+
           return ListView(
             padding: const EdgeInsets.all(20),
             children: [
@@ -33,36 +46,48 @@ class AppearanceThemeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              _ThemePreviewCard(
-                themeId: VisualThemeId.moonfin,
-                title: l10n.themeMoonfin,
-                subtitle: l10n.themeMoonfinSubtitle,
-                selected: selected == VisualThemeId.moonfin,
-                stripes: const [
-                  Color(0xFF101010),
-                  Color(0xFF1A1A1A),
-                  Color(0xFF252525),
-                  Color(0xFF00A4DC),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _ThemePreviewCard(
-                themeId: VisualThemeId.neonPulse,
-                title: l10n.themeNeonPulse,
-                subtitle: l10n.themeNeonPulseSubtitle,
-                selected: selected == VisualThemeId.neonPulse,
-                stripes: const [
-                  Color(0xFF0B0420),
-                  Color(0xCC1E0A3F),
-                  Color(0xFFFF2E92),
-                  Color(0xFF00E5FF),
-                ],
-              ),
+              for (var i = 0; i < themes.length; i++) ...[
+                _ThemePreviewCard(
+                  themeId: themes[i].id,
+                  title: _titleForTheme(l10n, themes[i]),
+                  subtitle: _subtitleForTheme(l10n, themes[i]),
+                  selected: selectedThemeId == themes[i].id,
+                  stripes: [
+                    themes[i].colors.background,
+                    themes[i].colors.surface,
+                    themes[i].colors.accent,
+                    themes[i].colors.rangeProgress,
+                  ],
+                ),
+                if (i != themes.length - 1) const SizedBox(height: 16),
+              ],
             ],
           );
         },
       ),
     );
+  }
+
+  static String _titleForTheme(AppLocalizations l10n, ThemeSpec spec) {
+    return switch (spec.id) {
+      ThemeRegistry.moonfinId => l10n.themeMoonfin,
+      ThemeRegistry.neonPulseId => l10n.themeNeonPulse,
+      _ => spec.displayName,
+    };
+  }
+
+  static String? _subtitleForTheme(AppLocalizations l10n, ThemeSpec spec) {
+    return switch (spec.id) {
+      ThemeRegistry.moonfinId => l10n.themeMoonfinSubtitle,
+      ThemeRegistry.neonPulseId => l10n.themeNeonPulseSubtitle,
+      _ => null,
+    };
+  }
+
+  static int _themeSortRank(String id) {
+    if (id == ThemeRegistry.moonfinId) return 0;
+    if (id == ThemeRegistry.neonPulseId) return 1;
+    return 2;
   }
 }
 
@@ -70,14 +95,14 @@ class _ThemePreviewCard extends StatelessWidget {
   const _ThemePreviewCard({
     required this.themeId,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.selected,
     required this.stripes,
   });
 
-  final VisualThemeId themeId;
+  final String themeId;
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final bool selected;
   final List<Color> stripes;
 
@@ -90,7 +115,7 @@ class _ThemePreviewCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: () async {
-        await controller.applyThemeSelection(prefs, themeId);
+        await controller.applyThemeById(prefs, themeId);
       },
       child: Ink(
         padding: const EdgeInsets.all(16),
@@ -118,13 +143,16 @@ class _ThemePreviewCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            Text(
-              subtitle,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.74),
+            if (subtitle != null) ...[
+              Text(
+                subtitle!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.74),
+                ),
               ),
-            ),
-            const SizedBox(height: 14),
+              const SizedBox(height: 14),
+            ] else
+              const SizedBox(height: 10),
             ClipRRect(
               borderRadius: BorderRadius.circular(14),
               child: SizedBox(
@@ -143,7 +171,7 @@ class _ThemePreviewCard extends StatelessWidget {
                         height: 28,
                         margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.28),
+                          color: AppColorScheme.scrim.withValues(alpha: 0.28),
                           borderRadius: BorderRadius.circular(999),
                           border: Border.fromBorderSide(
                             ThemeRegistry.active.borders.chipBorder.copyWith(

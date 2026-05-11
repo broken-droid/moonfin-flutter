@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../auth/repositories/emby_connect_repository.dart';
@@ -235,7 +236,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
           Text(
             l10n.embyConnectSignInSubtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.7),
+              color: AppColorScheme.onSurface.withValues(alpha: 0.7),
             ),
             textAlign: TextAlign.center,
           ),
@@ -284,7 +285,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
           const SizedBox(height: 12),
           Text(
             _errorMessage!,
-            style: const TextStyle(color: Color(0xFFef4444)),
+            style: TextStyle(color: AppColorScheme.statusRequested),
             textAlign: TextAlign.center,
           ),
         ],
@@ -384,18 +385,21 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
                   hint: label,
                   filled: true,
                   fillColor: focused
-                      ? Colors.white
-                      : Colors.white.withValues(alpha: 0.08),
+                      ? AppColorScheme.buttonFocused
+                      : AppColorScheme.surfaceVariant.withValues(alpha: 0.6),
                   borderRadius: 12,
-                  borderColor: Colors.white.withValues(alpha: 0.1),
-                  focusedBorderColor: Colors.white,
+                    borderColor: AppColorScheme.onSurface.withValues(alpha: 0.1),
+                    focusedBorderColor: AppColorScheme.buttonFocused,
                   hintStyle: TextStyle(
                     color: focused
-                        ? Colors.black.withValues(alpha: 0.5)
-                        : Colors.white.withValues(alpha: 0.5),
+                      ? AppColorScheme.onButtonFocused.withValues(alpha: 0.5)
+                      : AppColorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   textStyle: TextStyle(
-                    color: focused ? Colors.black : Colors.white,
+                    color:
+                      focused
+                        ? AppColorScheme.onButtonFocused
+                        : AppColorScheme.onSurface,
                   ),
                   textFieldType: isPassword
                       ? TextFieldType.password
@@ -418,7 +422,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
               textInputAction:
                   isPassword ? TextInputAction.done : TextInputAction.next,
               onSubmitted: isPassword ? (_) => _signIn() : null,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColorScheme.onSurface),
               decoration: _inputDecoration(label),
             ),
     );
@@ -441,7 +445,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
           const SizedBox(height: 12),
           Text(
             _errorMessage!,
-            style: const TextStyle(color: Color(0xFFef4444)),
+            style: TextStyle(color: AppColorScheme.statusRequested),
           ),
         ],
         const SizedBox(height: 16),
@@ -485,13 +489,13 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Material(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: AppColorScheme.surface.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () => _connectToServer(server),
-          focusColor: const Color(0xFF00A4DC),
-          hoverColor: Colors.white.withValues(alpha: 0.08),
+          focusColor: AppColorScheme.accent,
+          hoverColor: AppColorScheme.onSurface.withValues(alpha: 0.08),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
@@ -506,14 +510,14 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
                         server.name,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.9),
                         ),
                       ),
                       Text(
                         subtitle,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.5),
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                     ],
@@ -521,7 +525,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: AppColorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ],
             ),
@@ -542,7 +546,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
         const SizedBox(height: 12),
         Text(
           message,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+          style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.7)),
         ),
       ],
     );
@@ -551,20 +555,20 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+      labelStyle: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.5)),
       filled: true,
-      fillColor: Colors.white.withValues(alpha: 0.08),
+      fillColor: AppColorScheme.surfaceVariant.withValues(alpha: 0.6),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+        borderSide: BorderSide(color: AppColorScheme.onSurface.withValues(alpha: 0.1)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+        borderSide: BorderSide(color: AppColorScheme.onSurface.withValues(alpha: 0.1)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF00A4DC), width: 2),
+        borderSide: BorderSide(color: AppColorScheme.accent, width: 2),
       ),
     );
   }
@@ -574,16 +578,16 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
       side: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||
             states.contains(WidgetState.hovered)) {
-          return const BorderSide(color: Color(0xFF00A4DC), width: 2);
+          return BorderSide(color: AppColorScheme.accent, width: 2);
         }
-        return BorderSide(color: Colors.white.withValues(alpha: 0.2));
+        return BorderSide(color: AppColorScheme.onSurface.withValues(alpha: 0.2));
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||
             states.contains(WidgetState.hovered)) {
-          return const Color(0xFF00A4DC);
+          return AppColorScheme.accent;
         }
-        return Colors.white.withValues(alpha: 0.8);
+        return AppColorScheme.onSurface.withValues(alpha: 0.8);
       }),
     );
   }

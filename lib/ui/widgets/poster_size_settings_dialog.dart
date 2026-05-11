@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -32,7 +32,7 @@ class _PosterSizeSettingsDialogState extends State<PosterSizeSettingsDialog> {
         ? widget.prefs.get(widget.imageTypePreference!)
         : null;
     return Dialog(
-      backgroundColor: const Color(0xE6141414),
+      backgroundColor: AppColorScheme.surface.withAlpha(0xE6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: ThemeRegistry.active.borders.chipBorder,
@@ -47,14 +47,14 @@ class _PosterSizeSettingsDialogState extends State<PosterSizeSettingsDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: Text(
                 l10n.posterDisplayTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColorScheme.onSurface,
                 ),
               ),
             ),
-            Divider(color: Colors.white.withAlpha(20)),
+            Divider(color: AppColorScheme.onSurface.withAlpha(20)),
             if (currentImageType != null) ...[
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
@@ -63,13 +63,13 @@ class _PosterSizeSettingsDialogState extends State<PosterSizeSettingsDialog> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white.withAlpha(115),
+                    color: AppColorScheme.onSurface.withAlpha(115),
                   ),
                 ),
               ),
               for (final type in ImageType.values)
                 _imageTypeTile(type, currentImageType == type),
-              Divider(color: Colors.white.withAlpha(20)),
+              Divider(color: AppColorScheme.onSurface.withAlpha(20)),
             ],
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
@@ -78,7 +78,7 @@ class _PosterSizeSettingsDialogState extends State<PosterSizeSettingsDialog> {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withAlpha(115),
+                  color: AppColorScheme.onSurface.withAlpha(115),
                 ),
               ),
             ),
@@ -115,7 +115,9 @@ class _PosterSizeSettingsDialogState extends State<PosterSizeSettingsDialog> {
               label,
               style: TextStyle(
                 fontSize: 15,
-                color: selected ? Colors.white : Colors.white.withAlpha(179),
+                color: selected
+                    ? AppColorScheme.onSurface
+                    : AppColorScheme.onSurface.withAlpha(179),
               ),
             ),
           ],
@@ -147,7 +149,9 @@ class _PosterSizeSettingsDialogState extends State<PosterSizeSettingsDialog> {
               label,
               style: TextStyle(
                 fontSize: 15,
-                color: selected ? Colors.white : Colors.white.withAlpha(179),
+                color: selected
+                    ? AppColorScheme.onSurface
+                    : AppColorScheme.onSurface.withAlpha(179),
               ),
             ),
           ],
@@ -174,9 +178,9 @@ class _PosterSizeSettingsDialogState extends State<PosterSizeSettingsDialog> {
               child: Container(
                 width: 8,
                 height: 8,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white,
+                  color: AppColorScheme.onSurface,
                 ),
               ),
             )

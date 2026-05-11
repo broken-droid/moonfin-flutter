@@ -51,7 +51,7 @@ class _MoonfinAppState extends State<MoonfinApp> {
   }
 
   void _syncThemeFromPrefs() {
-    _themeController.setByThemeId(_prefs.get(UserPreferences.visualTheme));
+    _themeController.refreshFromPreferences(_prefs);
   }
 
   @override

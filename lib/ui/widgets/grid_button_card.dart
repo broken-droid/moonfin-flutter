@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import '../mixins/focus_state_mixin.dart';
 
 class GridButtonCard extends StatefulWidget {
@@ -49,8 +49,8 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
     final focusedBorderColor = widget.focusColor ?? borders.focusBorder.color;
     final focusedForeground =
       ThemeData.estimateBrightnessForColor(focusedBackground) == Brightness.dark
-        ? Colors.white
-        : Colors.black;
+        ? AppColorScheme.onSurface
+        : AppColors.black;
     final color = effectiveFocused
       ? focusedBackground
       : AppColorScheme.buttonNormal;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../util/app_exit.dart';
@@ -73,7 +73,7 @@ class _ExitConfirmationContentState extends State<_ExitConfirmationContent> {
       child: Container(
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E1E1E),
+          color: AppColorScheme.surface,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -87,10 +87,10 @@ class _ExitConfirmationContentState extends State<_ExitConfirmationContent> {
             const SizedBox(height: 24),
             Text(
               widget.title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppColorScheme.onSurface,
                 decoration: TextDecoration.none,
               ),
             ),
@@ -101,7 +101,7 @@ class _ExitConfirmationContentState extends State<_ExitConfirmationContent> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w400,
-                color: Colors.white.withValues(alpha: 0.7),
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                 decoration: TextDecoration.none,
               ),
             ),
@@ -162,7 +162,9 @@ class _ExitDialogButtonState extends State<_ExitDialogButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           decoration: BoxDecoration(
-            color: _focused ? Colors.white : Colors.white.withValues(alpha: 0.1),
+            color: _focused
+                ? AppColorScheme.onSurface
+                : AppColorScheme.onSurface.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -170,7 +172,7 @@ class _ExitDialogButtonState extends State<_ExitDialogButton> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,
-              color: _focused ? Colors.black : Colors.white,
+              color: _focused ? AppColors.black : AppColorScheme.onSurface,
               decoration: TextDecoration.none,
             ),
           ),

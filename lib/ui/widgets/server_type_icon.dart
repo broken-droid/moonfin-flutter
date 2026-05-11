@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 class ServerTypeIcon extends StatelessWidget {
   final ServerType serverType;
   final double size;
-  final Color color;
+  final Color? color;
 
   const ServerTypeIcon({
     super.key,
     required this.serverType,
     this.size = 24,
-    this.color = Colors.white,
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? AppColorScheme.onSurface;
     return CustomPaint(
       size: Size.square(size),
       painter: switch (serverType) {
-        ServerType.jellyfin => _JellyfinLogoPainter(color),
-        ServerType.emby => _EmbyLogoPainter(color),
+        ServerType.jellyfin => _JellyfinLogoPainter(effectiveColor),
+        ServerType.emby => _EmbyLogoPainter(effectiveColor),
       },
     );
   }

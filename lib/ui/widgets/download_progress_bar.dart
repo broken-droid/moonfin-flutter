@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../data/services/download_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -64,12 +64,12 @@ class DownloadProgressBar extends StatelessWidget {
               top: false,
               child: Row(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppColorScheme.onAccent,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -80,8 +80,8 @@ class DownloadProgressBar extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColorScheme.onAccent,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -93,8 +93,8 @@ class DownloadProgressBar extends StatelessWidget {
                           borderRadius: BorderRadius.circular(2),
                           child: LinearProgressIndicator(
                             value: progressValue,
-                            backgroundColor: Colors.white24,
-                            color: Colors.white,
+                            backgroundColor: AppColorScheme.onAccent.withValues(alpha: 0.24),
+                            color: AppColorScheme.onAccent,
                             minHeight: 3,
                           ),
                         ),
@@ -105,8 +105,8 @@ class DownloadProgressBar extends StatelessWidget {
                   if (percentLabel != null)
                     Text(
                       percentLabel,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: AppColorScheme.onAccent,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:moonfin_native_video/moonfin_native_video.dart';
@@ -31,7 +31,12 @@ import 'bounded_network_image.dart';
 import 'rating_display.dart';
 import 'web_youtube_trailer.dart';
 
-const _textShadows = [Shadow(blurRadius: 4, color: Colors.black54)];
+List<Shadow> get _textShadows => [
+  Shadow(
+    blurRadius: 4,
+    color: AppColorScheme.scrim.withValues(alpha: 0.54),
+  ),
+];
 
 class MediaBar extends StatefulWidget {
   final MediaBarViewModel viewModel;
@@ -814,7 +819,6 @@ class _MediaBarState extends State<MediaBar>
     String? detail,
     bool showRetry = false,
   }) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     return SizedBox(
       height: widget.height,
       width: double.infinity,
@@ -822,7 +826,7 @@ class _MediaBarState extends State<MediaBar>
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.35),
+            color: AppColorScheme.scrim.withValues(alpha: 0.35),
             borderRadius: BorderRadius.circular(12),
             border: Border.fromBorderSide(ThemeRegistry.active.borders.cardBorder),
           ),
@@ -832,7 +836,7 @@ class _MediaBarState extends State<MediaBar>
               children: [
                 Icon(
                   Icons.slideshow,
-                  color: isNeon ? AppColorScheme.accent : Colors.white70,
+                  color: AppColorScheme.accent,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -843,7 +847,7 @@ class _MediaBarState extends State<MediaBar>
                       Text(
                         title,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: isNeon ? AppColorScheme.onSurface : Colors.white,
+                          color: AppColorScheme.onSurface,
                         ),
                       ),
                       if (detail != null && detail.isNotEmpty)
@@ -852,9 +856,7 @@ class _MediaBarState extends State<MediaBar>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: isNeon
-                                ? AppColorScheme.onSurface.withValues(alpha: 0.85)
-                                : Colors.white70,
+                            color: AppColorScheme.onSurface.withValues(alpha: 0.85),
                           ),
                         ),
                     ],
@@ -874,7 +876,7 @@ class _MediaBarState extends State<MediaBar>
   }
 
   Widget _buildSlideshow(BuildContext context, List<MediaBarSlideItem> items) {
-    const overlayColor = Colors.black;
+    final overlayColor = AppColorScheme.scrim;
     const overlayOpacity = 0.7;
     final currentItem = items.elementAtOrNull(_currentIndex);
 
@@ -1114,9 +1116,9 @@ class _MediaBarState extends State<MediaBar>
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                           colors: [
-                            Colors.black.withValues(alpha: 0.78),
-                            Colors.black.withValues(alpha: 0.46),
-                            Colors.black.withValues(alpha: 0.06),
+                            AppColorScheme.scrim.withValues(alpha: 0.78),
+                            AppColorScheme.scrim.withValues(alpha: 0.46),
+                            AppColorScheme.scrim.withValues(alpha: 0.06),
                           ],
                           stops: const [0.0, 0.46, 1.0],
                         ),
@@ -1131,9 +1133,9 @@ class _MediaBarState extends State<MediaBar>
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withValues(alpha: 0.12),
-                              Colors.black.withValues(alpha: 0.28),
-                              Colors.black.withValues(alpha: 0.78),
+                              AppColorScheme.scrim.withValues(alpha: 0.12),
+                              AppColorScheme.scrim.withValues(alpha: 0.28),
+                              AppColorScheme.scrim.withValues(alpha: 0.78),
                             ],
                             stops: const [0.0, 0.48, 1.0],
                           ),
@@ -1429,7 +1431,7 @@ class _MediaBarState extends State<MediaBar>
             imageFilter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(
-                Colors.black.withValues(alpha: 0.4),
+                AppColorScheme.scrim.withValues(alpha: 0.4),
                 BlendMode.srcATop,
               ),
               child: image(),
@@ -1464,14 +1466,14 @@ class _BackdropLayer extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = items[index];
           if (item.backdropUrl == null) {
-            return const ColoredBox(color: Colors.black);
+            return ColoredBox(color: AppColorScheme.background);
           }
           return BoundedNetworkImage(
             imageUrl: item.backdropUrl!,
             minWidth: 640,
             maxWidth: 1280,
             errorBuilder: (_, _, _) =>
-                const ColoredBox(color: Colors.black),
+                ColoredBox(color: AppColorScheme.background),
           );
         },
       ),
@@ -1531,12 +1533,12 @@ class _NavArrow extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.black.withValues(alpha: 0.4),
+                color: AppColorScheme.scrim.withValues(alpha: 0.4),
                 border: Border.fromBorderSide(ThemeRegistry.active.borders.cardBorder),
               ),
               child: Icon(
                 icon,
-                color: Colors.white.withValues(alpha: 0.9),
+                color: AppColorScheme.onSurface.withValues(alpha: 0.9),
                 size: 28,
               ),
             ),
@@ -1567,7 +1569,6 @@ class _SlideInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final isMobile = PlatformDetection.useMobileUi;
 
     final infoCard = Container(
@@ -1578,7 +1579,7 @@ class _SlideInfo extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         // Higher opacity on web compensates for the missing blur.
-        color: Colors.black.withValues(alpha: kIsWeb ? 0.6 : 0.35),
+        color: AppColorScheme.scrim.withValues(alpha: kIsWeb ? 0.6 : 0.35),
         borderRadius: BorderRadius.circular(16),
         border: Border.fromBorderSide(ThemeRegistry.active.borders.cardBorder),
       ),
@@ -1613,9 +1614,7 @@ class _SlideInfo extends StatelessWidget {
                       ? theme.textTheme.bodySmall
                       : theme.textTheme.bodyMedium)
                   ?.copyWith(
-                color: isNeon
-                    ? AppColorScheme.onSurface
-                    : Colors.white.withValues(alpha: 0.9),
+                color: AppColorScheme.onSurface.withValues(alpha: 0.9),
                 shadows: _textShadows,
               ),
               maxLines: isMobile ? 2 : 3,
@@ -1653,7 +1652,6 @@ class _MetadataRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final parts = <Widget>[];
 
     if (item.year != null) {
@@ -1683,9 +1681,7 @@ class _MetadataRow extends StatelessWidget {
         separated.add(Text(
           ' \u2022 ',
           style: theme.textTheme.bodySmall?.copyWith(
-            color: isNeon
-                ? AppColorScheme.onSurface.withValues(alpha: 0.6)
-                : Colors.white.withValues(alpha: 0.5),
+            color: AppColorScheme.onSurface.withValues(alpha: 0.5),
             shadows: _textShadows,
           ),
         ));
@@ -1701,11 +1697,10 @@ class _MetadataRow extends StatelessWidget {
   }
 
   Widget _infoText(ThemeData theme, String value) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     return Text(
       value,
       style: theme.textTheme.bodySmall?.copyWith(
-        color: isNeon ? AppColorScheme.onSurface : Colors.white.withValues(alpha: 0.9),
+        color: AppColorScheme.onSurface.withValues(alpha: 0.9),
         fontWeight: FontWeight.w600,
         shadows: _textShadows,
       ),
@@ -1713,13 +1708,12 @@ class _MetadataRow extends StatelessWidget {
   }
 
   Widget _ratingBadge(ThemeData theme, String label) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
       decoration: BoxDecoration(
         border: Border.fromBorderSide(
           ThemeRegistry.active.borders.chipBorder.copyWith(
-            color: isNeon ? AppColorScheme.accent : ThemeRegistry.active.borders.chipBorder.color,
+            color: ThemeRegistry.active.borders.chipBorder.color,
           ),
         ),
         borderRadius: BorderRadius.circular(3),
@@ -1727,7 +1721,7 @@ class _MetadataRow extends StatelessWidget {
       child: Text(
         label,
         style: theme.textTheme.labelSmall?.copyWith(
-          color: isNeon ? AppColorScheme.onSurface : Colors.white.withValues(alpha: 0.9),
+          color: AppColorScheme.onSurface.withValues(alpha: 0.9),
           shadows: _textShadows,
         ),
       ),
@@ -1769,8 +1763,8 @@ class _IndicatorDots extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isActive
-                    ? Colors.white
-                    : Colors.white.withValues(alpha: 0.5),
+                    ? AppColorScheme.onSurface
+                    : AppColorScheme.onSurface.withValues(alpha: 0.5),
               ),
             );
           }),
@@ -1804,8 +1798,8 @@ class _MakdDots extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isActive
-                ? Colors.white
-                : Colors.white.withValues(alpha: 0.45),
+                ? AppColorScheme.onSurface
+                : AppColorScheme.onSurface.withValues(alpha: 0.45),
           ),
         );
       }),
@@ -1866,7 +1860,7 @@ class _MakdContent extends StatelessWidget {
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.88),
+              color: AppColorScheme.onSurface.withValues(alpha: 0.88),
               height: 1.38,
               shadows: _textShadows,
             ),
@@ -1905,7 +1899,7 @@ class _MakdActionButtons extends StatelessWidget {
               vertical: isMobile ? 7 : 10,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColorScheme.buttonFocused,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -1913,14 +1907,14 @@ class _MakdActionButtons extends StatelessWidget {
               children: [
                 Icon(
                   Icons.play_arrow_rounded,
-                  color: Colors.black,
+                  color: AppColorScheme.onButtonFocused,
                   size: isMobile ? 20 : 24,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   l10n.play,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: AppColorScheme.onButtonFocused,
                     fontWeight: FontWeight.w700,
                     fontSize: isMobile ? 14 : 17,
                   ),
@@ -1937,15 +1931,15 @@ class _MakdActionButtons extends StatelessWidget {
             height: isMobile ? 36 : 46,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.18),
+              color: AppColorScheme.onSurface.withValues(alpha: 0.18),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                 width: 1.5,
               ),
             ),
             child: Icon(
               Icons.info_outline_rounded,
-              color: Colors.white,
+              color: AppColorScheme.onSurface,
               size: isMobile ? 18 : 22,
             ),
           ),

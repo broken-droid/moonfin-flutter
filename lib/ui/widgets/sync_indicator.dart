@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../data/services/sync_service.dart';
 import '../../di/providers.dart';
@@ -13,8 +14,16 @@ class SyncIndicator extends ConsumerWidget {
     return switch (syncState) {
       SyncState.idle => const SizedBox.shrink(),
       SyncState.syncing => const _AnimatedSyncIcon(),
-      SyncState.done => const Icon(Icons.cloud_done, color: Colors.green, size: 18),
-      SyncState.error => const Icon(Icons.sync_problem, color: Colors.orange, size: 18),
+      SyncState.done => Icon(
+        Icons.cloud_done,
+        color: AppColorScheme.statusAvailable,
+        size: 18,
+      ),
+      SyncState.error => Icon(
+        Icons.sync_problem,
+        color: AppColorScheme.statusPending,
+        size: 18,
+      ),
     };
   }
 }
@@ -49,7 +58,11 @@ class _AnimatedSyncIconState extends State<_AnimatedSyncIcon>
   Widget build(BuildContext context) {
     return RotationTransition(
       turns: _controller,
-      child: const Icon(Icons.sync, color: Colors.white70, size: 18),
+      child: Icon(
+        Icons.sync,
+        color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+        size: 18,
+      ),
     );
   }
 }

@@ -1,4 +1,4 @@
-name: jellyfin_design
+name: moonfin_design
 description: Shared design system - theme tokens, colors, typography, and reusable widgets.
 publish_to: 'none'
 version: 0.1.0

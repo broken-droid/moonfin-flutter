@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
-const _kGradientColors = [
-  Color(0xFF0a0a0a),
-  Color(0xFF1a1a2e),
-  Color(0xFF16213e),
-];
-
-const _kCardColor = Color(0xCC111528);
 const _kCardRadius = 20.0;
 const _kCardMaxWidth = 700.0;
+const _kMoonfinCardColor = Color(0xCC111528);
+const _kMoonfinCardBorderColor = Color(0x33FFFFFF);
 
 class LoginScaffold extends StatelessWidget {
   final double maxWidth;
@@ -27,13 +22,27 @@ class LoginScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMoonfin = ThemeRegistry.active.id == ThemeRegistry.moonfinId;
+    final gradientColors = isMoonfin
+        ? const [Color(0xFF0a0a0a), Color(0xFF1a1a2e), Color(0xFF16213e)]
+        : [
+            AppColorScheme.background,
+            AppColorScheme.surfaceVariant,
+            AppColorScheme.surface,
+          ];
+      final cardColor = isMoonfin
+        ? _kMoonfinCardColor
+        : AppColorScheme.surface.withAlpha(0xCC);
+      final cardBorder = isMoonfin
+        ? Border.all(color: _kMoonfinCardBorderColor)
+        : Border.fromBorderSide(ThemeRegistry.active.borders.cardBorder);
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: _kGradientColors,
+            colors: gradientColors,
           ),
         ),
         child: SafeArea(
@@ -49,9 +58,9 @@ class LoginScaffold extends StatelessWidget {
                     ?header,
                     Container(
                       decoration: BoxDecoration(
-                        color: _kCardColor,
+                        color: cardColor,
                         borderRadius: BorderRadius.circular(_kCardRadius),
-                        border: Border.fromBorderSide(ThemeRegistry.active.borders.cardBorder),
+                        border: cardBorder,
                       ),
                       padding: const EdgeInsets.all(32),
                       child: child,

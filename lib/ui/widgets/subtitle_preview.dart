@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../preference/user_preferences.dart';
 import '../../l10n/app_localizations.dart';
@@ -45,10 +46,13 @@ class _SubtitlePreviewState extends State<SubtitlePreview> {
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF22303C), Color(0xFF0F1722)],
+          colors: [
+            AppColorScheme.surfaceVariant,
+            AppColorScheme.scrim,
+          ],
         ),
         borderRadius: BorderRadius.circular(12),
       ),

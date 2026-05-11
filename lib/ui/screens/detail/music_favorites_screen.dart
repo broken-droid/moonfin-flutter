@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/navigation_layout.dart';
@@ -16,7 +17,7 @@ class MusicFavoritesScreen extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: NavigationLayout(
         showBackButton: true,
         child: Center(child: Text(l10n.favoriteTracksPlaceholder)),

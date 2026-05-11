@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -441,14 +442,14 @@ class _SeverityBadge extends StatelessWidget {
   (Color, IconData) _severityStyle(String severity) {
     switch (severity) {
       case 'Error':
-        return (Colors.red, Icons.error_outline);
+        return (AppColorScheme.statusRequested, Icons.error_outline);
       case 'Warning':
       case 'Warn':
-        return (Colors.orange, Icons.warning_amber);
+        return (AppColorScheme.statusPending, Icons.warning_amber);
       case 'Information':
-        return (Colors.blue, Icons.info_outline);
+        return (AppColorScheme.accent, Icons.info_outline);
       default:
-        return (Colors.blueGrey, Icons.info_outline);
+        return (AppColorScheme.onSurface.withValues(alpha: 0.7), Icons.info_outline);
     }
   }
 }

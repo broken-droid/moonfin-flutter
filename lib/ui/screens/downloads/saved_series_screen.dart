@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
@@ -31,20 +32,28 @@ class SavedSeriesScreen extends ConsumerWidget {
     final episodesAsync = ref.watch(downloadedEpisodesProvider(seriesId));
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: SafeArea(
         child: seriesAsync.when(
           data: (series) {
             if (series == null) {
               return Center(
-                child: Text(AppLocalizations.of(context).seriesNotFound, style: const TextStyle(color: Colors.white54)),
+                child: Text(
+                  AppLocalizations.of(context).seriesNotFound,
+                  style: TextStyle(
+                    color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+                  ),
+                ),
               );
             }
             return _buildContent(context, ref, series, episodesAsync);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, _) => Center(
-            child: Text(AppLocalizations.of(context).errorLoadingSeries, style: const TextStyle(color: Colors.redAccent)),
+            child: Text(
+              AppLocalizations.of(context).errorLoadingSeries,
+              style: TextStyle(color: AppColorScheme.statusRequested),
+            ),
           ),
         ),
       ),
@@ -71,7 +80,7 @@ class SavedSeriesScreen extends ConsumerWidget {
             child: Text(
               AppLocalizations.of(context).downloadedEpisodes,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: AppColorScheme.onSurface.withValues(alpha: 0.9),
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -84,7 +93,12 @@ class SavedSeriesScreen extends ConsumerWidget {
             child: Center(child: CircularProgressIndicator()),
           ),
           error: (_, _) => SliverToBoxAdapter(
-            child: Center(child: Text(AppLocalizations.of(context).errorLoadingSeries, style: const TextStyle(color: Colors.redAccent))),
+            child: Center(
+              child: Text(
+                AppLocalizations.of(context).errorLoadingSeries,
+                style: TextStyle(color: AppColorScheme.statusRequested),
+              ),
+            ),
           ),
         ),
       ],
@@ -108,7 +122,10 @@ class SavedSeriesScreen extends ConsumerWidget {
               shaderCallback: (rect) => LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: 0.3), Colors.black],
+                colors: [
+                  AppColorScheme.scrim.withValues(alpha: 0.3),
+                  AppColorScheme.scrim,
+                ],
               ).createShader(rect),
               blendMode: BlendMode.darken,
               child: OfflineImage(
@@ -119,13 +136,15 @@ class SavedSeriesScreen extends ConsumerWidget {
             ),
           ),
         if (!PlatformDetection.isTV)
-          Positioned(
+            Positioned(
             top: series.backdropPath != null ? 140 : 16,
             left: 20,
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: AppColorScheme.onSurface),
               onPressed: () => context.pop(),
-              style: IconButton.styleFrom(backgroundColor: Colors.black45),
+              style: IconButton.styleFrom(
+                backgroundColor: AppColorScheme.scrim.withValues(alpha: 0.45),
+              ),
             ),
           ),
         Padding(
@@ -138,7 +157,11 @@ class SavedSeriesScreen extends ConsumerWidget {
               else
                 Text(
                   series.name,
-                  style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: AppColorScheme.onSurface,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               const SizedBox(height: 8),
               Row(
@@ -153,7 +176,10 @@ class SavedSeriesScreen extends ConsumerWidget {
                   overview,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 13),
+                  style: TextStyle(
+                    color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ],
@@ -168,10 +194,16 @@ class SavedSeriesScreen extends ConsumerWidget {
       margin: const EdgeInsets.only(right: 8),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: AppColorScheme.onSurface.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(text, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+          fontSize: 12,
+        ),
+      ),
     );
   }
 
@@ -231,7 +263,9 @@ class SavedSeriesScreen extends ConsumerWidget {
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColorScheme.statusRequested,
+            ),
             child: Text(l10n.delete),
           ),
         ],
@@ -275,12 +309,24 @@ class _SeasonSection extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-      title: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: AppColorScheme.onSurface,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       subtitle: Text(
         AppLocalizations.of(context).episodeCount(episodeCount),
-        style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+        style: TextStyle(
+          color: AppColorScheme.onSurface.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
       ),
-      trailing: const Icon(Icons.chevron_right, color: Colors.white38),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+      ),
     );
   }
 }

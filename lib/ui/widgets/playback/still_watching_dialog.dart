@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../overlay_sheet.dart';
@@ -33,25 +33,35 @@ class StillWatchingDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Text(
         l10n.stillWatching,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        style: TextStyle(
+          color: AppColorScheme.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
         textAlign: TextAlign.center,
       ),
       content: Text(
         l10n.stillWatchingContent,
-        style: const TextStyle(color: Colors.white70),
+        style: TextStyle(
+          color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+        ),
         textAlign: TextAlign.center,
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
         TextButton(
           onPressed: onStop,
-          child: Text(l10n.stillWatchingStop, style: const TextStyle(color: Colors.white54)),
+          child: Text(
+            l10n.stillWatchingStop,
+            style: TextStyle(
+              color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+            ),
+          ),
         ),
         ElevatedButton(
           onPressed: onContinue,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColorScheme.accent,
-            foregroundColor: Colors.white,
+            foregroundColor: AppColorScheme.onAccent,
           ),
           child: Text(l10n.stillWatchingContinue),
         ),

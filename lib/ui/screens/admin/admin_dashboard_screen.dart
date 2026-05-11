@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -358,8 +359,8 @@ class _DashboardKpiStrip extends StatelessWidget {
         : fill >= 0.90
             ? theme.colorScheme.error
             : fill >= 0.75
-                ? Colors.orange
-                : Colors.green.shade600;
+          ? AppColorScheme.statusPending
+          : AppColorScheme.statusAvailable;
 
     return Row(
       children: [
@@ -392,7 +393,7 @@ class _DashboardKpiStrip extends StatelessWidget {
             label: 'Warnings',
             value: '$warningCount',
             color: warningCount > 0
-                ? Colors.orange
+              ? AppColorScheme.statusPending
                 : theme.colorScheme.onSurfaceVariant,
             highlight: warningCount > 0,
             theme: theme,

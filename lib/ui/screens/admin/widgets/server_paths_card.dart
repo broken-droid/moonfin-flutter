@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -91,10 +92,10 @@ class ServerPathsCard extends StatelessWidget {
     final bool critical = usageFrac >= 0.90;
     final bool warning = usageFrac >= 0.75;
     final Color barColor = critical
-        ? Colors.red.shade400
+      ? AppColorScheme.statusRequested
         : warning
-            ? Colors.orange
-            : Colors.green.shade600;
+        ? AppColorScheme.statusPending
+        : AppColorScheme.statusAvailable;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -107,8 +108,8 @@ class ServerPathsCard extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w600)),
               if (critical) ...[
                 const SizedBox(width: 6),
-                const Icon(Icons.warning_amber,
-                    size: 13, color: Colors.orange),
+                Icon(Icons.warning_amber,
+                    size: 13, color: AppColorScheme.statusPending),
               ],
             ],
           ),

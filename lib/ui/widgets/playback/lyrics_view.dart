@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/models/lyrics.dart';
 import '../../../l10n/app_localizations.dart';
@@ -75,7 +75,7 @@ class _LyricsViewState extends State<LyricsView> {
       return Center(
         child: Text(
           AppLocalizations.of(context).lyricsNotAvailable,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
+          style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }
@@ -92,7 +92,7 @@ class _LyricsViewState extends State<LyricsView> {
           child: Text(
             lines[index].text,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: AppColorScheme.onSurface.withValues(alpha: 0.8),
               fontSize: 16,
               height: 1.5,
             ),
@@ -117,8 +117,8 @@ class _LyricsViewState extends State<LyricsView> {
             duration: const Duration(milliseconds: 200),
             style: TextStyle(
               color: isActive
-                  ? Colors.white
-                  : Colors.white.withValues(alpha: 0.4),
+                  ? AppColorScheme.onSurface
+                  : AppColorScheme.onSurface.withValues(alpha: 0.4),
               fontSize: isActive ? 18 : 15,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               height: 1.4,

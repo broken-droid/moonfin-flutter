@@ -91,6 +91,14 @@ class UserPreferences extends ChangeNotifier {
     values: VisualThemeId.values,
   );
 
+  /// Optional id of a plugin-supplied custom theme. When non-empty and the id
+  /// resolves to a registered custom theme, it overrides [visualTheme].
+  /// Empty string means "use the built-in [visualTheme] selection".
+  static final customThemeId = Preference(
+    key: 'pref_custom_theme_id',
+    defaultValue: '',
+  );
+
   static final showClock = Preference(
     key: 'pref_show_clock',
     defaultValue: true,

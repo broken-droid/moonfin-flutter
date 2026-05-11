@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/services/kefin_tweaks_service.dart';
 import '../../../data/services/home_screen_sections_service.dart';
@@ -134,7 +135,7 @@ class _HomeScreenSectionsIntegrationScreenState
     return ListTile(
       leading: Icon(
         cap.isAvailable ? Icons.check_circle : Icons.error_outline,
-        color: cap.isAvailable ? Colors.green : null,
+        color: cap.isAvailable ? AppColorScheme.statusAvailable : null,
       ),
       title: Text(cap.serverId),
       subtitle: Text(subtitle.toString()),

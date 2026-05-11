@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/services/seerr/seerr_api_models.dart';
 import '../../../data/viewmodels/seerr_discover_view_model.dart';
@@ -208,7 +208,7 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
     final infoPanelLeft = (navbarIsLeft && PlatformDetection.isTV) ? 80.0 : 48.0;
     final infoTopInset = topPad + navbarHeight + 8;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       body: NavigationLayout(
         showBackButton: true,
         child: Stack(
@@ -251,7 +251,9 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
           children: [
             Text(
               vm.error!,
-              style: const TextStyle(color: Colors.white70),
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
@@ -331,7 +333,7 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
     bool autofocusFirst = false,
     FocusNode? firstFocusNode,
   }) {
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
+    final suppressFocusGlow = ThemeRegistry.active.borders.focusGlow.isNotEmpty;
     final focusColor =
       Color(GetIt.instance<UserPreferences>().get(UserPreferences.focusColor).colorValue);
     final cardExpansion =
@@ -351,7 +353,7 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
         seerrStatus: item.mediaInfo?.status,
         focusColor: focusColor,
         cardFocusExpansion: cardExpansion,
-        suppressFocusGlow: isNeon,
+        suppressFocusGlow: suppressFocusGlow,
         autofocus: autofocusFirst && i == 0,
         focusNode: (autofocusFirst && i == 0) ? firstFocusNode : null,
         onTap: () => _onItemTap(item),
@@ -560,20 +562,20 @@ class _GradientScrim extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DecoratedBox(
+    return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xCC000000),
-            Color(0x55000000),
-            Color(0xDD000000),
+            AppColorScheme.scrim.withValues(alpha: 0.8),
+            AppColorScheme.scrim.withValues(alpha: 0.33),
+            AppColorScheme.scrim.withValues(alpha: 0.87),
           ],
           stops: [0.0, 0.25, 0.6],
         ),
       ),
-      child: SizedBox.expand(),
+      child: const SizedBox.expand(),
     );
   }
 }
@@ -589,7 +591,12 @@ class _InfoPanel extends StatelessWidget {
     if (item == null) return const SizedBox(height: 140);
 
     final theme = Theme.of(context);
-    const shadows = [Shadow(blurRadius: 4, color: Colors.black54)];
+    final shadows = [
+      Shadow(
+        blurRadius: 4,
+        color: AppColorScheme.scrim.withValues(alpha: 0.54),
+      ),
+    ];
     final year = _SeerrDiscoverScreenState._yearFromItem(item!);
     final rating = item!.voteAverage;
     final l10n = AppLocalizations.of(context);
@@ -609,7 +616,7 @@ class _InfoPanel extends StatelessWidget {
               Text(
                 item!.displayTitle,
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
+                  color: AppColorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   shadows: shadows,
                 ),
@@ -622,7 +629,7 @@ class _InfoPanel extends StatelessWidget {
                   if (year != null)
                     Text(year,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white70,
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                           shadows: shadows,
                         )),
                   if (year != null && rating != null)
@@ -631,12 +638,12 @@ class _InfoPanel extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.star, size: 16, color: Color(0xFFFFC107)),
+                        const Icon(Icons.star, size: 16, color: AppColors.orange500),
                         const SizedBox(width: 4),
                         Text(
                           rating.toStringAsFixed(1),
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.white70,
+                            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                             shadows: shadows,
                           ),
                         ),
@@ -645,7 +652,7 @@ class _InfoPanel extends StatelessWidget {
                   const SizedBox(width: 12),
                   Text(mediaType,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white54,
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.54),
                         shadows: shadows,
                       )),
                 ],
@@ -657,7 +664,7 @@ class _InfoPanel extends StatelessWidget {
                     ? Text(
                         item!.overview!,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: AppColorScheme.onSurface.withValues(alpha: 0.8),
                           shadows: shadows,
                         ),
                         maxLines: 3,
@@ -742,17 +749,20 @@ class _GenreCardState extends State<_GenreCard> with FocusStateMixin {
                         imageUrl: widget.imageUrl!,
                         fit: BoxFit.cover,
                         errorWidget: (_, _, _) => Container(
-                          color: Colors.grey[800],
+                          color: AppColorScheme.surfaceVariant,
                         ),
                       )
                     else
-                      Container(color: Colors.grey[800]),
+                      Container(color: AppColorScheme.surfaceVariant),
                     Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Color(0xBB000000)],
+                          colors: [
+                            AppColorScheme.scrim.withValues(alpha: 0),
+                            AppColorScheme.scrim.withValues(alpha: 0.73),
+                          ],
                         ),
                       ),
                     ),
@@ -762,12 +772,15 @@ class _GenreCardState extends State<_GenreCard> with FocusStateMixin {
                       right: 8,
                       child: Text(
                         widget.name,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: AppColorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                           shadows: [
-                            Shadow(blurRadius: 4, color: Colors.black),
+                            Shadow(
+                              blurRadius: 4,
+                              color: AppColorScheme.scrim,
+                            ),
                           ],
                         ),
                         maxLines: 1,
@@ -858,7 +871,7 @@ class _LogoCardState extends State<_LogoCard> with FocusStateMixin {
               height: 90,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A1A2E),
+                  color: AppColorScheme.surface,
                   borderRadius: BorderRadius.circular(8),
                   border: showFocusBorder
                       ? Border.fromBorderSide(
@@ -878,8 +891,8 @@ class _LogoCardState extends State<_LogoCard> with FocusStateMixin {
                           errorWidget: (_, _, _) => Center(
                             child: Text(
                               widget.name,
-                              style: const TextStyle(
-                                color: Colors.white70,
+                              style: TextStyle(
+                                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                                 fontSize: 13,
                               ),
                               textAlign: TextAlign.center,
@@ -890,8 +903,8 @@ class _LogoCardState extends State<_LogoCard> with FocusStateMixin {
                     : Center(
                         child: Text(
                           widget.name,
-                          style: const TextStyle(
-                            color: Colors.white70,
+                          style: TextStyle(
+                            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
                             fontSize: 13,
                           ),
                           textAlign: TextAlign.center,

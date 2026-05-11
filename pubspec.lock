@@ -715,13 +715,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  jellyfin_design:
-    dependency: "direct main"
-    description:
-      path: "packages/design"
-      relative: true
-    source: path
-    version: "0.1.0"
   jellyfin_preference:
     dependency: "direct main"
     description:
@@ -904,6 +897,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  moonfin_design:
+    dependency: "direct main"
+    description:
+      path: "packages/design"
+      relative: true
+    source: path
+    version: "0.1.0"
   moonfin_native_video:
     dependency: "direct main"
     description:

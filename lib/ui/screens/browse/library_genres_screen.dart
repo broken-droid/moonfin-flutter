@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart' hide ImageType;
 
 import '../../../data/services/background_service.dart';
@@ -338,7 +338,12 @@ class _LibraryGenresScreenState extends State<LibraryGenresScreen> {
 
     if (_genres.isEmpty) {
       return Center(
-        child: Text(AppLocalizations.of(context).noGenresFound, style: const TextStyle(color: Colors.white70)),
+        child: Text(
+          AppLocalizations.of(context).noGenresFound,
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
       );
     }
 
@@ -434,23 +439,31 @@ class _GenresHeader extends StatelessWidget {
         children: [
           if (PlatformDetection.isTV)
             IconButton(
-              icon: const Icon(Icons.home, color: Colors.white70, size: 22),
+              icon: Icon(
+                Icons.home,
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                size: 22,
+              ),
               onPressed: () => context.go(Destinations.home),
               tooltip: AppLocalizations.of(context).home,
             )
           else
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 22),
+              icon: Icon(
+                Icons.arrow_back,
+                color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                size: 22,
+              ),
               onPressed: onBack,
               tooltip: AppLocalizations.of(context).back,
             ),
           const SizedBox(width: 12),
           Text(
             AppLocalizations.of(context).libraryGenresTitle(libraryName),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w300,
-              color: Colors.white,
+              color: AppColorScheme.onSurface,
             ),
           ),
         ],

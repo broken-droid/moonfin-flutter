@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 class FocusTheme {
   static const double scale = 1.02;

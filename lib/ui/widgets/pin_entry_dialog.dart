@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../util/focus/dpad_keys.dart';
@@ -360,16 +360,16 @@ class _PinEntryDialogState extends State<PinEntryDialog> {
       ),
     ).copyWith(
       backgroundColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.focused)) return Colors.white;
+        if (states.contains(WidgetState.focused)) return AppColorScheme.onSurface;
         if (states.contains(WidgetState.pressed)) {
-          return Colors.white.withValues(alpha: 0.92);
+          return AppColorScheme.onSurface.withValues(alpha: 0.92);
         }
         return null;
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||
             states.contains(WidgetState.pressed)) {
-          return Colors.black;
+          return AppColors.black;
         }
         return null;
       }),

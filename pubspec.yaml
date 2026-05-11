@@ -83,7 +83,7 @@ dependencies:
     path: packages/playback_jellyfin
   playback_emby:
     path: packages/playback_emby
-  jellyfin_design:
+  moonfin_design:
     path: packages/design
   jellyfin_preference:
     path: packages/preference

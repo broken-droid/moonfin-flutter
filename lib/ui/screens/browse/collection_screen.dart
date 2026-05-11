@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../widgets/focus/request_initial_focus.dart';
@@ -12,7 +13,7 @@ class CollectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => RequestInitialFocus(
         child: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: AppColorScheme.background,
           body: NavigationLayout(
             showBackButton: true,
             child: Center(

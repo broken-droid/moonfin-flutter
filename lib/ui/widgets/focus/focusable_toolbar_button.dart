@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../preference/user_preferences.dart';
 import 'focus_theme.dart';
@@ -109,9 +110,9 @@ class _FocusableToolbarButtonState extends State<FocusableToolbarButton>
   Color _backgroundColor() {
     switch (widget.variant) {
       case ToolbarButtonVariant.invert:
-        return focused ? Colors.white : Colors.transparent;
+        return focused ? AppColorScheme.onSurface : Colors.transparent;
       case ToolbarButtonVariant.translucent:
-        return Colors.white.withAlpha(focused ? 36 : 20);
+        return AppColorScheme.onSurface.withAlpha(focused ? 36 : 20);
     }
   }
 
@@ -119,10 +120,10 @@ class _FocusableToolbarButtonState extends State<FocusableToolbarButton>
     switch (widget.variant) {
       case ToolbarButtonVariant.invert:
         return focused
-            ? Colors.black
-            : Colors.white.withAlpha(widget.unfocusedIconAlpha);
+            ? AppColors.black
+            : AppColorScheme.onSurface.withAlpha(widget.unfocusedIconAlpha);
       case ToolbarButtonVariant.translucent:
-        return Colors.white;
+        return AppColorScheme.onSurface;
     }
   }
 }

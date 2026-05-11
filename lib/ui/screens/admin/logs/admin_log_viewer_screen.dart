@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -109,10 +110,12 @@ class _AdminLogViewerScreenState extends State<AdminLogViewerScreen> {
 
   Color _lineColor(ThemeData theme, String line) {
     final upper = line.toUpperCase();
-    if (upper.contains('[ERR]')) return Colors.red;
-    if (upper.contains('[WRN]')) return Colors.orange;
-    if (upper.contains('[INF]')) return Colors.green;
-    if (upper.contains('[DBG]')) return Colors.grey;
+    if (upper.contains('[ERR]')) return AppColorScheme.statusRequested;
+    if (upper.contains('[WRN]')) return AppColorScheme.statusPending;
+    if (upper.contains('[INF]')) return AppColorScheme.statusAvailable;
+    if (upper.contains('[DBG]')) {
+      return AppColorScheme.onSurface.withValues(alpha: 0.6);
+    }
     return theme.colorScheme.onSurface;
   }
 

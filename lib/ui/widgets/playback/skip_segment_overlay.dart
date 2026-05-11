@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/models/media_segment.dart';
 import '../../../l10n/app_localizations.dart';
@@ -76,8 +76,8 @@ class _SkipSegmentOverlayState extends State<SkipSegmentOverlay> {
                 children: [
                   Text(
                     l10n.skipSegment(widget.segment.type.displayName),
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),

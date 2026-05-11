@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/models/aggregated_item.dart';
 import '../overlay_sheet.dart';
@@ -38,9 +39,9 @@ class _ContextMenu extends StatelessWidget {
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(FocusTheme.defaultBorderRadius),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Color(0x66000000),
+                color: AppColorScheme.scrim.withValues(alpha: 0.4),
                 blurRadius: 24,
                 offset: Offset(0, 8),
               ),

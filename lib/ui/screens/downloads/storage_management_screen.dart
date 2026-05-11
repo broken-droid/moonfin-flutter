@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/database/offline_database.dart';
 import '../../../data/providers/offline_providers.dart';
@@ -77,11 +77,11 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
       setState(() {
         _breakdown = [
           _StorageBreakdownItem(AppLocalizations.of(context).movies, movieBytes, AppColorScheme.accent),
-          _StorageBreakdownItem(AppLocalizations.of(context).tvShows, tvBytes, const Color(0xFF4CAF50)),
-          _StorageBreakdownItem(AppLocalizations.of(context).musicAndAudiobooks, musicBytes, const Color(0xFFAB47BC)),
-          _StorageBreakdownItem(AppLocalizations.of(context).books, bookBytes, const Color(0xFFEF5350)),
-          _StorageBreakdownItem(AppLocalizations.of(context).images, imageBytes, const Color(0xFFFFA726)),
-          _StorageBreakdownItem(AppLocalizations.of(context).database, dbBytes, const Color(0xFF9E9E9E)),
+          _StorageBreakdownItem(AppLocalizations.of(context).tvShows, tvBytes, AppColorScheme.statusAvailable),
+          _StorageBreakdownItem(AppLocalizations.of(context).musicAndAudiobooks, musicBytes, AppColorScheme.statusDownloading),
+          _StorageBreakdownItem(AppLocalizations.of(context).books, bookBytes, AppColorScheme.statusRequested),
+          _StorageBreakdownItem(AppLocalizations.of(context).images, imageBytes, AppColors.orange500),
+          _StorageBreakdownItem(AppLocalizations.of(context).database, dbBytes, AppColorScheme.statusPending),
         ];
         _itemsBySize = downloadable;
       });
@@ -98,14 +98,14 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
     final storageLimitMb = prefs.get(UserPreferences.downloadStorageLimitMb);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColorScheme.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(AppLocalizations.of(context).storageManagement),
         actions: [
           if (_selectMode && _selected.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.delete, color: Colors.redAccent),
+              icon: Icon(Icons.delete, color: AppColorScheme.statusRequested),
               onPressed: _bulkDelete,
             ),
           if (_itemsBySize != null && _itemsBySize!.isNotEmpty)
@@ -148,7 +148,14 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context).storageBreakdown, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+        Text(
+          AppLocalizations.of(context).storageBreakdown,
+          style: TextStyle(
+            color: AppColorScheme.onSurface,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 12),
         if (total > 0)
           ClipRRect(
@@ -173,8 +180,21 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
                 children: [
                   Container(width: 12, height: 12, decoration: BoxDecoration(color: b.color, borderRadius: BorderRadius.circular(2))),
                   const SizedBox(width: 8),
-                  Expanded(child: Text(b.label, style: const TextStyle(color: Colors.white70))),
-                  Text(formatBytes(b.bytes), style: const TextStyle(color: Colors.white54, fontSize: 13)),
+                  Expanded(
+                    child: Text(
+                      b.label,
+                      style: TextStyle(
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    formatBytes(b.bytes),
+                    style: TextStyle(
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+                      fontSize: 13,
+                    ),
+                  ),
                 ],
               ),
             )),
@@ -186,7 +206,14 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context).downloadedItems, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+        Text(
+          AppLocalizations.of(context).downloadedItems,
+          style: TextStyle(
+            color: AppColorScheme.onSurface,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 8),
         ..._itemsBySize!.map((item) {
           final isSelected = _selected.contains(item.itemId);
@@ -205,14 +232,27 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
                       'Book' => Icons.menu_book_outlined,
                       _ => Icons.movie_outlined,
                     },
-                    color: Colors.white38,
+                    color: AppColorScheme.onSurface.withValues(alpha: 0.38),
                   ),
-            title: Text(item.name, style: const TextStyle(color: Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis),
+            title: Text(
+              item.name,
+              style: TextStyle(color: AppColorScheme.onSurface),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             subtitle: Text(
               '${item.type} • ${item.qualityPreset}',
-              style: const TextStyle(color: Colors.white38, fontSize: 12),
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.38),
+                fontSize: 12,
+              ),
             ),
-            trailing: Text(formatBytes(item.fileSizeBytes), style: const TextStyle(color: Colors.white54)),
+            trailing: Text(
+              formatBytes(item.fileSizeBytes),
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+              ),
+            ),
             onTap: _selectMode
                 ? () => setState(() {
                       isSelected ? _selected.remove(item.itemId) : _selected.add(item.itemId);
@@ -228,11 +268,21 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context).storageLimit, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+        Text(
+          AppLocalizations.of(context).storageLimit,
+          style: TextStyle(
+            color: AppColorScheme.onSurface,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 4),
         Text(
           currentLimitMb == 0 ? AppLocalizations.of(context).noLimit : '${(currentLimitMb / 1024).toStringAsFixed(1)} GB',
-          style: const TextStyle(color: Colors.white54, fontSize: 13),
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+            fontSize: 13,
+          ),
         ),
         Slider(
           value: currentLimitMb.toDouble(),
@@ -251,11 +301,14 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
   Widget _buildDeleteAllButton() {
     return Center(
       child: OutlinedButton.icon(
-        icon: const Icon(Icons.delete_forever, color: Colors.redAccent),
-        label: Text(AppLocalizations.of(context).deleteAllDownloads, style: const TextStyle(color: Colors.redAccent)),
+        icon: Icon(Icons.delete_forever, color: AppColorScheme.statusRequested),
+        label: Text(
+          AppLocalizations.of(context).deleteAllDownloads,
+          style: TextStyle(color: AppColorScheme.statusRequested),
+        ),
         style: OutlinedButton.styleFrom(
           side: ThemeRegistry.active.borders.chipBorder.copyWith(
-            color: Colors.redAccent,
+            color: AppColorScheme.statusRequested,
           ),
         ),
         onPressed: _confirmDeleteAll,
@@ -274,7 +327,9 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColorScheme.statusRequested,
+            ),
             child: Text(l10n.delete),
           ),
         ],
@@ -316,7 +371,9 @@ class _StorageManagementScreenState extends ConsumerState<StorageManagementScree
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColorScheme.statusRequested,
+            ),
             child: Text(l10n.deleteAll),
           ),
         ],
@@ -345,19 +402,29 @@ class _TotalStorageHeader extends StatelessWidget {
       children: [
         Text(
           formatBytes(totalBytes),
-          style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppColorScheme.onSurface,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         if (limitMb > 0) ...[
           const SizedBox(height: 8),
           LinearProgressIndicator(
             value: fraction,
-            backgroundColor: Colors.white12,
-            color: fraction > 0.9 ? Colors.redAccent : AppColorScheme.accent,
+            backgroundColor: AppColorScheme.onSurface.withValues(alpha: 0.12),
+            color:
+                fraction > 0.9
+                    ? AppColorScheme.statusRequested
+                    : AppColorScheme.accent,
           ),
           const SizedBox(height: 4),
           Text(
             AppLocalizations.of(context).ofStorageLimit(formatBytes(limitBytes)),
-            style: const TextStyle(color: Colors.white54, fontSize: 13),
+            style: TextStyle(
+              color: AppColorScheme.onSurface.withValues(alpha: 0.54),
+              fontSize: 13,
+            ),
           ),
         ],
       ],

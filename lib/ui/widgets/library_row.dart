@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jellyfin_design/jellyfin_design.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../util/platform_detection.dart';
@@ -27,13 +27,12 @@ class _LibraryRowState extends State<LibraryRow> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final hasItems = widget.children.isNotEmpty;
     final showControls = hasItems && PlatformDetection.useDesktopUi;
     return HorizontalScrollSection(
       title: widget.title,
       titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-        color: isNeon ? AppColorScheme.onSurface : null,
+        color: AppColorScheme.onSurface,
         fontWeight: FontWeight.w700,
       ),
       headerPadding: const EdgeInsets.fromLTRB(16, 16, 8, 8),

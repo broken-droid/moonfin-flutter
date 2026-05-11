@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../data/models/download_quality.dart';
 import '../../../data/providers/offline_providers.dart';
@@ -97,8 +98,14 @@ class DownloadSettingsScreen extends ConsumerWidget {
 
           _Section(title: l10n.dangerZone),
           ListTile(
-            leading: const Icon(Icons.delete_forever, color: Colors.redAccent),
-            title: Text(l10n.clearAllDownloads, style: const TextStyle(color: Colors.redAccent)),
+            leading: Icon(
+              Icons.delete_forever,
+              color: AppColorScheme.statusRequested,
+            ),
+            title: Text(
+              l10n.clearAllDownloads,
+                style: TextStyle(color: AppColorScheme.statusRequested),
+            ),
             onTap: () => _confirmClearAll(context),
           ),
         ],
@@ -251,7 +258,9 @@ class DownloadSettingsScreen extends ConsumerWidget {
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColorScheme.statusRequested,
+            ),
             child: Text(l10n.clearAll),
           ),
         ],

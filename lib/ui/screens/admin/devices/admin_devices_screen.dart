@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -124,8 +125,8 @@ class _AdminDevicesScreenState extends ConsumerState<AdminDevicesScreen> {
   Color _lastSeenColor(DateTime? date, ThemeData theme) {
     if (date == null) return theme.colorScheme.onSurfaceVariant;
     final diff = DateTime.now().difference(date);
-    if (diff.inHours < 1) return Colors.green;
-    if (diff.inDays < 1) return Colors.orange.shade700;
+    if (diff.inHours < 1) return AppColorScheme.statusAvailable;
+    if (diff.inDays < 1) return AppColorScheme.statusPending;
     return theme.colorScheme.onSurfaceVariant;
   }
 
