@@ -12,6 +12,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:moonfin_native_video/moonfin_native_video.dart';
 import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart' hide ImageType;
+import 'package:window_manager/window_manager.dart';
 
 import '../../../data/models/aggregated_item.dart';
 import '../../../data/models/home_row.dart';
@@ -187,8 +188,10 @@ class _HomeShellState extends State<_HomeShell>
     if (state == AppLifecycleState.resumed) {
       _viewModel.refresh(preserveExisting: true);
     } else if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.hidden) {
+        state == AppLifecycleState.hidden ||
+        (state == AppLifecycleState.inactive &&
+            !PlatformDetection.isDesktop &&
+            !PlatformDetection.isWeb)) {
       _themeMusicService.fadeOutAndStop();
     }
   }
@@ -514,7 +517,7 @@ class _ContentRows extends StatefulWidget {
 }
 
 class _ContentRowsState extends State<_ContentRows>
-    with WidgetsBindingObserver {
+  with WidgetsBindingObserver, WindowListener {
   final _scrollController = ScrollController();
   final _mediaBarFocusNode = FocusNode(debugLabel: 'home_media_bar_focus');
   final _playbackManager = GetIt.instance<PlaybackManager>();
@@ -548,6 +551,7 @@ class _ContentRowsState extends State<_ContentRows>
   DateTime? _lastVerticalNavAt;
   bool _verticalNavInFlight = false;
   bool _chromeFocusActive = false;
+  bool _windowHasFocus = true;
   String? _activePreviewKey;
   late bool _lastMedia3PreviewPreference;
   List<double> _rowTopOffsets = [];
@@ -577,9 +581,11 @@ class _ContentRowsState extends State<_ContentRows>
     if (!mounted) return;
     final primary = FocusManager.instance.primaryFocus;
     final onMediaBar = identical(primary, _mediaBarFocusNode);
+    final desktopUnfocused =
+      PlatformDetection.isDesktop && !_windowHasFocus;
     final chromeFocusActive =
         SettingsPanel.isOpenNotifier.value ||
-        (!onMediaBar && _activeFocusedRowIndex == null);
+        (!desktopUnfocused && !onMediaBar && _activeFocusedRowIndex == null);
 
     final nextMediaBarVisible = onMediaBar || _activeFocusedRowIndex == null;
     final chromeChanged = _chromeFocusActive != chromeFocusActive;
@@ -665,6 +671,9 @@ class _ContentRowsState extends State<_ContentRows>
     super.initState();
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addObserver(this);
+    if (PlatformDetection.isDesktop) {
+      windowManager.addListener(this);
+    }
     appRouter.routerDelegate.addListener(_onRouteChanged);
     FocusManager.instance.addListener(_onGlobalFocusChanged);
     SettingsPanel.isOpenNotifier.addListener(_onSettingsPanelOpenChanged);
@@ -683,6 +692,9 @@ class _ContentRowsState extends State<_ContentRows>
   void dispose() {
     appRouter.routerDelegate.removeListener(_onRouteChanged);
     WidgetsBinding.instance.removeObserver(this);
+    if (PlatformDetection.isDesktop) {
+      windowManager.removeListener(this);
+    }
     FocusManager.instance.removeListener(_onGlobalFocusChanged);
     SettingsPanel.isOpenNotifier.removeListener(_onSettingsPanelOpenChanged);
     _scrollController.removeListener(_onScroll);
@@ -698,9 +710,57 @@ class _ContentRowsState extends State<_ContentRows>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed) {
+    final isBackground =
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached ||
+        (state == AppLifecycleState.inactive &&
+            !PlatformDetection.isDesktop &&
+            !PlatformDetection.isWeb);
+    if (isBackground) {
       _finishSharedPreview(releaseResources: true);
     }
+  }
+
+  @override
+  void onWindowBlur() {
+    _windowHasFocus = false;
+    _onGlobalFocusChanged();
+  }
+
+  @override
+  void onWindowFocus() {
+    _windowHasFocus = true;
+    _onGlobalFocusChanged();
+    _repairFocusAfterWindowReturn();
+  }
+
+  void _repairFocusAfterWindowReturn() {
+    if (!mounted || !_isHomeRouteActive()) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_isHomeRouteActive()) return;
+      if (FocusManager.instance.primaryFocus != null) return;
+
+      final rowIndex = _activeFocusedRowIndex;
+      if (rowIndex != null) {
+        final rowState = _rowKeys[rowIndex]?.currentState;
+        if (rowState is LockedFocusRowState<dynamic>) {
+          rowState.requestFocusFromMemory();
+          if (FocusManager.instance.primaryFocus != null) {
+            return;
+          }
+        }
+      }
+
+      if (_isMediaBarIncluded()) {
+        _mediaBarFocusNode.requestFocus();
+        if (_mediaBarFocusNode.hasFocus) {
+          return;
+        }
+      }
+
+      _requestFocusToNavbar();
+    });
   }
 
   void _onRouteChanged() {
@@ -831,9 +891,11 @@ class _ContentRowsState extends State<_ContentRows>
     _previewStopTimer?.cancel();
     _previewRequestId++;
     if (!kIsWeb) {
+      unawaited(_previewPlayer?.setVolume(0));
       _previewPlayer?.stop();
     }
     if (_previewUsingMedia3) {
+      unawaited(_media3PreviewBackend.setVolume(0));
       _previewUsingMedia3 = false;
       unawaited(_media3PreviewBackend.stop());
     }

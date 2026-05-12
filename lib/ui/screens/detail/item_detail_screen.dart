@@ -167,8 +167,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden ||
+        (state == AppLifecycleState.inactive &&
+            !PlatformDetection.isDesktop &&
+            !PlatformDetection.isWeb) ||
         state == AppLifecycleState.detached) {
       _themeMusicService.fadeOutAndStop();
       return;

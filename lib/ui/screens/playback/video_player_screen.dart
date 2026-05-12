@@ -13,6 +13,7 @@ import 'package:playback_core/playback_core.dart';
 import 'package:server_core/server_core.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:volume_controller/volume_controller.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../../util/fullscreen_helper.dart';
 import '../../widgets/playback/seek_icons.dart';
@@ -57,7 +58,7 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, WindowListener {
   static final _camelCaseSpaceRe = RegExp(r'(?<=[a-z])(?=[A-Z])');
   static const _tvTemporarySpeed = 2.0;
   static const _tvTemporarySpeedHoldDelay = Duration(milliseconds: 420);
@@ -577,6 +578,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     );
   }
 
+  void _ensureDesktopOverlayFocus() {
+    if (!(PlatformDetection.isDesktop || PlatformDetection.isWeb)) return;
+    if (_overlayFocus.hasFocus) return;
+    _overlayFocus.requestFocus();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -610,6 +617,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       ]);
     }
     WidgetsBinding.instance.addObserver(this);
+    if (PlatformDetection.isDesktop) {
+      windowManager.addListener(this);
+    }
     _loadSegmentsForCurrentItem();
     _positionSub = _state.positionStream.listen(_onPositionUpdate);
     _backendSub = _manager.backendChangedStream.listen((backend) {
@@ -713,6 +723,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    if (PlatformDetection.isDesktop) {
+      windowManager.removeListener(this);
+    }
     _cancelTvTemporarySpeedHold();
     _hideTimer?.cancel();
     _volumeOverlayTimer?.cancel();
@@ -959,6 +972,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   @override
+  void onWindowFocus() {
+    _ensureDesktopOverlayFocus();
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState lifecycleState) {
     if (lifecycleState != AppLifecycleState.resumed) {
       _cancelTvTemporarySpeedHold();
@@ -1011,6 +1029,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           _activeMediaKitBackend?.setVideoEnabled(true);
           _restorePositionAfterScreenLock();
         }
+        _ensureDesktopOverlayFocus();
         if (PlatformDetection.isMobile) _syncBrightnessFromSystem();
       case AppLifecycleState.detached:
         break;

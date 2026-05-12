@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'platform_detection.dart';
 
@@ -17,6 +18,13 @@ class AppExit {
       } catch (e, st) {
         debugPrint('[AppExit] Android platform channel error: $e\n$st');
       }
+    }
+
+    if (PlatformDetection.isDesktop) {
+      try {
+        await windowManager.close();
+        return;
+      } catch (_) {}
     }
 
     await SystemNavigator.pop();

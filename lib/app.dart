@@ -370,6 +370,11 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     return path.startsWith('/player/') || path == '/live-tv/player';
   }
 
+  bool _isHomeRoute() {
+    final path = appRouter.routerDelegate.currentConfiguration.uri.path;
+    return path == '/home';
+  }
+
   bool _isEditingText() {
     final focusContext = FocusManager.instance.primaryFocus?.context;
     if (focusContext == null) return false;
@@ -500,6 +505,15 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
         eventName == 'moved' ||
         eventName == 'resized') {
       _scheduleSaveGeometry();
+    }
+  }
+
+  @override
+  void onWindowFocus() {
+    if (_isPlayerRoute()) return;
+    if (_isHomeRoute()) return;
+    if (FocusManager.instance.primaryFocus == null && !_focusNode.hasFocus) {
+      _focusNode.requestFocus();
     }
   }
 
