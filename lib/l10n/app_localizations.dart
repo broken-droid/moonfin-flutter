@@ -1430,6 +1430,12 @@ abstract class AppLocalizations {
   /// **'Tracklist'**
   String get tracklist;
 
+  /// Label for an album disc section in a multi-disc track list
+  ///
+  /// In en, this message translates to:
+  /// **'Disc {number}'**
+  String discNumber(int number);
+
   /// Section header for person biography
   ///
   /// In en, this message translates to:

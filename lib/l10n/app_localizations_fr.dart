@@ -758,6 +758,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tracklist => 'Liste des pistes';
 
   @override
+  String discNumber(int number) {
+    return 'Disque $number';
+  }
+
+  @override
   String get biography => 'Biographie';
 
   @override

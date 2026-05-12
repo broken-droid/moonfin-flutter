@@ -25,14 +25,40 @@ class LyricsView extends StatefulWidget {
 class _LyricsViewState extends State<LyricsView> {
   final _scrollController = ScrollController();
   StreamSubscription<Duration>? _sub;
+  late List<GlobalKey> _lineKeys;
   int _activeIndex = -1;
 
   @override
   void initState() {
     super.initState();
-    _updateActive(widget.position);
+    _lineKeys = _buildLineKeys(widget.lyrics.lines.length);
     if (widget.lyrics.isSynced) {
+      _updateActive(widget.position);
       _sub = widget.positionStream.listen(_updateActive);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant LyricsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.lyrics.lines.length != widget.lyrics.lines.length) {
+      _lineKeys = _buildLineKeys(widget.lyrics.lines.length);
+    }
+
+    if (oldWidget.lyrics.isSynced != widget.lyrics.isSynced ||
+        !identical(oldWidget.positionStream, widget.positionStream)) {
+      _sub?.cancel();
+      _sub = null;
+      if (widget.lyrics.isSynced) {
+        _sub = widget.positionStream.listen(_updateActive);
+      }
+    }
+
+    if (widget.lyrics.isSynced) {
+      _updateActive(widget.position);
+    } else if (_activeIndex != -1) {
+      setState(() => _activeIndex = -1);
     }
   }
 
@@ -44,6 +70,7 @@ class _LyricsViewState extends State<LyricsView> {
   }
 
   void _updateActive(Duration position) {
+    if (!widget.lyrics.isSynced) return;
     final lines = widget.lyrics.lines;
     int idx = -1;
     for (var i = lines.length - 1; i >= 0; i--) {
@@ -59,13 +86,22 @@ class _LyricsViewState extends State<LyricsView> {
   }
 
   void _scrollToActive(int index) {
-    if (index < 0 || !_scrollController.hasClients) return;
-    final target = index * 48.0 - 100.0;
-    _scrollController.animateTo(
-      target.clamp(0, _scrollController.position.maxScrollExtent),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
+    if (index < 0 || index >= _lineKeys.length) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final targetContext = _lineKeys[index].currentContext;
+      if (targetContext == null) return;
+      Scrollable.ensureVisible(
+        targetContext,
+        alignment: 0.3,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  List<GlobalKey> _buildLineKeys(int length) {
+    return List<GlobalKey>.generate(length, (_) => GlobalKey());
   }
 
   @override
@@ -109,10 +145,10 @@ class _LyricsViewState extends State<LyricsView> {
         vertical: AppSpacing.spaceLg,
       ),
       itemCount: lines.length,
-      itemExtent: 48,
       itemBuilder: (context, index) {
         final isActive = index == _activeIndex;
         return Center(
+          key: _lineKeys[index],
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: TextStyle(
@@ -126,8 +162,6 @@ class _LyricsViewState extends State<LyricsView> {
             child: Text(
               lines[index].text,
               textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ),
         );

@@ -248,7 +248,7 @@ class ItemDetailViewModel extends ChangeNotifier {
               : await _client.itemsApi.getItems(
                 parentId: itemId,
                 includeItemTypes: ['Audio'],
-                sortBy: 'IndexNumber',
+                sortBy: 'ParentIndexNumber,IndexNumber,SortName',
                 fields: 'PrimaryImageAspectRatio,BasicSyncInfo',
               );
       final items = (data['Items'] as List?) ?? [];

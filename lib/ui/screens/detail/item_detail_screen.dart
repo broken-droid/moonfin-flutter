@@ -1565,6 +1565,7 @@ class _DetailContentState extends State<_DetailContent> {
           },
           onTrackFocused: onBackdropItemFocused,
           isAudiobook: isAudiobook,
+          groupByDisc: item.type == 'MusicAlbum',
           reorderable: canManagePlaylistTracks,
           onPlayTrack: (index) {
             final selectedTrack = viewModel.tracks[index];
@@ -8412,6 +8413,7 @@ class _TrackList extends StatelessWidget {
   final VoidCallback? onFirstTrackUp;
   final ValueChanged<AggregatedItem>? onTrackFocused;
   final bool isAudiobook;
+  final bool groupByDisc;
   final ValueChanged<int> onPlayTrack;
   final bool reorderable;
   final ReorderCallback? onReorder;
@@ -8425,6 +8427,7 @@ class _TrackList extends StatelessWidget {
     this.onFirstTrackUp,
     this.onTrackFocused,
     this.isAudiobook = false,
+    this.groupByDisc = false,
     required this.onPlayTrack,
     this.reorderable = false,
     this.onReorder,
@@ -8468,15 +8471,38 @@ class _TrackList extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: List.generate(tracks.length, (index) {
-        return _TrackTile(
-          track: tracks[index],
+    final hasMultipleDiscs =
+      groupByDisc &&
+      tracks.map((track) => track.parentIndexNumber ?? 1).toSet().length > 1;
+    final l10n = hasMultipleDiscs ? AppLocalizations.of(context) : null;
+    final children = <Widget>[];
+    int? previousDiscNumber;
+
+    for (var index = 0; index < tracks.length; index++) {
+      final track = tracks[index];
+      final discNumber = track.parentIndexNumber ?? 1;
+
+      if (hasMultipleDiscs && discNumber != previousDiscNumber) {
+        children.add(
+          Padding(
+            padding: EdgeInsets.fromLTRB(4, index == 0 ? 0 : 16, 4, 8),
+            child: Text(
+              l10n!.discNumber(discNumber),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Colors.white.withValues(alpha: 0.85),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        );
+      }
+
+      children.add(
+        _TrackTile(
+          track: track,
           focusNode: index == 0 ? firstTrackFocusNode : null,
           onArrowUp: index == 0 ? onFirstTrackUp : null,
-          onFocused: onTrackFocused == null
-              ? null
-              : () => onTrackFocused!(tracks[index]),
+          onFocused: onTrackFocused == null ? null : () => onTrackFocused!(track),
           index: index + 1,
           totalCount: tracks.length,
           currentIndex: index,
@@ -8487,9 +8513,13 @@ class _TrackList extends StatelessWidget {
           onMoveUp: onMoveUp,
           onMoveDown: onMoveDown,
           isAudiobook: isAudiobook,
-        );
-      }),
-    );
+        ),
+      );
+
+      previousDiscNumber = discNumber;
+    }
+
+    return Column(children: children);
   }
 }
 

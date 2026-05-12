@@ -995,6 +995,15 @@
   "@tracklist": {
     "description": "Section header for album track listing"
   },
+  "discNumber": "Disco {number}",
+  "@discNumber": {
+    "description": "Label for an album disc section in a multi-disc track list",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "biography": "Biografía",
   "@biography": {
     "description": "Section header for person biography"

@@ -1007,6 +1007,15 @@
   "@tracklist": {
     "description": "Section header for album track listing"
   },
+  "discNumber": "Disc {number}",
+  "@discNumber": {
+    "description": "Label for an album disc section in a multi-disc track list",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "biography": "Biography",
   "@biography": {
     "description": "Section header for person biography"

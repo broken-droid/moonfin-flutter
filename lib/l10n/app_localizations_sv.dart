@@ -749,6 +749,11 @@ class AppLocalizationsSv extends AppLocalizations {
   String get tracklist => 'Låtlista';
 
   @override
+  String discNumber(int number) {
+    return 'Skiva $number';
+  }
+
+  @override
   String get biography => 'Biografi';
 
   @override
