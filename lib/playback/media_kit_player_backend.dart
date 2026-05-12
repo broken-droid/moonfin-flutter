@@ -26,6 +26,153 @@ class _ParsedMpvConfCacheEntry {
   });
 }
 
+class _MediaKitDeviceProfileCapabilities {
+  const _MediaKitDeviceProfileCapabilities({
+    required this.supportsAvc,
+    required this.supportsAvcHigh10,
+    required this.avcMainLevel,
+    required this.avcHigh10Level,
+    required this.supportsHevc,
+    required this.supportsHevcMain10,
+    required this.hevcMainLevel,
+    required this.hevcMain10Level,
+    required this.supportsHevcDolbyVision,
+    required this.supportsHevcDolbyVisionEl,
+    required this.supportsHevcHdr10,
+    required this.supportsHevcHdr10Plus,
+    required this.supportsAv1,
+    required this.supportsAv1Main10,
+    required this.supportsAv1DolbyVision,
+    required this.supportsAv1Hdr10,
+    required this.supportsAv1Hdr10Plus,
+    required this.supportsVc1,
+    required this.maxResolutionAvcWidth,
+    required this.maxResolutionAvcHeight,
+    required this.maxResolutionHevcWidth,
+    required this.maxResolutionHevcHeight,
+    required this.maxResolutionAv1Width,
+    required this.maxResolutionAv1Height,
+    required this.maxResolutionVc1Width,
+    required this.maxResolutionVc1Height,
+    required this.supportsHdr10PlusDisplay,
+    required this.supportsDvProfile5,
+    required this.supportsDvProfile7,
+    required this.supportsDvProfile8,
+    required this.knownHevcDoviHdr10PlusBug,
+  });
+
+  final bool supportsAvc;
+  final bool supportsAvcHigh10;
+  final int avcMainLevel;
+  final int avcHigh10Level;
+  final bool supportsHevc;
+  final bool supportsHevcMain10;
+  final int hevcMainLevel;
+  final int hevcMain10Level;
+  final bool supportsHevcDolbyVision;
+  final bool supportsHevcDolbyVisionEl;
+  final bool supportsHevcHdr10;
+  final bool supportsHevcHdr10Plus;
+  final bool supportsAv1;
+  final bool supportsAv1Main10;
+  final bool supportsAv1DolbyVision;
+  final bool supportsAv1Hdr10;
+  final bool supportsAv1Hdr10Plus;
+  final bool supportsVc1;
+  final int maxResolutionAvcWidth;
+  final int maxResolutionAvcHeight;
+  final int maxResolutionHevcWidth;
+  final int maxResolutionHevcHeight;
+  final int maxResolutionAv1Width;
+  final int maxResolutionAv1Height;
+  final int maxResolutionVc1Width;
+  final int maxResolutionVc1Height;
+  final bool supportsHdr10PlusDisplay;
+  final bool supportsDvProfile5;
+  final bool supportsDvProfile7;
+  final bool supportsDvProfile8;
+  final bool knownHevcDoviHdr10PlusBug;
+
+  static const _k8kWidth = 7680;
+  static const _k8kHeight = 4320;
+  static const _h264Level52 = 52;
+  static const _hevcLevel62 = 183;
+
+  static _MediaKitDeviceProfileCapabilities fromPlatformDetection() {
+    return _MediaKitDeviceProfileCapabilities(
+      supportsAvc: PlatformDetection.supportsAvc,
+      supportsAvcHigh10: PlatformDetection.supportsAvcHigh10,
+      avcMainLevel: PlatformDetection.avcMainLevel,
+      avcHigh10Level: PlatformDetection.avcHigh10Level,
+      supportsHevc: PlatformDetection.supportsHevc,
+      supportsHevcMain10: PlatformDetection.supportsHevcMain10,
+      hevcMainLevel: PlatformDetection.hevcMainLevel,
+      hevcMain10Level: PlatformDetection.hevcMain10Level,
+      supportsHevcDolbyVision: PlatformDetection.supportsHevcDolbyVision,
+      supportsHevcDolbyVisionEl: PlatformDetection.supportsHevcDolbyVisionEl,
+      supportsHevcHdr10: PlatformDetection.supportsHevcHdr10,
+      supportsHevcHdr10Plus: PlatformDetection.supportsHevcHdr10Plus,
+      supportsAv1: PlatformDetection.supportsAv1,
+      supportsAv1Main10: PlatformDetection.supportsAv1Main10,
+      supportsAv1DolbyVision: PlatformDetection.supportsAv1DolbyVision,
+      supportsAv1Hdr10: PlatformDetection.supportsAv1Hdr10,
+      supportsAv1Hdr10Plus: PlatformDetection.supportsAv1Hdr10Plus,
+      supportsVc1: PlatformDetection.supportsVc1,
+      maxResolutionAvcWidth: PlatformDetection.maxResolutionAvcWidth,
+      maxResolutionAvcHeight: PlatformDetection.maxResolutionAvcHeight,
+      maxResolutionHevcWidth: PlatformDetection.maxResolutionHevcWidth,
+      maxResolutionHevcHeight: PlatformDetection.maxResolutionHevcHeight,
+      maxResolutionAv1Width: PlatformDetection.maxResolutionAv1Width,
+      maxResolutionAv1Height: PlatformDetection.maxResolutionAv1Height,
+      maxResolutionVc1Width: PlatformDetection.maxResolutionVc1Width,
+      maxResolutionVc1Height: PlatformDetection.maxResolutionVc1Height,
+      supportsHdr10PlusDisplay: PlatformDetection.supportsHdr10PlusDisplay,
+      supportsDvProfile5: PlatformDetection.supportsDoViProfile5,
+      supportsDvProfile7: PlatformDetection.supportsDoViProfile7,
+      supportsDvProfile8: PlatformDetection.supportsDoViProfile8,
+      knownHevcDoviHdr10PlusBug: PlatformDetection.knownHevcDoviHdr10PlusBug,
+    );
+  }
+
+  static _MediaKitDeviceProfileCapabilities libMpvDefaults({
+    required bool allowDolbyVisionProfile7DirectPlay,
+  }) {
+    return _MediaKitDeviceProfileCapabilities(
+      supportsAvc: true,
+      supportsAvcHigh10: true,
+      avcMainLevel: _h264Level52,
+      avcHigh10Level: _h264Level52,
+      supportsHevc: true,
+      supportsHevcMain10: true,
+      hevcMainLevel: _hevcLevel62,
+      hevcMain10Level: _hevcLevel62,
+      supportsHevcDolbyVision: true,
+      supportsHevcDolbyVisionEl: allowDolbyVisionProfile7DirectPlay,
+      supportsHevcHdr10: true,
+      supportsHevcHdr10Plus: true,
+      supportsAv1: true,
+      supportsAv1Main10: true,
+      supportsAv1DolbyVision: false,
+      supportsAv1Hdr10: true,
+      supportsAv1Hdr10Plus: true,
+      supportsVc1: true,
+      maxResolutionAvcWidth: _k8kWidth,
+      maxResolutionAvcHeight: _k8kHeight,
+      maxResolutionHevcWidth: _k8kWidth,
+      maxResolutionHevcHeight: _k8kHeight,
+      maxResolutionAv1Width: _k8kWidth,
+      maxResolutionAv1Height: _k8kHeight,
+      maxResolutionVc1Width: _k8kWidth,
+      maxResolutionVc1Height: _k8kHeight,
+      supportsHdr10PlusDisplay: false,
+      supportsDvProfile5: true,
+      supportsDvProfile7: allowDolbyVisionProfile7DirectPlay,
+      supportsDvProfile8: true,
+      knownHevcDoviHdr10PlusBug: false,
+    );
+  }
+}
+
 class MediaKitPlayerBackend implements PlayerBackend {
   static const Duration _linuxHwdecFirstFrameTimeout = Duration(
     milliseconds: 1500,
@@ -239,6 +386,20 @@ class MediaKitPlayerBackend implements PlayerBackend {
     final trueHdEnabled = _prefs.get(UserPreferences.trueHdEnabled);
     final dtsEnabled = _prefs.get(UserPreferences.dtsEnabled);
     final maxResolution = _prefs.get(UserPreferences.maxVideoResolution);
+    final allowDolbyVisionProfile7DirectPlay =
+        KnownDefects.shouldAllowDolbyVisionProfile7ElDirectPlay(
+          behavior: _prefs.get(
+            UserPreferences.dolbyVisionProfile7DirectPlayBehavior,
+          ),
+        );
+    final useDetectedPlatformCapabilities =
+        PlatformDetection.isAndroid && PlatformDetection.isTV;
+    final capabilities = useDetectedPlatformCapabilities
+        ? _MediaKitDeviceProfileCapabilities.fromPlatformDetection()
+        : _MediaKitDeviceProfileCapabilities.libMpvDefaults(
+            allowDolbyVisionProfile7DirectPlay:
+                allowDolbyVisionProfile7DirectPlay,
+          );
 
     return DeviceProfileBuilder.build(
       maxBitrateMbps: maxBitrate,
@@ -251,43 +412,38 @@ class MediaKitPlayerBackend implements PlayerBackend {
       maxResolution: maxResolution,
       pgsDirectPlay: _prefs.get(UserPreferences.pgsDirectPlay),
       assDirectPlay: _prefs.get(UserPreferences.assDirectPlay),
-      supportsAvc: PlatformDetection.supportsAvc,
-      supportsAvcHigh10: PlatformDetection.supportsAvcHigh10,
-      avcMainLevel: PlatformDetection.avcMainLevel,
-      avcHigh10Level: PlatformDetection.avcHigh10Level,
-      supportsHevc: PlatformDetection.supportsHevc,
-      supportsHevcMain10: PlatformDetection.supportsHevcMain10,
-      hevcMainLevel: PlatformDetection.hevcMainLevel,
-      hevcMain10Level: PlatformDetection.hevcMain10Level,
-      supportsHevcDolbyVision: PlatformDetection.supportsHevcDolbyVision,
-      supportsHevcDolbyVisionEl: PlatformDetection.supportsHevcDolbyVisionEl,
-      supportsHevcHdr10: PlatformDetection.supportsHevcHdr10,
-      supportsHevcHdr10Plus: PlatformDetection.supportsHevcHdr10Plus,
-      supportsAv1: PlatformDetection.supportsAv1,
-      supportsAv1Main10: PlatformDetection.supportsAv1Main10,
-      supportsAv1DolbyVision: PlatformDetection.supportsAv1DolbyVision,
-      supportsAv1Hdr10: PlatformDetection.supportsAv1Hdr10,
-      supportsAv1Hdr10Plus: PlatformDetection.supportsAv1Hdr10Plus,
-      supportsVc1: PlatformDetection.supportsVc1,
-      maxResolutionAvcWidth: PlatformDetection.maxResolutionAvcWidth,
-      maxResolutionAvcHeight: PlatformDetection.maxResolutionAvcHeight,
-      maxResolutionHevcWidth: PlatformDetection.maxResolutionHevcWidth,
-      maxResolutionHevcHeight: PlatformDetection.maxResolutionHevcHeight,
-      maxResolutionAv1Width: PlatformDetection.maxResolutionAv1Width,
-      maxResolutionAv1Height: PlatformDetection.maxResolutionAv1Height,
-      maxResolutionVc1Width: PlatformDetection.maxResolutionVc1Width,
-      maxResolutionVc1Height: PlatformDetection.maxResolutionVc1Height,
-      supportsHdr10PlusDisplay: PlatformDetection.supportsHdr10PlusDisplay,
-      supportsDvProfile5: PlatformDetection.supportsDoViProfile5,
-      supportsDvProfile7: PlatformDetection.supportsDoViProfile7,
-      supportsDvProfile8: PlatformDetection.supportsDoViProfile8,
-      knownHevcDoviHdr10PlusBug: PlatformDetection.knownHevcDoviHdr10PlusBug,
-      allowDolbyVisionProfile7ElDirectPlay:
-          KnownDefects.shouldAllowDolbyVisionProfile7ElDirectPlay(
-            behavior: _prefs.get(
-              UserPreferences.dolbyVisionProfile7DirectPlayBehavior,
-            ),
-          ),
+      supportsAvc: capabilities.supportsAvc,
+      supportsAvcHigh10: capabilities.supportsAvcHigh10,
+      avcMainLevel: capabilities.avcMainLevel,
+      avcHigh10Level: capabilities.avcHigh10Level,
+      supportsHevc: capabilities.supportsHevc,
+      supportsHevcMain10: capabilities.supportsHevcMain10,
+      hevcMainLevel: capabilities.hevcMainLevel,
+      hevcMain10Level: capabilities.hevcMain10Level,
+      supportsHevcDolbyVision: capabilities.supportsHevcDolbyVision,
+      supportsHevcDolbyVisionEl: capabilities.supportsHevcDolbyVisionEl,
+      supportsHevcHdr10: capabilities.supportsHevcHdr10,
+      supportsHevcHdr10Plus: capabilities.supportsHevcHdr10Plus,
+      supportsAv1: capabilities.supportsAv1,
+      supportsAv1Main10: capabilities.supportsAv1Main10,
+      supportsAv1DolbyVision: capabilities.supportsAv1DolbyVision,
+      supportsAv1Hdr10: capabilities.supportsAv1Hdr10,
+      supportsAv1Hdr10Plus: capabilities.supportsAv1Hdr10Plus,
+      supportsVc1: capabilities.supportsVc1,
+      maxResolutionAvcWidth: capabilities.maxResolutionAvcWidth,
+      maxResolutionAvcHeight: capabilities.maxResolutionAvcHeight,
+      maxResolutionHevcWidth: capabilities.maxResolutionHevcWidth,
+      maxResolutionHevcHeight: capabilities.maxResolutionHevcHeight,
+      maxResolutionAv1Width: capabilities.maxResolutionAv1Width,
+      maxResolutionAv1Height: capabilities.maxResolutionAv1Height,
+      maxResolutionVc1Width: capabilities.maxResolutionVc1Width,
+      maxResolutionVc1Height: capabilities.maxResolutionVc1Height,
+      supportsHdr10PlusDisplay: capabilities.supportsHdr10PlusDisplay,
+      supportsDvProfile5: capabilities.supportsDvProfile5,
+      supportsDvProfile7: capabilities.supportsDvProfile7,
+      supportsDvProfile8: capabilities.supportsDvProfile8,
+      knownHevcDoviHdr10PlusBug: capabilities.knownHevcDoviHdr10PlusBug,
+      allowDolbyVisionProfile7ElDirectPlay: allowDolbyVisionProfile7DirectPlay,
     );
   }
 
