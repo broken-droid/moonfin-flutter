@@ -135,6 +135,7 @@ class ItemDetailViewModel extends ChangeNotifier {
       futures.add(_loadFeatures());
     } else if (type == 'MusicArtist') {
       futures.add(_loadAlbums());
+      futures.add(_loadTracks(artistId: itemId));
       futures.add(_loadSimilar());
     } else if (type == 'MusicAlbum' || type == 'Playlist') {
       futures.add(_loadTracks());
@@ -231,11 +232,19 @@ class ItemDetailViewModel extends ChangeNotifier {
     } catch (_) {}
   }
 
-  Future<void> _loadTracks() async {
+  Future<void> _loadTracks({String? artistId}) async {
     try {
       final data =
           _item?.type == 'Playlist'
               ? await _client.itemsApi.getPlaylistItems(itemId)
+              : artistId != null
+              ? await _client.itemsApi.getItems(
+                artistIds: [artistId],
+                includeItemTypes: ['Audio'],
+                sortBy: 'Album,ParentIndexNumber,IndexNumber,SortName',
+                recursive: true,
+                fields: 'PrimaryImageAspectRatio,BasicSyncInfo',
+              )
               : await _client.itemsApi.getItems(
                 parentId: itemId,
                 includeItemTypes: ['Audio'],

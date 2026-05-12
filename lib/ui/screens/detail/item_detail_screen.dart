@@ -1446,6 +1446,19 @@ class _DetailContentState extends State<_DetailContent> {
 
     return [
       _ArtistHeader(item: item, imageApi: viewModel.imageApi),
+      const SizedBox(height: 16),
+      _AlbumActions(
+        item: item,
+        tracks: viewModel.tracks,
+        showAddToPlaylist: false,
+        onPlayDown: () {
+          final targetFocusNode = albumsFocusNode;
+          if (targetFocusNode == null || !targetFocusNode.canRequestFocus) {
+            return;
+          }
+          targetFocusNode.requestFocus();
+        },
+      ),
       if (item.overview != null && item.overview!.isNotEmpty) ...[
         const SizedBox(height: 24),
         _OverviewText(text: item.overview!),
