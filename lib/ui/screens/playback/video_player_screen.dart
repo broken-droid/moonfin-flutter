@@ -20,6 +20,7 @@ import '../../widgets/playback/seek_icons.dart';
 
 import '../../../playback/media_kit_player_backend.dart';
 import '../../../playback/playback_lifecycle_handler.dart';
+import '../../../playback/hdr_stream_capability.dart';
 import '../../../auth/repositories/user_repository.dart';
 import '../../../data/models/aggregated_item.dart';
 import '../../../data/models/media_segment.dart';
@@ -36,6 +37,7 @@ import '../../../platform/pip_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../../util/audio_labels.dart';
+import '../../../util/auto_hdr_switcher.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
@@ -68,6 +70,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   final _manager = GetIt.instance<PlaybackManager>();
   final _backend = GetIt.instance<MediaKitPlayerBackend>();
   final _prefs = GetIt.instance<UserPreferences>();
+  final _autoHdrSwitcher = AutoHdrSwitcher();
   final _clientFactory = GetIt.instance<MediaServerClientFactory>();
   final _castService = GetIt.instance<CastService>();
   final _nativeCast = GetIt.instance<NativeCastChannel>();
@@ -584,6 +587,75 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _overlayFocus.requestFocus();
   }
 
+  List<Map<String, dynamic>> _streamMaps(dynamic raw) {
+    if (raw is! List) {
+      return const <Map<String, dynamic>>[];
+    }
+    return raw.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList();
+  }
+
+  List<Map<String, dynamic>> _currentPlaybackMediaStreams() {
+    final resolutionStreams = _manager.currentResolution?.mediaStreams;
+    if (resolutionStreams != null && resolutionStreams.isNotEmpty) {
+      return resolutionStreams;
+    }
+
+    final item = _queue.currentItem;
+    if (item is AggregatedItem) {
+      return item.mediaStreams;
+    }
+
+    if (item is String) {
+      final offlineMeta = _manager.currentOfflineMetadata;
+      return _streamMaps(offlineMeta?['MediaStreams']);
+    }
+
+    if (item is Map) {
+      return _streamMaps(item['MediaStreams']);
+    }
+
+    return const <Map<String, dynamic>>[];
+  }
+
+  bool _isHdrPlaybackContent() {
+    if (_isCurrentPreroll) {
+      return false;
+    }
+
+    final streams = _currentPlaybackMediaStreams();
+    for (final stream in streams) {
+      if (!HdrStreamCapability.isVideoStream(stream)) continue;
+      if (HdrStreamCapability.isDolbyVisionVideoStream(stream) ||
+          HdrStreamCapability.isHdr10PlusVideoStream(stream)) {
+        return true;
+      }
+
+      final rangeType =
+          (stream['VideoRangeType']?.toString() ?? stream['VideoRange']?.toString() ?? '')
+              .toUpperCase();
+      if (rangeType.isEmpty || rangeType == 'SDR') {
+        continue;
+      }
+      if (rangeType.contains('HDR') ||
+          rangeType.contains('DOVI') ||
+          rangeType.contains('HLG')) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Future<void> _syncAutoHdrSwitching() async {
+    if (!PlatformDetection.isWindows) return;
+    final behavior = _prefs.get(UserPreferences.autoHdrSwitchingBehavior);
+    await _autoHdrSwitcher.sync(
+      behavior: behavior,
+      isHdrContent: _isHdrPlaybackContent(),
+      isDesktopFullscreen: _isDesktopFullscreen,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -598,6 +670,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       setState(() {
         _bringupState = state;
       });
+      unawaited(_syncAutoHdrSwitching());
     });
     _zoomMode = _prefs.get(UserPreferences.playerZoomMode);
     _applySubtitleStyle();
@@ -621,6 +694,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       windowManager.addListener(this);
     }
     _loadSegmentsForCurrentItem();
+    unawaited(_syncAutoHdrSwitching());
     _positionSub = _state.positionStream.listen(_onPositionUpdate);
     _backendSub = _manager.backendChangedStream.listen((backend) {
       if (backend is Media3PlayerBackend) {
@@ -638,6 +712,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         _syncSubtitleActive();
       }
       unawaited(_pushMedia3UiMetadata());
+      unawaited(_syncAutoHdrSwitching());
     });
     if (PlatformDetection.isAndroid || PlatformDetection.isIOS) {
       _castEventsSub = _nativeCast.googleCastEventStream().listen(
@@ -668,6 +743,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _manager.suppressAutoNext = false;
       _consecutiveEpisodes++;
       unawaited(_pushMedia3UiMetadata());
+      unawaited(_syncAutoHdrSwitching());
       final isPreroll = _isCurrentPreroll;
       setState(() {
         _nextUpDismissed = false;
@@ -774,6 +850,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _tvSecondaryFocus.dispose();
     _tvTransportLastFocus.dispose();
     _tvSecondaryLastFocus.dispose();
+    unawaited(_autoHdrSwitcher.restore());
     _themeMusicService.setExternalAudioActive(false);
     _pipService.enableAutoPiP(false);
     if (!_isStopping) _manager.stop(userInitiated: false);
@@ -3935,6 +4012,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _wasDesktopFullscreenOnEntry ??= full;
       if (!mounted) return;
       setState(() => _isDesktopFullscreen = full);
+      unawaited(_syncAutoHdrSwitching());
     } catch (_) {}
   }
 
@@ -3944,6 +4022,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       await FullscreenHelper.setFullscreen(full);
       if (!mounted) return;
       setState(() => _isDesktopFullscreen = full);
+      unawaited(_syncAutoHdrSwitching());
     } catch (_) {}
   }
 

@@ -1718,6 +1718,19 @@ class _VideoPlaybackScreen extends StatelessWidget {
               RefreshRateSwitchingBehavior.scaleOnDevice => l10n.scaleOnDevice,
             },
           ),
+          if (PlatformDetection.isWindows)
+            EnumPreferenceTile<AutoHdrSwitchingBehavior>(
+              preference: UserPreferences.autoHdrSwitchingBehavior,
+              title: 'Auto HDR Switching',
+              description:
+                  'Automatically enable HDR for HDR video playback and restore display mode on exit.',
+              icon: Icons.hdr_strong,
+              labelOf: (v) => switch (v) {
+                AutoHdrSwitchingBehavior.disabled => l10n.disabled,
+                AutoHdrSwitchingBehavior.whenFullscreen => 'When fullscreen',
+                AutoHdrSwitchingBehavior.always => l10n.always,
+              },
+            ),
           SwitchPreferenceTile(
             preference: UserPreferences.trickPlayEnabled,
             title: l10n.trickPlay,

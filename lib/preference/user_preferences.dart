@@ -227,6 +227,12 @@ class UserPreferences extends ChangeNotifier {
     values: RefreshRateSwitchingBehavior.values,
   );
 
+  static final autoHdrSwitchingBehavior = EnumPreference(
+    key: 'auto_hdr_switching_behavior',
+    defaultValue: AutoHdrSwitchingBehavior.disabled,
+    values: AutoHdrSwitchingBehavior.values,
+  );
+
   static final preferExoPlayerFfmpeg = Preference(
     key: 'exoplayer_prefer_ffmpeg',
     defaultValue: false,

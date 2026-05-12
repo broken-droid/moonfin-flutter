@@ -78,6 +78,12 @@ enum RefreshRateSwitchingBehavior {
   scaleOnDevice,
 }
 
+enum AutoHdrSwitchingBehavior {
+  disabled,
+  whenFullscreen,
+  always,
+}
+
 enum StillWatchingBehavior {
   short_(episodes: 2, hours: 1.0),
   medium(episodes: 3, hours: 1.5),
