@@ -3636,6 +3636,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
         autofocus: PlatformDetection.isTV,
         onPressed: () => _play(context, item, resume: !isPhoto && hasProgress),
       ),
+      if (_supportsShuffle(item))
+        _DetailActionButton(
+          label: l10n.shuffle,
+          icon: Icons.shuffle_rounded,
+          onPressed: () => _shuffle(context, item),
+        ),
       if (hasProgress && !isPhoto)
         _DetailActionButton(
           label: isBook ? l10n.startOver : l10n.restart,
@@ -4035,6 +4041,37 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
   }
 
+  void _shuffle(BuildContext context, AggregatedItem item) async {
+    if (_playLaunchInFlight) return;
+    _playLaunchInFlight = true;
+    try {
+      await _shuffleInternal(context, item);
+    } finally {
+      _playLaunchInFlight = false;
+    }
+  }
+
+  bool _supportsShuffle(AggregatedItem item) {
+    switch (item.type) {
+      case 'Series':
+        return viewModel.nextUp != null || viewModel.seasons.isNotEmpty;
+      case 'Season':
+        return viewModel.episodes.length > 1;
+      case 'BoxSet':
+        return viewModel.collectionItems.length > 1;
+      case 'Folder':
+      case 'CollectionFolder':
+      case 'UserView':
+        final childCount = item.rawData['ChildCount'];
+        if (childCount is num) {
+          return childCount > 1;
+        }
+        return true;
+      default:
+        return false;
+    }
+  }
+
   MediaServerClient _clientForItem(AggregatedItem item) {
     final clientFactory = GetIt.instance<MediaServerClientFactory>();
     final defaultClient = GetIt.instance<MediaServerClient>();
@@ -4085,6 +4122,97 @@ class _ActionButtonsState extends State<_ActionButtons> {
     } catch (_) {
       return const [];
     }
+  }
+
+  Future<List<AggregatedItem>> _shuffleQueueForItem(AggregatedItem item) async {
+    const shuffleQueueFields =
+        'MediaStreams,MediaSources,RunTimeTicks,Trickplay';
+    switch (item.type) {
+      case 'Series':
+        if (viewModel.episodes.length > 1) {
+          return viewModel.episodes;
+        }
+        return _loadSeriesEpisodesForShuffle(item, fields: shuffleQueueFields);
+      case 'Season':
+        return viewModel.episodes;
+      case 'BoxSet':
+        if (viewModel.collectionItems.length > 1) {
+          return viewModel.collectionItems;
+        }
+        return _loadFolderPlayableItemsForShuffle(
+          item,
+          fields: shuffleQueueFields,
+        );
+      case 'Folder':
+      case 'CollectionFolder':
+      case 'UserView':
+        return _loadFolderPlayableItemsForShuffle(
+          item,
+          fields: shuffleQueueFields,
+        );
+      default:
+        return const [];
+    }
+  }
+
+  Future<List<AggregatedItem>> _loadSeriesEpisodesForShuffle(
+    AggregatedItem item, {
+    required String fields,
+  }) async {
+    final client = _clientForItem(item);
+    try {
+      final data = await client.itemsApi.getEpisodes(
+        item.id,
+        fields: fields,
+      );
+      return _mapRawItemsForServer(data['Items'], item.serverId);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<List<AggregatedItem>> _loadFolderPlayableItemsForShuffle(
+    AggregatedItem item, {
+    required String fields,
+  }) async {
+    final client = _clientForItem(item);
+    try {
+      final data = await client.itemsApi.getItems(
+        parentId: item.id,
+        recursive: true,
+        includeItemTypes: const ['Episode', 'Movie', 'Video', 'Audio'],
+        sortBy: 'SortName',
+        fields: fields,
+      );
+      return _mapRawItemsForServer(data['Items'], item.serverId);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  List<AggregatedItem> _mapRawItemsForServer(
+    dynamic rawItems,
+    String serverId,
+  ) {
+    final items =
+        (rawItems as List?)
+            ?.whereType<Map>()
+            .map((raw) => raw.cast<String, dynamic>())
+            .toList() ??
+        const <Map<String, dynamic>>[];
+    return items
+        .where((raw) {
+          final id = raw['Id'] as String?;
+          return id != null && id.isNotEmpty;
+        })
+        .map(
+          (raw) => AggregatedItem(
+            id: raw['Id'] as String,
+            serverId: serverId,
+            rawData: raw,
+          ),
+        )
+        .toList();
   }
 
   Future<bool> _pushPlayerRouteWhileStartingPlayback(
@@ -4284,6 +4412,45 @@ class _ActionButtonsState extends State<_ActionButtons> {
             );
         }
       },
+    );
+
+    await _pushPlayerRouteWhileStartingPlayback(
+      context,
+      destination: isAudio
+          ? Destinations.audioPlayer
+          : Destinations.videoPlayer,
+      startupFuture: startupFuture,
+    );
+  }
+
+  Future<void> _shuffleInternal(BuildContext context, AggregatedItem item) async {
+    final manager = GetIt.instance<PlaybackManager>();
+    final queue = await _shuffleQueueForItem(item);
+    if (queue.length < 2) return;
+    if (!context.mounted) return;
+
+    final shuffled = List<AggregatedItem>.from(queue)..shuffle();
+    final isAudio = shuffled.every((queuedItem) {
+      final mediaType = queuedItem.rawData['MediaType'] as String?;
+      return queuedItem.type == 'Audio' || mediaType == 'Audio';
+    });
+
+    final forceTranscode = !isAudio &&
+        await _shouldForceTranscodeForDolbyVision(
+          context,
+          [shuffled.first],
+        );
+
+    if (!context.mounted) return;
+
+    final startupFuture = _runWithDolbyVisionStartupFallbackPrompt(
+      context,
+      manager,
+      () => manager.playItems(
+        shuffled,
+        enableDirectPlay: !forceTranscode,
+        enableDirectStream: !forceTranscode,
+      ),
     );
 
     await _pushPlayerRouteWhileStartingPlayback(
