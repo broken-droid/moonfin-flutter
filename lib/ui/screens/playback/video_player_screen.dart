@@ -201,6 +201,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   OverlayEntry? _zoomModeToastOverlay;
   StreamSubscription<double>? _brightnessListenerSub;
   StreamSubscription<double>? _volumeListenerSub;
+  double? _pendingMobileSystemVolume;
+  bool _isApplyingMobileSystemVolume = false;
   double _verticalDragStartY = 0.0;
   double _verticalDragStartValue = 0.0;
   bool _verticalDragIsVolume = false;
@@ -2665,6 +2667,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                 : PlatformDetection.useMobileUi && !_isOsdLocked
                 ? _onVerticalDragUpdate
                 : null,
+            onVerticalDragEnd: PlatformDetection.isTV
+              ? null
+              : PlatformDetection.useMobileUi && !_isOsdLocked
+              ? _onVerticalDragEnd
+              : null,
+            onVerticalDragCancel: PlatformDetection.isTV
+              ? null
+              : PlatformDetection.useMobileUi && !_isOsdLocked
+              ? _onVerticalDragCancel
+              : null,
             onPanDown: PlatformDetection.useDesktopUi
                 ? (_) => _showControls()
                 : null,
@@ -4046,7 +4058,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
     if (PlatformDetection.isMobile) {
       final next = (_systemVolume + delta).clamp(0.0, 1.0);
-      unawaited(_setMobileSystemVolume(next));
+      unawaited(_setMobileSystemVolume(next, syncFromSystem: true));
       _showVolumeIndicator();
       return;
     }
@@ -4117,28 +4129,46 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     unawaited(_manager.backend?.setVolume(100.0));
 
     _volumeListenerSub = vc.addListener((value) {
-      if (mounted && (value - _systemVolume).abs() > 0.001) {
+      if (mounted && (value - _systemVolume).abs() > 0.01) {
         setState(() => _systemVolume = value);
       }
     }, fetchInitialVolume: true);
   }
 
-  Future<void> _setMobileSystemVolume(double value) async {
+  Future<void> _setMobileSystemVolume(
+    double value, {
+    bool syncFromSystem = false,
+  }) async {
     final clamped = value.clamp(0.0, 1.0);
 
-    if (mounted && (clamped - _systemVolume).abs() > 0.001) {
+    if (mounted && (clamped - _systemVolume).abs() > 0.01) {
       setState(() => _systemVolume = clamped);
     }
 
-    try {
-      await VolumeController.instance.setVolume(clamped);
+    _pendingMobileSystemVolume = clamped;
+    if (_isApplyingMobileSystemVolume) {
+      return;
+    }
 
-      // Read back the real system value so UI remains accurate on iOS.
-      final actual = await VolumeController.instance.getVolume();
-      if (mounted && (actual - _systemVolume).abs() > 0.001) {
-        setState(() => _systemVolume = actual);
+    _isApplyingMobileSystemVolume = true;
+
+    try {
+      while (_pendingMobileSystemVolume != null) {
+        final next = _pendingMobileSystemVolume!;
+        _pendingMobileSystemVolume = null;
+        await VolumeController.instance.setVolume(next);
       }
-    } catch (_) {}
+
+      if (syncFromSystem) {
+        final actual = await VolumeController.instance.getVolume();
+        if (mounted && (actual - _systemVolume).abs() > 0.01) {
+          setState(() => _systemVolume = actual);
+        }
+      }
+    } catch (_) {
+    } finally {
+      _isApplyingMobileSystemVolume = false;
+    }
   }
 
   void _showVolumeIndicator() {
@@ -4260,6 +4290,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _brightnessValue = newBrightness;
       _setBrightness(newBrightness);
       _showBrightnessIndicator();
+    }
+  }
+
+  void _onVerticalDragEnd(DragEndDetails details) {
+    if (_verticalDragIsVolume && PlatformDetection.isMobile) {
+      unawaited(_setMobileSystemVolume(_systemVolume, syncFromSystem: true));
+    }
+  }
+
+  void _onVerticalDragCancel() {
+    if (_verticalDragIsVolume && PlatformDetection.isMobile) {
+      unawaited(_setMobileSystemVolume(_systemVolume, syncFromSystem: true));
     }
   }
 
