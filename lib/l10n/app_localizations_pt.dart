@@ -2187,7 +2187,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get nextUpAndQueuing => 'A Seguir e Fila';
 
   @override
-  String get nextUpBehavior => 'Comportamento do A Seguir';
+  String get nextUpDisplay => 'Comportamento do A Seguir';
 
   @override
   String get extended => 'Estendido';
@@ -6915,7 +6915,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Reproduza trailers/prerolls antes de um filme principal';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Extended mostra um cartão completo com a arte e a descrição do episódio. Mínimo mostra uma sobreposição compacta de contagem regressiva. Desativado oculta totalmente o prompt.';
 
   @override

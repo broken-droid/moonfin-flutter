@@ -2994,8 +2994,8 @@
   "@nextUpAndQueuing": {
     "description": "Section title for next up and queuing"
   },
-  "nextUpBehavior": "Sonraki Davranış",
-  "@nextUpBehavior": {
+  "nextUpDisplay": "Sonraki Davranış",
+  "@nextUpDisplay": {
     "description": "Setting for next up behavior"
   },
   "extended": "Uzatılmış",
@@ -6449,7 +6449,7 @@
   "settingsBitstreamAc3ToExternalDecoder": "Bitstream AC3'ten harici kod çözücüye",
   "settingsCinemaMode": "Sinema Modu",
   "settingsCinemaModeSubtitle": "Ana özellikten önce fragmanları/ön gösterimleri oynatın",
-  "settingsNextUpBehaviorDescription": "Genişletilmiş, bölümün resmini ve açıklamasını içeren tam bir kart gösterir. Minimal, kompakt bir geri sayım katmanını gösterir. Devre Dışı istemi tamamen gizler.",
+  "settingsNextUpDisplayDescription": "Genişletilmiş, bölümün resmini ve açıklamasını içeren tam bir kart gösterir. Minimal, kompakt bir geri sayım katmanını gösterir. Devre Dışı istemi tamamen gizler.",
   "settingsShort": "Kısa",
   "settingsLong": "Uzun",
   "settingsVeryLong": "Çok Uzun",

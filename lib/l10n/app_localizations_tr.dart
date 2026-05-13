@@ -2175,7 +2175,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get nextUpAndQueuing => 'Sonraki İşlem ve Sıraya Alma';
 
   @override
-  String get nextUpBehavior => 'Sonraki Davranış';
+  String get nextUpDisplay => 'Sonraki Davranış';
 
   @override
   String get extended => 'Uzatılmış';
@@ -6890,7 +6890,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Ana özellikten önce fragmanları/ön gösterimleri oynatın';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Genişletilmiş, bölümün resmini ve açıklamasını içeren tam bir kart gösterir. Minimal, kompakt bir geri sayım katmanını gösterir. Devre Dışı istemi tamamen gizler.';
 
   @override

@@ -2193,7 +2193,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nextUpAndQueuing => 'A continuación y cola';
 
   @override
-  String get nextUpBehavior => 'Comportamiento de A continuación';
+  String get nextUpDisplay => 'Comportamiento de A continuación';
 
   @override
   String get extended => 'Extendido';
@@ -6958,7 +6958,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Reproducir avances/prerolls antes de una característica principal';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Extendido muestra una tarjeta completa con el arte y la descripción del episodio. Minimal muestra una superposición de cuenta regresiva compacta. Deshabilitado oculta el mensaje por completo.';
 
   @override

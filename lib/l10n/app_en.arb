@@ -3070,8 +3070,8 @@
   "@nextUpAndQueuing": {
     "description": "Section title for next up and queuing"
   },
-  "nextUpBehavior": "Next Up Behavior",
-  "@nextUpBehavior": {
+  "nextUpDisplay": "Next Up Display",
+  "@nextUpDisplay": {
     "description": "Setting for next up behavior"
   },
   "extended": "Extended",
@@ -6526,7 +6526,7 @@
   "settingsBitstreamAc3ToExternalDecoder": "Bitstream AC3 to external decoder",
   "settingsCinemaMode": "Cinema Mode",
   "settingsCinemaModeSubtitle": "Play trailers/prerolls before a main feature",
-  "settingsNextUpBehaviorDescription": "Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.",
+  "settingsNextUpDisplayDescription": "Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.",
   "settingsShort": "Short",
   "settingsLong": "Long",
   "settingsVeryLong": "Very Long",

@@ -50,7 +50,7 @@ class _NextUpOverlayState extends State<NextUpOverlay>
     if (widget.timeoutMs > 0) {
       _timer = Timer(
         Duration(milliseconds: widget.timeoutMs),
-        widget.onPlayNext,
+        widget.onDismiss,
       );
     }
   }

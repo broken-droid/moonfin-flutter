@@ -3857,8 +3857,8 @@ abstract class AppLocalizations {
   /// Setting for next up behavior
   ///
   /// In en, this message translates to:
-  /// **'Next Up Behavior'**
-  String get nextUpBehavior;
+  /// **'Next Up Display'**
+  String get nextUpDisplay;
 
   /// Option: extended
   ///
@@ -12140,11 +12140,11 @@ abstract class AppLocalizations {
   /// **'Play trailers/prerolls before a main feature'**
   String get settingsCinemaModeSubtitle;
 
-  /// No description provided for @settingsNextUpBehaviorDescription.
+  /// No description provided for @settingsNextUpDisplayDescription.
   ///
   /// In en, this message translates to:
   /// **'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.'**
-  String get settingsNextUpBehaviorDescription;
+  String get settingsNextUpDisplayDescription;
 
   /// No description provided for @settingsShort.
   ///

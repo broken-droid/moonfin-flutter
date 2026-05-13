@@ -2188,7 +2188,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get nextUpAndQueuing => 'Prossimo e Coda';
 
   @override
-  String get nextUpBehavior => 'Comportamento Prossimo';
+  String get nextUpDisplay => 'Comportamento Prossimo';
 
   @override
   String get extended => 'Esteso';
@@ -6930,7 +6930,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Riproduci trailer/preroll prima di un film principale';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Esteso mostra una scheda completa con grafica e descrizione dell\'episodio. Minimal mostra una sovrapposizione compatta del conto alla rovescia. Disabilitato nasconde completamente il prompt.';
 
   @override

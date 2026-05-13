@@ -2167,7 +2167,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextUpAndQueuing => 'Next Up & Queuing';
 
   @override
-  String get nextUpBehavior => 'Next Up Behavior';
+  String get nextUpDisplay => 'Next Up Display';
 
   @override
   String get extended => 'Extended';
@@ -6834,7 +6834,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Play trailers/prerolls before a main feature';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.';
 
   @override

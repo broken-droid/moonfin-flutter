@@ -2205,7 +2205,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nextUpAndQueuing => 'À suivre et file d’attente';
 
   @override
-  String get nextUpBehavior => 'Comportement d’À suivre';
+  String get nextUpDisplay => 'Comportement d’À suivre';
 
   @override
   String get extended => 'Étendu';
@@ -6974,7 +6974,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Lire des bandes-annonces/prerolls avant un long métrage principal';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Extended affiche une carte complète avec les illustrations et la description de l\'épisode. Minimal montre une superposition de compte à rebours compacte. Désactivé masque entièrement l’invite.';
 
   @override

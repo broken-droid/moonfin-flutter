@@ -2193,7 +2193,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nextUpAndQueuing => 'Als Nächstes & Warteschlange';
 
   @override
-  String get nextUpBehavior => 'Nächstes-Verhalten';
+  String get nextUpDisplay => 'Nächstes-Verhalten';
 
   @override
   String get extended => 'Erweitert';
@@ -6946,7 +6946,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Spielen Sie Trailer/Prerolls vor einem Hauptfeature ab';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Extended zeigt eine vollständige Karte mit Episoden-Artwork und Beschreibung. Minimal zeigt ein kompaktes Countdown-Overlay. Deaktiviert blendet die Eingabeaufforderung vollständig aus.';
 
   @override

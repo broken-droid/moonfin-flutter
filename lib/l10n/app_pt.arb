@@ -2994,8 +2994,8 @@
   "@nextUpAndQueuing": {
     "description": "Section title for next up and queuing"
   },
-  "nextUpBehavior": "Comportamento do A Seguir",
-  "@nextUpBehavior": {
+  "nextUpDisplay": "Comportamento do A Seguir",
+  "@nextUpDisplay": {
     "description": "Setting for next up behavior"
   },
   "extended": "Estendido",
@@ -6449,7 +6449,7 @@
   "settingsBitstreamAc3ToExternalDecoder": "Bitstream AC3 para decodificador externo",
   "settingsCinemaMode": "Modo Cinema",
   "settingsCinemaModeSubtitle": "Reproduza trailers/prerolls antes de um filme principal",
-  "settingsNextUpBehaviorDescription": "Extended mostra um cartão completo com a arte e a descrição do episódio. Mínimo mostra uma sobreposição compacta de contagem regressiva. Desativado oculta totalmente o prompt.",
+  "settingsNextUpDisplayDescription": "Extended mostra um cartão completo com a arte e a descrição do episódio. Mínimo mostra uma sobreposição compacta de contagem regressiva. Desativado oculta totalmente o prompt.",
   "settingsShort": "Curto",
   "settingsLong": "Longo",
   "settingsVeryLong": "Muito Longo",

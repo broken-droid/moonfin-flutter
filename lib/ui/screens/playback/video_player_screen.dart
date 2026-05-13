@@ -675,6 +675,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       unawaited(_syncAutoHdrSwitching());
     });
     _zoomMode = _prefs.get(UserPreferences.playerZoomMode);
+    _prefs.addListener(_syncMediaQueuingPreference);
+    _syncMediaQueuingPreference();
     _applySubtitleStyle();
     _scheduleHide();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -800,6 +802,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   @override
   void dispose() {
+    _prefs.removeListener(_syncMediaQueuingPreference);
+    _manager.autoAdvanceEnabled = true;
     WidgetsBinding.instance.removeObserver(this);
     if (PlatformDetection.isDesktop) {
       windowManager.removeListener(this);
@@ -1779,6 +1783,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     return DateTime.now().isBefore(until);
   }
 
+  void _syncMediaQueuingPreference() {
+    _manager.autoAdvanceEnabled = _prefs.get(UserPreferences.mediaQueuingEnabled);
+  }
+
   void _suppressSeekPrompts({
     Duration duration = _seekPromptSuppressionDuration,
     bool dismissVisiblePrompts = true,
@@ -1814,6 +1822,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   void _checkSegments(Duration position) {
     final result = _segmentService.checkPosition(position);
     if (result.shouldSkip && result.skipTo != null) {
+      final isOutro = result.segment?.type == MediaSegmentType.outro;
+      if (isOutro && _showNextUp) {
+        return;
+      }
+      if (isOutro && _shouldShowNextUpOverlay()) {
+        unawaited(_manager.seekTo(result.skipTo!));
+        _presentNextUpOverlay();
+        return;
+      }
+      if (isOutro && !_hasDistinctQueueNextItem()) {
+        unawaited(_exitPlayback());
+        return;
+      }
       _manager.seekTo(result.skipTo!);
       _clearSkipSegment();
       return;
@@ -1838,17 +1859,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _checkNextUp(Duration position) {
-    final nextUpBehavior = _prefs.get(UserPreferences.nextUpBehavior);
-    if (_areSeekPromptsSuppressed() ||
-        nextUpBehavior == NextUpBehavior.disabled ||
-        _nextUpDismissed ||
-        _showNextUp) {
+    if (!_shouldShowNextUpOverlay()) {
       return;
     }
 
-    if (_isPrerollQueueItem(_queue.currentItem)) {
-      return;
-    }
+    final nextUpBehavior = _prefs.get(UserPreferences.nextUpBehavior);
 
     final duration = _state.duration;
     if (duration <= Duration.zero) return;
@@ -1864,23 +1879,85 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       return;
     }
 
-    if (remaining <= threshold && _queue.hasNext) {
-      final nextItem = _queue.peekNext;
-      if (nextItem is AggregatedItem) {
-        _manager.suppressAutoNext = true;
-        setState(() {
-          _showNextUp = true;
-          _nextUpItem = nextItem;
-          _controlsVisible = false;
-        });
-        _hideTimer?.cancel();
-        _focusTvNextUpPlay();
-      }
+    if (remaining <= threshold) {
+      _presentNextUpOverlay();
     }
+  }
+
+  bool _shouldShowNextUpOverlay() {
+    final nextUpBehavior = _prefs.get(UserPreferences.nextUpBehavior);
+    if (_areSeekPromptsSuppressed() ||
+        nextUpBehavior == NextUpBehavior.disabled ||
+        _nextUpDismissed ||
+        _showNextUp) {
+      return false;
+    }
+
+    if (_isPrerollQueueItem(_queue.currentItem)) {
+      return false;
+    }
+
+    return _nextUpCandidate() != null;
+  }
+
+  bool _hasDistinctQueueNextItem() {
+    if (!_queue.hasNext) {
+      return false;
+    }
+
+    // Treat repeat-all wraparound as "no real next episode" for Next Up.
+    final currentIndex = _queue.currentIndex;
+    if (currentIndex < 0 || currentIndex >= _queue.length - 1) {
+      return false;
+    }
+
+    final nextItem = _queue.peekNext;
+    if (nextItem == null) {
+      return false;
+    }
+
+    final currentId = _itemIdForQueueItem(_queue.currentItem);
+    final nextId = _itemIdForQueueItem(nextItem);
+    if (currentId != null && nextId != null && currentId == nextId) {
+      return false;
+    }
+
+    return true;
+  }
+
+  AggregatedItem? _nextUpCandidate() {
+    if (!_hasDistinctQueueNextItem()) {
+      return null;
+    }
+
+    final nextItem = _queue.peekNext;
+    return nextItem is AggregatedItem ? nextItem : null;
+  }
+
+  void _presentNextUpOverlay() {
+    if (!_shouldShowNextUpOverlay()) return;
+
+    final nextItem = _nextUpCandidate();
+    if (nextItem == null) return;
+
+    _manager.suppressAutoNext = true;
+    setState(() {
+      _showNextUp = true;
+      _nextUpItem = nextItem;
+      _controlsVisible = false;
+      _skipSegment = null;
+      _skipTo = null;
+    });
+    _hideTimer?.cancel();
+    _focusTvNextUpPlay();
   }
 
   Future<void> _handleNextUpPlay() async {
     if (_isNextUpAdvancing) return;
+    if (!_hasDistinctQueueNextItem()) {
+      _handleNextUpCancel();
+      return;
+    }
     _suppressBackNavigation(duration: const Duration(milliseconds: 500));
     _isNextUpAdvancing = true;
     setState(() => _showNextUp = false);
@@ -1941,6 +2018,22 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void _skipCurrentSegment() {
+    final isOutro =
+        _skipSegment?.type == MediaSegmentType.outro ||
+        _segmentService.activeSegment?.type == MediaSegmentType.outro;
+    if (isOutro && _shouldShowNextUpOverlay()) {
+      final skipTo = _skipTo;
+      if (skipTo != null) {
+        unawaited(_manager.seekTo(skipTo));
+      }
+      _presentNextUpOverlay();
+      return;
+    }
+    if (isOutro && !_hasDistinctQueueNextItem()) {
+      unawaited(_exitPlayback());
+      return;
+    }
+
     if (_skipTo != null) {
       _manager.seekTo(_skipTo!);
     }

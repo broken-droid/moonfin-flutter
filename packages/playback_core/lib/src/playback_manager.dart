@@ -48,6 +48,7 @@ class PlaybackManager {
   bool _isAutoNexting = false;
   bool _isManualNexting = false;
   bool suppressAutoNext = false;
+  bool autoAdvanceEnabled = true;
   bool _isOfflinePlayback = false;
   bool _forceTranscodeForQueue = false;
   bool _backendSelectionLockedForSession = false;
@@ -320,6 +321,13 @@ class PlaybackManager {
         _isAutoNexting ||
         _isManualNexting ||
         suppressAutoNext) {
+      return;
+    }
+    if (!autoAdvanceEnabled) {
+      _isAutoNexting = true;
+      _mediaSourceId = null;
+      _stopAndReportCurrent(skipQueueChange: true)
+          .whenComplete(() => _isAutoNexting = false);
       return;
     }
     // Ignore completed events that fire during initial load/seek.

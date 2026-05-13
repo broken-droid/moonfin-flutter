@@ -2184,7 +2184,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get nextUpAndQueuing => 'Nästa Upp & Kö';
 
   @override
-  String get nextUpBehavior => 'Next Up Beteende';
+  String get nextUpDisplay => 'Next Up Beteende';
 
   @override
   String get extended => 'Förlängd';
@@ -6899,7 +6899,7 @@ class AppLocalizationsSv extends AppLocalizations {
       'Spela trailers/prerolls före en huvudfunktion';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Utökad visar ett helt kort med avsnittsbilder och beskrivning. Minimal visar en kompakt nedräkningsöverlagring. Inaktiverad döljer uppmaningen helt.';
 
   @override

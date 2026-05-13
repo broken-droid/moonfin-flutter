@@ -1908,8 +1908,8 @@ class _AutomationQueueScreen extends StatelessWidget {
           ),
           EnumPreferenceTile<NextUpBehavior>(
             preference: UserPreferences.nextUpBehavior,
-            title: l10n.nextUpBehavior,
-            description: l10n.settingsNextUpBehaviorDescription,
+            title: l10n.nextUpDisplay,
+            description: l10n.settingsNextUpDisplayDescription,
             icon: Icons.skip_next,
             labelOf: (v) => switch (v) {
               NextUpBehavior.extended => l10n.extended,
