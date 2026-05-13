@@ -57,6 +57,7 @@ class LeftSidebar extends StatefulWidget {
 class _LeftSidebarState extends State<LeftSidebar> {
   final _userRepo = GetIt.instance<UserRepository>();
   final _prefs = GetIt.instance<UserPreferences>();
+  final _viewsRepo = GetIt.instance<UserViewsRepository>();
   final _sidebarFocus = FocusScopeNode(debugLabel: 'LeftSidebar');
   final _homeFocusNode = FocusNode(debugLabel: 'LeftSidebarHome');
   final _settingsFocusNode = FocusNode(debugLabel: 'LeftSidebarSettings');
@@ -98,6 +99,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _loadUserImage();
     _userSub = _userRepo.currentUserStream.listen((_) => _loadUserImage());
     _prefs.addListener(_onPrefsChanged);
+    _viewsRepo.addListener(_onUserViewsChanged);
     _loadLibraries();
     FocusManager.instance.addListener(_trackPreviousFocus);
     if (PlatformDetection.isTV || PlatformDetection.isDesktop) {
@@ -133,6 +135,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _sidebarFocus.dispose();
     _scrollController.dispose();
     _userSub?.cancel();
+    try {
+      _viewsRepo.removeListener(_onUserViewsChanged);
+    } catch (_) {}
     _prefs.removeListener(_onPrefsChanged);
     _currentTime.dispose();
     super.dispose();
@@ -142,6 +147,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
     if (!mounted) return;
     _loadLibraries();
     setState(() {});
+  }
+
+  void _onUserViewsChanged() {
+    if (!mounted) return;
+    _loadLibraries();
   }
 
   void _updateClock() {
@@ -180,20 +190,24 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   Future<void> _loadLibraries() async {
     try {
-      final viewsRepo = GetIt.instance<UserViewsRepository>();
-      final libs = _prefs.get(UserPreferences.enableMultiServerLibraries)
+      final useMultiServer = _prefs.get(
+        UserPreferences.enableMultiServerLibraries,
+      );
+      final libs = useMultiServer
           ? await GetIt.instance<MultiServerRepository>()
                 .getAggregatedLibraries()
-          : await viewsRepo.getUserViews();
+          : await _viewsRepo.getUserViews();
 
       List<AggregatedLibrary> filtered = libs;
-      try {
-        final config = await viewsRepo.getUserConfiguration();
-        final excluded = config.myMediaExcludes.toSet();
-        if (excluded.isNotEmpty) {
-          filtered = libs.where((lib) => !excluded.contains(lib.id)).toList();
-        }
-      } catch (_) {}
+      if (useMultiServer) {
+        try {
+          final config = await _viewsRepo.getUserConfiguration();
+          final excluded = config.myMediaExcludes.toSet();
+          if (excluded.isNotEmpty) {
+            filtered = libs.where((lib) => !excluded.contains(lib.id)).toList();
+          }
+        } catch (_) {}
+      }
 
       if (mounted && !_librariesEqual(_libraries, filtered)) {
         setState(() => _libraries = filtered);

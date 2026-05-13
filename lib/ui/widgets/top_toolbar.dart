@@ -63,6 +63,7 @@ class TopToolbar extends StatefulWidget {
 class _TopToolbarState extends State<TopToolbar> {
   final _userRepo = GetIt.instance<UserRepository>();
   final _prefs = GetIt.instance<UserPreferences>();
+  final _viewsRepo = GetIt.instance<UserViewsRepository>();
 
   final _avatarFocus = FocusNode();
   final _homeFocus = FocusNode(debugLabel: 'TopToolbarHome');
@@ -101,6 +102,7 @@ class _TopToolbarState extends State<TopToolbar> {
     _loadUserImage();
     _userSub = _userRepo.currentUserStream.listen((_) => _loadUserImage());
     _prefs.addListener(_onPrefsChanged);
+    _viewsRepo.addListener(_onUserViewsChanged);
     _loadLibraries();
   }
 
@@ -121,6 +123,9 @@ class _TopToolbarState extends State<TopToolbar> {
     _settingsFocus.dispose();
     _inlineLibrariesTriggerFocus.dispose();
     _userSub?.cancel();
+    try {
+      _viewsRepo.removeListener(_onUserViewsChanged);
+    } catch (_) {}
     _prefs.removeListener(_onPrefsChanged);
     _currentTime.dispose();
     super.dispose();
@@ -160,6 +165,11 @@ class _TopToolbarState extends State<TopToolbar> {
     if (!mounted) return;
     _loadLibraries();
     setState(() {});
+  }
+
+  void _onUserViewsChanged() {
+    if (!mounted) return;
+    _loadLibraries();
   }
 
   void _onAvatarFocusChanged() {
@@ -203,20 +213,24 @@ class _TopToolbarState extends State<TopToolbar> {
 
   Future<void> _loadLibraries() async {
     try {
-      final viewsRepo = GetIt.instance<UserViewsRepository>();
-      final libs = _prefs.get(UserPreferences.enableMultiServerLibraries)
+      final useMultiServer = _prefs.get(
+        UserPreferences.enableMultiServerLibraries,
+      );
+      final libs = useMultiServer
           ? await GetIt.instance<MultiServerRepository>()
                 .getAggregatedLibraries()
-          : await viewsRepo.getUserViews();
+          : await _viewsRepo.getUserViews();
 
       List<AggregatedLibrary> filtered = libs;
-      try {
-        final config = await viewsRepo.getUserConfiguration();
-        final excluded = config.myMediaExcludes.toSet();
-        if (excluded.isNotEmpty) {
-          filtered = libs.where((lib) => !excluded.contains(lib.id)).toList();
-        }
-      } catch (_) {}
+      if (useMultiServer) {
+        try {
+          final config = await _viewsRepo.getUserConfiguration();
+          final excluded = config.myMediaExcludes.toSet();
+          if (excluded.isNotEmpty) {
+            filtered = libs.where((lib) => !excluded.contains(lib.id)).toList();
+          }
+        } catch (_) {}
+      }
 
       if (mounted && !_librariesEqual(_libraries, filtered)) {
         setState(() => _libraries = filtered);

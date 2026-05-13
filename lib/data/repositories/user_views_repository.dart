@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:server_core/server_core.dart';
 
 import '../models/aggregated_library.dart';
 
-class UserViewsRepository {
+class UserViewsRepository extends ChangeNotifier {
   final MediaServerClient _client;
   UserConfiguration? _cachedConfig;
 
@@ -21,6 +22,24 @@ class UserViewsRepository {
         serverId: data['ServerId'] as String? ?? '',
       );
     }).toList();
+  }
+
+  Future<List<AggregatedLibrary>> getAllViewsIncludingHidden() async {
+    try {
+      final folders = await _client.adminLibraryApi.getMediaFolders();
+      return folders
+          .map(
+            (folder) => AggregatedLibrary(
+              id: folder.itemId,
+              name: folder.name,
+              collectionType: folder.collectionType ?? '',
+              serverId: '',
+            ),
+          )
+          .toList();
+    } catch (_) {
+      return getAllViews();
+    }
   }
 
   Future<List<AggregatedLibrary>> getUserViews() async {
@@ -48,6 +67,7 @@ class UserViewsRepository {
   Future<void> updateUserConfiguration(UserConfiguration config) async {
     await _client.usersApi.updateUserConfiguration(config);
     _cachedConfig = config;
+    notifyListeners();
   }
 
   void invalidateConfigCache() => _cachedConfig = null;

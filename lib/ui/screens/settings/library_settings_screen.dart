@@ -6,6 +6,7 @@ import 'package:server_core/server_core.dart' hide ImageType;
 import '../../../data/models/aggregated_library.dart';
 import '../../../data/repositories/user_views_repository.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../navigation/home_refresh_bus.dart';
 import '../../widgets/settings/preference_tiles.dart';
 import 'settings_app_bar.dart';
 import '../../widgets/focus/request_initial_focus.dart';
@@ -34,7 +35,7 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
   Future<void> _load() async {
     try {
       final results = await Future.wait([
-        _viewsRepo.getAllViews(),
+        _viewsRepo.getAllViewsIncludingHidden(),
         _viewsRepo.getUserConfiguration(),
       ]);
       if (!mounted) return;
@@ -69,6 +70,7 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
     setState(() => _config = updated);
     try {
       await _viewsRepo.updateUserConfiguration(updated);
+      requestHomeRefreshAfterNavigation();
     } catch (_) {
       if (!mounted) return;
       setState(() => _config = config);

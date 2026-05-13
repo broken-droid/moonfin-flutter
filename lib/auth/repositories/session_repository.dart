@@ -35,6 +35,7 @@ class SessionRepository {
     'SetRepeatMode',
     'SetShuffleQueue',
   ];
+  static const Duration _initialLoginSyncWait = Duration(seconds: 3);
 
   final AuthenticationStore _authStore;
   final AuthenticationPreferences _authPrefs;
@@ -154,11 +155,27 @@ class SessionRepository {
     await _authPrefs.setLastServerId(serverId);
     await _authPrefs.setLastUserId(userId);
 
-    _setState(SessionState.ready);
+    final shouldPrioritizeInitialSync =
+        !_pluginSyncService.isSyncInitializedForServer(
+          client,
+          serverId: serverId,
+        );
+    final Future<void> postLoginSyncFuture =
+        _postLoginSync(client, user, serverId, username, password)
+        .catchError((_) {});
 
-    // Server-side sync runs in the background so startup isn't blocked
-    // when the server is unreachable (e.g. on mobile data away from home).
-    unawaited(_postLoginSync(client, user, serverId, username, password));
+    if (shouldPrioritizeInitialSync) {
+      // Give first-login server sync a short head start so Home can build
+      // from synced preferences, without blocking startup indefinitely.
+      await Future.any<void>([
+        postLoginSyncFuture,
+        Future<void>.delayed(_initialLoginSyncWait),
+      ]);
+    } else {
+      unawaited(postLoginSyncFuture);
+    }
+
+    _setState(SessionState.ready);
 
     return true;
   }

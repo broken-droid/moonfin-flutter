@@ -212,6 +212,16 @@ class PluginSyncService extends ChangeNotifier {
   String get selectedCustomizationProfile =>
       _selectedCustomizationProfile ?? _profileName;
 
+  bool isSyncInitializedForServer(
+    MediaServerClient client, {
+    String? serverId,
+  }) {
+    final syncInitializedPref = UserPreferences.pluginSyncInitializedForServer(
+      _serverSyncKey(client, serverId: serverId),
+    );
+    return _prefs.get(syncInitializedPref);
+  }
+
   void setSelectedCustomizationProfile(String profile) {
     if (!supportedProfiles.contains(profile)) return;
     if (_selectedCustomizationProfile == profile) return;
@@ -237,9 +247,8 @@ class PluginSyncService extends ChangeNotifier {
         return;
       }
 
-      await _prefs.set(syncInitializedPref, true);
-
       if (availability != _PluginAvailabilityStatus.available) {
+        await _prefs.set(syncInitializedPref, true);
         await _applyFallbackHomeRows();
         return;
       }
@@ -248,13 +257,14 @@ class PluginSyncService extends ChangeNotifier {
 
       final resolved = await _fetchResolvedProfile(client, _profileName);
       if (resolved == null) {
-        await _applyFallbackHomeRows();
+        // Keep initialization pending so a later login can retry profile pull.
         return;
       }
 
       await _prefs.set(UserPreferences.pluginSyncEnabled, true);
 
       await _applyServerSettings(resolved);
+      await _prefs.set(syncInitializedPref, true);
     } catch (_) {
       resetState();
     }

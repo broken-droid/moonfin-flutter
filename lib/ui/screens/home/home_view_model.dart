@@ -27,6 +27,8 @@ class HomeViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   bool _bgMergeInFlight = false;
+  bool _reloadRequestedWhileLoading = false;
+  bool _pendingReloadPreserveExisting = true;
 
   String get _serverId => _client.baseUrl;
   MediaBarViewModel get mediaBarViewModel => _mediaBarViewModel;
@@ -52,136 +54,206 @@ class HomeViewModel extends ChangeNotifier {
         _multiServerRepo = multiServerRepo;
 
   Future<void> load({bool preserveExisting = false}) async {
-    if (_isLoading) return;
+    if (_isLoading) {
+      _reloadRequestedWhileLoading = true;
+      _pendingReloadPreserveExisting =
+          _pendingReloadPreserveExisting && preserveExisting;
+      return;
+    }
     _isLoading = true;
     notifyListeners();
+    try {
+      final activeConfigs = _prefs.activeHomeSectionConfigs;
+      final fallbackUsed = activeConfigs.isEmpty;
+      final configs = fallbackUsed
+          ? const [
+              HomeSectionConfig(type: HomeSectionType.resume, enabled: true, order: 0),
+              HomeSectionConfig(type: HomeSectionType.nextUp, enabled: true, order: 1),
+              HomeSectionConfig(type: HomeSectionType.latestMedia, enabled: true, order: 2),
+            ]
+          : activeConfigs;
 
-    final activeConfigs = _prefs.activeHomeSectionConfigs;
-    final fallbackUsed = activeConfigs.isEmpty;
-    final configs = fallbackUsed
-        ? const [
-            HomeSectionConfig(type: HomeSectionType.resume, enabled: true, order: 0),
-            HomeSectionConfig(type: HomeSectionType.nextUp, enabled: true, order: 1),
-            HomeSectionConfig(type: HomeSectionType.latestMedia, enabled: true, order: 2),
-          ]
-        : activeConfigs;
+      // Plugin-dynamic sections only make sense on the active server.
+      final visibleConfigsRaw = configs
+          .where((c) =>
+              c.isBuiltin ||
+              (c.serverId != null && c.serverId == _serverId))
+          .toList(growable: false);
 
-    // Plugin-dynamic sections only make sense on the active server.
-    final visibleConfigsRaw = configs
-        .where((c) =>
-            c.isBuiltin ||
-            (c.serverId != null && c.serverId == _serverId))
-        .toList(growable: false);
+      // Filter out plugin-dynamic rows that duplicate already-enabled built-ins
+      // and collapse equivalent rows across HSS/KefinTweaks so only the first
+      // configured plugin row in a duplicate group remains visible.
+      final enabledBuiltinKeys = visibleConfigsRaw
+          .where((c) => c.isBuiltin)
+          .expand(_duplicateKeysForConfig)
+          .toSet();
+      final seenPluginKeys = <String>{};
+      final visibleConfigs = visibleConfigsRaw.where((c) {
+        if (!c.isPluginDynamic) return true;
+        final duplicateKeys = _duplicateKeysForConfig(c);
+        if (duplicateKeys.any(enabledBuiltinKeys.contains)) {
+          return false;
+        }
+        final duplicatesExistingPlugin =
+            duplicateKeys.any(seenPluginKeys.contains);
+        if (!duplicatesExistingPlugin) {
+          seenPluginKeys.addAll(duplicateKeys);
+        }
+        return !duplicatesExistingPlugin;
+      }).toList(growable: false);
 
-    // Filter out plugin-dynamic rows that duplicate already-enabled built-ins
-    // and collapse equivalent rows across HSS/KefinTweaks so only the first
-    // configured plugin row in a duplicate group remains visible.
-    final enabledBuiltinKeys = visibleConfigsRaw
-        .where((c) => c.isBuiltin)
-        .expand(_duplicateKeysForConfig)
-        .toSet();
-    final seenPluginKeys = <String>{};
-    final visibleConfigs = visibleConfigsRaw.where((c) {
-      if (!c.isPluginDynamic) return true;
-      final duplicateKeys = _duplicateKeysForConfig(c);
-      if (duplicateKeys.any(enabledBuiltinKeys.contains)) {
-        return false;
+      final sections = visibleConfigs
+          .where((c) => c.isBuiltin)
+          .map((c) => c.type)
+          .toList();
+
+      if (!sections.contains(HomeSectionType.mediaBar)) {
+        _mediaBarViewModel.load();
       }
-      final duplicatesExistingPlugin =
-          duplicateKeys.any(seenPluginKeys.contains);
-      if (!duplicatesExistingPlugin) {
-        seenPluginKeys.addAll(duplicateKeys);
-      }
-      return !duplicatesExistingPlugin;
-    }).toList(growable: false);
 
-    final sections = visibleConfigs
-        .where((c) => c.isBuiltin)
-        .map((c) => c.type)
-        .toList();
+      final merge = _prefs.get(UserPreferences.mergeContinueWatchingNextUp);
+      final effectiveConfigs = visibleConfigs
+          .where((c) => !(c.isBuiltin && merge && c.type == HomeSectionType.nextUp))
+          .toList();
 
-    if (!sections.contains(HomeSectionType.mediaBar)) {
-      _mediaBarViewModel.load();
-    }
+      final nonResumeEffectiveConfigs = merge
+          ? effectiveConfigs
+              .where((c) => !(c.isBuiltin && c.type == HomeSectionType.resume))
+              .toList()
+          : effectiveConfigs;
 
-    final merge = _prefs.get(UserPreferences.mergeContinueWatchingNextUp);
+      final showMergedResume =
+          merge &&
+          effectiveConfigs.any(
+            (c) => c.isBuiltin && c.type == HomeSectionType.resume,
+          );
 
-    if (!preserveExisting || _rows.isEmpty) {
-      final placeholders = <HomeRow>[];
-      for (final cfg in visibleConfigs) {
-        if (cfg.isBuiltin && merge && cfg.type == HomeSectionType.nextUp) continue;
-        final placeholder = _placeholderForConfig(cfg);
-        if (placeholder != null) {
-          placeholders.add(placeholder);
-        }
-      }
-      _rows = placeholders;
-      notifyListeners();
-    }
-
-    final effectiveConfigs = visibleConfigs
-        .where((c) => !(c.isBuiltin && merge && c.type == HomeSectionType.nextUp))
-        .toList();
-
-    final nonResumeEffectiveConfigs = merge
-        ? effectiveConfigs
-            .where((c) => !(c.isBuiltin && c.type == HomeSectionType.resume))
-            .toList()
-        : effectiveConfigs;
-
-    final completers = <Future<void>>[];
-    for (final cfg in nonResumeEffectiveConfigs) {
-      completers.add(() async {
-        List<HomeRow> sectionRows;
-        try {
-          sectionRows = await _loadConfig(cfg);
-        } catch (_) {
-          sectionRows = const <HomeRow>[];
-        }
-        final loadedRows = sectionRows
-            .where((r) => r.items.isNotEmpty || r.rowType == HomeRowType.liveTv)
-            .toList();
-        final placeholder = _placeholderForConfig(cfg);
-        final loadedIds = loadedRows.map((r) => r.id).toSet();
-        _rows = List.of(_rows);
-        int insertIndex = -1;
-        if (placeholder != null) {
-          insertIndex = _rows.indexWhere((r) => r.id == placeholder.id);
-        }
-        if (insertIndex < 0 && loadedIds.isNotEmpty) {
-          insertIndex = _rows.indexWhere((r) => loadedIds.contains(r.id));
-        }
-        _rows.removeWhere((r) =>
-            (placeholder != null && r.id == placeholder.id) ||
-            loadedIds.contains(r.id));
-
-        if (loadedRows.isNotEmpty) {
-          if (insertIndex < 0 || insertIndex > _rows.length) {
-            _rows.addAll(loadedRows);
-          } else {
-            _rows.insertAll(insertIndex, loadedRows);
+      if (!preserveExisting || _rows.isEmpty) {
+        final placeholders = <HomeRow>[];
+        for (final cfg in effectiveConfigs) {
+          final placeholder = _placeholderForConfig(cfg);
+          if (placeholder != null) {
+            placeholders.add(placeholder);
           }
         }
+        _rows = placeholders;
         notifyListeners();
-      }());
-    }
+      } else {
+        final reconciledRows = _reconcilePreservedRows(effectiveConfigs);
+        if (!listEquals(_rows, reconciledRows)) {
+          _rows = reconciledRows;
+          notifyListeners();
+        }
+      }
 
-    await Future.wait(completers);
+      final completers = <Future<void>>[];
+      for (final cfg in nonResumeEffectiveConfigs) {
+        completers.add(() async {
+          List<HomeRow> sectionRows;
+          try {
+            sectionRows = await _loadConfig(cfg);
+          } catch (_) {
+            sectionRows = const <HomeRow>[];
+          }
+          final loadedRows = sectionRows
+              .where((r) => r.items.isNotEmpty || r.rowType == HomeRowType.liveTv)
+              .toList();
+          final placeholder = _placeholderForConfig(cfg);
+          final loadedIds = loadedRows.map((r) => r.id).toSet();
+          _rows = List.of(_rows);
+          int insertIndex = -1;
+          if (placeholder != null) {
+            insertIndex = _rows.indexWhere((r) => r.id == placeholder.id);
+          }
+          if (insertIndex < 0 && loadedIds.isNotEmpty) {
+            insertIndex = _rows.indexWhere((r) => loadedIds.contains(r.id));
+          }
+          _rows.removeWhere((r) =>
+              (placeholder != null && r.id == placeholder.id) ||
+              loadedIds.contains(r.id));
 
-    if (merge) {
-      final resumePlaceholder = _placeholderForSection(HomeSectionType.resume);
-      if (resumePlaceholder != null && !_rows.any((r) => r.id == 'resume')) {
-        _rows = List.of(_rows);
-        _rows.insert(0, resumePlaceholder);
-        notifyListeners();
+          if (loadedRows.isNotEmpty) {
+            if (insertIndex < 0 || insertIndex > _rows.length) {
+              _rows.addAll(loadedRows);
+            } else {
+              _rows.insertAll(insertIndex, loadedRows);
+            }
+          }
+          notifyListeners();
+        }());
+      }
+
+      await Future.wait(completers);
+
+      if (showMergedResume) {
+        _loadResumeAndNextUpInBackground();
+      }
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+      if (_reloadRequestedWhileLoading) {
+        final nextPreserveExisting = _pendingReloadPreserveExisting;
+        _reloadRequestedWhileLoading = false;
+        _pendingReloadPreserveExisting = true;
+        await load(preserveExisting: nextPreserveExisting);
       }
     }
-    
-    _isLoading = false;
-    notifyListeners();
+  }
 
-    if (merge) {
-      _loadResumeAndNextUpInBackground();
+  List<HomeRow> _reconcilePreservedRows(List<HomeSectionConfig> effectiveConfigs) {
+    final currentRows = _rows;
+    final reconciledRows = <HomeRow>[];
+
+    for (final cfg in effectiveConfigs) {
+      final existingRows = _rowsForConfig(currentRows, cfg);
+      if (existingRows.isNotEmpty) {
+        reconciledRows.addAll(existingRows);
+        continue;
+      }
+
+      final placeholder = _placeholderForConfig(cfg);
+      if (placeholder != null) {
+        reconciledRows.add(placeholder);
+      }
+    }
+
+    return reconciledRows;
+  }
+
+  List<HomeRow> _rowsForConfig(List<HomeRow> rows, HomeSectionConfig cfg) {
+    return rows.where((row) => _rowBelongsToConfig(row, cfg)).toList(growable: false);
+  }
+
+  bool _rowBelongsToConfig(HomeRow row, HomeSectionConfig cfg) {
+    if (cfg.isPluginDynamic) {
+      return row.rowType == HomeRowType.pluginDynamic && row.id == cfg.stableId;
+    }
+
+    switch (cfg.type) {
+      case HomeSectionType.resume:
+        return row.rowType == HomeRowType.resume;
+      case HomeSectionType.resumeAudio:
+        return row.rowType == HomeRowType.resumeAudio;
+      case HomeSectionType.nextUp:
+        return row.rowType == HomeRowType.nextUp;
+      case HomeSectionType.latestMedia:
+        return row.rowType == HomeRowType.latestMedia;
+      case HomeSectionType.libraryTilesSmall:
+        return row.rowType == HomeRowType.libraryTiles;
+      case HomeSectionType.libraryButtons:
+        return row.rowType == HomeRowType.libraryTilesSmall;
+      case HomeSectionType.playlists:
+        return row.rowType == HomeRowType.playlists;
+      case HomeSectionType.liveTv:
+        return row.rowType == HomeRowType.liveTv ||
+            row.rowType == HomeRowType.liveTvOnNow;
+      case HomeSectionType.activeRecordings:
+        return row.rowType == HomeRowType.activeRecordings;
+      case HomeSectionType.mediaBar:
+      case HomeSectionType.recentlyReleased:
+      case HomeSectionType.resumeBook:
+      case HomeSectionType.none:
+        return false;
     }
   }
 

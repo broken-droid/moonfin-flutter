@@ -155,7 +155,10 @@ void _registerUserScopedSingletons() {
     () => KefinTweaksService(_getIt<MultiServerRepository>()),
     dispose: (s) => s.dispose(),
   );
-  _getIt.registerLazySingleton(() => UserViewsRepository(_getIt()));
+  _getIt.registerLazySingleton(
+    () => UserViewsRepository(_getIt()),
+    dispose: (repository) => repository.dispose(),
+  );
   _getIt.registerLazySingleton(() => SearchRepository(_getIt()));
   _getIt.registerLazySingleton(() => ItemMutationRepository(_getIt()));
   _getIt.registerLazySingleton(

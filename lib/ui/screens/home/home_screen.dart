@@ -92,6 +92,7 @@ class _HomeShellState extends State<_HomeShell>
   Type? _lastMediaBarStateRuntime;
   int _lastMediaBarItemCount = 0;
   bool _lastMultiServer = false;
+  bool _lastMergeContinueWatchingNextUp = false;
   String _lastBlockedParentalRatings = '';
   bool _themeMusicRegistered = false;
   String? _lastObservedPath;
@@ -125,6 +126,8 @@ class _HomeShellState extends State<_HomeShell>
             : 0;
     _lastSectionsJson = _userPrefs.get(UserPreferences.homeSectionsJson);
     _lastMultiServer = _userPrefs.get(UserPreferences.enableMultiServerLibraries);
+    _lastMergeContinueWatchingNextUp =
+      _userPrefs.get(UserPreferences.mergeContinueWatchingNextUp);
     _lastBlockedParentalRatings = _userPrefs.get(UserPreferences.blockedParentalRatings);
     _userPrefs.addListener(_onPrefsChanged);
     _maybeRegisterThemeMusic();
@@ -206,12 +209,18 @@ class _HomeShellState extends State<_HomeShell>
     if (!mounted) return;
     final currentJson = _userPrefs.get(UserPreferences.homeSectionsJson);
     final currentMultiServer = _userPrefs.get(UserPreferences.enableMultiServerLibraries);
+    final currentMergeContinueWatchingNextUp =
+      _userPrefs.get(UserPreferences.mergeContinueWatchingNextUp);
     final currentBlocked = _userPrefs.get(UserPreferences.blockedParentalRatings);
     if (currentJson != _lastSectionsJson ||
         currentMultiServer != _lastMultiServer ||
+      currentMergeContinueWatchingNextUp !=
+        _lastMergeContinueWatchingNextUp ||
         currentBlocked != _lastBlockedParentalRatings) {
       _lastSectionsJson = currentJson;
       _lastMultiServer = currentMultiServer;
+      _lastMergeContinueWatchingNextUp =
+        currentMergeContinueWatchingNextUp;
       _lastBlockedParentalRatings = currentBlocked;
       _viewModel.refresh();
     }
