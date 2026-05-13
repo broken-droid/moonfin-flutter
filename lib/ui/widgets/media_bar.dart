@@ -109,6 +109,12 @@ class _MediaBarState extends State<MediaBar>
   late final AnimationController _makdKenBurnsController;
   late final Animation<double> _makdKenBurnsScale;
 
+  bool get _hideLeftNavArrowForSidebar {
+    if (PlatformDetection.useMobileUi) return false;
+    return widget.prefs.get(UserPreferences.navbarPosition) ==
+        NavbarPosition.left;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -1005,9 +1011,7 @@ class _MediaBarState extends State<MediaBar>
                     ),
                   ),
                 if (items.length > 1 && !PlatformDetection.useMobileUi) ...[
-                  if (!(PlatformDetection.isTV &&
-                      GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition) ==
-                          NavbarPosition.left))
+                  if (!_hideLeftNavArrowForSidebar)
                   Positioned(
                     left: 0,
                     top: 0,
@@ -1236,19 +1240,20 @@ class _MediaBarState extends State<MediaBar>
                             ),
                           ),
                   if (items.length > 1 && !PlatformDetection.useMobileUi) ...[
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      child: Center(
-                        child: _NavArrow(
-                          icon: Icons.chevron_left,
-                          onTap: _currentIndex > 0
-                              ? () => _goToPage(_currentIndex - 1)
-                              : null,
+                    if (!_hideLeftNavArrowForSidebar)
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: Center(
+                          child: _NavArrow(
+                            icon: Icons.chevron_left,
+                            onTap: _currentIndex > 0
+                                ? () => _goToPage(_currentIndex - 1)
+                                : null,
+                          ),
                         ),
                       ),
-                    ),
                     Positioned(
                       right: 44,
                       top: 0,

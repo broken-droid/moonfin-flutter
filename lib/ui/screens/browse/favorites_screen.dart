@@ -185,7 +185,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
     final isMobile = _isCompact(context);
     final navbarIsLeft = _prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
-    final rowLeftInset = (!isMobile && navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
+    final rowLeftInset = (!isMobile && navbarIsLeft) ? 56.0 : 0.0;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
     final cardFocusExpansion = _prefs.get(UserPreferences.cardFocusExpansion);
     final watchedBehavior = _prefs.get(UserPreferences.watchedIndicatorBehavior);

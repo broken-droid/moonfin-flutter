@@ -37,6 +37,7 @@ import '../../../data/models/media_bar_state.dart';
 import '../../../data/viewmodels/media_bar_view_model.dart';
 import '../../widgets/grid_button_card.dart';
 import '../../widgets/info_area.dart';
+import '../../widgets/left_sidebar.dart';
 import '../../widgets/library_row.dart';
 import '../../widgets/media_bar.dart';
 import '../../widgets/media_card.dart';
@@ -552,6 +553,8 @@ class _ContentRowsState extends State<_ContentRows>
   bool _verticalNavInFlight = false;
   bool _chromeFocusActive = false;
   bool _windowHasFocus = true;
+  bool _holdMediaBarWhileSidebarFocused = false;
+  FocusNode? _lastGlobalPrimaryFocus;
   String? _activePreviewKey;
   late bool _lastMedia3PreviewPreference;
   List<double> _rowTopOffsets = [];
@@ -577,17 +580,46 @@ class _ContentRowsState extends State<_ContentRows>
     return _activeFocusedRowIndex;
   }
 
+  bool _isSidebarFocus(FocusNode? node) {
+    final nodeContext = node?.context;
+    if (nodeContext == null) return false;
+
+    var insideSidebar = false;
+    nodeContext.visitAncestorElements((element) {
+      if (element.widget is LeftSidebar) {
+        insideSidebar = true;
+        return false;
+      }
+      return true;
+    });
+    return insideSidebar;
+  }
+
   void _onGlobalFocusChanged() {
     if (!mounted) return;
     final primary = FocusManager.instance.primaryFocus;
     final onMediaBar = identical(primary, _mediaBarFocusNode);
+    final onSidebar = _isSidebarFocus(primary);
+    final wasOnSidebar = _isSidebarFocus(_lastGlobalPrimaryFocus);
+    if (onSidebar && !wasOnSidebar) {
+      _holdMediaBarWhileSidebarFocused = identical(
+        _lastGlobalPrimaryFocus,
+        _mediaBarFocusNode,
+      );
+    } else if (!onSidebar) {
+      _holdMediaBarWhileSidebarFocused = false;
+    }
+    final hasRowContext = _activeFocusedRowIndex != null || onSidebar;
     final desktopUnfocused =
       PlatformDetection.isDesktop && !_windowHasFocus;
     final chromeFocusActive =
         SettingsPanel.isOpenNotifier.value ||
-        (!desktopUnfocused && !onMediaBar && _activeFocusedRowIndex == null);
+        (!desktopUnfocused && !onMediaBar && !hasRowContext);
 
-    final nextMediaBarVisible = onMediaBar || _activeFocusedRowIndex == null;
+    final nextMediaBarVisible =
+        onMediaBar ||
+        _holdMediaBarWhileSidebarFocused ||
+        (!onSidebar && _activeFocusedRowIndex == null);
     final chromeChanged = _chromeFocusActive != chromeFocusActive;
 
     if (_mediaBarVisible != nextMediaBarVisible || chromeChanged) {
@@ -596,6 +628,8 @@ class _ContentRowsState extends State<_ContentRows>
         _chromeFocusActive = chromeFocusActive;
       });
     }
+
+    _lastGlobalPrimaryFocus = primary;
 
     if (chromeFocusActive && (chromeChanged || _activePreviewKey != null)) {
       _finishSharedPreview(releaseResources: true);
@@ -1747,6 +1781,9 @@ class _ContentRowsState extends State<_ContentRows>
         setState(() => _mediaBarVisible = false);
       }
     } else if (_activeFocusedRowIndex == rowIndex) {
+      if (_isSidebarFocus(FocusManager.instance.primaryFocus)) {
+        return;
+      }
       if (_activePreviewKey != null) {
         _finishSharedPreview();
       }
@@ -2007,7 +2044,8 @@ class _ContentRowsState extends State<_ContentRows>
                 : 80.0)
         : 0.0;
     final navbarLeftInset = navbarIsTop ? 16.0 : 56.0;
-    final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
+    final rowLeftInset =
+      (navbarIsLeft && !PlatformDetection.useMobileUi) ? 56.0 : 0.0;
     final infoTopPadding = safeTop + navbarHeight + 8;
     final infoAreaHeight = InfoArea.fixedHeight(
       isMobile: PlatformDetection.useMobileUi,

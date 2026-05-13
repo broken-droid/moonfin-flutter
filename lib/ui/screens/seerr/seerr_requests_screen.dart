@@ -120,7 +120,8 @@ class _SeerrRequestsScreenState extends State<SeerrRequestsScreen> {
     final prefs = GetIt.instance<UserPreferences>();
     final navbarPosition = prefs.get(UserPreferences.navbarPosition);
     final navbarIsLeft = navbarPosition == NavbarPosition.left;
-    final leftInset = (navbarIsLeft && PlatformDetection.isTV) ? 72.0 : 16.0;
+    final leftInset =
+      (navbarIsLeft && !PlatformDetection.useMobileUi) ? 72.0 : 16.0;
     return RefreshIndicator(
       onRefresh: vm.refresh,
       child: ListView.builder(

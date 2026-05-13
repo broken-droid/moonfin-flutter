@@ -34,6 +34,9 @@ const _kExpandedWidthMobile = 260.0;
 const _kExpandDuration = Duration(milliseconds: 200);
 const _kExpandedWidthTV = 280.0;
 const _kCollapsedWidthTV = 72.0;
+const _kExpandedBackdropWidthTV = _kExpandedWidthTV - 16.0;
+const _kBackdropEdgeBlendWidthTV =
+  _kExpandedWidthTV - _kExpandedBackdropWidthTV;
 
 class LeftSidebar extends StatefulWidget {
   final String? activeRoute;
@@ -97,9 +100,11 @@ class _LeftSidebarState extends State<LeftSidebar> {
     _prefs.addListener(_onPrefsChanged);
     _loadLibraries();
     FocusManager.instance.addListener(_trackPreviousFocus);
-    if (PlatformDetection.isTV) {
+    if (PlatformDetection.isTV || PlatformDetection.isDesktop) {
       _armTvFocusGate();
       _sidebarFocus.addListener(_onSidebarFocusNodeChanged);
+    }
+    if (PlatformDetection.isTV) {
       _profileFocusNode.addListener(() {
         if (mounted) setState(() {});
       });
@@ -115,7 +120,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
       NavigationLayout.focusNavbarNotifier.value = _previousFocusNavbarCallback;
     }
     FocusManager.instance.removeListener(_trackPreviousFocus);
-    if (PlatformDetection.isTV) _sidebarFocus.removeListener(_onSidebarFocusNodeChanged);
+    if (PlatformDetection.isTV || PlatformDetection.isDesktop) {
+      _sidebarFocus.removeListener(_onSidebarFocusNodeChanged);
+    }
     _clockTimer?.cancel();
     _labelTimer?.cancel();
     _focusExpandGateTimer?.cancel();
@@ -280,13 +287,13 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
   void _markNavigationAwayFromSidebar() {
-    if (PlatformDetection.isTV) {
+    if (PlatformDetection.isTV || PlatformDetection.isDesktop) {
       _skipExpandOnNextFocusFromNavigation = true;
     }
   }
 
   void _onSidebarFocusChange(bool hasFocus) {
-    if (PlatformDetection.isTV) {
+    if (PlatformDetection.isTV || PlatformDetection.isDesktop) {
       return;
     }
     if (hasFocus) {
@@ -383,7 +390,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
   }
 
   Widget _buildDrawerLayout() {
-    if (PlatformDetection.isTV) return _buildTvLayout();
+    if (PlatformDetection.isTV || PlatformDetection.isDesktop) {
+      return _buildTvLayout();
+    }
     final expandedWidth = _isMobile
         ? _kExpandedWidthMobile
         : _kExpandedWidthDesktop;
@@ -525,42 +534,93 @@ class _LeftSidebarState extends State<LeftSidebar> {
     final overlayColor = _overlayColor();
     final opacity = _overlayOpacity();
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
-    return AnimatedContainer(
+    final desktopHoverRail = PlatformDetection.isDesktop && !PlatformDetection.isTV;
+    final railWidth = _isExpanded ? _kExpandedWidthTV : _kCollapsedWidthTV;
+
+    final rail = AnimatedContainer(
       duration: _kExpandDuration,
       curve: Curves.easeInOut,
-      width: _isExpanded ? _kExpandedWidthTV : _kCollapsedWidthTV,
+      width: railWidth,
       child: ClipRect(
         child: FocusScope(
           node: _sidebarFocus,
           onFocusChange: _onSidebarFocusChange,
           onKeyEvent: _onKeyEvent,
-          child: Container(
-            decoration: _isExpanded
-                ? BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        overlayColor.withValues(alpha: math.max(opacity, 0.7)),
-                        overlayColor.withValues(alpha: math.max(opacity, 0.5)),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.7, 1.0],
-                    ),
-                    border: isNeon
-                        ? Border(
-                            right: ThemeRegistry.active.borders.chipBorder.copyWith(
-                              color: AppColorScheme.accent,
-                              width: 1.2,
+          child: Stack(
+            children: [
+              if (_isExpanded)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    width: _kExpandedWidthTV,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: _kExpandedBackdropWidthTV,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                overlayColor.withValues(
+                                  alpha: math.max(opacity, 0.7),
+                                ),
+                                overlayColor.withValues(
+                                  alpha: math.max(opacity, 0.5),
+                                ),
+                              ],
                             ),
-                          )
-                        : null,
-                  )
-                : null,
-            child: _buildContent(),
+                            border: isNeon
+                                ? Border(
+                                    right: ThemeRegistry
+                                        .active
+                                        .borders
+                                        .chipBorder
+                                        .copyWith(
+                                          color: AppColorScheme.accent,
+                                          width: 1.2,
+                                        ),
+                                  )
+                                : null,
+                          ),
+                        ),
+                        Positioned(
+                          left: _kExpandedBackdropWidthTV,
+                          top: 0,
+                          bottom: 0,
+                          child: Container(
+                            width: _kBackdropEdgeBlendWidthTV,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  overlayColor.withValues(
+                                    alpha: math.max(opacity, 0.5),
+                                  ),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              _buildContent(),
+            ],
           ),
         ),
       ),
+    );
+
+    if (!desktopHoverRail) return rail;
+
+    return MouseRegion(
+      onEnter: (_) => _expand(),
+      onExit: (_) => _collapse(),
+      child: rail,
     );
   }
 
@@ -753,7 +813,10 @@ class _LeftSidebarState extends State<LeftSidebar> {
                             duration: _kExpandDuration,
                             child: Icon(
                               Icons.expand_more,
-                              size: 16,
+                              size: (PlatformDetection.isDesktop &&
+                                      !PlatformDetection.isTV)
+                                  ? 18
+                                  : 16,
                               color: Colors.white.withValues(alpha: 0.5),
                             ),
                           )
@@ -865,7 +928,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
 
   void _exitSidebarToContent() {
     _collapse();
-    if (PlatformDetection.isTV) {
+    if (PlatformDetection.isTV || PlatformDetection.isDesktop) {
       _restoreFocusOutsideSidebar();
     }
   }
@@ -1050,6 +1113,8 @@ class _SidebarItemState extends State<_SidebarItem> {
 
   @override
   Widget build(BuildContext context) {
+    final desktopSidebar =
+        PlatformDetection.isDesktop && !PlatformDetection.isTV;
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final highlighted = _isFocused || _isHovered;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
@@ -1060,6 +1125,9 @@ class _SidebarItemState extends State<_SidebarItem> {
       : highlighted
       ? (isNeon ? baseColor : focusColor)
       : baseColor;
+    final iconSize = desktopSidebar ? 28.0 : 24.0;
+    final iconSlotWidth = desktopSidebar ? 36.0 : 32.0;
+    final labelFontSize = desktopSidebar ? 16.0 : 14.0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1),
@@ -1082,7 +1150,7 @@ class _SidebarItemState extends State<_SidebarItem> {
             onLongPress: widget.onLongPress,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              height: 40,
+              height: desktopSidebar ? 44 : 40,
               padding: EdgeInsets.symmetric(horizontal: _tvCompact ? 4 : 10),
               decoration: BoxDecoration(
                 color: tvFocused
@@ -1099,10 +1167,10 @@ class _SidebarItemState extends State<_SidebarItem> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 32,
+                    width: iconSlotWidth,
                     child:
-                        widget.iconBuilder?.call(24, fgColor) ??
-                        Icon(widget.icon, size: 24, color: fgColor),
+                        widget.iconBuilder?.call(iconSize, fgColor) ??
+                        Icon(widget.icon, size: iconSize, color: fgColor),
                   ),
                   if (widget.showLabel) ...[
                     const SizedBox(width: 12),
@@ -1111,7 +1179,7 @@ class _SidebarItemState extends State<_SidebarItem> {
                         widget.label,
                         style: TextStyle(
                           color: fgColor,
-                          fontSize: 14,
+                          fontSize: labelFontSize,
                           fontWeight: FontWeight.w500,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -1169,6 +1237,8 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
 
   @override
   Widget build(BuildContext context) {
+    final desktopSidebar =
+        PlatformDetection.isDesktop && !PlatformDetection.isTV;
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
     final baseColor = widget.baseColor ?? Colors.white.withValues(alpha: 0.5);
@@ -1194,8 +1264,8 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
             onTap: widget.onPressed,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              height: 36,
-              padding: const EdgeInsets.only(left: 50, right: 10),
+              height: desktopSidebar ? 40 : 36,
+              padding: EdgeInsets.only(left: desktopSidebar ? 56 : 50, right: 10),
               decoration: BoxDecoration(
                 color: tvFocused
                     ? Colors.white
@@ -1218,7 +1288,7 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
                             : highlighted
                           ? (isNeon ? baseColor : focusColor)
                           : baseColor,
-                        fontSize: 13,
+                        fontSize: desktopSidebar ? 15 : 13,
                         fontWeight: FontWeight.w500,
                       ),
                       overflow: TextOverflow.ellipsis,

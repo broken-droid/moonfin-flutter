@@ -204,8 +204,10 @@ class _SeerrDiscoverScreenState extends State<SeerrDiscoverScreen> {
         ? (PlatformDetection.isTV ? 95.0 : PlatformDetection.useMobileUi ? 60.0 : 80.0)
         : 0.0;
     final navbarIsLeft = navbarPosition == NavbarPosition.left;
-    final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
-    final infoPanelLeft = (navbarIsLeft && PlatformDetection.isTV) ? 80.0 : 48.0;
+    final rowLeftInset =
+      (navbarIsLeft && !PlatformDetection.useMobileUi) ? 56.0 : 0.0;
+    final infoPanelLeft =
+      (navbarIsLeft && !PlatformDetection.useMobileUi) ? 80.0 : 48.0;
     final infoTopInset = topPad + navbarHeight + 8;
     return Scaffold(
       backgroundColor: AppColorScheme.background,

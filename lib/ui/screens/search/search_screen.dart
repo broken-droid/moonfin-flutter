@@ -616,7 +616,8 @@ class _SearchScreenState extends State<SearchScreen> {
     final cardFocusExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final posterSize = prefs.get(UserPreferences.posterSize);
     final navbarIsLeft = prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
-    final rowLeftInset = (navbarIsLeft && PlatformDetection.isTV) ? 56.0 : 0.0;
+    final rowLeftInset =
+      (navbarIsLeft && !PlatformDetection.useMobileUi) ? 56.0 : 0.0;
     final hasSeerr = _vm.seerrResults.isNotEmpty;
     final totalCount = _vm.results.length + (hasSeerr ? 1 : 0);
     return ListView.builder(
