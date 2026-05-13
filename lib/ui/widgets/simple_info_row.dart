@@ -10,49 +10,66 @@ final _textShadows = [
 class SimpleInfoRow extends StatelessWidget {
   final AggregatedItem item;
   final bool showRating;
+  final String? metadataSummary;
 
-  const SimpleInfoRow({super.key, required this.item, this.showRating = true});
+  const SimpleInfoRow({
+    super.key,
+    required this.item,
+    this.showRating = true,
+    this.metadataSummary,
+  });
 
   @override
   Widget build(BuildContext context) {
     final children = <Widget>[];
 
-    if (item.productionYear != null) {
-      children.add(_text(context, item.productionYear.toString()));
-    }
-
-    if (item.type == 'Episode') {
-      final s = item.parentIndexNumber;
-      final e = item.indexNumber;
-      if (s != null && e != null) {
-        children.add(_text(context, 'S$s:E$e'));
+    final summary = metadataSummary;
+    if (summary != null && summary.isNotEmpty) {
+      final parts = summary
+          .split(' \u2022 ')
+          .map((part) => part.trim())
+          .where((part) => part.isNotEmpty);
+      for (final part in parts) {
+        children.add(_text(context, part));
       }
-    }
+    } else {
+      if (item.productionYear != null) {
+        children.add(_text(context, item.productionYear.toString()));
+      }
 
-    if (item.officialRating != null) {
-      children.add(_badge(context, item.officialRating!));
-    }
+      if (item.type == 'Episode') {
+        final s = item.parentIndexNumber;
+        final e = item.indexNumber;
+        if (s != null && e != null) {
+          children.add(_text(context, 'S$s:E$e'));
+        }
+      }
 
-    final runtime = item.runtime;
-    if (runtime != null) {
-      final hours = runtime.inHours;
-      final minutes = runtime.inMinutes.remainder(60);
-      final label = hours > 0 ? '${hours}h ${minutes}m' : '${minutes}m';
-      children.add(_text(context, label));
-    }
+      if (item.officialRating != null) {
+        children.add(_badge(context, item.officialRating!));
+      }
 
-    final resolution = item.videoResolution;
-    if (resolution != null) {
-      children.add(_badge(context, resolution));
-    }
+      final runtime = item.runtime;
+      if (runtime != null) {
+        final hours = runtime.inHours;
+        final minutes = runtime.inMinutes.remainder(60);
+        final label = hours > 0 ? '${hours}h ${minutes}m' : '${minutes}m';
+        children.add(_text(context, label));
+      }
 
-    if (showRating && item.communityRating != null) {
-      children.add(_ratingChip(context, item.communityRating!));
-    }
+      final resolution = item.videoResolution;
+      if (resolution != null) {
+        children.add(_badge(context, resolution));
+      }
 
-    final genres = item.genres;
-    if (genres.isNotEmpty) {
-      children.add(_text(context, genres.take(3).join(', ')));
+      if (showRating && item.communityRating != null) {
+        children.add(_ratingChip(context, item.communityRating!));
+      }
+
+      final genres = item.genres;
+      if (genres.isNotEmpty) {
+        children.add(_text(context, genres.take(3).join(', ')));
+      }
     }
 
     if (children.isEmpty) return const SizedBox.shrink();
@@ -78,8 +95,8 @@ class SimpleInfoRow extends StatelessWidget {
       value,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         color: AppColorScheme.onSurface.withValues(alpha: 0.8),
-            shadows: _textShadows,
-          ),
+        shadows: _textShadows,
+      ),
     );
   }
 
@@ -88,8 +105,8 @@ class SimpleInfoRow extends StatelessWidget {
       ' \u2022 ',
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         color: AppColorScheme.onSurface.withValues(alpha: 0.5),
-            shadows: _textShadows,
-          ),
+        shadows: _textShadows,
+      ),
     );
   }
 
@@ -105,9 +122,9 @@ class SimpleInfoRow extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: AppColorScheme.onSurface.withValues(alpha: 0.8),
-              shadows: _textShadows,
-            ),
+          color: AppColorScheme.onSurface.withValues(alpha: 0.8),
+          shadows: _textShadows,
+        ),
       ),
     );
   }
@@ -121,9 +138,9 @@ class SimpleInfoRow extends StatelessWidget {
         Text(
           rating.toStringAsFixed(1),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColorScheme.onSurface.withValues(alpha: 0.8),
-                shadows: _textShadows,
-              ),
+            color: AppColorScheme.onSurface.withValues(alpha: 0.8),
+            shadows: _textShadows,
+          ),
         ),
       ],
     );

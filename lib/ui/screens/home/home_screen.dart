@@ -2053,9 +2053,13 @@ class _ContentRowsState extends State<_ContentRows>
                 : 80.0)
         : 0.0;
     final navbarLeftInset = navbarIsTop ? 16.0 : 56.0;
+    final infoHeaderLeftInset =
+      (!PlatformDetection.useMobileUi && navbarLeftInset == 16.0) ? 8.0 : 0.0;
     final rowLeftInset =
       (navbarIsLeft && !PlatformDetection.useMobileUi) ? 56.0 : 0.0;
-    final infoTopPadding = safeTop + navbarHeight + 8;
+    final infoTopBasePadding =
+      (!PlatformDetection.useMobileUi && navbarHeight == 0) ? 14.0 : 8.0;
+    final infoTopPadding = safeTop + navbarHeight + infoTopBasePadding;
     final infoAreaHeight = InfoArea.fixedHeight(
       isMobile: PlatformDetection.useMobileUi,
       desktopScale: desktopScale,
@@ -2245,7 +2249,10 @@ class _ContentRowsState extends State<_ContentRows>
                     16,
                     8,
                   ),
-                  child: InfoArea(item: widget.selectedItem),
+                  child: InfoArea(
+                    item: widget.selectedItem,
+                    headerLeftInset: infoHeaderLeftInset,
+                  ),
                 ),
               ),
             ),
