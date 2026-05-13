@@ -6377,6 +6377,14 @@
   "@playerTooltipExitFullscreen": {
     "description": "Tooltip label for exiting fullscreen in player"
   },
+  "playerTooltipFloatOnTop": "Float on top",
+  "@playerTooltipFloatOnTop": {
+    "description": "Tooltip label for enabling always-on-top in desktop player"
+  },
+  "playerTooltipExitFloatOnTop": "Disable float on top",
+  "@playerTooltipExitFloatOnTop": {
+    "description": "Tooltip label for disabling always-on-top in desktop player"
+  },
   "playerTooltipLockLandscape": "Lock landscape",
   "@playerTooltipLockLandscape": {
     "description": "Tooltip label for locking landscape orientation in player"

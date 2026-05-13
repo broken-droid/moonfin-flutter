@@ -11474,6 +11474,18 @@ abstract class AppLocalizations {
   /// **'Exit fullscreen'**
   String get playerTooltipExitFullscreen;
 
+  /// Tooltip label for enabling always-on-top in desktop player
+  ///
+  /// In en, this message translates to:
+  /// **'Float on top'**
+  String get playerTooltipFloatOnTop;
+
+  /// Tooltip label for disabling always-on-top in desktop player
+  ///
+  /// In en, this message translates to:
+  /// **'Disable float on top'**
+  String get playerTooltipExitFloatOnTop;
+
   /// Tooltip label for locking landscape orientation in player
   ///
   /// In en, this message translates to:

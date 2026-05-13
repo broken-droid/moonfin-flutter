@@ -186,6 +186,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   );
   bool _seekbarFocused = false;
   bool _isDesktopFullscreen = false;
+  bool _isAlwaysOnTop = false;
+  bool? _wasAlwaysOnTopOnEntry;
   bool? _wasDesktopFullscreenOnEntry;
 
   LogicalKeyboardKey? _seekDirection;
@@ -768,7 +770,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       onError: (_) {},
     );
 
-    if (PlatformDetection.isAndroid || PlatformDetection.isIOS) {
+    if ((PlatformDetection.isAndroid && !PlatformDetection.isTV) ||
+        PlatformDetection.isIOS) {
       _pipChangedSub = _pipService.onPiPChanged.listen(_onPiPChanged);
       _pipActionSub = _pipService.onPiPAction.listen(_onPiPAction);
       _playingSub = _state.playingStream.listen((playing) {
@@ -792,6 +795,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
     if (PlatformDetection.useDesktopUi) {
       unawaited(_syncDesktopFullscreenState());
+      unawaited(_syncAlwaysOnTopState());
     }
 
     if (PlatformDetection.isMobile) {
@@ -858,7 +862,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     _tvSecondaryLastFocus.dispose();
     unawaited(_autoHdrSwitcher.restore());
     _themeMusicService.setExternalAudioActive(false);
-    _pipService.enableAutoPiP(false);
+    if (!PlatformDetection.isTV) _pipService.enableAutoPiP(false);
+    if (_wasAlwaysOnTopOnEntry == false && _isAlwaysOnTop) {
+      unawaited(_setAlwaysOnTop(false));
+    }
     if (!_isStopping) _manager.stop(userInitiated: false);
     unawaited(_restoreSystemUiForExit());
     super.dispose();
@@ -2060,7 +2067,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (_isStopping) return;
     _isStopping = true;
     _cancelTvTemporarySpeedHold();
-    _pipService.enableAutoPiP(false);
+    if (!PlatformDetection.isTV) _pipService.enableAutoPiP(false);
+    if (_wasAlwaysOnTopOnEntry == false && _isAlwaysOnTop) {
+      await _setAlwaysOnTop(false);
+    }
     await _manager.stop(userInitiated: false);
     if (PlatformDetection.useDesktopUi &&
         _wasDesktopFullscreenOnEntry == false) {
@@ -4028,6 +4038,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                       shortcut: 'F11',
                     ),
             ),
+          if (PlatformDetection.useDesktopUi && !_isDesktopFullscreen)
+            _controlButton(
+              _isAlwaysOnTop ? Icons.push_pin : Icons.push_pin_outlined,
+              onPressed: _toggleAlwaysOnTop,
+              size: secondaryIconSize,
+              extent: secondaryExtent,
+              tooltip: _isAlwaysOnTop
+                  ? _tooltipMessage(l10n.playerTooltipExitFloatOnTop)
+                  : _tooltipMessage(l10n.playerTooltipFloatOnTop),
+            ),
         ];
 
         final orderedSecondaryButtons = PlatformDetection.isTV
@@ -4138,6 +4158,34 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       _wasDesktopFullscreenOnEntry ??= full;
       await _setDesktopFullscreen(!full);
     } catch (_) {}
+  }
+
+  Future<void> _syncAlwaysOnTopState() async {
+    if (!PlatformDetection.useDesktopUi) return;
+    try {
+      final onTop = await windowManager.isAlwaysOnTop();
+      _wasAlwaysOnTopOnEntry ??= onTop;
+      if (!mounted) return;
+      setState(() => _isAlwaysOnTop = onTop);
+    } catch (_) {}
+  }
+
+  Future<void> _setAlwaysOnTop(bool value) async {
+    if (!PlatformDetection.useDesktopUi) return;
+    try {
+      await windowManager.setAlwaysOnTop(value);
+      if (!mounted) return;
+      setState(() => _isAlwaysOnTop = value);
+    } catch (_) {}
+  }
+
+  Future<void> _toggleAlwaysOnTop() async {
+    if (!PlatformDetection.useDesktopUi) return;
+    if (_wasAlwaysOnTopOnEntry == null) {
+      await _syncAlwaysOnTopState();
+      _wasAlwaysOnTopOnEntry ??= _isAlwaysOnTop;
+    }
+    await _setAlwaysOnTop(!_isAlwaysOnTop);
   }
 
   Future<void> _changeVolumeBy(double delta) async {

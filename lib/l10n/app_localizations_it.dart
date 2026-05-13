@@ -6540,6 +6540,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get playerTooltipExitFullscreen => 'Esci da schermo intero';
 
   @override
+  String get playerTooltipFloatOnTop => 'Float on top';
+
+  @override
+  String get playerTooltipExitFloatOnTop => 'Disable float on top';
+
+  @override
   String get playerTooltipLockLandscape => 'Blocca il paesaggio';
 
   @override

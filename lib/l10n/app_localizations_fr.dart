@@ -6585,6 +6585,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get playerTooltipExitFullscreen => 'Quitter le plein écran';
 
   @override
+  String get playerTooltipFloatOnTop => 'Float on top';
+
+  @override
+  String get playerTooltipExitFloatOnTop => 'Disable float on top';
+
+  @override
   String get playerTooltipLockLandscape => 'Paysage de verrouillage';
 
   @override
