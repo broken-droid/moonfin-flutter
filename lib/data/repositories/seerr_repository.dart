@@ -144,7 +144,9 @@ class SeerrRepository {
     );
   }
 
-  Future<T> _withClient<T>(Future<T> Function(SeerrHttpClient client) fn) async {
+  Future<T> _withClient<T>(
+    Future<T> Function(SeerrHttpClient client) fn,
+  ) async {
     await ensureInitialized();
     final client = _httpClient;
     if (client == null) throw StateError('Seerr HTTP client not initialized');
@@ -164,7 +166,8 @@ class SeerrRepository {
 
   Future<bool> isSessionValidCached() async {
     final now = DateTime.now().millisecondsSinceEpoch;
-    if ((now - _lastSessionCheckMs) < _sessionCacheDurationMs && _lastSessionValid) {
+    if ((now - _lastSessionCheckMs) < _sessionCacheDurationMs &&
+        _lastSessionValid) {
       return true;
     }
     final valid = await isSessionValid();
@@ -173,8 +176,8 @@ class SeerrRepository {
     return valid;
   }
 
-  Future<SeerrUser> getCurrentUser() => _withClient(
-      (c) async => SeerrUser.fromJson(await c.getCurrentUser()));
+  Future<SeerrUser> getCurrentUser() =>
+      _withClient((c) async => SeerrUser.fromJson(await c.getCurrentUser()));
 
   Future<SeerrUser> loginWithJellyfin({
     required String username,
@@ -190,7 +193,11 @@ class SeerrRepository {
     await _store.setString(_serverUrlKey, seerrUrl);
 
     _initClient(seerrUrl, '');
-    final data = await _httpClient!.loginJellyfin(username, password, jellyfinUrl);
+    final data = await _httpClient!.loginJellyfin(
+      username,
+      password,
+      jellyfinUrl,
+    );
     final user = SeerrUser.fromJson(data);
 
     await _store.setBool(_enabledKey, true);
@@ -280,7 +287,10 @@ class SeerrRepository {
 
     if (effectiveEnabled) {
       if (status.jellyseerrUserId != null) {
-        await _store.setString(_moonfinUserIdKey, status.jellyseerrUserId.toString());
+        await _store.setString(
+          _moonfinUserIdKey,
+          status.jellyseerrUserId.toString(),
+        );
       }
       _isAvailable = true;
     } else {
@@ -319,7 +329,12 @@ class SeerrRepository {
         _moonfinUserIdKey,
         response.jellyseerrUserId?.toString() ?? '',
       );
+      await _store.setString(_authMethodKey, 'moonfin');
+      await _store.setBool(_enabledKey, true);
+      await _store.setBool(_lastConnectionSuccessKey, true);
+      _isMoonfinMode = true;
       _isAvailable = true;
+      _invalidateSessionCache();
     }
 
     return response;
@@ -333,45 +348,61 @@ class SeerrRepository {
       } catch (_) {}
     }
 
-    await _store.setBool(_moonfinModeKey, false);
     await _store.setString(_moonfinDisplayNameKey, '');
     await _store.setString(_moonfinUserIdKey, '');
     await _store.setBool(_enabledKey, false);
-    await _store.setString(_authMethodKey, '');
+    await _store.setString(_authMethodKey, 'moonfin');
+    await _store.setBool(_moonfinModeKey, true);
 
-    _httpClient?.proxyConfig = null;
-    _isMoonfinMode = false;
+    _isMoonfinMode = true;
     _isAvailable = false;
-    _initialized = false;
+    _invalidateSessionCache();
   }
 
   Future<SeerrDiscoverPage> getTrending({int limit = 20, int offset = 0}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getTrending(limit: limit, offset: offset)));
+      _withClient(
+        (c) async => SeerrDiscoverPage.fromJson(
+          await c.getTrending(limit: limit, offset: offset),
+        ),
+      );
 
-  Future<SeerrDiscoverPage> getTrendingMovies({int limit = 20, int offset = 0}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getTrendingMovies(limit: limit, offset: offset)));
+  Future<SeerrDiscoverPage> getTrendingMovies({
+    int limit = 20,
+    int offset = 0,
+  }) => _withClient(
+    (c) async => SeerrDiscoverPage.fromJson(
+      await c.getTrendingMovies(limit: limit, offset: offset),
+    ),
+  );
 
   Future<SeerrDiscoverPage> getTrendingTv({int limit = 20, int offset = 0}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getTrendingTv(limit: limit, offset: offset)));
+      _withClient(
+        (c) async => SeerrDiscoverPage.fromJson(
+          await c.getTrendingTv(limit: limit, offset: offset),
+        ),
+      );
 
   Future<SeerrDiscoverPage> getTopMovies({int limit = 20, int offset = 0}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getTopMovies(limit: limit, offset: offset)));
+      _withClient(
+        (c) async => SeerrDiscoverPage.fromJson(
+          await c.getTopMovies(limit: limit, offset: offset),
+        ),
+      );
 
   Future<SeerrDiscoverPage> getTopTv({int limit = 20, int offset = 0}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getTopTv(limit: limit, offset: offset)));
+      _withClient(
+        (c) async => SeerrDiscoverPage.fromJson(
+          await c.getTopTv(limit: limit, offset: offset),
+        ),
+      );
 
-  Future<SeerrDiscoverPage> getUpcomingMovies() =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getUpcomingMovies()));
+  Future<SeerrDiscoverPage> getUpcomingMovies() => _withClient(
+    (c) async => SeerrDiscoverPage.fromJson(await c.getUpcomingMovies()),
+  );
 
-  Future<SeerrDiscoverPage> getUpcomingTv() =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getUpcomingTv()));
+  Future<SeerrDiscoverPage> getUpcomingTv() => _withClient(
+    (c) async => SeerrDiscoverPage.fromJson(await c.getUpcomingTv()),
+  );
 
   Future<SeerrDiscoverPage> discoverMovies({
     int page = 1,
@@ -380,16 +411,18 @@ class SeerrRepository {
     int? studio,
     int? keywords,
     String language = 'en',
-  }) =>
-      _withClient((c) async => SeerrDiscoverPage.fromJson(
-          await c.discoverMovies(
-            page: page,
-            sortBy: sortBy,
-            genre: genre,
-            studio: studio,
-            keywords: keywords,
-            language: language,
-          )));
+  }) => _withClient(
+    (c) async => SeerrDiscoverPage.fromJson(
+      await c.discoverMovies(
+        page: page,
+        sortBy: sortBy,
+        genre: genre,
+        studio: studio,
+        keywords: keywords,
+        language: language,
+      ),
+    ),
+  );
 
   Future<SeerrDiscoverPage> discoverTv({
     int page = 1,
@@ -398,87 +431,113 @@ class SeerrRepository {
     int? network,
     int? keywords,
     String language = 'en',
-  }) =>
-      _withClient((c) async => SeerrDiscoverPage.fromJson(
-          await c.discoverTv(
-            page: page,
-            sortBy: sortBy,
-            genre: genre,
-            network: network,
-            keywords: keywords,
-            language: language,
-          )));
+  }) => _withClient(
+    (c) async => SeerrDiscoverPage.fromJson(
+      await c.discoverTv(
+        page: page,
+        sortBy: sortBy,
+        genre: genre,
+        network: network,
+        keywords: keywords,
+        language: language,
+      ),
+    ),
+  );
 
   Future<SeerrDiscoverPage> search(
     String query, {
     String? mediaType,
     int limit = 20,
     int offset = 0,
-  }) =>
-      _withClient((c) async => SeerrDiscoverPage.fromJson(
-          await c.search(query, mediaType: mediaType, limit: limit, offset: offset)));
+  }) => _withClient(
+    (c) async => SeerrDiscoverPage.fromJson(
+      await c.search(query, mediaType: mediaType, limit: limit, offset: offset),
+    ),
+  );
 
-  Future<SeerrMovieDetails> getMovieDetails(int tmdbId) =>
-      _withClient((c) async =>
-          SeerrMovieDetails.fromJson(await c.getMovieDetails(tmdbId)));
+  Future<SeerrMovieDetails> getMovieDetails(int tmdbId) => _withClient(
+    (c) async => SeerrMovieDetails.fromJson(await c.getMovieDetails(tmdbId)),
+  );
 
-  Future<SeerrTvDetails> getTvDetails(int tmdbId) =>
-      _withClient((c) async =>
-          SeerrTvDetails.fromJson(await c.getTvDetails(tmdbId)));
+  Future<SeerrTvDetails> getTvDetails(int tmdbId) => _withClient(
+    (c) async => SeerrTvDetails.fromJson(await c.getTvDetails(tmdbId)),
+  );
 
   Future<SeerrDiscoverPage> getSimilarMovies(int tmdbId, {int page = 1}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getSimilarMovies(tmdbId, page: page)));
+      _withClient(
+        (c) async => SeerrDiscoverPage.fromJson(
+          await c.getSimilarMovies(tmdbId, page: page),
+        ),
+      );
 
   Future<SeerrDiscoverPage> getSimilarTv(int tmdbId, {int page = 1}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getSimilarTv(tmdbId, page: page)));
+      _withClient(
+        (c) async => SeerrDiscoverPage.fromJson(
+          await c.getSimilarTv(tmdbId, page: page),
+        ),
+      );
 
-  Future<SeerrDiscoverPage> getMovieRecommendations(int tmdbId, {int page = 1}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getMovieRecommendations(tmdbId, page: page)));
+  Future<SeerrDiscoverPage> getMovieRecommendations(
+    int tmdbId, {
+    int page = 1,
+  }) => _withClient(
+    (c) async => SeerrDiscoverPage.fromJson(
+      await c.getMovieRecommendations(tmdbId, page: page),
+    ),
+  );
 
   Future<SeerrDiscoverPage> getTvRecommendations(int tmdbId, {int page = 1}) =>
-      _withClient((c) async =>
-          SeerrDiscoverPage.fromJson(await c.getTvRecommendations(tmdbId, page: page)));
+      _withClient(
+        (c) async => SeerrDiscoverPage.fromJson(
+          await c.getTvRecommendations(tmdbId, page: page),
+        ),
+      );
 
-  Future<SeerrPersonDetails> getPersonDetails(int personId) =>
-      _withClient((c) async =>
-          SeerrPersonDetails.fromJson(await c.getPersonDetails(personId)));
+  Future<SeerrPersonDetails> getPersonDetails(int personId) => _withClient(
+    (c) async =>
+        SeerrPersonDetails.fromJson(await c.getPersonDetails(personId)),
+  );
 
   Future<SeerrPersonCombinedCredits> getPersonCombinedCredits(int personId) =>
-      _withClient((c) async =>
-          SeerrPersonCombinedCredits.fromJson(await c.getPersonCombinedCredits(personId)));
+      _withClient(
+        (c) async => SeerrPersonCombinedCredits.fromJson(
+          await c.getPersonCombinedCredits(personId),
+        ),
+      );
 
-  Future<List<SeerrGenre>> getGenreSliderMovies() =>
-      _withClient((c) async => (await c.getGenreSliderMovies())
-          .cast<Map<String, dynamic>>()
-          .map(SeerrGenre.fromJson)
-          .toList());
+  Future<List<SeerrGenre>> getGenreSliderMovies() => _withClient(
+    (c) async => (await c.getGenreSliderMovies())
+        .cast<Map<String, dynamic>>()
+        .map(SeerrGenre.fromJson)
+        .toList(),
+  );
 
-  Future<List<SeerrGenre>> getGenreSliderTv() =>
-      _withClient((c) async => (await c.getGenreSliderTv())
-          .cast<Map<String, dynamic>>()
-          .map(SeerrGenre.fromJson)
-          .toList());
+  Future<List<SeerrGenre>> getGenreSliderTv() => _withClient(
+    (c) async => (await c.getGenreSliderTv())
+        .cast<Map<String, dynamic>>()
+        .map(SeerrGenre.fromJson)
+        .toList(),
+  );
 
   Future<SeerrRequestListResponse> getRequests({
     String? filter,
     int? requestedBy,
     int limit = 50,
     int offset = 0,
-  }) =>
-      _withClient((c) async => SeerrRequestListResponse.fromJson(
-          await c.getRequests(
-            filter: filter,
-            requestedBy: requestedBy,
-            limit: limit,
-            offset: offset,
-          )));
+  }) => _withClient(
+    (c) async => SeerrRequestListResponse.fromJson(
+      await c.getRequests(
+        filter: filter,
+        requestedBy: requestedBy,
+        limit: limit,
+        offset: offset,
+      ),
+    ),
+  );
 
-  Future<SeerrRequest> getRequest(int requestId) =>
-      _withClient((c) async =>
-          SeerrRequest.fromJson(await c.getRequest(requestId)));
+  Future<SeerrRequest> getRequest(int requestId) => _withClient(
+    (c) async => SeerrRequest.fromJson(await c.getRequest(requestId)),
+  );
 
   Future<SeerrRequest> createRequest({
     required int mediaId,
@@ -489,18 +548,20 @@ class SeerrRepository {
     int? profileId,
     String? rootFolder,
     int? serverId,
-  }) =>
-      _withClient((c) async => SeerrRequest.fromJson(
-          await c.createRequest(
-            mediaId: mediaId,
-            mediaType: mediaType,
-            seasons: seasons,
-            allSeasons: allSeasons,
-            is4k: is4k,
-            profileId: profileId,
-            rootFolder: rootFolder,
-            serverId: serverId,
-          )));
+  }) => _withClient(
+    (c) async => SeerrRequest.fromJson(
+      await c.createRequest(
+        mediaId: mediaId,
+        mediaType: mediaType,
+        seasons: seasons,
+        allSeasons: allSeasons,
+        is4k: is4k,
+        profileId: profileId,
+        rootFolder: rootFolder,
+        serverId: serverId,
+      ),
+    ),
+  );
 
   Future<void> deleteRequest(int requestId) =>
       _withClient((c) => c.deleteRequest(requestId));
@@ -508,7 +569,8 @@ class SeerrRepository {
   Future<List<SeerrMedia>> getRecentlyAdded({int limit = 20}) =>
       _withClient((c) async {
         final data = await c.getRecentlyAdded(take: limit);
-        final results = (data['results'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+        final results =
+            (data['results'] as List?)?.cast<Map<String, dynamic>>() ?? [];
         return results.map(SeerrMedia.fromJson).toList();
       });
 
@@ -518,40 +580,49 @@ class SeerrRepository {
   Future<void> declineRequest(int requestId) =>
       _withClient((c) => c.declineRequest(requestId));
 
-  Future<List<SeerrServiceServer>> getRadarrServers() =>
-      _withClient((c) async => (await c.getRadarrServers())
-          .cast<Map<String, dynamic>>()
-          .map(SeerrServiceServer.fromJson)
-          .toList());
+  Future<List<SeerrServiceServer>> getRadarrServers() => _withClient(
+    (c) async => (await c.getRadarrServers())
+        .cast<Map<String, dynamic>>()
+        .map(SeerrServiceServer.fromJson)
+        .toList(),
+  );
 
   Future<SeerrServiceServerDetails> getRadarrServerDetails(int serverId) =>
-      _withClient((c) async =>
-          SeerrServiceServerDetails.fromJson(await c.getRadarrServerDetails(serverId)));
+      _withClient(
+        (c) async => SeerrServiceServerDetails.fromJson(
+          await c.getRadarrServerDetails(serverId),
+        ),
+      );
 
-  Future<List<SeerrServiceServer>> getSonarrServers() =>
-      _withClient((c) async => (await c.getSonarrServers())
-          .cast<Map<String, dynamic>>()
-          .map(SeerrServiceServer.fromJson)
-          .toList());
+  Future<List<SeerrServiceServer>> getSonarrServers() => _withClient(
+    (c) async => (await c.getSonarrServers())
+        .cast<Map<String, dynamic>>()
+        .map(SeerrServiceServer.fromJson)
+        .toList(),
+  );
 
   Future<SeerrServiceServerDetails> getSonarrServerDetails(int serverId) =>
-      _withClient((c) async =>
-          SeerrServiceServerDetails.fromJson(await c.getSonarrServerDetails(serverId)));
+      _withClient(
+        (c) async => SeerrServiceServerDetails.fromJson(
+          await c.getSonarrServerDetails(serverId),
+        ),
+      );
 
-  Future<List<SeerrRadarrSettings>> getRadarrSettings() =>
-      _withClient((c) async => (await c.getRadarrSettings())
-          .cast<Map<String, dynamic>>()
-          .map(SeerrRadarrSettings.fromJson)
-          .toList());
+  Future<List<SeerrRadarrSettings>> getRadarrSettings() => _withClient(
+    (c) async => (await c.getRadarrSettings())
+        .cast<Map<String, dynamic>>()
+        .map(SeerrRadarrSettings.fromJson)
+        .toList(),
+  );
 
-  Future<List<SeerrSonarrSettings>> getSonarrSettings() =>
-      _withClient((c) async => (await c.getSonarrSettings())
-          .cast<Map<String, dynamic>>()
-          .map(SeerrSonarrSettings.fromJson)
-          .toList());
+  Future<List<SeerrSonarrSettings>> getSonarrSettings() => _withClient(
+    (c) async => (await c.getSonarrSettings())
+        .cast<Map<String, dynamic>>()
+        .map(SeerrSonarrSettings.fromJson)
+        .toList(),
+  );
 
-  Future<SeerrStatus> getStatus() =>
-      _withClient((c) => c.getStatus());
+  Future<SeerrStatus> getStatus() => _withClient((c) => c.getStatus());
 
   Future<void> logout() async {
     if (_httpClient?.isProxyMode == true) {

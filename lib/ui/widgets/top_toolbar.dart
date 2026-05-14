@@ -533,10 +533,11 @@ class _TopToolbarState extends State<TopToolbar> {
     final pluginSync = GetIt.instance<PluginSyncService>();
     final seerrPrefs = GetIt.instance<SeerrPreferences>();
     final seerrEnabledLocally =
-      seerrPrefs.enabled || _prefs.get(UserPreferences.seerrEnabled);
+        seerrPrefs.enabled && _prefs.get(UserPreferences.seerrEnabled);
     final showSeerr =
-      seerrEnabledLocally &&
-      (!pluginSync.pluginAvailable || pluginSync.seerrInfoAvailable);
+        seerrEnabledLocally &&
+        pluginSync.pluginAvailable &&
+        pluginSync.seerrInfoAvailable;
     final useAndroidTvInlineLibraries =
       PlatformDetection.isAndroid &&
       PlatformDetection.isTV &&
@@ -714,9 +715,9 @@ class _TopToolbarState extends State<TopToolbar> {
                       iconBuilder: (size, color) => seerrPrefs.isSeerrVariant
                           ? SeerrIcon(size: size, color: color)
                           : JellyseerrIcon(size: size, color: color),
-                      label: seerrPrefs.moonfinDisplayName.isNotEmpty
-                          ? seerrPrefs.moonfinDisplayName
-                          : (seerrPrefs.isSeerrVariant ? l10n.seerr : l10n.jellyseerr),
+                      label: seerrPrefs.isSeerrVariant
+                          ? l10n.seerr
+                          : l10n.jellyseerr,
                       onPressed: () {
                         if (_isActive(Destinations.seerrDiscover)) return;
                         context.navigateTopLevel(

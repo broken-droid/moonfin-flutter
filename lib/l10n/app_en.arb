@@ -29,6 +29,10 @@
   "@username": {
     "description": "Username field label"
   },
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
   "quickConnectInstruction": "Enter this code on your server's web dashboard:",
   "@quickConnectInstruction": {
     "description": "Instruction text for Quick Connect code entry"
@@ -2347,6 +2351,18 @@
   "seerr": "Seerr",
   "@seerr": {
     "description": "Title for the Seerr (Overseerr/Jellyseerr) results section"
+  },
+  "seerrAccountType": "Seerr Account Type",
+  "@seerrAccountType": {
+    "description": "Header for selecting Seerr authentication account type"
+  },
+  "jellyfinAccount": "Jellyfin",
+  "@jellyfinAccount": {
+    "description": "Auth option label for Seerr sign in using Jellyfin credentials"
+  },
+  "localAccount": "Local",
+  "@localAccount": {
+    "description": "Auth option label for Seerr sign in using local Seerr credentials"
   },
 
   "savedMedia": "Saved Media",

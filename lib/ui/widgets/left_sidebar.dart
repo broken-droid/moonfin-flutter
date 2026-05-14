@@ -651,6 +651,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
       _prefs.get(UserPreferences.showSyncPlayButton);
     final pluginSync = GetIt.instance<PluginSyncService>();
     final seerrPrefs = GetIt.instance<SeerrPreferences>();
+    final seerrEnabledLocally =
+        seerrPrefs.enabled && _prefs.get(UserPreferences.seerrEnabled);
     final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
     final showClock =
         clockBehavior == ClockBehavior.always ||
@@ -789,15 +791,15 @@ class _LeftSidebarState extends State<LeftSidebar> {
                   ),
                 if (pluginSync.pluginAvailable &&
                     pluginSync.seerrInfoAvailable &&
-                    seerrPrefs.enabled)
+                    seerrEnabledLocally)
                   _SidebarItem(
                     baseColor: nextSidebarColor(),
                     iconBuilder: (size, color) => seerrPrefs.isSeerrVariant
                         ? SeerrIcon(size: size, color: color)
                         : JellyseerrIcon(size: size, color: color),
-                    label: seerrPrefs.moonfinDisplayName.isNotEmpty
-                        ? seerrPrefs.moonfinDisplayName
-                        : (seerrPrefs.isSeerrVariant ? l10n.seerr : l10n.jellyseerr),
+                    label: seerrPrefs.isSeerrVariant
+                        ? l10n.seerr
+                        : l10n.jellyseerr,
                     showLabel: _showLabels,
                     onPressed: () {
                       _onNavigate();

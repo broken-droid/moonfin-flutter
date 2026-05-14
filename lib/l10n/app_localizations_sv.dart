@@ -29,6 +29,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get username => 'Anvandarnamn';
 
   @override
+  String get email => 'Email';
+
+  @override
   String get quickConnectInstruction =>
       'Ange den här koden på din servers webbinstrumentpanel:';
 
@@ -1653,6 +1656,15 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get seerr => 'Seerr';
+
+  @override
+  String get seerrAccountType => 'Seerr Account Type';
+
+  @override
+  String get jellyfinAccount => 'Jellyfin';
+
+  @override
+  String get localAccount => 'Local';
 
   @override
   String get savedMedia => 'Sparade media';

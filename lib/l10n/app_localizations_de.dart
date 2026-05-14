@@ -29,6 +29,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get username => 'Benutzername';
 
   @override
+  String get email => 'Email';
+
+  @override
   String get quickConnectInstruction =>
       'Gib diesen Code im Web-Dashboard deines Servers ein:';
 
@@ -1662,6 +1665,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get seerr => 'Seerr';
+
+  @override
+  String get seerrAccountType => 'Seerr Account Type';
+
+  @override
+  String get jellyfinAccount => 'Jellyfin';
+
+  @override
+  String get localAccount => 'Local';
 
   @override
   String get savedMedia => 'Gespeicherte Medien';

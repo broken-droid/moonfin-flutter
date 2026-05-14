@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'Username'**
   String get username;
 
+  /// Email field label
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
   /// Instruction text for Quick Connect code entry
   ///
   /// In en, this message translates to:
@@ -2911,6 +2917,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Seerr'**
   String get seerr;
+
+  /// Header for selecting Seerr authentication account type
+  ///
+  /// In en, this message translates to:
+  /// **'Seerr Account Type'**
+  String get seerrAccountType;
+
+  /// Auth option label for Seerr sign in using Jellyfin credentials
+  ///
+  /// In en, this message translates to:
+  /// **'Jellyfin'**
+  String get jellyfinAccount;
+
+  /// Auth option label for Seerr sign in using local Seerr credentials
+  ///
+  /// In en, this message translates to:
+  /// **'Local'**
+  String get localAccount;
 
   /// Header title for saved/downloaded media screen
   ///
