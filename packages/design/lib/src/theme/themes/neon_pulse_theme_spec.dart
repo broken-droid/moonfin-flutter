@@ -37,7 +37,7 @@ const neonPulseThemeSpec = ThemeSpec(
     badgeBackground: Color(0xFFFF2E92),
     onBadge: Color(0xFFFFFFFF),
     badgeUnplayed: Color(0xFFFF2E92),
-    badgeWatched: Color(0xFF00E5FF),
+    badgeWatched: Color(0xFFFF2E92),
     recordingActive: Color(0xFFFF2E92),
     recordingScheduled: Color(0xFF00E5FF),
   ),

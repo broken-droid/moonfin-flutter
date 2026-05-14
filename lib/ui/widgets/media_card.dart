@@ -147,11 +147,14 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final baseTextStyle =
         Theme.of(context).textTheme.bodySmall ?? const TextStyle(fontSize: 12);
     final subtitleColor =
         widget.subtitleColor ?? Theme.of(context).colorScheme.onSurface.withAlpha(153);
-    final titleStyle = baseTextStyle.copyWith(color: widget.titleColor);
+    final titleStyle = baseTextStyle.copyWith(
+      color: widget.titleColor ?? (isNeon ? AppColorScheme.accent : baseTextStyle.color),
+    );
     final subtitleStyle = baseTextStyle.copyWith(color: subtitleColor);
     final textScaler = MediaQuery.textScalerOf(context);
 
@@ -488,7 +491,7 @@ class _CardImage extends StatelessWidget {
         child: Text(
           isMovie ? 'MOVIE' : 'SERIES',
           style: TextStyle(
-            color: AppColorScheme.onSurface,
+            color: AppColorScheme.onBadge,
             fontSize: 10,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.8,
@@ -513,7 +516,7 @@ class _CardImage extends StatelessWidget {
     if (seerrStatus == 4) {
       return _buildStatusCircle(
         fillColor: AppColorScheme.statusAvailable,
-        icon: Icon(Icons.remove_rounded, size: 13, color: AppColorScheme.onSurface),
+        icon: Icon(Icons.remove_rounded, size: 13, color: AppColorScheme.onBadge),
       );
     }
 
@@ -543,7 +546,7 @@ class _CardImage extends StatelessWidget {
     Color? fillColor,
     Color? borderColor,
   }) {
-    final effectiveFillColor = fillColor ?? AppColorScheme.onSurface;
+    final effectiveFillColor = fillColor ?? AppColorScheme.onBadge;
     return Container(
       width: 20,
       height: 20,
@@ -571,7 +574,7 @@ class _CardImage extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.all(2),
-          child: Icon(Icons.check, color: AppColorScheme.onSurface, size: 12),
+          child: Icon(Icons.check, color: AppColorScheme.onBadge, size: 12),
         ),
       );
     }
@@ -585,7 +588,7 @@ class _CardImage extends StatelessWidget {
         child: Text(
           '$unplayedCount',
           style: TextStyle(
-            color: AppColorScheme.onSurface,
+            color: AppColorScheme.onBadge,
             fontSize: 10,
             fontWeight: FontWeight.bold,
           ),
