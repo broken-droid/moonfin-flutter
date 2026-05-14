@@ -111,7 +111,7 @@
   "@addServer": {
     "description": "Button to manually add a server address"
   },
-  "embyConnect": "Emby Connect",
+  "embyConnect": "Emby Verbinden",
   "@embyConnect": {
     "description": "Emby Connect sign-in option label"
   },
@@ -4448,7 +4448,7 @@
   "adminDrawerLibraries": "Bibliotheken",
   "adminDrawerTranscoding": "Transkodierung",
   "adminDrawerResume": "Fortsetzen",
-  "adminDrawerStreaming": "Streaming",
+  "adminDrawerStreaming": "Studios",
   "adminDrawerTrickplay": "Trickspiel",
   "adminDrawerDevices": "Geräte",
   "adminDrawerActivity": "Aktivität",
@@ -6725,5 +6725,33 @@
         "type": "String"
       }
     }
+  },
+  "desktopUiScale": "Desktop-UI-Skalierung",
+  "@desktopUiScale": {
+    "description": "Setting for desktop UI scale"
+  },
+  "playerTooltipFloatOnTop": "Oben schweben",
+  "playerTooltipExitFloatOnTop": "Deaktivieren Sie den Schwimmer oben",
+  "@playerTooltipFloatOnTop": {
+    "description": "Tooltip label for enabling always-on-top in desktop player"
+  },
+  "@playerTooltipExitFloatOnTop": {
+    "description": "Tooltip label for disabling always-on-top in desktop player"
+  },
+  "email": "E-Mail",
+  "seerrAccountType": "Seerr-Kontotyp",
+  "jellyfinAccount": "Jellyfin",
+  "localAccount": "Lokal",
+  "@email": {
+    "description": "Email field label"
+  },
+  "@seerrAccountType": {
+    "description": "Header for selecting Seerr authentication account type"
+  },
+  "@jellyfinAccount": {
+    "description": "Auth option label for Seerr sign in using Jellyfin credentials"
+  },
+  "@localAccount": {
+    "description": "Auth option label for Seerr sign in using local Seerr credentials"
   }
 }

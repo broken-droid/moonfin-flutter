@@ -6725,5 +6725,33 @@
         "type": "String"
       }
     }
+  },
+  "desktopUiScale": "Masaüstü Kullanıcı Arayüzü Ölçeği",
+  "@desktopUiScale": {
+    "description": "Setting for desktop UI scale"
+  },
+  "playerTooltipFloatOnTop": "Üstte yüzer",
+  "playerTooltipExitFloatOnTop": "Üstte şamandırayı devre dışı bırak",
+  "@playerTooltipFloatOnTop": {
+    "description": "Tooltip label for enabling always-on-top in desktop player"
+  },
+  "@playerTooltipExitFloatOnTop": {
+    "description": "Tooltip label for disabling always-on-top in desktop player"
+  },
+  "email": "E-posta",
+  "seerrAccountType": "Seerr Hesap Türü",
+  "jellyfinAccount": "Jellyfin",
+  "localAccount": "Yerel",
+  "@email": {
+    "description": "Email field label"
+  },
+  "@seerrAccountType": {
+    "description": "Header for selecting Seerr authentication account type"
+  },
+  "@jellyfinAccount": {
+    "description": "Auth option label for Seerr sign in using Jellyfin credentials"
+  },
+  "@localAccount": {
+    "description": "Auth option label for Seerr sign in using local Seerr credentials"
   }
 }

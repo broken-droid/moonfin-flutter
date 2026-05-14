@@ -2962,7 +2962,7 @@
   "@compressDynamicRange": {
     "description": "Description for night mode"
   },
-  "advancedMpv": "MPV avanzado",
+  "advancedMpv": "Avanzado mpv",
   "@advancedMpv": {
     "description": "Section title for advanced mpv settings"
   },
@@ -2974,11 +2974,11 @@
   "@applyMpvConfBeforePlayback": {
     "description": "Description for custom mpv.conf"
   },
-  "unsafeAdvancedMpvOptions": "Opciones avanzadas de MPV inseguras",
+  "unsafeAdvancedMpvOptions": "Opciones avanzadas inseguras mpv",
   "@unsafeAdvancedMpvOptions": {
     "description": "Setting for unsafe mpv options"
   },
-  "unsafeMpvOptionsDescription": "Estas opciones pueden causar fallos o comportamiento inesperado",
+  "unsafeMpvOptionsDescription": "Permitir un conjunto más amplio de opciones mpv. Puede alterar el comportamiento de reproducción.",
   "@unsafeMpvOptionsDescription": {
     "description": "Description for unsafe mpv options"
   },
@@ -6013,7 +6013,7 @@
   },
   "folders": "Carpetas",
   "libraries": "Bibliotecas",
-  "syncPlay": "Reproducción sincronizada",
+  "syncPlay": "SyncPlay",
   "jellyseerr": "Jellyseerr",
   "seeAll": "Ver todo",
   "noItems": "No hay elementos",
@@ -6026,7 +6026,7 @@
   "offlineSwitchServer": "Cambiar de servidor",
   "offlineSavedMedia": "Contenido guardado",
   "castGoogleCast": "Google Cast",
-  "castAirPlay": "Salida en antena",
+  "castAirPlay": "AirPlay",
   "castDlna": "DLNA",
   "castRemotePlayback": "Reproducción remota",
   "castControlFailed": "Error en el control de transmisión: {error}",
@@ -6124,7 +6124,7 @@
     }
   },
   "noRemoteDevices": "No hay dispositivos de reproducción remota disponibles.",
-  "noRemoteDevicesIos": "No hay dispositivos de reproducción remota disponibles.",
+  "noRemoteDevicesIos": "No hay dispositivos de reproducción remota disponibles.\n\nEn iOS, es posible que los objetivos AirPlay no estén disponibles en el simulador.",
   "trackActionPlayNext": "Reproducir a continuación",
   "trackActionAddToQueue": "Añadir a la cola",
   "trackActionAddToPlaylist": "Añadir a lista de reproducción",
@@ -6292,7 +6292,7 @@
   "syncPlayDisabledMessage": "Habilite SyncPlay en Configuración para usar la reproducción sincronizada.",
   "syncPlayServerUnsupportedTitle": "Servidor no compatible",
   "syncPlayServerUnsupportedMessage": "SyncPlay requiere un servidor Jellyfin. El servidor actual no lo admite.",
-  "syncPlayGroupFallbackName": "Grupo de sincronización",
+  "syncPlayGroupFallbackName": "SyncPlay Grupo",
   "syncPlayGroupTooltip": "Grupo SyncPlay",
   "syncPlayParticipantCount": "{count, plural, one {# participante} other {# participantes}}",
   "syncPlayIgnoreWait": "ignorar esperar",
@@ -6355,7 +6355,7 @@
   "settingsPersonalizationSubtitle": "Tema, navegación, filas de inicio y visibilidad de la biblioteca",
   "settingsDynamicContent": "Contenido dinámico",
   "settingsDynamicContentSubtitle": "Barra multimedia y superposiciones visuales",
-  "settingsPlaybackSyncplay": "Reproducción y sincronizaciónReproducir",
+  "settingsPlaybackSyncplay": "Reproducción y SyncPlay",
   "settingsPlaybackSyncplaySubtitle": "Configuración de audio/vídeo, subtítulos, descargas y controles de SyncPlay",
   "settingsIntegrationsSubtitle": "Sincronización de complementos, Seerr, calificaciones y más",
   "settingsAboutSubtitle": "Versión de la aplicación, información legal y créditos.",
@@ -6392,9 +6392,9 @@
   "settingsAppInfo": "INFORMACIÓN DE LA APLICACIÓN",
   "settingsReportAnIssue": "Informar un problema",
   "settingsReportAnIssueSubtitle": "Abra el rastreador de problemas en GitHub",
-  "settingsJoinDiscord": "Únete a la discordia",
+  "settingsJoinDiscord": "Únase a Discord",
   "settingsJoinDiscordSubtitle": "Chatea con la comunidad",
-  "settingsJoinTheDiscord": "Únete a la discordia",
+  "settingsJoinTheDiscord": "Únase al Discord",
   "settingsSupportMoonfin": "Apoyar Moonfin",
   "settingsSupportMoonfinSubtitle": "Destaque el proyecto en GitHub o contribuya",
   "settingsLegal": "LEGAL",
@@ -6426,7 +6426,7 @@
   "settingsPlayerZoomDescription": "Cómo se debe escalar el video para que se ajuste a la pantalla.",
   "settingsPlaybackEngineAndroidTv": "Motor de reproducción (Android TV)",
   "settingsPlaybackEngineAndroidTvDescription": "Elija el motor de reproducción predeterminado en dispositivos Android TV. Los cambios se aplican a la siguiente sesión de reproducción.",
-  "settingsPlaybackEngineMedia3Recommended": "Medios3 (recomendado)",
+  "settingsPlaybackEngineMedia3Recommended": "Media3 (recomendado)",
   "settingsPlaybackEngineMpvLegacy": "mpv (heredado)",
   "settingsDolbyVisionFallback": "Retroceso de Dolby Vision",
   "settingsDolbyVisionFallbackDescription": "Comportamiento de títulos Dolby Vision en dispositivos sin decodificación Dolby Vision.",
@@ -6459,9 +6459,9 @@
   "settingsLiveTvDirectSubtitle": "Habilitar reproducción directa para Live TV",
   "settingsOpenGroups": "Grupos abiertos",
   "settingsOpenGroupsSubtitle": "Crear, unirse o administrar grupos de SyncPlay",
-  "settingsSyncplayEnabled": "Reproducción sincronizada habilitada",
+  "settingsSyncplayEnabled": "SyncPlay Habilitado",
   "settingsSyncplayEnabledSubtitle": "Habilitar funciones de observación grupal",
-  "settingsSyncplayButton": "Botón Sincronizar reproducción",
+  "settingsSyncplayButton": "Botón SyncPlay",
   "settingsSyncplayButtonSubtitle": "Mostrar el botón SyncPlay en la barra de navegación",
   "settingsSyncplayAdvancedCorrection": "Corrección avanzada",
   "settingsSyncplayAdvancedCorrectionSubtitle": "Habilite la lógica de sincronización detallada",
@@ -6725,5 +6725,33 @@
         "type": "String"
       }
     }
+  },
+  "desktopUiScale": "Escala de interfaz de usuario de escritorio",
+  "@desktopUiScale": {
+    "description": "Setting for desktop UI scale"
+  },
+  "playerTooltipFloatOnTop": "flotar encima",
+  "playerTooltipExitFloatOnTop": "Deshabilitar el flotador en la parte superior",
+  "@playerTooltipFloatOnTop": {
+    "description": "Tooltip label for enabling always-on-top in desktop player"
+  },
+  "@playerTooltipExitFloatOnTop": {
+    "description": "Tooltip label for disabling always-on-top in desktop player"
+  },
+  "email": "Correo electrónico",
+  "seerrAccountType": "Tipo de cuenta vidente",
+  "jellyfinAccount": "Jellyfin",
+  "localAccount": "Local",
+  "@email": {
+    "description": "Email field label"
+  },
+  "@seerrAccountType": {
+    "description": "Header for selecting Seerr authentication account type"
+  },
+  "@jellyfinAccount": {
+    "description": "Auth option label for Seerr sign in using Jellyfin credentials"
+  },
+  "@localAccount": {
+    "description": "Auth option label for Seerr sign in using local Seerr credentials"
   }
 }

@@ -6013,8 +6013,8 @@
   },
   "folders": "Dossiers",
   "libraries": "Bibliothèques",
-  "syncPlay": "Lecture synchronisée",
-  "jellyseerr": "Geléeseer",
+  "syncPlay": "SyncPlay",
+  "jellyseerr": "Jellyseerr",
   "seeAll": "Voir tout",
   "noItems": "Aucun élément",
   "switchUser": "Changer d'utilisateur",
@@ -6328,7 +6328,7 @@
   "syncPlaySyncingPlaybackToGroup": "Synchronisation de la lecture avec {groupName}",
   "voiceSearchUnavailable": "La recherche vocale n'est pas disponible.",
   "dolbyVisionDirectPlayFailedTitle": "Échec de la lecture directe Dolby Vision",
-  "dolbyVisionDirectPlayFailedMessage": "La lecture directe n'a pas pu démarrer pour ce flux Dolby Vision. Réessayer en utilisant le transcodage du serveur ?",
+  "dolbyVisionDirectPlayFailedMessage": "La lecture directe n'a pas pu démarrer pour ce flux Dolby Vision. Réessayer en utilisant le transcodage du serveur ?",
   "retryWithTranscode": "Réessayez avec le transcodage",
   "dolbyVisionNotSupportedTitle": "Dolby Vision non pris en charge",
   "dolbyVisionNotSupportedMessage": "Cet appareil ne peut pas décoder directement le contenu Dolby Vision. Utilisez la solution de secours HDR10 ou demandez le transcodage du serveur.",
@@ -6355,7 +6355,7 @@
   "settingsPersonalizationSubtitle": "Thème, navigation, lignes d'accueil et visibilité de la bibliothèque",
   "settingsDynamicContent": "Contenu dynamique",
   "settingsDynamicContentSubtitle": "Barre média et superpositions visuelles",
-  "settingsPlaybackSyncplay": "Lecture et synchronisation",
+  "settingsPlaybackSyncplay": "Lecture & SyncPlay",
   "settingsPlaybackSyncplaySubtitle": "Paramètres audio/vidéo, sous-titres, téléchargements et commandes SyncPlay",
   "settingsIntegrationsSubtitle": "Synchronisation des plugins, Seerr, évaluations et plus encore",
   "settingsAboutSubtitle": "Version de l'application, informations légales et crédits",
@@ -6426,7 +6426,7 @@
   "settingsPlayerZoomDescription": "Comment la vidéo doit être mise à l'échelle pour s'adapter à l'écran.",
   "settingsPlaybackEngineAndroidTv": "Moteur de lecture (Android TV)",
   "settingsPlaybackEngineAndroidTvDescription": "Choisissez le moteur de lecture par défaut sur les appareils Android TV. Les modifications s'appliquent à la prochaine session de lecture.",
-  "settingsPlaybackEngineMedia3Recommended": "Média3 (recommandé)",
+  "settingsPlaybackEngineMedia3Recommended": "Media3 (recommandé)",
   "settingsPlaybackEngineMpvLegacy": "mpv (ancien)",
   "settingsDolbyVisionFallback": "Solution de repli Dolby Vision",
   "settingsDolbyVisionFallbackDescription": "Comportement des titres Dolby Vision sur les appareils sans décodage Dolby Vision.",
@@ -6725,5 +6725,33 @@
         "type": "String"
       }
     }
+  },
+  "desktopUiScale": "Échelle de l'interface utilisateur de bureau",
+  "@desktopUiScale": {
+    "description": "Setting for desktop UI scale"
+  },
+  "playerTooltipFloatOnTop": "Flottez au dessus",
+  "playerTooltipExitFloatOnTop": "Désactiver le flottement en haut",
+  "@playerTooltipFloatOnTop": {
+    "description": "Tooltip label for enabling always-on-top in desktop player"
+  },
+  "@playerTooltipExitFloatOnTop": {
+    "description": "Tooltip label for disabling always-on-top in desktop player"
+  },
+  "email": "E-mail",
+  "seerrAccountType": "Type de compte Seerr",
+  "jellyfinAccount": "Jellyfin",
+  "localAccount": "Locale",
+  "@email": {
+    "description": "Email field label"
+  },
+  "@seerrAccountType": {
+    "description": "Header for selecting Seerr authentication account type"
+  },
+  "@jellyfinAccount": {
+    "description": "Auth option label for Seerr sign in using Jellyfin credentials"
+  },
+  "@localAccount": {
+    "description": "Auth option label for Seerr sign in using local Seerr credentials"
   }
 }
