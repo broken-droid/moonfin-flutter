@@ -171,6 +171,9 @@ class MainActivity : AudioServiceActivity() {
                 "mediaCodecCapabilities" -> {
                     result.success(MediaCodecCapabilities.query())
                 }
+                "audioCapabilities" -> {
+                    result.success(AudioCapabilities.query(this))
+                }
                 "startTvVoiceSearch" -> {
                     if (pendingTvVoiceSearchResult != null) {
                         result.error(

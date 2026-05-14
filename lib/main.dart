@@ -101,6 +101,43 @@ Future<void> _detectAndSetDisplayCapabilities() async {
   } catch (_) {}
 }
 
+Future<void> _detectAndApplyAudioCapabilities(UserPreferences prefs) async {
+  if (!(PlatformDetection.isAndroid && PlatformDetection.isTV)) return;
+  try {
+    const channel = MethodChannel('org.moonfin.androidtv/platform');
+    final audioCaps = await channel.invokeMethod<Map<dynamic, dynamic>>(
+      'audioCapabilities',
+    );
+    if (audioCaps == null) {
+      PlatformDetection.setAudioCapabilities(null);
+      return;
+    }
+
+    PlatformDetection.setAudioCapabilities(
+      audioCaps.map((key, value) => MapEntry(key.toString(), value)),
+    );
+
+    final hasAutoDetected = prefs.get(UserPreferences.audioPrefsAutoDetected);
+    if (hasAutoDetected) return;
+
+    final supportsAc3 = PlatformDetection.supportsAc3Audio;
+    final supportsTrueHd = PlatformDetection.supportsTrueHdAudio;
+    final supportsDts = PlatformDetection.supportsDtsAudio;
+
+    if (prefs.get(UserPreferences.ac3Enabled) != supportsAc3) {
+      await prefs.set(UserPreferences.ac3Enabled, supportsAc3);
+    }
+    if (prefs.get(UserPreferences.trueHdEnabled) != supportsTrueHd) {
+      await prefs.set(UserPreferences.trueHdEnabled, supportsTrueHd);
+    }
+    if (prefs.get(UserPreferences.dtsEnabled) != supportsDts) {
+      await prefs.set(UserPreferences.dtsEnabled, supportsDts);
+    }
+
+    await prefs.set(UserPreferences.audioPrefsAutoDetected, true);
+  } catch (_) {}
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -132,6 +169,9 @@ void main() async {
   }
 
   await configureDependencies();
+
+  final prefs = GetIt.instance<UserPreferences>();
+  await _detectAndApplyAudioCapabilities(prefs);
 
   if (PlatformDetection.isDesktop) {
     await _restoreWindowGeometry();

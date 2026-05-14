@@ -34,6 +34,7 @@ class PlatformDetection {
 
   static final Set<String> _displayHdrTypes = <String>{};
   static final Map<String, dynamic> _mediaCodecCapabilities = <String, dynamic>{};
+  static final Map<String, dynamic> _audioCapabilities = <String, dynamic>{};
   static bool _hasDolbyVisionCodecCapabilities = false;
   static bool _supportsDoViProfile5 = false;
   static bool _supportsDoViProfile7 = false;
@@ -53,6 +54,11 @@ class PlatformDetection {
   static bool get supportsDoViProfile5 => _supportsDoViProfile5;
   static bool get supportsDoViProfile7 => _supportsDoViProfile7;
   static bool get supportsDoViProfile8 => _supportsDoViProfile8;
+
+  static bool get hasAudioCapabilities => _audioCapabilities.isNotEmpty;
+  static bool get supportsAc3Audio => _audioCapabilityBool('supportsAc3');
+  static bool get supportsDtsAudio => _audioCapabilityBool('supportsDts');
+  static bool get supportsTrueHdAudio => _audioCapabilityBool('supportsTrueHd');
 
     static bool get supportsAvc => _capabilityBool('supportsAvc');
     static bool get supportsAvcHigh10 => _capabilityBool('supportsAvcHigh10');
@@ -168,8 +174,21 @@ class PlatformDetection {
     setMediaCodecCapabilities(merged);
   }
 
+  static void setAudioCapabilities(Map<String, dynamic>? values) {
+    _audioCapabilities
+      ..clear()
+      ..addAll(values ?? const <String, dynamic>{});
+  }
+
   static bool _capabilityBool(String key) {
-    final value = _mediaCodecCapabilities[key];
+    return _asBool(_mediaCodecCapabilities[key]);
+  }
+
+  static bool _audioCapabilityBool(String key) {
+    return _asBool(_audioCapabilities[key]);
+  }
+
+  static bool _asBool(Object? value) {
     if (value is bool) return value;
     if (value is num) return value != 0;
     if (value is String) {

@@ -1811,6 +1811,25 @@ class _VideoPlaybackScreen extends StatelessWidget {
 class _AudioPreferencesScreen extends StatelessWidget {
   const _AudioPreferencesScreen();
 
+  String _capabilitySubtitle(
+    AppLocalizations l10n, {
+    required String baseSubtitle,
+    required bool isSupported,
+  }) {
+    if (!(PlatformDetection.isAndroid && PlatformDetection.isTV)) {
+      return baseSubtitle;
+    }
+
+    if (!PlatformDetection.hasAudioCapabilities) {
+      return baseSubtitle;
+    }
+
+    final status = isSupported
+        ? l10n.settingsEnabledOnThisDevice
+        : l10n.settingsDisabledPreferTranscode;
+    return '$baseSubtitle\n${l10n.status}: $status';
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -1862,20 +1881,32 @@ class _AudioPreferencesScreen extends StatelessWidget {
           SwitchPreferenceTile(
             preference: UserPreferences.ac3Enabled,
             title: l10n.ac3Passthrough,
-            subtitle: l10n.settingsBitstreamAc3ToExternalDecoder,
+            subtitle: _capabilitySubtitle(
+              l10n,
+              baseSubtitle: l10n.settingsBitstreamAc3ToExternalDecoder,
+              isSupported: PlatformDetection.supportsAc3Audio,
+            ),
             icon: Icons.speaker,
           ),
           if (PlatformDetection.isAndroid && PlatformDetection.isTV)
             SwitchPreferenceTile(
               preference: UserPreferences.dtsEnabled,
               title: l10n.dtsPassthrough,
-              subtitle: l10n.enableDtsPassthrough,
+              subtitle: _capabilitySubtitle(
+                l10n,
+                baseSubtitle: l10n.enableDtsPassthrough,
+                isSupported: PlatformDetection.supportsDtsAudio,
+              ),
               icon: Icons.audiotrack,
             ),
           SwitchPreferenceTile(
             preference: UserPreferences.trueHdEnabled,
             title: l10n.trueHdSupport,
-            subtitle: l10n.enableTrueHdAudio,
+            subtitle: _capabilitySubtitle(
+              l10n,
+              baseSubtitle: l10n.enableTrueHdAudio,
+              isSupported: PlatformDetection.supportsTrueHdAudio,
+            ),
             icon: Icons.graphic_eq,
           ),
         ],

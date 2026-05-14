@@ -286,7 +286,12 @@ class UserPreferences extends ChangeNotifier {
 
   static final dtsEnabled = Preference(
     key: 'pref_bitstream_dts',
-    defaultValue: true,
+    defaultValue: false,
+  );
+
+  static final audioPrefsAutoDetected = Preference(
+    key: 'pref_audio_caps_auto_detected',
+    defaultValue: false,
   );
 
   static final customMpvConfEnabled = Preference(
