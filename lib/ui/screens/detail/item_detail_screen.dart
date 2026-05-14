@@ -3440,6 +3440,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   DownloadedItem? _offlineRow;
   List<DownloadedItem>? _offlineQueue;
   DownloadService? _downloadService;
+  StreamSubscription<Object?>? _userSub;
   final FocusNode _tvPlayFocusNode = FocusNode(
     debugLabel: 'detail_play_button',
   );
@@ -3455,6 +3456,10 @@ class _ActionButtonsState extends State<_ActionButtons> {
       _downloadService = GetIt.instance<DownloadService>();
       _downloadService!.addListener(_onDownloadChanged);
     }
+    _userSub = GetIt.instance<UserRepository>().currentUserStream.listen((_) {
+      if (!mounted) return;
+      setState(() {});
+    });
     _checkOffline();
     _maybeTriggerAutoPlay();
   }
@@ -3462,6 +3467,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   @override
   void dispose() {
     _downloadService?.removeListener(_onDownloadChanged);
+    _userSub?.cancel();
     _tvPlayFocusNode.dispose();
     super.dispose();
   }
@@ -3629,6 +3635,10 @@ class _ActionButtonsState extends State<_ActionButtons> {
         .where((s) => s['Type'] == 'Subtitle')
         .toList();
     final l10n = AppLocalizations.of(context);
+    final canShowDownloadActions =
+      _isDownloadable(item.type) &&
+      _canUserDownload() &&
+      !PlatformDetection.isTV;
 
     _ensureTvPlayFocus(item.id);
 
@@ -3747,13 +3757,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
           onPressed: () =>
               AddToPlaylistDialog.show(context, itemIds: [item.id]),
         ),
-      if (_isDownloadable(item.type) &&
-          _canUserDownload() &&
-          !PlatformDetection.isTV)
+      if (canShowDownloadActions)
         _DownloadButton(item: item, viewModel: viewModel),
-      if (_isDownloadable(item.type) &&
-          _canUserDownload() &&
-          !PlatformDetection.isTV)
+      if (canShowDownloadActions)
         _DeleteDownloadButton(item: item),
       if (item.canDelete)
         _DetailActionButton(
@@ -5645,6 +5651,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
         final item = widget.item;
         final isMulti = item.type == 'Season' || item.type == 'Series';
         final progress = downloadService.activeDownloads[item.id];
+        final downloadError = progress?.error;
         final isBatch = downloadService.isBatchDownloading;
 
         if (progress != null &&
@@ -5690,6 +5697,23 @@ class _DownloadButtonState extends State<_DownloadButton> {
             isActive: true,
             activeColor: const Color(0xFF4CAF50),
             onPressed: () => _showQualityPicker(context, downloadService),
+          );
+        }
+
+        if (downloadError != null) {
+          return _DetailActionButton(
+            label: AppLocalizations.of(context).retry,
+            icon: Icons.error_outline,
+            isActive: true,
+            activeColor: const Color(0xFFD32F2F),
+            onPressed: () {
+              if (downloadError.isNotEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(downloadError)),
+                );
+              }
+              _showQualityPicker(context, downloadService);
+            },
           );
         }
 
