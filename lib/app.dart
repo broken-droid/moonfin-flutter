@@ -525,6 +525,10 @@ class _GlobalShortcutScopeState extends State<_GlobalShortcutScope>
     final key = event.logicalKey;
 
     if (key == LogicalKeyboardKey.enter || key == LogicalKeyboardKey.select) {
+      // swallow repeated enter/select events to avoid multiple actions when it's held down
+      if (event is KeyRepeatEvent) {
+        return KeyEventResult.handled;
+      }
       final targetContext =
           FocusManager.instance.primaryFocus?.context ?? context;
       final activated = Actions.maybeInvoke(
