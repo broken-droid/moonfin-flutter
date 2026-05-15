@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin/ui/widgets/overlay_sheet.dart';
 import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
 
@@ -188,6 +189,35 @@ class _ServerScreenState extends State<ServerScreen> {
       context.go(_buildUserLoginRoute(server, user));
     }
   }
+
+  Future<void> _removeUser(_MergedUser user) async {
+      final server = _server;
+      if (server == null) return;
+
+      final l10n = AppLocalizations.of(context);
+      final confirmed = await showFocusRestoringDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.remove),
+          content: Text(l10n.removeName(user.name)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l10n.remove),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed == true) {
+        await _userRepo.deleteStoredUser(server.id, user.id);
+        await _load();
+      }
+    }
 
   Future<bool> _trySwitchSession(String serverId, String userId) async {
     try {
