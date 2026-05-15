@@ -17,10 +17,29 @@ class VirtualFolderInfo {
       VirtualFolderInfo(
         name: json['Name'] as String? ?? '',
         collectionType: json['CollectionType'] as String?,
-        itemId: json['ItemId'] as String? ?? '',
+        itemId: _readString(json, 'ItemId', fallbackKey: 'Id'),
         locations: _stringList(json['Locations']),
         libraryOptions: json['LibraryOptions'] as Map<String, dynamic>?,
       );
+
+  static String _readString(
+    Map<String, dynamic> json,
+    String key, {
+    String? fallbackKey,
+  }) {
+    final value = json[key];
+    if (value is String && value.isNotEmpty) {
+      return value;
+    }
+    if (fallbackKey == null) {
+      return '';
+    }
+    final fallback = json[fallbackKey];
+    if (fallback is String && fallback.isNotEmpty) {
+      return fallback;
+    }
+    return '';
+  }
 
   static List<String> _stringList(dynamic value) {
     if (value is List) return value.cast<String>();

@@ -107,7 +107,6 @@ dependencies:
   custom_tv_text_field:
     path: packages/custom_tv_text_field_fork
   speech_to_text: ^7.3.0
-  voice_search: ^1.1.0
   qr_flutter: ^4.1.0
 
 dev_dependencies:

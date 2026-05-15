@@ -28,7 +28,7 @@ import 'settings/settings_panel.dart';
 import '../screens/settings/settings_side_panel.dart';
 import '../screens/syncplay/syncplay_screen.dart';
 import 'seerr_icons.dart';
-import 'shuffle_options_dialog.dart';
+import 'shuffle_overlay.dart';
 import 'user_menu_dialog.dart';
 
 const _kToolbarHeightTV = 95.0;
@@ -331,14 +331,14 @@ class _TopToolbarState extends State<TopToolbar> {
         : 10.0;
     final clockBehavior = _prefs.get(UserPreferences.clockBehavior);
     final showClock =
-      clockBehavior == ClockBehavior.always ||
-      clockBehavior == ClockBehavior.inMenus;
+        clockBehavior == ClockBehavior.always ||
+        clockBehavior == ClockBehavior.inMenus;
     final hasEndSection = !isMobile && showClock;
     final startReservedWidth =
-      (widget.showBackButton && !PlatformDetection.isTV) ? 96.0 : 44.0;
+        (widget.showBackButton && !PlatformDetection.isTV) ? 96.0 : 44.0;
     final endReservedWidth = hasEndSection ? 96.0 : 0.0;
     final centerSidePadding =
-      math.max(startReservedWidth, endReservedWidth) + 14.0;
+        math.max(startReservedWidth, endReservedWidth) + 14.0;
     final toolbarHeight = isTV
         ? _kToolbarHeightTV
         : isMobile
@@ -470,7 +470,9 @@ class _TopToolbarState extends State<TopToolbar> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: (_avatarFocus.hasFocus && !PlatformDetection.isTV)
-                ? Border.fromBorderSide(ThemeRegistry.active.borders.focusBorder)
+                  ? Border.fromBorderSide(
+                      ThemeRegistry.active.borders.focusBorder,
+                    )
                   : null,
               color: (_avatarFocus.hasFocus && PlatformDetection.isTV)
                   ? Colors.white
@@ -539,16 +541,18 @@ class _TopToolbarState extends State<TopToolbar> {
         pluginSync.pluginAvailable &&
         pluginSync.seerrInfoAvailable;
     final useAndroidTvInlineLibraries =
-      PlatformDetection.isAndroid &&
-      PlatformDetection.isTV &&
-      _prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top;
+        PlatformDetection.isAndroid &&
+        PlatformDetection.isTV &&
+        _prefs.get(UserPreferences.navbarPosition) == NavbarPosition.top;
 
     final l10n = AppLocalizations.of(context);
     int order = 1;
     var neonSlot = 0;
     Color? nextNavColor() {
       if (!isNeon) return null;
-      final c = neonSlot.isEven ? AppColorScheme.accent : AppColorScheme.onSurface;
+      final c = neonSlot.isEven
+          ? AppColorScheme.accent
+          : AppColorScheme.onSurface;
       neonSlot += 1;
       return c;
     }
@@ -629,8 +633,7 @@ class _TopToolbarState extends State<TopToolbar> {
                       icon: Icons.shuffle_rounded,
                       label: l10n.shuffle,
                       baseColor: nextNavColor(),
-                      onPressed: () => _shuffleRandom(context),
-                      onLongPress: () => showShuffleDialog(context),
+                      onPressed: () => showShuffleOverlay(context),
                     ),
                   ),
                 ],
@@ -720,9 +723,7 @@ class _TopToolbarState extends State<TopToolbar> {
                           : l10n.jellyseerr,
                       onPressed: () {
                         if (_isActive(Destinations.seerrDiscover)) return;
-                        context.navigateTopLevel(
-                          Destinations.seerrDiscover,
-                        );
+                        context.navigateTopLevel(Destinations.seerrDiscover);
                       },
                     ),
                   ),
@@ -795,7 +796,10 @@ class _TopToolbarState extends State<TopToolbar> {
     );
   }
 
-  Widget _buildAndroidTvLibrariesButton(AppLocalizations l10n, {Color? iconColor}) {
+  Widget _buildAndroidTvLibrariesButton(
+    AppLocalizations l10n, {
+    Color? iconColor,
+  }) {
     return _AndroidTvExpandableLibrariesButton(
       key: const ValueKey('toolbar_libraries_inline_tv'),
       activeRoute: widget.activeRoute,
@@ -814,11 +818,6 @@ class _TopToolbarState extends State<TopToolbar> {
         }
       },
     );
-  }
-
-  Future<void> _shuffleRandom(BuildContext context) async {
-    final contentType = _prefs.get(UserPreferences.shuffleContentType);
-    await fetchRandomAndNavigate(context, contentType: contentType);
   }
 
   Widget _buildEnd() {
@@ -927,7 +926,9 @@ class _AndroidTvExpandableLibrariesButtonState
   }
 
   @override
-  void didUpdateWidget(covariant _AndroidTvExpandableLibrariesButton oldWidget) {
+  void didUpdateWidget(
+    covariant _AndroidTvExpandableLibrariesButton oldWidget,
+  ) {
     super.didUpdateWidget(oldWidget);
     _syncLibraryFocusNodes();
   }
@@ -999,8 +1000,8 @@ class _AndroidTvExpandableLibrariesButtonState
 
   @override
   Widget build(BuildContext context) {
-    final inlineLibrariesWidth =
-        (MediaQuery.sizeOf(context).width * 0.36).clamp(280.0, 560.0);
+    final inlineLibrariesWidth = (MediaQuery.sizeOf(context).width * 0.36)
+        .clamp(280.0, 560.0);
 
     return Focus(
       canRequestFocus: false,
@@ -1046,11 +1047,15 @@ class _AndroidTvExpandableLibrariesButtonState
                                 key: _libraryItemKeys[entry.$1],
                                 padding: const EdgeInsets.only(right: 4),
                                 child: _ToolbarLibraryLabelButton(
-                                  key: ValueKey('toolbar_library_${entry.$2.id}'),
+                                  key: ValueKey(
+                                    'toolbar_library_${entry.$2.id}',
+                                  ),
                                   focusNode: _libraryFocusNodes[entry.$1],
                                   label: entry.$2.name,
                                   onFocusChanged: (focused) {
-                                    if (focused) _ensureLibraryVisible(entry.$1);
+                                    if (focused) {
+                                      _ensureLibraryVisible(entry.$1);
+                                    }
                                   },
                                   onMoveLeft: () {
                                     final i = entry.$1;
@@ -1123,8 +1128,10 @@ class _ToolbarLibrariesTriggerButtonState
     final bgColor = highlighted ? Colors.white : Colors.transparent;
     final fgColor = highlighted
         ? Colors.black
-      : (widget.iconColor ??
-        (isNeon ? AppColorScheme.accent : Colors.white.withValues(alpha: 0.6)));
+        : (widget.iconColor ??
+              (isNeon
+                  ? AppColorScheme.accent
+                  : Colors.white.withValues(alpha: 0.6)));
 
     return Focus(
       focusNode: widget.focusNode,
@@ -1216,7 +1223,8 @@ class _ToolbarLibraryLabelButton extends StatefulWidget {
       _ToolbarLibraryLabelButtonState();
 }
 
-class _ToolbarLibraryLabelButtonState extends State<_ToolbarLibraryLabelButton> {
+class _ToolbarLibraryLabelButtonState
+    extends State<_ToolbarLibraryLabelButton> {
   bool _focused = false;
 
   @override

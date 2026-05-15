@@ -4,13 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moonfin_design/moonfin_design.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:server_core/server_core.dart';
-import 'package:voice_search/voice_search.dart';
 
 import '../../../data/models/aggregated_item.dart';
 import '../../../data/repositories/search_repository.dart';
 import '../../../data/repositories/seerr_repository.dart';
+import '../../../data/services/voice_search_controller.dart';
 import '../../../data/viewmodels/search_view_model.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
@@ -33,19 +33,15 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  static const _platformChannel = MethodChannel('org.moonfin.androidtv/platform');
   final _searchController = TextEditingController();
   final _voiceFocus = FocusNode();
   final _searchFocus = FocusNode();
   final _searchInputFocus = FocusNode();
   final _searchTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _resultsScrollController = ScrollController();
-  final _speechToText = stt.SpeechToText();
+  final _voiceController = VoiceSearchController();
   late final SearchViewModel _vm;
   static const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
-  bool _voiceReady = false;
-  bool _voiceInitializing = false;
-  bool _isVoiceListening = false;
   bool _isFirstRowFocused = false;
 
   @override
@@ -69,6 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _voiceFocus.addListener(_onFocusChanged);
     _searchFocus.addListener(_onFocusChanged);
     _searchInputFocus.addListener(_onFocusChanged);
+    _voiceController.addListener(_onVoiceControllerChanged);
 
     if (PlatformDetection.isTV) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -96,6 +93,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _onSearchTextChanged() {
     _vm.searchDebounced(_searchController.text);
+    if (mounted) setState(() {});
+  }
+
+  void _onVoiceControllerChanged() {
     if (mounted) setState(() {});
   }
 
@@ -138,21 +139,21 @@ class _SearchScreenState extends State<SearchScreen> {
     return KeyEventResult.handled;
   }
 
-  void _applyVoiceSearchResult(String result) {
+  void _applyVoiceSearchResult(String result, {required bool isFinal}) {
     final query = result.trim();
     _searchController.text = query;
     _searchController.selection = TextSelection.collapsed(offset: query.length);
 
-    if (_isVoiceListening) {
-      _speechToText.stop();
-      _isVoiceListening = false;
-    }
-
     if (query.isEmpty) {
       _vm.searchDebounced('');
-    } else {
+    } else if (isFinal) {
       _vm.searchImmediate(query);
+    } else {
+      _vm.searchDebounced(query);
     }
+
+    if (!isFinal) return;
+
     if (mounted) {
       if (PlatformDetection.isTV) {
         _searchFocus.requestFocus();
@@ -186,6 +187,8 @@ class _SearchScreenState extends State<SearchScreen> {
     _voiceFocus.removeListener(_onFocusChanged);
     _searchFocus.removeListener(_onFocusChanged);
     _searchInputFocus.removeListener(_onFocusChanged);
+    _voiceController.removeListener(_onVoiceControllerChanged);
+    _voiceController.dispose();
     _voiceFocus.dispose();
     _searchFocus.dispose();
     _searchInputFocus.dispose();
@@ -195,103 +198,97 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  Future<bool> _ensureVoiceReady() async {
-    if (_voiceReady) return true;
-    if (_voiceInitializing) return false;
+  Future<void> _toggleVoiceSearch() async {
+    final l10n = AppLocalizations.of(context);
 
-    _voiceInitializing = true;
-    final available = await _speechToText.initialize(
-      onStatus: (status) {
-        if (!mounted) return;
-        final listening = status == 'listening';
-        if (_isVoiceListening != listening) {
-          setState(() {
-            _isVoiceListening = listening;
-          });
-        }
-      },
-      onError: (_) {
-        if (!mounted) return;
-        setState(() {
-          _isVoiceListening = false;
-        });
+    if (_voiceController.isListening) {
+      await _voiceController.stopListening();
+      return;
+    }
+
+    // Dismiss the system keyboard before starting voice recognition
+    // so it doesn't intercept audio or produce a double-UI.
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    final startResult = await _voiceController.startListening(
+      localeCode: _voiceLocaleCode(context),
+      onText: (text, {required isFinal}) {
+        _applyVoiceSearchResult(text, isFinal: isFinal);
       },
     );
-    _voiceInitializing = false;
-    if (mounted) {
-      setState(() {
-        _voiceReady = available;
-      });
-    } else {
-      _voiceReady = available;
+
+    if (!mounted) return;
+
+    switch (startResult) {
+      case VoiceSearchStartResult.listeningStarted:
+        return;
+      case VoiceSearchStartResult.permissionDeniedPermanently:
+        _showVoiceSearchError(
+          _voiceErrorMessage(l10n),
+          showSettingsAction: true,
+        );
+        return;
+      case VoiceSearchStartResult.permissionDenied:
+      case VoiceSearchStartResult.unavailable:
+      case VoiceSearchStartResult.failed:
+        _showVoiceSearchError(_voiceErrorMessage(l10n));
+        return;
     }
-    return available;
   }
 
-  Future<void> _toggleTvVoiceSearch() async {
-    final localeCode = _voiceLocaleCode(context);
-
-    if (PlatformDetection.isAndroid) {
-      if (_isVoiceListening) return;
-      if (mounted) {
-        setState(() {
-          _isVoiceListening = true;
-        });
-      }
-
-      try {
-        final recognized = await _platformChannel.invokeMethod<String>(
-          'startTvVoiceSearch',
-          <String, Object?>{'localeId': localeCode},
-        );
-        if (!mounted) return;
-        setState(() {
-          _isVoiceListening = false;
-        });
-        final query = recognized?.trim() ?? '';
-        if (query.isNotEmpty) {
-          _applyVoiceSearchResult(query);
-        }
-        return;
-      } catch (_) {
-        if (mounted) {
-          setState(() {
-            _isVoiceListening = false;
-          });
-        }
-      }
+  String _voiceErrorMessage(AppLocalizations l10n) {
+    final code = (_voiceController.lastErrorCode ?? '').toLowerCase();
+    if (_voiceController.permissionPermanentlyDenied ||
+        code.contains('permission_permanently_denied')) {
+      return 'Microphone permission is permanently denied. Enable it in system settings.';
     }
-
-    if (_isVoiceListening) {
-      await _speechToText.stop();
-      if (mounted) {
-        setState(() {
-          _isVoiceListening = false;
-        });
-      }
-      return;
+    if (_voiceController.permissionDenied ||
+        code.contains('permission_denied')) {
+      return 'Microphone permission is required for voice search.';
     }
-
-    final ready = await _ensureVoiceReady();
-    if (!ready) {
-      if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.voiceSearchUnavailable)),
-        );
-      }
-      return;
+    if (code.contains('error_no_match')) {
+      return 'Did not catch that. Try again.';
     }
+    if (code.contains('error_speech_timeout')) {
+      return 'No speech detected.';
+    }
+    if (code.contains('error_audio')) {
+      return 'Microphone error.';
+    }
+    if (code.contains('error_network')) {
+      return 'Voice search needs internet.';
+    }
+    if (code.contains('error_busy') || code.contains('error_client')) {
+      return 'Voice service is busy. Try again.';
+    }
+    final message = _voiceController.lastErrorMessage?.trim();
+    if (message != null && message.isNotEmpty) {
+      return message;
+    }
+    return l10n.voiceSearchUnavailable;
+  }
 
-    await _speechToText.listen(
-      localeId: localeCode,
-      onResult: (result) => _applyVoiceSearchResult(result.recognizedWords),
+  void _showVoiceSearchError(
+    String message, {
+    bool showSettingsAction = false,
+  }) {
+    if (!mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: showSettingsAction
+            ? SnackBarAction(
+                label: 'Settings',
+                onPressed: () {
+                  openAppSettings();
+                },
+              )
+            : null,
+      ),
     );
-    if (mounted) {
-      setState(() {
-        _isVoiceListening = true;
-      });
-    }
   }
 
   KeyEventResult _onVoiceKey(FocusNode node, KeyEvent event) {
@@ -309,7 +306,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
     if (event.logicalKey == LogicalKeyboardKey.enter ||
         event.logicalKey == LogicalKeyboardKey.select) {
-      _toggleTvVoiceSearch();
+      _toggleVoiceSearch();
       return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
@@ -342,7 +339,10 @@ class _SearchScreenState extends State<SearchScreen> {
     final type = item.type;
     if (type == 'Episode' || type == 'Program' || type == 'Recording') {
       if (item.backdropImageTags.isNotEmpty) {
-        return api.getBackdropImageUrl(item.id, tag: item.backdropImageTags.first);
+        return api.getBackdropImageUrl(
+          item.id,
+          tag: item.backdropImageTags.first,
+        );
       }
       final parentId = item.parentBackdropItemId;
       final parentTags = item.parentBackdropImageTags;
@@ -362,38 +362,22 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildVoiceActivation() {
-    final localeCode = _voiceLocaleCode(context);
+    final hasFocus = PlatformDetection.isTV && _voiceFocus.hasFocus;
+    final isListening = _voiceController.isListening;
+    final isInitializing = _voiceController.isInitializing;
+    final backgroundColor = isListening
+        ? const Color(0xFF8B1A1A)
+        : (hasFocus
+              ? AppColorScheme.buttonFocused
+              : AppColorScheme.surfaceVariant);
+    final iconColor = isListening
+        ? AppColorScheme.onAccent
+        : (hasFocus
+              ? AppColorScheme.onButtonFocused
+              : AppColorScheme.onSurface);
 
-    if (!PlatformDetection.isTV) {
-      return SizedBox(
-        width: 54,
-        height: 54,
-        child: VoiceSearchWidget(
-          localeCode: localeCode,
-          minRadius: 22,
-          maxRadius: 26,
-          activeWidgetColor: const Color(0xFF8B1A1A),
-          inactiveWidgetColor: AppColorScheme.surfaceVariant,
-          activeIcon: Icons.mic,
-          inactiveIcon: Icons.mic_none,
-          borderColor: ThemeRegistry.active.borders.chipBorder.color,
-          elevation: 0,
-          onResult: _applyVoiceSearchResult,
-        ),
-      );
-    }
-
-    final hasFocus = _voiceFocus.hasFocus;
-    final backgroundColor = _isVoiceListening
-      ? const Color(0xFF8B1A1A)
-      : (hasFocus ? AppColorScheme.buttonFocused : AppColorScheme.surfaceVariant);
-    final iconColor = _isVoiceListening
-      ? AppColorScheme.onAccent
-      : (hasFocus ? AppColorScheme.onButtonFocused : AppColorScheme.onSurface);
-
-    return Focus(
-      focusNode: _voiceFocus,
-      onKeyEvent: _onVoiceKey,
+    Widget button = GestureDetector(
+      onTap: isInitializing ? null : _toggleVoiceSearch,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         width: 54,
@@ -406,7 +390,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ? ThemeRegistry.active.borders.focusBorder
                 : ThemeRegistry.active.borders.chipBorder,
           ),
-          boxShadow: _isVoiceListening
+          boxShadow: isListening
               ? [
                   BoxShadow(
                     color: AppColorScheme.accent.withValues(alpha: 0.27),
@@ -416,12 +400,33 @@ class _SearchScreenState extends State<SearchScreen> {
                 ]
               : null,
         ),
-        child: Icon(
-          _isVoiceListening ? Icons.mic : Icons.mic_none,
-          color: iconColor,
-          size: 24,
+        child: Center(
+          child: isInitializing
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(iconColor),
+                  ),
+                )
+              : Icon(
+                  isListening ? Icons.mic : Icons.mic_none,
+                  color: iconColor,
+                  size: 24,
+                ),
         ),
       ),
+    );
+
+    if (!PlatformDetection.isTV) {
+      return button;
+    }
+
+    return Focus(
+      focusNode: _voiceFocus,
+      onKeyEvent: _onVoiceKey,
+      child: button,
     );
   }
 
@@ -429,20 +434,20 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final searchHasFocus = PlatformDetection.isTV
-      ? _searchFocus.hasFocus
-      : _searchInputFocus.hasFocus;
+        ? _searchFocus.hasFocus
+        : _searchInputFocus.hasFocus;
     final searchBackgroundColor = searchHasFocus
-      ? AppColorScheme.buttonFocused
-      : AppColorScheme.surfaceVariant;
+        ? AppColorScheme.buttonFocused
+        : AppColorScheme.surfaceVariant;
     final searchTextColor = searchHasFocus
-      ? AppColorScheme.onButtonFocused
-      : AppColorScheme.onSurface;
+        ? AppColorScheme.onButtonFocused
+        : AppColorScheme.onSurface;
     final searchHintColor = searchHasFocus
-      ? AppColorScheme.onButtonFocused.withAlpha(153)
-      : AppColorScheme.onSurface.withAlpha(128);
+        ? AppColorScheme.onButtonFocused.withAlpha(153)
+        : AppColorScheme.onSurface.withAlpha(128);
     final searchIconColor = searchHasFocus
-      ? AppColorScheme.onButtonFocused
-      : AppColorScheme.onSurface.withValues(alpha: 0.7);
+        ? AppColorScheme.onButtonFocused
+        : AppColorScheme.onSurface.withValues(alpha: 0.7);
     const searchBorderRadius = 28.0;
 
     return Scaffold(
@@ -468,7 +473,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 key: _searchTvFieldKey,
                                 controller: _searchController,
                                 isFocused: _searchFocus.hasFocus,
-                                hint: widget.scopedLibraryId != null &&
+                                hint:
+                                    widget.scopedLibraryId != null &&
                                         widget.scopedLibraryId!.isNotEmpty
                                     ? l10n.searchThisLibrary
                                     : l10n.searchEllipsis,
@@ -488,8 +494,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                 filled: true,
                                 fillColor: searchBackgroundColor,
                                 borderRadius: searchBorderRadius,
-                                borderColor: AppColorScheme.scrim.withValues(alpha: 0),
-                                focusedBorderColor: AppColorScheme.scrim.withValues(alpha: 0),
+                                borderColor: AppColorScheme.scrim.withValues(
+                                  alpha: 0,
+                                ),
+                                focusedBorderColor: AppColorScheme.scrim
+                                    .withValues(alpha: 0),
                                 borderWidth: 0,
                                 focusedBorderWidth: 0,
                                 contentPadding: const EdgeInsets.symmetric(
@@ -507,7 +516,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 fontSize: 20,
                               ),
                               decoration: InputDecoration(
-                                hintText: widget.scopedLibraryId != null &&
+                                hintText:
+                                    widget.scopedLibraryId != null &&
                                         widget.scopedLibraryId!.isNotEmpty
                                     ? l10n.searchThisLibrary
                                     : l10n.searchEllipsis,
@@ -588,7 +598,8 @@ class _SearchScreenState extends State<SearchScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         return _buildResults();
-      case SearchState.ready when _vm.results.isEmpty && _vm.seerrResults.isEmpty:
+      case SearchState.ready
+          when _vm.results.isEmpty && _vm.seerrResults.isEmpty:
         return Center(
           child: Text(
             AppLocalizations.of(context).noResultsForQuery(_vm.query),
@@ -615,9 +626,11 @@ class _SearchScreenState extends State<SearchScreen> {
     final focusColor = Color(prefs.get(UserPreferences.focusColor).colorValue);
     final cardFocusExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final posterSize = prefs.get(UserPreferences.posterSize);
-    final navbarIsLeft = prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
-    final rowLeftInset =
-      (navbarIsLeft && !PlatformDetection.useMobileUi) ? 56.0 : 0.0;
+    final navbarIsLeft =
+        prefs.get(UserPreferences.navbarPosition) == NavbarPosition.left;
+    final rowLeftInset = (navbarIsLeft && !PlatformDetection.useMobileUi)
+        ? 56.0
+        : 0.0;
     final hasSeerr = _vm.seerrResults.isNotEmpty;
     final totalCount = _vm.results.length + (hasSeerr ? 1 : 0);
     return ListView.builder(
@@ -631,40 +644,46 @@ class _SearchScreenState extends State<SearchScreen> {
           return Padding(
             padding: EdgeInsets.only(top: 8, left: rowLeftInset),
             child: LibraryRow(
-                title: group.title,
-                rowHeight: _rowHeight(group, posterSize),
-                children: group.items.map((item) {
-                  final ar = MediaCard.aspectRatioForType(item.type);
-                  final height = _searchImageHeight(ar, posterSize);
-                  final width = height * ar;
-                  return MediaCard(
-                    title: item.name,
-                    subtitle: _subtitle(item),
-                    imageUrl: _imageUrl(item),
-                    width: width,
-                    aspectRatio: ar,
-                    isFavorite: item.isFavorite,
-                    isPlayed: item.isPlayed,
-                    unplayedCount: item.unplayedItemCount,
-                    playedPercentage: item.playedPercentage,
-                    itemType: item.type,
-                    focusColor: focusColor,
-                    cardFocusExpansion: cardFocusExpansion,
-                    onFocus: () {
-                      if (isFirstVisibleRow) {
-                        _isFirstRowFocused = true;
-                        _restoreNavbarToNormalPosition();
-                      }
-                    },
-                    onFocusLost: () {
-                      if (isFirstVisibleRow) {
-                        _isFirstRowFocused = false;
-                      }
-                    },
-                    onTap: () => context.push(Destinations.itemOrPhoto(item.id, serverId: item.serverId, type: item.type)),
-                  );
-                }).toList(),
-              ),
+              title: group.title,
+              rowHeight: _rowHeight(group, posterSize),
+              children: group.items.map((item) {
+                final ar = MediaCard.aspectRatioForType(item.type);
+                final height = _searchImageHeight(ar, posterSize);
+                final width = height * ar;
+                return MediaCard(
+                  title: item.name,
+                  subtitle: _subtitle(item),
+                  imageUrl: _imageUrl(item),
+                  width: width,
+                  aspectRatio: ar,
+                  isFavorite: item.isFavorite,
+                  isPlayed: item.isPlayed,
+                  unplayedCount: item.unplayedItemCount,
+                  playedPercentage: item.playedPercentage,
+                  itemType: item.type,
+                  focusColor: focusColor,
+                  cardFocusExpansion: cardFocusExpansion,
+                  onFocus: () {
+                    if (isFirstVisibleRow) {
+                      _isFirstRowFocused = true;
+                      _restoreNavbarToNormalPosition();
+                    }
+                  },
+                  onFocusLost: () {
+                    if (isFirstVisibleRow) {
+                      _isFirstRowFocused = false;
+                    }
+                  },
+                  onTap: () => context.push(
+                    Destinations.itemOrPhoto(
+                      item.id,
+                      serverId: item.serverId,
+                      type: item.type,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           );
         }
         return Padding(
@@ -692,7 +711,9 @@ class _SearchScreenState extends State<SearchScreen> {
       rowHeight: height + 56,
       children: _vm.seerrResults.map((item) {
         final year = (item.releaseDate ?? item.firstAirDate);
-        final yearStr = (year != null && year.length >= 4) ? year.substring(0, 4) : null;
+        final yearStr = (year != null && year.length >= 4)
+            ? year.substring(0, 4)
+            : null;
         return MediaCard(
           title: item.displayTitle,
           subtitle: yearStr,

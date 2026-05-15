@@ -152,16 +152,14 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
         leading: PlatformDetection.isTV
             ? null
             : IconButton(
-              onPressed: _closeSettingsPanel,
-              icon: const Icon(Icons.close),
-            ),
+                onPressed: _closeSettingsPanel,
+                icon: const Icon(Icons.close),
+              ),
         automaticallyImplyLeading: false,
         title: Text(l10n.settings),
       ),
       body: ListView(
-        children: [
-          for (final entry in entries) _PanelEntryTile(entry: entry),
-        ],
+        children: [for (final entry in entries) _PanelEntryTile(entry: entry)],
       ),
     );
   }
@@ -255,7 +253,8 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
   @override
   Widget build(BuildContext context) {
     final resolvedTrailing =
-        widget.trailing ?? (widget.onTap != null ? const Icon(Icons.chevron_right) : null);
+        widget.trailing ??
+        (widget.onTap != null ? const Icon(Icons.chevron_right) : null);
     return Focus(
       canRequestFocus: false,
       skipTraversal: true,
@@ -273,14 +272,13 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
           focusColor: Colors.transparent,
           hoverColor: Colors.transparent,
           leading: widget.leading != null
-              ? IconTheme(
-                  data: IconThemeData(
-                    size: 22,
-                    color: focused
-                        ? AppColors.black.withValues(alpha: 0.54)
-                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
-                  child: widget.leading!,
+              ? buildSettingsLeadingIconShell(
+                  context,
+                  icon: widget.leading!,
+                  focused: focused,
+                  iconColor: focused
+                      ? AppColors.black.withValues(alpha: 0.54)
+                      : AppColorScheme.onSurface.withValues(alpha: 0.78),
                 )
               : null,
           title: DefaultTextStyle.merge(
@@ -359,7 +357,10 @@ String _formatCamelCaseLabel(String camelCase) {
   return buf.toString();
 }
 
-void _ensureSettingsTileVisible(BuildContext context, {double alignment = 0.9}) {
+void _ensureSettingsTileVisible(
+  BuildContext context, {
+  double alignment = 0.9,
+}) {
   WidgetsBinding.instance.addPostFrameCallback((_) {
     if (!context.mounted) return;
     Scrollable.ensureVisible(
@@ -430,8 +431,8 @@ class _AuthenticationCategoryScreen extends StatelessWidget {
             subtitle: l10n.showConfirmationBeforeExiting,
             icon: Icons.exit_to_app,
           ),
-          ],
-        ),
+        ],
+      ),
     );
   }
 }
@@ -523,7 +524,8 @@ class _GeneralStyleScreenState extends State<_GeneralStyleScreen> {
               leading: const Icon(Icons.palette_outlined),
               title: Text(l10n.settingsAppearanceTheme),
               subtitle: Text(l10n.settingsAppearanceThemeSubtitle),
-              onTap: () => context.pushSettingsScreen(const AppearanceThemeScreen()),
+              onTap: () =>
+                  context.pushSettingsScreen(const AppearanceThemeScreen()),
             ),
             EnumPreferenceTile<AppTheme>(
               preference: UserPreferences.focusColor,
@@ -648,8 +650,9 @@ class _NavigationCategoryScreen extends StatelessWidget {
               NavbarPosition.left => l10n.leftSidebar,
             },
             onChanged: () {
-              final pos = GetIt.instance<UserPreferences>()
-                  .get(UserPreferences.navbarPosition);
+              final pos = GetIt.instance<UserPreferences>().get(
+                UserPreferences.navbarPosition,
+              );
               NavigationLayout.positionNotifier.value = pos;
               _pushPersonalizationSync();
             },
@@ -907,8 +910,7 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
               leading: const Icon(Icons.extension),
               title: Text(l10n.pluginLabel),
               subtitle: Text(l10n.serverSyncAndPluginStatus),
-              onTap: () =>
-                  context.pushSettingsScreen(const _PluginScreen()),
+              onTap: () => context.pushSettingsScreen(const _PluginScreen()),
             ),
             _TvSettingsListTile(
               leading: const Icon(Icons.star),
@@ -925,7 +927,8 @@ class _IntegrationsScreenState extends State<_IntegrationsScreen> {
               ),
               title: Text(l10n.seerr),
               subtitle: Text(l10n.mediaRequestIntegration),
-              onTap: () => context.pushSettingsScreen(const SeerrConfigScreen()),
+              onTap: () =>
+                  context.pushSettingsScreen(const SeerrConfigScreen()),
             ),
             _TvSettingsListTile(
               leading: Image.asset(
@@ -1000,11 +1003,7 @@ class _PluginScreenState extends State<_PluginScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.extension,
-                      size: 20,
-                      color: colorScheme.primary,
-                    ),
+                    Icon(Icons.extension, size: 20, color: colorScheme.primary),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -1030,8 +1029,7 @@ class _MetadataRatingsScreen extends StatefulWidget {
   const _MetadataRatingsScreen();
 
   @override
-  State<_MetadataRatingsScreen> createState() =>
-      _MetadataRatingsScreenState();
+  State<_MetadataRatingsScreen> createState() => _MetadataRatingsScreenState();
 }
 
 class _MetadataRatingsScreenState extends State<_MetadataRatingsScreen> {
@@ -1050,7 +1048,10 @@ class _MetadataRatingsScreenState extends State<_MetadataRatingsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, Text(l10n.settingsMetadataAndRatings)),
+      appBar: buildSettingsAppBar(
+        context,
+        Text(l10n.settingsMetadataAndRatings),
+      ),
       body: FocusScope(
         node: _metadataScope,
         autofocus: true,
@@ -1198,10 +1199,7 @@ class _AboutCategoryScreen extends StatelessWidget {
         children: [
           const SizedBox(height: 24),
           Center(
-            child: Image.asset(
-              'assets/images/logo_and_text.png',
-              height: 72,
-            ),
+            child: Image.asset('assets/images/logo_and_text.png', height: 72),
           ),
           const SizedBox(height: 8),
           Center(
@@ -1228,9 +1226,7 @@ class _AboutCategoryScreen extends StatelessWidget {
             title: Text(l10n.sourceCode),
             subtitle: Text(l10n.sourceCodeUrl),
             onTap: () => launchUrl(
-              Uri.parse(
-                'https://github.com/Moonfin-Client/Mobile-Desktop',
-              ),
+              Uri.parse('https://github.com/Moonfin-Client/Mobile-Desktop'),
               mode: LaunchMode.externalApplication,
             ),
           ),
@@ -1283,7 +1279,6 @@ class _AboutCategoryScreen extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class _CheckForUpdatesTile extends StatefulWidget {
@@ -1359,15 +1354,20 @@ class _LicensesScreenState extends State<_LicensesScreen> {
       }
     }
 
-    final packages = licenseBlocksByPackage.entries
-        .map(
-          (entry) => _LicensePackageData(
-            packageName: entry.key,
-            blocks: List<String>.unmodifiable(entry.value),
-          ),
-        )
-        .toList()
-      ..sort((a, b) => a.packageName.toLowerCase().compareTo(b.packageName.toLowerCase()));
+    final packages =
+        licenseBlocksByPackage.entries
+            .map(
+              (entry) => _LicensePackageData(
+                packageName: entry.key,
+                blocks: List<String>.unmodifiable(entry.value),
+              ),
+            )
+            .toList()
+          ..sort(
+            (a, b) => a.packageName.toLowerCase().compareTo(
+              b.packageName.toLowerCase(),
+            ),
+          );
 
     return packages;
   }
@@ -1411,7 +1411,10 @@ class _LicensesScreenState extends State<_LicensesScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     l10n.settingsPoweredByFlutter,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1526,10 +1529,7 @@ class _LicensePackageData {
   final String packageName;
   final List<String> blocks;
 
-  const _LicensePackageData({
-    required this.packageName,
-    required this.blocks,
-  });
+  const _LicensePackageData({required this.packageName, required this.blocks});
 }
 
 class _PlaybackCategoryScreen extends StatelessWidget {
@@ -1679,7 +1679,8 @@ class _VideoPlaybackScreen extends StatelessWidget {
               labelOf: (v) => switch (v) {
                 PlaybackEnginePreference.media3 =>
                   l10n.settingsPlaybackEngineMedia3Recommended,
-                PlaybackEnginePreference.mpv => l10n.settingsPlaybackEngineMpvLegacy,
+                PlaybackEnginePreference.mpv =>
+                  l10n.settingsPlaybackEngineMpvLegacy,
               },
             ),
           if (PlatformDetection.isAndroid && PlatformDetection.isTV)
@@ -1700,7 +1701,8 @@ class _VideoPlaybackScreen extends StatelessWidget {
             EnumPreferenceTile<DolbyVisionProfile7DirectPlayBehavior>(
               preference: UserPreferences.dolbyVisionProfile7DirectPlayBehavior,
               title: l10n.settingsDolbyVisionProfile7DirectPlay,
-              description: l10n.settingsDolbyVisionProfile7DirectPlayDescription,
+              description:
+                  l10n.settingsDolbyVisionProfile7DirectPlayDescription,
               icon: Icons.movie_filter,
               labelOf: (v) => switch (v) {
                 DolbyVisionProfile7DirectPlayBehavior.auto =>
@@ -1931,7 +1933,10 @@ class _AutomationQueueScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, Text(l10n.settingsAutomationAndQueue)),
+      appBar: buildSettingsAppBar(
+        context,
+        Text(l10n.settingsAutomationAndQueue),
+      ),
       body: ListView(
         children: [
           SwitchPreferenceTile(
@@ -1988,8 +1993,7 @@ class _AdvancedOptionsScreen extends StatefulWidget {
   const _AdvancedOptionsScreen();
 
   @override
-  State<_AdvancedOptionsScreen> createState() =>
-      _AdvancedOptionsScreenState();
+  State<_AdvancedOptionsScreen> createState() => _AdvancedOptionsScreenState();
 }
 
 class _AdvancedOptionsScreenState extends State<_AdvancedOptionsScreen> {
@@ -2129,9 +2133,7 @@ class _SyncPlaySettingsScreenState extends State<_SyncPlaySettingsScreen> {
               title: Text(l10n.settingsOpenGroups),
               subtitle: Text(l10n.settingsOpenGroupsSubtitle),
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const SyncPlayScreen(),
-                ),
+                MaterialPageRoute<void>(builder: (_) => const SyncPlayScreen()),
               ),
             ),
             const Divider(),
@@ -2231,13 +2233,17 @@ class _EditableStringPreferenceTile extends StatefulWidget {
       _EditableStringPreferenceTileState();
 }
 
-class _EditableStringPreferenceTileState extends State<_EditableStringPreferenceTile> {
+class _EditableStringPreferenceTileState
+    extends State<_EditableStringPreferenceTile> {
   late final PreferenceBinding<String> _binding;
 
   @override
   void initState() {
     super.initState();
-    _binding = PreferenceBinding(GetIt.instance<PreferenceStore>(), widget.preference);
+    _binding = PreferenceBinding(
+      GetIt.instance<PreferenceStore>(),
+      widget.preference,
+    );
   }
 
   @override
@@ -2328,7 +2334,9 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
   @override
   void initState() {
     super.initState();
-    _outerFocusNode = FocusNode(debugLabel: 'DoubleSliderOuter_${widget.title}');
+    _outerFocusNode = FocusNode(
+      debugLabel: 'DoubleSliderOuter_${widget.title}',
+    );
     _sliderInternalNode = FocusNode(
       debugLabel: 'DoubleSliderInner_${widget.title}',
       canRequestFocus: false,
@@ -2356,7 +2364,8 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
       node.nextFocus();
       return KeyEventResult.handled;
     }
-    if (key == LogicalKeyboardKey.arrowLeft || key == LogicalKeyboardKey.arrowRight) {
+    if (key == LogicalKeyboardKey.arrowLeft ||
+        key == LogicalKeyboardKey.arrowRight) {
       final delta = key == LogicalKeyboardKey.arrowLeft ? -_step : _step;
       final current = widget.binding.value;
       final next = (current + delta).clamp(widget.min, widget.max);
@@ -2414,7 +2423,9 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context).settingsMillisecondsValue(value.round()),
+                    AppLocalizations.of(
+                      context,
+                    ).settingsMillisecondsValue(value.round()),
                     style: TextStyle(
                       color: _outerFocused
                           ? AppColors.black.withValues(alpha: 0.54)
@@ -2498,10 +2509,9 @@ class _NavbarColorPickerTileState extends State<_NavbarColorPickerTile> {
 
   Color _swatchColor(String key) => Color(_swatches[key] ?? 0xFF6B7280);
 
-  Color _swatchBorder(Color color) =>
-      color.computeLuminance() > 0.8
-        ? AppColors.black.withValues(alpha: 0.38)
-        : AppColorScheme.onSurface.withValues(alpha: 0.24);
+  Color _swatchBorder(Color color) => color.computeLuminance() > 0.8
+      ? AppColors.black.withValues(alpha: 0.38)
+      : AppColorScheme.onSurface.withValues(alpha: 0.24);
 
   String _labelFor(String key, AppLocalizations l10n) => switch (key) {
     'gray' => l10n.gray,

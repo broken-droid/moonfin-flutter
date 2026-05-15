@@ -5,6 +5,7 @@ import '../mixins/focus_state_mixin.dart';
 
 class GridButtonCard extends StatefulWidget {
   final IconData icon;
+  final Widget Function(double size, Color color)? iconBuilder;
   final String label;
   final VoidCallback onTap;
   final double width;
@@ -19,6 +20,7 @@ class GridButtonCard extends StatefulWidget {
   const GridButtonCard({
     super.key,
     required this.icon,
+    this.iconBuilder,
     required this.label,
     required this.onTap,
     this.width = 160,
@@ -36,7 +38,6 @@ class GridButtonCard extends StatefulWidget {
 }
 
 class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
-
   @override
   Widget build(BuildContext context) {
     final borders = ThemeRegistry.active.borders;
@@ -48,18 +49,19 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
     final focusedBackground = widget.focusColor ?? AppColorScheme.buttonFocused;
     final focusedBorderColor = widget.focusColor ?? borders.focusBorder.color;
     final focusedForeground =
-      ThemeData.estimateBrightnessForColor(focusedBackground) == Brightness.dark
+        ThemeData.estimateBrightnessForColor(focusedBackground) ==
+            Brightness.dark
         ? AppColorScheme.onSurface
         : AppColors.black;
     final color = effectiveFocused
-      ? focusedBackground
-      : AppColorScheme.buttonNormal;
+        ? focusedBackground
+        : AppColorScheme.buttonNormal;
     final foregroundColor = effectiveFocused
-      ? focusedForeground
-      : AppColorScheme.onButtonNormal;
+        ? focusedForeground
+        : AppColorScheme.onButtonNormal;
     final scale = widget.cardFocusExpansion && effectiveFocused ? 1.05 : 1.0;
     final sizeScale =
-      (widget.width < widget.height ? widget.width : widget.height) / 160.0;
+        (widget.width < widget.height ? widget.width : widget.height) / 160.0;
     final visualScale = sizeScale.clamp(0.8, 1.4);
 
     final inner = GestureDetector(
@@ -86,11 +88,12 @@ class _GridButtonCardState extends State<GridButtonCard> with FocusStateMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                widget.icon,
-                size: 36 * visualScale,
-                color: foregroundColor,
-              ),
+              widget.iconBuilder?.call(36 * visualScale, foregroundColor) ??
+                  Icon(
+                    widget.icon,
+                    size: 36 * visualScale,
+                    color: foregroundColor,
+                  ),
               const SizedBox(height: AppSpacing.spaceSm),
               Text(
                 widget.label,

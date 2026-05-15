@@ -26,7 +26,7 @@ import 'settings/settings_panel.dart';
 import '../screens/syncplay/syncplay_screen.dart';
 import '../screens/settings/settings_side_panel.dart';
 import 'seerr_icons.dart';
-import 'shuffle_options_dialog.dart';
+import 'shuffle_overlay.dart';
 import 'user_menu_dialog.dart';
 
 const _kExpandedWidthDesktop = 240.0;
@@ -36,7 +36,7 @@ const _kExpandedWidthTV = 280.0;
 const _kCollapsedWidthTV = 72.0;
 const _kExpandedBackdropWidthTV = _kExpandedWidthTV - 16.0;
 const _kBackdropEdgeBlendWidthTV =
-  _kExpandedWidthTV - _kExpandedBackdropWidthTV;
+    _kExpandedWidthTV - _kExpandedBackdropWidthTV;
 
 class LeftSidebar extends StatefulWidget {
   final String? activeRoute;
@@ -548,7 +548,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
     final overlayColor = _overlayColor();
     final opacity = _overlayOpacity();
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
-    final desktopHoverRail = PlatformDetection.isDesktop && !PlatformDetection.isTV;
+    final desktopHoverRail =
+        PlatformDetection.isDesktop && !PlatformDetection.isTV;
     final railWidth = _isExpanded ? _kExpandedWidthTV : _kCollapsedWidthTV;
 
     final rail = AnimatedContainer(
@@ -647,8 +648,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
     final showLibraries = _prefs.get(UserPreferences.showLibrariesInToolbar);
     final showFolders = _prefs.get(UserPreferences.enableFolderView);
     final showSyncPlay =
-      _prefs.get(UserPreferences.syncPlayEnabled) &&
-      _prefs.get(UserPreferences.showSyncPlayButton);
+        _prefs.get(UserPreferences.syncPlayEnabled) &&
+        _prefs.get(UserPreferences.showSyncPlayButton);
     final pluginSync = GetIt.instance<PluginSyncService>();
     final seerrPrefs = GetIt.instance<SeerrPreferences>();
     final seerrEnabledLocally =
@@ -660,7 +661,9 @@ class _LeftSidebarState extends State<LeftSidebar> {
     var neonSlot = 0;
     Color? nextSidebarColor() {
       if (!isNeon) return null;
-      final c = neonSlot.isEven ? AppColorScheme.accent : AppColorScheme.onSurface;
+      final c = neonSlot.isEven
+          ? AppColorScheme.accent
+          : AppColorScheme.onSurface;
       neonSlot += 1;
       return c;
     }
@@ -713,11 +716,7 @@ class _LeftSidebarState extends State<LeftSidebar> {
                     showLabel: _showLabels,
                     onPressed: () {
                       _onNavigate();
-                      _shuffleRandom(context);
-                    },
-                    onLongPress: () {
-                      _onNavigate();
-                      showShuffleDialog(context);
+                      showShuffleOverlay(context);
                     },
                   ),
                 if (showGenres)
@@ -829,7 +828,8 @@ class _LeftSidebarState extends State<LeftSidebar> {
                             duration: _kExpandDuration,
                             child: Icon(
                               Icons.expand_more,
-                              size: (PlatformDetection.isDesktop &&
+                              size:
+                                  (PlatformDetection.isDesktop &&
                                       !PlatformDetection.isTV)
                                   ? 18
                                   : 16,
@@ -949,11 +949,6 @@ class _LeftSidebarState extends State<LeftSidebar> {
     }
   }
 
-  Future<void> _shuffleRandom(BuildContext context) async {
-    final contentType = _prefs.get(UserPreferences.shuffleContentType);
-    await fetchRandomAndNavigate(context, contentType: contentType);
-  }
-
   Widget _buildUserSection() {
     final user = _userRepo.currentUser;
     final initial = (user?.name.isNotEmpty == true)
@@ -1067,7 +1062,6 @@ class _LeftSidebarState extends State<LeftSidebar> {
             ),
     );
   }
-
 }
 
 class _SidebarItem extends StatefulWidget {
@@ -1076,7 +1070,6 @@ class _SidebarItem extends StatefulWidget {
   final String label;
   final bool showLabel;
   final VoidCallback onPressed;
-  final VoidCallback? onLongPress;
   final Widget? trailing;
   final FocusNode? focusNode;
   final Color? baseColor;
@@ -1087,7 +1080,6 @@ class _SidebarItem extends StatefulWidget {
     required this.label,
     required this.showLabel,
     required this.onPressed,
-    this.onLongPress,
     this.trailing,
     this.focusNode,
     this.baseColor,
@@ -1138,9 +1130,9 @@ class _SidebarItemState extends State<_SidebarItem> {
     final baseColor = widget.baseColor ?? Colors.white.withValues(alpha: 0.6);
     final fgColor = tvFocused
         ? Colors.black
-      : highlighted
-      ? (isNeon ? baseColor : focusColor)
-      : baseColor;
+        : highlighted
+        ? (isNeon ? baseColor : focusColor)
+        : baseColor;
     final iconSize = desktopSidebar ? 28.0 : 24.0;
     final iconSlotWidth = desktopSidebar ? 36.0 : 32.0;
     final labelFontSize = desktopSidebar ? 16.0 : 14.0;
@@ -1163,7 +1155,6 @@ class _SidebarItemState extends State<_SidebarItem> {
           },
           child: GestureDetector(
             onTap: widget.onPressed,
-            onLongPress: widget.onLongPress,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               height: desktopSidebar ? 44 : 40,
@@ -1173,8 +1164,8 @@ class _SidebarItemState extends State<_SidebarItem> {
                     ? Colors.white
                     : highlighted
                     ? (isNeon
-                        ? baseColor.withValues(alpha: 0.12)
-                        : focusColor.withValues(alpha: 0.12))
+                          ? baseColor.withValues(alpha: 0.12)
+                          : focusColor.withValues(alpha: 0.12))
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(
                   PlatformDetection.isTV ? 24 : 8,
@@ -1281,14 +1272,17 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               height: desktopSidebar ? 40 : 36,
-              padding: EdgeInsets.only(left: desktopSidebar ? 56 : 50, right: 10),
+              padding: EdgeInsets.only(
+                left: desktopSidebar ? 56 : 50,
+                right: 10,
+              ),
               decoration: BoxDecoration(
                 color: tvFocused
                     ? Colors.white
                     : highlighted
-                  ? (isNeon
-                    ? baseColor.withValues(alpha: 0.12)
-                    : focusColor.withValues(alpha: 0.1))
+                    ? (isNeon
+                          ? baseColor.withValues(alpha: 0.12)
+                          : focusColor.withValues(alpha: 0.1))
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(
                   PlatformDetection.isTV ? 24 : 8,
@@ -1302,8 +1296,8 @@ class _SidebarLibraryItemState extends State<_SidebarLibraryItem> {
                         color: tvFocused
                             ? Colors.black
                             : highlighted
-                          ? (isNeon ? baseColor : focusColor)
-                          : baseColor,
+                            ? (isNeon ? baseColor : focusColor)
+                            : baseColor,
                         fontSize: desktopSidebar ? 15 : 13,
                         fontWeight: FontWeight.w500,
                       ),
