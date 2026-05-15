@@ -366,6 +366,12 @@ class _DetailContentState extends State<_DetailContent> {
   final FocusNode _firstTrackFocusNode = FocusNode(
     debugLabel: 'albumFirstTrack',
   );
+  final FocusNode _nextEpisodeFocusNode = FocusNode(
+    debugLabel: 'detailNextEpisode',
+  );
+  final FocusNode _seriesNextUpFocusNode = FocusNode(
+    debugLabel: 'detailSeriesNextUp',
+  );
   String? _tvAlbumPlayFocusAppliedForItemId;
 
   ItemDetailViewModel get viewModel => widget.viewModel;
@@ -399,7 +405,7 @@ class _DetailContentState extends State<_DetailContent> {
           duration: const Duration(milliseconds: 220),
           curve: Curves.easeOut,
           alignment: 0.2,
-          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
         );
       });
       return KeyEventResult.handled;
@@ -410,14 +416,26 @@ class _DetailContentState extends State<_DetailContent> {
   KeyEventResult Function(int index, KeyEvent event)? _buildVerticalRowHandler({
     FocusNode? upTarget,
     FocusNode? downTarget,
+    int? itemCount,
   }) {
+    final hasBoundaryGuards = itemCount != null && itemCount > 0;
     if (!PlatformDetection.isTV ||
-        (upTarget == null && downTarget == null)) {
+        (upTarget == null && downTarget == null && !hasBoundaryGuards)) {
       return null;
     }
-    return (_, event) {
+    return (index, event) {
       if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
         return KeyEventResult.ignored;
+      }
+      if (hasBoundaryGuards &&
+          event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+          index <= 0) {
+        return KeyEventResult.handled;
+      }
+      if (hasBoundaryGuards &&
+          event.logicalKey == LogicalKeyboardKey.arrowRight &&
+          index >= itemCount - 1) {
+        return KeyEventResult.handled;
       }
       if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
         return _requestSectionFocus(upTarget);
@@ -485,6 +503,8 @@ class _DetailContentState extends State<_DetailContent> {
     _firstFeatureFocusNode.dispose();
     _albumPlayFocusNode.dispose();
     _firstTrackFocusNode.dispose();
+    _nextEpisodeFocusNode.dispose();
+    _seriesNextUpFocusNode.dispose();
     super.dispose();
   }
 
@@ -547,6 +567,7 @@ class _DetailContentState extends State<_DetailContent> {
             const _GradientScrim(),
           CustomScrollView(
             controller: _scrollController,
+            cacheExtent: 4000,
             slivers: [
               if (item.type != 'Person' &&
                   item.type != 'MusicArtist' &&
@@ -946,6 +967,7 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: chapterFeatureLastNode,
               downTarget: collectionFocusNode ?? similarFocusNode,
+              itemCount: viewModel.actors.length,
             ),
           ),
         ),
@@ -963,6 +985,7 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: castFocusNode ?? chapterFeatureLastNode,
               downTarget: similarFocusNode,
+              itemCount: viewModel.parentCollectionItems.length,
             ),
           ),
         ),
@@ -986,6 +1009,7 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget:
                   collectionFocusNode ?? castFocusNode ?? chapterFeatureLastNode,
+              itemCount: viewModel.similar.length,
             ),
           ),
         ),
@@ -999,6 +1023,8 @@ class _DetailContentState extends State<_DetailContent> {
     final hasSeasons = viewModel.seasons.isNotEmpty;
     final hasCast = viewModel.actors.isNotEmpty;
     final hasSimilar = viewModel.similar.isNotEmpty;
+    final hasNextUp = viewModel.nextUp != null;
+    final seriesNextUpFocusNode = hasNextUp ? _seriesNextUpFocusNode : null;
     final seasonsFocusNode = hasSeasons
         ? _sectionFocusNode('detailSeriesSeasons')
         : null;
@@ -1020,7 +1046,7 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 24),
         _MetadataSection(viewModel: viewModel),
       ],
-      if (viewModel.nextUp != null) ...[
+      if (hasNextUp) ...[
         const SizedBox(height: 32),
         Text(
           l10n.nextUp,
@@ -1034,9 +1060,24 @@ class _DetailContentState extends State<_DetailContent> {
           ),
         ),
         const SizedBox(height: 12),
-        _NextUpCard(episode: viewModel.nextUp!, imageApi: viewModel.imageApi),
+        _NextUpCard(
+          episode: viewModel.nextUp!,
+          imageApi: viewModel.imageApi,
+          focusNode: seriesNextUpFocusNode,
+          onKeyEvent: (event) {
+            if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+              return KeyEventResult.ignored;
+            }
+            if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+              return _requestSectionFocus(
+                seasonsFocusNode ?? castFocusNode ?? similarFocusNode,
+              );
+            }
+            return KeyEventResult.ignored;
+          },
+        ),
       ],
-      if (viewModel.seasons.isNotEmpty) ...[
+      if (hasSeasons) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.seasons,
@@ -1053,12 +1094,14 @@ class _DetailContentState extends State<_DetailContent> {
             scrollController: ctrl,
             firstItemFocusNode: seasonsFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
+              upTarget: seriesNextUpFocusNode,
               downTarget: castFocusNode ?? similarFocusNode,
+              itemCount: viewModel.seasons.length,
             ),
           ),
         ),
       ],
-      if (viewModel.actors.isNotEmpty) ...[
+      if (hasCast) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.castAndCrew,
@@ -1075,13 +1118,14 @@ class _DetailContentState extends State<_DetailContent> {
             scrollController: ctrl,
             firstItemFocusNode: castFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
-              upTarget: seasonsFocusNode,
+              upTarget: seasonsFocusNode ?? seriesNextUpFocusNode,
               downTarget: similarFocusNode,
+              itemCount: viewModel.actors.length,
             ),
           ),
         ),
       ],
-      if (viewModel.similar.isNotEmpty) ...[
+      if (hasSimilar) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.moreLikeThis,
@@ -1098,7 +1142,9 @@ class _DetailContentState extends State<_DetailContent> {
             scrollController: ctrl,
             firstItemFocusNode: similarFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
-              upTarget: castFocusNode ?? seasonsFocusNode,
+              upTarget:
+                  castFocusNode ?? seasonsFocusNode ?? seriesNextUpFocusNode,
+              itemCount: viewModel.similar.length,
             ),
           ),
         ),
@@ -1147,11 +1193,25 @@ class _DetailContentState extends State<_DetailContent> {
     final similarFocusNode = hasSimilar
         ? _sectionFocusNode('detailEpisodeSimilar')
         : null;
+    final currentEpisodeIndex = viewModel.episodes.indexWhere(
+      (ep) => ep.id == item.id,
+    );
+    final nextEpisode =
+        (currentEpisodeIndex >= 0 &&
+            currentEpisodeIndex < viewModel.episodes.length - 1)
+        ? viewModel.episodes[currentEpisodeIndex + 1]
+        : null;
+    final nextEpisodeFocusNode = nextEpisode != null
+        ? _nextEpisodeFocusNode
+        : null;
     final chapterFeatureLastNode = hasFeatures
         ? _firstFeatureFocusNode
         : (hasChapters ? _firstChapterFocusNode : null);
     final chapterFeatureNextNode =
-        episodesFocusNode ?? castFocusNode ?? similarFocusNode;
+        nextEpisodeFocusNode ??
+        episodesFocusNode ??
+        castFocusNode ??
+        similarFocusNode;
 
     return [
       _ActionButtons(
@@ -1170,44 +1230,45 @@ class _DetailContentState extends State<_DetailContent> {
         selectedMediaSourceId: selectedMediaSourceId,
         nextSectionFocusNode: chapterFeatureNextNode,
       ),
-      if (viewModel.episodes.isNotEmpty) ...[
-        () {
-          final currentIndex = viewModel.episodes.indexWhere(
-            (ep) => ep.id == item.id,
-          );
-          final nextEpisode =
-              (currentIndex >= 0 &&
-                  currentIndex < viewModel.episodes.length - 1)
-              ? viewModel.episodes[currentIndex + 1]
-              : null;
-          if (nextEpisode != null) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.nextEpisode,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color:
-                          ThemeRegistry.active.id == ThemeRegistry.neonPulseId
-                          ? AppColorScheme.onSurface
-                          : Colors.white,
-                      fontWeight: FontWeight.bold,
-                      shadows: _textShadows,
-                      fontSize: _isCompact(context) ? 17 : null,
-                    ),
-                  ),
-                  _NextUpCard(
-                    episode: nextEpisode,
-                    imageApi: viewModel.imageApi,
-                  ),
-                ],
+      if (nextEpisode != null) ...[
+        Padding(
+          padding: const EdgeInsets.only(top: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.nextEpisode,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: ThemeRegistry.active.id == ThemeRegistry.neonPulseId
+                      ? AppColorScheme.onSurface
+                      : Colors.white,
+                  fontWeight: FontWeight.bold,
+                  shadows: _textShadows,
+                  fontSize: _isCompact(context) ? 17 : null,
+                ),
               ),
-            );
-          }
-          return const SizedBox.shrink();
-        }(),
+              _NextUpCard(
+                episode: nextEpisode,
+                imageApi: viewModel.imageApi,
+                focusNode: nextEpisodeFocusNode,
+                onKeyEvent: (event) {
+                  if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+                    return KeyEventResult.ignored;
+                  }
+                  if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                    return _requestSectionFocus(chapterFeatureLastNode);
+                  }
+                  if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                    return _requestSectionFocus(episodesFocusNode);
+                  }
+                  return KeyEventResult.ignored;
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+      if (hasSeasonEpisodes) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.moreFromThisSeason,
@@ -1224,13 +1285,14 @@ class _DetailContentState extends State<_DetailContent> {
             scrollController: ctrl,
             firstItemFocusNode: episodesFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
-              upTarget: chapterFeatureLastNode,
+              upTarget: nextEpisodeFocusNode ?? chapterFeatureLastNode,
               downTarget: castFocusNode ?? similarFocusNode,
+              itemCount: viewModel.episodes.length,
             ),
           ),
         ),
       ],
-      if (viewModel.actors.isNotEmpty) ...[
+      if (hasCast) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.castAndCrew,
@@ -1247,13 +1309,17 @@ class _DetailContentState extends State<_DetailContent> {
             scrollController: ctrl,
             firstItemFocusNode: castFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
-              upTarget: episodesFocusNode ?? chapterFeatureLastNode,
+              upTarget:
+                  nextEpisodeFocusNode ??
+                  episodesFocusNode ??
+                  chapterFeatureLastNode,
               downTarget: similarFocusNode,
+              itemCount: viewModel.actors.length,
             ),
           ),
         ),
       ],
-      if (viewModel.similar.isNotEmpty) ...[
+      if (hasSimilar) ...[
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.moreLikeThis,
@@ -1272,6 +1338,7 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget:
                   castFocusNode ?? episodesFocusNode ?? chapterFeatureLastNode,
+              itemCount: viewModel.similar.length,
             ),
           ),
         ),
@@ -1340,6 +1407,7 @@ class _DetailContentState extends State<_DetailContent> {
             firstItemFocusNode: _firstChapterFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               downTarget: chapterDownTarget,
+              itemCount: item.chapters.length,
             ),
           ),
         ),
@@ -1357,6 +1425,7 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: featureUpTarget,
               downTarget: nextSectionFocusNode,
+              itemCount: viewModel.features.length,
             ),
           ),
         ),
@@ -1409,6 +1478,7 @@ class _DetailContentState extends State<_DetailContent> {
             firstFocusNode: moviesFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               downTarget: seriesFocusNode,
+              itemCount: movies.length,
             ),
           ),
         ),
@@ -1425,6 +1495,7 @@ class _DetailContentState extends State<_DetailContent> {
             firstFocusNode: seriesFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: moviesFocusNode,
+              itemCount: series.length,
             ),
           ),
         ),
@@ -1475,6 +1546,7 @@ class _DetailContentState extends State<_DetailContent> {
             firstItemFocusNode: albumsFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               downTarget: similarFocusNode,
+              itemCount: viewModel.albums.length,
             ),
           ),
         ),
@@ -1491,6 +1563,7 @@ class _DetailContentState extends State<_DetailContent> {
             firstItemFocusNode: similarFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: albumsFocusNode,
+              itemCount: viewModel.similar.length,
             ),
           ),
         ),
@@ -1833,6 +1906,7 @@ class _DetailContentState extends State<_DetailContent> {
             firstItemFocusNode: moviesFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               downTarget: seriesFocusNode ?? otherFocusNode ?? castFocusNode,
+              itemCount: movies.length,
             ),
           ),
         ),
@@ -1850,6 +1924,7 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: moviesFocusNode,
               downTarget: otherFocusNode ?? castFocusNode,
+              itemCount: series.length,
             ),
           ),
         ),
@@ -1867,6 +1942,7 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: seriesFocusNode ?? moviesFocusNode,
               downTarget: castFocusNode,
+              itemCount: other.length,
             ),
           ),
         ),
@@ -1889,6 +1965,7 @@ class _DetailContentState extends State<_DetailContent> {
             firstItemFocusNode: castFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               upTarget: otherFocusNode ?? seriesFocusNode ?? moviesFocusNode,
+              itemCount: viewModel.actors.length,
             ),
           ),
         ),
@@ -7319,8 +7396,15 @@ class _EpisodeListCardState extends State<_EpisodeListCard>
 class _NextUpCard extends StatefulWidget {
   final AggregatedItem episode;
   final ImageApi imageApi;
+  final FocusNode? focusNode;
+  final KeyEventResult Function(KeyEvent event)? onKeyEvent;
 
-  const _NextUpCard({required this.episode, required this.imageApi});
+  const _NextUpCard({
+    required this.episode,
+    required this.imageApi,
+    this.focusNode,
+    this.onKeyEvent,
+  });
 
   @override
   State<_NextUpCard> createState() => _NextUpCardState();
@@ -7352,8 +7436,13 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
       onEnter: (_) => setHovered(true),
       onExit: (_) => setHovered(false),
       child: Focus(
+        focusNode: widget.focusNode,
         onFocusChange: (focused) => setFocused(focused),
         onKeyEvent: (_, event) {
+          final customResult = widget.onKeyEvent?.call(event);
+          if (customResult != null && customResult != KeyEventResult.ignored) {
+            return customResult;
+          }
           if (isActivateKey(event)) {
             context.push(
               Destinations.item(episode.id, serverId: episode.serverId),
