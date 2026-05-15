@@ -25,6 +25,8 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
   List<AggregatedLibrary>? _libraries;
   UserConfiguration? _config;
   bool _isLoading = true;
+  Future<void> _saveQueue = Future.value();
+  int _lastQueuedOpId = 0;
 
   @override
   void initState() {
@@ -51,9 +53,9 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
   }
 
   Future<void> _toggleExclude(String libraryId, bool hidden,
-      {required bool isLatest}) async {
+      {required bool isLatest}) {
     final config = _config;
-    if (config == null) return;
+    if (config == null) return Future.value();
 
     final source =
         isLatest ? config.latestItemsExcludes : config.myMediaExcludes;
@@ -67,14 +69,21 @@ class _LibraryVisibilityScreenState extends State<LibraryVisibilityScreen> {
     final updated = isLatest
         ? config.copyWith(latestItemsExcludes: excludes)
         : config.copyWith(myMediaExcludes: excludes);
+    final opId = ++_lastQueuedOpId;
     setState(() => _config = updated);
-    try {
-      await _viewsRepo.updateUserConfiguration(updated);
-      requestHomeRefreshAfterNavigation();
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _config = config);
-    }
+
+    // Queue writes to preserve toggle order and prevent stale responses
+    // from undoing a later user action.
+    _saveQueue = _saveQueue.then((_) async {
+      try {
+        await _viewsRepo.updateUserConfiguration(updated);
+        requestHomeRefreshAfterNavigation();
+      } catch (_) {
+        if (!mounted || opId != _lastQueuedOpId) return;
+        setState(() => _config = config);
+      }
+    });
+    return _saveQueue;
   }
 
   @override
