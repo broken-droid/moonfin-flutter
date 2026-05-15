@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin/ui/widgets/focus/focusable_wrapper.dart';
 import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart';
 
@@ -441,6 +442,7 @@ class _FocusableTile extends StatefulWidget {
 
 class _FocusableTileState extends State<_FocusableTile> {
   bool _focused = false;
+
   bool get _isMoonfin => ThemeRegistry.active.id == ThemeRegistry.moonfinId;
 
   Color _tileIdleColor() {
@@ -452,28 +454,32 @@ class _FocusableTileState extends State<_FocusableTile> {
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(12);
-    return Material(
-      color: _focused ? _kAccent.withValues(alpha: 0.18) : _tileIdleColor(),
-      borderRadius: radius,
-      child: InkWell(
-        borderRadius: radius,
-        focusColor: _kAccent.withValues(alpha: 0.2),
-        hoverColor: _kAccent.withValues(alpha: 0.12),
-        onFocusChange: (f) => setState(() => _focused = f),
-        onTap: widget.onTap,
-        onLongPress: widget.onLongPress,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          decoration: BoxDecoration(
-            borderRadius: radius,
-            border: Border.all(
-              color: _focused ? _kAccent : Colors.transparent,
-              width: 2,
-            ),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: widget.child,
+
+    return FocusableWrapper(
+      onSelect: widget.onTap,
+      onLongPress: widget.onLongPress,
+      enableLongPress: widget.onLongPress != null,
+
+      onFocusChange: (hasFocus) {
+        setState(() => _focused = hasFocus);
+      },
+
+      focusColor: _focused
+          ? _kAccent.withValues(alpha: 0.2)
+          : Colors.transparent,
+
+      useBackgroundFocus: true,
+      borderRadius: 12,
+
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          color: _focused
+              ? _kAccent.withValues(alpha: 0.18)
+              : _tileIdleColor(),
         ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: widget.child,
       ),
     );
   }
