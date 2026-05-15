@@ -8,7 +8,7 @@
   "@signIn": {
     "description": "Sign in heading and button label"
   },
-  "connectingToServer": "Conectando a {serverName}",
+  "connectingToServer": "Conectándose a {serverName}",
   "@connectingToServer": {
     "description": "Subtitle showing which server the user is connecting to",
     "placeholders": {
@@ -58,7 +58,7 @@
       }
     }
   },
-  "quickConnectUnavailableWithStatus": "Conexión rápida no disponible ({status}): {detail}",
+  "quickConnectUnavailableWithStatus": "QuickConnect no disponible ({status}): {detail}",
   "@quickConnectUnavailableWithStatus": {
     "description": "Quick Connect error message with HTTP status info",
     "placeholders": {
@@ -82,7 +82,7 @@
   "@selectServer": {
     "description": "Button to navigate back to server selection"
   },
-  "appVersionFooter": "Moonfin versión {version}",
+  "appVersionFooter": "Versión Moonfin {version}",
   "@appVersionFooter": {
     "description": "App version shown in footer",
     "placeholders": {
@@ -119,7 +119,7 @@
   "@removeServer": {
     "description": "Dialog title for removing a saved server"
   },
-  "removeServerConfirmation": "¿Eliminar “{serverName}” de tus servidores?",
+  "removeServerConfirmation": "¿Eliminar \"{serverName}\" de sus servidores?",
   "@removeServerConfirmation": {
     "description": "Confirmation message when removing a saved server",
     "placeholders": {
@@ -349,7 +349,7 @@
   "@noGenresFound": {
     "description": "Empty state when no genres are available"
   },
-  "failedToLoadFolderError": "Error al cargar la carpeta: {error}",
+  "failedToLoadFolderError": "No se pudo cargar la carpeta: {error}",
   "@failedToLoadFolderError": {
     "description": "Error when a folder cannot be loaded",
     "placeholders": {
@@ -387,7 +387,7 @@
   "@favorites": {
     "description": "Favorites section heading and filter label"
   },
-  "totalCountItems": "{count} elementos",
+  "totalCountItems": "{count} Artículos",
   "@totalCountItems": {
     "description": "Header showing total item count",
     "placeholders": {
@@ -497,7 +497,7 @@
   "@justNow": {
     "description": "Relative time for less than a minute ago"
   },
-  "minutesAgo": "hace {count} min",
+  "minutesAgo": "{count}hace m",
   "@minutesAgo": {
     "description": "Relative time in minutes",
     "placeholders": {
@@ -506,7 +506,7 @@
       }
     }
   },
-  "hoursAgo": "hace {count} h",
+  "hoursAgo": "{count}hace h",
   "@hoursAgo": {
     "description": "Relative time in hours",
     "placeholders": {
@@ -515,7 +515,7 @@
       }
     }
   },
-  "daysAgo": "hace {count} d",
+  "daysAgo": "{count}hace d",
   "@daysAgo": {
     "description": "Relative time in days",
     "placeholders": {
@@ -679,7 +679,7 @@
       }
     }
   },
-  "percentCompleted": "{percent} % completado",
+  "percentCompleted": "{percent}% completado",
   "@percentCompleted": {
     "description": "Reading progress percentage label",
     "placeholders": {
@@ -704,7 +704,7 @@
   "@bookmarksAndProgress": {
     "description": "Panel header for bookmarks section"
   },
-  "titlesArrangedForBrowsing": "{count} títulos organizados para explorar.",
+  "titlesArrangedForBrowsing": "{count} títulos organizados para navegación de primera lectura.",
   "@titlesArrangedForBrowsing": {
     "description": "Panel subtitle showing total titles",
     "placeholders": {
@@ -753,7 +753,7 @@
   "@audiobooks": {
     "description": "Audiobooks navigation and tab label"
   },
-  "noLabelFound": "No se encontraron {label}",
+  "noLabelFound": "No se encontró {label}",
   "@noLabelFound": {
     "description": "Empty state with dynamic label like books or audiobooks",
     "placeholders": {
@@ -859,7 +859,7 @@
       }
     }
   },
-  "firstPublished": "Publicado por primera vez en {year}",
+  "firstPublished": "Publicado por primera vez {year}",
   "@firstPublished": {
     "description": "Publication year for a book",
     "placeholders": {
@@ -897,7 +897,7 @@
   "@audiobookDetails": {
     "description": "AppBar title for LibriVox audiobook detail screen"
   },
-  "authorsCountTitle": "{count} autores",
+  "authorsCountTitle": "{count} Autores",
   "@authorsCountTitle": {
     "description": "AppBar title for LibriVox authors list screen",
     "placeholders": {
@@ -1028,7 +1028,7 @@
   "@unableToLoadAuthorDetails": {
     "description": "Error message when author details fail to load"
   },
-  "published": "Publicado en {year}",
+  "published": "Publicado {year}",
   "@published": {
     "description": "Publication year for an author book tile",
     "placeholders": {
@@ -1050,7 +1050,7 @@
       }
     }
   },
-  "endsAt": "Termina a las {time}",
+  "endsAt": "Termina en {time}",
   "@endsAt": {
     "description": "Label showing when media will end",
     "placeholders": {
@@ -1204,7 +1204,7 @@
   "@deleteDownloadedAlbum": {
     "description": "Dialog title for deleting downloaded album tracks"
   },
-  "deleteDownloadedTracksMessage": "¿Eliminar las pistas descargadas de “{title}”?",
+  "deleteDownloadedTracksMessage": "¿Eliminar las pistas descargadas de \"{title}\"?",
   "@deleteDownloadedTracksMessage": {
     "description": "Confirmation message for deleting downloaded album tracks",
     "placeholders": {
@@ -1225,7 +1225,7 @@
   "@noTracksLoaded": {
     "description": "Message when no tracks are available"
   },
-  "noItemsLoaded": "No hay {itemLabel} cargados",
+  "noItemsLoaded": "No {itemLabel} cargado",
   "@noItemsLoaded": {
     "description": "Message when no items are loaded for download",
     "placeholders": {
@@ -1246,7 +1246,7 @@
       }
     }
   },
-  "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar “{name}” del servidor? Esta acción no se puede deshacer.",
+  "deleteConfirmMessage": "¿Está seguro de que desea eliminar \"{name}\" del servidor? Esta acción no se puede deshacer.",
   "@deleteConfirmMessage": {
     "description": "Confirmation message for permanently deleting an item",
     "placeholders": {
@@ -1263,7 +1263,7 @@
   "@noPlayableTrailerFound": {
     "description": "Error message when no trailer can be played"
   },
-  "unsupportedBookFormat": "Formato de libro no soportado: .{extension}",
+  "unsupportedBookFormat": "Formato de libro no admitido: .{extension}",
   "@unsupportedBookFormat": {
     "description": "Error message for unsupported book file format",
     "placeholders": {
@@ -1371,7 +1371,7 @@
   "@deleteDownloadedFiles": {
     "description": "Dialog title for deleting downloaded files"
   },
-  "deleteLocalFilesMessage": "¿Eliminar archivos locales de {typeLabel}?\n\nEsto liberará espacio de almacenamiento. Puedes volver a descargarlos más tarde.",
+  "deleteLocalFilesMessage": "¿Eliminar archivos locales para {typeLabel}?\n\nEsto liberará espacio de almacenamiento. Puedes volver a descargarlo más tarde.",
   "@deleteLocalFilesMessage": {
     "description": "Confirmation message for deleting local downloaded files",
     "placeholders": {
@@ -1413,7 +1413,7 @@
       }
     }
   },
-  "totalEpisodes": "{count} episodios",
+  "totalEpisodes": "{count} Episodios",
   "@totalEpisodes": {
     "description": "Season progress label showing total episodes",
     "placeholders": {
@@ -1422,7 +1422,7 @@
       }
     }
   },
-  "episodeProgress": "{watched} / {total}",
+  "episodeProgress": "{watched} de {total}",
   "@episodeProgress": {
     "description": "Season progress label showing watched vs total",
     "placeholders": {
@@ -1461,7 +1461,7 @@
       }
     }
   },
-  "chapterCount": "{count, plural, =1{1 capítulo} other{{count} capítulos}}",
+  "chapterCount": "{count, plural, =1{1 capitulo} other{{count} capitulos}}",
   "@chapterCount": {
     "description": "Label showing number of chapters in an audiobook",
     "placeholders": {
@@ -1470,7 +1470,7 @@
       }
     }
   },
-  "born": "Nacido/a el {date}",
+  "born": "Nacido {date}",
   "@born": {
     "description": "Person birth date label",
     "placeholders": {
@@ -1479,7 +1479,7 @@
       }
     }
   },
-  "died": "Fallecido/a el {date}",
+  "died": "Murió {date}",
   "@died": {
     "description": "Person death date label",
     "placeholders": {
@@ -1522,7 +1522,7 @@
   "@perfectMatch": {
     "description": "Label for a subtitle that is a hash match"
   },
-  "channelsCount": "{count} canales",
+  "channelsCount": "{count} can.",
   "@channelsCount": {
     "description": "Audio channel count label",
     "placeholders": {
@@ -1539,7 +1539,7 @@
   "@stereo": {
     "description": "Audio channel layout label for stereo"
   },
-  "remoteSubtitlePermissionError": "La acción {action} de subtítulos remotos requiere el permiso de gestión de subtítulos de Jellyfin para este usuario.",
+  "remoteSubtitlePermissionError": "El subtítulo remoto {action} requiere el permiso de administración de subtítulos de Jellyfin para este usuario.",
   "@remoteSubtitlePermissionError": {
     "description": "Error message when user lacks subtitle management permission",
     "placeholders": {
@@ -1548,7 +1548,7 @@
       }
     }
   },
-  "remoteSubtitleNotFoundError": "No se pudo encontrar este elemento en el servidor para la acción {action} de subtítulos remotos.",
+  "remoteSubtitleNotFoundError": "Este elemento no se pudo encontrar en el servidor para el subtítulo remoto {action}.",
   "@remoteSubtitleNotFoundError": {
     "description": "Error message when item not found for subtitle operation",
     "placeholders": {
@@ -1557,7 +1557,7 @@
       }
     }
   },
-  "remoteSubtitleDetailError": "Acción {action} de subtítulos remotos fallida: {detail}",
+  "remoteSubtitleDetailError": "Subtítulo remoto {action} falló: {detail}",
   "@remoteSubtitleDetailError": {
     "description": "Error message with detail for subtitle operation",
     "placeholders": {
@@ -1569,7 +1569,7 @@
       }
     }
   },
-  "remoteSubtitleHttpError": "Acción {action} de subtítulos remotos fallida (HTTP {status}).",
+  "remoteSubtitleHttpError": "Error de subtítulo remoto {action} (HTTP {status}).",
   "@remoteSubtitleHttpError": {
     "description": "Error message with HTTP status for subtitle operation",
     "placeholders": {
@@ -1581,7 +1581,7 @@
       }
     }
   },
-  "remoteSubtitleGenericError": "No se pudieron {action} los subtítulos remotos.",
+  "remoteSubtitleGenericError": "No se pudieron obtener {action} subtítulos remotos.",
   "@remoteSubtitleGenericError": {
     "description": "Generic error message for subtitle operation",
     "placeholders": {
@@ -1590,7 +1590,7 @@
       }
     }
   },
-  "deleteSeriesFiles": "todos los episodios descargados de “{name}”",
+  "deleteSeriesFiles": "todos los episodios descargados para \"{name}\"",
   "@deleteSeriesFiles": {
     "description": "Type label for series file deletion",
     "placeholders": {
@@ -1619,7 +1619,7 @@
   "@playbackFailedForTrailer": {
     "description": "Error when trailer playback fails"
   },
-  "photoCountOf": "{current} / {total}",
+  "photoCountOf": "{current} de {total}",
   "@photoCountOf": {
     "description": "Photo counter showing current and total",
     "placeholders": {
@@ -1635,7 +1635,7 @@
   "@castingUnavailableOffline": {
     "description": "Snackbar message when casting is unavailable offline"
   },
-  "castActionFailed": "Acción de {label} fallida: {error}",
+  "castActionFailed": "{label} acción fallida: {error}",
   "@castActionFailed": {
     "description": "Error when a cast action fails",
     "placeholders": {
@@ -1647,7 +1647,7 @@
       }
     }
   },
-  "failedToSetCastVolume": "Error al establecer el volumen de transmisión: {error}",
+  "failedToSetCastVolume": "No se pudo configurar el volumen de transmisión: {error}",
   "@failedToSetCastVolume": {
     "description": "Error when setting cast volume fails",
     "placeholders": {
@@ -1656,7 +1656,7 @@
       }
     }
   },
-  "castControlsTitle": "Controles de {label}",
+  "castControlsTitle": "{label} Controles",
   "@castControlsTitle": {
     "description": "Title for cast controls dialog",
     "placeholders": {
@@ -1736,7 +1736,7 @@
   "@off": {
     "description": "Label for subtitle off option"
   },
-  "streamTypeFallback": "{streamType} {number}",
+  "streamTypeFallback": "{streamType} n.o {number}",
   "@streamTypeFallback": {
     "description": "Fallback label for unnamed audio or subtitle stream",
     "placeholders": {
@@ -1869,7 +1869,7 @@
   "@embedded": {
     "description": "Subtitle type label for embedded subtitles"
   },
-  "castSessionError": "Error de sesión de {protocol}",
+  "castSessionError": "{protocol} error de sesión",
   "@castSessionError": {
     "description": "Fallback error message for cast session errors",
     "placeholders": {
@@ -1878,7 +1878,7 @@
       }
     }
   },
-  "failedToLoadBookDetails": "Error al cargar los detalles del libro: {error}",
+  "failedToLoadBookDetails": "No se pudieron cargar los detalles del libro: {error}",
   "@failedToLoadBookDetails": {
     "description": "Error when loading book details fails",
     "placeholders": {
@@ -1891,7 +1891,7 @@
   "@epubUnavailableOnPlatform": {
     "description": "Fallback message when EPUB cannot render on current platform"
   },
-  "formatCannotRenderInApp": "Este formato (.{extension}) aún no se puede visualizar en la app.",
+  "formatCannotRenderInApp": "Este formato (.{extension}) aún no se puede representar en la aplicación.",
   "@formatCannotRenderInApp": {
     "description": "Fallback message for unsupported document format",
     "placeholders": {
@@ -1908,7 +1908,7 @@
   "@couldNotOpenExternalViewer": {
     "description": "Error when external viewer fails to open"
   },
-  "failedToOpenInAppReader": "Error al abrir el lector integrado: {error}",
+  "failedToOpenInAppReader": "No se pudo abrir el lector en la aplicación: {error}",
   "@failedToOpenInAppReader": {
     "description": "Error when in-app reader fails to open",
     "placeholders": {
@@ -1969,7 +1969,7 @@
       }
     }
   },
-  "percentRead": "{percent} % leído",
+  "percentRead": "{percent}% leído",
   "@percentRead": {
     "description": "Chip label showing reading progress",
     "placeholders": {
@@ -2035,7 +2035,7 @@
   "@markedAsUnread": {
     "description": "Snackbar confirming item marked as unread"
   },
-  "failedToUpdateReadState": "Error al actualizar el estado de lectura: {error}",
+  "failedToUpdateReadState": "No se pudo actualizar el estado de lectura: {error}",
   "@failedToUpdateReadState": {
     "description": "Error when marking read/unread fails",
     "placeholders": {
@@ -2080,7 +2080,7 @@
   "@readerFallbackModeActive": {
     "description": "Title for fallback reader mode"
   },
-  "platformCannotHostDocumentEngine": "Esta plataforma no puede alojar el motor de documentos incrustado para archivos {extension}.",
+  "platformCannotHostDocumentEngine": "Esta plataforma no puede alojar el motor de documentos integrado para archivos {extension}.",
   "@platformCannotHostDocumentEngine": {
     "description": "Fallback description when platform lacks document engine",
     "placeholders": {
@@ -2133,7 +2133,7 @@
   "@guideTimeline": {
     "description": "Section title for the TV guide timeline"
   },
-  "failedToLoadGuide": "Error al cargar la guía: {error}",
+  "failedToLoadGuide": "No se pudo cargar la guía: {error}",
   "@failedToLoadGuide": {
     "description": "Error when guide data fails to load",
     "placeholders": {
@@ -2182,7 +2182,7 @@
   "@close": {
     "description": "Button label to close a dialog"
   },
-  "failedToPlayChannel": "Error al reproducir {name}",
+  "failedToPlayChannel": "No se pudo reproducir {name}",
   "@failedToPlayChannel": {
     "description": "Error when live TV channel playback fails",
     "placeholders": {
@@ -2219,7 +2219,7 @@
   "@cancelRecording": {
     "description": "Dialog title for cancelling a recording"
   },
-  "cancelScheduledRecordingOf": "¿Cancelar la grabación programada de “{name}”?",
+  "cancelScheduledRecordingOf": "¿Cancelar la grabación programada de \"{name}\"?",
   "@cancelScheduledRecordingOf": {
     "description": "Confirmation message for cancelling a scheduled recording",
     "placeholders": {
@@ -2256,7 +2256,7 @@
   "@cancelSeriesRecordingQuestion": {
     "description": "Dialog title for cancelling a series recording"
   },
-  "stopRecordingName": "¿Detener la grabación de “{name}”?",
+  "stopRecordingName": "¿Dejar de grabar \"{name}\"?",
   "@stopRecordingName": {
     "description": "Confirmation message for stopping a series recording",
     "placeholders": {
@@ -2277,7 +2277,7 @@
   "@searchEllipsis": {
     "description": "Search hint placeholder"
   },
-  "noResultsForQuery": "Sin resultados para “{query}”",
+  "noResultsForQuery": "No hay resultados para \"{query}\"",
   "@noResultsForQuery": {
     "description": "Shown when search returns no results",
     "placeholders": {
@@ -2286,7 +2286,7 @@
       }
     }
   },
-  "searchFailedError": "Error en la búsqueda: {error}",
+  "searchFailedError": "La búsqueda falló: {error}",
   "@searchFailedError": {
     "description": "Shown when search encounters an error",
     "placeholders": {
@@ -2331,7 +2331,7 @@
   "@deleteDownload": {
     "description": "Dialog title for deleting a download"
   },
-  "removeItemAndFiles": "¿Eliminar “{name}” y sus archivos?",
+  "removeItemAndFiles": "¿Eliminar \"{name}\" y sus archivos?",
   "@removeItemAndFiles": {
     "description": "Confirmation to delete a downloaded item and its files",
     "placeholders": {
@@ -2357,7 +2357,7 @@
   "@playAlbum": {
     "description": "Button to play an album"
   },
-  "failedToLoadAlbum": "Error al cargar el álbum: {error}",
+  "failedToLoadAlbum": "No se pudo cargar el álbum: {error}",
   "@failedToLoadAlbum": {
     "description": "Error when loading an album fails",
     "placeholders": {
@@ -2391,7 +2391,7 @@
   "@deleteEpisode": {
     "description": "Dialog title for deleting an episode"
   },
-  "removeName": "¿Eliminar “{name}”?",
+  "removeName": "¿Eliminar \"{name}\"?",
   "@removeName": {
     "description": "Confirmation to remove an item by name",
     "placeholders": {
@@ -2400,7 +2400,7 @@
       }
     }
   },
-  "durationMinutes": "{minutes} min",
+  "durationMinutes": "{minutes} mín.",
   "@durationMinutes": {
     "description": "Duration in minutes",
     "placeholders": {
@@ -2459,7 +2459,7 @@
   "@deleteSeason": {
     "description": "Dialog title for deleting a season"
   },
-  "deleteAllEpisodesInSeason": "¿Eliminar todos los episodios descargados de {season}?",
+  "deleteAllEpisodesInSeason": "¿Eliminar todos los episodios descargados en {season}?",
   "@deleteAllEpisodesInSeason": {
     "description": "Confirmation to delete all episodes in a season",
     "placeholders": {
@@ -2534,7 +2534,7 @@
   "@database": {
     "description": "Storage breakdown label for database"
   },
-  "ofStorageLimit": "de {limit} de límite",
+  "ofStorageLimit": "del límite {limit}",
   "@ofStorageLimit": {
     "description": "Text showing storage used of total limit",
     "placeholders": {
@@ -2727,6 +2727,10 @@
   "seasonalEffects": "Efectos estacionales",
   "@seasonalEffects": {
     "description": "Setting for seasonal visual effects"
+  },
+  "seasonalEffectsDescription": "Efectos visuales y decoraciones de temporada",
+  "@seasonalEffectsDescription": {
+    "description": "Description for seasonal effects settings"
   },
   "snow": "Nieve",
   "@snow": {
@@ -3010,7 +3014,7 @@
   "@nextUpTimeout": {
     "description": "Setting for next up timeout"
   },
-  "secondsValue": "{value} segundos",
+  "secondsValue": "{value} s",
   "@secondsValue": {
     "description": "Seconds value display",
     "placeholders": {
@@ -3031,7 +3035,7 @@
   "@stillWatchingPrompt": {
     "description": "Setting for still watching prompt"
   },
-  "afterEpisodesAndHours": "Después de {episodes} episodios / {hours} h",
+  "afterEpisodesAndHours": "Después de {episodes} episodios / {hours}h",
   "@afterEpisodesAndHours": {
     "description": "Still watching prompt interval",
     "placeholders": {
@@ -3183,7 +3187,7 @@
   "@tv": {
     "description": "Profile: TV"
   },
-  "loadedProfileSettings": "Ajustes del perfil {profile} cargados.",
+  "loadedProfileSettings": "Se cargó la configuración del perfil {profile}.",
   "@loadedProfileSettings": {
     "description": "Message when profile settings are loaded",
     "placeholders": {
@@ -3192,7 +3196,7 @@
       }
     }
   },
-  "failedToLoadProfileSettings": "Error al cargar los ajustes del perfil {profile}.",
+  "failedToLoadProfileSettings": "No se pudo cargar la configuración del perfil {profile}.",
   "@failedToLoadProfileSettings": {
     "description": "Error when profile settings fail to load",
     "placeholders": {
@@ -3201,7 +3205,7 @@
       }
     }
   },
-  "syncedSettingsToProfile": "Ajustes locales sincronizados con el perfil {profile}.",
+  "syncedSettingsToProfile": "Configuración local sincronizada con el perfil {profile}.",
   "@syncedSettingsToProfile": {
     "description": "Message when settings are synced to a profile",
     "placeholders": {
@@ -3486,7 +3490,7 @@
   "@selectAll": {
     "description": "Button to select all items"
   },
-  "itemsSelected": "{count} seleccionados",
+  "itemsSelected": "{count} seleccionado",
   "@itemsSelected": {
     "description": "Number of selected items",
     "placeholders": {
@@ -3498,6 +3502,26 @@
   "mediaBar": "Barra de medios",
   "@mediaBar": {
     "description": "Media bar section title"
+  },
+  "mediaSources": "Fuentes multimedia",
+  "@mediaSources": {
+    "description": "Section heading for media source options"
+  },
+  "behavior": "Comportamiento",
+  "@behavior": {
+    "description": "Section heading for behavior options"
+  },
+  "seconds": "segundos",
+  "@seconds": {
+    "description": "Time unit label in seconds"
+  },
+  "localPreviews": "Vistas previas locales",
+  "@localPreviews": {
+    "description": "Local previews settings screen title"
+  },
+  "localPreviewsDescription": "Configura vistas previas de tráilers, medios y audio.",
+  "@localPreviewsDescription": {
+    "description": "Description for local previews settings"
   },
   "mediaBarMode": "Estilo de la barra de medios",
   "@mediaBarMode": {
@@ -3579,9 +3603,17 @@
   "@episodePreview": {
     "description": "Setting for episode preview"
   },
+  "mediaPreview": "Vista previa de medios",
+  "@mediaPreview": {
+    "description": "Setting for media preview"
+  },
   "episodePreviewDescription": "Reproducir una vista previa de 30 segundos en tarjetas enfocadas, con el cursor encima o pulsación larga",
   "@episodePreviewDescription": {
     "description": "Description for episode preview"
+  },
+  "mediaPreviewDescription": "Reproducir una vista previa de 30 segundos en tarjetas enfocadas, con el cursor encima o pulsación larga",
+  "@mediaPreviewDescription": {
+    "description": "Description for media preview"
   },
   "previewAudio": "Audio de vista previa",
   "@previewAudio": {
@@ -3767,7 +3799,7 @@
   "@timeout": {
     "description": "Setting for timeout"
   },
-  "minutesShort": "{minutes} min",
+  "minutesShort": "{minutes} mín.",
   "@minutesShort": {
     "description": "Minutes duration short format",
     "placeholders": {
@@ -3788,7 +3820,7 @@
   "@any": {
     "description": "Option: any"
   },
-  "agePlusValue": "{age}+",
+  "agePlusValue": "{age} anos o mas",
   "@agePlusValue": {
     "description": "Age rating display",
     "placeholders": {
@@ -3921,7 +3953,7 @@
   "@pluginNotDetectedDescription": {
     "description": "Description when plugin is not detected"
   },
-  "pluginStatusVersion": "{status}",
+  "pluginStatusVersion": "{status}\nVersión: {version}",
   "@pluginStatusVersion": {
     "description": "Plugin status with version",
     "placeholders": {
@@ -4021,7 +4053,7 @@
   "@hideAdultContent": {
     "description": "Description for NSFW filter"
   },
-  "loggedInAs": "Conectado como: {username}",
+  "loggedInAs": "Iniciado sesión como: {username}",
   "@loggedInAs": {
     "description": "Label showing logged in username",
     "placeholders": {
@@ -4160,7 +4192,7 @@
   "@mdbListTmdbRatingSources": {
     "description": "Ratings settings subtitle"
   },
-  "gbValue": "{value}GB",
+  "gbValue": "{value} Gb",
   "@gbValue": {
     "description": "Gigabyte value display",
     "placeholders": {
@@ -4189,7 +4221,7 @@
   "@seerrRequestedStatus": {
     "description": "Seerr media status when item has been requested"
   },
-  "itemsCount": "{count} elementos",
+  "itemsCount": "{count} Artículos",
   "@itemsCount": {
     "description": "Status bar item count",
     "placeholders": {
@@ -4243,7 +4275,7 @@
   "@recommendations": {
     "description": "Section title for recommended media"
   },
-  "cancelRequestForTitle": "¿Cancelar solicitud de “{title}”?",
+  "cancelRequestForTitle": "¿Cancelar solicitud para \"{title}\"?",
   "@cancelRequestForTitle": {
     "description": "Confirmation message for single request cancellation",
     "placeholders": {
@@ -4252,7 +4284,7 @@
       }
     }
   },
-  "cancelCountRequestsForTitle": "¿Cancelar {count} solicitudes de “{title}”?",
+  "cancelCountRequestsForTitle": "¿Cancelar solicitudes de {count} para \"{title}\"?",
   "@cancelCountRequestsForTitle": {
     "description": "Confirmation message for multiple request cancellation",
     "placeholders": {
@@ -4294,7 +4326,7 @@
       }
     }
   },
-  "seasonsCount": "{count} {label}",
+  "seasonsCount": "{label}: {count}",
   "@seasonsCount": {
     "description": "Number of seasons label",
     "placeholders": {
@@ -4465,7 +4497,7 @@
   "adminMediaOverview": "Vista general de medios",
   "adminMediaTotalsError": "No se pudieron cargar los totales de medios del servidor.",
   "adminMediaOverviewSubtitle": "Un resumen rápido de cuánto contenido hay en este servidor.",
-  "adminPluginUpdatesAvailable": "Actualizaciones de plugins disponibles: {count}",
+  "adminPluginUpdatesAvailable": "Actualizaciones de complementos disponibles: {count}",
   "@adminPluginUpdatesAvailable": {
     "placeholders": {
       "count": {
@@ -4473,7 +4505,7 @@
       }
     }
   },
-  "adminPluginsRequiringRestart": "Plugins que requieren reinicio: {count}",
+  "adminPluginsRequiringRestart": "Complementos que requieren reinicio: {count}",
   "@adminPluginsRequiringRestart": {
     "placeholders": {
       "count": {
@@ -4515,7 +4547,7 @@
   "adminShutdownServer": "Apagar servidor",
   "adminScanLibraries": "Escanear bibliotecas",
   "adminLibraryScanStarted": "Escaneo de bibliotecas iniciado",
-  "errorGeneric": "Error: {error}",
+  "errorGeneric": "Error general: {error}",
   "@errorGeneric": {
     "placeholders": {
       "error": {
@@ -4530,7 +4562,7 @@
   "adminNoActiveSessions": "No hay sesiones activas",
   "adminRecentActivity": "Actividad reciente",
   "adminNoRecentActivity": "No hay actividad reciente",
-  "adminCommandFailed": "Comando fallido: {error}",
+  "adminCommandFailed": "El comando falló: {error}",
   "@adminCommandFailed": {
     "placeholders": {
       "error": {
@@ -4557,7 +4589,7 @@
   "direct": "Directo",
   "adminDisconnect": "Desconectar",
   "adminClearDates": "Borrar fechas",
-  "adminActivityLoadFailed": "Error al cargar el registro de actividad: {error}",
+  "adminActivityLoadFailed": "No se pudo cargar el registro de actividad: {error}",
   "@adminActivityLoadFailed": {
     "placeholders": {
       "error": {
@@ -4569,7 +4601,7 @@
   "adminEditDeviceName": "Editar nombre del dispositivo",
   "adminCustomName": "Nombre personalizado",
   "adminDeviceNameUpdated": "Nombre del dispositivo actualizado",
-  "adminDeviceUpdateFailed": "Error al actualizar el dispositivo: {error}",
+  "adminDeviceUpdateFailed": "No se pudo actualizar el dispositivo: {error}",
   "@adminDeviceUpdateFailed": {
     "placeholders": {
       "error": {
@@ -4579,7 +4611,7 @@
   },
   "adminDeleteDevice": "Eliminar dispositivo",
   "adminDeviceDeleted": "Dispositivo eliminado",
-  "adminDeviceDeleteFailed": "Error al eliminar el dispositivo: {error}",
+  "adminDeviceDeleteFailed": "No se pudo eliminar el dispositivo: {error}",
   "@adminDeviceDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4595,7 +4627,7 @@
   "adminNoLibraries": "No hay bibliotecas configuradas",
   "adminScanAllLibraries": "Escanear todas las bibliotecas",
   "adminAddLibrary": "Añadir biblioteca",
-  "adminScanFailed": "Error al iniciar el escaneo: {error}",
+  "adminScanFailed": "No se pudo iniciar el escaneo: {error}",
   "@adminScanFailed": {
     "placeholders": {
       "error": {
@@ -4605,7 +4637,7 @@
   },
   "adminRenameLibrary": "Renombrar biblioteca",
   "adminNewName": "Nuevo nombre",
-  "adminLibraryRenamed": "Biblioteca renombrada a “{name}”",
+  "adminLibraryRenamed": "Biblioteca renombrada a \"{name}\"",
   "@adminLibraryRenamed": {
     "placeholders": {
       "name": {
@@ -4613,7 +4645,7 @@
       }
     }
   },
-  "adminRenameFailed": "Error al renombrar: {error}",
+  "adminRenameFailed": "No se pudo cambiar el nombre: {error}",
   "@adminRenameFailed": {
     "placeholders": {
       "error": {
@@ -4622,7 +4654,7 @@
     }
   },
   "adminDeleteLibrary": "Eliminar biblioteca",
-  "adminLibraryDeleted": "Biblioteca “{name}” eliminada",
+  "adminLibraryDeleted": "Biblioteca \"{name}\" eliminada",
   "@adminLibraryDeleted": {
     "placeholders": {
       "name": {
@@ -4630,7 +4662,7 @@
       }
     }
   },
-  "adminLibraryDeleteFailed": "Error al eliminar la biblioteca: {error}",
+  "adminLibraryDeleteFailed": "No se pudo eliminar la biblioteca: {error}",
   "@adminLibraryDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4638,7 +4670,7 @@
       }
     }
   },
-  "adminAddPathFailed": "Error al añadir la ruta: {error}",
+  "adminAddPathFailed": "No se pudo agregar la ruta: {error}",
   "@adminAddPathFailed": {
     "placeholders": {
       "error": {
@@ -4647,7 +4679,7 @@
     }
   },
   "adminRemovePath": "Eliminar ruta",
-  "adminRemovePathConfirm": "¿Eliminar “{path}” de esta biblioteca?",
+  "adminRemovePathConfirm": "¿Eliminar \"{path}\" de esta biblioteca?",
   "@adminRemovePathConfirm": {
     "placeholders": {
       "path": {
@@ -4655,7 +4687,7 @@
       }
     }
   },
-  "adminRemovePathFailed": "Error al eliminar la ruta: {error}",
+  "adminRemovePathFailed": "No se pudo eliminar la ruta: {error}",
   "@adminRemovePathFailed": {
     "placeholders": {
       "error": {
@@ -4664,7 +4696,7 @@
     }
   },
   "adminLibraryOptionsSaved": "Opciones de biblioteca guardadas",
-  "adminLibraryOptionsSaveFailed": "Error al guardar las opciones: {error}",
+  "adminLibraryOptionsSaveFailed": "No se pudieron guardar las opciones: {error}",
   "@adminLibraryOptionsSaveFailed": {
     "placeholders": {
       "error": {
@@ -4682,7 +4714,7 @@
   "adminMetadataCountryCode": "Código de país de metadatos",
   "adminMetadataCountryHint": "p. ej. US, DE, FR",
   "adminLibraryNameRequired": "El nombre de la biblioteca es obligatorio",
-  "adminLibraryCreateFailed": "Error al crear la biblioteca: {error}",
+  "adminLibraryCreateFailed": "No se pudo crear la biblioteca: {error}",
   "@adminLibraryCreateFailed": {
     "placeholders": {
       "error": {
@@ -4697,7 +4729,7 @@
   "paths": "Rutas:",
   "adminDisableUser": "Deshabilitar usuario",
   "adminEnableUser": "Habilitar usuario",
-  "adminDisableUserConfirm": "¿Deshabilitar a {name}? No podrá iniciar sesión.",
+  "adminDisableUserConfirm": "¿Desactivar {name}? No podrán iniciar sesión.",
   "@adminDisableUserConfirm": {
     "placeholders": {
       "name": {
@@ -4705,7 +4737,7 @@
       }
     }
   },
-  "adminEnableUserConfirm": "¿Habilitar a {name}? Podrá iniciar sesión de nuevo.",
+  "adminEnableUserConfirm": "¿Habilitar {name}? Podrán iniciar sesión nuevamente.",
   "@adminEnableUserConfirm": {
     "placeholders": {
       "name": {
@@ -4713,7 +4745,7 @@
       }
     }
   },
-  "adminUserDisabled": "Usuario “{name}” deshabilitado",
+  "adminUserDisabled": "Usuario \"{name}\" deshabilitado",
   "@adminUserDisabled": {
     "placeholders": {
       "name": {
@@ -4721,7 +4753,7 @@
       }
     }
   },
-  "adminUserEnabled": "Usuario “{name}” habilitado",
+  "adminUserEnabled": "Usuario \"{name}\" habilitado",
   "@adminUserEnabled": {
     "placeholders": {
       "name": {
@@ -4729,7 +4761,7 @@
       }
     }
   },
-  "adminUserPolicyUpdateFailed": "Error al actualizar la política del usuario: {error}",
+  "adminUserPolicyUpdateFailed": "No se pudo actualizar la política de usuario: {error}",
   "@adminUserPolicyUpdateFailed": {
     "placeholders": {
       "error": {
@@ -4741,7 +4773,7 @@
   "adminSearchUsers": "Buscar usuarios",
   "adminEditUser": "Editar usuario",
   "adminAddUser": "Añadir usuario",
-  "adminUserCreateFailed": "Error al crear el usuario: {error}",
+  "adminUserCreateFailed": "No se pudo crear el usuario: {error}",
   "@adminUserCreateFailed": {
     "placeholders": {
       "error": {
@@ -4754,7 +4786,7 @@
   "adminUsernameRequired": "El nombre de usuario no puede estar vacío",
   "adminNoProfileChanges": "No hay cambios de perfil que guardar",
   "adminProfileSaved": "Perfil guardado",
-  "adminSaveFailed": "Error al guardar: {error}",
+  "adminSaveFailed": "No se pudo guardar: {error}",
   "@adminSaveFailed": {
     "placeholders": {
       "error": {
@@ -4807,7 +4839,7 @@
   "adminConfirmPassword": "Confirmar contraseña",
   "adminSetPassword": "Establecer contraseña",
   "adminResetPassword": "Restablecer contraseña",
-  "adminDeleteUserConfirm": "¿Estás seguro de que quieres eliminar a {name}?",
+  "adminDeleteUserConfirm": "¿Estás seguro de que deseas eliminar {name}?",
   "@adminDeleteUserConfirm": {
     "placeholders": {
       "name": {
@@ -4815,7 +4847,7 @@
       }
     }
   },
-  "adminUserDeleted": "Usuario “{name}” eliminado",
+  "adminUserDeleted": "Usuario \"{name}\" eliminado",
   "@adminUserDeleted": {
     "placeholders": {
       "name": {
@@ -4823,7 +4855,7 @@
       }
     }
   },
-  "adminUserDeleteFailed": "Error al eliminar el usuario: {error}",
+  "adminUserDeleteFailed": "No se pudo eliminar el usuario: {error}",
   "@adminUserDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4836,7 +4868,7 @@
   "adminApiKeyCreated": "Clave API creada",
   "adminApiKeyCreatedNoToken": "Clave creada correctamente. El servidor no devolvió el token. Comprueba las claves API del servidor.",
   "adminKeyCopied": "Clave copiada al portapapeles",
-  "adminApiKeyCreateFailed": "Error al crear la clave: {error}",
+  "adminApiKeyCreateFailed": "No se pudo crear la clave: {error}",
   "@adminApiKeyCreateFailed": {
     "placeholders": {
       "error": {
@@ -4846,7 +4878,7 @@
   },
   "adminKeyTokenMissing": "Token de clave ausente en la respuesta del servidor",
   "adminRevokeApiKey": "Revocar clave API",
-  "adminRevokeKeyConfirm": "¿Revocar la clave de {name}?",
+  "adminRevokeKeyConfirm": "¿Revocar clave para {name}?",
   "@adminRevokeKeyConfirm": {
     "placeholders": {
       "name": {
@@ -4855,7 +4887,7 @@
     }
   },
   "adminApiKeyRevoked": "Clave API revocada",
-  "adminApiKeyRevokeFailed": "Error al revocar la clave: {error}",
+  "adminApiKeyRevokeFailed": "No se pudo revocar la clave: {error}",
   "@adminApiKeyRevokeFailed": {
     "placeholders": {
       "error": {
@@ -4868,7 +4900,7 @@
   "adminNoApiKeys": "No se encontraron claves API",
   "adminCreatingBackup": "Creando copia de seguridad...",
   "adminBackupCreated": "Copia de seguridad creada correctamente",
-  "adminBackupCreateFailed": "Error al crear la copia de seguridad: {error}",
+  "adminBackupCreateFailed": "No se pudo crear la copia de seguridad: {error}",
   "@adminBackupCreateFailed": {
     "placeholders": {
       "error": {
@@ -4885,7 +4917,7 @@
       }
     }
   },
-  "adminManifestLoadFailed": "Error al cargar el manifiesto: {error}",
+  "adminManifestLoadFailed": "No se pudo cargar el manifiesto: {error}",
   "@adminManifestLoadFailed": {
     "placeholders": {
       "error": {
@@ -4895,7 +4927,7 @@
   },
   "adminConfirmRestore": "Confirmar restauración",
   "adminRestoringBackup": "Restaurando copia de seguridad...",
-  "adminRestoreFailed": "Error al restaurar la copia de seguridad: {error}",
+  "adminRestoreFailed": "No se pudo restaurar la copia de seguridad: {error}",
   "@adminRestoreFailed": {
     "placeholders": {
       "error": {
@@ -4920,7 +4952,7 @@
       }
     }
   },
-  "adminFileSaveFailed": "Error al guardar el archivo: {error}",
+  "adminFileSaveFailed": "No se pudo guardar el archivo: {error}",
   "@adminFileSaveFailed": {
     "placeholders": {
       "error": {
@@ -4928,7 +4960,7 @@
       }
     }
   },
-  "adminLogFileLoadFailed": "Error al cargar {fileName}",
+  "adminLogFileLoadFailed": "No se pudo cargar {fileName}",
   "@adminLogFileLoadFailed": {
     "placeholders": {
       "fileName": {
@@ -4938,7 +4970,7 @@
   },
   "adminSearchInLog": "Buscar en el registro",
   "adminNoMatchingLines": "No hay líneas coincidentes",
-  "adminTasksLoadFailed": "Error al cargar las tareas: {error}",
+  "adminTasksLoadFailed": "No se pudieron cargar las tareas: {error}",
   "@adminTasksLoadFailed": {
     "placeholders": {
       "error": {
@@ -4948,7 +4980,7 @@
   },
   "adminNoScheduledTasks": "No se encontraron tareas programadas",
   "adminNoTasksMatchFilter": "Ninguna tarea coincide con el filtro actual",
-  "adminTaskStartFailed": "Error al iniciar la tarea: {error}",
+  "adminTaskStartFailed": "No se pudo iniciar la tarea: {error}",
   "@adminTaskStartFailed": {
     "placeholders": {
       "error": {
@@ -4956,7 +4988,7 @@
       }
     }
   },
-  "adminTaskStopFailed": "Error al detener la tarea: {error}",
+  "adminTaskStopFailed": "No se pudo detener la tarea: {error}",
   "@adminTaskStopFailed": {
     "placeholders": {
       "error": {
@@ -4964,7 +4996,7 @@
       }
     }
   },
-  "adminTaskLoadFailed": "Error al cargar la tarea: {error}",
+  "adminTaskLoadFailed": "No se pudo cargar la tarea: {error}",
   "@adminTaskLoadFailed": {
     "placeholders": {
       "error": {
@@ -4973,7 +5005,7 @@
     }
   },
   "adminRunNow": "Ejecutar ahora",
-  "adminTriggerRemoveFailed": "Error al eliminar el disparador: {error}",
+  "adminTriggerRemoveFailed": "No se pudo eliminar el activador: {error}",
   "@adminTriggerRemoveFailed": {
     "placeholders": {
       "error": {
@@ -4981,7 +5013,7 @@
       }
     }
   },
-  "adminTriggerAddFailed": "Error al añadir el disparador: {error}",
+  "adminTriggerAddFailed": "No se pudo agregar el activador: {error}",
   "@adminTriggerAddFailed": {
     "placeholders": {
       "error": {
@@ -5006,7 +5038,7 @@
   },
   "adminDayOfWeek": "Día de la semana",
   "adminSearchPlugins": "Buscar plugins...",
-  "adminPluginToggleFailed": "Error al alternar el plugin: {error}",
+  "adminPluginToggleFailed": "No se pudo alternar el complemento: {error}",
   "@adminPluginToggleFailed": {
     "placeholders": {
       "error": {
@@ -5015,7 +5047,7 @@
     }
   },
   "adminUninstallPlugin": "Desinstalar plugin",
-  "adminUninstallPluginConfirm": "¿Estás seguro de que quieres desinstalar “{name}”?",
+  "adminUninstallPluginConfirm": "¿Está seguro de que desea desinstalar \"{name}\"?",
   "@adminUninstallPluginConfirm": {
     "placeholders": {
       "name": {
@@ -5023,7 +5055,7 @@
       }
     }
   },
-  "adminPluginUninstallFailed": "Error al desinstalar el plugin: {error}",
+  "adminPluginUninstallFailed": "No se pudo desinstalar el complemento: {error}",
   "@adminPluginUninstallFailed": {
     "placeholders": {
       "error": {
@@ -5031,7 +5063,7 @@
       }
     }
   },
-  "adminPackageInstallFailed": "Error al instalar el paquete: {error}",
+  "adminPackageInstallFailed": "No se pudo instalar el paquete: {error}",
   "@adminPackageInstallFailed": {
     "placeholders": {
       "error": {
@@ -5039,7 +5071,7 @@
       }
     }
   },
-  "adminPluginUpdateFailed": "Error al instalar la actualización: {error}",
+  "adminPluginUpdateFailed": "No se pudo instalar la actualización: {error}",
   "@adminPluginUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5047,7 +5079,7 @@
       }
     }
   },
-  "adminPluginsLoadFailed": "Error al cargar los plugins: {error}",
+  "adminPluginsLoadFailed": "No se pudieron cargar los complementos: {error}",
   "@adminPluginsLoadFailed": {
     "placeholders": {
       "error": {
@@ -5065,7 +5097,7 @@
       }
     }
   },
-  "adminCatalogLoadFailed": "Error al cargar el catálogo: {error}",
+  "adminCatalogLoadFailed": "No se pudo cargar el catálogo: {error}",
   "@adminCatalogLoadFailed": {
     "placeholders": {
       "error": {
@@ -5078,7 +5110,7 @@
   "adminExperimentalIntegration": "Integración experimental",
   "adminExperimentalWarning": "La integración de ajustes de plugins es aún experimental. Algunas páginas de ajustes pueden no mostrarse correctamente.",
   "continueAction": "Continuar",
-  "adminPluginRemoveAfterRestart": "“{name}” se eliminará tras reiniciar el servidor",
+  "adminPluginRemoveAfterRestart": "\"{name}\" se eliminará después de reiniciar el servidor",
   "@adminPluginRemoveAfterRestart": {
     "placeholders": {
       "name": {
@@ -5086,7 +5118,7 @@
       }
     }
   },
-  "adminUninstallFailed": "Error al desinstalar: {error}",
+  "adminUninstallFailed": "No se pudo desinstalar: {error}",
   "@adminUninstallFailed": {
     "placeholders": {
       "error": {
@@ -5094,7 +5126,7 @@
       }
     }
   },
-  "adminPluginUpdating": "Actualizando “{name}” a v{version}...",
+  "adminPluginUpdating": "Actualizando \"{name}\" a v{version}...",
   "@adminPluginUpdating": {
     "placeholders": {
       "name": {
@@ -5106,7 +5138,7 @@
     }
   },
   "adminMissingAuthToken": "No se pueden abrir los ajustes: falta el token de autenticación.",
-  "adminPluginLoadFailed": "Error al cargar el plugin: {error}",
+  "adminPluginLoadFailed": "No se pudo cargar el complemento: {error}",
   "@adminPluginLoadFailed": {
     "placeholders": {
       "error": {
@@ -5128,7 +5160,7 @@
   "adminRevisionHistory": "Historial de revisiones",
   "adminNoChangelog": "No hay registro de cambios disponible.",
   "adminRemoveRepository": "Eliminar repositorio",
-  "adminRemoveRepositoryConfirm": "¿Estás seguro de que quieres eliminar “{name}”?",
+  "adminRemoveRepositoryConfirm": "¿Está seguro de que desea eliminar \"{name}\"?",
   "@adminRemoveRepositoryConfirm": {
     "placeholders": {
       "name": {
@@ -5136,7 +5168,7 @@
       }
     }
   },
-  "adminRepositoriesSaveFailed": "Error al guardar los repositorios: {error}",
+  "adminRepositoriesSaveFailed": "No se pudieron guardar los repositorios: {error}",
   "@adminRepositoriesSaveFailed": {
     "placeholders": {
       "error": {
@@ -5144,7 +5176,7 @@
       }
     }
   },
-  "adminRepositoriesLoadFailed": "Error al cargar los repositorios: {error}",
+  "adminRepositoriesLoadFailed": "No se pudieron cargar los repositorios: {error}",
   "@adminRepositoriesLoadFailed": {
     "placeholders": {
       "error": {
@@ -5156,7 +5188,7 @@
   "adminRepositoryUrl": "URL del repositorio",
   "adminAddEntry": "Añadir entrada",
   "adminInvalidUrl": "URL no válida",
-  "adminPluginSettingsLoadFailed": "No se pudieron cargar los ajustes del plugin: {error}",
+  "adminPluginSettingsLoadFailed": "No se puede cargar la configuración del complemento: {error}",
   "@adminPluginSettingsLoadFailed": {
     "placeholders": {
       "error": {
@@ -5257,7 +5289,7 @@
   "blacklist": "Lista negra",
   "notSet": "No establecido",
   "adminMetadataSaved": "Metadatos guardados",
-  "adminMetadataLoadFailed": "Error al cargar los metadatos: {error}",
+  "adminMetadataLoadFailed": "No se pudieron cargar los metadatos: {error}",
   "@adminMetadataLoadFailed": {
     "placeholders": {
       "error": {
@@ -5265,7 +5297,7 @@
       }
     }
   },
-  "adminMetadataSaveFailed": "Error al guardar los metadatos: {error}",
+  "adminMetadataSaveFailed": "No se pudieron guardar los metadatos: {error}",
   "@adminMetadataSaveFailed": {
     "placeholders": {
       "error": {
@@ -5278,7 +5310,7 @@
   "adminReplaceAllMetadata": "Reemplazar todos los metadatos",
   "adminReplaceAllImages": "Reemplazar todas las imágenes",
   "adminMetadataRefreshRequested": "Actualización de metadatos solicitada",
-  "adminMetadataRefreshFailed": "Error al actualizar los metadatos: {error}",
+  "adminMetadataRefreshFailed": "No se pudieron actualizar los metadatos: {error}",
   "@adminMetadataRefreshFailed": {
     "placeholders": {
       "error": {
@@ -5290,7 +5322,7 @@
   "adminNoRemoteMatches": "No se encontraron coincidencias remotas",
   "adminRemoteResults": "Resultados remotos",
   "adminRemoteMetadataApplied": "Metadatos remotos aplicados",
-  "adminRemoteSearchFailed": "Error en la búsqueda remota: {error}",
+  "adminRemoteSearchFailed": "La búsqueda remota falló: {error}",
   "@adminRemoteSearchFailed": {
     "placeholders": {
       "error": {
@@ -5301,7 +5333,7 @@
   "adminUpdateContentType": "Actualizar tipo de contenido",
   "adminContentType": "Tipo de contenido",
   "adminContentTypeUpdated": "Tipo de contenido actualizado",
-  "adminContentTypeUpdateFailed": "Error al actualizar el tipo de contenido: {error}",
+  "adminContentTypeUpdateFailed": "No se pudo actualizar el tipo de contenido: {error}",
   "@adminContentTypeUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5312,7 +5344,7 @@
   "adminMetadataEditorLoadFailed": "Error al cargar el editor de metadatos",
   "adminNoPeopleEntries": "No hay entradas de personas",
   "adminNoExternalIds": "No hay IDs externos disponibles",
-  "adminImageUpdated": "Imagen de {imageType} actualizada",
+  "adminImageUpdated": "{imageType} imagen actualizada",
   "@adminImageUpdated": {
     "placeholders": {
       "imageType": {
@@ -5320,7 +5352,7 @@
       }
     }
   },
-  "adminImageDownloadFailed": "Error al descargar la imagen: {error}",
+  "adminImageDownloadFailed": "No se pudo descargar la imagen: {error}",
   "@adminImageDownloadFailed": {
     "placeholders": {
       "error": {
@@ -5330,7 +5362,7 @@
   },
   "adminUnsupportedImageFormat": "Formato de imagen no soportado",
   "adminImageReadFailed": "Error al leer la imagen seleccionada",
-  "adminImageUploaded": "Imagen de {imageType} subida",
+  "adminImageUploaded": "{imageType} imagen cargada",
   "@adminImageUploaded": {
     "placeholders": {
       "imageType": {
@@ -5338,7 +5370,7 @@
       }
     }
   },
-  "adminImageUploadFailed": "Error al subir la imagen: {error}",
+  "adminImageUploadFailed": "No se pudo cargar la imagen: {error}",
   "@adminImageUploadFailed": {
     "placeholders": {
       "error": {
@@ -5346,7 +5378,7 @@
       }
     }
   },
-  "adminDeleteImage": "Eliminar imagen de {imageType}",
+  "adminDeleteImage": "Eliminar imagen {imageType}",
   "@adminDeleteImage": {
     "placeholders": {
       "imageType": {
@@ -5354,7 +5386,7 @@
       }
     }
   },
-  "adminImageDeleted": "Imagen de {imageType} eliminada",
+  "adminImageDeleted": "{imageType} imagen eliminada",
   "@adminImageDeleted": {
     "placeholders": {
       "imageType": {
@@ -5362,7 +5394,7 @@
       }
     }
   },
-  "adminImageDeleteFailed": "Error al eliminar la imagen: {error}",
+  "adminImageDeleteFailed": "No se pudo eliminar la imagen: {error}",
   "@adminImageDeleteFailed": {
     "placeholders": {
       "error": {
@@ -5372,7 +5404,7 @@
   },
   "adminAllProviders": "Todos los proveedores",
   "adminNoRemoteImages": "No se encontraron imágenes remotas",
-  "adminTunerDiscoveryFailed": "Error en el descubrimiento de sintonizadores: {error}",
+  "adminTunerDiscoveryFailed": "Falló el descubrimiento del sintonizador: {error}",
   "@adminTunerDiscoveryFailed": {
     "placeholders": {
       "error": {
@@ -5386,7 +5418,7 @@
   "adminUrlPath": "URL / Ruta",
   "adminNameOptional": "Nombre (opcional)",
   "adminTunerAdded": "Sintonizador añadido",
-  "adminTunerAddFailed": "Error al añadir el sintonizador: {error}",
+  "adminTunerAddFailed": "No se pudo agregar el sintonizador: {error}",
   "@adminTunerAddFailed": {
     "placeholders": {
       "error": {
@@ -5400,7 +5432,7 @@
   "adminUsernameOptional": "Nombre de usuario (opcional)",
   "adminRefreshInterval": "Intervalo de actualización (horas)",
   "adminProviderAdded": "Proveedor añadido",
-  "adminProviderAddFailed": "Error al añadir el proveedor: {error}",
+  "adminProviderAddFailed": "No se pudo agregar el proveedor: {error}",
   "@adminProviderAddFailed": {
     "placeholders": {
       "error": {
@@ -5408,7 +5440,7 @@
       }
     }
   },
-  "adminTunerRemoveFailed": "Error al eliminar el sintonizador: {error}",
+  "adminTunerRemoveFailed": "No se pudo eliminar el sintonizador: {error}",
   "@adminTunerRemoveFailed": {
     "placeholders": {
       "error": {
@@ -5417,7 +5449,7 @@
     }
   },
   "adminTunerResetRequested": "Reinicio del sintonizador solicitado",
-  "adminTunerResetFailed": "Error al reiniciar el sintonizador: {error}",
+  "adminTunerResetFailed": "No se pudo restablecer el sintonizador: {error}",
   "@adminTunerResetFailed": {
     "placeholders": {
       "error": {
@@ -5425,7 +5457,7 @@
       }
     }
   },
-  "adminProviderRemoveFailed": "Error al eliminar el proveedor: {error}",
+  "adminProviderRemoveFailed": "No se pudo eliminar el proveedor: {error}",
   "@adminProviderRemoveFailed": {
     "placeholders": {
       "error": {
@@ -5439,7 +5471,7 @@
   "adminRecordingPath": "Ruta de grabación",
   "adminSeriesRecordingPath": "Ruta de grabación de series",
   "adminRecordingSettingsSaved": "Ajustes de grabación guardados",
-  "adminSettingsSaveFailed": "Error al guardar los ajustes: {error}",
+  "adminSettingsSaveFailed": "No se pudo guardar la configuración: {error}",
   "@adminSettingsSaveFailed": {
     "placeholders": {
       "error": {
@@ -5450,7 +5482,7 @@
   "adminSetChannelMappings": "Establecer mapeo de canales",
   "adminMappingJson": "JSON de mapeo",
   "adminChannelMappingsUpdated": "Mapeo de canales actualizado",
-  "adminMappingsUpdateFailed": "Error al actualizar el mapeo: {error}",
+  "adminMappingsUpdateFailed": "No se pudieron actualizar las asignaciones: {error}",
   "@adminMappingsUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5472,7 +5504,7 @@
       }
     }
   },
-  "adminSeriesPathDisplay": "Ruta de series: {path}",
+  "adminSeriesPathDisplay": "Ruta de la serie: {path}",
   "@adminSeriesPathDisplay": {
     "placeholders": {
       "path": {
@@ -5525,7 +5557,7 @@
   "adminLogsNewestFirst": "Más reciente primero",
   "adminLogsOldestFirst": "Más antiguo primero",
   "adminLogsJustNow": "Ahora mismo",
-  "adminLogsMinutesAgo": "hace {minutes} min",
+  "adminLogsMinutesAgo": "{minutes}hace m",
   "@adminLogsMinutesAgo": {
     "placeholders": {
       "minutes": {
@@ -5533,7 +5565,7 @@
       }
     }
   },
-  "adminLogsHoursAgo": "hace {hours} h",
+  "adminLogsHoursAgo": "{hours}hace h",
   "@adminLogsHoursAgo": {
     "placeholders": {
       "hours": {
@@ -5541,7 +5573,7 @@
       }
     }
   },
-  "adminLogsDaysAgo": "hace {days} d",
+  "adminLogsDaysAgo": "{days}hace d",
   "@adminLogsDaysAgo": {
     "placeholders": {
       "days": {
@@ -5549,7 +5581,7 @@
       }
     }
   },
-  "adminLogViewerLoadFailed": "Error al cargar {fileName}",
+  "adminLogViewerLoadFailed": "No se pudo cargar {fileName}",
   "@adminLogViewerLoadFailed": {
     "placeholders": {
       "fileName": {
@@ -5600,7 +5632,7 @@
   "adminMetadataImageThumb": "Miniatura",
   "adminMetadataRecursive": "Recursivo",
   "adminMetadataProvider": "Proveedor",
-  "adminMetadataImageUpdated": "Imagen de {imageType} actualizada",
+  "adminMetadataImageUpdated": "{imageType} imagen actualizada",
   "@adminMetadataImageUpdated": {
     "placeholders": {
       "imageType": {
@@ -5608,7 +5640,7 @@
       }
     }
   },
-  "adminMetadataImageUploaded": "Imagen de {imageType} subida",
+  "adminMetadataImageUploaded": "{imageType} imagen cargada",
   "@adminMetadataImageUploaded": {
     "placeholders": {
       "imageType": {
@@ -5616,7 +5648,7 @@
       }
     }
   },
-  "adminMetadataImageDeleted": "Imagen de {imageType} eliminada",
+  "adminMetadataImageDeleted": "{imageType} imagen eliminada",
   "@adminMetadataImageDeleted": {
     "placeholders": {
       "imageType": {
@@ -5624,7 +5656,7 @@
       }
     }
   },
-  "adminMetadataImageDownloadFailed": "Error al descargar la imagen: {error}",
+  "adminMetadataImageDownloadFailed": "No se pudo descargar la imagen: {error}",
   "@adminMetadataImageDownloadFailed": {
     "placeholders": {
       "error": {
@@ -5633,7 +5665,7 @@
     }
   },
   "adminMetadataImageReadFailed": "Error al leer la imagen seleccionada",
-  "adminMetadataImageUploadFailed": "Error al subir la imagen: {error}",
+  "adminMetadataImageUploadFailed": "No se pudo cargar la imagen: {error}",
   "@adminMetadataImageUploadFailed": {
     "placeholders": {
       "error": {
@@ -5641,7 +5673,7 @@
       }
     }
   },
-  "adminMetadataDeleteImageTitle": "Eliminar imagen de {imageType}",
+  "adminMetadataDeleteImageTitle": "Eliminar imagen {imageType}",
   "@adminMetadataDeleteImageTitle": {
     "placeholders": {
       "imageType": {
@@ -5650,7 +5682,7 @@
     }
   },
   "adminMetadataDeleteImageContent": "Esto elimina la imagen actual del elemento.",
-  "adminMetadataImageDeleteFailed": "Error al eliminar la imagen: {error}",
+  "adminMetadataImageDeleteFailed": "No se pudo eliminar la imagen: {error}",
   "@adminMetadataImageDeleteFailed": {
     "placeholders": {
       "error": {
@@ -5658,7 +5690,7 @@
       }
     }
   },
-  "adminMetadataChooseImage": "Elegir imagen de {imageType}",
+  "adminMetadataChooseImage": "Elija la imagen {imageType}",
   "@adminMetadataChooseImage": {
     "placeholders": {
       "imageType": {
@@ -5699,7 +5731,7 @@
   },
   "adminPluginsCatalogNoSearchResults": "Ningún paquete coincide con tu búsqueda",
   "adminPluginsCatalogEmpty": "No hay paquetes disponibles",
-  "adminPluginsInstalling": "Instalando “{name}”...",
+  "adminPluginsInstalling": "\"{name}\" se está instalando...",
   "@adminPluginsInstalling": {
     "placeholders": {
       "name": {
@@ -5711,7 +5743,7 @@
   "adminPluginDetailExperimentalContent": "La integración de ajustes de plugins es aún experimental. Algunos campos o diseños pueden no mostrarse correctamente.",
   "adminPluginDetailToggle404": "Error al alternar el plugin. El servidor no encontró esta versión del plugin. Intenta actualizar los plugins y vuelve a intentarlo.",
   "adminPluginDetailToggleDioError": "Error al alternar el plugin. Consulta los registros del servidor para más detalles.",
-  "adminPluginDetailSettingsTitle": "Ajustes de {name}",
+  "adminPluginDetailSettingsTitle": "{name} Configuración",
   "@adminPluginDetailSettingsTitle": {
     "placeholders": {
       "name": {
@@ -5729,7 +5761,7 @@
   "adminPluginDetailMalfunctioned": "Este plugin ha funcionado incorrectamente y puede no funcionar bien.",
   "adminPluginDetailNotSupported": "Este plugin no es compatible con la versión actual del servidor.",
   "adminPluginDetailSuperseded": "Este plugin ha sido reemplazado por una versión más nueva.",
-  "adminReposLoadFailed": "Error al cargar los repositorios: {error}",
+  "adminReposLoadFailed": "No se pudieron cargar los repositorios: {error}",
   "@adminReposLoadFailed": {
     "placeholders": {
       "error": {
@@ -5738,7 +5770,7 @@
     }
   },
   "adminReposRemoveTitle": "Eliminar repositorio",
-  "adminReposRemoveConfirm": "¿Estás seguro de que quieres eliminar “{name}”?",
+  "adminReposRemoveConfirm": "¿Está seguro de que desea eliminar \"{name}\"?",
   "@adminReposRemoveConfirm": {
     "placeholders": {
       "name": {
@@ -5747,7 +5779,7 @@
     }
   },
   "adminReposRemove": "Eliminar",
-  "adminReposSaveFailed": "Error al guardar los repositorios: {error}",
+  "adminReposSaveFailed": "No se pudieron guardar los repositorios: {error}",
   "@adminReposSaveFailed": {
     "placeholders": {
       "error": {
@@ -5841,7 +5873,7 @@
   "adminTaskDetailEnded": "Finalizada",
   "adminTaskDetailDuration": "Duración",
   "adminTaskDetailErrorLabel": "Error:",
-  "adminTaskTriggerDaily": "Diario a las {time}",
+  "adminTaskTriggerDaily": "Diariamente en {time}",
   "@adminTaskTriggerDaily": {
     "placeholders": {
       "time": {
@@ -5849,7 +5881,7 @@
       }
     }
   },
-  "adminTaskTriggerWeekly": "Cada {day} a las {time}",
+  "adminTaskTriggerWeekly": "Cada {day} en {time}",
   "@adminTaskTriggerWeekly": {
     "placeholders": {
       "day": {
@@ -5893,7 +5925,7 @@
   "adminActivityToday": "Hoy",
   "adminActivityYesterday": "Ayer",
   "adminActivityOlder": "Más antiguo",
-  "adminActivityDaysAgo": "hace {days} d",
+  "adminActivityDaysAgo": "{days}hace d",
   "@adminActivityDaysAgo": {
     "placeholders": {
       "days": {
@@ -5901,7 +5933,7 @@
       }
     }
   },
-  "adminActivityHoursAgo": "hace {hours} h",
+  "adminActivityHoursAgo": "{hours}hace h",
   "@adminActivityHoursAgo": {
     "placeholders": {
       "hours": {
@@ -5909,7 +5941,7 @@
       }
     }
   },
-  "adminActivityMinutesAgo": "hace {minutes} min",
+  "adminActivityMinutesAgo": "{minutes}hace m",
   "@adminActivityMinutesAgo": {
     "placeholders": {
       "minutes": {
@@ -5942,7 +5974,7 @@
       }
     }
   },
-  "adminActivityDateShort": "{month}/{day}",
+  "adminActivityDateShort": "{day}/{month}",
   "@adminActivityDateShort": {
     "placeholders": {
       "month": {
@@ -5981,7 +6013,7 @@
   "adminTrickplayWidthResolutions": "Resoluciones de ancho",
   "adminMetadataDefault": "Predeterminado",
   "adminMetadataContentTypeUpdated": "Tipo de contenido actualizado",
-  "adminMetadataContentTypeFailed": "Error al actualizar el tipo de contenido: {error}",
+  "adminMetadataContentTypeFailed": "No se pudo actualizar el tipo de contenido: {error}",
   "@adminMetadataContentTypeFailed": {
     "placeholders": {
       "error": {
@@ -5995,7 +6027,7 @@
   "adminGeneralServerName": "Nombre del servidor",
   "adminSettingsLoadFailed": "Error al cargar los ajustes",
   "adminDiscover": "Descubrir",
-  "adminChannelMappingsUpdateFailed": "Error al actualizar el mapeo: {error}",
+  "adminChannelMappingsUpdateFailed": "No se pudieron actualizar las asignaciones: {error}",
   "@adminChannelMappingsUpdateFailed": {
     "placeholders": {
       "error": {
@@ -6037,7 +6069,7 @@
       }
     }
   },
-  "castKindControls": "Controles de {kind}",
+  "castKindControls": "{kind} Controles",
   "@castKindControls": {
     "placeholders": {
       "kind": {
@@ -6061,7 +6093,7 @@
   "pinSetTitle": "Establecer PIN",
   "pinEnterTitle": "Introducir PIN",
   "pinReenterToConfirm": "Vuelve a introducir tu PIN para confirmar",
-  "pinEnterNDigit": "Introduce un PIN de {length} dígitos",
+  "pinEnterNDigit": "Ingrese un PIN de {length} dígitos",
   "@pinEnterNDigit": {
     "placeholders": {
       "length": {
@@ -6069,7 +6101,7 @@
       }
     }
   },
-  "pinEnterYourNDigit": "Introduce tu PIN de {length} dígitos",
+  "pinEnterYourNDigit": "Ingrese su PIN de {length} dígitos",
   "@pinEnterYourNDigit": {
     "placeholders": {
       "length": {
@@ -6099,7 +6131,7 @@
   },
   "quickConnectEnterCode": "Introducir código",
   "quickConnectAuthorize": "Autorizar",
-  "remoteCommandFailed": "Comando fallido: {error}",
+  "remoteCommandFailed": "El comando falló: {error}",
   "@remoteCommandFailed": {
     "placeholders": {
       "error": {
@@ -6115,7 +6147,7 @@
   "unknownItem": "Desconocido",
   "remoteNothingPlaying": "No se está reproduciendo nada en esta sesión",
   "castingStarted": "Transmisión iniciada en el dispositivo seleccionado",
-  "castingFailed": "Error al iniciar la transmisión: {error}",
+  "castingFailed": "No se pudo iniciar la transmisión: {error}",
   "@castingFailed": {
     "placeholders": {
       "error": {
@@ -6244,9 +6276,9 @@
   "contextMenuGoToSeries": "Ir a la serie",
   "openLink": "Abrir enlace",
   "scanWithYourPhone": "Escanea con tu teléfono",
-  "delayMinusMs": "-{value}ms",
-  "delayPlusMs": "+{value}ms",
-  "seasonChip": "S{number}",
+  "delayMinusMs": "-{value} ms",
+  "delayPlusMs": "+{value} ms",
+  "seasonChip": "T{number}",
   "dtsPassthrough": "Paso DTS",
   "enableDtsPassthrough": "Audio Bitstream DTS a AVR únicamente; requiere soporte de receptor y seguimiento de fuente DTS",
   "unpauseRewind": "Reanudar la pausa Rebobinar",
@@ -6343,7 +6375,7 @@
   "integrationOpenHomeSectionsSubtitle": "Activar, desactivar y reordenar filas",
   "integrationInstalledButDisabled": "Instalado pero deshabilitado",
   "integrationNotInstalled": "No instalado",
-  "integrationSectionsCount": "{count, plural, one {# sección} other {# secciones}}",
+  "integrationSectionsCount": "{count, plural, one {# seccion} other {# secciones}}",
   "integrationRowsDiscoveredCount": "{count, plural, one {# fila detectada} other {# filas detectadas}}",
   "offlineFileNotAvailable": "Archivo no disponible",
   "playerTooltipLockLandscape": "Bloquear paisaje",
@@ -6454,7 +6486,7 @@
   "settingsLong": "Largo",
   "settingsVeryLong": "muy largo",
   "settingsVideoStartDelay": "Retraso de inicio de vídeo",
-  "settingsMillisecondsValue": "{value} ms",
+  "settingsMillisecondsValue": "{value} miliseg.",
   "settingsLiveTvDirect": "TV en vivo directo",
   "settingsLiveTvDirectSubtitle": "Habilitar reproducción directa para Live TV",
   "settingsOpenGroups": "Grupos abiertos",
@@ -6479,7 +6511,7 @@
   "onNow": "Ahora",
   "collections": "Colecciones",
   "lastPlayed": "Jugado por última vez",
-  "libraryNameWithServer": "{libraryName} ({serverName})",
+  "libraryNameWithServer": "{libraryName} en {serverName}",
   "latestLibraryName": "Último {libraryName}",
   "@openLink": {
     "description": "Action label to open a URL externally"

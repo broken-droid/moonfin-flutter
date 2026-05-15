@@ -16,7 +16,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String connectingToServer(String serverName) {
-    return 'Ansluter till $serverName';
+    return 'Connecting to $serverName';
   }
 
   @override
@@ -29,7 +29,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get username => 'Anvandarnamn';
 
   @override
-  String get email => 'Email';
+  String get email => 'E-post';
 
   @override
   String get quickConnectInstruction =>
@@ -49,12 +49,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'QuickConnect inte tillgänglig: $detail';
+    return 'QuickConnect unavailable: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'QuickConnect inte tillgänglig ($status): $detail';
+    return 'QuickConnect unavailable ($status): $detail';
   }
 
   @override
@@ -87,14 +87,14 @@ class AppLocalizationsSv extends AppLocalizations {
   String get addServer => 'Lägg till server';
 
   @override
-  String get embyConnect => 'Emby Connect';
+  String get embyConnect => 'Emby Anslut';
 
   @override
   String get removeServer => 'Ta bort server';
 
   @override
   String removeServerConfirmation(String serverName) {
-    return 'Vill du ta bort \"$serverName\" från dina servrar?';
+    return 'Remove \"$serverName\" from your servers?';
   }
 
   @override
@@ -193,7 +193,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String unableToConnectTo(String target) {
-    return 'Det går inte att ansluta till $target';
+    return 'Unable to connect to $target';
   }
 
   @override
@@ -274,7 +274,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String failedToLoadFolderError(String error) {
-    return 'Det gick inte att ladda mappen: $error';
+    return 'Failed to load folder: $error';
   }
 
   @override
@@ -282,7 +282,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String itemCountLabel(int count) {
-    return '$count föremål';
+    return '$count items';
   }
 
   @override
@@ -299,7 +299,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String totalCountItems(int count) {
-    return '$count artiklar';
+    return '$count Items';
   }
 
   @override
@@ -340,7 +340,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String libraryGenresTitle(String name) {
-    return '$name — Genrer';
+    return '$name — Genres';
   }
 
   @override
@@ -378,17 +378,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String minutesAgo(int count) {
-    return '${count}m sedan';
+    return '${count}m ago';
   }
 
   @override
   String hoursAgo(int count) {
-    return '${count}h sedan';
+    return '${count}h ago';
   }
 
   @override
   String daysAgo(int count) {
-    return '${count}d sedan';
+    return '${count}d ago';
   }
 
   @override
@@ -422,7 +422,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String titlesCount(int count) {
-    return '$count titlar';
+    return '$count titles';
   }
 
   @override
@@ -509,17 +509,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String authorsCount(int count) {
-    return '$count författare';
+    return '$count authors';
   }
 
   @override
   String genresCount(int count) {
-    return '$count genrer';
+    return '$count genres';
   }
 
   @override
   String percentCompleted(int percent) {
-    return '$percent% slutförd';
+    return '$percent% completed';
   }
 
   @override
@@ -536,7 +536,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String titlesArrangedForBrowsing(int count) {
-    return '$count titlar ordnade för att läsa först.';
+    return '$count titles arranged for reading-first browsing.';
   }
 
   @override
@@ -573,7 +573,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String noLabelFound(String label) {
-    return 'Ingen $label hittades';
+    return 'No $label found';
   }
 
   @override
@@ -645,12 +645,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String sectionCountLabel(int count) {
-    return '$count sektioner';
+    return '$count sections';
   }
 
   @override
   String firstPublished(int year) {
-    return 'Första publicerade $year';
+    return 'First published $year';
   }
 
   @override
@@ -665,7 +665,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String booksCount(int count) {
-    return '$count böcker';
+    return '$count books';
   }
 
   @override
@@ -677,7 +677,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String authorsCountTitle(int count) {
-    return '$count Författare';
+    return '$count Authors';
   }
 
   @override
@@ -753,7 +753,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String discNumber(int number) {
-    return 'Skiva $number';
+    return 'Disc $number';
   }
 
   @override
@@ -779,7 +779,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String published(int year) {
-    return 'Publicerad $year';
+    return 'Published $year';
   }
 
   @override
@@ -798,7 +798,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String endsAt(String time) {
-    return 'Slutar vid $time';
+    return 'Ends at $time';
   }
 
   @override
@@ -812,7 +812,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String resumeFrom(String position) {
-    return 'Återuppta från $position';
+    return 'Resume from $position';
   }
 
   @override
@@ -911,7 +911,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String deleteDownloadedTracksMessage(String title) {
-    return 'Vill du ta bort nedladdade spår för \"$title\"?';
+    return 'Delete downloaded tracks for \"$title\"?';
   }
 
   @override
@@ -926,17 +926,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String noItemsLoaded(String itemLabel) {
-    return 'Ingen $itemLabel laddad';
+    return 'No $itemLabel loaded';
   }
 
   @override
   String downloadingTitle(String title, int count) {
-    return 'Laddar ned $title ($count objekt)...';
+    return 'Downloading $title ($count items)...';
   }
 
   @override
   String deleteConfirmMessage(String name) {
-    return 'Är du säker på att du vill ta bort \"$name\" från servern? Denna åtgärd kan inte ångras.';
+    return 'Are you sure you want to delete \"$name\" from the server? This action cannot be undone.';
   }
 
   @override
@@ -947,7 +947,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String unsupportedBookFormat(String extension) {
-    return 'Bokformat som inte stöds: .$extension';
+    return 'Unsupported book format: .$extension';
   }
 
   @override
@@ -974,7 +974,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String subtitleDownloadedSelected(String name) {
-    return 'Undertext har laddats ner och valts: $name';
+    return 'Subtitle downloaded and selected: $name';
   }
 
   @override
@@ -983,7 +983,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String noRemoteSubtitlesFound(String language) {
-    return 'Inga fjärrundertexter hittades för $language.';
+    return 'No remote subtitles found for $language.';
   }
 
   @override
@@ -1011,7 +1011,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String downloadingItem(String name, String quality) {
-    return 'Laddar ned $name ($quality)...';
+    return 'Downloading $name ($quality)...';
   }
 
   @override
@@ -1019,7 +1019,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
-    return 'Ta bort lokala filer för $typeLabel?\n\nDetta kommer att frigöra lagringsutrymme. Du kan ladda ner igen senare.';
+    return 'Delete local files for $typeLabel?\n\nThis will free up storage space. You can re-download later.';
   }
 
   @override
@@ -1042,12 +1042,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String studioMoreCount(int count) {
-    return '+$count till';
+    return '+$count more';
   }
 
   @override
   String totalEpisodes(int count) {
-    return '$count Avsnitt';
+    return '$count Episodes';
   }
 
   @override
@@ -1057,12 +1057,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String episodeLabel(int number) {
-    return 'Avsnitt $number';
+    return 'Episode $number';
   }
 
   @override
   String chapterNumber(int number) {
-    return 'Kapitel $number';
+    return 'Chapter $number';
   }
 
   @override
@@ -1089,17 +1089,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String born(String date) {
-    return 'Född $date';
+    return 'Born $date';
   }
 
   @override
   String died(String date) {
-    return 'Död $date';
+    return 'Died $date';
   }
 
   @override
   String age(int age) {
-    return 'Ålder $age';
+    return 'Age $age';
   }
 
   @override
@@ -1113,7 +1113,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String downloadsCount(int count) {
-    return '$count nedladdningar';
+    return '$count downloads';
   }
 
   @override
@@ -1132,32 +1132,32 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String remoteSubtitlePermissionError(String action) {
-    return 'Fjärrundertext $action kräver behörigheten Jellyfin för undertexthantering för denna användare.';
+    return 'Remote subtitle $action requires the Jellyfin subtitle management permission for this user.';
   }
 
   @override
   String remoteSubtitleNotFoundError(String action) {
-    return 'Det här objektet kunde inte hittas på servern för fjärrundertexten $action.';
+    return 'This item could not be found on the server for remote subtitle $action.';
   }
 
   @override
   String remoteSubtitleDetailError(String action, String detail) {
-    return 'Fjärrundertext $action misslyckades: $detail';
+    return 'Remote subtitle $action failed: $detail';
   }
 
   @override
   String remoteSubtitleHttpError(String action, int status) {
-    return 'Fjärrundertext $action misslyckades (HTTP $status).';
+    return 'Remote subtitle $action failed (HTTP $status).';
   }
 
   @override
   String remoteSubtitleGenericError(String action) {
-    return 'Det gick inte att $action fjärrundertexter.';
+    return 'Failed to $action remote subtitles.';
   }
 
   @override
   String deleteSeriesFiles(String name) {
-    return 'alla nedladdade avsnitt för \"$name\"';
+    return 'all downloaded episodes for \"$name\"';
   }
 
   @override
@@ -1189,17 +1189,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String castActionFailed(String label, String error) {
-    return '$label åtgärd misslyckades: $error';
+    return '$label action failed: $error';
   }
 
   @override
   String failedToSetCastVolume(String error) {
-    return 'Det gick inte att ställa in röstvolymen: $error';
+    return 'Failed to set cast volume: $error';
   }
 
   @override
   String castControlsTitle(String label) {
-    return '$label Kontroller';
+    return '$label Controls';
   }
 
   @override
@@ -1216,7 +1216,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String stopCast(String label) {
-    return 'Stoppa $label';
+    return 'Stop $label';
   }
 
   @override
@@ -1224,7 +1224,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String trackNumber(int number) {
-    return 'Spåra $number';
+    return 'Track $number';
   }
 
   @override
@@ -1241,7 +1241,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String secondsCount(int seconds) {
-    return '$seconds sekunder';
+    return '$seconds seconds';
   }
 
   @override
@@ -1356,12 +1356,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String castSessionError(String protocol) {
-    return '$protocol sessionsfel';
+    return '$protocol session error';
   }
 
   @override
   String failedToLoadBookDetails(String error) {
-    return 'Det gick inte att läsa in bokinformation: $error';
+    return 'Failed to load book details: $error';
   }
 
   @override
@@ -1370,7 +1370,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String formatCannotRenderInApp(String extension) {
-    return 'Det här formatet (.$extension) kan inte renderas i appen ännu.';
+    return 'This format (.$extension) cannot be rendered in-app yet.';
   }
 
   @override
@@ -1383,17 +1383,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String failedToOpenInAppReader(String error) {
-    return 'Det gick inte att öppna läsaren i appen: $error';
+    return 'Failed to open in-app reader: $error';
   }
 
   @override
   String bookmarkAlreadySaved(String label) {
-    return 'Bokmärket har redan sparats på $label.';
+    return 'Bookmark already saved at $label.';
   }
 
   @override
   String bookmarkAdded(String label) {
-    return 'Bokmärke tillagt: $label';
+    return 'Bookmark added: $label';
   }
 
   @override
@@ -1406,7 +1406,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String pageLabel(int number) {
-    return 'Sida $number';
+    return 'Page $number';
   }
 
   @override
@@ -1422,7 +1422,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String percentRead(String percent) {
-    return '$percent% läst';
+    return '$percent% read';
   }
 
   @override
@@ -1445,7 +1445,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String resetZoom(String zoom) {
-    return 'Återställ zoom (${zoom}x)';
+    return 'Reset Zoom (${zoom}x)';
   }
 
   @override
@@ -1468,7 +1468,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String failedToUpdateReadState(String error) {
-    return 'Det gick inte att uppdatera lässtatus: $error';
+    return 'Failed to update read state: $error';
   }
 
   @override
@@ -1500,7 +1500,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
-    return 'Den här plattformen kan inte vara värd för den inbäddade dokumentmotorn för $extension-filer.';
+    return 'This platform cannot host the embedded document engine for $extension files.';
   }
 
   @override
@@ -1539,7 +1539,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String failedToLoadGuide(String error) {
-    return 'Det gick inte att läsa in guiden: $error';
+    return 'Failed to load guide: $error';
   }
 
   @override
@@ -1575,7 +1575,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String failedToPlayChannel(String name) {
-    return 'Det gick inte att spela $name';
+    return 'Failed to play $name';
   }
 
   @override
@@ -1602,7 +1602,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String cancelScheduledRecordingOf(String name) {
-    return 'Vill du avbryta schemalagd inspelning av \"$name\"?';
+    return 'Cancel scheduled recording of \"$name\"?';
   }
 
   @override
@@ -1631,7 +1631,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String stopRecordingName(String name) {
-    return 'Vill du sluta spela in \"$name\"?';
+    return 'Stop recording \"$name\"?';
   }
 
   @override
@@ -1646,25 +1646,25 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String noResultsForQuery(String query) {
-    return 'Inga resultat för \"$query\"';
+    return 'No results for \"$query\"';
   }
 
   @override
   String searchFailedError(String error) {
-    return 'Sökningen misslyckades: $error';
+    return 'Search failed: $error';
   }
 
   @override
   String get seerr => 'Seerr';
 
   @override
-  String get seerrAccountType => 'Seerr Account Type';
+  String get seerrAccountType => 'Seerr kontotyp';
 
   @override
   String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get localAccount => 'Local';
+  String get localAccount => 'Lokal';
 
   @override
   String get savedMedia => 'Sparade media';
@@ -1692,12 +1692,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String removeItemAndFiles(String name) {
-    return 'Ta bort \"$name\" och dess filer?';
+    return 'Remove \"$name\" and its files?';
   }
 
   @override
   String tracksCount(int count) {
-    return '$count spår';
+    return '$count tracks';
   }
 
   @override
@@ -1708,12 +1708,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String failedToLoadAlbum(String error) {
-    return 'Det gick inte att ladda album: $error';
+    return 'Failed to load album: $error';
   }
 
   @override
   String noDownloadedTracksForAlbum(String name) {
-    return 'Inga nedladdade spår hittades för $name.';
+    return 'No downloaded tracks found for $name.';
   }
 
   @override
@@ -1730,7 +1730,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String removeName(String name) {
-    return 'Vill du ta bort \"$name\"?';
+    return 'Remove \"$name\"?';
   }
 
   @override
@@ -1745,7 +1745,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String episodeNumber(int number) {
-    return 'Avsnitt $number';
+    return 'Episode $number';
   }
 
   @override
@@ -1759,7 +1759,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String seasonNumber(int number) {
-    return 'Säsong $number';
+    return 'Season $number';
   }
 
   @override
@@ -1775,7 +1775,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String deleteAllEpisodesInSeason(String season) {
-    return 'Vill du ta bort alla nedladdade avsnitt i $season?';
+    return 'Delete all downloaded episodes in $season?';
   }
 
   @override
@@ -1819,7 +1819,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String deleteSelectedCount(int count) {
-    return 'Ta bort $count nedladdade objekt?';
+    return 'Delete $count downloaded items?';
   }
 
   @override
@@ -1833,7 +1833,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String ofStorageLimit(String limit) {
-    return 'av gränsen $limit';
+    return 'of $limit limit';
   }
 
   @override
@@ -1918,7 +1918,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String optionsCount(int count) {
-    return '$count alternativ';
+    return '$count options';
   }
 
   @override
@@ -1946,7 +1946,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get focusExpansionAnimation => 'Focus Expansion Animation';
 
   @override
-  String get desktopUiScale => 'Desktop UI Scale';
+  String get desktopUiScale => 'Desktop UI-skala';
 
   @override
   String get scaleFocusedCards =>
@@ -1983,6 +1983,10 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get seasonalEffects => 'Säsongseffekter';
+
+  @override
+  String get seasonalEffectsDescription =>
+      'Visuella effekter och säsongsbetonade dekorationer';
 
   @override
   String get snow => 'Snö';
@@ -2223,7 +2227,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
-    return 'Efter $episodes avsnitt / ${hours}h';
+    return 'After $episodes episodes / ${hours}h';
   }
 
   @override
@@ -2355,17 +2359,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String loadedProfileSettings(String profile) {
-    return 'Laddade $profile profilinställningar.';
+    return 'Loaded $profile profile settings.';
   }
 
   @override
   String failedToLoadProfileSettings(String profile) {
-    return 'Det gick inte att läsa in $profile profilinställningar.';
+    return 'Failed to load $profile profile settings.';
   }
 
   @override
   String syncedSettingsToProfile(String profile) {
-    return 'Synkroniserade lokala inställningar till profilen $profile.';
+    return 'Synced local settings to $profile profile.';
   }
 
   @override
@@ -2592,11 +2596,27 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String itemsSelected(int count) {
-    return '$count har valts';
+    return '$count selected';
   }
 
   @override
   String get mediaBar => 'Media Bar';
+
+  @override
+  String get mediaSources => 'Mediekällor';
+
+  @override
+  String get behavior => 'Beteende';
+
+  @override
+  String get seconds => 'sekunder';
+
+  @override
+  String get localPreviews => 'Lokala förhandsvisningar';
+
+  @override
+  String get localPreviewsDescription =>
+      'Konfigurera förhandsvisningar av trailer, media och ljud.';
 
   @override
   String get mediaBarMode => 'Mediefaltsstil';
@@ -2662,7 +2682,14 @@ class AppLocalizationsSv extends AppLocalizations {
   String get episodePreview => 'Förhandsvisning av avsnitt';
 
   @override
+  String get mediaPreview => 'Medieforhandsvisning';
+
+  @override
   String get episodePreviewDescription =>
+      'Spela en 30-sekunders inline-förhandsvisning på fokuserade, svävade eller långtryckta kort';
+
+  @override
+  String get mediaPreviewDescription =>
       'Spela en 30-sekunders inline-förhandsvisning på fokuserade, svävade eller långtryckta kort';
 
   @override
@@ -3005,7 +3032,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String loggedInAs(String username) {
-    return 'Inloggad som: $username';
+    return 'Logged in as: $username';
   }
 
   @override
@@ -3080,7 +3107,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String updateAvailableVersion(String version) {
-    return 'Uppdatering tillgänglig: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -3092,7 +3119,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String updateAvailableTitle(String version) {
-    return 'v$version Tillgänglig';
+    return 'v$version Available';
   }
 
   @override
@@ -3156,7 +3183,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String itemsCount(int count) {
-    return '$count artiklar';
+    return '$count Items';
   }
 
   @override
@@ -3176,7 +3203,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String requestedByName(String name) {
-    return 'Begärd av $name';
+    return 'Requested by $name';
   }
 
   @override
@@ -3193,12 +3220,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String cancelRequestForTitle(String title) {
-    return 'Vill du avbryta begäran om \"$title\"?';
+    return 'Cancel request for \"$title\"?';
   }
 
   @override
   String cancelCountRequestsForTitle(int count, String title) {
-    return 'Vill du avbryta $count-förfrågningar för \"$title\"?';
+    return 'Cancel $count requests for \"$title\"?';
   }
 
   @override
@@ -3218,7 +3245,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String revenueAmount(String amount) {
-    return 'Intäkt: \$$amount';
+    return 'Revenue: \$$amount';
   }
 
   @override
@@ -3228,7 +3255,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String requestSeriesOrMovie(String type) {
-    return 'Begär $type';
+    return 'Request $type';
   }
 
   @override
@@ -3264,7 +3291,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String ageValue(int age) {
-    return 'ålder $age';
+    return 'age $age';
   }
 
   @override
@@ -3557,22 +3584,22 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginUpdatesAvailable(int count) {
-    return 'Pluginuppdateringar tillgängliga: $count';
+    return 'Plugin updates available: $count';
   }
 
   @override
   String adminPluginsRequiringRestart(int count) {
-    return 'Plugins som kräver omstart: $count';
+    return 'Plugins requiring restart: $count';
   }
 
   @override
   String adminFailedScheduledTasks(int count) {
-    return 'Misslyckade schemalagda uppgifter: $count';
+    return 'Failed scheduled tasks: $count';
   }
 
   @override
   String adminRecentAlertEntries(int count) {
-    return 'Senaste varnings-/felposter: $count';
+    return 'Recent warning/error entries: $count';
   }
 
   @override
@@ -3631,7 +3658,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String errorGeneric(String error) {
-    return 'Fel: $error';
+    return 'Error: $error';
   }
 
   @override
@@ -3658,7 +3685,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminCommandFailed(String error) {
-    return 'Kommandot misslyckades: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -3723,7 +3750,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminActivityLoadFailed(String error) {
-    return 'Det gick inte att läsa in aktivitetsloggen: $error';
+    return 'Failed to load activity log: $error';
   }
 
   @override
@@ -3740,7 +3767,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminDeviceUpdateFailed(String error) {
-    return 'Det gick inte att uppdatera enheten: $error';
+    return 'Failed to update device: $error';
   }
 
   @override
@@ -3751,7 +3778,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminDeviceDeleteFailed(String error) {
-    return 'Det gick inte att ta bort enheten: $error';
+    return 'Failed to delete device: $error';
   }
 
   @override
@@ -3780,7 +3807,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminScanFailed(String error) {
-    return 'Det gick inte att starta skanningen: $error';
+    return 'Failed to start scan: $error';
   }
 
   @override
@@ -3791,12 +3818,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminLibraryRenamed(String name) {
-    return 'Biblioteket bytt namn till \"$name\"';
+    return 'Library renamed to \"$name\"';
   }
 
   @override
   String adminRenameFailed(String error) {
-    return 'Det gick inte att byta namn på: $error';
+    return 'Failed to rename: $error';
   }
 
   @override
@@ -3804,17 +3831,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminLibraryDeleted(String name) {
-    return 'Biblioteket \"$name\" har tagits bort';
+    return 'Library \"$name\" deleted';
   }
 
   @override
   String adminLibraryDeleteFailed(String error) {
-    return 'Det gick inte att ta bort biblioteket: $error';
+    return 'Failed to delete library: $error';
   }
 
   @override
   String adminAddPathFailed(String error) {
-    return 'Det gick inte att lägga till sökväg: $error';
+    return 'Failed to add path: $error';
   }
 
   @override
@@ -3822,12 +3849,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminRemovePathConfirm(String path) {
-    return 'Vill du ta bort \"$path\" från det här biblioteket?';
+    return 'Remove \"$path\" from this library?';
   }
 
   @override
   String adminRemovePathFailed(String error) {
-    return 'Det gick inte att ta bort sökvägen: $error';
+    return 'Failed to remove path: $error';
   }
 
   @override
@@ -3835,7 +3862,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
-    return 'Det gick inte att spara alternativ: $error';
+    return 'Failed to save options: $error';
   }
 
   @override
@@ -3870,7 +3897,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminLibraryCreateFailed(String error) {
-    return 'Det gick inte att skapa bibliotek: $error';
+    return 'Failed to create library: $error';
   }
 
   @override
@@ -3897,27 +3924,27 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminDisableUserConfirm(String name) {
-    return 'Inaktivera $name? De kommer inte att kunna logga in.';
+    return 'Disable $name? They will not be able to sign in.';
   }
 
   @override
   String adminEnableUserConfirm(String name) {
-    return 'Aktivera $name? De kommer att kunna logga in igen.';
+    return 'Enable $name? They will be able to sign in again.';
   }
 
   @override
   String adminUserDisabled(String name) {
-    return 'Användaren \"$name\" inaktiverad';
+    return 'User \"$name\" disabled';
   }
 
   @override
   String adminUserEnabled(String name) {
-    return 'Användaren \"$name\" aktiverad';
+    return 'User \"$name\" enabled';
   }
 
   @override
   String adminUserPolicyUpdateFailed(String error) {
-    return 'Det gick inte att uppdatera användarpolicyn: $error';
+    return 'Failed to update user policy: $error';
   }
 
   @override
@@ -3934,7 +3961,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminUserCreateFailed(String error) {
-    return 'Det gick inte att skapa användare: $error';
+    return 'Failed to create user: $error';
   }
 
   @override
@@ -3954,7 +3981,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminSaveFailed(String error) {
-    return 'Det gick inte att spara: $error';
+    return 'Failed to save: $error';
   }
 
   @override
@@ -3965,7 +3992,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminFailed(String error) {
-    return 'Misslyckades: $error';
+    return 'Failed: $error';
   }
 
   @override
@@ -4103,22 +4130,22 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminServerReturnedHttp(int status) {
-    return 'Servern returnerade HTTP $status';
+    return 'Server returned HTTP $status';
   }
 
   @override
   String adminDeleteUserConfirm(String name) {
-    return 'Är du säker på att du vill ta bort $name?';
+    return 'Are you sure you want to delete $name?';
   }
 
   @override
   String adminUserDeleted(String name) {
-    return 'Användaren \"$name\" har tagits bort';
+    return 'User \"$name\" deleted';
   }
 
   @override
   String adminUserDeleteFailed(String error) {
-    return 'Det gick inte att ta bort användare: $error';
+    return 'Failed to delete user: $error';
   }
 
   @override
@@ -4139,7 +4166,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminApiKeyCreateFailed(String error) {
-    return 'Det gick inte att skapa nyckel: $error';
+    return 'Failed to create key: $error';
   }
 
   @override
@@ -4150,7 +4177,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminRevokeKeyConfirm(String name) {
-    return 'Återkalla nyckel för $name?';
+    return 'Revoke key for $name?';
   }
 
   @override
@@ -4158,7 +4185,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminApiKeyRevokeFailed(String error) {
-    return 'Det gick inte att återkalla nyckel: $error';
+    return 'Failed to revoke key: $error';
   }
 
   @override
@@ -4178,7 +4205,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
-    return 'Token: $token\\nSkapat: $created';
+    return 'Token: $token\\nCreated: $created';
   }
 
   @override
@@ -4189,7 +4216,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminBackupCreateFailed(String error) {
-    return 'Det gick inte att skapa säkerhetskopia: $error';
+    return 'Failed to create backup: $error';
   }
 
   @override
@@ -4203,7 +4230,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminManifestLoadFailed(String error) {
-    return 'Det gick inte att läsa in manifestet: $error';
+    return 'Failed to load manifest: $error';
   }
 
   @override
@@ -4214,7 +4241,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminRestoreFailed(String error) {
-    return 'Det gick inte att återställa säkerhetskopian: $error';
+    return 'Failed to restore backup: $error';
   }
 
   @override
@@ -4247,17 +4274,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminSavedTo(String path) {
-    return 'Sparad till $path';
+    return 'Saved to $path';
   }
 
   @override
   String adminFileSaveFailed(String error) {
-    return 'Det gick inte att spara filen: $error';
+    return 'Failed to save file: $error';
   }
 
   @override
   String adminLogFileLoadFailed(String fileName) {
-    return 'Det gick inte att ladda $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
@@ -4268,7 +4295,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminTasksLoadFailed(String error) {
-    return 'Det gick inte att läsa in uppgifter: $error';
+    return 'Failed to load tasks: $error';
   }
 
   @override
@@ -4280,17 +4307,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminTaskStartFailed(String error) {
-    return 'Det gick inte att starta uppgiften: $error';
+    return 'Failed to start task: $error';
   }
 
   @override
   String adminTaskStopFailed(String error) {
-    return 'Det gick inte att stoppa uppgiften: $error';
+    return 'Failed to stop task: $error';
   }
 
   @override
   String adminTaskLoadFailed(String error) {
-    return 'Det gick inte att läsa in uppgiften: $error';
+    return 'Failed to load task: $error';
   }
 
   @override
@@ -4298,12 +4325,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminTriggerRemoveFailed(String error) {
-    return 'Det gick inte att ta bort utlösaren: $error';
+    return 'Failed to remove trigger: $error';
   }
 
   @override
   String adminTriggerAddFailed(String error) {
-    return 'Det gick inte att lägga till trigger: $error';
+    return 'Failed to add trigger: $error';
   }
 
   @override
@@ -4329,7 +4356,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminHours(String hours) {
-    return '$hours timme(r)';
+    return '$hours hour(s)';
   }
 
   @override
@@ -4340,7 +4367,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginToggleFailed(String error) {
-    return 'Det gick inte att växla plugin: $error';
+    return 'Failed to toggle plugin: $error';
   }
 
   @override
@@ -4348,27 +4375,27 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminUninstallPluginConfirm(String name) {
-    return 'Är du säker på att du vill avinstallera \"$name\"?';
+    return 'Are you sure you want to uninstall \"$name\"?';
   }
 
   @override
   String adminPluginUninstallFailed(String error) {
-    return 'Det gick inte att avinstallera plugin: $error';
+    return 'Failed to uninstall plugin: $error';
   }
 
   @override
   String adminPackageInstallFailed(String error) {
-    return 'Det gick inte att installera paketet: $error';
+    return 'Failed to install package: $error';
   }
 
   @override
   String adminPluginUpdateFailed(String error) {
-    return 'Det gick inte att installera uppdateringen: $error';
+    return 'Failed to install update: $error';
   }
 
   @override
   String adminPluginsLoadFailed(String error) {
-    return 'Det gick inte att ladda plugins: $error';
+    return 'Failed to load plugins: $error';
   }
 
   @override
@@ -4379,12 +4406,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminInstallUpdate(String version) {
-    return 'Installera uppdatering (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
   String adminCatalogLoadFailed(String error) {
-    return 'Det gick inte att ladda katalogen: $error';
+    return 'Failed to load catalog: $error';
   }
 
   @override
@@ -4405,17 +4432,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
-    return '\"$name\" kommer att tas bort efter omstart av servern';
+    return '\"$name\" will be removed after server restart';
   }
 
   @override
   String adminUninstallFailed(String error) {
-    return 'Det gick inte att avinstallera: $error';
+    return 'Failed to uninstall: $error';
   }
 
   @override
   String adminPluginUpdating(String name, String version) {
-    return 'Uppdaterar \"$name\" till v$version...';
+    return 'Updating \"$name\" to v$version...';
   }
 
   @override
@@ -4424,7 +4451,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginLoadFailed(String error) {
-    return 'Det gick inte att ladda plugin: $error';
+    return 'Failed to load plugin: $error';
   }
 
   @override
@@ -4452,17 +4479,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
-    return 'Är du säker på att du vill ta bort \"$name\"?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
   String adminRepositoriesSaveFailed(String error) {
-    return 'Det gick inte att spara förråd: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
   String adminRepositoriesLoadFailed(String error) {
-    return 'Det gick inte att ladda arkiv: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -4479,12 +4506,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
-    return 'Det gick inte att ladda plugin-inställningarna: $error';
+    return 'Unable to load plugin settings: $error';
   }
 
   @override
   String adminCouldNotOpenUrl(String uri) {
-    return 'Kunde inte öppna $uri';
+    return 'Could not open $uri';
   }
 
   @override
@@ -4765,12 +4792,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminMetadataLoadFailed(String error) {
-    return 'Det gick inte att läsa in metadata: $error';
+    return 'Failed to load metadata: $error';
   }
 
   @override
   String adminMetadataSaveFailed(String error) {
-    return 'Det gick inte att spara metadata: $error';
+    return 'Failed to save metadata: $error';
   }
 
   @override
@@ -4790,7 +4817,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminMetadataRefreshFailed(String error) {
-    return 'Det gick inte att uppdatera metadata: $error';
+    return 'Failed to refresh metadata: $error';
   }
 
   @override
@@ -4807,7 +4834,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminRemoteSearchFailed(String error) {
-    return 'Fjärrsökning misslyckades: $error';
+    return 'Remote search failed: $error';
   }
 
   @override
@@ -4821,7 +4848,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminContentTypeUpdateFailed(String error) {
-    return 'Det gick inte att uppdatera innehållstypen: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -4836,12 +4863,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminImageUpdated(String imageType) {
-    return '$imageType bild uppdaterad';
+    return '$imageType image updated';
   }
 
   @override
   String adminImageDownloadFailed(String error) {
-    return 'Det gick inte att ladda ner bilden: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -4852,27 +4879,27 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminImageUploaded(String imageType) {
-    return '$imageType bild uppladdad';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminImageUploadFailed(String error) {
-    return 'Det gick inte att ladda upp bilden: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminDeleteImage(String imageType) {
-    return 'Ta bort $imageType bild';
+    return 'Delete $imageType image';
   }
 
   @override
   String adminImageDeleted(String imageType) {
-    return '$imageType bild raderad';
+    return '$imageType image deleted';
   }
 
   @override
   String adminImageDeleteFailed(String error) {
-    return 'Det gick inte att ta bort bilden: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
@@ -4883,7 +4910,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminTunerDiscoveryFailed(String error) {
-    return 'Tuner upptäckt misslyckades: $error';
+    return 'Tuner discovery failed: $error';
   }
 
   @override
@@ -4906,7 +4933,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminTunerAddFailed(String error) {
-    return 'Det gick inte att lägga till tuner: $error';
+    return 'Failed to add tuner: $error';
   }
 
   @override
@@ -4929,12 +4956,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminProviderAddFailed(String error) {
-    return 'Det gick inte att lägga till leverantör: $error';
+    return 'Failed to add provider: $error';
   }
 
   @override
   String adminTunerRemoveFailed(String error) {
-    return 'Det gick inte att ta bort tunern: $error';
+    return 'Failed to remove tuner: $error';
   }
 
   @override
@@ -4942,12 +4969,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminTunerResetFailed(String error) {
-    return 'Det gick inte att återställa tunern: $error';
+    return 'Failed to reset tuner: $error';
   }
 
   @override
   String adminProviderRemoveFailed(String error) {
-    return 'Det gick inte att ta bort leverantör: $error';
+    return 'Failed to remove provider: $error';
   }
 
   @override
@@ -4970,7 +4997,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminSettingsSaveFailed(String error) {
-    return 'Det gick inte att spara inställningarna: $error';
+    return 'Failed to save settings: $error';
   }
 
   @override
@@ -4987,7 +5014,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminMappingsUpdateFailed(String error) {
-    return 'Det gick inte att uppdatera mappningar: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
@@ -5012,22 +5039,22 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminRecordingPathDisplay(String path) {
-    return 'Inspelningsväg: $path';
+    return 'Recording path: $path';
   }
 
   @override
   String adminSeriesPathDisplay(String path) {
-    return 'Seriesökväg: $path';
+    return 'Series path: $path';
   }
 
   @override
   String adminPrePaddingDisplay(int minutes) {
-    return 'Förstoppning: $minutes min';
+    return 'Pre-padding: $minutes min';
   }
 
   @override
   String adminPostPaddingDisplay(int minutes) {
-    return 'Efterstoppning: $minutes min';
+    return 'Post-padding: $minutes min';
   }
 
   @override
@@ -5060,7 +5087,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminRestoreConfirmMessage(String name) {
-    return 'Återställa säkerhetskopian $name nu?';
+    return 'Restore backup $name now?';
   }
 
   @override
@@ -5106,27 +5133,27 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminLogsMinutesAgo(int minutes) {
-    return '${minutes}m sedan';
+    return '${minutes}m ago';
   }
 
   @override
   String adminLogsHoursAgo(int hours) {
-    return '${hours}h sedan';
+    return '${hours}h ago';
   }
 
   @override
   String adminLogsDaysAgo(int days) {
-    return '${days}d sedan';
+    return '${days}d ago';
   }
 
   @override
   String adminLogViewerLoadFailed(String fileName) {
-    return 'Det gick inte att ladda $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
   String adminLogViewerMatches(int count) {
-    return '$count matchar';
+    return '$count matches';
   }
 
   @override
@@ -5236,22 +5263,22 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminMetadataImageUpdated(String imageType) {
-    return '$imageType bild uppdaterad';
+    return '$imageType image updated';
   }
 
   @override
   String adminMetadataImageUploaded(String imageType) {
-    return '$imageType bild uppladdad';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminMetadataImageDeleted(String imageType) {
-    return '$imageType bild raderad';
+    return '$imageType image deleted';
   }
 
   @override
   String adminMetadataImageDownloadFailed(String error) {
-    return 'Det gick inte att ladda ner bilden: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -5260,12 +5287,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminMetadataImageUploadFailed(String error) {
-    return 'Det gick inte att ladda upp bilden: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminMetadataDeleteImageTitle(String imageType) {
-    return 'Ta bort $imageType bild';
+    return 'Delete $imageType image';
   }
 
   @override
@@ -5274,12 +5301,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
-    return 'Det gick inte att ta bort bilden: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
   String adminMetadataChooseImage(String imageType) {
-    return 'Välj bild $imageType';
+    return 'Choose $imageType image';
   }
 
   @override
@@ -5311,7 +5338,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginsUpdateAvailable(String version) {
-    return 'Uppdatering tillgänglig: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -5335,7 +5362,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
-    return 'Installera uppdatering (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
@@ -5347,7 +5374,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginsInstalling(String name) {
-    return '\"$name\" håller på att installeras...';
+    return '\"$name\" is being installed...';
   }
 
   @override
@@ -5367,7 +5394,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
-    return '$name Inställningar';
+    return '$name Settings';
   }
 
   @override
@@ -5407,7 +5434,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminReposLoadFailed(String error) {
-    return 'Det gick inte att ladda arkiv: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -5415,7 +5442,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminReposRemoveConfirm(String name) {
-    return 'Är du säker på att du vill ta bort \"$name\"?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
@@ -5423,7 +5450,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminReposSaveFailed(String error) {
-    return 'Det gick inte att spara förråd: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
@@ -5702,17 +5729,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminTaskTriggerDaily(String time) {
-    return 'Dagligen på $time';
+    return 'Daily at $time';
   }
 
   @override
   String adminTaskTriggerWeekly(String day, String time) {
-    return 'Varje $day vid $time';
+    return 'Every $day at $time';
   }
 
   @override
   String adminTaskTriggerInterval(String duration) {
-    return 'Varje $duration';
+    return 'Every $duration';
   }
 
   @override
@@ -5779,17 +5806,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminActivityDaysAgo(int days) {
-    return '${days}d sedan';
+    return '${days}d ago';
   }
 
   @override
   String adminActivityHoursAgo(int hours) {
-    return '${hours}h sedan';
+    return '${hours}h ago';
   }
 
   @override
   String adminActivityMinutesAgo(int minutes) {
-    return '${minutes}m sedan';
+    return '${minutes}m ago';
   }
 
   @override
@@ -5906,7 +5933,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminMetadataContentTypeFailed(String error) {
-    return 'Det gick inte att uppdatera innehållstypen: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -5931,12 +5958,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
-    return 'Det gick inte att uppdatera mappningar: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
   String adminTimeLimitDuration(String duration) {
-    return 'Tidsgräns: $duration';
+    return 'Time limit: $duration';
   }
 
   @override
@@ -6017,7 +6044,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String syncPlayQueueItemFallback(int index) {
-    return 'Objekt $index';
+    return 'Item $index';
   }
 
   @override
@@ -6065,12 +6092,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
-    return '$userName gick med i gruppen SyncPlay';
+    return '$userName joined SyncPlay group';
   }
 
   @override
   String syncPlayUserLeftGroup(String userName) {
-    return '$userName lämnade gruppen SyncPlay';
+    return '$userName left SyncPlay group';
   }
 
   @override
@@ -6082,7 +6109,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
-    return 'Synkronisera uppspelning till $groupName';
+    return 'Syncing playback to $groupName';
   }
 
   @override
@@ -6218,12 +6245,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String castControlFailed(String error) {
-    return 'Cast-kontrollen misslyckades: $error';
+    return 'Cast control failed: $error';
   }
 
   @override
   String castKindControls(String kind) {
-    return '$kind Kontroller';
+    return '$kind Controls';
   }
 
   @override
@@ -6234,7 +6261,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String castStopKind(String kind) {
-    return 'Stoppa $kind';
+    return 'Stop $kind';
   }
 
   @override
@@ -6257,12 +6284,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String pinEnterNDigit(int length) {
-    return 'Ange en $length-siffrig PIN-kod';
+    return 'Enter a $length-digit PIN';
   }
 
   @override
   String pinEnterYourNDigit(int length) {
-    return 'Ange din $length-siffriga PIN-kod';
+    return 'Enter your $length-digit PIN';
   }
 
   @override
@@ -6309,7 +6336,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String quickConnectFailedWithMessage(String message) {
-    return 'Snabbanslutningen misslyckades: $message';
+    return 'Quick Connect failed: $message';
   }
 
   @override
@@ -6320,7 +6347,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String remoteCommandFailed(String error) {
-    return 'Kommandot misslyckades: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -6350,7 +6377,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String castingFailed(String error) {
-    return 'Det gick inte att börja casta: $error';
+    return 'Failed to start casting: $error';
   }
 
   @override
@@ -6395,7 +6422,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String trackActionDownloading(String name) {
-    return 'Laddar ned $name...';
+    return 'Downloading $name...';
   }
 
   @override
@@ -6483,7 +6510,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String skipSegment(String segment) {
-    return 'Hoppa över $segment';
+    return 'Skip $segment';
   }
 
   @override
@@ -6494,12 +6521,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
-    return 'Laddar ner $current/$total — $fileName';
+    return 'Downloading $current/$total — $fileName';
   }
 
   @override
   String downloadingFile(String fileName) {
-    return 'Laddar ner $fileName';
+    return 'Downloading $fileName';
   }
 
   @override
@@ -6524,10 +6551,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get playerTooltipExitFullscreen => 'Avsluta helskärm';
 
   @override
-  String get playerTooltipFloatOnTop => 'Float on top';
+  String get playerTooltipFloatOnTop => 'Flyt på toppen';
 
   @override
-  String get playerTooltipExitFloatOnTop => 'Disable float on top';
+  String get playerTooltipExitFloatOnTop => 'Inaktivera flytande på toppen';
 
   @override
   String get playerTooltipLockLandscape => 'Lås landskap';
@@ -7027,6 +7054,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String latestLibraryName(String libraryName) {
-    return 'Senaste $libraryName';
+    return 'Latest $libraryName';
   }
 }

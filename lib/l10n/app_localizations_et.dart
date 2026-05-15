@@ -9,10 +9,10 @@ class AppLocalizationsEt extends AppLocalizations {
   AppLocalizationsEt([String locale = 'et']) : super(locale);
 
   @override
-  String get appTitle => 'Moonfin';
+  String get appTitle => 'Kuufin';
 
   @override
-  String get signIn => 'Sign In';
+  String get signIn => 'Logi sisse';
 
   @override
   String connectingToServer(String serverName) {
@@ -20,29 +20,32 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get quickConnect => 'Quick Connect';
+  String get quickConnect => 'Kiirühendus';
 
   @override
-  String get password => 'Password';
+  String get password => 'Parool';
 
   @override
-  String get username => 'Username';
+  String get username => 'Kasutajanimi';
+
+  @override
+  String get email => 'Meil';
 
   @override
   String get quickConnectInstruction =>
-      'Enter this code on your server\'s web dashboard:';
+      'Sisestage see kood oma serveri veebi juhtpaneelile:';
 
   @override
-  String get waitingForAuthorization => 'Waiting for authorization...';
+  String get waitingForAuthorization => 'Autoriseerimise ootel...';
 
   @override
-  String get back => 'Back';
+  String get back => 'Tagasi';
 
   @override
-  String get serverUnavailable => 'Server is unavailable';
+  String get serverUnavailable => 'Server pole saadaval';
 
   @override
-  String get loginFailed => 'Login failed';
+  String get loginFailed => 'Sisselogimine ebaõnnestus';
 
   @override
   String quickConnectUnavailable(String detail) {
@@ -55,13 +58,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get whosWatching => 'Who\'s watching?';
+  String get whosWatching => 'Kes vaatab?';
 
   @override
-  String get addUser => 'Add User';
+  String get addUser => 'Lisa kasutaja';
 
   @override
-  String get selectServer => 'Select Server';
+  String get selectServer => 'Valige Server';
 
   @override
   String appVersionFooter(String version) {
@@ -69,25 +72,25 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get savedServers => 'Saved Servers';
+  String get savedServers => 'Salvestatud serverid';
 
   @override
-  String get discoveredServers => 'Discovered Servers';
+  String get discoveredServers => 'Avastatud serverid';
 
   @override
-  String get noneFound => 'None found';
+  String get noneFound => 'Ühtegi ei leitud';
 
   @override
-  String get unableToConnectToServer => 'Unable to connect to server';
+  String get unableToConnectToServer => 'Serveriga ei saa ühendust luua';
 
   @override
-  String get addServer => 'Add Server';
+  String get addServer => 'Lisa server';
 
   @override
-  String get embyConnect => 'Emby Connect';
+  String get embyConnect => 'Emby Ühendage';
 
   @override
-  String get removeServer => 'Remove Server';
+  String get removeServer => 'Eemalda server';
 
   @override
   String removeServerConfirmation(String serverName) {
@@ -95,99 +98,100 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Tühista';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'Eemalda';
 
   @override
-  String get connectToServer => 'Connect to Server';
+  String get connectToServer => 'Ühendage serveriga';
 
   @override
-  String get serverAddress => 'Server Address';
+  String get serverAddress => 'Serveri aadress';
 
   @override
   String get serverAddressHint => 'https://your-server.example.com';
 
   @override
-  String get connect => 'Connect';
+  String get connect => 'Ühendage';
 
   @override
-  String get secureStorageUnavailable => 'Secure Storage Unavailable';
+  String get secureStorageUnavailable =>
+      'Turvaline salvestusruum pole saadaval';
 
   @override
   String get secureStorageUnavailableMessage =>
-      'Moonfin could not access your system keyring. Login can continue, but secure token storage may be unavailable until the keyring is unlocked.';
+      'Moonfin ei pääsenud teie süsteemi võtmehoidjale juurde. Sisselogimine võib jätkuda, kuid žetoonide turvaline salvestus ei pruugi olla saadaval enne, kui võtmehoidja on lukust avatud.';
 
   @override
   String get ok => 'OK';
 
   @override
-  String get settingsAppearanceTheme => 'App Theme';
+  String get settingsAppearanceTheme => 'Rakenduse teema';
 
   @override
   String get settingsAppearanceThemeSubtitle =>
-      'Switch between Moonfin and Neon Pulse without restarting the app';
+      'Lülitage Moonfini ja Neon Pulse vahel ilma rakendust taaskäivitamata';
 
   @override
-  String get themeMoonfin => 'Moonfin';
+  String get themeMoonfin => 'Kuufin';
 
   @override
   String get themeMoonfinSubtitle =>
-      'Current Moonfin look you\'ve all come to love';
+      'Praegune Moonfin välimus, mida olete kõik armastama hakanud';
 
   @override
-  String get themeNeonPulse => 'Neon Pulse';
+  String get themeNeonPulse => 'Neoonpulss';
 
   @override
   String get themeNeonPulseSubtitle =>
-      'Synthwave styling with magenta glow, cyan text, and stronger chrome contrast';
+      'Synthwave stiil magenta sära, tsüaani teksti ja tugevama kroomitud kontrastiga';
 
   @override
   String get embyConnectSignInSubtitle =>
-      'Sign in with your Emby Connect account';
+      'Logige sisse oma Emby Connecti kontoga';
 
   @override
-  String get emailOrUsername => 'Email or Username';
+  String get emailOrUsername => 'E-post või kasutajanimi';
 
   @override
-  String get selectAServer => 'Select a Server';
+  String get selectAServer => 'Valige server';
 
   @override
-  String get tryAgain => 'Try Again';
+  String get tryAgain => 'Proovige uuesti';
 
   @override
   String get noLinkedServers =>
-      'No servers linked to this Emby Connect account';
+      'Selle Emby Connecti kontoga pole lingitud ühtegi serverit';
 
   @override
   String get invalidEmbyConnectCredentials =>
-      'Invalid Emby Connect credentials';
+      'Kehtetud Emby Connecti mandaadid';
 
   @override
   String get invalidEmbyConnectLogin =>
-      'Invalid Emby Connect username or password';
+      'Kehtetu Emby Connecti kasutajanimi või parool';
 
   @override
   String get embyConnectExchangeNotSupported =>
-      'Server does not support Emby Connect exchange';
+      'Server ei toeta Emby Connecti vahetust';
 
   @override
   String get embyConnectNetworkError =>
-      'Network error while contacting Emby Connect or the selected server';
+      'Võrgutõrge Emby Connecti või valitud serveriga ühenduse võtmisel';
 
   @override
-  String get loadingLinkedServers => 'Loading linked servers...';
+  String get loadingLinkedServers => 'Lingitud serverite laadimine...';
 
   @override
-  String get connectingToServerEllipsis => 'Connecting to server...';
+  String get connectingToServerEllipsis => 'Ühenduse loomine serveriga...';
 
   @override
-  String get noReachableAddress => 'No reachable address provided';
+  String get noReachableAddress => 'Kättesaadav aadress puudub';
 
   @override
   String get invalidServerExchangeResponse =>
-      'Invalid response from server exchange endpoint';
+      'Vale vastus serverivahetuse lõpp-punktist';
 
   @override
   String unableToConnectTo(String target) {
@@ -195,81 +199,81 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get exitApp => 'Exit Moonfin?';
+  String get exitApp => 'Kas lahkuda Moonfinist?';
 
   @override
-  String get exitAppConfirmation => 'Are you sure you want to exit?';
+  String get exitAppConfirmation => 'Kas soovite kindlasti väljuda?';
 
   @override
-  String get exit => 'Exit';
+  String get exit => 'Välju';
 
   @override
-  String get noHomeRowsLoaded => 'No home rows could be loaded';
+  String get noHomeRowsLoaded => 'Ühtegi kodurida ei saanud laadida';
 
   @override
   String get noHomeRowsHint =>
-      'Try refreshing or reducing active home sections.';
+      'Proovige aktiivseid koduosasid värskendada või vähendada.';
 
   @override
-  String get retryHomeRows => 'Retry Home Rows';
+  String get retryHomeRows => 'Proovige koduridu uuesti';
 
   @override
-  String get guide => 'Guide';
+  String get guide => 'Juhend';
 
   @override
-  String get recordings => 'Recordings';
+  String get recordings => 'Salvestised';
 
   @override
-  String get schedule => 'Schedule';
+  String get schedule => 'Ajakava';
 
   @override
-  String get series => 'Series';
+  String get series => 'seeria';
 
   @override
-  String get noItemsFound => 'No items found';
+  String get noItemsFound => 'Üksusi ei leitud';
 
   @override
-  String get home => 'Home';
+  String get home => 'Kodu';
 
   @override
-  String get browseAll => 'Browse All';
+  String get browseAll => 'Sirvi kõiki';
 
   @override
-  String get genres => 'Genres';
+  String get genres => 'Žanrid';
 
   @override
-  String get collectionPlaceholder => 'Collection items will appear here';
+  String get collectionPlaceholder => 'Siin kuvatakse kollektsiooni üksused';
 
   @override
-  String get browseByLetter => 'Browse by Letter';
+  String get browseByLetter => 'Sirvige kirjade kaupa';
 
   @override
   String get alphabeticalBrowsePlaceholder =>
-      'Alphabetical browse will appear here';
+      'Siin kuvatakse tähestikuline sirvimine';
 
   @override
-  String get suggestions => 'Suggestions';
+  String get suggestions => 'Ettepanekud';
 
   @override
-  String get suggestionsPlaceholder => 'Suggested items will appear here';
+  String get suggestionsPlaceholder => 'Soovitatud üksused kuvatakse siin';
 
   @override
-  String get failedToLoadLibraries => 'Failed to load libraries';
+  String get failedToLoadLibraries => 'Teekide laadimine ebaõnnestus';
 
   @override
-  String get noLibrariesFound => 'No libraries found';
+  String get noLibrariesFound => 'Ühtegi raamatukogu ei leitud';
 
   @override
-  String get library => 'Library';
+  String get library => 'Raamatukogu';
 
   @override
-  String get displaySettings => 'Display Settings';
+  String get displaySettings => 'Kuva seaded';
 
   @override
-  String get allGenres => 'All Genres';
+  String get allGenres => 'Kõik žanrid';
 
   @override
-  String get noGenresFound => 'No genres found';
+  String get noGenresFound => 'Žanreid ei leitud';
 
   @override
   String failedToLoadFolderError(String error) {
@@ -277,7 +281,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get thisFolderIsEmpty => 'This folder is empty';
+  String get thisFolderIsEmpty => 'See kaust on tühi';
 
   @override
   String itemCountLabel(int count) {
@@ -285,16 +289,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadFavorites => 'Failed to load favorites';
+  String get failedToLoadFavorites => 'Lemmikute laadimine ebaõnnestus';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Proovi uuesti';
 
   @override
-  String get noFavoritesYet => 'No favorites yet';
+  String get noFavoritesYet => 'Lemmikuid veel pole';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Lemmikud';
 
   @override
   String totalCountItems(int count) {
@@ -302,40 +306,40 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get continuing => 'Continuing';
+  String get continuing => 'Jätkub';
 
   @override
-  String get ended => 'Ended';
+  String get ended => 'Lõppenud';
 
   @override
-  String get sortAndFilter => 'Sort & Filter';
+  String get sortAndFilter => 'Sorteeri ja filtreeri';
 
   @override
-  String get type => 'Type';
+  String get type => 'Tüüp';
 
   @override
-  String get sortBy => 'Sort By';
+  String get sortBy => 'Sorteeri';
 
   @override
-  String get display => 'Display';
+  String get display => 'Ekraan';
 
   @override
-  String get imageType => 'Image Type';
+  String get imageType => 'Pildi tüüp';
 
   @override
-  String get posterSize => 'Poster Size';
+  String get posterSize => 'Plakati suurus';
 
   @override
-  String get small => 'Small';
+  String get small => 'Väike';
 
   @override
-  String get medium => 'Medium';
+  String get medium => 'Keskmine';
 
   @override
-  String get large => 'Large';
+  String get large => 'Suur';
 
   @override
-  String get extraLarge => 'Extra Large';
+  String get extraLarge => 'Eriti suur';
 
   @override
   String libraryGenresTitle(String name) {
@@ -343,37 +347,38 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get views => 'Views';
+  String get views => 'Vaated';
 
   @override
-  String get albums => 'Albums';
+  String get albums => 'Albumid';
 
   @override
-  String get albumArtists => 'Album Artists';
+  String get albumArtists => 'Albumi kunstnikud';
 
   @override
-  String get artists => 'Artists';
+  String get artists => 'Kunstnikud';
 
   @override
-  String get bookmarks => 'Bookmarks';
+  String get bookmarks => 'Järjehoidjad';
 
   @override
-  String get noSavedBookmarks => 'No saved bookmarks for this title yet.';
+  String get noSavedBookmarks =>
+      'Selle pealkirja jaoks pole veel salvestatud järjehoidjaid.';
 
   @override
-  String get openBook => 'Open Book';
+  String get openBook => 'Ava raamat';
 
   @override
-  String get chapter => 'Chapter';
+  String get chapter => 'Peatükk';
 
   @override
-  String get page => 'Page';
+  String get page => 'Lehekülg';
 
   @override
-  String get bookmark => 'Bookmark';
+  String get bookmark => 'Järjehoidja';
 
   @override
-  String get justNow => 'Just now';
+  String get justNow => 'Just praegu';
 
   @override
   String minutesAgo(int count) {
@@ -391,34 +396,34 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get discoverySubjects => 'Discovery Subjects';
+  String get discoverySubjects => 'Avastusobjektid';
 
   @override
   String get pickDiscoverySubjects =>
-      'Pick which subject feeds to show in Discover.';
+      'Valige, milliseid teemavooge Discoveris kuvada.';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'Rakenda';
 
   @override
-  String get openLink => 'Open Link';
+  String get openLink => 'Ava link';
 
   @override
-  String get scanWithYourPhone => 'Scan with your phone';
+  String get scanWithYourPhone => 'Skannige oma telefoniga';
 
   @override
-  String get audiobookGenres => 'Audiobook Genres';
+  String get audiobookGenres => 'Audioraamatu žanrid';
 
   @override
   String get pickAudiobookGenres =>
-      'Pick which genres to show in Audiobook Discover.';
+      'Valige, milliseid žanre Audiobook Discoveris kuvada.';
 
   @override
-  String get discoverAudiobooks => 'Discover Audiobooks';
+  String get discoverAudiobooks => 'Avastage heliraamatuid';
 
   @override
   String get librivoxDescription =>
-      'Popular public domain titles from LibriVox.';
+      'LibriVoxi populaarsed üldkasutatavad pealkirjad.';
 
   @override
   String titlesCount(int count) {
@@ -426,84 +431,86 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get scrollLeft => 'Scroll left';
+  String get scrollLeft => 'Kerige vasakule';
 
   @override
-  String get scrollRight => 'Scroll right';
+  String get scrollRight => 'Kerige paremale';
 
   @override
-  String get couldNotLoadGenre => 'Could not load this genre right now.';
+  String get couldNotLoadGenre => 'Seda žanrit ei saanud praegu laadida.';
 
   @override
-  String get continueReading => 'Continue Reading';
+  String get continueReading => 'Jätka lugemist';
 
   @override
-  String get savedHighlights => 'Saved Highlights';
+  String get savedHighlights => 'Salvestatud esiletõstmised';
 
   @override
-  String get continueListening => 'Continue Listening';
+  String get continueListening => 'Jätka kuulamist';
 
   @override
-  String get listen => 'Listen';
+  String get listen => 'Kuulake';
 
   @override
-  String get resume => 'Resume';
+  String get resume => 'Jätka';
 
   @override
-  String get failedToLoadLibrary => 'Failed to load library';
+  String get failedToLoadLibrary => 'Teegi laadimine ebaõnnestus';
 
   @override
-  String get popularNow => 'Popular Now';
+  String get popularNow => 'Praegu populaarne';
 
   @override
-  String get savedForLater => 'Saved For Later';
+  String get savedForLater => 'Salvestatud hilisemaks';
 
   @override
-  String get topListens => 'Top Listens';
+  String get topListens => 'Parimad kuulamised';
 
   @override
-  String get unreadDiscoveries => 'Unread Discoveries';
+  String get unreadDiscoveries => 'Lugemata avastused';
 
   @override
-  String get pickUpAgain => 'Pick Up Again';
+  String get pickUpAgain => 'Võtke uuesti üles';
 
   @override
   String get bookHighlightsDescription =>
-      'Your books with highlights, favorites, or reading progress.';
+      'Teie raamatud tipphetkede, lemmikute või lugemise edenemisega.';
 
   @override
-  String get handPickedFromLibrary => 'Hand-picked from your library.';
+  String get handPickedFromLibrary => 'Teie raamatukogust käsitsi valitud.';
 
   @override
   String get handPickedFromListeningQueue =>
-      'Hand-picked from your listening queue.';
+      'Teie kuulamisjärjekorrast käsitsi valitud.';
 
   @override
   String get booksWithHighlights =>
-      'Books with highlights, favorites, or reading progress.';
+      'Raamatud tipphetkede, lemmikute või lugemise edenemisega.';
 
   @override
   String get jumpBackNarration =>
-      'Jump back into narration without hunting for your place.';
+      'Hüppa tagasi jutustamisse ilma oma kohta jahtimata.';
 
   @override
-  String get unreadBooksReady => 'Unread books ready for the next quiet hour.';
+  String get unreadBooksReady =>
+      'Lugemata raamatud on järgmiseks vaikseks tunniks valmis.';
 
   @override
   String get quickAccessFavorites =>
-      'Quick access to the books you keep coming back to.';
+      'Kiire juurdepääs raamatutele, mille juurde naased.';
 
   @override
-  String get searchAudiobooks => 'Search audiobooks';
+  String get searchAudiobooks => 'Otsige audioraamatuid';
 
   @override
-  String get searchYourLibrary => 'Search your library';
+  String get searchYourLibrary => 'Otsige oma raamatukogust';
 
   @override
-  String get pickUpStory => 'Pick up the story where you left off';
+  String get pickUpStory => 'Jätkake lugu sealt, kus pooleli jäite';
 
   @override
-  String get savedPlacesChapters => 'Your saved places and unfinished chapters';
+  String get savedPlacesChapters =>
+      'Teie salvestatud kohad ja lõpetamata peatükid';
 
   @override
   String authorsCount(int count) {
@@ -521,16 +528,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get readyWhenYouAre => 'Ready when you are';
+  String get readyWhenYouAre => 'Valmis, kui oled';
 
   @override
-  String get details => 'Details';
+  String get details => 'Üksikasjad';
 
   @override
-  String get listeningRoom => 'Listening Room';
+  String get listeningRoom => 'Kuulamistuba';
 
   @override
-  String get bookmarksAndProgress => 'Bookmarks & Progress';
+  String get bookmarksAndProgress => 'Järjehoidjad ja edenemine';
 
   @override
   String titlesArrangedForBrowsing(int count) {
@@ -538,36 +545,36 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get titles => 'Titles';
+  String get titles => 'Pealkirjad';
 
   @override
-  String get allTitles => 'All Titles';
+  String get allTitles => 'Kõik pealkirjad';
 
   @override
-  String get authors => 'Authors';
+  String get authors => 'Autorid';
 
   @override
-  String get browseByAuthor => 'Browse By Author';
+  String get browseByAuthor => 'Sirvi autori järgi';
 
   @override
-  String get browseByGenre => 'Browse By Genre';
+  String get browseByGenre => 'Sirvi žanri järgi';
 
   @override
-  String get discover => 'Discover';
+  String get discover => 'Avastage';
 
   @override
   String get trendingTitlesOpenLibrary =>
-      'Trending titles by subject from Open Library.';
+      'Populaarsed pealkirjad teemade kaupa Open Libraryst.';
 
   @override
-  String get noBookmarkedItems => 'No bookmarked items yet';
+  String get noBookmarkedItems => 'Järjehoidjatesse lisatud üksusi pole veel';
 
   @override
   String get nothingMatchesSection =>
-      'Nothing matches this section yet. Try another tab or come back after the library sync finishes.';
+      'Sellele jaotisele ei vasta veel midagi. Proovige teist vahekaarti või tulge pärast teegi sünkroonimise lõppemist tagasi.';
 
   @override
-  String get audiobooks => 'Audiobooks';
+  String get audiobooks => 'Audioraamatud';
 
   @override
   String noLabelFound(String label) {
@@ -575,71 +582,71 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get folder => 'Folder';
+  String get folder => 'Kaust';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'Filtrid';
 
   @override
-  String get readingStatus => 'Reading Status';
+  String get readingStatus => 'Lugemise olek';
 
   @override
-  String get playedStatus => 'Played Status';
+  String get playedStatus => 'Mänginud olek';
 
   @override
-  String get readStatus => 'Read';
+  String get readStatus => 'Lugege';
 
   @override
-  String get watched => 'Watched';
+  String get watched => 'Vaadati';
 
   @override
-  String get unread => 'Unread';
+  String get unread => 'Lugemata';
 
   @override
-  String get unwatched => 'Unwatched';
+  String get unwatched => 'Vaatamata';
 
   @override
-  String get seriesStatus => 'Series Status';
+  String get seriesStatus => 'Sarja olek';
 
   @override
-  String get allLibraries => 'All Libraries';
+  String get allLibraries => 'Kõik raamatukogud';
 
   @override
-  String get books => 'Books';
+  String get books => 'Raamatud';
 
   @override
-  String get author => 'Author';
+  String get author => 'Autor';
 
   @override
-  String get unknownAuthor => 'Unknown Author';
+  String get unknownAuthor => 'Tundmatu autor';
 
   @override
-  String get uncategorized => 'Uncategorized';
+  String get uncategorized => 'Kategooriata';
 
   @override
-  String get overview => 'Overview';
+  String get overview => 'Ülevaade';
 
   @override
   String get noLibrivoxDescription =>
-      'No description provided by LibriVox for this title yet.';
+      'LibriVox pole selle pealkirja kohta veel kirjeldust esitanud.';
 
   @override
-  String get readers => 'Readers';
+  String get readers => 'Lugejad';
 
   @override
-  String get openLinks => 'Open Links';
+  String get openLinks => 'Avage lingid';
 
   @override
-  String get librivoxPage => 'LibriVox Page';
+  String get librivoxPage => 'LibriVoxi leht';
 
   @override
-  String get internetArchive => 'Internet Archive';
+  String get internetArchive => 'Interneti-arhiiv';
 
   @override
-  String get rssFeed => 'RSS Feed';
+  String get rssFeed => 'RSS-voog';
 
   @override
-  String get downloadZip => 'Download Zip';
+  String get downloadZip => 'Laadige alla Zip';
 
   @override
   String sectionCountLabel(int count) {
@@ -653,13 +660,13 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get noOpenLibraryOverview =>
-      'No overview available from Open Library for this title yet.';
+      'Selle pealkirja kohta pole Open Library ülevaadet veel saadaval.';
 
   @override
-  String get subjects => 'Subjects';
+  String get subjects => 'Õppeained';
 
   @override
-  String get all => 'All';
+  String get all => 'Kõik';
 
   @override
   String booksCount(int count) {
@@ -667,10 +674,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get couldNotLoadSubject => 'Could not load this subject right now.';
+  String get couldNotLoadSubject => 'Seda teemat ei saanud praegu laadida.';
 
   @override
-  String get audiobookDetails => 'Audiobook Details';
+  String get audiobookDetails => 'Audioraamatu üksikasjad';
 
   @override
   String authorsCountTitle(int count) {
@@ -689,83 +696,89 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get trackList => 'Track List';
+  String get trackList => 'Lugude loend';
 
   @override
-  String get itemListPlaceholder => 'Item list will appear here';
+  String get itemListPlaceholder => 'Siin kuvatakse üksuste loend';
 
   @override
-  String get favoriteTracksPlaceholder => 'Favorite tracks will appear here';
+  String get favoriteTracksPlaceholder => 'Siin kuvatakse lemmiklood';
 
   @override
-  String get failedToLoad => 'Failed to load';
+  String get failedToLoad => 'Laadimine ebaõnnestus';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Kustuta';
 
   @override
-  String get save => 'Save';
+  String get save => 'Salvesta';
 
   @override
-  String get moreLikeThis => 'More Like This';
+  String get moreLikeThis => 'Rohkem sellist';
 
   @override
-  String get castAndCrew => 'Cast & Crew';
+  String get castAndCrew => 'Näitlejad ja meeskond';
 
   @override
-  String get collection => 'Collection';
+  String get collection => 'Kollektsioon';
 
   @override
-  String get episodes => 'Episodes';
+  String get episodes => 'Episoodid';
 
   @override
-  String get nextUp => 'Next Up';
+  String get nextUp => 'Järgmine Üles';
 
   @override
-  String get seasons => 'Seasons';
+  String get seasons => 'Aastaajad';
 
   @override
-  String get chapters => 'Chapters';
+  String get chapters => 'Peatükid';
 
   @override
-  String get features => 'Features';
+  String get features => 'Omadused';
 
   @override
-  String get movies => 'Movies';
+  String get movies => 'Filmid';
 
   @override
-  String get other => 'Other';
+  String get other => 'muud';
 
   @override
-  String get discography => 'Discography';
+  String get discography => 'Diskograafia';
 
   @override
-  String get similarArtists => 'Similar Artists';
+  String get similarArtists => 'Sarnased kunstnikud';
 
   @override
-  String get tableOfContents => 'Table of Contents';
+  String get tableOfContents => 'Sisukord';
 
   @override
-  String get tracklist => 'Tracklist';
+  String get tracklist => 'Lugude nimekiri';
 
   @override
-  String get biography => 'Biography';
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
 
   @override
-  String get authorDetails => 'Author Details';
+  String get biography => 'Biograafia';
 
   @override
-  String get noOverviewAvailable => 'No overview available for this title yet.';
+  String get authorDetails => 'Autori üksikasjad';
 
   @override
-  String get noBiographyAvailable => 'No biography available for this author.';
+  String get noOverviewAvailable =>
+      'Selle pealkirja kohta pole veel ülevaadet saadaval.';
 
   @override
-  String get noBooksFound => 'No books found for this author.';
+  String get noBiographyAvailable => 'Selle autori elulugu pole saadaval.';
+
+  @override
+  String get noBooksFound => 'Selle autori jaoks ei leitud ühtegi raamatut.';
 
   @override
   String get unableToLoadAuthorDetails =>
-      'Unable to load author details right now.';
+      'Autori üksikasju ei saa praegu laadida.';
 
   @override
   String published(int year) {
@@ -773,7 +786,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get publicationDateUnknown => 'Publication date unknown';
+  String get publicationDateUnknown => 'Avaldamise kuupäev teadmata';
 
   @override
   String seasonCount(int count) {
@@ -792,13 +805,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get view => 'View';
+  String get view => 'Vaade';
 
   @override
-  String get resumeReading => 'Resume Reading';
+  String get resumeReading => 'Jätka lugemist';
 
   @override
-  String get read => 'Read';
+  String get read => 'Lugege';
 
   @override
   String resumeFrom(String position) {
@@ -806,97 +819,98 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get play => 'Play';
+  String get play => 'Mängi';
 
   @override
-  String get startOver => 'Start Over';
+  String get startOver => 'Alusta otsast';
 
   @override
-  String get restart => 'Restart';
+  String get restart => 'Taaskäivitage';
 
   @override
-  String get readOffline => 'Read Offline';
+  String get readOffline => 'Lugege võrguühenduseta';
 
   @override
-  String get playOffline => 'Play Offline';
+  String get playOffline => 'Mängige võrguühenduseta';
 
   @override
-  String get audio => 'Audio';
+  String get audio => 'Heli';
 
   @override
-  String get subtitles => 'Subtitles';
+  String get subtitles => 'Subtiitrid';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versioon';
 
   @override
   String get cast => 'Cast';
 
   @override
-  String get trailer => 'Trailer';
+  String get trailer => 'Treiler';
 
   @override
-  String get finished => 'Finished';
+  String get finished => 'Valmis';
 
   @override
-  String get favorited => 'Favorited';
+  String get favorited => 'Lemmikus';
 
   @override
-  String get favorite => 'Favorite';
+  String get favorite => 'Lemmik';
 
   @override
-  String get playlist => 'Playlist';
+  String get playlist => 'Esitusloend';
 
   @override
-  String get downloaded => 'Downloaded';
+  String get downloaded => 'Alla laaditud';
 
   @override
-  String get downloadAll => 'Download All';
+  String get downloadAll => 'Laadige kõik alla';
 
   @override
-  String get download => 'Download';
+  String get download => 'Laadi alla';
 
   @override
-  String get deleteDownloaded => 'Delete Downloaded';
+  String get deleteDownloaded => 'Kustuta allalaaditud';
 
   @override
-  String get goToSeries => 'Go to Series';
+  String get goToSeries => 'Minge seeriasse';
 
   @override
-  String get editMetadata => 'Edit Metadata';
+  String get editMetadata => 'Redigeeri metaandmeid';
 
   @override
-  String get less => 'Less';
+  String get less => 'Vähem';
 
   @override
-  String get more => 'More';
+  String get more => 'Rohkem';
 
   @override
-  String get deleteItem => 'Delete Item';
+  String get deleteItem => 'Kustuta üksus';
 
   @override
-  String get deletePlaylist => 'Delete Playlist';
+  String get deletePlaylist => 'Kustuta esitusloend';
 
   @override
-  String get deletePlaylistMessage => 'Delete this playlist from the server?';
+  String get deletePlaylistMessage =>
+      'Kas kustutada see esitusloend serverist?';
 
   @override
-  String get deleteItemMessage => 'Delete this item from the server?';
+  String get deleteItemMessage => 'Kas kustutada see üksus serverist?';
 
   @override
-  String get failedToDeletePlaylist => 'Failed to delete playlist';
+  String get failedToDeletePlaylist => 'Esitusloendi kustutamine ebaõnnestus';
 
   @override
-  String get failedToDeleteItem => 'Failed to delete item';
+  String get failedToDeleteItem => 'Üksuse kustutamine ebaõnnestus';
 
   @override
-  String get renamePlaylist => 'Rename Playlist';
+  String get renamePlaylist => 'Esitusloendi ümbernimetamine';
 
   @override
-  String get playlistName => 'Playlist name';
+  String get playlistName => 'Esitusloendi nimi';
 
   @override
-  String get deleteDownloadedAlbum => 'Delete Downloaded Album';
+  String get deleteDownloadedAlbum => 'Allalaaditud albumi kustutamine';
 
   @override
   String deleteDownloadedTracksMessage(String title) {
@@ -904,14 +918,14 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get downloadedTracksDeleted => 'Downloaded tracks deleted';
+  String get downloadedTracksDeleted => 'Allalaaditud lood on kustutatud';
 
   @override
   String get downloadedTracksDeleteFailed =>
-      'Some downloaded tracks could not be deleted';
+      'Mõnda allalaaditud lugu ei saanud kustutada';
 
   @override
-  String get noTracksLoaded => 'No tracks loaded';
+  String get noTracksLoaded => 'Lugusid pole laaditud';
 
   @override
   String noItemsLoaded(String itemLabel) {
@@ -929,10 +943,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get itemDeleted => 'Item deleted';
+  String get itemDeleted => 'Üksus kustutatud';
 
   @override
-  String get noPlayableTrailerFound => 'No playable trailer found.';
+  String get noPlayableTrailerFound => 'Esitatavat treilerit ei leitud.';
 
   @override
   String unsupportedBookFormat(String extension) {
@@ -940,26 +954,26 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get audioTrack => 'Audio Track';
+  String get audioTrack => 'Helirada';
 
   @override
-  String get subtitleTrack => 'Subtitle Track';
+  String get subtitleTrack => 'Subtiitrirada';
 
   @override
-  String get none => 'None';
+  String get none => 'Mitte ühtegi';
 
   @override
-  String get downloadSubtitlesLabel => 'Download subtitles...';
+  String get downloadSubtitlesLabel => 'Laadi alla subtiitrid...';
 
   @override
   String get searchOpenSubtitlesPlugin =>
-      'Search using the OpenSubtitles plugin';
+      'Otsige OpenSubtitlesi pistikprogrammi abil';
 
   @override
-  String get downloadSubtitles => 'Download Subtitles';
+  String get downloadSubtitles => 'Laadige alla subtiitrid';
 
   @override
-  String get selectedSubtitleInvalid => 'The selected subtitle is invalid.';
+  String get selectedSubtitleInvalid => 'Valitud alapealkiri on kehtetu.';
 
   @override
   String subtitleDownloadedSelected(String name) {
@@ -968,7 +982,7 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get subtitleDownloadedPending =>
-      'Subtitle downloaded. It may take a moment to appear while Jellyfin refreshes the item.';
+      'Subtiitrid alla laaditud. Jellyfini üksust värskendades võib kuvamiseks kuluda veidi aega.';
 
   @override
   String noRemoteSubtitlesFound(String language) {
@@ -976,7 +990,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get selectVersion => 'Select Version';
+  String get selectVersion => 'Valige Versioon';
 
   @override
   String versionNumber(int number) {
@@ -984,19 +998,21 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get downloadAllQuality => 'Download All — Quality';
+  String get downloadAllQuality => 'Laadige kõik alla – kvaliteet';
 
   @override
-  String get downloadQuality => 'Download Quality';
+  String get downloadQuality => 'Allalaadimise kvaliteet';
 
   @override
-  String get originalFileNoReencoding => 'Original file, no re-encoding';
+  String get originalFileNoReencoding =>
+      'Originaalfail, uuesti kodeerimist pole';
 
   @override
-  String get originalFilesNoReencoding => 'Original files, no re-encoding';
+  String get originalFilesNoReencoding =>
+      'Originaalfailid, uuesti kodeerimist pole';
 
   @override
-  String get noEpisodesLoaded => 'No episodes loaded';
+  String get noEpisodesLoaded => 'Ühtegi episoodi pole laaditud';
 
   @override
   String downloadingItem(String name, String quality) {
@@ -1004,7 +1020,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get deleteDownloadedFiles => 'Delete Downloaded Files';
+  String get deleteDownloadedFiles => 'Kustutage allalaaditud failid';
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
@@ -1012,22 +1028,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get downloadedFilesDeleted => 'Downloaded files deleted';
+  String get downloadedFilesDeleted => 'Allalaaditud failid on kustutatud';
 
   @override
-  String get failedToDeleteFiles => 'Failed to delete files';
+  String get failedToDeleteFiles => 'Failide kustutamine ebaõnnestus';
 
   @override
-  String get deleteFiles => 'Delete Files';
+  String get deleteFiles => 'Kustuta failid';
 
   @override
-  String get director => 'DIRECTOR';
+  String get director => 'DIREKTOR';
 
   @override
-  String get writers => 'WRITERS';
+  String get writers => 'KIRJANIKUD';
 
   @override
-  String get studio => 'STUDIO';
+  String get studio => 'STUUDIO';
 
   @override
   String studioMoreCount(int count) {
@@ -1092,13 +1108,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get showLess => 'Show Less';
+  String get showLess => 'Näita vähem';
 
   @override
-  String get readMore => 'Read More';
+  String get readMore => 'Loe edasi';
 
   @override
-  String get shuffle => 'Shuffle';
+  String get shuffle => 'Segamine';
 
   @override
   String downloadsCount(int count) {
@@ -1106,7 +1122,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get perfectMatch => 'Perfect match';
+  String get perfectMatch => 'Ideaalne sobivus';
 
   @override
   String channelsCount(int count) {
@@ -1150,19 +1166,20 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get deleteSeasonFiles => 'all downloaded episodes in this season';
+  String get deleteSeasonFiles => 'kõik selle hooaja allalaaditud episoodid';
 
   @override
-  String get stillWatching => 'Still Watching?';
+  String get stillWatching => 'Vaatad ikka veel?';
 
   @override
-  String get unableToLoadTrailerStream => 'Unable to load trailer stream.';
+  String get unableToLoadTrailerStream => 'Treilerite voogu ei saa laadida.';
 
   @override
-  String get trailerTimedOut => 'Trailer timed out while loading.';
+  String get trailerTimedOut => 'Haagis aegus laadimise ajal.';
 
   @override
-  String get playbackFailedForTrailer => 'Playback failed for this trailer.';
+  String get playbackFailedForTrailer =>
+      'Selle treileri taasesitus ebaõnnestus.';
 
   @override
   String photoCountOf(int current, int total) {
@@ -1171,7 +1188,7 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get castingUnavailableOffline =>
-      'Casting is unavailable during offline playback.';
+      'Ülekandmine pole võrguühenduseta taasesituse ajal saadaval.';
 
   @override
   String castActionFailed(String label, String error) {
@@ -1189,16 +1206,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get deviceVolume => 'Device Volume';
+  String get deviceVolume => 'Seadme helitugevus';
 
   @override
-  String get unavailable => 'Unavailable';
+  String get unavailable => 'Pole saadaval';
 
   @override
-  String get pause => 'Pause';
+  String get pause => 'Paus';
 
   @override
-  String get syncPosition => 'Sync Position';
+  String get syncPosition => 'Sünkroonimispositsioon';
 
   @override
   String stopCast(String label) {
@@ -1206,7 +1223,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get queueIsEmpty => 'Queue is empty';
+  String get queueIsEmpty => 'Järjekord on tühi';
 
   @override
   String trackNumber(int number) {
@@ -1214,16 +1231,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get remotePlayback => 'Remote Playback';
+  String get remotePlayback => 'Kaugesitus';
 
   @override
-  String get castingToGoogleCast => 'Casting to Google Cast';
+  String get castingToGoogleCast => 'Ülekandmine Google Casti';
 
   @override
-  String get castingViaAirPlay => 'Casting via AirPlay';
+  String get castingViaAirPlay => 'Ülekandmine AirPlay kaudu';
 
   @override
-  String get castingViaDlna => 'Casting via DLNA';
+  String get castingViaDlna => 'Ülekandmine DLNA kaudu';
 
   @override
   String secondsCount(int seconds) {
@@ -1231,10 +1248,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get longPressToUnlock => 'Long press to unlock';
+  String get longPressToUnlock => 'Avamiseks vajutage pikalt';
 
   @override
-  String get off => 'Off';
+  String get off => 'Väljas';
 
   @override
   String streamTypeFallback(String streamType, int number) {
@@ -1242,7 +1259,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get auto => 'Auto';
+  String get auto => 'Automaatne';
 
   @override
   String bitrateValueMbps(int mbps) {
@@ -1250,10 +1267,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get bitrateOverride => 'Bitrate Override';
+  String get bitrateOverride => 'Bitikiiruse alistamine';
 
   @override
-  String get audioDelay => 'Audio Delay';
+  String get audioDelay => 'Heli viivitus';
 
   @override
   String delayMinusMs(int value) {
@@ -1266,79 +1283,79 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get subtitleDelay => 'Subtitle Delay';
+  String get subtitleDelay => 'Subtiitrite viivitus';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'Lähtesta';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Tundmatu';
 
   @override
-  String get playbackInformation => 'Playback Information';
+  String get playbackInformation => 'Taasesituse teave';
 
   @override
-  String get playback => 'Playback';
+  String get playback => 'Taasesitus';
 
   @override
-  String get playMethod => 'Play Method';
+  String get playMethod => 'Mängumeetod';
 
   @override
-  String get directPlay => 'Direct Play';
+  String get directPlay => 'Otsene mängimine';
 
   @override
-  String get directStream => 'Direct Stream';
+  String get directStream => 'Otsene voog';
 
   @override
-  String get transcoding => 'Transcoding';
+  String get transcoding => 'Ümberkodeerimine';
 
   @override
-  String get transcodeReasons => 'Transcode Reasons';
+  String get transcodeReasons => 'Transkodeerimise põhjused';
 
   @override
-  String get player => 'Player';
+  String get player => 'Mängija';
 
   @override
-  String get container => 'Container';
+  String get container => 'Konteiner';
 
   @override
-  String get bitrate => 'Bitrate';
+  String get bitrate => 'Bitikiirus';
 
   @override
   String get video => 'Video';
 
   @override
-  String get resolution => 'Resolution';
+  String get resolution => 'Resolutsioon';
 
   @override
   String get hdr => 'HDR';
 
   @override
-  String get codec => 'Codec';
+  String get codec => 'Kodek';
 
   @override
-  String get videoBitrate => 'Video Bitrate';
+  String get videoBitrate => 'Video bitikiirus';
 
   @override
-  String get track => 'Track';
+  String get track => 'Rada';
 
   @override
-  String get channels => 'Channels';
+  String get channels => 'Kanalid';
 
   @override
-  String get audioBitrate => 'Audio Bitrate';
+  String get audioBitrate => 'Heli bitikiirus';
 
   @override
-  String get sampleRate => 'Sample Rate';
+  String get sampleRate => 'Proovi sagedus';
 
   @override
-  String get format => 'Format';
+  String get format => 'Vorming';
 
   @override
-  String get external => 'External';
+  String get external => 'Väline';
 
   @override
-  String get embedded => 'Embedded';
+  String get embedded => 'Manustatud';
 
   @override
   String castSessionError(String protocol) {
@@ -1352,7 +1369,7 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get epubUnavailableOnPlatform =>
-      'EPUB rendering in-app is not available on this platform yet.';
+      'Rakendusesisene EPUB-i renderdamine pole sellel platvormil veel saadaval.';
 
   @override
   String formatCannotRenderInApp(String extension) {
@@ -1361,10 +1378,10 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get embeddedRenderingUnavailable =>
-      'Embedded document rendering is unavailable on this platform.';
+      'Manustatud dokumendi renderdamine pole sellel platvormil saadaval.';
 
   @override
-  String get couldNotOpenExternalViewer => 'Could not open external viewer.';
+  String get couldNotOpenExternalViewer => 'Välist vaatajat ei saanud avada.';
 
   @override
   String failedToOpenInAppReader(String error) {
@@ -1383,10 +1400,10 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get noBookmarksYet =>
-      'No bookmarks yet.\nTap the bookmark icon while reading to save your position.';
+      'Järjehoidjaid pole veel.\nOma asukoha salvestamiseks puudutage lugemise ajal järjehoidja ikooni.';
 
   @override
-  String get noTableOfContentsAvailable => 'No table of contents available';
+  String get noTableOfContentsAvailable => 'Sisukorda pole saadaval';
 
   @override
   String pageLabel(int number) {
@@ -1394,10 +1411,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get position => 'Position';
+  String get position => 'positsioon';
 
   @override
-  String get bookReader => 'Book Reader';
+  String get bookReader => 'Raamatulugeja';
 
   @override
   String formatExtension(String extension) {
@@ -1410,22 +1427,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get updating => 'Updating...';
+  String get updating => 'Värskendamine...';
 
   @override
-  String get markUnread => 'Mark Unread';
+  String get markUnread => 'Märgi mitteloetuks';
 
   @override
-  String get markAsRead => 'Mark as Read';
+  String get markAsRead => 'Märgi loetuks';
 
   @override
-  String get reloadReader => 'Reload Reader';
+  String get reloadReader => 'Laadige lugeja uuesti';
 
   @override
-  String get noPagesFound => 'No pages found.';
+  String get noPagesFound => 'Ühtegi lehte ei leitud.';
 
   @override
-  String get failedToDecodePageImage => 'Failed to decode page image.';
+  String get failedToDecodePageImage => 'Lehepildi dekodeerimine ebaõnnestus.';
 
   @override
   String resetZoom(String zoom) {
@@ -1433,22 +1450,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get singlePage => 'Single Page';
+  String get singlePage => 'Üks leht';
 
   @override
-  String get twoPageSpread => 'Two-Page Spread';
+  String get twoPageSpread => 'Kaheleheküljeline levi';
 
   @override
-  String get addBookmark => 'Add Bookmark';
+  String get addBookmark => 'Lisa järjehoidja';
 
   @override
-  String get bookmarksEllipsis => 'Bookmarks...';
+  String get bookmarksEllipsis => 'Järjehoidjad...';
 
   @override
-  String get markedAsRead => 'Marked as read';
+  String get markedAsRead => 'Märgitud loetuks';
 
   @override
-  String get markedAsUnread => 'Marked as unread';
+  String get markedAsUnread => 'Märgitud lugemata';
 
   @override
   String failedToUpdateReadState(String error) {
@@ -1456,31 +1473,33 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get themeSystem => 'Theme: System';
+  String get themeSystem => 'Teema: Süsteem';
 
   @override
-  String get themeLight => 'Theme: Light';
+  String get themeLight => 'Teema: Valgus';
 
   @override
-  String get themeDark => 'Theme: Dark';
+  String get themeDark => 'Teema: tume';
 
   @override
-  String get themeSepia => 'Theme: Sepia';
+  String get themeSepia => 'Teema: Seepia';
 
   @override
-  String get invertColorsFixedLayout => 'Invert Colors (fixed layout)';
+  String get invertColorsFixedLayout =>
+      'Inverteeri värvid (fikseeritud paigutus)';
 
   @override
-  String get invertColorsPdf => 'Invert Colors (PDF)';
+  String get invertColorsPdf => 'Inverteeri värvid (PDF)';
 
   @override
-  String get preparingInAppReader => 'Preparing in-app reader...';
+  String get preparingInAppReader =>
+      'Rakendusesisese lugeja ettevalmistamine...';
 
   @override
-  String get pdfDataNotAvailable => 'PDF data not available.';
+  String get pdfDataNotAvailable => 'PDF-andmed pole saadaval.';
 
   @override
-  String get readerFallbackModeActive => 'Reader fallback mode active';
+  String get readerFallbackModeActive => 'Lugeja varurežiim aktiivne';
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
@@ -1489,37 +1508,37 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get reloadReaderPlatformHint =>
-      'Use Reload Reader after switching to a supported platform target (Android, iOS, macOS).';
+      'Kasutage Reload Readerit pärast toetatud platvormi sihtmärgile (Android, iOS, macOS) lülitumist.';
 
   @override
-  String get openExternally => 'Open Externally';
+  String get openExternally => 'Avage väliselt';
 
   @override
-  String get noEpubChaptersFound => 'No EPUB chapters found.';
+  String get noEpubChaptersFound => 'EPUB-i peatükke ei leitud.';
 
   @override
-  String get readerNotReady => 'Reader not ready.';
+  String get readerNotReady => 'Lugeja pole valmis.';
 
   @override
-  String get seriesRecordings => 'Series Recordings';
+  String get seriesRecordings => 'Sarja salvestused';
 
   @override
-  String get now => 'Now';
+  String get now => 'Nüüd';
 
   @override
-  String get sports => 'Sports';
+  String get sports => 'Sport';
 
   @override
-  String get news => 'News';
+  String get news => 'Uudised';
 
   @override
-  String get kids => 'Kids';
+  String get kids => 'Lapsed';
 
   @override
-  String get premiere => 'Premiere';
+  String get premiere => 'Esietendus';
 
   @override
-  String get guideTimeline => 'Guide Timeline';
+  String get guideTimeline => 'Juhend ajaskaala';
 
   @override
   String failedToLoadGuide(String error) {
@@ -1527,35 +1546,35 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get noChannelsFound => 'No channels found';
+  String get noChannelsFound => 'Ühtegi kanalit ei leitud';
 
   @override
   String get liveBadge => 'LIVE';
 
   @override
-  String get movie => 'Movie';
+  String get movie => 'Film';
 
   @override
-  String get removedFromFavoriteChannels => 'Removed from favorite channels';
+  String get removedFromFavoriteChannels => 'Lemmikkanalitest eemaldatud';
 
   @override
-  String get addedToFavoriteChannels => 'Added to favorite channels';
+  String get addedToFavoriteChannels => 'Lisatud lemmikkanalitesse';
 
   @override
   String get failedToUpdateFavoriteChannel =>
-      'Failed to update favorite channel';
+      'Lemmikkanali värskendamine ebaõnnestus';
 
   @override
-  String get unfavoriteChannel => 'Unfavorite Channel';
+  String get unfavoriteChannel => 'Lemmik kanal';
 
   @override
-  String get favoriteChannel => 'Favorite Channel';
+  String get favoriteChannel => 'Lemmikkanal';
 
   @override
-  String get watch => 'Watch';
+  String get watch => 'Vaata';
 
   @override
-  String get close => 'Close';
+  String get close => 'Sule';
 
   @override
   String failedToPlayChannel(String name) {
@@ -1563,25 +1582,25 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadRecordings => 'Failed to load recordings';
+  String get failedToLoadRecordings => 'Salvestiste laadimine ebaõnnestus';
 
   @override
-  String get scheduledInNext24Hours => 'Scheduled in Next 24 Hours';
+  String get scheduledInNext24Hours => 'Plaanitud järgmise 24 tunni jooksul';
 
   @override
-  String get recentRecordings => 'Recent Recordings';
+  String get recentRecordings => 'Viimased salvestused';
 
   @override
-  String get tvSeries => 'TV Series';
+  String get tvSeries => 'Telesari';
 
   @override
-  String get failedToLoadSchedule => 'Failed to load schedule';
+  String get failedToLoadSchedule => 'Ajakava laadimine ebaõnnestus';
 
   @override
-  String get noScheduledRecordings => 'No scheduled recordings';
+  String get noScheduledRecordings => 'Ajastatud salvestusi pole';
 
   @override
-  String get cancelRecording => 'Cancel Recording?';
+  String get cancelRecording => 'Kas katkestada salvestamine?';
 
   @override
   String cancelScheduledRecordingOf(String name) {
@@ -1589,25 +1608,27 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get no => 'No';
+  String get no => 'Ei';
 
   @override
-  String get yesCancel => 'Yes, Cancel';
+  String get yesCancel => 'Jah, tühista';
 
   @override
-  String get failedToCancelRecording => 'Failed to cancel recording';
+  String get failedToCancelRecording => 'Salvestamise tühistamine ebaõnnestus';
 
   @override
-  String get failedToLoadSeriesRecordings => 'Failed to load series recordings';
+  String get failedToLoadSeriesRecordings =>
+      'Sarja salvestiste laadimine ebaõnnestus';
 
   @override
-  String get noSeriesRecordings => 'No series recordings';
+  String get noSeriesRecordings => 'Sarja salvestusi pole';
 
   @override
-  String get cancelSeriesRecording => 'Cancel Series Recording';
+  String get cancelSeriesRecording => 'Tühista seeria salvestamine';
 
   @override
-  String get cancelSeriesRecordingQuestion => 'Cancel Series Recording?';
+  String get cancelSeriesRecordingQuestion =>
+      'Kas katkestada seeria salvestamine?';
 
   @override
   String stopRecordingName(String name) {
@@ -1616,13 +1637,13 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get failedToCancelSeriesRecording =>
-      'Failed to cancel series recording';
+      'Sarja salvestamise tühistamine ebaõnnestus';
 
   @override
-  String get searchThisLibrary => 'Search this library...';
+  String get searchThisLibrary => 'Otsi sellest raamatukogust...';
 
   @override
-  String get searchEllipsis => 'Search...';
+  String get searchEllipsis => 'Otsi...';
 
   @override
   String noResultsForQuery(String query) {
@@ -1635,31 +1656,40 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get seerr => 'Seerr';
+  String get seerr => 'Nägija';
 
   @override
-  String get savedMedia => 'Saved Media';
+  String get seerrAccountType => 'Nägija konto tüüp';
 
   @override
-  String get tvShows => 'TV Shows';
+  String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get music => 'Music';
+  String get localAccount => 'Kohalik';
 
   @override
-  String get musicAlbums => 'Music Albums';
+  String get savedMedia => 'Salvestatud meedia';
 
   @override
-  String get noMediaInFilter => 'No media in this filter';
+  String get tvShows => 'Telesaated';
 
   @override
-  String get noDownloadedMediaYet => 'No downloaded media yet';
+  String get music => 'Muusika';
 
   @override
-  String get browseLibrary => 'Browse Library';
+  String get musicAlbums => 'Muusikaalbumid';
 
   @override
-  String get deleteDownload => 'Delete Download';
+  String get noMediaInFilter => 'Selles filtris pole meediat';
+
+  @override
+  String get noDownloadedMediaYet => 'Allalaaditud meediat pole veel';
+
+  @override
+  String get browseLibrary => 'Sirvige raamatukogu';
+
+  @override
+  String get deleteDownload => 'Kustuta allalaadimine';
 
   @override
   String removeItemAndFiles(String name) {
@@ -1675,7 +1705,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get album => 'Album';
 
   @override
-  String get playAlbum => 'Play Album';
+  String get playAlbum => 'Esita albumit';
 
   @override
   String failedToLoadAlbum(String error) {
@@ -1688,16 +1718,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get season => 'Season';
+  String get season => 'Hooaeg';
 
   @override
-  String get errorLoadingEpisodes => 'Error loading episodes';
+  String get errorLoadingEpisodes => 'Viga episoodide laadimisel';
 
   @override
-  String get noDownloadedEpisodes => 'No downloaded episodes';
+  String get noDownloadedEpisodes => 'Allalaaditud episoode pole';
 
   @override
-  String get deleteEpisode => 'Delete Episode';
+  String get deleteEpisode => 'Kustuta episood';
 
   @override
   String removeName(String name) {
@@ -1720,13 +1750,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get seriesNotFound => 'Series not found';
+  String get seriesNotFound => 'Sarja ei leitud';
 
   @override
-  String get errorLoadingSeries => 'Error loading series';
+  String get errorLoadingSeries => 'Seeria laadimisel tekkis viga';
 
   @override
-  String get downloadedEpisodes => 'Downloaded Episodes';
+  String get downloadedEpisodes => 'Allalaaditud episoodid';
 
   @override
   String seasonNumber(int number) {
@@ -1739,10 +1769,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get specials => 'Specials';
+  String get specials => 'Eripakkumised';
 
   @override
-  String get deleteSeason => 'Delete Season';
+  String get deleteSeason => 'Kustuta hooaeg';
 
   @override
   String deleteAllEpisodesInSeason(String season) {
@@ -1761,32 +1791,32 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get storageManagement => 'Storage Management';
+  String get storageManagement => 'Salvestusruumi haldamine';
 
   @override
-  String get storageBreakdown => 'Storage Breakdown';
+  String get storageBreakdown => 'Salvestusala jaotus';
 
   @override
-  String get downloadedItems => 'Downloaded Items';
+  String get downloadedItems => 'Allalaaditud üksused';
 
   @override
-  String get storageLimit => 'Storage Limit';
+  String get storageLimit => 'Salvestuspiirang';
 
   @override
-  String get noLimit => 'No limit';
+  String get noLimit => 'Piiramata';
 
   @override
-  String get deleteAllDownloads => 'Delete All Downloads';
+  String get deleteAllDownloads => 'Kustuta kõik allalaadimised';
 
   @override
   String get deleteAllDownloadsWarning =>
-      'This will remove all downloaded media files and cannot be undone.';
+      'See eemaldab kõik allalaaditud meediumifailid ja seda ei saa tagasi võtta.';
 
   @override
-  String get deleteAll => 'Delete All';
+  String get deleteAll => 'Kustuta kõik';
 
   @override
-  String get deleteSelected => 'Delete Selected';
+  String get deleteSelected => 'Kustuta valitud';
 
   @override
   String deleteSelectedCount(int count) {
@@ -1794,13 +1824,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get musicAndAudiobooks => 'Music & Audiobooks';
+  String get musicAndAudiobooks => 'Muusika ja heliraamatud';
 
   @override
-  String get images => 'Images';
+  String get images => 'Pildid';
 
   @override
-  String get database => 'Database';
+  String get database => 'Andmebaas';
 
   @override
   String ofStorageLimit(String limit) {
@@ -1808,81 +1838,83 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'Seaded';
 
   @override
-  String get authentication => 'Authentication';
+  String get authentication => 'Autentimine';
 
   @override
-  String get autoLoginServerManagement => 'Auto login, server management';
+  String get autoLoginServerManagement =>
+      'Automaatne sisselogimine, serverihaldus';
 
   @override
-  String get pinCode => 'PIN Code';
+  String get pinCode => 'PIN-kood';
 
   @override
-  String get setUpPinCodeProtection => 'Set up PIN code protection';
+  String get setUpPinCodeProtection => 'Seadistage PIN-koodi kaitse';
 
   @override
-  String get parentalControls => 'Parental Controls';
+  String get parentalControls => 'Vanemlik kontroll';
 
   @override
-  String get contentRatingRestrictions => 'Content rating restrictions';
+  String get contentRatingRestrictions => 'Sisu reitingupiirangud';
 
   @override
-  String get bitRateResolutionBehavior => 'Bitrate, resolution, behavior';
+  String get bitRateResolutionBehavior => 'Bitikiirus, eraldusvõime, käitumine';
 
   @override
-  String get languageSizeAppearance => 'Language, size, appearance';
+  String get languageSizeAppearance => 'Keel, suurus, välimus';
 
   @override
-  String get qualityStorage => 'Quality, storage';
+  String get qualityStorage => 'Kvaliteet, ladustamine';
 
   @override
-  String get serverSyncAndPluginStatus => 'Server sync and plugin status';
+  String get serverSyncAndPluginStatus =>
+      'Serveri sünkroonimine ja pistikprogrammi olek';
 
   @override
-  String get mediaRequestIntegration => 'Media request integration';
+  String get mediaRequestIntegration => 'Meediumitaotluste integreerimine';
 
   @override
-  String get switchServer => 'Switch Server';
+  String get switchServer => 'Vaheta serverit';
 
   @override
-  String get signOut => 'Sign Out';
+  String get signOut => 'Logi välja';
 
   @override
-  String get versionLicenses => 'Version, licenses';
+  String get versionLicenses => 'Versioon, litsentsid';
 
   @override
-  String get account => 'Account';
+  String get account => 'konto';
 
   @override
-  String get signInAndSecurity => 'Sign-in and security';
+  String get signInAndSecurity => 'Sisselogimine ja turvalisus';
 
   @override
-  String get administration => 'Administration';
+  String get administration => 'Administreerimine';
 
   @override
   String get serverSettingsUsersLibraries =>
-      'Server settings, users, libraries';
+      'Serveri seaded, kasutajad, teegid';
 
   @override
-  String get customization => 'Customization';
+  String get customization => 'Kohandamine';
 
   @override
-  String get themeAndLayout => 'Theme and layout';
+  String get themeAndLayout => 'Teema ja paigutus';
 
   @override
-  String get videoAndSubtitles => 'Video and subtitles';
+  String get videoAndSubtitles => 'Video ja subtiitrid';
 
   @override
-  String get integrations => 'Integrations';
+  String get integrations => 'Integratsioonid';
 
   @override
-  String get pluginAndRequests => 'Plugin and requests';
+  String get pluginAndRequests => 'Plugin ja taotlused';
 
   @override
   String get customizeAccountPlaybackInterface =>
-      'Customize account, playback, and interface behavior';
+      'Kohandage konto, taasesituse ja liidese käitumist';
 
   @override
   String optionsCount(int count) {
@@ -1890,84 +1922,93 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get themeAndAppearance => 'Theme & Appearance';
+  String get themeAndAppearance => 'Teema ja välimus';
 
   @override
-  String get focusBorderColor => 'Focus Border Color';
+  String get focusBorderColor => 'Fookuse äärise värv';
 
   @override
-  String get watchedIndicators => 'Watched Indicators';
+  String get watchedIndicators => 'Vaadatud indikaatorid';
 
   @override
-  String get always => 'Always';
+  String get always => 'Alati';
 
   @override
-  String get hideUnwatched => 'Hide Unwatched';
+  String get hideUnwatched => 'Peida jälgimata';
 
   @override
-  String get episodesOnly => 'Episodes Only';
+  String get episodesOnly => 'Ainult episoodid';
 
   @override
-  String get never => 'Never';
+  String get never => 'Mitte kunagi';
 
   @override
-  String get focusExpansionAnimation => 'Focus Expansion Animation';
+  String get focusExpansionAnimation => 'Fookuse laiendamise animatsioon';
 
   @override
-  String get scaleFocusedCards => 'Scale focused or hovered cards and tiles';
+  String get desktopUiScale => 'Töölaua kasutajaliidese skaala';
 
   @override
-  String get backgroundBackdrops => 'Background Backdrops';
+  String get scaleFocusedCards =>
+      'Skaalake fokuseeritud või hõljutatud kaarte ja paanid';
 
   @override
-  String get showBackdropImages => 'Show backdrop images behind content';
+  String get backgroundBackdrops => 'Tausta taustad';
 
   @override
-  String get seriesThumbnails => 'Series Thumbnails';
+  String get showBackdropImages => 'Kuva sisu taga taustapildid';
+
+  @override
+  String get seriesThumbnails => 'Sarja pisipildid';
 
   @override
   String get seriesThumbnailsDescription =>
-      'Episodes only: use series artwork that matches each row image type';
+      'Ainult jaod: kasutage seeriakujundust, mis sobib iga rea ​​kujutise tüübiga';
 
   @override
-  String get homeRowInfoOverlay => 'Home Row Info Overlay';
+  String get homeRowInfoOverlay => 'Avalehe rea teabe ülekate';
 
   @override
   String get showTitleMetadataOnHomeRows =>
-      'Show title and metadata when browsing home rows';
+      'Kuva koduridade sirvimisel pealkiri ja metaandmed';
 
   @override
-  String get clockDisplay => 'Clock Display';
+  String get clockDisplay => 'Kella ekraan';
 
   @override
-  String get inMenus => 'In Menus';
+  String get inMenus => 'Menüüdes';
 
   @override
-  String get inVideo => 'In Video';
+  String get inVideo => 'Videos';
 
   @override
-  String get seasonalEffects => 'Seasonal Effects';
+  String get seasonalEffects => 'Hooajalised efektid';
 
   @override
-  String get snow => 'Snow';
+  String get seasonalEffectsDescription =>
+      'Visuaalsed efektid ja hooajalised kaunistused';
 
   @override
-  String get fireworks => 'Fireworks';
+  String get snow => 'Lumi';
 
   @override
-  String get confetti => 'Confetti';
+  String get fireworks => 'Ilutulestik';
 
   @override
-  String get fallingLeaves => 'Falling Leaves';
+  String get confetti => 'Konfettid';
 
   @override
-  String get themeMusic => 'Theme Music';
+  String get fallingLeaves => 'Langevad lehed';
 
   @override
-  String get playThemeMusicOnDetailPages => 'Play theme music on detail pages';
+  String get themeMusic => 'Teema Muusika';
 
   @override
-  String get themeMusicVolume => 'Theme Music Volume';
+  String get playThemeMusicOnDetailPages =>
+      'Esitage teemamuusikat üksikasjade lehtedel';
+
+  @override
+  String get themeMusicVolume => 'Teema muusika helitugevus';
 
   @override
   String percentValue(int value) {
@@ -1975,13 +2016,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get themeMusicOnHomeRows => 'Theme Music on Home Rows';
+  String get themeMusicOnHomeRows => 'Teemamuusika koduridadel';
 
   @override
-  String get playWhenBrowsingHomeScreen => 'Play when browsing home screen';
+  String get playWhenBrowsingHomeScreen => 'Esita avakuva sirvimisel';
 
   @override
-  String get detailsBackgroundBlur => 'Details Background Blur';
+  String get detailsBackgroundBlur => 'Üksikasjad Tausta hägu';
 
   @override
   String pixelValue(int value) {
@@ -1989,183 +2030,183 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get browsingBackgroundBlur => 'Browsing Background Blur';
+  String get browsingBackgroundBlur => 'Sirvimise taustahägu';
 
   @override
-  String get maxStreamingBitrate => 'Max Streaming Bitrate';
+  String get maxStreamingBitrate => 'Maksimaalne voogesituse bitikiirus';
 
   @override
-  String get maxResolution => 'Max Resolution';
+  String get maxResolution => 'Maksimaalne eraldusvõime';
 
   @override
-  String get playerZoomMode => 'Player Zoom Mode';
+  String get playerZoomMode => 'Mängija suumirežiim';
 
   @override
-  String get fit => 'Fit';
+  String get fit => 'Sobivad';
 
   @override
-  String get autoCrop => 'Auto Crop';
+  String get autoCrop => 'Automaatne kärpimine';
 
   @override
-  String get stretch => 'Stretch';
+  String get stretch => 'Venitada';
 
   @override
-  String get refreshRateSwitching => 'Refresh Rate Switching';
+  String get refreshRateSwitching => 'Värskendussageduse vahetamine';
 
   @override
-  String get disabled => 'Disabled';
+  String get disabled => 'Keelatud';
 
   @override
-  String get scaleOnTv => 'Scale on TV';
+  String get scaleOnTv => 'Skaala teleris';
 
   @override
-  String get scaleOnDevice => 'Scale on Device';
+  String get scaleOnDevice => 'Skaala seadmel';
 
   @override
-  String get trickPlay => 'Trick Play';
+  String get trickPlay => 'Trikimäng';
 
   @override
   String get showPreviewThumbnailsWhenSeeking =>
-      'Show preview thumbnails when seeking';
+      'Kuva otsimisel eelvaate pisipildid';
 
   @override
-  String get showDescriptionOnPause => 'Show Description on Pause';
+  String get showDescriptionOnPause => 'Kuva kirjeldus pausil';
 
   @override
   String get dimVideoShowOverview =>
-      'Dim video and show overview text while paused';
+      'Hämardage video ja kuvage ülevaateteksti peatamise ajal';
 
   @override
-  String get osdLockButton => 'OSD Lock Button';
+  String get osdLockButton => 'OSD lukustusnupp';
 
   @override
   String get osdLockButtonDescription =>
-      'Show a lock button that blocks touch input until long-pressed';
+      'Kuva lukustusnupp, mis blokeerib puutesisendi, kuni seda pikalt vajutatakse';
 
   @override
-  String get audioBehavior => 'Audio Behavior';
+  String get audioBehavior => 'Heli käitumine';
 
   @override
-  String get downmixToStereo => 'Downmix to Stereo';
+  String get downmixToStereo => 'Mikserda alla stereoks';
 
   @override
-  String get defaultAudioLanguage => 'Default Audio Language';
+  String get defaultAudioLanguage => 'Heli vaikekeel';
 
   @override
-  String get autoServerDefault => 'Auto (Server Default)';
+  String get autoServerDefault => 'Automaatne (serveri vaikeseade)';
 
   @override
-  String get english => 'English';
+  String get english => 'inglise keel';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'hispaania keel';
 
   @override
-  String get french => 'French';
+  String get french => 'prantsuse keel';
 
   @override
-  String get german => 'German';
+  String get german => 'saksa keel';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'itaalia keel';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'portugali keel';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'Jaapani';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'korea keel';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'hiina keel';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'vene keel';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'araabia keel';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'hindi';
 
   @override
-  String get dutch => 'Dutch';
+  String get dutch => 'hollandi keel';
 
   @override
-  String get swedish => 'Swedish';
+  String get swedish => 'rootsi keel';
 
   @override
-  String get norwegian => 'Norwegian';
+  String get norwegian => 'norra keel';
 
   @override
-  String get danish => 'Danish';
+  String get danish => 'taani keel';
 
   @override
-  String get finnish => 'Finnish';
+  String get finnish => 'soome keel';
 
   @override
-  String get polish => 'Polish';
+  String get polish => 'poola keel';
 
   @override
-  String get ac3Passthrough => 'AC3 Passthrough';
+  String get ac3Passthrough => 'AC3 läbilaskevõime';
 
   @override
-  String get dtsPassthrough => 'DTS Passthrough';
+  String get dtsPassthrough => 'DTS läbipääs';
 
   @override
-  String get trueHdSupport => 'TrueHD Support';
+  String get trueHdSupport => 'TrueHD tugi';
 
   @override
   String get enableDtsPassthrough =>
-      'Bitstream DTS audio to AVR only; requires receiver support and DTS source track';
+      'Bitivoo DTS-heli ainult AVR-ile; nõuab vastuvõtja tuge ja DTS-i allika rada';
 
   @override
   String get enableTrueHdAudio =>
-      'Enable TrueHD audio (may not work on all platforms)';
+      'Luba TrueHD heli (ei pruugi kõigil platvormidel töötada)';
 
   @override
-  String get nightMode => 'Night Mode';
+  String get nightMode => 'Öörežiim';
 
   @override
-  String get compressDynamicRange => 'Compress dynamic range';
+  String get compressDynamicRange => 'Dünaamilise ulatuse tihendamine';
 
   @override
-  String get advancedMpv => 'Advanced mpv';
+  String get advancedMpv => 'Täiustatud mpv';
 
   @override
-  String get enableCustomMpvConf => 'Enable Custom mpv.conf';
+  String get enableCustomMpvConf => 'Luba kohandatud mpv.conf';
 
   @override
   String get applyMpvConfBeforePlayback =>
-      'Apply a user-specified mpv.conf before playback starts';
+      'Enne taasesituse alustamist rakendage kasutaja määratud mpv.conf';
 
   @override
-  String get unsafeAdvancedMpvOptions => 'Unsafe Advanced mpv Options';
+  String get unsafeAdvancedMpvOptions => 'Ebaturvalised mpv täpsemad valikud';
 
   @override
   String get unsafeMpvOptionsDescription =>
-      'Allow a wider set of mpv options. May break playback behavior.';
+      'Lubage laiem mpv-valikute komplekt. Võib rikkuda taasesituskäitumist.';
 
   @override
-  String get hardwareDecoding => 'Hardware decoding';
+  String get hardwareDecoding => 'Riistvara dekodeerimine';
 
   @override
   String get hardwareDecodingSubtitle =>
-      'May improve performance but can cause playback issues on some devices.';
+      'Võib parandada jõudlust, kuid võib mõnes seadmes põhjustada taasesitusprobleeme.';
 
   @override
-  String get nextUpAndQueuing => 'Next Up & Queuing';
+  String get nextUpAndQueuing => 'Järgmine üles ja järjekord';
 
   @override
-  String get nextUpBehavior => 'Next Up Behavior';
+  String get nextUpDisplay => 'Järgmine ekraan';
 
   @override
-  String get extended => 'Extended';
+  String get extended => 'Laiendatud';
 
   @override
-  String get minimal => 'Minimal';
+  String get minimal => 'Minimaalne';
 
   @override
   String get nextUpTimeout => 'Next Up Timeout';
@@ -2176,13 +2217,14 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get mediaQueuing => 'Media Queuing';
+  String get mediaQueuing => 'Meedia järjekord';
 
   @override
-  String get autoQueueNextEpisodes => 'Auto-queue next episodes';
+  String get autoQueueNextEpisodes =>
+      'Pange järgmised osad automaatselt järjekorda';
 
   @override
-  String get stillWatchingPrompt => 'Still Watching Prompt';
+  String get stillWatchingPrompt => 'Vaatan endiselt viipa';
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
@@ -2190,128 +2232,127 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get resumeAndSkip => 'Resume & Skip';
+  String get resumeAndSkip => 'Jätka ja jäta vahele';
 
   @override
-  String get resumeRewind => 'Resume Rewind';
+  String get resumeRewind => 'Jätka tagasikerimist';
 
   @override
-  String get unpauseRewind => 'Unpause Rewind';
+  String get unpauseRewind => 'Tühista tagasikerimise paus';
 
   @override
-  String get fiveSeconds => '5 seconds';
+  String get fiveSeconds => '5 sekundit';
 
   @override
-  String get tenSeconds => '10 seconds';
+  String get tenSeconds => '10 sekundit';
 
   @override
-  String get fifteenSeconds => '15 seconds';
+  String get fifteenSeconds => '15 sekundit';
 
   @override
-  String get thirtySeconds => '30 seconds';
+  String get thirtySeconds => '30 sekundit';
 
   @override
-  String get skipBackLength => 'Skip Back Length';
+  String get skipBackLength => 'Jäta vahele pikkus';
 
   @override
-  String get skipForwardLength => 'Skip Forward Length';
+  String get skipForwardLength => 'Jätke pikkus edasi';
 
   @override
-  String get customMpvConfPath => 'Custom mpv.conf Path';
+  String get customMpvConfPath => 'Kohandatud mpv.conf tee';
 
   @override
   String get notSetMpvConf =>
-      'Not set. Moonfin will try a default mpv.conf in app/data folders.';
+      'Pole määratud. Moonfin proovib rakenduste/andmete kaustades vaikefaili mpv.conf.';
 
   @override
-  String get selectMpvConf => 'Select mpv.conf';
+  String get selectMpvConf => 'Valige mpv.conf';
 
   @override
   String get pathToMpvConf => '/path/to/mpv.conf';
 
   @override
   String get subtitleStyleDescription =>
-      'Style settings (size, color, offset) apply to text-based subtitles (SRT, VTT, TTML). ASS/SSA subtitles use their own embedded styling unless \"ASS/SSA Direct Play\" is turned off. Bitmap subtitles (PGS, DVB, VobSub) cannot be restyled.';
+      'Stiiliseaded (suurus, värv, nihe) kehtivad tekstipõhistele subtiitritele (SRT, VTT, TTML). ASS/SSA subtiitrid kasutavad oma manustatud stiili, välja arvatud juhul, kui \"ASS/SSA Direct Play\" on välja lülitatud. Bitmap-subtiitreid (PGS, DVB, VobSub) ei saa ümber kujundada.';
 
   @override
-  String get defaultSubtitleLanguage => 'Default Subtitle Language';
+  String get defaultSubtitleLanguage => 'Subtiitrite vaikekeel';
 
   @override
-  String get defaultToNoSubtitles => 'Default to No Subtitles';
+  String get defaultToNoSubtitles => 'Vaikimisi Subtiitreid pole';
 
   @override
-  String get turnOffSubtitlesByDefault => 'Turn off subtitles by default';
+  String get turnOffSubtitlesByDefault => 'Lülitage subtiitrid vaikimisi välja';
 
   @override
-  String get subtitleSize => 'Subtitle Size';
+  String get subtitleSize => 'Subtiitrite suurus';
 
   @override
-  String get textFillColor => 'Text Fill Color';
+  String get textFillColor => 'Teksti täitevärv';
 
   @override
-  String get backgroundColor => 'Background Color';
+  String get backgroundColor => 'Taustavärv';
 
   @override
-  String get textStrokeColor => 'Text Stroke Color';
+  String get textStrokeColor => 'Teksti joone värv';
 
   @override
-  String get subtitleCustomization => 'Subtitle Customization';
+  String get subtitleCustomization => 'Subtiitrite kohandamine';
 
   @override
   String get subtitleCustomizationDescription =>
-      'Customize subtitle appearance';
+      'Kohandage subtiitrite välimust';
 
   @override
-  String get subtitlePreviewText =>
-      'The quick brown fox jumps over the lazy dog';
+  String get subtitlePreviewText => 'Kiire pruunrebane hüppab üle laisa koera';
 
   @override
-  String get verticalOffset => 'Vertical Offset';
+  String get verticalOffset => 'Vertikaalne nihe';
 
   @override
-  String get pgsDirectPlay => 'PGS Direct Play';
+  String get pgsDirectPlay => 'PGS otsemäng';
 
   @override
-  String get directPlayPgsSubtitles => 'Direct play PGS subtitles';
+  String get directPlayPgsSubtitles => 'Otsesesitus PGS-i subtiitritega';
 
   @override
-  String get assSsaDirectPlay => 'ASS/SSA Direct Play';
+  String get assSsaDirectPlay => 'ASS/SSA otsemäng';
 
   @override
-  String get directPlayAssSsaSubtitles => 'Direct play ASS/SSA subtitles';
+  String get directPlayAssSsaSubtitles => 'Otsesesitus ASS/SSA subtiitritega';
 
   @override
-  String get white => 'White';
+  String get white => 'Valge';
 
   @override
-  String get black => 'Black';
+  String get black => 'Must';
 
   @override
-  String get yellow => 'Yellow';
+  String get yellow => 'Kollane';
 
   @override
-  String get green => 'Green';
+  String get green => 'Roheline';
 
   @override
-  String get cyan => 'Cyan';
+  String get cyan => 'Tsüaan';
 
   @override
-  String get red => 'Red';
+  String get red => 'Punane';
 
   @override
-  String get transparent => 'Transparent';
+  String get transparent => 'Läbipaistev';
 
   @override
-  String get semiTransparentBlack => 'Semi-transparent Black';
+  String get semiTransparentBlack => 'Poolläbipaistev must';
 
   @override
-  String get global => 'Global';
+  String get global => 'Globaalne';
 
   @override
-  String get desktop => 'Desktop';
+  String get desktop => 'Töölaud';
 
   @override
-  String get mobile => 'Mobile';
+  String get mobile => 'Mobiilne';
 
   @override
   String get tv => 'TV';
@@ -2332,224 +2373,226 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get customizationProfile => 'Customization Profile';
+  String get customizationProfile => 'Kohandamise profiil';
 
   @override
   String get customizationProfileDescription =>
-      'Choose the profile to load, edit, and sync. Global applies everywhere unless a device profile overrides it. The green dot marks your current device profile.';
+      'Valige laadimiseks, muutmiseks ja sünkroonimiseks profiil. Globaalne kehtib kõikjal, välja arvatud juhul, kui seadme profiil seda alistab. Roheline punkt tähistab teie praegust seadme profiili.';
 
   @override
-  String get loadProfile => 'Load Profile';
+  String get loadProfile => 'Laadi profiil';
 
   @override
-  String get syncing => 'Syncing...';
+  String get syncing => 'Sünkroonimine...';
 
   @override
-  String get syncToProfile => 'Sync To Profile';
+  String get syncToProfile => 'Sünkrooni profiiliga';
 
   @override
-  String get profileSyncHidden => 'Profile Sync Hidden';
+  String get profileSyncHidden => 'Profiili sünkroonimine on peidetud';
 
   @override
   String get enablePluginSyncDescription =>
-      'Enable Server Plugin Sync in Plugin settings to show profile controls here.';
+      'Profiili juhtelementide kuvamiseks lubage pistikprogrammi seadetes serveri pistikprogrammi sünkroonimine.';
 
   @override
-  String get quality => 'Quality';
+  String get quality => 'Kvaliteet';
 
   @override
-  String get defaultDownloadQuality => 'Default Download Quality';
+  String get defaultDownloadQuality => 'Allalaadimise vaikekvaliteet';
 
   @override
-  String get network => 'Network';
+  String get network => 'Võrk';
 
   @override
-  String get wifiOnlyDownloads => 'WiFi-Only Downloads';
+  String get wifiOnlyDownloads => 'Allalaadimised ainult WiFi kaudu';
 
   @override
-  String get onlyDownloadOnWifi => 'Only download when connected to WiFi';
+  String get onlyDownloadOnWifi =>
+      'Laadige alla ainult siis, kui see on ühendatud WiFi-ga';
 
   @override
-  String get storage => 'Storage';
+  String get storage => 'Säilitamine';
 
   @override
-  String get storageUsed => 'Storage Used';
+  String get storageUsed => 'Ladustamine Kasutatud';
 
   @override
-  String get manage => 'Manage';
+  String get manage => 'Halda';
 
   @override
-  String get calculating => 'Calculating...';
+  String get calculating => 'Arvutamine...';
 
   @override
-  String get downloadLocation => 'Download Location';
+  String get downloadLocation => 'Laadi alla asukoht';
 
   @override
-  String get defaultLabel => 'Default';
+  String get defaultLabel => 'Vaikimisi';
 
   @override
-  String get saveToDownloadsFolder => 'Save to Downloads folder';
+  String get saveToDownloadsFolder => 'Salvestage kausta Allalaadimised';
 
   @override
   String get downloadsVisibleToOtherApps =>
-      'Downloads/Moonfin — visible to other apps';
+      'Allalaadimised/Moonfin – nähtav teistele rakendustele';
 
   @override
-  String get dangerZone => 'Danger Zone';
+  String get dangerZone => 'Ohutu tsoon';
 
   @override
-  String get clearAllDownloads => 'Clear All Downloads';
+  String get clearAllDownloads => 'Kustuta kõik allalaadimised';
 
   @override
-  String get original => 'Original';
+  String get original => 'Originaal';
 
   @override
-  String get changeDownloadLocation => 'Change Download Location';
+  String get changeDownloadLocation => 'Muutke allalaadimise asukohta';
 
   @override
   String get changeDownloadLocationDescription =>
-      'New downloads will be saved to the selected folder. Existing downloads will remain in their current location and can be managed from Storage settings.';
+      'Uued allalaadimised salvestatakse valitud kausta. Olemasolevad allalaadimised jäävad oma praegusesse asukohta ja neid saab hallata Salvestusruumi seadetes.';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Kinnita';
 
   @override
   String get cannotWriteToFolder =>
-      'Cannot write to selected folder. Please choose a different location or grant storage permissions.';
+      'Valitud kausta ei saa kirjutada. Valige mõni muu asukoht või andke talletusload.';
 
   @override
-  String get saveToDownloadsFolderQuestion => 'Save to Downloads folder?';
+  String get saveToDownloadsFolderQuestion =>
+      'Kas salvestada allalaadimiste kausta?';
 
   @override
   String get saveToDownloadsFolderDescription =>
-      'Downloaded media will be saved to Downloads/Moonfin on your device. These files will be visible to other apps such as your gallery or music player.\n\nExisting downloads will remain in their current location.';
+      'Allalaaditud meedium salvestatakse teie seadme kausta Allalaadimised/Moonfin. Need failid on nähtavad teistele rakendustele, nagu teie galerii või muusikapleier.\n\nOlemasolevad allalaadimised jäävad oma praegusesse asukohta.';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'Luba';
 
   @override
   String get clearAllDownloadsWarning =>
-      'This will delete all downloaded media and cannot be undone.';
+      'See kustutab kõik allalaaditud meediumid ja seda ei saa tagasi võtta.';
 
   @override
-  String get clearAll => 'Clear All';
+  String get clearAll => 'Kustuta kõik';
 
   @override
-  String get navigationStyle => 'Navigation Style';
+  String get navigationStyle => 'Navigeerimisstiil';
 
   @override
-  String get topBar => 'Top Bar';
+  String get topBar => 'Ülemine riba';
 
   @override
-  String get leftSidebar => 'Left Sidebar';
+  String get leftSidebar => 'Vasak külgriba';
 
   @override
-  String get showShuffleButton => 'Show Shuffle Button';
+  String get showShuffleButton => 'Näita juhujuhtimisnuppu';
 
   @override
-  String get showGenresButton => 'Show Genres Button';
+  String get showGenresButton => 'Žanrite kuvamise nupp';
 
   @override
-  String get showFavoritesButton => 'Show Favorites Button';
+  String get showFavoritesButton => 'Kuva lemmikute nupp';
 
   @override
-  String get showLibrariesInToolbar => 'Show Libraries in Toolbar';
+  String get showLibrariesInToolbar => 'Näita teeke tööriistaribal';
 
   @override
-  String get navbarOpacity => 'Navbar Opacity';
+  String get navbarOpacity => 'Navbari läbipaistmatus';
 
   @override
-  String get navbarColor => 'Navbar Color';
+  String get navbarColor => 'Navbari värv';
 
   @override
-  String get gray => 'Gray';
+  String get gray => 'Hall';
 
   @override
-  String get darkBlue => 'Dark Blue';
+  String get darkBlue => 'Tumesinine';
 
   @override
-  String get purple => 'Purple';
+  String get purple => 'Lilla';
 
   @override
-  String get teal => 'Teal';
+  String get teal => 'Sinine';
 
   @override
-  String get navy => 'Navy';
+  String get navy => 'Merevägi';
 
   @override
-  String get charcoal => 'Charcoal';
+  String get charcoal => 'Süsi';
 
   @override
-  String get brown => 'Brown';
+  String get brown => 'Pruun';
 
   @override
-  String get darkRed => 'Dark Red';
+  String get darkRed => 'Tumepunane';
 
   @override
-  String get darkGreen => 'Dark Green';
+  String get darkGreen => 'Tumeroheline';
 
   @override
-  String get slate => 'Slate';
+  String get slate => 'Kiltkivi';
 
   @override
   String get indigo => 'Indigo';
 
   @override
-  String get libraryDisplay => 'Library Display';
+  String get libraryDisplay => 'Raamatukogu väljapanek';
 
   @override
-  String get posterLabel => 'Poster';
+  String get posterLabel => 'Plakat';
 
   @override
-  String get thumbnailLabel => 'Thumbnail';
+  String get thumbnailLabel => 'Pisipilt';
 
   @override
-  String get bannerLabel => 'Banner';
+  String get bannerLabel => 'Bänner';
 
   @override
-  String get overridePerLibrarySettings => 'Override Per-Library Settings';
+  String get overridePerLibrarySettings => 'Alista raamatukogupõhised sätted';
 
   @override
   String get applyImageTypeToAllLibraries =>
-      'Apply image type to all libraries';
+      'Rakenda pilditüüp kõikidele teekidele';
 
   @override
-  String get multiServerLibraries => 'Multi-Server Libraries';
+  String get multiServerLibraries => 'Mitme serveriga raamatukogud';
 
   @override
   String get showLibrariesFromAllServers =>
-      'Show libraries from all connected servers';
+      'Kuva kõigi ühendatud serverite teegid';
 
   @override
-  String get enableFolderView => 'Enable Folder View';
+  String get enableFolderView => 'Luba kaustavaade';
 
   @override
-  String get showFolderBrowsingOption => 'Show folder browsing option';
+  String get showFolderBrowsingOption => 'Kuva kaustade sirvimise valik';
 
   @override
-  String get libraryVisibility => 'Library Visibility';
+  String get libraryVisibility => 'Raamatukogu nähtavus';
 
   @override
   String get libraryVisibilityDescription =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'Avalehe nähtavuse sisse- ja väljalülitamine teegi kaupa. Muudatuste jõustumiseks taaskäivitage Moonfin.';
 
   @override
-  String get showInNavigation => 'Show in navigation';
+  String get showInNavigation => 'Kuva navigeerimisel';
 
   @override
-  String get showInLatestMedia => 'Show in latest media';
+  String get showInLatestMedia => 'Näita uusimas meedias';
 
   @override
-  String get sourceLibraries => 'Source Libraries';
+  String get sourceLibraries => 'Allikate raamatukogud';
 
   @override
-  String get sourceCollections => 'Source Collections';
+  String get sourceCollections => 'Allikakogud';
 
   @override
-  String get excludedGenres => 'Excluded Genres';
+  String get excludedGenres => 'Välistatud žanrid';
 
   @override
-  String get selectAll => 'Select All';
+  String get selectAll => 'Valige Kõik';
 
   @override
   String itemsSelected(int count) {
@@ -2557,221 +2600,241 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get mediaBar => 'Media Bar';
+  String get mediaBar => 'Meediumiriba';
 
   @override
-  String get mediaBarMode => 'Media Bar Style';
+  String get mediaSources => 'Meedia allikad';
+
+  @override
+  String get behavior => 'Käitumine';
+
+  @override
+  String get seconds => 'sekundit';
+
+  @override
+  String get localPreviews => 'Kohalikud eelvaated';
+
+  @override
+  String get localPreviewsDescription =>
+      'Treileri, meedia ja heli eelvaate seadistamine.';
+
+  @override
+  String get mediaBarMode => 'Meediumiriba stiil';
 
   @override
   String get mediaBarModeDescription =>
-      'Choose between Moonfin, MakD, or turn the media bar off';
+      'Valige Moonfin, MakD või lülitage meediariba välja';
 
   @override
-  String get mediaBarModeMoonfin => 'Moonfin';
+  String get mediaBarModeMoonfin => 'Kuufin';
 
   @override
   String get mediaBarModeMakd => 'MakD';
 
   @override
-  String get mediaBarModeOff => 'Off';
+  String get mediaBarModeOff => 'Väljas';
 
   @override
-  String get enableMediaBar => 'Enable Media Bar';
+  String get enableMediaBar => 'Luba meediariba';
 
   @override
   String get showFeaturedContentSlideshow =>
-      'Show featured content slideshow on home';
+      'Kuva esiletõstetud sisu slaidiseanss kodus';
 
   @override
-  String get contentType => 'Content Type';
+  String get contentType => 'Sisu tüüp';
 
   @override
-  String get moviesAndTvShows => 'Movies & TV Shows';
+  String get moviesAndTvShows => 'Filmid ja telesaated';
 
   @override
-  String get moviesOnly => 'Movies Only';
+  String get moviesOnly => 'Ainult filmid';
 
   @override
-  String get tvShowsOnly => 'TV Shows Only';
+  String get tvShowsOnly => 'Ainult telesaated';
 
   @override
-  String get itemCount => 'Item Count';
+  String get itemCount => 'Artiklite arv';
 
   @override
-  String get noneSelected => 'None selected';
+  String get noneSelected => 'Ühtegi pole valitud';
 
   @override
-  String get noneExcluded => 'None excluded';
+  String get noneExcluded => 'Pole välistatud';
 
   @override
-  String get autoAdvance => 'Auto Advance';
+  String get autoAdvance => 'Automaatne edasiliikumine';
 
   @override
-  String get autoAdvanceSlides => 'Automatically advance to next slide';
+  String get autoAdvanceSlides => 'Liikub automaatselt järgmisele slaidile';
 
   @override
-  String get autoAdvanceInterval => 'Auto Advance Interval';
+  String get autoAdvanceInterval => 'Automaatse edasiliikumise intervall';
 
   @override
-  String get trailerPreview => 'Trailer Preview';
+  String get trailerPreview => 'Treileri eelvaade';
 
   @override
   String get autoPlayTrailers =>
-      'Auto-play trailers in the media bar after 3 seconds';
+      'Esitage treilereid automaatselt meediaribal 3 sekundi pärast';
 
   @override
-  String get episodePreview => 'Episode Preview';
+  String get episodePreview => 'Episoodi eelvaade';
+
+  @override
+  String get mediaPreview => 'Meedia eelvaade';
 
   @override
   String get episodePreviewDescription =>
-      'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
+      'Esitage teravustatud, hõljutatud või pikalt vajutatud kaartidel 30-sekundiline rea eelvaade';
 
   @override
-  String get previewAudio => 'Preview Audio';
+  String get mediaPreviewDescription =>
+      'Esitage teravustatud, hõljutatud või pikalt vajutatud kaartidel 30-sekundiline rea eelvaade';
 
   @override
-  String get enablePreviewAudio =>
-      'Enable audio for trailer and episode previews';
+  String get previewAudio => 'Heli eelvaade';
 
   @override
-  String get latestMedia => 'Latest Media';
+  String get enablePreviewAudio => 'Lubage treileri ja jao eelvaate jaoks heli';
 
   @override
-  String get recentlyReleased => 'Recently Released';
+  String get latestMedia => 'Uusim meedia';
 
   @override
-  String get myMedia => 'My Media';
+  String get recentlyReleased => 'Hiljuti välja antud';
 
   @override
-  String get myMediaSmall => 'My Media (Small)';
+  String get myMedia => 'Minu meedia';
 
   @override
-  String get continueWatching => 'Continue Watching';
+  String get myMediaSmall => 'Minu meedia (väike)';
 
   @override
-  String get resumeAudio => 'Resume Audio';
+  String get continueWatching => 'Jätkake vaatamist';
 
   @override
-  String get resumeBooks => 'Resume Books';
+  String get resumeAudio => 'Jätka heli';
 
   @override
-  String get activeRecordings => 'Active Recordings';
+  String get resumeBooks => 'Jätka raamatuid';
 
   @override
-  String get playlists => 'Playlists';
+  String get activeRecordings => 'Aktiivsed salvestused';
 
   @override
-  String get liveTV => 'Live TV';
+  String get playlists => 'Esitusloendid';
 
   @override
-  String get homeSections => 'Home Sections';
+  String get liveTV => 'Otse-TV';
 
   @override
-  String get resetToDefaults => 'Reset to defaults';
+  String get homeSections => 'Avaleht Sektsioonid';
 
   @override
-  String get homeRowPosterSize => 'Home Row Poster Size';
+  String get resetToDefaults => 'Lähtestage vaikeseadetele';
 
   @override
-  String get perRowImageTypeSelection => 'Per Row Image Type Selection';
+  String get homeRowPosterSize => 'Kodurea plakati suurus';
+
+  @override
+  String get perRowImageTypeSelection => 'Pilditüübi valik rea kohta';
 
   @override
   String get configureImageTypeForEachRow =>
-      'Configure image type for each enabled home row';
+      'Konfigureerige iga lubatud kodurea pilditüüp';
 
   @override
   String get mergeContinueWatchingAndNextUp =>
-      'Merge Continue Watching and Next Up';
+      'Ühendage Jätka vaatamist ja Edasi';
 
   @override
-  String get combineBothRows => 'Combine both rows into a single home section';
+  String get combineBothRows => 'Ühendage mõlemad read üheks koduosaks';
 
   @override
-  String get perRowImageType => 'Per Row Image Type';
+  String get perRowImageType => 'Rea pilditüübi kohta';
 
   @override
-  String get perRowSettings => 'Per-Row Settings';
+  String get perRowSettings => 'Reapõhised sätted';
 
   @override
-  String get autoLogin => 'Auto Login';
+  String get autoLogin => 'Automaatne sisselogimine';
 
   @override
-  String get lastUser => 'Last User';
+  String get lastUser => 'Viimane kasutaja';
 
   @override
-  String get specificUser => 'Specific User';
+  String get specificUser => 'Konkreetne kasutaja';
 
   @override
-  String get alwaysAuthenticate => 'Always Authenticate';
+  String get alwaysAuthenticate => 'Autentige alati';
 
   @override
   String get requirePasswordWithToken =>
-      'Require password even with stored token';
+      'Nõua parooli isegi salvestatud märgiga';
 
   @override
-  String get confirmExit => 'Confirm Exit';
+  String get confirmExit => 'Kinnitage väljumine';
 
   @override
-  String get showConfirmationBeforeExiting =>
-      'Show confirmation before exiting';
+  String get showConfirmationBeforeExiting => 'Enne väljumist näita kinnitust';
 
   @override
-  String get blockContentWithRatings =>
-      'Block content with the following ratings:';
+  String get blockContentWithRatings => 'Blokeeri sisu järgmiste hinnangutega:';
 
   @override
   String get noContentRatingsFound =>
-      'No content ratings were found on this server yet.';
+      'Sellest serverist ei leitud veel ühtegi sisu reitingut.';
 
   @override
   String get couldNotLoadServerRatings =>
-      'Could not load server ratings. Showing saved ratings only.';
+      'Serveri hinnanguid ei saanud laadida. Kuvatakse ainult salvestatud hinnangud.';
 
   @override
   String get couldNotRefreshRatings =>
-      'Could not refresh ratings from server. Showing saved ratings.';
+      'Hinnanguid serverist ei saanud värskendada. Kuvatakse salvestatud hinnangud.';
 
   @override
-  String get enablePinCode => 'Enable PIN Code';
+  String get enablePinCode => 'PIN-koodi lubamine';
 
   @override
-  String get requirePinToAccess => 'Require a PIN to access your account';
+  String get requirePinToAccess => 'Nõua oma kontole juurdepääsuks PIN-koodi';
 
   @override
-  String get changePin => 'Change PIN';
+  String get changePin => 'Muuda PIN-koodi';
 
   @override
-  String get setNewPinCode => 'Set a new PIN code';
+  String get setNewPinCode => 'Määra uus PIN-kood';
 
   @override
-  String get removePin => 'Remove PIN';
+  String get removePin => 'Eemaldage PIN-kood';
 
   @override
-  String get removePinProtection => 'Remove PIN code protection';
+  String get removePinProtection => 'Eemaldage PIN-koodi kaitse';
 
   @override
-  String get screensaver => 'Screensaver';
+  String get screensaver => 'Ekraanisäästja';
 
   @override
-  String get inAppScreensaver => 'In-App Screensaver';
+  String get inAppScreensaver => 'Rakendusesisene ekraanisäästja';
 
   @override
-  String get enableBuiltInScreensaver => 'Enable the built-in screensaver';
+  String get enableBuiltInScreensaver => 'Lubage sisseehitatud ekraanisäästja';
 
   @override
-  String get mode => 'Mode';
+  String get mode => 'Režiim';
 
   @override
-  String get libraryArt => 'Library Art';
+  String get libraryArt => 'Raamatukogu Art';
 
   @override
   String get logo => 'Logo';
 
   @override
-  String get clock => 'Clock';
+  String get clock => 'Kell';
 
   @override
-  String get timeout => 'Timeout';
+  String get timeout => 'Aegumine';
 
   @override
   String minutesShort(int minutes) {
@@ -2779,13 +2842,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get dimmingLevel => 'Dimming Level';
+  String get dimmingLevel => 'Hämardamise tase';
 
   @override
-  String get maxAgeRating => 'Max Age Rating';
+  String get maxAgeRating => 'Maksimaalne vanusepiirang';
 
   @override
-  String get any => 'Any';
+  String get any => 'Ükskõik milline';
 
   @override
   String agePlusValue(int age) {
@@ -2793,23 +2856,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get requireAgeRating => 'Require Age Rating';
+  String get requireAgeRating => 'Nõua vanusepiirangut';
 
   @override
-  String get onlyShowRatedContent => 'Only show rated content';
+  String get onlyShowRatedContent => 'Kuva ainult hinnatud sisu';
 
   @override
-  String get showClock => 'Show Clock';
+  String get showClock => 'Näita kella';
 
   @override
-  String get displayClockDuringScreensaver =>
-      'Display clock during screensaver';
+  String get displayClockDuringScreensaver => 'Kuva kella ekraanisäästja ajal';
 
   @override
-  String get rottenTomatoesCritics => 'Rotten Tomatoes (Critics)';
+  String get rottenTomatoesCritics => 'Rotten Tomatoes (kriitikud)';
 
   @override
-  String get rottenTomatoesAudience => 'Rotten Tomatoes (Audience)';
+  String get rottenTomatoesAudience => 'Rotten Tomatoes (vaatajaskond)';
 
   @override
   String get imdb => 'IMDb';
@@ -2818,76 +2880,77 @@ class AppLocalizationsEt extends AppLocalizations {
   String get tmdb => 'TMDB';
 
   @override
-  String get metacritic => 'Metacritic';
+  String get metacritic => 'Metakriitiline';
 
   @override
-  String get metacriticUser => 'Metacritic (User)';
+  String get metacriticUser => 'Metacritic (kasutaja)';
 
   @override
   String get trakt => 'Trakt';
 
   @override
-  String get letterboxd => 'Letterboxd';
+  String get letterboxd => 'Postkastd';
 
   @override
-  String get myAnimeList => 'MyAnimeList';
+  String get myAnimeList => 'MinuAnimeList';
 
   @override
   String get aniList => 'AniList';
 
   @override
-  String get communityRating => 'Community Rating';
+  String get communityRating => 'Kogukonna hinnang';
 
   @override
-  String get ratings => 'Ratings';
+  String get ratings => 'Hinnangud';
 
   @override
-  String get additionalRatings => 'Additional Ratings';
+  String get additionalRatings => 'Täiendavad hinnangud';
 
   @override
-  String get showMdbListAndTmdbRatings => 'Show MDBList and TMDB ratings';
+  String get showMdbListAndTmdbRatings => 'Kuva MDBList ja TMDB reitingud';
 
   @override
-  String get ratingLabels => 'Rating Labels';
+  String get ratingLabels => 'Reitingusildid';
 
   @override
-  String get showLabelsNextToIcons => 'Show labels next to rating icons';
+  String get showLabelsNextToIcons => 'Kuva sildid hinnanguikoonide kõrval';
 
   @override
-  String get ratingBadges => 'Rating Badges';
+  String get ratingBadges => 'Reitingumärgid';
 
   @override
-  String get showDecorativeBadges => 'Show decorative badges behind ratings';
+  String get showDecorativeBadges =>
+      'Kuvage hinnangute taga dekoratiivsed märgid';
 
   @override
-  String get episodeRatings => 'Episode Ratings';
+  String get episodeRatings => 'Episoodide hinnangud';
 
   @override
-  String get showRatingsOnEpisodes => 'Show ratings on individual episodes';
+  String get showRatingsOnEpisodes => 'Kuva üksikute osade hinnangud';
 
   @override
-  String get ratingSources => 'Rating Sources';
+  String get ratingSources => 'Hinnanguallikad';
 
   @override
   String get ratingSourcesDescription =>
-      'Enable and reorder the rating sources shown throughout the app';
+      'Lubage ja korraldage ümber kogu rakenduses kuvatavad reitinguallikad';
 
   @override
   String get pluginLabel => 'Plugin';
 
   @override
-  String get pluginDetected => 'Plugin Detected';
+  String get pluginDetected => 'Tuvastati plugin';
 
   @override
-  String get pluginNotDetected => 'Plugin Not Detected';
+  String get pluginNotDetected => 'Pluginat ei tuvastatud';
 
   @override
   String get pluginDetectedDescription =>
-      'Server plugin detected. Sync is enabled automatically the first time the plugin is found.';
+      'Tuvastati serveri pistikprogramm. Sünkroonimine lubatakse pistikprogrammi esmakordsel leidmisel automaatselt.';
 
   @override
   String get pluginNotDetectedDescription =>
-      'Server plugin is not currently detected. Local settings still use their saved values or built-in defaults.';
+      'Serveri pistikprogrammi ei tuvastata praegu. Kohalikud seaded kasutavad endiselt oma salvestatud väärtusi või sisseehitatud vaikeseadeid.';
 
   @override
   String pluginStatusVersion(String status, String version) {
@@ -2895,73 +2958,75 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get availableServices => 'Available Services';
+  String get availableServices => 'Saadaolevad teenused';
 
   @override
-  String get serverPluginSync => 'Server Plugin Sync';
+  String get serverPluginSync => 'Serveri pistikprogrammi sünkroonimine';
 
   @override
-  String get syncSettingsWithPlugin => 'Sync settings with the server plugin';
+  String get syncSettingsWithPlugin =>
+      'Sünkroonige seaded serveri pistikprogrammiga';
 
   @override
-  String get whatSyncControls => 'What sync controls';
+  String get whatSyncControls => 'Millised sünkroonimise juhised';
 
   @override
   String get syncControlsDescription =>
-      'Sync only controls whether plugin-backed settings are pushed to and pulled from the server. Profile selection and profile sync actions are in Customization settings when plugin sync is enabled.';
+      'Sünkroonimine juhib ainult seda, kas pistikprogrammide tagatud seaded lükatakse serverisse ja tõmmatakse sealt. Kui pistikprogrammi sünkroonimine on lubatud, on profiili valik ja profiili sünkroonimistoimingud jaotises Kohandamise seaded.';
 
   @override
-  String get recentRequests => 'Recent Requests';
+  String get recentRequests => 'Viimased taotlused';
 
   @override
-  String get recentlyAdded => 'Recently Added';
+  String get recentlyAdded => 'Hiljuti lisatud';
 
   @override
-  String get trending => 'Trending';
+  String get trending => 'Trendikas';
 
   @override
-  String get popularMovies => 'Popular Movies';
+  String get popularMovies => 'Populaarsed filmid';
 
   @override
-  String get movieGenres => 'Movie Genres';
+  String get movieGenres => 'Filmižanrid';
 
   @override
-  String get upcomingMovies => 'Upcoming Movies';
+  String get upcomingMovies => 'Tulevased filmid';
 
   @override
-  String get studios => 'Studios';
+  String get studios => 'Stuudiokorterid';
 
   @override
-  String get popularSeries => 'Popular Series';
+  String get popularSeries => 'Populaarne sari';
 
   @override
-  String get seriesGenres => 'Series Genres';
+  String get seriesGenres => 'Sarja žanrid';
 
   @override
-  String get upcomingSeries => 'Upcoming Series';
+  String get upcomingSeries => 'Tulevane seeria';
 
   @override
-  String get networks => 'Networks';
+  String get networks => 'Võrgud';
 
   @override
-  String get resetRowsToDefaults => 'Reset rows to defaults';
+  String get resetRowsToDefaults => 'Lähtestage read vaikeseadetele';
 
   @override
-  String get enableSeerr => 'Enable Seerr';
+  String get enableSeerr => 'Luba Seerr';
 
   @override
   String get showSeerrInNavigation =>
-      'Show Seerr in navigation (requires server plugin)';
+      'Kuva Nägija navigeerimisel (vaja on serveri pistikprogrammi)';
 
   @override
   String get seerrUnavailable =>
-      'Unavailable because server plugin Seerr support is disabled.';
+      'Pole saadaval, kuna serveri pistikprogrammi Seerr tugi on keelatud.';
 
   @override
-  String get nsfwFilter => 'NSFW Filter';
+  String get nsfwFilter => 'NSFW filter';
 
   @override
-  String get hideAdultContent => 'Hide adult content in results';
+  String get hideAdultContent =>
+      'Peida tulemustes täiskasvanutele mõeldud sisu';
 
   @override
   String loggedInAs(String username) {
@@ -2969,24 +3034,24 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get discoverRows => 'Discover Rows';
+  String get discoverRows => 'Avasta read';
 
   @override
   String get discoverRowsDescriptionPlugin =>
-      'Drag to reorder. Enable or disable rows. Enabled row order syncs with the Moonfin plugin.';
+      'Lohistage ümberjärjestamiseks. Lubage või keelake read. Lubatud ridade järjestus sünkroonitakse Moonfini pistikprogrammiga.';
 
   @override
   String get discoverRowsDescription =>
-      'Drag to reorder. Enable or disable rows.';
+      'Lohistage ümberjärjestamiseks. Lubage või keelake read.';
 
   @override
-  String get enabled => 'Enabled';
+  String get enabled => 'Lubatud';
 
   @override
-  String get hidden => 'Hidden';
+  String get hidden => 'Peidetud';
 
   @override
-  String get aboutTitle => 'About';
+  String get aboutTitle => 'Umbes';
 
   @override
   String versionValue(String version) {
@@ -2994,49 +3059,50 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get openSourceLicenses => 'Open Source Licenses';
+  String get openSourceLicenses => 'Avatud lähtekoodiga litsentsid';
 
   @override
-  String get sourceCode => 'Source Code';
+  String get sourceCode => 'Lähtekood';
 
   @override
   String get sourceCodeUrl =>
       'https://github.com/Moonfin-Client/Mobile-Desktop';
 
   @override
-  String get checkForUpdatesNow => 'Check for Updates Now';
+  String get checkForUpdatesNow => 'Otsige värskendusi kohe';
 
   @override
   String get checksLatestDesktopRelease =>
-      'Checks latest desktop release for this platform';
+      'Kontrollib selle platvormi uusimat töölauaversiooni';
 
   @override
-  String get youAreUpToDate => 'You are up to date.';
+  String get youAreUpToDate => 'Olete kursis.';
 
   @override
   String get couldNotCheckForUpdates =>
-      'Could not check for updates right now.';
+      'Värskendusi ei saanud praegu kontrollida.';
 
   @override
   String get noCompatibleUpdate =>
-      'No compatible update package found for this platform.';
+      'Selle platvormi jaoks ei leitud ühilduvat värskenduspaketti.';
 
   @override
   String get updateChecksNotSupported =>
-      'Update checks are not supported on this platform.';
+      'Sellel platvormil värskenduste kontrollimist ei toetata.';
 
   @override
   String get updateNotificationsDisabled =>
-      'Update notifications are disabled.';
+      'Värskenduste märguanded on keelatud.';
 
   @override
-  String get pleaseWaitBeforeChecking => 'Please wait before checking again.';
+  String get pleaseWaitBeforeChecking =>
+      'Palun oodake enne uuesti kontrollimist.';
 
   @override
-  String get latestUpdateAlreadyShown => 'Latest update was already shown.';
+  String get latestUpdateAlreadyShown => 'Viimane värskendus on juba näidatud.';
 
   @override
-  String get updateAvailable => 'Update available.';
+  String get updateAvailable => 'Värskendus saadaval.';
 
   @override
   String updateAvailableVersion(String version) {
@@ -3044,10 +3110,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get updateNotifications => 'Update Notifications';
+  String get updateNotifications => 'Teavituste värskendamine';
 
   @override
-  String get showWhenUpdatesAvailable => 'Show when updates are available';
+  String get showWhenUpdatesAvailable => 'Näita, kui värskendused on saadaval';
 
   @override
   String updateAvailableTitle(String version) {
@@ -3055,44 +3121,45 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get readReleaseNotes => 'Read Release Notes';
+  String get readReleaseNotes => 'Lugege väljalaskemärkmeid';
 
   @override
-  String get downloadingUpdate => 'Downloading update...';
+  String get downloadingUpdate => 'Värskenduse allalaadimine...';
 
   @override
   String get updateDownloadFailed =>
-      'Update download failed. Please try again.';
+      'Värskenduse allalaadimine ebaõnnestus. Palun proovi uuesti.';
 
   @override
-  String get openReleasesPage => 'Open Releases Page';
+  String get openReleasesPage => 'Avage väljaannete leht';
 
   @override
-  String get navigation => 'Navigation';
+  String get navigation => 'Navigeerimine';
 
   @override
-  String get watchedIndicatorsBackdrops => 'Watched indicators, backdrops';
+  String get watchedIndicatorsBackdrops => 'Vaadatud indikaatorid, taustad';
 
   @override
   String get focusColorWatchedIndicatorsBackdrops =>
-      'Focus color, watched indicators, backdrops';
+      'Fookuse värv, vaadatud indikaatorid, taustad';
 
   @override
   String get navbarStyleToolbarAppearance =>
-      'Navbar style, toolbar buttons, appearance';
+      'Navibari stiil, tööriistariba nupud, välimus';
 
   @override
-  String get reorderToggleHomeRows => 'Reorder and toggle home rows';
+  String get reorderToggleHomeRows =>
+      'Koduridade ümberjärjestamine ja vahetamine';
 
   @override
-  String get featuredContentAppearance => 'Featured content, appearance';
+  String get featuredContentAppearance => 'Esiletõstetud sisu, välimus';
 
   @override
   String get posterSizeImageTypeFolderView =>
-      'Poster size, image type, folder view';
+      'Plakati suurus, pildi tüüp, kausta vaade';
 
   @override
-  String get mdbListTmdbRatingSources => 'MDBList, TMDB, and rating sources';
+  String get mdbListTmdbRatingSources => 'MDBList, TMDB ja reitinguallikad';
 
   @override
   String gbValue(String value) {
@@ -3100,19 +3167,19 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Selge';
 
   @override
-  String get browse => 'Browse';
+  String get browse => 'Sirvige';
 
   @override
-  String get noResults => 'No results';
+  String get noResults => 'Tulemusi pole';
 
   @override
-  String get seerrAvailableStatus => 'Available';
+  String get seerrAvailableStatus => 'Saadaval';
 
   @override
-  String get seerrRequestedStatus => 'Requested';
+  String get seerrRequestedStatus => 'Soovitud';
 
   @override
   String itemsCount(int count) {
@@ -3120,19 +3187,19 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get seerrSettings => 'Seerr Settings';
+  String get seerrSettings => 'Nägija seaded';
 
   @override
-  String get requestMore => 'Request More';
+  String get requestMore => 'Küsi lisa';
 
   @override
-  String get request => 'Request';
+  String get request => 'Taotlus';
 
   @override
-  String get cancelRequest => 'Cancel Request';
+  String get cancelRequest => 'Tühista taotlus';
 
   @override
-  String get playInMoonfin => 'Play in Moonfin';
+  String get playInMoonfin => 'Mängi Moonfinis';
 
   @override
   String requestedByName(String name) {
@@ -3140,16 +3207,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get approve => 'Approve';
+  String get approve => 'Kinnita';
 
   @override
-  String get declineAction => 'Decline';
+  String get declineAction => 'Keeldumine';
 
   @override
-  String get similar => 'Similar';
+  String get similar => 'Sarnased';
 
   @override
-  String get recommendations => 'Recommendations';
+  String get recommendations => 'Soovitused';
 
   @override
   String cancelRequestForTitle(String title) {
@@ -3162,13 +3229,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get keep => 'Keep';
+  String get keep => 'Hoidke';
 
   @override
-  String get itemNotFoundInLibrary => 'Item not found in your Moonfin library';
+  String get itemNotFoundInLibrary => 'Üksust ei leitud teie Moonfini teegist';
 
   @override
-  String get errorSearchingLibrary => 'Error searching library';
+  String get errorSearchingLibrary => 'Viga raamatukogu otsimisel';
 
   @override
   String budgetAmount(String amount) {
@@ -3191,34 +3258,35 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get submitRequest => 'Submit Request';
+  String get submitRequest => 'Esitage taotlus';
 
   @override
-  String get allSeasons => 'All Seasons';
+  String get allSeasons => 'Kõik aastaajad';
 
   @override
-  String get advancedOptions => 'Advanced Options';
+  String get advancedOptions => 'Täpsemad suvandid';
 
   @override
-  String get noServiceServersConfigured => 'No service servers configured';
+  String get noServiceServersConfigured =>
+      'Ühtegi teenindusserverit pole konfigureeritud';
 
   @override
   String get server => 'Server';
 
   @override
-  String get qualityProfile => 'Quality Profile';
+  String get qualityProfile => 'Kvaliteediprofiil';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => 'Juurkaust';
 
   @override
-  String get showMore => 'Show More';
+  String get showMore => 'Näita rohkem';
 
   @override
-  String get appearances => 'Appearances';
+  String get appearances => 'Esinemised';
 
   @override
-  String get crewSection => 'Crew';
+  String get crewSection => 'Meeskond';
 
   @override
   String ageValue(int age) {
@@ -3226,290 +3294,291 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get noRequests => 'No requests';
+  String get noRequests => 'Taotlusi pole';
 
   @override
-  String get pendingStatus => 'Pending';
+  String get pendingStatus => 'Ootel';
 
   @override
-  String get declinedStatus => 'Declined';
+  String get declinedStatus => 'Keeldutud';
 
   @override
-  String get partiallyAvailable => 'Partially Available';
+  String get partiallyAvailable => 'Osaliselt saadaval';
 
   @override
-  String get downloadingStatus => 'Downloading';
+  String get downloadingStatus => 'Allalaadimine';
 
   @override
-  String get approvedStatus => 'Approved';
+  String get approvedStatus => 'Kinnitatud';
 
   @override
-  String get notRequestedStatus => 'Not Requested';
+  String get notRequestedStatus => 'Pole nõutud';
 
   @override
-  String get blocklistedStatus => 'Blocklisted';
+  String get blocklistedStatus => 'Blokeeritud nimekirjas';
 
   @override
-  String get deletedStatus => 'Deleted';
+  String get deletedStatus => 'Kustutatud';
 
   @override
-  String get tmdbScore => 'TMDB Score';
+  String get tmdbScore => 'TMDB skoor';
 
   @override
-  String get releaseDateLabel => 'Release Date';
+  String get releaseDateLabel => 'Väljalaske kuupäev';
 
   @override
-  String get firstAirDateLabel => 'First Air Date';
+  String get firstAirDateLabel => 'Esimene eetri kuupäev';
 
   @override
-  String get revenueLabel => 'Revenue';
+  String get revenueLabel => 'Tulu';
 
   @override
-  String get runtimeLabel => 'Runtime';
+  String get runtimeLabel => 'Kestus';
 
   @override
-  String get budgetLabel => 'Budget';
+  String get budgetLabel => 'Eelarve';
 
   @override
-  String get originalLanguageLabel => 'Original Language';
+  String get originalLanguageLabel => 'Algkeel';
 
   @override
-  String get seasonsLabel => 'Seasons';
+  String get seasonsLabel => 'Aastaajad';
 
   @override
-  String get episodesLabel => 'Episodes';
+  String get episodesLabel => 'Episoodid';
 
   @override
-  String get access => 'Access';
+  String get access => 'Juurdepääs';
 
   @override
-  String get add => 'Add';
+  String get add => 'Lisa';
 
   @override
-  String get address => 'Address';
+  String get address => 'Aadress';
 
   @override
-  String get analytics => 'Analytics';
+  String get analytics => 'Analüütika';
 
   @override
-  String get catalog => 'Catalog';
+  String get catalog => 'Kataloog';
 
   @override
-  String get content => 'Content';
+  String get content => 'Sisu';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Kopeeri';
 
   @override
-  String get create => 'Create';
+  String get create => 'Loo';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Keela';
 
   @override
-  String get done => 'Done';
+  String get done => 'Valmis';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Muuda';
 
   @override
-  String get encoding => 'Encoding';
+  String get encoding => 'Kodeerimine';
 
   @override
-  String get error => 'Error';
+  String get error => 'Viga';
 
   @override
-  String get forward => 'Forward';
+  String get forward => 'Edasi';
 
   @override
-  String get general => 'General';
+  String get general => 'Kindral';
 
   @override
-  String get go => 'Go';
+  String get go => 'Mine';
 
   @override
-  String get install => 'Install';
+  String get install => 'Installige';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'Paigaldatud';
 
   @override
-  String get interval => 'Interval';
+  String get interval => 'Intervall';
 
   @override
-  String get name => 'Name';
+  String get name => 'Nimi';
 
   @override
-  String get networking => 'Networking';
+  String get networking => 'Võrgustiku loomine';
 
   @override
-  String get next => 'Next';
+  String get next => 'Edasi';
 
   @override
-  String get path => 'Path';
+  String get path => 'Tee';
 
   @override
-  String get paused => 'Paused';
+  String get paused => 'Peatatud';
 
   @override
-  String get permissions => 'Permissions';
+  String get permissions => 'load';
 
   @override
-  String get processing => 'Processing';
+  String get processing => 'Töötlemine';
 
   @override
-  String get profile => 'Profile';
+  String get profile => 'Profiil';
 
   @override
-  String get provider => 'Provider';
+  String get provider => 'Pakkuja';
 
   @override
-  String get refresh => 'Refresh';
+  String get refresh => 'Värskenda';
 
   @override
-  String get remote => 'Remote';
+  String get remote => 'Kaugjuhtimispult';
 
   @override
-  String get rename => 'Rename';
+  String get rename => 'Nimeta ümber';
 
   @override
-  String get revoke => 'Revoke';
+  String get revoke => 'Tühista';
 
   @override
-  String get role => 'Role';
+  String get role => 'Roll';
 
   @override
-  String get root => 'Root';
+  String get root => 'Juur';
 
   @override
-  String get run => 'Run';
+  String get run => 'Jookse';
 
   @override
-  String get search => 'Search';
+  String get search => 'Otsi';
 
   @override
-  String get select => 'Select';
+  String get select => 'Valige';
 
   @override
-  String get send => 'Send';
+  String get send => 'Saada';
 
   @override
-  String get sessions => 'Sessions';
+  String get sessions => 'Seansid';
 
   @override
-  String get set => 'Set';
+  String get set => 'Määra';
 
   @override
-  String get status => 'Status';
+  String get status => 'Olek';
 
   @override
-  String get stop => 'Stop';
+  String get stop => 'Peatus';
 
   @override
-  String get streaming => 'Streaming';
+  String get streaming => 'Voogesitus';
 
   @override
-  String get time => 'Time';
+  String get time => 'Aeg';
 
   @override
   String get trickplay => 'Trickplay';
 
   @override
-  String get uninstall => 'Uninstall';
+  String get uninstall => 'Desinstalli';
 
   @override
-  String get up => 'Up';
+  String get up => 'Üles';
 
   @override
-  String get update => 'Update';
+  String get update => 'Värskenda';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'Laadi üles';
 
   @override
-  String get unmute => 'Unmute';
+  String get unmute => 'Tühista vaigistus';
 
   @override
-  String get mute => 'Mute';
+  String get mute => 'Vaigista';
 
   @override
-  String get branding => 'Branding';
+  String get branding => 'Bränding';
 
   @override
-  String get adminDrawerDashboard => 'Dashboard';
+  String get adminDrawerDashboard => 'Armatuurlaud';
 
   @override
-  String get adminDrawerAnalytics => 'Analytics';
+  String get adminDrawerAnalytics => 'Analüütika';
 
   @override
-  String get adminDrawerSettings => 'Settings';
+  String get adminDrawerSettings => 'Seaded';
 
   @override
-  String get adminDrawerBranding => 'Branding';
+  String get adminDrawerBranding => 'Bränding';
 
   @override
-  String get adminDrawerUsers => 'Users';
+  String get adminDrawerUsers => 'Kasutajad';
 
   @override
-  String get adminDrawerLibraries => 'Libraries';
+  String get adminDrawerLibraries => 'raamatukogud';
 
   @override
-  String get adminDrawerTranscoding => 'Transcoding';
+  String get adminDrawerTranscoding => 'Ümberkodeerimine';
 
   @override
-  String get adminDrawerResume => 'Resume';
+  String get adminDrawerResume => 'Jätka';
 
   @override
-  String get adminDrawerStreaming => 'Streaming';
+  String get adminDrawerStreaming => 'Voogesitus';
 
   @override
   String get adminDrawerTrickplay => 'Trickplay';
 
   @override
-  String get adminDrawerDevices => 'Devices';
+  String get adminDrawerDevices => 'Seadmed';
 
   @override
-  String get adminDrawerActivity => 'Activity';
+  String get adminDrawerActivity => 'Tegevus';
 
   @override
-  String get adminDrawerNetworking => 'Networking';
+  String get adminDrawerNetworking => 'Võrgustiku loomine';
 
   @override
-  String get adminDrawerApiKeys => 'API Keys';
+  String get adminDrawerApiKeys => 'API võtmed';
 
   @override
-  String get adminDrawerBackups => 'Backups';
+  String get adminDrawerBackups => 'Varukoopiad';
 
   @override
-  String get adminDrawerLogs => 'Logs';
+  String get adminDrawerLogs => 'Palgid';
 
   @override
-  String get adminDrawerScheduledTasks => 'Scheduled Tasks';
+  String get adminDrawerScheduledTasks => 'Plaanitud ülesanded';
 
   @override
-  String get adminDrawerPlugins => 'Plugins';
+  String get adminDrawerPlugins => 'Pluginad';
 
   @override
-  String get adminDrawerRepositories => 'Repositories';
+  String get adminDrawerRepositories => 'Hoidlad';
 
   @override
-  String get adminDrawerLiveTv => 'Live TV';
+  String get adminDrawerLiveTv => 'Otse-TV';
 
   @override
-  String get adminExitTooltip => 'Exit Admin';
+  String get adminExitTooltip => 'Välju administraatorist';
 
   @override
-  String get adminDashboardLoadFailed => 'Failed to load dashboard';
+  String get adminDashboardLoadFailed => 'Armatuurlaua laadimine ebaõnnestus';
 
   @override
-  String get adminMediaOverview => 'Media Overview';
+  String get adminMediaOverview => 'Meedia ülevaade';
 
   @override
-  String get adminMediaTotalsError => 'Could not load server media totals.';
+  String get adminMediaTotalsError =>
+      'Serveri meediumikogumeid ei saanud laadida.';
 
   @override
   String get adminMediaOverviewSubtitle =>
-      'A quick read on how much content is on this server.';
+      'Kiire lugemine selle kohta, kui palju sisu selles serveris on.';
 
   @override
   String adminPluginUpdatesAvailable(int count) {
@@ -3532,58 +3601,58 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get analyticsMediaDistribution => 'Media Distribution';
+  String get analyticsMediaDistribution => 'Meedia levitamine';
 
   @override
-  String get analyticsVideoCodecs => 'Video Codecs';
+  String get analyticsVideoCodecs => 'Videokodekid';
 
   @override
-  String get analyticsAudioCodecs => 'Audio Codecs';
+  String get analyticsAudioCodecs => 'Heli kodekid';
 
   @override
-  String get analyticsContainers => 'Containers';
+  String get analyticsContainers => 'Konteinerid';
 
   @override
-  String get analyticsTopGenres => 'Top Genres';
+  String get analyticsTopGenres => 'Parimad žanrid';
 
   @override
-  String get analyticsReleaseYears => 'Release Years';
+  String get analyticsReleaseYears => 'Väljalaskeaastad';
 
   @override
-  String get analyticsContentRatings => 'Content Ratings';
+  String get analyticsContentRatings => 'Sisu reitingud';
 
   @override
-  String get analyticsRuntimeBuckets => 'Runtime Buckets';
+  String get analyticsRuntimeBuckets => 'Tööaja ämbrid';
 
   @override
-  String get analyticsFileFormats => 'File Formats';
+  String get analyticsFileFormats => 'Failivormingud';
 
   @override
-  String get analyticsNoData => 'No Data Available.';
+  String get analyticsNoData => 'Andmed pole saadaval.';
 
   @override
-  String get adminServerInfo => 'Server Info';
+  String get adminServerInfo => 'Serveriteave';
 
   @override
-  String get adminRestartPending => 'Restart Pending';
+  String get adminRestartPending => 'Taaskäivitamine Ootel';
 
   @override
-  String get adminServerPaths => 'Server Paths';
+  String get adminServerPaths => 'Serveriteed';
 
   @override
-  String get adminServerActions => 'Server Actions';
+  String get adminServerActions => 'Serveri toimingud';
 
   @override
-  String get adminRestartServer => 'Restart Server';
+  String get adminRestartServer => 'Taaskäivitage server';
 
   @override
-  String get adminShutdownServer => 'Shutdown Server';
+  String get adminShutdownServer => 'Serveri väljalülitamine';
 
   @override
-  String get adminScanLibraries => 'Scan Libraries';
+  String get adminScanLibraries => 'Skanni raamatukogud';
 
   @override
-  String get adminLibraryScanStarted => 'Library scan started';
+  String get adminLibraryScanStarted => 'Teegi skannimine algas';
 
   @override
   String errorGeneric(String error) {
@@ -3591,26 +3660,27 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminServerRebootInProgress => 'Server reboot in progress';
+  String get adminServerRebootInProgress =>
+      'Serveri taaskäivitamine on pooleli';
 
   @override
   String get adminServerRebootMessage =>
-      'Server reboot in progress, please restart Moonfin';
+      'Serveri taaskäivitamine on pooleli, taaskäivitage Moonfin';
 
   @override
-  String get adminActiveSessions => 'Active Sessions';
+  String get adminActiveSessions => 'Aktiivsed seansid';
 
   @override
-  String get adminSessionsLoadFailed => 'Failed to load sessions';
+  String get adminSessionsLoadFailed => 'Seansside laadimine ebaõnnestus';
 
   @override
-  String get adminNoActiveSessions => 'No active sessions';
+  String get adminNoActiveSessions => 'Aktiivseid seansse pole';
 
   @override
-  String get adminRecentActivity => 'Recent Activity';
+  String get adminRecentActivity => 'Hiljutine tegevus';
 
   @override
-  String get adminNoRecentActivity => 'No recent activity';
+  String get adminNoRecentActivity => 'Hiljutine tegevus puudub';
 
   @override
   String adminCommandFailed(String error) {
@@ -3618,25 +3688,25 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminSendMessage => 'Send Message';
+  String get adminSendMessage => 'Saada sõnum';
 
   @override
-  String get adminMessageTextHint => 'Message text';
+  String get adminMessageTextHint => 'Sõnumi tekst';
 
   @override
-  String get adminSetVolume => 'Set Volume';
+  String get adminSetVolume => 'Helitugevuse määramine';
 
   @override
-  String get sessionPrev => 'Prev';
+  String get sessionPrev => 'Eelmine';
 
   @override
-  String get sessionRewind => 'Rewind';
+  String get sessionRewind => 'Keri tagasi';
 
   @override
-  String get sessionForward => 'Forward';
+  String get sessionForward => 'Edasi';
 
   @override
-  String get sessionNext => 'Next';
+  String get sessionNext => 'Edasi';
 
   @override
   String get sessionVolumeDown => 'Vol –';
@@ -3648,34 +3718,34 @@ class AppLocalizationsEt extends AppLocalizations {
   String get uhd4k => '4K';
 
   @override
-  String get nowPlaying => 'Now Playing';
+  String get nowPlaying => 'Mängib';
 
   @override
-  String get volume => 'Volume';
+  String get volume => 'Helitugevus';
 
   @override
-  String get actions => 'Actions';
+  String get actions => 'Tegevused';
 
   @override
-  String get videoCodec => 'Video Codec';
+  String get videoCodec => 'Videokodek';
 
   @override
-  String get audioCodec => 'Audio Codec';
+  String get audioCodec => 'Heli koodek';
 
   @override
   String get hwAccel => 'HW Accel';
 
   @override
-  String get completion => 'Completion';
+  String get completion => 'Lõpetamine';
 
   @override
-  String get direct => 'Direct';
+  String get direct => 'Otsene';
 
   @override
-  String get adminDisconnect => 'Disconnect';
+  String get adminDisconnect => 'Katkesta ühendus';
 
   @override
-  String get adminClearDates => 'Clear dates';
+  String get adminClearDates => 'Selged kuupäevad';
 
   @override
   String adminActivityLoadFailed(String error) {
@@ -3683,16 +3753,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminNoActivityEntries => 'No activity entries';
+  String get adminNoActivityEntries => 'Tegevuskirjeid pole';
 
   @override
-  String get adminEditDeviceName => 'Edit Device Name';
+  String get adminEditDeviceName => 'Redigeeri seadme nime';
 
   @override
-  String get adminCustomName => 'Custom Name';
+  String get adminCustomName => 'Kohandatud nimi';
 
   @override
-  String get adminDeviceNameUpdated => 'Device name updated';
+  String get adminDeviceNameUpdated => 'Seadme nime värskendati';
 
   @override
   String adminDeviceUpdateFailed(String error) {
@@ -3700,10 +3770,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteDevice => 'Delete Device';
+  String get adminDeleteDevice => 'Kustuta seade';
 
   @override
-  String get adminDeviceDeleted => 'Device deleted';
+  String get adminDeviceDeleted => 'Seade kustutatud';
 
   @override
   String adminDeviceDeleteFailed(String error) {
@@ -3711,28 +3781,28 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminDevicesLoadFailed => 'Failed to load devices';
+  String get adminDevicesLoadFailed => 'Seadmete laadimine ebaõnnestus';
 
   @override
-  String get adminSearchDevices => 'Search devices';
+  String get adminSearchDevices => 'Otsige seadmeid';
 
   @override
-  String get adminThisDevice => 'This Device';
+  String get adminThisDevice => 'See seade';
 
   @override
-  String get adminEditName => 'Edit Name';
+  String get adminEditName => 'Redigeeri nime';
 
   @override
-  String get adminLibrariesLoadFailed => 'Failed to load libraries';
+  String get adminLibrariesLoadFailed => 'Teekide laadimine ebaõnnestus';
 
   @override
-  String get adminNoLibraries => 'No libraries configured';
+  String get adminNoLibraries => 'Ühtegi teeki pole konfigureeritud';
 
   @override
-  String get adminScanAllLibraries => 'Scan All Libraries';
+  String get adminScanAllLibraries => 'Kontrollige kõiki teeke';
 
   @override
-  String get adminAddLibrary => 'Add Library';
+  String get adminAddLibrary => 'Lisa raamatukogu';
 
   @override
   String adminScanFailed(String error) {
@@ -3740,10 +3810,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminRenameLibrary => 'Rename Library';
+  String get adminRenameLibrary => 'Nimeta raamatukogu ümber';
 
   @override
-  String get adminNewName => 'New name';
+  String get adminNewName => 'Uus nimi';
 
   @override
   String adminLibraryRenamed(String name) {
@@ -3756,7 +3826,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteLibrary => 'Delete Library';
+  String get adminDeleteLibrary => 'Kustuta raamatukogu';
 
   @override
   String adminLibraryDeleted(String name) {
@@ -3774,7 +3844,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminRemovePath => 'Remove Path';
+  String get adminRemovePath => 'Eemalda tee';
 
   @override
   String adminRemovePathConfirm(String path) {
@@ -3787,7 +3857,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryOptionsSaved => 'Library options saved';
+  String get adminLibraryOptionsSaved => 'Teegi valikud on salvestatud';
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
@@ -3795,34 +3865,34 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryLoadFailed => 'Failed to load library';
+  String get adminLibraryLoadFailed => 'Teegi laadimine ebaõnnestus';
 
   @override
-  String get adminNoMediaPaths => 'No media paths configured';
+  String get adminNoMediaPaths => 'Meediumiteid pole konfigureeritud';
 
   @override
-  String get adminAddPath => 'Add Path';
+  String get adminAddPath => 'Lisa tee';
 
   @override
-  String get adminBrowseFilesystem => 'Browse server filesystem:';
+  String get adminBrowseFilesystem => 'Sirvige serveri failisüsteemi:';
 
   @override
-  String get adminSaveOptions => 'Save Options';
+  String get adminSaveOptions => 'Salvesta Valikud';
 
   @override
-  String get adminPreferredMetadataLanguage => 'Preferred metadata language';
+  String get adminPreferredMetadataLanguage => 'Eelistatud metaandmete keel';
 
   @override
-  String get adminMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminMetadataLanguageHint => 'nt. et, de, fr';
 
   @override
-  String get adminMetadataCountryCode => 'Metadata country code';
+  String get adminMetadataCountryCode => 'Metaandmete riigikood';
 
   @override
-  String get adminMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminMetadataCountryHint => 'nt. USA, DE, FR';
 
   @override
-  String get adminLibraryNameRequired => 'Library name is required';
+  String get adminLibraryNameRequired => 'Teegi nimi on kohustuslik';
 
   @override
   String adminLibraryCreateFailed(String error) {
@@ -3830,25 +3900,25 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryName => 'Library Name';
+  String get adminLibraryName => 'Raamatukogu nimi';
 
   @override
-  String get adminSelectedPaths => 'Selected Paths:';
+  String get adminSelectedPaths => 'Valitud teed:';
 
   @override
-  String get adminNoPathsAdded => 'No paths added (can be added later)';
+  String get adminNoPathsAdded => 'Teed pole lisatud (saab hiljem lisada)';
 
   @override
-  String get adminCreateLibrary => 'Create Library';
+  String get adminCreateLibrary => 'Loo raamatukogu';
 
   @override
-  String get paths => 'Paths:';
+  String get paths => 'Teed:';
 
   @override
-  String get adminDisableUser => 'Disable User';
+  String get adminDisableUser => 'Kasutaja keelamine';
 
   @override
-  String get adminEnableUser => 'Enable User';
+  String get adminEnableUser => 'Luba kasutaja';
 
   @override
   String adminDisableUserConfirm(String name) {
@@ -3876,16 +3946,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminUsersLoadFailed => 'Failed to load users';
+  String get adminUsersLoadFailed => 'Kasutajate laadimine ebaõnnestus';
 
   @override
-  String get adminSearchUsers => 'Search users';
+  String get adminSearchUsers => 'Otsige kasutajaid';
 
   @override
-  String get adminEditUser => 'Edit User';
+  String get adminEditUser => 'Redigeeri kasutajat';
 
   @override
-  String get adminAddUser => 'Add User';
+  String get adminAddUser => 'Lisa kasutaja';
 
   @override
   String adminUserCreateFailed(String error) {
@@ -3893,19 +3963,19 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminCreateUser => 'Create User';
+  String get adminCreateUser => 'Loo kasutaja';
 
   @override
-  String get adminPasswordOptional => 'Password (optional)';
+  String get adminPasswordOptional => 'Parool (valikuline)';
 
   @override
-  String get adminUsernameRequired => 'Username cannot be empty';
+  String get adminUsernameRequired => 'Kasutajanimi ei tohi olla tühi';
 
   @override
-  String get adminNoProfileChanges => 'No profile changes to save';
+  String get adminNoProfileChanges => 'Salvestatavaid profiilimuudatusi pole';
 
   @override
-  String get adminProfileSaved => 'Profile saved';
+  String get adminProfileSaved => 'Profiil salvestatud';
 
   @override
   String adminSaveFailed(String error) {
@@ -3913,10 +3983,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminPermissionsSaved => 'Permissions saved';
+  String get adminPermissionsSaved => 'Load salvestatud';
 
   @override
-  String get adminPasswordsMismatch => 'Passwords do not match';
+  String get adminPasswordsMismatch => 'Paroolid ei ühti';
 
   @override
   String adminFailed(String error) {
@@ -3924,135 +3994,138 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminUserLoadFailed => 'Failed to load user';
+  String get adminUserLoadFailed => 'Kasutaja laadimine ebaõnnestus';
 
   @override
-  String get adminBackToUsers => 'Back to Users';
+  String get adminBackToUsers => 'Tagasi kasutajate juurde';
 
   @override
-  String get adminSaveProfile => 'Save Profile';
+  String get adminSaveProfile => 'Salvesta profiil';
 
   @override
-  String get adminDeleteUser => 'Delete User';
+  String get adminDeleteUser => 'Kustuta kasutaja';
 
   @override
-  String get admin => 'Admin';
+  String get admin => 'Logo';
 
   @override
   String get adminFullAccessWarning =>
-      'Administrators have complete access to the server. Grant with caution.';
+      'Administraatoritel on täielik juurdepääs serverile. Andke ettevaatusega.';
 
   @override
-  String get administrator => 'Administrator';
+  String get administrator => 'Administraator';
 
   @override
-  String get adminHiddenUser => 'Hidden user';
+  String get adminHiddenUser => 'Varjatud kasutaja';
 
   @override
-  String get adminAllowMediaPlayback => 'Allow media playback';
+  String get adminAllowMediaPlayback => 'Luba meedia taasesitus';
 
   @override
-  String get adminAllowAudioTranscoding => 'Allow audio transcoding';
+  String get adminAllowAudioTranscoding => 'Luba heli ümberkodeerimine';
 
   @override
-  String get adminAllowVideoTranscoding => 'Allow video transcoding';
+  String get adminAllowVideoTranscoding => 'Luba video ümberkodeerimine';
 
   @override
-  String get adminAllowRemuxing => 'Allow remuxing';
+  String get adminAllowRemuxing => 'Luba uuesti segada';
 
   @override
-  String get adminForceRemoteTranscoding => 'Force remote source transcoding';
+  String get adminForceRemoteTranscoding =>
+      'Kaugallika ümberkodeerimise sundimine';
 
   @override
-  String get adminAllowContentDeletion => 'Allow content deletion';
+  String get adminAllowContentDeletion => 'Luba sisu kustutamine';
 
   @override
-  String get adminAllowContentDownloading => 'Allow content downloading';
+  String get adminAllowContentDownloading => 'Luba sisu allalaadimine';
 
   @override
-  String get adminAllowPublicSharing => 'Allow public sharing';
+  String get adminAllowPublicSharing => 'Luba avalik jagamine';
 
   @override
-  String get adminAllowRemoteControl => 'Allow remote control of other users';
+  String get adminAllowRemoteControl =>
+      'Lubage teiste kasutajate kaugjuhtimine';
 
   @override
-  String get adminAllowSharedDeviceControl => 'Allow shared device control';
+  String get adminAllowSharedDeviceControl => 'Luba jagatud seadme juhtimine';
 
   @override
-  String get adminAllowRemoteAccess => 'Allow remote access';
+  String get adminAllowRemoteAccess => 'Luba kaugjuurdepääs';
 
   @override
-  String get adminRemoteBitrateLimit => 'Remote client bitrate limit (bps)';
+  String get adminRemoteBitrateLimit => 'Kaugkliendi bitikiiruse limiit (bps)';
 
   @override
-  String get adminLeaveEmptyNoLimit => 'Leave empty for no limit';
+  String get adminLeaveEmptyNoLimit => 'Jätke piiranguteta tühjaks';
 
   @override
-  String get adminMaxActiveSessions => 'Max active sessions';
+  String get adminMaxActiveSessions => 'Aktiivsete seansside maksimaalne arv';
 
   @override
-  String get adminAllowLiveTvAccess => 'Allow Live TV access';
+  String get adminAllowLiveTvAccess => 'Luba otsetelevisiooni juurdepääs';
 
   @override
-  String get adminAllowLiveTvManagement => 'Allow Live TV management';
+  String get adminAllowLiveTvManagement => 'Luba otse-TV haldamine';
 
   @override
-  String get adminAllowCollectionManagement => 'Allow collection management';
+  String get adminAllowCollectionManagement => 'Luba kogude haldamine';
 
   @override
-  String get adminAllowSubtitleManagement => 'Allow subtitle management';
+  String get adminAllowSubtitleManagement => 'Luba subtiitrite haldamine';
 
   @override
-  String get adminAllowLyricManagement => 'Allow lyric management';
+  String get adminAllowLyricManagement => 'Luba laulusõnade haldamine';
 
   @override
-  String get adminSavePermissions => 'Save Permissions';
+  String get adminSavePermissions => 'Salvesta load';
 
   @override
-  String get adminEnableAllLibraryAccess => 'Enable access to all libraries';
+  String get adminEnableAllLibraryAccess =>
+      'Luba juurdepääs kõikidele raamatukogudele';
 
   @override
-  String get adminSaveAccess => 'Save Access';
+  String get adminSaveAccess => 'Salvesta juurdepääs';
 
   @override
-  String get adminChangePassword => 'Change Password';
+  String get adminChangePassword => 'Muuda parooli';
 
   @override
-  String get adminNewPassword => 'New Password';
+  String get adminNewPassword => 'Uus parool';
 
   @override
-  String get adminConfirmPassword => 'Confirm Password';
+  String get adminConfirmPassword => 'Kinnitage parool';
 
   @override
-  String get adminSetPassword => 'Set Password';
+  String get adminSetPassword => 'Määra parool';
 
   @override
-  String get adminResetPassword => 'Reset Password';
+  String get adminResetPassword => 'Lähtestage parool';
 
   @override
-  String get adminPasswordReset => 'Password reset';
+  String get adminPasswordReset => 'Parooli lähtestamine';
 
   @override
-  String get adminPasswordUpdated => 'Password updated';
+  String get adminPasswordUpdated => 'Parool uuendatud';
 
   @override
-  String get adminUserSettings => 'User Settings';
+  String get adminUserSettings => 'Kasutaja seaded';
 
   @override
-  String get adminLibraryAccess => 'Library Access';
+  String get adminLibraryAccess => 'Juurdepääs raamatukogule';
 
   @override
-  String get adminDeviceAndChannelAccess => 'Device & Channel Access';
+  String get adminDeviceAndChannelAccess => 'Juurdepääs seadmele ja kanalile';
 
   @override
-  String get adminEnableAllDevices => 'Enable access to all devices';
+  String get adminEnableAllDevices => 'Luba juurdepääs kõikidele seadmetele';
 
   @override
-  String get adminEnableAllChannels => 'Enable access to all channels';
+  String get adminEnableAllChannels => 'Luba juurdepääs kõikidele kanalitele';
 
   @override
   String get adminResetPasswordWarning =>
-      'This will remove the password. The user will be able to log in without a password.';
+      'See eemaldab parooli. Kasutaja saab sisse logida ilma paroolita.';
 
   @override
   String adminServerReturnedHttp(int status) {
@@ -4075,20 +4148,20 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminCreateApiKey => 'Create API Key';
+  String get adminCreateApiKey => 'Looge API võti';
 
   @override
-  String get adminAppName => 'App name';
+  String get adminAppName => 'Rakenduse nimi';
 
   @override
-  String get adminApiKeyCreated => 'API Key Created';
+  String get adminApiKeyCreated => 'API võti loodud';
 
   @override
   String get adminApiKeyCreatedNoToken =>
-      'Key created successfully. The server did not return the token. Check server API keys.';
+      'Võtme loomine õnnestus. Server ei tagastanud luba. Kontrollige serveri API võtmeid.';
 
   @override
-  String get adminKeyCopied => 'Key copied to clipboard';
+  String get adminKeyCopied => 'Võti kopeeriti lõikelauale';
 
   @override
   String adminApiKeyCreateFailed(String error) {
@@ -4096,10 +4169,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminKeyTokenMissing => 'Key token missing from server response';
+  String get adminKeyTokenMissing => 'Serveri vastusest puudub võtmemärk';
 
   @override
-  String get adminRevokeApiKey => 'Revoke API Key';
+  String get adminRevokeApiKey => 'Tühista API võti';
 
   @override
   String adminRevokeKeyConfirm(String name) {
@@ -4107,7 +4180,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeyRevoked => 'API key revoked';
+  String get adminApiKeyRevoked => 'API võti tühistati';
 
   @override
   String adminApiKeyRevokeFailed(String error) {
@@ -4115,19 +4188,19 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeysLoadFailed => 'Failed to load API keys';
+  String get adminApiKeysLoadFailed => 'API võtmete laadimine ebaõnnestus';
 
   @override
-  String get adminApiKeysTitle => 'API Keys';
+  String get adminApiKeysTitle => 'API võtmed';
 
   @override
-  String get adminCreateKey => 'Create Key';
+  String get adminCreateKey => 'Loo võti';
 
   @override
-  String get adminNoApiKeys => 'No API keys found';
+  String get adminNoApiKeys => 'API võtmeid ei leitud';
 
   @override
-  String get adminUnknownApp => 'Unknown App';
+  String get adminUnknownApp => 'Tundmatu rakendus';
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
@@ -4135,10 +4208,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminCreatingBackup => 'Creating backup...';
+  String get adminCreatingBackup => 'Varukoopia loomine...';
 
   @override
-  String get adminBackupCreated => 'Backup created successfully';
+  String get adminBackupCreated => 'Varundamine õnnestus';
 
   @override
   String adminBackupCreateFailed(String error) {
@@ -4146,7 +4219,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminBackupPathMissing => 'Backup path missing in server response';
+  String get adminBackupPathMissing => 'Serveri vastuses puudub varutee';
 
   @override
   String adminBackupManifest(String name) {
@@ -4159,10 +4232,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminConfirmRestore => 'Confirm Restore';
+  String get adminConfirmRestore => 'Kinnitage taastamine';
 
   @override
-  String get adminRestoringBackup => 'Restoring backup...';
+  String get adminRestoringBackup => 'Varukoopia taastamine...';
 
   @override
   String adminRestoreFailed(String error) {
@@ -4170,31 +4243,31 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminBackupsLoadFailed => 'Failed to load backups';
+  String get adminBackupsLoadFailed => 'Varukoopiate laadimine ebaõnnestus';
 
   @override
-  String get adminCreateBackup => 'Create Backup';
+  String get adminCreateBackup => 'Loo varukoopia';
 
   @override
-  String get adminNoBackups => 'No backups found';
+  String get adminNoBackups => 'Varukoopiaid ei leitud';
 
   @override
-  String get adminViewDetails => 'View Details';
+  String get adminViewDetails => 'Kuva üksikasjad';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Taasta';
 
   @override
-  String get adminLogsLoadFailed => 'Failed to load server logs';
+  String get adminLogsLoadFailed => 'Serveri logide laadimine ebaõnnestus';
 
   @override
-  String get adminNoLogFiles => 'No log files found';
+  String get adminNoLogFiles => 'Logifaile ei leitud';
 
   @override
-  String get adminLogCopied => 'Log copied to clipboard';
+  String get adminLogCopied => 'Logi kopeeriti lõikelauale';
 
   @override
-  String get adminSaveLogFile => 'Save log file';
+  String get adminSaveLogFile => 'Salvesta logifail';
 
   @override
   String adminSavedTo(String path) {
@@ -4212,10 +4285,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminSearchInLog => 'Search in log';
+  String get adminSearchInLog => 'Otsi logist';
 
   @override
-  String get adminNoMatchingLines => 'No matching lines';
+  String get adminNoMatchingLines => 'Ühtegi sobivat rida pole';
 
   @override
   String adminTasksLoadFailed(String error) {
@@ -4223,10 +4296,11 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminNoScheduledTasks => 'No scheduled tasks found';
+  String get adminNoScheduledTasks => 'Ajastatud ülesandeid ei leitud';
 
   @override
-  String get adminNoTasksMatchFilter => 'No tasks match the current filter';
+  String get adminNoTasksMatchFilter =>
+      'Praegusele filtrile ei vasta ükski ülesanne';
 
   @override
   String adminTaskStartFailed(String error) {
@@ -4244,7 +4318,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminRunNow => 'Run Now';
+  String get adminRunNow => 'Jookse kohe';
 
   @override
   String adminTriggerRemoveFailed(String error) {
@@ -4257,25 +4331,25 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminLastExecution => 'Last Execution';
+  String get adminLastExecution => 'Viimane hukkamine';
 
   @override
-  String get adminTriggers => 'Triggers';
+  String get adminTriggers => 'Päästikud';
 
   @override
-  String get adminAddTrigger => 'Add Trigger';
+  String get adminAddTrigger => 'Lisa päästik';
 
   @override
-  String get adminNoTriggers => 'No triggers configured';
+  String get adminNoTriggers => 'Päästikuid pole konfigureeritud';
 
   @override
-  String get adminTriggerType => 'Trigger Type';
+  String get adminTriggerType => 'Päästiku tüüp';
 
   @override
-  String get adminTimeLimit => 'Time limit (optional)';
+  String get adminTimeLimit => 'Ajapiirang (valikuline)';
 
   @override
-  String get adminNoLimit => 'No limit';
+  String get adminNoLimit => 'Piiramata';
 
   @override
   String adminHours(String hours) {
@@ -4283,10 +4357,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminDayOfWeek => 'Day of week';
+  String get adminDayOfWeek => 'Nädalapäev';
 
   @override
-  String get adminSearchPlugins => 'Search plugins...';
+  String get adminSearchPlugins => 'Otsi pluginaid...';
 
   @override
   String adminPluginToggleFailed(String error) {
@@ -4294,7 +4368,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminUninstallPlugin => 'Uninstall Plugin';
+  String get adminUninstallPlugin => 'Desinstallige pistikprogramm';
 
   @override
   String adminUninstallPluginConfirm(String name) {
@@ -4322,10 +4396,11 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminNoPluginsMatchSearch => 'No plugins match your search';
+  String get adminNoPluginsMatchSearch =>
+      'Ükski pistikprogramm ei vasta teie otsingule';
 
   @override
-  String get adminNoPluginsInstalled => 'No plugins installed';
+  String get adminNoPluginsInstalled => 'Pluginaid pole installitud';
 
   @override
   String adminInstallUpdate(String version) {
@@ -4338,20 +4413,21 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminNoPackagesMatchSearch => 'No packages match your search';
+  String get adminNoPackagesMatchSearch =>
+      'Ükski pakend ei vasta teie otsingule';
 
   @override
-  String get adminNoPackagesAvailable => 'No packages available';
+  String get adminNoPackagesAvailable => 'Paketid pole saadaval';
 
   @override
-  String get adminExperimentalIntegration => 'Experimental Integration';
+  String get adminExperimentalIntegration => 'Eksperimentaalne integratsioon';
 
   @override
   String get adminExperimentalWarning =>
-      'Plugin settings integration is still experimental. Some settings pages may not render correctly.';
+      'Pistikprogrammide seadete integreerimine on veel eksperimentaalne. Mõnda seadete lehte ei pruugita õigesti renderdada.';
 
   @override
-  String get continueAction => 'Continue';
+  String get continueAction => 'Jätka';
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
@@ -4370,7 +4446,7 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get adminMissingAuthToken =>
-      'Unable to open settings: missing auth token.';
+      'Seadeid ei saa avada: autentimisluba puudub.';
 
   @override
   String adminPluginLoadFailed(String error) {
@@ -4378,7 +4454,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminPluginNotFound => 'Plugin not found';
+  String get adminPluginNotFound => 'Pluginat ei leitud';
 
   @override
   String adminPluginVersion(String version) {
@@ -4386,19 +4462,19 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminEnablePlugin => 'Enable Plugin';
+  String get adminEnablePlugin => 'Luba pistikprogramm';
 
   @override
-  String get adminPluginSettingsPage => 'Plugin settings page';
+  String get adminPluginSettingsPage => 'Pistikprogrammi seadete leht';
 
   @override
-  String get adminRevisionHistory => 'Revision History';
+  String get adminRevisionHistory => 'Läbivaatamise ajalugu';
 
   @override
-  String get adminNoChangelog => 'No changelog available.';
+  String get adminNoChangelog => 'Muudatuste logi pole saadaval.';
 
   @override
-  String get adminRemoveRepository => 'Remove Repository';
+  String get adminRemoveRepository => 'Eemalda hoidla';
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
@@ -4416,16 +4492,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminRepositoryNameHint => 'e.g. Jellyfin Stable';
+  String get adminRepositoryNameHint => 'nt. Jellyfin stabiilne';
 
   @override
-  String get adminRepositoryUrl => 'Repository URL';
+  String get adminRepositoryUrl => 'Hoidla URL';
 
   @override
-  String get adminAddEntry => 'Add entry';
+  String get adminAddEntry => 'Lisa kirje';
 
   @override
-  String get adminInvalidUrl => 'Invalid URL';
+  String get adminInvalidUrl => 'Vigane URL';
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
@@ -4438,269 +4514,276 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminOpenInBrowser => 'Open in Browser';
+  String get adminOpenInBrowser => 'Avage brauseris';
 
   @override
-  String get adminOpenExternally => 'Open externally';
+  String get adminOpenExternally => 'Avage väliselt';
 
   @override
-  String get adminGeneralSettings => 'General Settings';
+  String get adminGeneralSettings => 'Üldsätted';
 
   @override
-  String get adminServerName => 'Server name';
+  String get adminServerName => 'Serveri nimi';
 
   @override
-  String get adminPreferredMetadataCountry => 'Preferred metadata country';
+  String get adminPreferredMetadataCountry => 'Eelistatud metaandmete riik';
 
   @override
-  String get adminCachePath => 'Cache path';
+  String get adminCachePath => 'Vahemälu tee';
 
   @override
-  String get adminMetadataPath => 'Metadata path';
+  String get adminMetadataPath => 'Metaandmete tee';
 
   @override
-  String get adminLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminLibraryScanConcurrency => 'Raamatukogu skannimise samaaegsus';
 
   @override
-  String get adminParallelImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminParallelImageEncodingLimit =>
+      'Kujutise paralleelse kodeerimise piirang';
 
   @override
-  String get adminSlowResponseThreshold => 'Slow response threshold (ms)';
+  String get adminSlowResponseThreshold => 'Aeglase reageerimise lävi (ms)';
 
   @override
-  String get adminBrandingSaved => 'Branding settings saved';
+  String get adminBrandingSaved => 'Brändiseaded on salvestatud';
 
   @override
-  String get adminBrandingLoadFailed => 'Failed to load branding settings';
+  String get adminBrandingLoadFailed => 'Brändiseadete laadimine ebaõnnestus';
 
   @override
-  String get adminLoginDisclaimer => 'Login disclaimer';
+  String get adminLoginDisclaimer => 'Sisselogimisest loobumine';
 
   @override
-  String get adminLoginDisclaimerHint => 'HTML displayed below the login form';
+  String get adminLoginDisclaimerHint => 'HTML kuvatakse sisselogimisvormi all';
 
   @override
-  String get adminCustomCss => 'Custom CSS';
+  String get adminCustomCss => 'Kohandatud CSS';
 
   @override
-  String get adminCustomCssHint => 'Custom CSS applied to the web interface';
+  String get adminCustomCssHint => 'Veebiliidesele rakendatud kohandatud CSS';
 
   @override
-  String get adminEnableSplashScreen => 'Enable splash screen';
+  String get adminEnableSplashScreen => 'Luba pritskuva';
 
   @override
-  String get adminStreamingSaved => 'Streaming settings saved';
+  String get adminStreamingSaved => 'Voogesituse seaded on salvestatud';
 
   @override
-  String get adminStreamingLoadFailed => 'Failed to load streaming settings';
+  String get adminStreamingLoadFailed =>
+      'Voogesituse seadete laadimine ebaõnnestus';
 
   @override
   String get adminStreamingDescription =>
-      'Set global streaming bitrate limits for remote connections.';
+      'Määrake kaugühenduste jaoks globaalsed voogesituse bitikiiruse piirangud.';
 
   @override
   String get adminRemoteBitrateLimitMbps =>
-      'Remote client bitrate limit (Mbps)';
+      'Kaugkliendi bitikiiruse limiit (Mbps)';
 
   @override
-  String get adminLeaveEmptyForUnlimited => 'Leave empty or 0 for unlimited';
+  String get adminLeaveEmptyForUnlimited => 'Jätke tühjaks või 0 piiramatuks';
 
   @override
-  String get adminPlaybackSaved => 'Playback settings saved';
+  String get adminPlaybackSaved => 'Taasesituse seaded on salvestatud';
 
   @override
-  String get adminPlaybackLoadFailed => 'Failed to load playback settings';
+  String get adminPlaybackLoadFailed =>
+      'Taasesituse seadete laadimine ebaõnnestus';
 
   @override
-  String get adminPlaybackTranscoding => 'Playback / Transcoding';
+  String get adminPlaybackTranscoding => 'Taasesitus / ümberkodeerimine';
 
   @override
-  String get adminHardwareAcceleration => 'Hardware acceleration';
+  String get adminHardwareAcceleration => 'Riistvaraline kiirendus';
 
   @override
-  String get adminVaapiDevice => 'VA-API device';
+  String get adminVaapiDevice => 'VA-API seade';
 
   @override
-  String get adminEnableHardwareEncoding => 'Enable hardware encoding';
+  String get adminEnableHardwareEncoding => 'Luba riistvaraline kodeering';
 
   @override
-  String get adminEnableHardwareDecoding => 'Enable hardware decoding for:';
+  String get adminEnableHardwareDecoding => 'Riistvara dekodeerimise lubamine:';
 
   @override
-  String get adminEncodingThreads => 'Encoding threads';
+  String get adminEncodingThreads => 'Kodeerimislõngad';
 
   @override
-  String get adminAutomatic => '0 = automatic';
+  String get adminAutomatic => '0 = automaatne';
 
   @override
-  String get adminTranscodingTempPath => 'Transcoding temp path';
+  String get adminTranscodingTempPath => 'Transkodeerimise temp tee';
 
   @override
-  String get adminEnableFallbackFont => 'Enable fallback font';
+  String get adminEnableFallbackFont => 'Luba varufont';
 
   @override
-  String get adminFallbackFontPath => 'Fallback font path';
+  String get adminFallbackFontPath => 'Varufondi tee';
 
   @override
-  String get adminAllowSegmentDeletion => 'Allow segment deletion';
+  String get adminAllowSegmentDeletion => 'Luba segmendi kustutamine';
 
   @override
-  String get adminSegmentKeepSeconds => 'Segment keep (seconds)';
+  String get adminSegmentKeepSeconds => 'Segmendi säilitamine (sekundites)';
 
   @override
-  String get adminThrottleBuffering => 'Throttle buffering';
+  String get adminThrottleBuffering => 'Drosselklapi puhverdus';
 
   @override
-  String get adminTrickplaySaved => 'Trickplay settings saved';
+  String get adminTrickplaySaved => 'Trickplay seaded on salvestatud';
 
   @override
-  String get adminTrickplayLoadFailed => 'Failed to load trickplay settings';
+  String get adminTrickplayLoadFailed =>
+      'Trickplay seadete laadimine ebaõnnestus';
 
   @override
-  String get adminEnableHardwareAcceleration => 'Enable hardware acceleration';
+  String get adminEnableHardwareAcceleration => 'Luba riistvaraline kiirendus';
 
   @override
   String get adminEnableKeyFrameExtraction =>
-      'Enable key frame only extraction';
+      'Luba ainult võtmeraami ekstraheerimine';
 
   @override
-  String get adminKeyFrameSubtitle => 'Faster but lower accuracy';
+  String get adminKeyFrameSubtitle => 'Kiirem, kuid väiksem täpsus';
 
   @override
-  String get adminScanBehavior => 'Scan behavior';
+  String get adminScanBehavior => 'Skaneerimise käitumine';
 
   @override
-  String get adminProcessPriority => 'Process priority';
+  String get adminProcessPriority => 'Protsessi prioriteet';
 
   @override
-  String get adminImageSettings => 'Image Settings';
+  String get adminImageSettings => 'Pildi seaded';
 
   @override
-  String get adminIntervalMs => 'Interval (ms)';
+  String get adminIntervalMs => 'Intervall (ms)';
 
   @override
-  String get adminCaptureFrameSubtitle => 'How often to capture frames';
+  String get adminCaptureFrameSubtitle => 'Kui sageli kaadreid jäädvustada';
 
   @override
-  String get adminWidthResolutions => 'Width resolutions';
+  String get adminWidthResolutions => 'Laiuse eraldusvõimed';
 
   @override
-  String get adminTileWidth => 'Tile width';
+  String get adminTileWidth => 'Plaatide laius';
 
   @override
-  String get adminTileHeight => 'Tile height';
+  String get adminTileHeight => 'Plaatide kõrgus';
 
   @override
   String get adminQualitySubtitle =>
-      'Lower values = better quality, larger files';
+      'Madalamad väärtused = parem kvaliteet, suuremad failid';
 
   @override
-  String get adminProcessThreads => 'Process threads';
+  String get adminProcessThreads => 'Töötle niidid';
 
   @override
-  String get adminResumeSaved => 'Resume settings saved';
+  String get adminResumeSaved => 'Jätkamisseaded on salvestatud';
 
   @override
-  String get adminResumeLoadFailed => 'Failed to load resume settings';
+  String get adminResumeLoadFailed => 'Jätkamisseadete laadimine ebaõnnestus';
 
   @override
   String get adminResumeDescription =>
-      'Configure when content should be marked as partially played or fully played.';
+      'Seadistage, millal tuleks sisu märkida osaliselt või täielikult esitatuks.';
 
   @override
-  String get adminMinResumePercentage => 'Minimum resume percentage';
+  String get adminMinResumePercentage => 'Minimaalne jätkamise protsent';
 
   @override
   String get adminMinResumeSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'Edenemise salvestamiseks tuleb sisu esitada sellest protsendist üle';
 
   @override
-  String get adminMaxResumePercentage => 'Maximum resume percentage';
+  String get adminMaxResumePercentage => 'Maksimaalne jätkamise protsent';
 
   @override
   String get adminMaxResumeSubtitle =>
-      'Content is considered fully played after this percentage';
+      'Pärast seda protsenti loetakse sisu täielikult esitatuks';
 
   @override
-  String get adminMinResumeDuration => 'Minimum resume duration (seconds)';
+  String get adminMinResumeDuration =>
+      'Jätkamise minimaalne kestus (sekundites)';
 
   @override
   String get adminMinResumeDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Sellest lühemaid esemeid ei saa jätkata';
 
   @override
-  String get adminMinAudiobookResume => 'Minimum audiobook resume percentage';
+  String get adminMinAudiobookResume =>
+      'Audioraamatute jätkamise minimaalne protsent';
 
   @override
-  String get adminMaxAudiobookResume => 'Maximum audiobook resume percentage';
+  String get adminMaxAudiobookResume =>
+      'Maksimaalne audioraamatu jätkamise protsent';
 
   @override
   String get adminNetworkingSaved =>
-      'Networking settings saved. A server restart may be required.';
+      'Võrguseaded on salvestatud. Vajalik võib olla serveri taaskäivitamine.';
 
   @override
-  String get adminNetworkingLoadFailed => 'Failed to load networking settings';
+  String get adminNetworkingLoadFailed => 'Võrguseadete laadimine ebaõnnestus';
 
   @override
   String get adminNetworkingWarning =>
-      'Changes to networking settings may require a server restart.';
+      'Võrguseadete muutmine võib nõuda serveri taaskäivitamist.';
 
   @override
-  String get adminEnableRemoteAccess => 'Enable remote access';
+  String get adminEnableRemoteAccess => 'Luba kaugjuurdepääs';
 
   @override
-  String get ports => 'Ports';
+  String get ports => 'Sadamad';
 
   @override
   String get adminHttpPort => 'HTTP port';
 
   @override
-  String get adminHttpsPort => 'HTTPS port';
+  String get adminHttpsPort => 'HTTPS-port';
 
   @override
-  String get adminPublicHttpsPort => 'Public HTTPS port';
+  String get adminPublicHttpsPort => 'Avalik HTTPS-port';
 
   @override
-  String get adminBaseUrl => 'Base URL';
+  String get adminBaseUrl => 'Baas-URL';
 
   @override
-  String get adminBaseUrlHint => 'e.g. /jellyfin';
+  String get adminBaseUrlHint => 'nt. /tarretis';
 
   @override
   String get https => 'HTTPS';
 
   @override
-  String get adminEnableHttps => 'Enable HTTPS';
+  String get adminEnableHttps => 'Luba HTTPS';
 
   @override
-  String get adminLocalNetwork => 'Local Network';
+  String get adminLocalNetwork => 'Kohalik võrk';
 
   @override
-  String get adminLocalNetworkAddresses => 'Local network addresses';
+  String get adminLocalNetworkAddresses => 'Kohaliku võrgu aadressid';
 
   @override
-  String get adminKnownProxies => 'Known proxies';
+  String get adminKnownProxies => 'Tuntud puhverserverid';
 
   @override
-  String get adminRemoteIpFilter => 'Remote IP Filter';
+  String get adminRemoteIpFilter => 'Kaug-IP-filter';
 
   @override
-  String get adminRemoteIpFilterEntries => 'Remote IP filter';
+  String get adminRemoteIpFilterEntries => 'Kaug-IP-filter';
 
   @override
-  String get adminCertificatePath => 'Certificate path';
+  String get adminCertificatePath => 'Sertifikaadi tee';
 
   @override
-  String get whitelist => 'Whitelist';
+  String get whitelist => 'Valge nimekiri';
 
   @override
-  String get blacklist => 'Blacklist';
+  String get blacklist => 'Must nimekiri';
 
   @override
-  String get notSet => 'Not set';
+  String get notSet => 'Pole määratud';
 
   @override
-  String get adminMetadataSaved => 'Metadata saved';
+  String get adminMetadataSaved => 'Metaandmed salvestatud';
 
   @override
   String adminMetadataLoadFailed(String error) {
@@ -4713,19 +4796,20 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminRefreshMetadata => 'Refresh Metadata';
+  String get adminRefreshMetadata => 'Värskenda metaandmeid';
 
   @override
-  String get recursive => 'Recursive';
+  String get recursive => 'Rekursiivne';
 
   @override
-  String get adminReplaceAllMetadata => 'Replace all metadata';
+  String get adminReplaceAllMetadata => 'Asendage kõik metaandmed';
 
   @override
-  String get adminReplaceAllImages => 'Replace all images';
+  String get adminReplaceAllImages => 'Asenda kõik pildid';
 
   @override
-  String get adminMetadataRefreshRequested => 'Metadata refresh requested';
+  String get adminMetadataRefreshRequested =>
+      'Taotleti metaandmete värskendamist';
 
   @override
   String adminMetadataRefreshFailed(String error) {
@@ -4733,16 +4817,16 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminSearchRemotePerson => 'Search Remote Person';
+  String get adminSearchRemotePerson => 'Otsige kaugisikut';
 
   @override
-  String get adminNoRemoteMatches => 'No remote matches found';
+  String get adminNoRemoteMatches => 'Kaugvasteid ei leitud';
 
   @override
-  String get adminRemoteResults => 'Remote Results';
+  String get adminRemoteResults => 'Kaugtulemused';
 
   @override
-  String get adminRemoteMetadataApplied => 'Remote metadata applied';
+  String get adminRemoteMetadataApplied => 'Kaugmetaandmed on rakendatud';
 
   @override
   String adminRemoteSearchFailed(String error) {
@@ -4750,13 +4834,13 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminUpdateContentType => 'Update Content Type';
+  String get adminUpdateContentType => 'Värskenda sisutüüpi';
 
   @override
-  String get adminContentType => 'Content type';
+  String get adminContentType => 'Sisu tüüp';
 
   @override
-  String get adminContentTypeUpdated => 'Content type updated';
+  String get adminContentTypeUpdated => 'Sisutüüp on värskendatud';
 
   @override
   String adminContentTypeUpdateFailed(String error) {
@@ -4764,13 +4848,14 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataEditorLoadFailed => 'Failed to load metadata editor';
+  String get adminMetadataEditorLoadFailed =>
+      'Metaandmete redaktori laadimine ebaõnnestus';
 
   @override
-  String get adminNoPeopleEntries => 'No people entries';
+  String get adminNoPeopleEntries => 'Inimesi sissekandeid pole';
 
   @override
-  String get adminNoExternalIds => 'No external IDs available';
+  String get adminNoExternalIds => 'Väliseid ID-sid pole saadaval';
 
   @override
   String adminImageUpdated(String imageType) {
@@ -4783,10 +4868,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminUnsupportedImageFormat => 'Unsupported image format';
+  String get adminUnsupportedImageFormat => 'Toetamata pildivorming';
 
   @override
-  String get adminImageReadFailed => 'Failed to read selected image';
+  String get adminImageReadFailed => 'Valitud pildi lugemine ebaõnnestus';
 
   @override
   String adminImageUploaded(String imageType) {
@@ -4814,10 +4899,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminAllProviders => 'All providers';
+  String get adminAllProviders => 'Kõik pakkujad';
 
   @override
-  String get adminNoRemoteImages => 'No remote images found';
+  String get adminNoRemoteImages => 'Kaugpilte ei leitud';
 
   @override
   String adminTunerDiscoveryFailed(String error) {
@@ -4825,22 +4910,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminAddTuner => 'Add Tuner';
+  String get adminAddTuner => 'Lisage tuuner';
 
   @override
-  String get adminTunerType => 'Tuner Type';
+  String get adminTunerType => 'Tuneri tüüp';
 
   @override
-  String get adminTunerTypeHint => 'HDHomeRun, M3U, Other';
+  String get adminTunerTypeHint => 'HDHomeRun, M3U, muu';
 
   @override
-  String get adminUrlPath => 'URL / Path';
+  String get adminUrlPath => 'URL / tee';
 
   @override
-  String get adminNameOptional => 'Name (optional)';
+  String get adminNameOptional => 'Nimi (valikuline)';
 
   @override
-  String get adminTunerAdded => 'Tuner added';
+  String get adminTunerAdded => 'Tuner lisatud';
 
   @override
   String adminTunerAddFailed(String error) {
@@ -4848,22 +4933,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminAddGuideProvider => 'Add Guide Provider';
+  String get adminAddGuideProvider => 'Lisage juhendi pakkuja';
 
   @override
-  String get adminProviderType => 'Provider Type';
+  String get adminProviderType => 'Pakkuja tüüp';
 
   @override
-  String get adminProviderTypeHint => 'SchedulesDirect or XMLTV';
+  String get adminProviderTypeHint => 'SchedulesDirect või XMLTV';
 
   @override
-  String get adminUsernameOptional => 'Username (optional)';
+  String get adminUsernameOptional => 'Kasutajanimi (valikuline)';
 
   @override
-  String get adminRefreshInterval => 'Refresh interval (hours)';
+  String get adminRefreshInterval => 'Värskendusintervall (tunnid)';
 
   @override
-  String get adminProviderAdded => 'Provider added';
+  String get adminProviderAdded => 'Pakkuja lisatud';
 
   @override
   String adminProviderAddFailed(String error) {
@@ -4876,7 +4961,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminTunerResetRequested => 'Tuner reset requested';
+  String get adminTunerResetRequested => 'Tuneri lähtestamist taotleti';
 
   @override
   String adminTunerResetFailed(String error) {
@@ -4889,22 +4974,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminRecordingSettings => 'Recording Settings';
+  String get adminRecordingSettings => 'Salvestusseaded';
 
   @override
-  String get adminPrePadding => 'Pre-padding (minutes)';
+  String get adminPrePadding => 'Eelpolster (minutites)';
 
   @override
-  String get adminPostPadding => 'Post-padding (minutes)';
+  String get adminPostPadding => 'Järeltäide (minutites)';
 
   @override
-  String get adminRecordingPath => 'Recording path';
+  String get adminRecordingPath => 'Salvestustee';
 
   @override
-  String get adminSeriesRecordingPath => 'Series recording path';
+  String get adminSeriesRecordingPath => 'Sarja salvestustee';
 
   @override
-  String get adminRecordingSettingsSaved => 'Recording settings saved';
+  String get adminRecordingSettingsSaved => 'Salvestusseaded on salvestatud';
 
   @override
   String adminSettingsSaveFailed(String error) {
@@ -4912,16 +4997,17 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminSetChannelMappings => 'Set Channel Mappings';
+  String get adminSetChannelMappings => 'Kanalite vastendamise määramine';
 
   @override
-  String get adminMappingJson => 'Mapping JSON';
+  String get adminMappingJson => 'JSON-i kaardistamine';
 
   @override
-  String get adminMappingJsonHint => 'Example: mappings JSON payload';
+  String get adminMappingJsonHint =>
+      'Näide: JSON-i kasuliku koormuse vastendamine';
 
   @override
-  String get adminChannelMappingsUpdated => 'Channel mappings updated';
+  String get adminChannelMappingsUpdated => 'Kanalite vastendusi värskendati';
 
   @override
   String adminMappingsUpdateFailed(String error) {
@@ -4929,22 +5015,24 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminLiveTvLoadFailed => 'Failed to load Live TV administration';
+  String get adminLiveTvLoadFailed =>
+      'Otseülekande halduse laadimine ebaõnnestus';
 
   @override
-  String get adminTunerDevices => 'Tuner Devices';
+  String get adminTunerDevices => 'Tuneri seadmed';
 
   @override
-  String get adminNoTunerHosts => 'No tuner hosts configured';
+  String get adminNoTunerHosts => 'Ühtegi tuuneri hosti pole konfigureeritud';
 
   @override
-  String get adminGuideProviders => 'Guide Providers';
+  String get adminGuideProviders => 'Juhendi pakkujad';
 
   @override
-  String get adminAddProvider => 'Add Provider';
+  String get adminAddProvider => 'Lisa teenusepakkuja';
 
   @override
-  String get adminNoListingProviders => 'No listing providers configured';
+  String get adminNoListingProviders =>
+      'Ühtegi loendi pakkujat pole konfigureeritud';
 
   @override
   String adminRecordingPathDisplay(String path) {
@@ -4967,32 +5055,31 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminTunerDiscovery => 'Tuner Discovery';
+  String get adminTunerDiscovery => 'Tuneri avastus';
 
   @override
-  String get adminChannelMappings => 'Channel Mappings';
+  String get adminChannelMappings => 'Kanalite kaardistused';
 
   @override
-  String get adminNoDiscoveredTuners => 'No discovered tuners yet';
+  String get adminNoDiscoveredTuners => 'Veel pole avastatud tuunereid';
 
   @override
-  String get adminSettingsSaved => 'Settings saved';
+  String get adminSettingsSaved => 'Seaded salvestatud';
 
   @override
   String get adminBackupsNotAvailable =>
-      'Backups are not available on this server build.';
+      'Varukoopiad pole selles serverijärgus saadaval.';
 
   @override
   String get adminRestoreWarning1 =>
-      'Restoring will replace ALL current server data with the backup data.';
+      'Taastamine asendab KÕIK praegused serveri andmed varuandmetega.';
 
   @override
   String get adminRestoreWarning2 =>
-      'Current server settings, users, and library data will be overwritten.';
+      'Praegused serveri seaded, kasutajad ja teegi andmed kirjutatakse üle.';
 
   @override
-  String get adminRestoreWarning3 =>
-      'The server will restart after restoration.';
+  String get adminRestoreWarning3 => 'Server taaskäivitub pärast taastamist.';
 
   @override
   String adminRestoreConfirmMessage(String name) {
@@ -5001,44 +5088,44 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get adminRestoreRequested =>
-      'Restore requested. Server restart may disconnect this session.';
+      'Taastamist taotleti. Serveri taaskäivitamine võib selle seansi katkestada.';
 
   @override
-  String get adminBackupsTitle => 'Backups';
+  String get adminBackupsTitle => 'Varukoopiad';
 
   @override
-  String get adminUnknownDate => 'Unknown date';
+  String get adminUnknownDate => 'Tundmatu kuupäev';
 
   @override
-  String get adminUnnamedBackup => 'Unnamed Backup';
+  String get adminUnnamedBackup => 'Nimetu varukoopia';
 
   @override
   String get adminLiveTvNotAvailable =>
-      'Live TV administration is not available on this server build.';
+      'Otsetelevisiooni haldamine pole selles serverijärgus saadaval.';
 
   @override
-  String get adminLiveTvTitle => 'Live TV Administration';
+  String get adminLiveTvTitle => 'Otseülekande administreerimine';
 
   @override
-  String get adminApply => 'Apply';
+  String get adminApply => 'Rakenda';
 
   @override
-  String get adminNotSet => 'Not set';
+  String get adminNotSet => 'Pole määratud';
 
   @override
-  String get adminReset => 'Reset';
+  String get adminReset => 'Lähtesta';
 
   @override
-  String get adminLogsTitle => 'Server Logs';
+  String get adminLogsTitle => 'Serveri logid';
 
   @override
-  String get adminLogsNewestFirst => 'Newest First';
+  String get adminLogsNewestFirst => 'Kõige uuemad enne';
 
   @override
-  String get adminLogsOldestFirst => 'Oldest First';
+  String get adminLogsOldestFirst => 'Vanim esimene';
 
   @override
-  String get adminLogsJustNow => 'Just now';
+  String get adminLogsJustNow => 'Just praegu';
 
   @override
   String adminLogsMinutesAgo(int minutes) {
@@ -5066,109 +5153,110 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminLogViewerNoMatches => 'No matching lines';
+  String get adminLogViewerNoMatches => 'Ühtegi sobivat rida pole';
 
   @override
-  String get adminMetadataEditorTitle => 'Metadata Editor';
+  String get adminMetadataEditorTitle => 'Metaandmete redaktor';
 
   @override
-  String get adminMetadataRemote => 'Remote';
+  String get adminMetadataRemote => 'Kaugjuhtimispult';
 
   @override
-  String get adminMetadataType => 'Type';
+  String get adminMetadataType => 'Tüüp';
 
   @override
-  String get adminMetadataDetails => 'Details';
+  String get adminMetadataDetails => 'Üksikasjad';
 
   @override
-  String get adminMetadataExternalIds => 'External IDs';
+  String get adminMetadataExternalIds => 'Välised ID-d';
 
   @override
-  String get adminMetadataImages => 'Images';
+  String get adminMetadataImages => 'Pildid';
 
   @override
-  String get adminMetadataFieldTitle => 'Title';
+  String get adminMetadataFieldTitle => 'Pealkiri';
 
   @override
-  String get adminMetadataFieldSortTitle => 'Sort title';
+  String get adminMetadataFieldSortTitle => 'Sorteeri pealkiri';
 
   @override
-  String get adminMetadataFieldOriginalTitle => 'Original title';
+  String get adminMetadataFieldOriginalTitle => 'Algne pealkiri';
 
   @override
-  String get adminMetadataFieldPremiereDate => 'Premiere date (YYYY-MM-DD)';
+  String get adminMetadataFieldPremiereDate =>
+      'Esilinastuse kuupäev (AAAA-KK-PP)';
 
   @override
-  String get adminMetadataFieldEndDate => 'End date (YYYY-MM-DD)';
+  String get adminMetadataFieldEndDate => 'Lõppkuupäev (AAAA-KK-PP)';
 
   @override
-  String get adminMetadataFieldProductionYear => 'Production year';
+  String get adminMetadataFieldProductionYear => 'Tootmisaasta';
 
   @override
-  String get adminMetadataFieldOfficialRating => 'Official rating';
+  String get adminMetadataFieldOfficialRating => 'Ametlik reiting';
 
   @override
-  String get adminMetadataFieldCommunityRating => 'Community rating';
+  String get adminMetadataFieldCommunityRating => 'kogukonna reiting';
 
   @override
-  String get adminMetadataFieldCriticRating => 'Critic rating';
+  String get adminMetadataFieldCriticRating => 'Kriitika hinnang';
 
   @override
-  String get adminMetadataFieldTagline => 'Tagline';
+  String get adminMetadataFieldTagline => 'Tunnuslause';
 
   @override
-  String get adminMetadataFieldOverview => 'Overview';
+  String get adminMetadataFieldOverview => 'Ülevaade';
 
   @override
-  String get adminMetadataGenres => 'Genres';
+  String get adminMetadataGenres => 'Žanrid';
 
   @override
-  String get adminMetadataTags => 'Tags';
+  String get adminMetadataTags => 'Sildid';
 
   @override
-  String get adminMetadataStudios => 'Studios';
+  String get adminMetadataStudios => 'Stuudiokorterid';
 
   @override
-  String get adminMetadataPeople => 'People';
+  String get adminMetadataPeople => 'Inimesed';
 
   @override
-  String get adminMetadataAddGenre => 'Add genre';
+  String get adminMetadataAddGenre => 'Lisa žanr';
 
   @override
-  String get adminMetadataAddTag => 'Add tag';
+  String get adminMetadataAddTag => 'Lisa silt';
 
   @override
-  String get adminMetadataAddStudio => 'Add studio';
+  String get adminMetadataAddStudio => 'Lisa stuudio';
 
   @override
-  String get adminMetadataAddPerson => 'Add Person';
+  String get adminMetadataAddPerson => 'Lisa inimene';
 
   @override
-  String get adminMetadataEditPerson => 'Edit Person';
+  String get adminMetadataEditPerson => 'Muuda isikut';
 
   @override
-  String get adminMetadataRole => 'Role';
+  String get adminMetadataRole => 'Roll';
 
   @override
-  String get adminMetadataImagePrimary => 'Primary';
+  String get adminMetadataImagePrimary => 'Esmane';
 
   @override
-  String get adminMetadataImageBackdrop => 'Backdrop';
+  String get adminMetadataImageBackdrop => 'Taust';
 
   @override
   String get adminMetadataImageLogo => 'Logo';
 
   @override
-  String get adminMetadataImageBanner => 'Banner';
+  String get adminMetadataImageBanner => 'Bänner';
 
   @override
-  String get adminMetadataImageThumb => 'Thumb';
+  String get adminMetadataImageThumb => 'Pöial';
 
   @override
-  String get adminMetadataRecursive => 'Recursive';
+  String get adminMetadataRecursive => 'Rekursiivne';
 
   @override
-  String get adminMetadataProvider => 'Provider';
+  String get adminMetadataProvider => 'Pakkuja';
 
   @override
   String adminMetadataImageUpdated(String imageType) {
@@ -5191,7 +5279,8 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataImageReadFailed => 'Failed to read selected image';
+  String get adminMetadataImageReadFailed =>
+      'Valitud pildi lugemine ebaõnnestus';
 
   @override
   String adminMetadataImageUploadFailed(String error) {
@@ -5205,7 +5294,7 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get adminMetadataDeleteImageContent =>
-      'This removes the current image from the item.';
+      'See eemaldab elemendist praeguse pildi.';
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
@@ -5218,31 +5307,32 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataUpload => 'Upload';
+  String get adminMetadataUpload => 'Laadi üles';
 
   @override
-  String get adminMetadataUpdate => 'Update';
+  String get adminMetadataUpdate => 'Värskenda';
 
   @override
-  String get adminMetadataRemoteImage => 'Remote image';
+  String get adminMetadataRemoteImage => 'Kaugpilt';
 
   @override
-  String get adminPluginsInstalled => 'Installed';
+  String get adminPluginsInstalled => 'Paigaldatud';
 
   @override
-  String get adminPluginsCatalog => 'Catalog';
+  String get adminPluginsCatalog => 'Kataloog';
 
   @override
-  String get adminPluginsActive => 'Active';
+  String get adminPluginsActive => 'Aktiivne';
 
   @override
-  String get adminPluginsRestart => 'Restart';
+  String get adminPluginsRestart => 'Taaskäivitage';
 
   @override
-  String get adminPluginsNoSearchResults => 'No plugins match your search';
+  String get adminPluginsNoSearchResults =>
+      'Ükski pistikprogramm ei vasta teie otsingule';
 
   @override
-  String get adminPluginsNoneInstalled => 'No plugins installed';
+  String get adminPluginsNoneInstalled => 'Pluginaid pole installitud';
 
   @override
   String adminPluginsUpdateAvailable(String version) {
@@ -5250,22 +5340,23 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminPluginsUpdateAvailableGeneric => 'Update available';
+  String get adminPluginsUpdateAvailableGeneric => 'Värskendus saadaval';
 
   @override
-  String get adminPluginsPendingRemoval => 'Pending removal after restart';
+  String get adminPluginsPendingRemoval =>
+      'Pärast taaskäivitamist ootel eemaldamine';
 
   @override
-  String get adminPluginsChangesPending => 'Changes pending restart';
+  String get adminPluginsChangesPending => 'Muudatused ootavad taaskäivitamist';
 
   @override
-  String get adminPluginsEnable => 'Enable';
+  String get adminPluginsEnable => 'Luba';
 
   @override
-  String get adminPluginsDisable => 'Disable';
+  String get adminPluginsDisable => 'Keela';
 
   @override
-  String get adminPluginsInstallUpdate => 'Install update';
+  String get adminPluginsInstallUpdate => 'Installige värskendus';
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
@@ -5274,10 +5365,10 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get adminPluginsCatalogNoSearchResults =>
-      'No packages match your search';
+      'Ükski pakend ei vasta teie otsingule';
 
   @override
-  String get adminPluginsCatalogEmpty => 'No packages available';
+  String get adminPluginsCatalogEmpty => 'Paketid pole saadaval';
 
   @override
   String adminPluginsInstalling(String name) {
@@ -5285,19 +5376,19 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailExperimental => 'Experimental Integration';
+  String get adminPluginDetailExperimental => 'Eksperimentaalne integratsioon';
 
   @override
   String get adminPluginDetailExperimentalContent =>
-      'Plugin settings integration is still experimental. Some fields or layouts may not render correctly yet.';
+      'Pistikprogrammide seadete integreerimine on veel eksperimentaalne. Mõnda välja või paigutust ei pruugita veel õigesti renderdada.';
 
   @override
   String get adminPluginDetailToggle404 =>
-      'Failed to toggle plugin. The server could not find this plugin version. Try refreshing plugins, then retry.';
+      'Plugina sisse- ja väljalülitamine ebaõnnestus. Server ei leidnud seda pistikprogrammi versiooni. Proovige pistikprogramme värskendada ja seejärel uuesti.';
 
   @override
   String get adminPluginDetailToggleDioError =>
-      'Failed to toggle plugin. Please check server logs for details.';
+      'Plugina sisse- ja väljalülitamine ebaõnnestus. Vaadake üksikasju serveri logidest.';
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
@@ -5305,39 +5396,39 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailDetails => 'Details';
+  String get adminPluginDetailDetails => 'Üksikasjad';
 
   @override
-  String get adminPluginDetailDeveloper => 'Developer';
+  String get adminPluginDetailDeveloper => 'Arendaja';
 
   @override
-  String get adminPluginDetailRepository => 'Repository';
+  String get adminPluginDetailRepository => 'Hoidla';
 
   @override
-  String get adminPluginDetailBundled => 'Bundled';
+  String get adminPluginDetailBundled => 'Komplektis';
 
   @override
-  String get adminPluginDetailEnablePlugin => 'Enable Plugin';
+  String get adminPluginDetailEnablePlugin => 'Luba pistikprogramm';
 
   @override
   String get adminPluginDetailRestartRequired =>
-      'A server restart is required for changes to take effect.';
+      'Muudatuste jõustumiseks on vaja serveri taaskäivitamist.';
 
   @override
   String get adminPluginDetailRemovalPending =>
-      'This plugin will be removed after server restart.';
+      'See pistikprogramm eemaldatakse pärast serveri taaskäivitamist.';
 
   @override
   String get adminPluginDetailMalfunctioned =>
-      'This plugin has malfunctioned and may not work correctly.';
+      'Sellel pistikprogrammil on tõrge ja see ei pruugi korralikult töötada.';
 
   @override
   String get adminPluginDetailNotSupported =>
-      'This plugin is not supported by the current server version.';
+      'Seda pistikprogrammi praegune serveriversioon ei toeta.';
 
   @override
   String get adminPluginDetailSuperseded =>
-      'This plugin has been superseded by a newer version.';
+      'See pistikprogramm on asendatud uuema versiooniga.';
 
   @override
   String adminReposLoadFailed(String error) {
@@ -5345,7 +5436,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemoveTitle => 'Remove Repository';
+  String get adminReposRemoveTitle => 'Eemalda hoidla';
 
   @override
   String adminReposRemoveConfirm(String name) {
@@ -5353,7 +5444,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemove => 'Remove';
+  String get adminReposRemove => 'Eemalda';
 
   @override
   String adminReposSaveFailed(String error) {
@@ -5361,270 +5452,279 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminReposEmpty => 'No repositories configured';
+  String get adminReposEmpty => 'Hoidlaid pole konfigureeritud';
 
   @override
   String get adminReposEmptySubtitle =>
-      'Add a repository to browse available plugins';
+      'Saadaolevate pistikprogrammide sirvimiseks lisage hoidla';
 
   @override
-  String get adminReposUnnamed => '(unnamed)';
+  String get adminReposUnnamed => '(nimetu)';
 
   @override
-  String get adminReposEditTitle => 'Edit Repository';
+  String get adminReposEditTitle => 'Redigeeri hoidlat';
 
   @override
-  String get adminReposAddTitle => 'Add Repository';
+  String get adminReposAddTitle => 'Lisa hoidla';
 
   @override
-  String get adminReposUrl => 'Repository URL';
+  String get adminReposUrl => 'Hoidla URL';
 
   @override
-  String get adminReposNameHint => 'e.g. Jellyfin Stable';
+  String get adminReposNameHint => 'nt. Jellyfin stabiilne';
 
   @override
-  String get adminPluginSettingsInvalidUrl => 'Invalid URL';
+  String get adminPluginSettingsInvalidUrl => 'Vigane URL';
 
   @override
-  String get adminGeneralSettingsTitle => 'General Settings';
+  String get adminGeneralSettingsTitle => 'Üldsätted';
 
   @override
-  String get adminGeneralMetadataLanguage => 'Preferred metadata language';
+  String get adminGeneralMetadataLanguage => 'Eelistatud metaandmete keel';
 
   @override
-  String get adminGeneralMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminGeneralMetadataLanguageHint => 'nt. et, de, fr';
 
   @override
-  String get adminGeneralMetadataCountry => 'Preferred metadata country';
+  String get adminGeneralMetadataCountry => 'Eelistatud metaandmete riik';
 
   @override
-  String get adminGeneralMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminGeneralMetadataCountryHint => 'nt. USA, DE, FR';
 
   @override
-  String get adminGeneralLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminGeneralLibraryScanConcurrency =>
+      'Raamatukogu skannimise samaaegsus';
 
   @override
-  String get adminGeneralImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminGeneralImageEncodingLimit =>
+      'Kujutise paralleelse kodeerimise piirang';
 
   @override
-  String get adminUnknownError => 'Unknown error';
+  String get adminUnknownError => 'Tundmatu viga';
 
   @override
-  String get adminBrowse => 'Browse';
+  String get adminBrowse => 'Sirvige';
 
   @override
-  String get adminCloseBrowser => 'Close browser';
+  String get adminCloseBrowser => 'Sulgege brauser';
 
   @override
-  String get adminNetworkingTitle => 'Networking';
+  String get adminNetworkingTitle => 'Võrgustiku loomine';
 
   @override
   String get adminNetworkingRestartWarning =>
-      'Changes to networking settings may require a server restart.';
+      'Võrguseadete muutmine võib nõuda serveri taaskäivitamist.';
 
   @override
-  String get adminNetworkingRemoteAccess => 'Enable remote access';
+  String get adminNetworkingRemoteAccess => 'Luba kaugjuurdepääs';
 
   @override
-  String get adminNetworkingPorts => 'Ports';
+  String get adminNetworkingPorts => 'Sadamad';
 
   @override
   String get adminNetworkingHttpPort => 'HTTP port';
 
   @override
-  String get adminNetworkingHttpsPort => 'HTTPS port';
+  String get adminNetworkingHttpsPort => 'HTTPS-port';
 
   @override
-  String get adminNetworkingEnableHttps => 'Enable HTTPS';
+  String get adminNetworkingEnableHttps => 'Luba HTTPS';
 
   @override
-  String get adminNetworkingLocalNetwork => 'Local Network';
+  String get adminNetworkingLocalNetwork => 'Kohalik võrk';
 
   @override
-  String get adminNetworkingLocalAddresses => 'Local network addresses';
+  String get adminNetworkingLocalAddresses => 'Kohaliku võrgu aadressid';
 
   @override
-  String get adminNetworkingAddressHint => 'e.g. 192.168.1.0/24';
+  String get adminNetworkingAddressHint => 'nt. 192.168.1.0/24';
 
   @override
-  String get adminNetworkingKnownProxies => 'Known proxies';
+  String get adminNetworkingKnownProxies => 'Tuntud puhverserverid';
 
   @override
-  String get adminNetworkingProxyHint => 'e.g. 10.0.0.1';
+  String get adminNetworkingProxyHint => 'nt. 10.0.0.1';
 
   @override
-  String get adminNetworkingWhitelist => 'Whitelist';
+  String get adminNetworkingWhitelist => 'Valge nimekiri';
 
   @override
-  String get adminNetworkingBlacklist => 'Blacklist';
+  String get adminNetworkingBlacklist => 'Must nimekiri';
 
   @override
-  String get adminNetworkingAddEntry => 'Add entry';
+  String get adminNetworkingAddEntry => 'Lisa kirje';
 
   @override
-  String get adminBrandingTitle => 'Branding';
+  String get adminBrandingTitle => 'Bränding';
 
   @override
-  String get adminBrandingLoginDisclaimer => 'Login disclaimer';
+  String get adminBrandingLoginDisclaimer => 'Sisselogimisest loobumine';
 
   @override
   String get adminBrandingLoginDisclaimerHint =>
-      'HTML displayed below the login form';
+      'HTML kuvatakse sisselogimisvormi all';
 
   @override
-  String get adminBrandingCustomCss => 'Custom CSS';
+  String get adminBrandingCustomCss => 'Kohandatud CSS';
 
   @override
   String get adminBrandingCustomCssHint =>
-      'Custom CSS applied to the web interface';
+      'Veebiliidesele rakendatud kohandatud CSS';
 
   @override
-  String get adminBrandingEnableSplash => 'Enable splash screen';
+  String get adminBrandingEnableSplash => 'Luba pritskuva';
 
   @override
-  String get adminPlaybackHwAccel => 'Hardware Acceleration';
+  String get adminPlaybackHwAccel => 'Riistvaraline kiirendus';
 
   @override
-  String get adminPlaybackHwAccelLabel => 'Hardware acceleration';
+  String get adminPlaybackHwAccelLabel => 'Riistvaraline kiirendus';
 
   @override
-  String get adminPlaybackEnableHwEncoding => 'Enable hardware encoding';
+  String get adminPlaybackEnableHwEncoding => 'Luba riistvaraline kodeering';
 
   @override
-  String get adminPlaybackEnableHwDecoding => 'Enable hardware decoding for:';
+  String get adminPlaybackEnableHwDecoding =>
+      'Riistvara dekodeerimise lubamine:';
 
   @override
-  String get adminPlaybackEncoding => 'Encoding';
+  String get adminPlaybackEncoding => 'Kodeerimine';
 
   @override
-  String get adminPlaybackEncodingThreads => 'Encoding threads';
+  String get adminPlaybackEncodingThreads => 'Kodeerimislõngad';
 
   @override
-  String get adminPlaybackFallbackFont => 'Enable fallback font';
+  String get adminPlaybackFallbackFont => 'Luba varufont';
 
   @override
-  String get adminPlaybackFallbackFontPath => 'Fallback font path';
+  String get adminPlaybackFallbackFontPath => 'Varufondi tee';
 
   @override
-  String get adminPlaybackStreaming => 'Streaming';
+  String get adminPlaybackStreaming => 'Voogesitus';
 
   @override
   String get adminResumeVideo => 'Video';
 
   @override
-  String get adminResumeAudiobooks => 'Audiobooks';
+  String get adminResumeAudiobooks => 'Audioraamatud';
 
   @override
   String get adminResumeMinAudiobookPct =>
-      'Minimum audiobook resume percentage';
+      'Audioraamatute jätkamise minimaalne protsent';
 
   @override
   String get adminResumeMaxAudiobookPct =>
-      'Maximum audiobook resume percentage';
+      'Maksimaalne audioraamatu jätkamise protsent';
 
   @override
-  String get adminStreamingBitrateLimit => 'Remote client bitrate limit (Mbps)';
+  String get adminStreamingBitrateLimit =>
+      'Kaugkliendi bitikiiruse limiit (Mbps)';
 
   @override
-  String get adminStreamingBitrateLimitHint => 'Leave empty or 0 for unlimited';
+  String get adminStreamingBitrateLimitHint =>
+      'Jätke tühjaks või 0 piiramatuks';
 
   @override
-  String get adminTrickplayHwAccel => 'Enable hardware acceleration';
+  String get adminTrickplayHwAccel => 'Luba riistvaraline kiirendus';
 
   @override
-  String get adminTrickplayHwEncoding => 'Enable hardware encoding';
+  String get adminTrickplayHwEncoding => 'Luba riistvaraline kodeering';
 
   @override
-  String get adminTrickplayKeyFrameOnly => 'Enable key frame only extraction';
+  String get adminTrickplayKeyFrameOnly =>
+      'Luba ainult võtmeraami ekstraheerimine';
 
   @override
-  String get adminTrickplayKeyFrameOnlySubtitle => 'Faster but lower accuracy';
+  String get adminTrickplayKeyFrameOnlySubtitle =>
+      'Kiirem, kuid väiksem täpsus';
 
   @override
-  String get adminTrickplayNonBlocking => 'Non-Blocking';
+  String get adminTrickplayNonBlocking => 'Mitteblokeeriv';
 
   @override
-  String get adminTrickplayBlocking => 'Blocking';
+  String get adminTrickplayBlocking => 'Blokeerimine';
 
   @override
-  String get adminTrickplayPriorityHigh => 'High';
+  String get adminTrickplayPriorityHigh => 'Kõrge';
 
   @override
-  String get adminTrickplayPriorityAboveNormal => 'Above Normal';
+  String get adminTrickplayPriorityAboveNormal => 'Üle normaalse';
 
   @override
-  String get adminTrickplayPriorityNormal => 'Normal';
+  String get adminTrickplayPriorityNormal => 'Tavaline';
 
   @override
-  String get adminTrickplayPriorityBelowNormal => 'Below Normal';
+  String get adminTrickplayPriorityBelowNormal => 'Alla normaalse';
 
   @override
-  String get adminTrickplayPriorityIdle => 'Idle';
+  String get adminTrickplayPriorityIdle => 'Tühikäik';
 
   @override
-  String get adminTrickplayImageSettings => 'Image Settings';
+  String get adminTrickplayImageSettings => 'Pildi seaded';
 
   @override
-  String get adminTrickplayInterval => 'Interval (ms)';
+  String get adminTrickplayInterval => 'Intervall (ms)';
 
   @override
-  String get adminTrickplayIntervalSubtitle => 'How often to capture frames';
+  String get adminTrickplayIntervalSubtitle =>
+      'Kui sageli kaadreid jäädvustada';
 
   @override
   String get adminTrickplayWidthResolutionsHint =>
-      'Comma-separated pixel widths (e.g. 320)';
+      'Komaga eraldatud pikslilaiused (nt 320)';
 
   @override
-  String get adminTrickplayQuality => 'Quality';
+  String get adminTrickplayQuality => 'Kvaliteet';
 
   @override
-  String get adminTrickplayQScale => 'Quality scale';
+  String get adminTrickplayQScale => 'Kvaliteedi skaala';
 
   @override
   String get adminTrickplayQScaleSubtitle =>
-      'Lower values = better quality, larger files';
+      'Madalamad väärtused = parem kvaliteet, suuremad failid';
 
   @override
-  String get adminTrickplayJpegQuality => 'JPEG quality';
+  String get adminTrickplayJpegQuality => 'JPEG kvaliteet';
 
   @override
-  String get adminTrickplayProcessing => 'Processing';
+  String get adminTrickplayProcessing => 'Töötlemine';
 
   @override
-  String get adminTasksEmpty => 'No scheduled tasks found';
+  String get adminTasksEmpty => 'Ajastatud ülesandeid ei leitud';
 
   @override
-  String get adminTasksNoFilterMatch => 'No tasks match the current filter';
+  String get adminTasksNoFilterMatch =>
+      'Praegusele filtrile ei vasta ükski ülesanne';
 
   @override
-  String get adminTaskCancelling => 'Cancelling...';
+  String get adminTaskCancelling => 'Tühistamine...';
 
   @override
-  String get adminTaskRunning => 'Running...';
+  String get adminTaskRunning => 'Jooksmine...';
 
   @override
-  String get adminTaskNeverRun => 'Never run';
+  String get adminTaskNeverRun => 'Ärge kunagi jookske';
 
   @override
-  String get adminTaskStop => 'Stop';
+  String get adminTaskStop => 'Peatus';
 
   @override
-  String get adminTaskRun => 'Run';
+  String get adminTaskRun => 'Jookse';
 
   @override
-  String get adminTaskDetailLastExecution => 'Last Execution';
+  String get adminTaskDetailLastExecution => 'Viimane hukkamine';
 
   @override
-  String get adminTaskDetailStarted => 'Started';
+  String get adminTaskDetailStarted => 'Alustatud';
 
   @override
-  String get adminTaskDetailEnded => 'Ended';
+  String get adminTaskDetailEnded => 'Lõppenud';
 
   @override
-  String get adminTaskDetailDuration => 'Duration';
+  String get adminTaskDetailDuration => 'Kestus';
 
   @override
-  String get adminTaskDetailErrorLabel => 'Error:';
+  String get adminTaskDetailErrorLabel => 'Viga:';
 
   @override
   String adminTaskTriggerDaily(String time) {
@@ -5642,34 +5742,34 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerStartup => 'On application startup';
+  String get adminTaskTriggerStartup => 'Rakenduse käivitamisel';
 
   @override
-  String get adminTaskTriggerTypeDaily => 'Daily';
+  String get adminTaskTriggerTypeDaily => 'Igapäevane';
 
   @override
-  String get adminTaskTriggerTypeWeekly => 'Weekly';
+  String get adminTaskTriggerTypeWeekly => 'Iganädalane';
 
   @override
-  String get adminTaskTriggerTypeInterval => 'On an interval';
+  String get adminTaskTriggerTypeInterval => 'Vahepeal';
 
   @override
-  String get adminTaskTriggerIntervalLabel => 'Interval';
+  String get adminTaskTriggerIntervalLabel => 'Intervall';
 
   @override
-  String get adminTaskTriggerEveryHour => 'Every hour';
+  String get adminTaskTriggerEveryHour => 'Iga tund';
 
   @override
-  String get adminTaskTriggerEvery6Hours => 'Every 6 hours';
+  String get adminTaskTriggerEvery6Hours => 'Iga 6 tunni järel';
 
   @override
-  String get adminTaskTriggerEvery12Hours => 'Every 12 hours';
+  String get adminTaskTriggerEvery12Hours => 'Iga 12 tunni järel';
 
   @override
-  String get adminTaskTriggerEvery24Hours => 'Every 24 hours';
+  String get adminTaskTriggerEvery24Hours => 'Iga 24 tunni järel';
 
   @override
-  String get adminTaskTriggerEvery2Days => 'Every 2 days';
+  String get adminTaskTriggerEvery2Days => 'Iga 2 päeva järel';
 
   @override
   String adminTaskTriggerHours(int count) {
@@ -5683,25 +5783,25 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerTime => 'Time';
+  String get adminTaskTriggerTime => 'Aeg';
 
   @override
-  String get adminTaskTriggerNoLimit => 'No limit';
+  String get adminTaskTriggerNoLimit => 'Piiramata';
 
   @override
-  String get adminActivityJustNow => 'Just now';
+  String get adminActivityJustNow => 'Just praegu';
 
   @override
-  String get adminActivityLastHour => 'Last hour';
+  String get adminActivityLastHour => 'Viimane tund';
 
   @override
-  String get adminActivityToday => 'Today';
+  String get adminActivityToday => 'Täna';
 
   @override
-  String get adminActivityYesterday => 'Yesterday';
+  String get adminActivityYesterday => 'eile';
 
   @override
-  String get adminActivityOlder => 'Older';
+  String get adminActivityOlder => 'Vanemad';
 
   @override
   String adminActivityDaysAgo(int days) {
@@ -5719,7 +5819,7 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get adminActivityNow => 'now';
+  String get adminActivityNow => 'nüüd';
 
   @override
   String adminActivityMinutesShort(int minutes) {
@@ -5743,91 +5843,92 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get adminTrickplayDescription =>
-      'Configure trickplay image generation for seek preview thumbnails.';
+      'Konfigureerige eelvaate pisipiltide jaoks trickplay-piltide genereerimine.';
 
   @override
-  String get adminNetworkingPublicHttpsPort => 'Public HTTPS port';
+  String get adminNetworkingPublicHttpsPort => 'Avalik HTTPS-port';
 
   @override
-  String get adminNetworkingBaseUrl => 'Base URL';
+  String get adminNetworkingBaseUrl => 'Baas-URL';
 
   @override
-  String get adminNetworkingBaseUrlHint => 'e.g. /jellyfin';
+  String get adminNetworkingBaseUrlHint => 'nt. /tarretis';
 
   @override
   String get adminNetworkingHttps => 'HTTPS';
 
   @override
-  String get adminNetworkingCertPath => 'Certificate path';
+  String get adminNetworkingCertPath => 'Sertifikaadi tee';
 
   @override
-  String get adminNetworkingRemoteIpFilter => 'Remote IP Filter';
+  String get adminNetworkingRemoteIpFilter => 'Kaug-IP-filter';
 
   @override
-  String get adminNetworkingRemoteIpFilterLabel => 'Remote IP filter';
+  String get adminNetworkingRemoteIpFilterLabel => 'Kaug-IP-filter';
 
   @override
-  String get adminPlaybackVaapiDevice => 'VA-API device';
+  String get adminPlaybackVaapiDevice => 'VA-API seade';
 
   @override
-  String get adminPlaybackAutomatic => '0 = automatic';
+  String get adminPlaybackAutomatic => '0 = automaatne';
 
   @override
-  String get adminPlaybackTranscodeTempPath => 'Transcoding temp path';
+  String get adminPlaybackTranscodeTempPath => 'Transkodeerimise temp tee';
 
   @override
-  String get adminPlaybackSegmentDeletion => 'Allow segment deletion';
+  String get adminPlaybackSegmentDeletion => 'Luba segmendi kustutamine';
 
   @override
-  String get adminPlaybackSegmentKeep => 'Segment keep (seconds)';
+  String get adminPlaybackSegmentKeep => 'Segmendi säilitamine (sekundites)';
 
   @override
-  String get adminPlaybackThrottleBuffering => 'Throttle buffering';
+  String get adminPlaybackThrottleBuffering => 'Drosselklapi puhverdus';
 
   @override
-  String get adminResumeMinPct => 'Minimum resume percentage';
+  String get adminResumeMinPct => 'Minimaalne jätkamise protsent';
 
   @override
   String get adminResumeMinPctSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'Edenemise salvestamiseks tuleb sisu esitada sellest protsendist üle';
 
   @override
-  String get adminResumeMaxPct => 'Maximum resume percentage';
+  String get adminResumeMaxPct => 'Maksimaalne jätkamise protsent';
 
   @override
   String get adminResumeMaxPctSubtitle =>
-      'Content is considered fully played after this percentage';
+      'Pärast seda protsenti loetakse sisu täielikult esitatuks';
 
   @override
-  String get adminResumeMinDuration => 'Minimum resume duration (seconds)';
+  String get adminResumeMinDuration =>
+      'Jätkamise minimaalne kestus (sekundites)';
 
   @override
   String get adminResumeMinDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Sellest lühemaid esemeid ei saa jätkata';
 
   @override
-  String get adminTrickplayScanBehavior => 'Scan behavior';
+  String get adminTrickplayScanBehavior => 'Skaneerimise käitumine';
 
   @override
-  String get adminTrickplayProcessPriority => 'Process priority';
+  String get adminTrickplayProcessPriority => 'Protsessi prioriteet';
 
   @override
-  String get adminTrickplayTileWidth => 'Tile width';
+  String get adminTrickplayTileWidth => 'Plaatide laius';
 
   @override
-  String get adminTrickplayTileHeight => 'Tile height';
+  String get adminTrickplayTileHeight => 'Plaatide kõrgus';
 
   @override
-  String get adminTrickplayProcessThreads => 'Process threads';
+  String get adminTrickplayProcessThreads => 'Töötle niidid';
 
   @override
-  String get adminTrickplayWidthResolutions => 'Width resolutions';
+  String get adminTrickplayWidthResolutions => 'Laiuse eraldusvõimed';
 
   @override
-  String get adminMetadataDefault => 'Default';
+  String get adminMetadataDefault => 'Vaikimisi';
 
   @override
-  String get adminMetadataContentTypeUpdated => 'Content type updated';
+  String get adminMetadataContentTypeUpdated => 'Sisutüüp on värskendatud';
 
   @override
   String adminMetadataContentTypeFailed(String error) {
@@ -5836,22 +5937,22 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get adminGeneralSlowResponseThreshold =>
-      'Slow response threshold (ms)';
+      'Aeglase reageerimise lävi (ms)';
 
   @override
-  String get adminGeneralCachePath => 'Cache path';
+  String get adminGeneralCachePath => 'Vahemälu tee';
 
   @override
-  String get adminGeneralMetadataPath => 'Metadata path';
+  String get adminGeneralMetadataPath => 'Metaandmete tee';
 
   @override
-  String get adminGeneralServerName => 'Server name';
+  String get adminGeneralServerName => 'Serveri nimi';
 
   @override
-  String get adminSettingsLoadFailed => 'Failed to load settings';
+  String get adminSettingsLoadFailed => 'Seadete laadimine ebaõnnestus';
 
   @override
-  String get adminDiscover => 'Discover';
+  String get adminDiscover => 'Avasta';
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
@@ -5864,33 +5965,33 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get folders => 'Folders';
+  String get folders => 'Kaustad';
 
   @override
-  String get libraries => 'Libraries';
+  String get libraries => 'raamatukogud';
 
   @override
   String get syncPlay => 'SyncPlay';
 
   @override
-  String get syncPlayDisabledTitle => 'SyncPlay disabled';
+  String get syncPlayDisabledTitle => 'SyncPlay on keelatud';
 
   @override
   String get syncPlayDisabledMessage =>
-      'Enable SyncPlay in Settings to use synchronized playback.';
+      'Sünkroonitud taasesituse kasutamiseks lubage seadetes SyncPlay.';
 
   @override
-  String get syncPlayServerUnsupportedTitle => 'Server unsupported';
+  String get syncPlayServerUnsupportedTitle => 'Serverit ei toetata';
 
   @override
   String get syncPlayServerUnsupportedMessage =>
-      'SyncPlay requires a Jellyfin server. The current server does not support it.';
+      'SyncPlay nõuab Jellyfini serverit. Praegune server seda ei toeta.';
 
   @override
-  String get syncPlayGroupFallbackName => 'SyncPlay Group';
+  String get syncPlayGroupFallbackName => 'SyncPlay grupp';
 
   @override
-  String get syncPlayGroupTooltip => 'SyncPlay group';
+  String get syncPlayGroupTooltip => 'SyncPlay grupp';
 
   @override
   String syncPlayParticipantCount(int count) {
@@ -5904,40 +6005,41 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get syncPlayIgnoreWait => 'Ignore wait';
+  String get syncPlayIgnoreWait => 'Ignoreeri ootamist';
 
   @override
   String get syncPlayIgnoreWaitSubtitle =>
-      'Don\'t hold the group up while this device buffers';
+      'Ärge hoidke rühma üleval, kui seade puhverdab';
 
   @override
   String get syncPlayContinueLocallyNoWait =>
-      'Continue locally without waiting for slow members';
+      'Jätkake kohapeal, ootamata aeglaseid liikmeid';
 
   @override
-  String get syncPlayRepeat => 'Repeat';
+  String get syncPlayRepeat => 'Korda';
 
   @override
-  String get syncPlayRepeatOne => 'One';
+  String get syncPlayRepeatOne => 'Üks';
 
   @override
-  String get syncPlayShuffleModeShuffled => 'Shuffled';
+  String get syncPlayShuffleModeShuffled => 'Segatud';
 
   @override
-  String get syncPlayShuffleModeSorted => 'Sorted';
+  String get syncPlayShuffleModeSorted => 'Sorteeritud';
 
   @override
-  String get syncPlaySyncCurrentQueue => 'Sync current playback queue';
+  String get syncPlaySyncCurrentQueue =>
+      'Sünkrooni praegune taasesitusjärjekord';
 
   @override
   String get syncPlaySyncCurrentQueueSubtitle =>
-      'Replace the group queue with what is playing locally';
+      'Asendage rühmajärjekord kohapeal esitatavaga';
 
   @override
-  String get syncPlayLeaveGroup => 'Leave group';
+  String get syncPlayLeaveGroup => 'Lahku rühmast';
 
   @override
-  String get syncPlayGroupQueue => 'Group queue';
+  String get syncPlayGroupQueue => 'Grupi järjekord';
 
   @override
   String syncPlayQueueItemFallback(int index) {
@@ -5945,47 +6047,47 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get syncPlayPlayNow => 'Play now';
+  String get syncPlayPlayNow => 'Mängi nüüd';
 
   @override
-  String get syncPlayCreateNewGroup => 'Create a new group';
+  String get syncPlayCreateNewGroup => 'Looge uus grupp';
 
   @override
-  String get syncPlayGroupName => 'Group name';
+  String get syncPlayGroupName => 'Grupi nimi';
 
   @override
-  String get syncPlayDefaultGroupName => 'My SyncPlay Group';
+  String get syncPlayDefaultGroupName => 'Minu SyncPlay grupp';
 
   @override
-  String get syncPlayCreateGroup => 'Create group';
+  String get syncPlayCreateGroup => 'Loo grupp';
 
   @override
-  String get syncPlayAvailableGroups => 'Available groups';
+  String get syncPlayAvailableGroups => 'Saadaolevad rühmad';
 
   @override
-  String get syncPlayNoGroupsAvailable => 'No groups available';
+  String get syncPlayNoGroupsAvailable => 'Ühtegi rühma pole saadaval';
 
   @override
-  String get syncPlayJoinGroupQuestion => 'Join SyncPlay group?';
+  String get syncPlayJoinGroupQuestion => 'Kas liituda SyncPlay grupiga?';
 
   @override
   String get syncPlayJoinGroupWarning =>
-      'Joining a SyncPlay group may replace your current playback queue. Continue?';
+      'SyncPlay grupiga liitumine võib teie praeguse taasesitusjärjekorra asendada. Kas jätkata?';
 
   @override
-  String get syncPlayJoin => 'Join';
+  String get syncPlayJoin => 'Liitu';
 
   @override
-  String get syncPlayStateIdle => 'Idle';
+  String get syncPlayStateIdle => 'Tühikäik';
 
   @override
-  String get syncPlayStateWaiting => 'Waiting';
+  String get syncPlayStateWaiting => 'Ootan';
 
   @override
-  String get syncPlayStatePaused => 'Paused';
+  String get syncPlayStatePaused => 'Peatatud';
 
   @override
-  String get syncPlayStatePlaying => 'Playing';
+  String get syncPlayStatePlaying => 'Mängib';
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
@@ -5998,11 +6100,11 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get syncPlayAccessDeniedTitle => 'SyncPlay access denied';
+  String get syncPlayAccessDeniedTitle => 'SyncPlay juurdepääs keelatud';
 
   @override
   String get syncPlayAccessDeniedMessage =>
-      'You do not have access to one or more items in this SyncPlay group. Ask the group owner to verify library permissions or choose a different queue.';
+      'Teil pole juurdepääsu ühele või mitmele selle SyncPlay grupi üksusele. Paluge rühma omanikul kinnitada teegi õigused või valida mõni muu järjekord.';
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
@@ -6010,63 +6112,63 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get voiceSearchUnavailable => 'Voice search is unavailable.';
+  String get voiceSearchUnavailable => 'Häälotsing pole saadaval.';
 
   @override
   String get dolbyVisionDirectPlayFailedTitle =>
-      'Dolby Vision Direct Play Failed';
+      'Dolby Vision Direct Play ebaõnnestus';
 
   @override
   String get dolbyVisionDirectPlayFailedMessage =>
-      'Direct play failed to start for this Dolby Vision stream. Retry using server transcode?';
+      'Selle Dolby Visioni voo otseesituse käivitamine ebaõnnestus. Kas proovida serveri ümberkodeerimist uuesti kasutada?';
 
   @override
-  String get retryWithTranscode => 'Retry with transcode';
+  String get retryWithTranscode => 'Proovige uuesti ümberkodeerimisega';
 
   @override
-  String get dolbyVisionNotSupportedTitle => 'Dolby Vision Not Supported';
+  String get dolbyVisionNotSupportedTitle => 'Dolby Visioni ei toetata';
 
   @override
   String get dolbyVisionNotSupportedMessage =>
-      'This device cannot decode Dolby Vision content directly. Use HDR10 fallback or request server transcoding.';
+      'See seade ei saa Dolby Visioni sisu otse dekodeerida. Kasutage HDR10 varuvarianti või taotlege serveri ümberkodeerimist.';
 
   @override
-  String get rememberMyChoice => 'Remember my choice';
+  String get rememberMyChoice => 'Pidage meeles minu valikut';
 
   @override
-  String get playHdr10Fallback => 'Play HDR10 fallback';
+  String get playHdr10Fallback => 'Esitage HDR10 varuvarianti';
 
   @override
-  String get requestTranscode => 'Request transcode';
+  String get requestTranscode => 'Küsi transkodeerimist';
 
   @override
   String get homeScreenSectionsIntegrationDescription =>
-      'Detect rows exposed by IAmParadox27\'s \"Home Screen Sections\" plugin. Rows can be enabled and reordered below.';
+      'Tuvastage IAmParadox27 pistikprogrammi \"Home Screen Sections\" paljastatud read. Ridu saab allpool lubada ja ümber järjestada.';
 
   @override
   String get homeScreenSectionsIntegrationNoServers =>
-      'No Jellyfin servers reporting the plugin yet.';
+      'Ükski Jellyfini server pole pistikprogrammist veel teatanud.';
 
   @override
   String get kefinTweaksIntegrationDescription =>
-      'Detect rows configured via ranaldsgift\'s \"KefinTweaks\" plugin. Custom sections, recently released, watch again, seasonal, and recently added in library are mirrored from the KefinTweaks configuration on each Jellyfin server.';
+      'Tuvastage read, mis on konfigureeritud ranaldsgifti pistikprogrammi \"KefinTweaks\" kaudu. Hiljuti välja antud, uuesti vaadatavad, hooajalised ja hiljuti teeki lisatud kohandatud jaotised peegelduvad iga Jellyfini serveri KefinTweaksi konfiguratsioonist.';
 
   @override
   String get kefinTweaksIntegrationNoServers =>
-      'No Jellyfin servers reporting KefinTweaks yet.';
+      'Ükski Jellyfini server ei teatanud veel KefinTweaksist.';
 
   @override
-  String get integrationOpenHomeSections => 'Open Home Sections';
+  String get integrationOpenHomeSections => 'Avage jaotised Avaleht';
 
   @override
   String get integrationOpenHomeSectionsSubtitle =>
-      'Enable, disable, and reorder rows';
+      'Lubage, keelake ja järjestage ridu ümber';
 
   @override
-  String get integrationInstalledButDisabled => 'Installed but disabled';
+  String get integrationInstalledButDisabled => 'Installitud, kuid keelatud';
 
   @override
-  String get integrationNotInstalled => 'Not installed';
+  String get integrationNotInstalled => 'Pole installitud';
 
   @override
   String integrationSectionsCount(int count) {
@@ -6094,39 +6196,39 @@ class AppLocalizationsEt extends AppLocalizations {
   String get jellyseerr => 'Jellyseerr';
 
   @override
-  String get seeAll => 'See All';
+  String get seeAll => 'Vaata kõiki';
 
   @override
-  String get noItems => 'No items';
+  String get noItems => 'Üksusi pole';
 
   @override
-  String get switchUser => 'Switch User';
+  String get switchUser => 'Vaheta kasutajat';
 
   @override
-  String get remoteControl => 'Remote Control';
+  String get remoteControl => 'Kaugjuhtimispult';
 
   @override
-  String get mediaBarLoading => 'Loading media bar...';
+  String get mediaBarLoading => 'Meediumiriba laadimine...';
 
   @override
-  String get mediaBarError => 'Media bar failed to load';
+  String get mediaBarError => 'Meediumiriba laadimine ebaõnnestus';
 
   @override
   String get offlineServerUnavailable =>
-      'Connected to the internet, but the current server is unavailable.';
+      'Internetiga ühendatud, kuid praegune server pole saadaval.';
 
   @override
   String get offlineNoInternet =>
-      'You are offline. Only downloaded content is available.';
+      'Olete võrguühenduseta. Saadaval on ainult allalaaditud sisu.';
 
   @override
-  String get offlineFileNotAvailable => 'File not available';
+  String get offlineFileNotAvailable => 'Fail pole saadaval';
 
   @override
-  String get offlineSwitchServer => 'Switch Server';
+  String get offlineSwitchServer => 'Vaheta serverit';
 
   @override
-  String get offlineSavedMedia => 'Saved Media';
+  String get offlineSavedMedia => 'Salvestatud meedia';
 
   @override
   String get castGoogleCast => 'Google Cast';
@@ -6138,7 +6240,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get castDlna => 'DLNA';
 
   @override
-  String get castRemotePlayback => 'Remote Playback';
+  String get castRemotePlayback => 'Kaugesitus';
 
   @override
   String castControlFailed(String error) {
@@ -6151,10 +6253,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get castDeviceVolume => 'Device Volume';
+  String get castDeviceVolume => 'Seadme helitugevus';
 
   @override
-  String get castVolumeUnavailable => 'Unavailable';
+  String get castVolumeUnavailable => 'Pole saadaval';
 
   @override
   String castStopKind(String kind) {
@@ -6162,22 +6264,22 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get audioLabel => 'Audio';
+  String get audioLabel => 'Heli';
 
   @override
-  String get subtitlesLabel => 'Subtitles';
+  String get subtitlesLabel => 'Subtiitrid';
 
   @override
-  String get pinConfirmTitle => 'Confirm PIN';
+  String get pinConfirmTitle => 'Kinnitage PIN-kood';
 
   @override
-  String get pinSetTitle => 'Set PIN';
+  String get pinSetTitle => 'Määra PIN';
 
   @override
-  String get pinEnterTitle => 'Enter PIN';
+  String get pinEnterTitle => 'Sisestage PIN-kood';
 
   @override
-  String get pinReenterToConfirm => 'Re-enter your PIN to confirm';
+  String get pinReenterToConfirm => 'Kinnitamiseks sisestage PIN-kood uuesti';
 
   @override
   String pinEnterNDigit(int length) {
@@ -6190,46 +6292,45 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get pinIncorrect => 'Incorrect PIN';
+  String get pinIncorrect => 'Vale PIN-kood';
 
   @override
-  String get pinMismatch => 'PINs do not match';
+  String get pinMismatch => 'PIN-koodid ei ühti';
 
   @override
-  String get pinForgot => 'Forgot PIN?';
+  String get pinForgot => 'Unustasite PIN-koodi?';
 
   @override
-  String get pinClear => 'Clear';
+  String get pinClear => 'Selge';
 
   @override
-  String get pinBackspace => 'Backspace';
+  String get pinBackspace => 'Tagasilükkeklahv';
 
   @override
-  String get quickConnectAuthorized => 'Quick Connect request authorized.';
+  String get quickConnectAuthorized => 'Kiirühenduse taotlus on lubatud.';
 
   @override
   String get quickConnectInvalidOrExpired =>
-      'Quick Connect code is invalid or expired.';
+      'Kiirühenduse kood on kehtetu või aegunud.';
 
   @override
   String get quickConnectNotSupported =>
-      'Quick Connect is not supported on this server.';
+      'Kiirühendust selles serveris ei toetata.';
 
   @override
   String get quickConnectAuthorizeFailed =>
-      'Failed to authorize Quick Connect code.';
+      'Kiirühenduse koodi autoriseerimine ebaõnnestus.';
 
   @override
-  String get quickConnectDisabled =>
-      'Quick Connect is disabled on this server.';
+  String get quickConnectDisabled => 'Kiirühendus on selles serveris keelatud.';
 
   @override
   String get quickConnectForbidden =>
-      'Your account cannot authorize this Quick Connect request.';
+      'Teie konto ei saa seda kiirühenduse taotlust autoriseerida.';
 
   @override
   String get quickConnectNotFound =>
-      'Quick Connect code was not found. Try a new code.';
+      'Kiirühenduse koodi ei leitud. Proovige uut koodi.';
 
   @override
   String quickConnectFailedWithMessage(String message) {
@@ -6237,10 +6338,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get quickConnectEnterCode => 'Enter code';
+  String get quickConnectEnterCode => 'Sisestage kood';
 
   @override
-  String get quickConnectAuthorize => 'Authorize';
+  String get quickConnectAuthorize => 'Volita';
 
   @override
   String remoteCommandFailed(String error) {
@@ -6248,28 +6349,28 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get remoteControlTitle => 'Remote Control';
+  String get remoteControlTitle => 'Kaugjuhtimispult';
 
   @override
-  String get remoteFailedToLoadSessions => 'Failed to load sessions';
+  String get remoteFailedToLoadSessions => 'Seansside laadimine ebaõnnestus';
 
   @override
-  String get remoteNoSessions => 'No controllable sessions';
+  String get remoteNoSessions => 'Kontrollitavaid seansse pole';
 
   @override
-  String get remoteStartPlayback => 'Start playback on another device';
+  String get remoteStartPlayback => 'Alustage taasesitust teises seadmes';
 
   @override
-  String get unknownUser => 'Unknown';
+  String get unknownUser => 'Tundmatu';
 
   @override
-  String get unknownItem => 'Unknown';
+  String get unknownItem => 'Tundmatu';
 
   @override
-  String get remoteNothingPlaying => 'Nothing playing on this session';
+  String get remoteNothingPlaying => 'Sellel seansil ei mängita midagi';
 
   @override
-  String get castingStarted => 'Casting started on selected device';
+  String get castingStarted => 'Ülekandmine algas valitud seadmes';
 
   @override
   String castingFailed(String error) {
@@ -6277,44 +6378,44 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get noRemoteDevices => 'No remote playback devices available.';
+  String get noRemoteDevices => 'Kaugesituse seadmeid pole saadaval.';
 
   @override
   String get noRemoteDevicesIos =>
-      'No remote playback devices available.\n\nOn iOS, AirPlay targets may be unavailable in the simulator.';
+      'Kaugesituse seadmeid pole saadaval.\n\niOS-is ei pruugi AirPlay sihtmärgid simulaatoris saadaval olla.';
 
   @override
-  String get trackActionPlayNext => 'Play Next';
+  String get trackActionPlayNext => 'Mängi edasi';
 
   @override
-  String get trackActionAddToQueue => 'Add to Queue';
+  String get trackActionAddToQueue => 'Lisa järjekorda';
 
   @override
-  String get trackActionAddToPlaylist => 'Add to Playlist';
+  String get trackActionAddToPlaylist => 'Lisa esitusloendisse';
 
   @override
-  String get trackActionCancelDownload => 'Cancel Download';
+  String get trackActionCancelDownload => 'Tühista allalaadimine';
 
   @override
-  String get trackActionDeleteFromPlaylist => 'Delete from Playlist';
+  String get trackActionDeleteFromPlaylist => 'Kustuta esitusloendist';
 
   @override
-  String get trackActionMoveUp => 'Move Up';
+  String get trackActionMoveUp => 'Liigu üles';
 
   @override
-  String get trackActionMoveDown => 'Move Down';
+  String get trackActionMoveDown => 'Liigu alla';
 
   @override
-  String get trackActionRemoveFromFavorites => 'Remove from Favorites';
+  String get trackActionRemoveFromFavorites => 'Eemalda lemmikutest';
 
   @override
-  String get trackActionAddToFavorites => 'Add to Favorites';
+  String get trackActionAddToFavorites => 'Lisa lemmikute hulka';
 
   @override
-  String get trackActionGoToAlbum => 'Go to Album';
+  String get trackActionGoToAlbum => 'Minge albumisse';
 
   @override
-  String get trackActionGoToArtist => 'Go to Artist';
+  String get trackActionGoToArtist => 'Mine Artist';
 
   @override
   String trackActionDownloading(String name) {
@@ -6322,86 +6423,88 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get trackActionDeletedFile => 'Deleted downloaded file';
+  String get trackActionDeletedFile => 'Allalaaditud fail on kustutatud';
 
   @override
-  String get trackActionDeleteFileFailed => 'Could not delete downloaded file';
+  String get trackActionDeleteFileFailed =>
+      'Allalaaditud faili ei saanud kustutada';
 
   @override
-  String get shuffleBy => 'Shuffle By';
+  String get shuffleBy => 'Juhuslikult';
 
   @override
-  String get shuffleSelectLibrary => 'Select Library';
+  String get shuffleSelectLibrary => 'Valige Raamatukogu';
 
   @override
-  String get shuffleSelectGenre => 'Select Genre';
+  String get shuffleSelectGenre => 'Valige Žanr';
 
   @override
-  String get shuffleLibrary => 'Library';
+  String get shuffleLibrary => 'Raamatukogu';
 
   @override
-  String get shuffleGenre => 'Genre';
+  String get shuffleGenre => 'Žanr';
 
   @override
-  String get shuffleNoLibraries => 'No compatible libraries available.';
+  String get shuffleNoLibraries => 'Ühilduvaid teeke pole saadaval.';
 
   @override
-  String get shuffleNoGenres => 'No genres found for this shuffle mode.';
+  String get shuffleNoGenres =>
+      'Selle segamisrežiimi jaoks ei leitud ühtegi žanri.';
 
   @override
-  String get posterDisplayTitle => 'Display';
+  String get posterDisplayTitle => 'Ekraan';
 
   @override
-  String get posterImageType => 'Image Type';
+  String get posterImageType => 'Pildi tüüp';
 
   @override
-  String get imageTypePoster => 'Poster';
+  String get imageTypePoster => 'Plakat';
 
   @override
-  String get imageTypeThumbnail => 'Thumbnail';
+  String get imageTypeThumbnail => 'Pisipilt';
 
   @override
-  String get imageTypeBanner => 'Banner';
+  String get imageTypeBanner => 'Bänner';
 
   @override
-  String get playlistAddFailed => 'Failed to add to playlist';
+  String get playlistAddFailed => 'Esitusloendisse lisamine ebaõnnestus';
 
   @override
-  String get playlistCreateFailed => 'Failed to create playlist';
+  String get playlistCreateFailed => 'Esitusloendi loomine ebaõnnestus';
 
   @override
-  String get playlistNew => 'New Playlist';
+  String get playlistNew => 'Uus esitusloend';
 
   @override
-  String get playlistCreate => 'Create';
+  String get playlistCreate => 'Loo';
 
   @override
-  String get playlistCreateNew => 'Create New Playlist';
+  String get playlistCreateNew => 'Loo uus esitusloend';
 
   @override
-  String get playlistNoneFound => 'No playlists found';
+  String get playlistNoneFound => 'Esitusloendeid ei leitud';
 
   @override
-  String get addToPlaylist => 'Add to Playlist';
+  String get addToPlaylist => 'Lisa esitusloendisse';
 
   @override
-  String get lyricsNotAvailable => 'No lyrics available';
+  String get lyricsNotAvailable => 'Laulusõnu pole saadaval';
 
   @override
-  String get upNext => 'Up Next';
+  String get upNext => 'Üles Järgmine';
 
   @override
-  String get playNext => 'Play Next';
+  String get playNext => 'Mängi edasi';
 
   @override
   String get stillWatchingContent =>
-      'Playback has been paused. Are you still watching?';
+      'Taasesitus on peatatud. Kas sa ikka vaatad?';
 
   @override
-  String get stillWatchingStop => 'Stop';
+  String get stillWatchingStop => 'Peatus';
 
   @override
-  String get stillWatchingContinue => 'Continue';
+  String get stillWatchingContinue => 'Jätka';
 
   @override
   String skipSegment(String segment) {
@@ -6409,10 +6512,10 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get liveTv => 'Live TV';
+  String get liveTv => 'Otse-TV';
 
   @override
-  String get continueWatchingAndNextUp => 'Continue Watching & Next Up';
+  String get continueWatchingAndNextUp => 'Jätkake vaatamist ja järgmist';
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
@@ -6425,243 +6528,254 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get nextEpisode => 'Next Episode';
+  String get nextEpisode => 'Järgmine episood';
 
   @override
-  String get moreFromThisSeason => 'More From This Season';
+  String get moreFromThisSeason => 'Veel sellest hooajast';
 
   @override
-  String get playerTooltipPlaybackSpeed => 'Playback speed';
+  String get playerTooltipPlaybackSpeed => 'Taasesituse kiirus';
 
   @override
-  String get playerTooltipCastControls => 'Cast controls';
+  String get playerTooltipCastControls => 'Cast juhtnupud';
 
   @override
-  String get playerTooltipPlaybackQuality => 'Bitrate';
+  String get playerTooltipPlaybackQuality => 'Bitikiirus';
 
   @override
-  String get playerTooltipEnterFullscreen => 'Enter fullscreen';
+  String get playerTooltipEnterFullscreen => 'Sisenege täisekraanil';
 
   @override
-  String get playerTooltipExitFullscreen => 'Exit fullscreen';
+  String get playerTooltipExitFullscreen => 'Välju täisekraanilt';
 
   @override
-  String get playerTooltipLockLandscape => 'Lock landscape';
+  String get playerTooltipFloatOnTop => 'Hõljuge peal';
 
   @override
-  String get playerTooltipUnlockOrientation => 'Allow rotation';
+  String get playerTooltipExitFloatOnTop => 'Keela ujuk peal';
 
   @override
-  String get playerTooltipPrevious => 'Previous';
+  String get playerTooltipLockLandscape => 'Lukusta maastik';
 
   @override
-  String get playerTooltipSeekBack => 'Seek back';
+  String get playerTooltipUnlockOrientation => 'Luba pöörlemine';
 
   @override
-  String get playerTooltipSeekForward => 'Seek forward';
+  String get playerTooltipPrevious => 'Eelmine';
 
   @override
-  String get contextMenuMarkWatched => 'Mark as Watched';
+  String get playerTooltipSeekBack => 'Otsige tagasi';
 
   @override
-  String get contextMenuMarkUnwatched => 'Mark as Unwatched';
+  String get playerTooltipSeekForward => 'Otsige edasi';
 
   @override
-  String get contextMenuAddToFavorites => 'Add to Favorites';
+  String get contextMenuMarkWatched => 'Märgi vaadatuks';
 
   @override
-  String get contextMenuRemoveFromFavorites => 'Remove from Favorites';
+  String get contextMenuMarkUnwatched => 'Märgi jälgimata';
 
   @override
-  String get contextMenuGoToSeries => 'Go to Series';
+  String get contextMenuAddToFavorites => 'Lisa lemmikute hulka';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Eemalda lemmikutest';
+
+  @override
+  String get contextMenuGoToSeries => 'Minge seeriasse';
 
   @override
   String get settingsAdministrationSubtitle =>
-      'Access the server administration panel';
+      'Juurdepääs serveri halduspaneelile';
 
   @override
-  String get settingsAccountSecurity => 'Account & Security';
+  String get settingsAccountSecurity => 'Konto ja turvalisus';
 
   @override
   String get settingsAccountSecuritySubtitle =>
-      'Authentication, PIN code, and parental controls';
+      'Autentimine, PIN-kood ja vanemlik järelevalve';
 
   @override
-  String get settingsPersonalization => 'Personalization';
+  String get settingsPersonalization => 'Isikupärastamine';
 
   @override
   String get settingsPersonalizationSubtitle =>
-      'Theme, navigation, home rows, and library visibility';
+      'Teema, navigeerimine, avaread ja teegi nähtavus';
 
   @override
-  String get settingsDynamicContent => 'Dynamic Content';
+  String get settingsDynamicContent => 'Dünaamiline sisu';
 
   @override
-  String get settingsDynamicContentSubtitle => 'Media Bar and visual overlays';
+  String get settingsDynamicContentSubtitle =>
+      'Meediumiriba ja visuaalsed ülekatted';
 
   @override
-  String get settingsPlaybackSyncplay => 'Playback & SyncPlay';
+  String get settingsPlaybackSyncplay => 'Taasesitus ja SyncPlay';
 
   @override
   String get settingsPlaybackSyncplaySubtitle =>
-      'Audio/video settings, subtitles, downloads, and SyncPlay controls';
+      'Heli/video seaded, subtiitrid, allalaadimised ja SyncPlay juhtnupud';
 
   @override
   String get settingsIntegrationsSubtitle =>
-      'Plugin sync, Seerr, ratings, and more';
+      'Plugina sünkroonimine, seerr, hinnangud ja palju muud';
 
   @override
   String get settingsAboutSubtitle =>
-      'App version, legal information, and credits';
+      'Rakenduse versioon, juriidiline teave ja krediidid';
 
   @override
-  String get settingsAuthenticationSection => 'AUTHENTICATION';
+  String get settingsAuthenticationSection => 'AUTENTISEERIMINE';
 
   @override
-  String get settingsSortServersBy => 'Sort Servers By';
+  String get settingsSortServersBy => 'Sorteeri serverid';
 
   @override
-  String get settingsLastUsed => 'Last Used';
+  String get settingsLastUsed => 'Viimati kasutatud';
 
   @override
-  String get settingsAlphabetical => 'Alphabetical';
+  String get settingsAlphabetical => 'Tähestikuline';
 
   @override
-  String get settingsPrivacyAndSafetySection => 'PRIVACY & SAFETY';
+  String get settingsPrivacyAndSafetySection => 'PRIVAATSUS JA OHUTUS';
 
   @override
-  String get settingsBlockedRatings => 'Blocked Ratings';
+  String get settingsBlockedRatings => 'Blokeeritud reitingud';
 
   @override
-  String get settingsGeneralStyle => 'General Style';
+  String get settingsGeneralStyle => 'Üldine stiil';
 
   @override
   String get settingsGeneralStyleSubtitle =>
-      'Theme accents, backdrops, watched indicators, and theme music';
+      'Teema aktsendid, taustad, vaadatud indikaatorid ja teemamuusika';
 
   @override
-  String get settingsHomePage => 'Home Page';
+  String get settingsHomePage => 'Avaleht';
 
   @override
   String get settingsHomePageSubtitle =>
-      'Sections, image types, overlays, and media previews';
+      'Jaotised, pilditüübid, ülekatted ja meedia eelvaated';
 
   @override
   String get settingsLibrariesSubtitle =>
-      'Library visibility, folder view, and multi-server behavior';
+      'Teegi nähtavus, kaustavaade ja mitme serveri käitumine';
 
   @override
-  String get settingsTwentyFourHourClock => '24-Hour Clock';
+  String get settingsTwentyFourHourClock => '24-tunnine kell';
 
   @override
   String get settingsTwentyFourHourClockSubtitle =>
-      'Use 24-hour time formatting wherever the clock is shown';
+      'Kasutage 24-tunnise kellaaja vormindamist kõikjal, kus kella kuvatakse';
 
   @override
   String get settingsShowShuffleButtonInNavigation =>
-      'Show the shuffle button in the navigation bar';
+      'Kuvage navigeerimisribal juhuesitusnupp';
 
   @override
   String get settingsShowGenresButtonInNavigation =>
-      'Show the genres button in the navigation bar';
+      'Kuvage navigeerimisribal žanrite nupp';
 
   @override
   String get settingsShowFavoritesButtonInNavigation =>
-      'Show the favorites button in the navigation bar';
+      'Kuvage navigeerimisribal lemmikute nupp';
 
   @override
   String get settingsShowLibrariesButtonInNavigation =>
-      'Show the libraries button in the navigation bar';
+      'Kuvage navigeerimisribal teekide nupp';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'Avalehe nähtavuse sisse- ja väljalülitamine teegi kaupa. Muudatuste jõustumiseks taaskäivitage Moonfin.';
 
   @override
-  String get settingsMediaBarAndLocalPreviews => 'Media Bar & Local Previews';
+  String get settingsMediaBarAndLocalPreviews =>
+      'Meediumiriba ja kohalikud eelvaated';
 
   @override
-  String get settingsVisualOverlays => 'Visual Overlays';
+  String get settingsVisualOverlays => 'Visuaalsed ülekatted';
 
   @override
-  String get settingsSeasonalSurprise => 'Seasonal Surprise';
+  String get settingsSeasonalSurprise => 'Hooajaline üllatus';
 
   @override
-  String get settingsMetadataAndRatings => 'Metadata & Ratings';
+  String get settingsMetadataAndRatings => 'Metaandmed ja hinnangud';
 
   @override
   String get settingsPluginScreenDescription =>
-      'Moonbase powers server-side integrations including additional rating sources, Seerr requests, and synced preferences.';
+      'Moonbase võimaldab serveripoolseid integratsioone, sealhulgas täiendavaid reitinguallikaid, Seerr-i päringuid ja sünkroonitud eelistusi.';
 
   @override
-  String get settingsOfflineDownloads => 'Offline Downloads';
+  String get settingsOfflineDownloads => 'Võrguühenduseta allalaadimised';
 
   @override
-  String get settingsHigh => 'High';
+  String get settingsHigh => 'Kõrge';
 
   @override
-  String get settingsLow => 'Low';
+  String get settingsLow => 'Madal';
 
   @override
-  String get settingsCustomPath => 'Custom Path';
+  String get settingsCustomPath => 'Kohandatud tee';
 
   @override
-  String get settingsEnterDownloadFolderPath => 'Enter download folder path';
+  String get settingsEnterDownloadFolderPath =>
+      'Sisestage allalaaditava kausta tee';
 
   @override
-  String get settingsConcurrentDownloads => 'Concurrent Downloads';
+  String get settingsConcurrentDownloads => 'Samaaegsed allalaadimised';
 
   @override
   String get settingsConcurrentDownloadsDescription =>
-      'Maximum number of items to download at once.';
+      'Maksimaalne korraga allalaaditavate üksuste arv.';
 
   @override
-  String get settingsAppInfo => 'APP INFO';
+  String get settingsAppInfo => 'RAKENDUSE INFO';
 
   @override
-  String get settingsReportAnIssue => 'Report an Issue';
+  String get settingsReportAnIssue => 'Probleemist teavitamine';
 
   @override
   String get settingsReportAnIssueSubtitle =>
-      'Open the issue tracker on GitHub';
+      'Avage GitHubis probleemide jälgija';
 
   @override
-  String get settingsJoinDiscord => 'Join Discord';
+  String get settingsJoinDiscord => 'Liituge Discordiga';
 
   @override
-  String get settingsJoinDiscordSubtitle => 'Chat with the community';
+  String get settingsJoinDiscordSubtitle => 'Vestelge kogukonnaga';
 
   @override
-  String get settingsJoinTheDiscord => 'Join the Discord';
+  String get settingsJoinTheDiscord => 'Liituge Discordiga';
 
   @override
-  String get settingsSupportMoonfin => 'Support Moonfin';
+  String get settingsSupportMoonfin => 'Toetage Moonfinit';
 
   @override
   String get settingsSupportMoonfinSubtitle =>
-      'Star the project on GitHub or contribute';
+      'Tähista projekt GitHubis või panusta';
 
   @override
-  String get settingsLegal => 'LEGAL';
+  String get settingsLegal => 'ÕIGUSLIK';
 
   @override
-  String get settingsLicenses => 'Licenses';
+  String get settingsLicenses => 'Litsentsid';
 
   @override
-  String get settingsOpenSourceLicenseNotices => 'Open-source license notices';
+  String get settingsOpenSourceLicenseNotices =>
+      'Avatud lähtekoodiga litsentsi teatised';
 
   @override
-  String get settingsPrivacyPolicy => 'Privacy Policy';
+  String get settingsPrivacyPolicy => 'Privaatsuspoliitika';
 
   @override
-  String get settingsPrivacyPolicySubtitle => 'How Moonfin handles your data';
+  String get settingsPrivacyPolicySubtitle =>
+      'Kuidas Moonfin teie andmeid käsitleb';
 
   @override
-  String get settingsCheckForUpdates => 'Check for Updates';
+  String get settingsCheckForUpdates => 'Kontrollige värskendusi';
 
   @override
   String get settingsCheckForUpdatesSubtitle =>
-      'Check for the latest Moonfin release';
+      'Kontrollige uusimat Moonfini väljaannet';
 
   @override
   String get settingsPoweredByFlutter => 'Powered by Flutter';
@@ -6678,168 +6792,170 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get settingsBoth => 'Both';
+  String get settingsBoth => 'Mõlemad';
 
   @override
-  String get settingsShuffleContentTypeFilter => 'Shuffle Content Type Filter';
+  String get settingsShuffleContentTypeFilter => 'Juhusliku sisutüübi filter';
 
   @override
-  String get settingsVideoPlaybackPreferences => 'Video Playback Preferences';
+  String get settingsVideoPlaybackPreferences => 'Video taasesituse eelistused';
 
   @override
   String get settingsVideoPlaybackPreferencesSubtitle =>
-      'Core video engine and streaming quality settings';
+      'Põhivideomootori ja voogesituse kvaliteedi seaded';
 
   @override
-  String get settingsAudioPreferences => 'Audio Preferences';
+  String get settingsAudioPreferences => 'Heli eelistused';
 
   @override
   String get settingsAudioPreferencesSubtitle =>
-      'Audio tracks, processing, and passthrough options';
+      'Helirajad, töötlemine ja läbipääsuvalikud';
 
   @override
-  String get settingsAutomationAndQueue => 'Automation & Queue';
+  String get settingsAutomationAndQueue => 'Automatiseerimine ja järjekord';
 
   @override
   String get settingsAutomationAndQueueSubtitle =>
-      'Automated playback and sequencing';
+      'Automaatne taasesitus ja järjestus';
 
   @override
   String get settingsOfflineDownloadsSubtitle =>
-      'Download quality, storage limits, and queue size';
+      'Allalaadimise kvaliteet, salvestuspiirangud ja järjekorra suurus';
 
   @override
-  String get settingsSyncplaySubtitle =>
-      'Synchronization logic for group sessions';
+  String get settingsSyncplaySubtitle => 'Grupiseansside sünkroonimisloogika';
 
   @override
   String get settingsAdvancedOptionsSubtitle =>
-      'Specialized player features. Use with caution, as some options may cause playback issues';
+      'Spetsiaalsed mängija funktsioonid. Kasutage ettevaatlikult, kuna mõned valikud võivad põhjustada taasesitusprobleeme';
 
   @override
-  String get settingsSkipIntrosAndOutros => 'Skip Intros and Outros?';
+  String get settingsSkipIntrosAndOutros =>
+      'Kas jätta sissejuhatused ja välised vahele?';
 
   @override
-  String get settingsPromptUser => 'Prompt User';
+  String get settingsPromptUser => 'Küsi kasutajat';
 
   @override
-  String get settingsSkip => 'Skip';
+  String get settingsSkip => 'Jäta vahele';
 
   @override
-  String get settingsDoNothing => 'Do Nothing';
+  String get settingsDoNothing => 'Ära tee midagi';
 
   @override
   String get settingsMaxBitrateDescription =>
-      'Cap the streaming bitrate. Content above this threshold will be transcoded to fit.';
+      'Piirake voogesituse bitikiirust. Sellest lävest ületav sisu ümberkodeeritakse, et see sobiks.';
 
   @override
   String get settingsMaxResolutionDescription =>
-      'Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.';
+      'Piirake maksimaalset eraldusvõimet, mida mängija taotleb. Kõrgema eraldusvõimega sisu transkodeeritakse allapoole.';
 
   @override
   String get settingsPlayerZoomDescription =>
-      'How video should be scaled to fit the screen.';
+      'Kuidas tuleks videot ekraanile sobitamiseks skaleerida.';
 
   @override
-  String get settingsPlaybackEngineAndroidTv => 'Playback Engine (Android TV)';
+  String get settingsPlaybackEngineAndroidTv => 'Taasesitusmootor (Android TV)';
 
   @override
   String get settingsPlaybackEngineAndroidTvDescription =>
-      'Choose the default playback engine on Android TV devices. Changes apply to the next playback session.';
+      'Valige Android TV seadmete vaike taasesitusmootor. Muudatused rakenduvad järgmisele taasesitusseansile.';
 
   @override
-  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (recommended)';
+  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (soovitatav)';
 
   @override
-  String get settingsPlaybackEngineMpvLegacy => 'mpv (legacy)';
+  String get settingsPlaybackEngineMpvLegacy => 'mpv (pärand)';
 
   @override
-  String get settingsDolbyVisionFallback => 'Dolby Vision Fallback';
+  String get settingsDolbyVisionFallback => 'Dolby Visioni tagavara';
 
   @override
   String get settingsDolbyVisionFallbackDescription =>
-      'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.';
+      'Dolby Visioni pealkirjade käitumine seadmetes, kus puudub Dolby Vision dekodeerimine.';
 
   @override
-  String get settingsAskEachTime => 'Ask each time';
+  String get settingsAskEachTime => 'Küsi iga kord';
 
   @override
-  String get settingsPreferHdr10Fallback => 'Prefer HDR10 fallback';
+  String get settingsPreferHdr10Fallback => 'Eelista HDR10 varu';
 
   @override
-  String get settingsPreferServerTranscode => 'Prefer server transcode';
+  String get settingsPreferServerTranscode =>
+      'Eelista serveri ümberkodeerimist';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlay =>
-      'Dolby Vision Profile 7 Direct Play';
+      'Dolby Vision Profiil 7 Otsesesitus';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlayDescription =>
-      'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.';
+      'Määrab, kas Dolby Vision 7. profiili täiustuskihi vood peaksid esitust suunama.';
 
   @override
-  String get settingsAutoAftkrtEnabled => 'Auto (AFTKRT enabled)';
+  String get settingsAutoAftkrtEnabled => 'Automaatne (AFTKRT lubatud)';
 
   @override
-  String get settingsEnabledOnThisDevice => 'Enabled on this device';
+  String get settingsEnabledOnThisDevice => 'Selles seadmes lubatud';
 
   @override
-  String get settingsDisabledPreferTranscode => 'Disabled (prefer transcode)';
+  String get settingsDisabledPreferTranscode =>
+      'Keelatud (eelistage ümberkodeerimist)';
 
   @override
   String get settingsResumeRewindDescription =>
-      'When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?';
+      'Mitu sekundit tuleks taasesituse jätkamisel (Jätka vaatamist või meediumiüksuse lehelt) tagasi kerida?';
 
   @override
   String get settingsUnpauseRewindDescription =>
-      'When resuming playback after pressing the pause button, how many seconds should be rewound?';
+      'Mitu sekundit tuleks tagasi kerida, kui jätkate taasesitust pärast pausinupu vajutamist?';
 
   @override
   String get settingsSkipBackLengthDescription =>
-      'How many seconds to jump back after pressing the rewind button.';
+      'Mitu sekundit pärast tagasikerimise nupu vajutamist tagasi hüpata.';
 
   @override
-  String get settingsOneSecond => '1 second';
+  String get settingsOneSecond => '1 sekund';
 
   @override
-  String get settingsThreeSeconds => '3 seconds';
+  String get settingsThreeSeconds => '3 sekundit';
 
   @override
-  String get settingsFortyFiveSeconds => '45 seconds';
+  String get settingsFortyFiveSeconds => '45 sekundit';
 
   @override
-  String get settingsSixtySeconds => '60 seconds';
+  String get settingsSixtySeconds => '60 sekundit';
 
   @override
   String get settingsSkipForwardLengthDescription =>
-      'How many seconds to jump forward after pressing the fast forward button.';
+      'Mitu sekundit pärast edasikerimise nupu vajutamist edasi hüpata.';
 
   @override
   String get settingsBitstreamAc3ToExternalDecoder =>
-      'Bitstream AC3 to external decoder';
+      'Bitivoog AC3 välisele dekoodrile';
 
   @override
-  String get settingsCinemaMode => 'Cinema Mode';
+  String get settingsCinemaMode => 'Kinorežiim';
 
   @override
   String get settingsCinemaModeSubtitle =>
-      'Play trailers/prerolls before a main feature';
+      'Enne põhifunktsiooni esitage treilereid/eelreklaame';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
-      'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.';
+  String get settingsNextUpDisplayDescription =>
+      'Laiendatud kuvab täieliku kaardi koos jaokujunduse ja kirjeldusega. Minimaalne näitab kompaktset loenduri ülekatet. Keelatud peidab viipa täielikult.';
 
   @override
-  String get settingsShort => 'Short';
+  String get settingsShort => 'Lühike';
 
   @override
-  String get settingsLong => 'Long';
+  String get settingsLong => 'Pikk';
 
   @override
-  String get settingsVeryLong => 'Very Long';
+  String get settingsVeryLong => 'Väga pikk';
 
   @override
-  String get settingsVideoStartDelay => 'Video Start Delay';
+  String get settingsVideoStartDelay => 'Video käivitamise viivitus';
 
   @override
   String settingsMillisecondsValue(int value) {
@@ -6847,82 +6963,86 @@ class AppLocalizationsEt extends AppLocalizations {
   }
 
   @override
-  String get settingsLiveTvDirect => 'Live TV Direct';
+  String get settingsLiveTvDirect => 'Otse-TV';
 
   @override
-  String get settingsLiveTvDirectSubtitle => 'Enable direct play for Live TV';
+  String get settingsLiveTvDirectSubtitle =>
+      'Luba otseesitus otsesaadete jaoks';
 
   @override
-  String get settingsOpenGroups => 'Open Groups';
+  String get settingsOpenGroups => 'Avage rühmad';
 
   @override
   String get settingsOpenGroupsSubtitle =>
-      'Create, join, or manage SyncPlay groups';
+      'Looge, liituge või hallake SyncPlay gruppe';
 
   @override
-  String get settingsSyncplayEnabled => 'SyncPlay Enabled';
+  String get settingsSyncplayEnabled => 'SyncPlay lubatud';
 
   @override
   String get settingsSyncplayEnabledSubtitle =>
-      'Enable group watching features';
+      'Lubage rühmavaatamise funktsioonid';
 
   @override
-  String get settingsSyncplayButton => 'SyncPlay Button';
+  String get settingsSyncplayButton => 'SyncPlay nupp';
 
   @override
   String get settingsSyncplayButtonSubtitle =>
-      'Show the SyncPlay button on the navigation bar';
+      'Kuvage navigeerimisribal nuppu SyncPlay';
 
   @override
-  String get settingsSyncplayAdvancedCorrection => 'Advanced Correction';
+  String get settingsSyncplayAdvancedCorrection => 'Täiustatud parandus';
 
   @override
   String get settingsSyncplayAdvancedCorrectionSubtitle =>
-      'Enable fine-grained sync logic';
+      'Luba peeneteraline sünkroonimisloogika';
 
   @override
-  String get settingsSyncplaySyncCorrection => 'Sync Correction';
+  String get settingsSyncplaySyncCorrection => 'Sünkroonimisparandus';
 
   @override
   String get settingsSyncplaySyncCorrectionSubtitle =>
-      'Automatically adjust playback to stay in sync';
+      'Reguleerige esitust automaatselt, et sünkroonis püsida';
 
   @override
-  String get settingsSyncplaySpeedToSync => 'Speed to Sync';
+  String get settingsSyncplaySpeedToSync => 'Sünkroonimise kiirus';
 
   @override
   String get settingsSyncplaySpeedToSyncSubtitle =>
-      'Use playback speed adjustment to sync';
+      'Kasutage sünkroonimiseks taasesituskiiruse reguleerimist';
 
   @override
-  String get settingsSyncplaySkipToSync => 'Skip to Sync';
+  String get settingsSyncplaySkipToSync => 'Jätke sünkroonimise juurde';
 
   @override
-  String get settingsSyncplaySkipToSyncSubtitle => 'Use seeking to sync';
+  String get settingsSyncplaySkipToSyncSubtitle =>
+      'Kasutage sünkroonimiseks otsimist';
 
   @override
-  String get settingsSyncplayMinimumSpeedDelay => 'Minimum Speed Delay';
+  String get settingsSyncplayMinimumSpeedDelay => 'Minimaalne kiiruse viivitus';
 
   @override
-  String get settingsSyncplayMaximumSpeedDelay => 'Maximum Speed Delay';
+  String get settingsSyncplayMaximumSpeedDelay =>
+      'Maksimaalse kiiruse viivitus';
 
   @override
-  String get settingsSyncplaySpeedDuration => 'Speed Duration';
+  String get settingsSyncplaySpeedDuration => 'Kiiruse kestus';
 
   @override
-  String get settingsSyncplayMinimumSkipDelay => 'Minimum Skip Delay';
+  String get settingsSyncplayMinimumSkipDelay =>
+      'Minimaalne vahelejätmise viivitus';
 
   @override
-  String get settingsSyncplayExtraOffset => 'SyncPlay Extra Offset';
+  String get settingsSyncplayExtraOffset => 'SyncPlay Lisanihe';
 
   @override
-  String get onNow => 'On Now';
+  String get onNow => 'Sisse kohe';
 
   @override
-  String get collections => 'Collections';
+  String get collections => 'Kollektsioonid';
 
   @override
-  String get lastPlayed => 'Last Played';
+  String get lastPlayed => 'Viimati mängitud';
 
   @override
   String libraryNameWithServer(String libraryName, String serverName) {

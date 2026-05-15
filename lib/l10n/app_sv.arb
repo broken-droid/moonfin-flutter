@@ -8,7 +8,7 @@
   "@signIn": {
     "description": "Sign in heading and button label"
   },
-  "connectingToServer": "Ansluter till {serverName}",
+  "connectingToServer": "Connecting to {serverName}",
   "@connectingToServer": {
     "description": "Subtitle showing which server the user is connecting to",
     "placeholders": {
@@ -49,7 +49,7 @@
   "@loginFailed": {
     "description": "Generic login failure message"
   },
-  "quickConnectUnavailable": "QuickConnect inte tillgänglig: {detail}",
+  "quickConnectUnavailable": "QuickConnect unavailable: {detail}",
   "@quickConnectUnavailable": {
     "description": "Quick Connect generic error message",
     "placeholders": {
@@ -58,7 +58,7 @@
       }
     }
   },
-  "quickConnectUnavailableWithStatus": "QuickConnect inte tillgänglig ({status}): {detail}",
+  "quickConnectUnavailableWithStatus": "QuickConnect unavailable ({status}): {detail}",
   "@quickConnectUnavailableWithStatus": {
     "description": "Quick Connect error message with HTTP status info",
     "placeholders": {
@@ -119,7 +119,7 @@
   "@removeServer": {
     "description": "Dialog title for removing a saved server"
   },
-  "removeServerConfirmation": "Vill du ta bort \"{serverName}\" från dina servrar?",
+  "removeServerConfirmation": "Remove \"{serverName}\" from your servers?",
   "@removeServerConfirmation": {
     "description": "Confirmation message when removing a saved server",
     "placeholders": {
@@ -240,7 +240,7 @@
   "@invalidServerExchangeResponse": {
     "description": "Error when server exchange returns invalid data"
   },
-  "unableToConnectTo": "Det går inte att ansluta till {target}",
+  "unableToConnectTo": "Unable to connect to {target}",
   "@unableToConnectTo": {
     "description": "Error when connection to a specific server or address fails",
     "placeholders": {
@@ -349,7 +349,7 @@
   "@noGenresFound": {
     "description": "Empty state when no genres are available"
   },
-  "failedToLoadFolderError": "Det gick inte att ladda mappen: {error}",
+  "failedToLoadFolderError": "Failed to load folder: {error}",
   "@failedToLoadFolderError": {
     "description": "Error when a folder cannot be loaded",
     "placeholders": {
@@ -362,7 +362,7 @@
   "@thisFolderIsEmpty": {
     "description": "Empty state for folder browse screen"
   },
-  "itemCountLabel": "{count} föremål",
+  "itemCountLabel": "{count} items",
   "@itemCountLabel": {
     "description": "Subtitle showing number of items in a folder or collection",
     "placeholders": {
@@ -387,7 +387,7 @@
   "@favorites": {
     "description": "Favorites section heading and filter label"
   },
-  "totalCountItems": "{count} artiklar",
+  "totalCountItems": "{count} Items",
   "@totalCountItems": {
     "description": "Header showing total item count",
     "placeholders": {
@@ -444,7 +444,7 @@
   "@extraLarge": {
     "description": "Size option: extra large"
   },
-  "libraryGenresTitle": "{name} — Genrer",
+  "libraryGenresTitle": "{name} — Genres",
   "@libraryGenresTitle": {
     "description": "Header title showing library name with genres suffix",
     "placeholders": {
@@ -497,7 +497,7 @@
   "@justNow": {
     "description": "Relative time for less than a minute ago"
   },
-  "minutesAgo": "{count}m sedan",
+  "minutesAgo": "{count}m ago",
   "@minutesAgo": {
     "description": "Relative time in minutes",
     "placeholders": {
@@ -506,7 +506,7 @@
       }
     }
   },
-  "hoursAgo": "{count}h sedan",
+  "hoursAgo": "{count}h ago",
   "@hoursAgo": {
     "description": "Relative time in hours",
     "placeholders": {
@@ -515,7 +515,7 @@
       }
     }
   },
-  "daysAgo": "{count}d sedan",
+  "daysAgo": "{count}d ago",
   "@daysAgo": {
     "description": "Relative time in days",
     "placeholders": {
@@ -552,7 +552,7 @@
   "@librivoxDescription": {
     "description": "Subtitle for audiobook discovery section"
   },
-  "titlesCount": "{count} titlar",
+  "titlesCount": "{count} titles",
   "@titlesCount": {
     "description": "Label showing number of titles",
     "placeholders": {
@@ -661,7 +661,7 @@
   "@savedPlacesChapters": {
     "description": "Hero card subtitle for bookmarks section"
   },
-  "authorsCount": "{count} författare",
+  "authorsCount": "{count} authors",
   "@authorsCount": {
     "description": "Metric pill showing author count",
     "placeholders": {
@@ -670,7 +670,7 @@
       }
     }
   },
-  "genresCount": "{count} genrer",
+  "genresCount": "{count} genres",
   "@genresCount": {
     "description": "Metric pill showing genre count",
     "placeholders": {
@@ -679,7 +679,7 @@
       }
     }
   },
-  "percentCompleted": "{percent}% slutförd",
+  "percentCompleted": "{percent}% completed",
   "@percentCompleted": {
     "description": "Reading progress percentage label",
     "placeholders": {
@@ -704,7 +704,7 @@
   "@bookmarksAndProgress": {
     "description": "Panel header for bookmarks section"
   },
-  "titlesArrangedForBrowsing": "{count} titlar ordnade för att läsa först.",
+  "titlesArrangedForBrowsing": "{count} titles arranged for reading-first browsing.",
   "@titlesArrangedForBrowsing": {
     "description": "Panel subtitle showing total titles",
     "placeholders": {
@@ -753,7 +753,7 @@
   "@audiobooks": {
     "description": "Audiobooks navigation and tab label"
   },
-  "noLabelFound": "Ingen {label} hittades",
+  "noLabelFound": "No {label} found",
   "@noLabelFound": {
     "description": "Empty state with dynamic label like books or audiobooks",
     "placeholders": {
@@ -850,7 +850,7 @@
   "@downloadZip": {
     "description": "Button label for zip download external link"
   },
-  "sectionCountLabel": "{count} sektioner",
+  "sectionCountLabel": "{count} sections",
   "@sectionCountLabel": {
     "description": "Detail chip showing number of sections in audiobook",
     "placeholders": {
@@ -859,7 +859,7 @@
       }
     }
   },
-  "firstPublished": "Första publicerade {year}",
+  "firstPublished": "First published {year}",
   "@firstPublished": {
     "description": "Publication year for a book",
     "placeholders": {
@@ -880,7 +880,7 @@
   "@all": {
     "description": "Filter option for showing all items"
   },
-  "booksCount": "{count} böcker",
+  "booksCount": "{count} books",
   "@booksCount": {
     "description": "Label showing number of books in a discover row",
     "placeholders": {
@@ -897,7 +897,7 @@
   "@audiobookDetails": {
     "description": "AppBar title for LibriVox audiobook detail screen"
   },
-  "authorsCountTitle": "{count} Författare",
+  "authorsCountTitle": "{count} Authors",
   "@authorsCountTitle": {
     "description": "AppBar title for LibriVox authors list screen",
     "placeholders": {
@@ -995,7 +995,7 @@
   "@tracklist": {
     "description": "Section header for album track listing"
   },
-  "discNumber": "Skiva {number}",
+  "discNumber": "Disc {number}",
   "@discNumber": {
     "description": "Label for an album disc section in a multi-disc track list",
     "placeholders": {
@@ -1028,7 +1028,7 @@
   "@unableToLoadAuthorDetails": {
     "description": "Error message when author details fail to load"
   },
-  "published": "Publicerad {year}",
+  "published": "Published {year}",
   "@published": {
     "description": "Publication year for an author book tile",
     "placeholders": {
@@ -1050,7 +1050,7 @@
       }
     }
   },
-  "endsAt": "Slutar vid {time}",
+  "endsAt": "Ends at {time}",
   "@endsAt": {
     "description": "Label showing when media will end",
     "placeholders": {
@@ -1071,7 +1071,7 @@
   "@read": {
     "description": "Action button label to start reading a book"
   },
-  "resumeFrom": "Återuppta från {position}",
+  "resumeFrom": "Resume from {position}",
   "@resumeFrom": {
     "description": "Action button label showing resume position",
     "placeholders": {
@@ -1204,7 +1204,7 @@
   "@deleteDownloadedAlbum": {
     "description": "Dialog title for deleting downloaded album tracks"
   },
-  "deleteDownloadedTracksMessage": "Vill du ta bort nedladdade spår för \"{title}\"?",
+  "deleteDownloadedTracksMessage": "Delete downloaded tracks for \"{title}\"?",
   "@deleteDownloadedTracksMessage": {
     "description": "Confirmation message for deleting downloaded album tracks",
     "placeholders": {
@@ -1225,7 +1225,7 @@
   "@noTracksLoaded": {
     "description": "Message when no tracks are available"
   },
-  "noItemsLoaded": "Ingen {itemLabel} laddad",
+  "noItemsLoaded": "No {itemLabel} loaded",
   "@noItemsLoaded": {
     "description": "Message when no items are loaded for download",
     "placeholders": {
@@ -1234,7 +1234,7 @@
       }
     }
   },
-  "downloadingTitle": "Laddar ned {title} ({count} objekt)...",
+  "downloadingTitle": "Downloading {title} ({count} items)...",
   "@downloadingTitle": {
     "description": "Snackbar message when downloading album tracks",
     "placeholders": {
@@ -1246,7 +1246,7 @@
       }
     }
   },
-  "deleteConfirmMessage": "Är du säker på att du vill ta bort \"{name}\" från servern? Denna åtgärd kan inte ångras.",
+  "deleteConfirmMessage": "Are you sure you want to delete \"{name}\" from the server? This action cannot be undone.",
   "@deleteConfirmMessage": {
     "description": "Confirmation message for permanently deleting an item",
     "placeholders": {
@@ -1263,7 +1263,7 @@
   "@noPlayableTrailerFound": {
     "description": "Error message when no trailer can be played"
   },
-  "unsupportedBookFormat": "Bokformat som inte stöds: .{extension}",
+  "unsupportedBookFormat": "Unsupported book format: .{extension}",
   "@unsupportedBookFormat": {
     "description": "Error message for unsupported book file format",
     "placeholders": {
@@ -1300,7 +1300,7 @@
   "@selectedSubtitleInvalid": {
     "description": "Error message when a selected subtitle is invalid"
   },
-  "subtitleDownloadedSelected": "Undertext har laddats ner och valts: {name}",
+  "subtitleDownloadedSelected": "Subtitle downloaded and selected: {name}",
   "@subtitleDownloadedSelected": {
     "description": "Success message after downloading and selecting a subtitle",
     "placeholders": {
@@ -1313,7 +1313,7 @@
   "@subtitleDownloadedPending": {
     "description": "Message when subtitle was downloaded but not yet visible"
   },
-  "noRemoteSubtitlesFound": "Inga fjärrundertexter hittades för {language}.",
+  "noRemoteSubtitlesFound": "No remote subtitles found for {language}.",
   "@noRemoteSubtitlesFound": {
     "description": "Message when no remote subtitles were found",
     "placeholders": {
@@ -1355,7 +1355,7 @@
   "@noEpisodesLoaded": {
     "description": "Message when no episodes are available for download"
   },
-  "downloadingItem": "Laddar ned {name} ({quality})...",
+  "downloadingItem": "Downloading {name} ({quality})...",
   "@downloadingItem": {
     "description": "Snackbar message when downloading an item",
     "placeholders": {
@@ -1371,7 +1371,7 @@
   "@deleteDownloadedFiles": {
     "description": "Dialog title for deleting downloaded files"
   },
-  "deleteLocalFilesMessage": "Ta bort lokala filer för {typeLabel}?\n\nDetta kommer att frigöra lagringsutrymme. Du kan ladda ner igen senare.",
+  "deleteLocalFilesMessage": "Delete local files for {typeLabel}?\n\nThis will free up storage space. You can re-download later.",
   "@deleteLocalFilesMessage": {
     "description": "Confirmation message for deleting local downloaded files",
     "placeholders": {
@@ -1404,7 +1404,7 @@
   "@studio": {
     "description": "Metadata label for studio"
   },
-  "studioMoreCount": "+{count} till",
+  "studioMoreCount": "+{count} more",
   "@studioMoreCount": {
     "description": "Label showing additional studio count",
     "placeholders": {
@@ -1413,7 +1413,7 @@
       }
     }
   },
-  "totalEpisodes": "{count} Avsnitt",
+  "totalEpisodes": "{count} Episodes",
   "@totalEpisodes": {
     "description": "Season progress label showing total episodes",
     "placeholders": {
@@ -1434,7 +1434,7 @@
       }
     }
   },
-  "episodeLabel": "Avsnitt {number}",
+  "episodeLabel": "Episode {number}",
   "@episodeLabel": {
     "description": "Label for an episode number",
     "placeholders": {
@@ -1443,7 +1443,7 @@
       }
     }
   },
-  "chapterNumber": "Kapitel {number}",
+  "chapterNumber": "Chapter {number}",
   "@chapterNumber": {
     "description": "Default name for a chapter",
     "placeholders": {
@@ -1470,7 +1470,7 @@
       }
     }
   },
-  "born": "Född {date}",
+  "born": "Born {date}",
   "@born": {
     "description": "Person birth date label",
     "placeholders": {
@@ -1479,7 +1479,7 @@
       }
     }
   },
-  "died": "Död {date}",
+  "died": "Died {date}",
   "@died": {
     "description": "Person death date label",
     "placeholders": {
@@ -1488,7 +1488,7 @@
       }
     }
   },
-  "age": "Ålder {age}",
+  "age": "Age {age}",
   "@age": {
     "description": "Person age label",
     "placeholders": {
@@ -1509,7 +1509,7 @@
   "@shuffle": {
     "description": "Action button label for shuffle playback"
   },
-  "downloadsCount": "{count} nedladdningar",
+  "downloadsCount": "{count} downloads",
   "@downloadsCount": {
     "description": "Subtitle showing number of downloads for a remote subtitle",
     "placeholders": {
@@ -1539,7 +1539,7 @@
   "@stereo": {
     "description": "Audio channel layout label for stereo"
   },
-  "remoteSubtitlePermissionError": "Fjärrundertext {action} kräver behörigheten Jellyfin för undertexthantering för denna användare.",
+  "remoteSubtitlePermissionError": "Remote subtitle {action} requires the Jellyfin subtitle management permission for this user.",
   "@remoteSubtitlePermissionError": {
     "description": "Error message when user lacks subtitle management permission",
     "placeholders": {
@@ -1548,7 +1548,7 @@
       }
     }
   },
-  "remoteSubtitleNotFoundError": "Det här objektet kunde inte hittas på servern för fjärrundertexten {action}.",
+  "remoteSubtitleNotFoundError": "This item could not be found on the server for remote subtitle {action}.",
   "@remoteSubtitleNotFoundError": {
     "description": "Error message when item not found for subtitle operation",
     "placeholders": {
@@ -1557,7 +1557,7 @@
       }
     }
   },
-  "remoteSubtitleDetailError": "Fjärrundertext {action} misslyckades: {detail}",
+  "remoteSubtitleDetailError": "Remote subtitle {action} failed: {detail}",
   "@remoteSubtitleDetailError": {
     "description": "Error message with detail for subtitle operation",
     "placeholders": {
@@ -1569,7 +1569,7 @@
       }
     }
   },
-  "remoteSubtitleHttpError": "Fjärrundertext {action} misslyckades (HTTP {status}).",
+  "remoteSubtitleHttpError": "Remote subtitle {action} failed (HTTP {status}).",
   "@remoteSubtitleHttpError": {
     "description": "Error message with HTTP status for subtitle operation",
     "placeholders": {
@@ -1581,7 +1581,7 @@
       }
     }
   },
-  "remoteSubtitleGenericError": "Det gick inte att {action} fjärrundertexter.",
+  "remoteSubtitleGenericError": "Failed to {action} remote subtitles.",
   "@remoteSubtitleGenericError": {
     "description": "Generic error message for subtitle operation",
     "placeholders": {
@@ -1590,7 +1590,7 @@
       }
     }
   },
-  "deleteSeriesFiles": "alla nedladdade avsnitt för \"{name}\"",
+  "deleteSeriesFiles": "all downloaded episodes for \"{name}\"",
   "@deleteSeriesFiles": {
     "description": "Type label for series file deletion",
     "placeholders": {
@@ -1635,7 +1635,7 @@
   "@castingUnavailableOffline": {
     "description": "Snackbar message when casting is unavailable offline"
   },
-  "castActionFailed": "{label} åtgärd misslyckades: {error}",
+  "castActionFailed": "{label} action failed: {error}",
   "@castActionFailed": {
     "description": "Error when a cast action fails",
     "placeholders": {
@@ -1647,7 +1647,7 @@
       }
     }
   },
-  "failedToSetCastVolume": "Det gick inte att ställa in röstvolymen: {error}",
+  "failedToSetCastVolume": "Failed to set cast volume: {error}",
   "@failedToSetCastVolume": {
     "description": "Error when setting cast volume fails",
     "placeholders": {
@@ -1656,7 +1656,7 @@
       }
     }
   },
-  "castControlsTitle": "{label} Kontroller",
+  "castControlsTitle": "{label} Controls",
   "@castControlsTitle": {
     "description": "Title for cast controls dialog",
     "placeholders": {
@@ -1681,7 +1681,7 @@
   "@syncPosition": {
     "description": "Cast control action to sync playback position"
   },
-  "stopCast": "Stoppa {label}",
+  "stopCast": "Stop {label}",
   "@stopCast": {
     "description": "Cast control action to stop casting",
     "placeholders": {
@@ -1694,7 +1694,7 @@
   "@queueIsEmpty": {
     "description": "Empty state text for playback queue"
   },
-  "trackNumber": "Spåra {number}",
+  "trackNumber": "Track {number}",
   "@trackNumber": {
     "description": "Fallback track name in queue",
     "placeholders": {
@@ -1719,7 +1719,7 @@
   "@castingViaDlna": {
     "description": "Cast mini bar label for DLNA"
   },
-  "secondsCount": "{seconds} sekunder",
+  "secondsCount": "{seconds} seconds",
   "@secondsCount": {
     "description": "Double-tap skip overlay duration label",
     "placeholders": {
@@ -1869,7 +1869,7 @@
   "@embedded": {
     "description": "Subtitle type label for embedded subtitles"
   },
-  "castSessionError": "{protocol} sessionsfel",
+  "castSessionError": "{protocol} session error",
   "@castSessionError": {
     "description": "Fallback error message for cast session errors",
     "placeholders": {
@@ -1878,7 +1878,7 @@
       }
     }
   },
-  "failedToLoadBookDetails": "Det gick inte att läsa in bokinformation: {error}",
+  "failedToLoadBookDetails": "Failed to load book details: {error}",
   "@failedToLoadBookDetails": {
     "description": "Error when loading book details fails",
     "placeholders": {
@@ -1891,7 +1891,7 @@
   "@epubUnavailableOnPlatform": {
     "description": "Fallback message when EPUB cannot render on current platform"
   },
-  "formatCannotRenderInApp": "Det här formatet (.{extension}) kan inte renderas i appen ännu.",
+  "formatCannotRenderInApp": "This format (.{extension}) cannot be rendered in-app yet.",
   "@formatCannotRenderInApp": {
     "description": "Fallback message for unsupported document format",
     "placeholders": {
@@ -1908,7 +1908,7 @@
   "@couldNotOpenExternalViewer": {
     "description": "Error when external viewer fails to open"
   },
-  "failedToOpenInAppReader": "Det gick inte att öppna läsaren i appen: {error}",
+  "failedToOpenInAppReader": "Failed to open in-app reader: {error}",
   "@failedToOpenInAppReader": {
     "description": "Error when in-app reader fails to open",
     "placeholders": {
@@ -1917,7 +1917,7 @@
       }
     }
   },
-  "bookmarkAlreadySaved": "Bokmärket har redan sparats på {label}.",
+  "bookmarkAlreadySaved": "Bookmark already saved at {label}.",
   "@bookmarkAlreadySaved": {
     "description": "Snackbar when bookmark already exists",
     "placeholders": {
@@ -1926,7 +1926,7 @@
       }
     }
   },
-  "bookmarkAdded": "Bokmärke tillagt: {label}",
+  "bookmarkAdded": "Bookmark added: {label}",
   "@bookmarkAdded": {
     "description": "Snackbar confirming bookmark was added",
     "placeholders": {
@@ -1943,7 +1943,7 @@
   "@noTableOfContentsAvailable": {
     "description": "Empty state for table of contents panel"
   },
-  "pageLabel": "Sida {number}",
+  "pageLabel": "Page {number}",
   "@pageLabel": {
     "description": "Page number label in TOC or position",
     "placeholders": {
@@ -1969,7 +1969,7 @@
       }
     }
   },
-  "percentRead": "{percent}% läst",
+  "percentRead": "{percent}% read",
   "@percentRead": {
     "description": "Chip label showing reading progress",
     "placeholders": {
@@ -2002,7 +2002,7 @@
   "@failedToDecodePageImage": {
     "description": "Error when comic page image cannot be decoded"
   },
-  "resetZoom": "Återställ zoom ({zoom}x)",
+  "resetZoom": "Reset Zoom ({zoom}x)",
   "@resetZoom": {
     "description": "Tooltip for reset zoom button",
     "placeholders": {
@@ -2035,7 +2035,7 @@
   "@markedAsUnread": {
     "description": "Snackbar confirming item marked as unread"
   },
-  "failedToUpdateReadState": "Det gick inte att uppdatera lässtatus: {error}",
+  "failedToUpdateReadState": "Failed to update read state: {error}",
   "@failedToUpdateReadState": {
     "description": "Error when marking read/unread fails",
     "placeholders": {
@@ -2080,7 +2080,7 @@
   "@readerFallbackModeActive": {
     "description": "Title for fallback reader mode"
   },
-  "platformCannotHostDocumentEngine": "Den här plattformen kan inte vara värd för den inbäddade dokumentmotorn för {extension}-filer.",
+  "platformCannotHostDocumentEngine": "This platform cannot host the embedded document engine for {extension} files.",
   "@platformCannotHostDocumentEngine": {
     "description": "Fallback description when platform lacks document engine",
     "placeholders": {
@@ -2133,7 +2133,7 @@
   "@guideTimeline": {
     "description": "Section title for the TV guide timeline"
   },
-  "failedToLoadGuide": "Det gick inte att läsa in guiden: {error}",
+  "failedToLoadGuide": "Failed to load guide: {error}",
   "@failedToLoadGuide": {
     "description": "Error when guide data fails to load",
     "placeholders": {
@@ -2182,7 +2182,7 @@
   "@close": {
     "description": "Button label to close a dialog"
   },
-  "failedToPlayChannel": "Det gick inte att spela {name}",
+  "failedToPlayChannel": "Failed to play {name}",
   "@failedToPlayChannel": {
     "description": "Error when live TV channel playback fails",
     "placeholders": {
@@ -2219,7 +2219,7 @@
   "@cancelRecording": {
     "description": "Dialog title for cancelling a recording"
   },
-  "cancelScheduledRecordingOf": "Vill du avbryta schemalagd inspelning av \"{name}\"?",
+  "cancelScheduledRecordingOf": "Cancel scheduled recording of \"{name}\"?",
   "@cancelScheduledRecordingOf": {
     "description": "Confirmation message for cancelling a scheduled recording",
     "placeholders": {
@@ -2256,7 +2256,7 @@
   "@cancelSeriesRecordingQuestion": {
     "description": "Dialog title for cancelling a series recording"
   },
-  "stopRecordingName": "Vill du sluta spela in \"{name}\"?",
+  "stopRecordingName": "Stop recording \"{name}\"?",
   "@stopRecordingName": {
     "description": "Confirmation message for stopping a series recording",
     "placeholders": {
@@ -2277,7 +2277,7 @@
   "@searchEllipsis": {
     "description": "Search hint placeholder"
   },
-  "noResultsForQuery": "Inga resultat för \"{query}\"",
+  "noResultsForQuery": "No results for \"{query}\"",
   "@noResultsForQuery": {
     "description": "Shown when search returns no results",
     "placeholders": {
@@ -2286,7 +2286,7 @@
       }
     }
   },
-  "searchFailedError": "Sökningen misslyckades: {error}",
+  "searchFailedError": "Search failed: {error}",
   "@searchFailedError": {
     "description": "Shown when search encounters an error",
     "placeholders": {
@@ -2331,7 +2331,7 @@
   "@deleteDownload": {
     "description": "Dialog title for deleting a download"
   },
-  "removeItemAndFiles": "Ta bort \"{name}\" och dess filer?",
+  "removeItemAndFiles": "Remove \"{name}\" and its files?",
   "@removeItemAndFiles": {
     "description": "Confirmation to delete a downloaded item and its files",
     "placeholders": {
@@ -2340,7 +2340,7 @@
       }
     }
   },
-  "tracksCount": "{count} spår",
+  "tracksCount": "{count} tracks",
   "@tracksCount": {
     "description": "Number of tracks in an album",
     "placeholders": {
@@ -2357,7 +2357,7 @@
   "@playAlbum": {
     "description": "Button to play an album"
   },
-  "failedToLoadAlbum": "Det gick inte att ladda album: {error}",
+  "failedToLoadAlbum": "Failed to load album: {error}",
   "@failedToLoadAlbum": {
     "description": "Error when loading an album fails",
     "placeholders": {
@@ -2366,7 +2366,7 @@
       }
     }
   },
-  "noDownloadedTracksForAlbum": "Inga nedladdade spår hittades för {name}.",
+  "noDownloadedTracksForAlbum": "No downloaded tracks found for {name}.",
   "@noDownloadedTracksForAlbum": {
     "description": "Shown when an album has no downloaded tracks",
     "placeholders": {
@@ -2391,7 +2391,7 @@
   "@deleteEpisode": {
     "description": "Dialog title for deleting an episode"
   },
-  "removeName": "Vill du ta bort \"{name}\"?",
+  "removeName": "Remove \"{name}\"?",
   "@removeName": {
     "description": "Confirmation to remove an item by name",
     "placeholders": {
@@ -2421,7 +2421,7 @@
       }
     }
   },
-  "episodeNumber": "Avsnitt {number}",
+  "episodeNumber": "Episode {number}",
   "@episodeNumber": {
     "description": "Episode label with number",
     "placeholders": {
@@ -2442,7 +2442,7 @@
   "@downloadedEpisodes": {
     "description": "Section title for downloaded episodes"
   },
-  "seasonNumber": "Säsong {number}",
+  "seasonNumber": "Season {number}",
   "@seasonNumber": {
     "description": "Season label with number",
     "placeholders": {
@@ -2459,7 +2459,7 @@
   "@deleteSeason": {
     "description": "Dialog title for deleting a season"
   },
-  "deleteAllEpisodesInSeason": "Vill du ta bort alla nedladdade avsnitt i {season}?",
+  "deleteAllEpisodesInSeason": "Delete all downloaded episodes in {season}?",
   "@deleteAllEpisodesInSeason": {
     "description": "Confirmation to delete all episodes in a season",
     "placeholders": {
@@ -2513,7 +2513,7 @@
   "@deleteSelected": {
     "description": "Dialog title for deleting selected items"
   },
-  "deleteSelectedCount": "Ta bort {count} nedladdade objekt?",
+  "deleteSelectedCount": "Delete {count} downloaded items?",
   "@deleteSelectedCount": {
     "description": "Confirmation to delete selected downloaded items",
     "placeholders": {
@@ -2534,7 +2534,7 @@
   "@database": {
     "description": "Storage breakdown label for database"
   },
-  "ofStorageLimit": "av gränsen {limit}",
+  "ofStorageLimit": "of {limit} limit",
   "@ofStorageLimit": {
     "description": "Text showing storage used of total limit",
     "placeholders": {
@@ -2643,7 +2643,7 @@
   "@customizeAccountPlaybackInterface": {
     "description": "Settings screen subtitle"
   },
-  "optionsCount": "{count} alternativ",
+  "optionsCount": "{count} options",
   "@optionsCount": {
     "description": "Number of options in a settings section",
     "placeholders": {
@@ -3031,7 +3031,7 @@
   "@stillWatchingPrompt": {
     "description": "Setting for still watching prompt"
   },
-  "afterEpisodesAndHours": "Efter {episodes} avsnitt / {hours}h",
+  "afterEpisodesAndHours": "After {episodes} episodes / {hours}h",
   "@afterEpisodesAndHours": {
     "description": "Still watching prompt interval",
     "placeholders": {
@@ -3183,7 +3183,7 @@
   "@tv": {
     "description": "Profile: TV"
   },
-  "loadedProfileSettings": "Laddade {profile} profilinställningar.",
+  "loadedProfileSettings": "Loaded {profile} profile settings.",
   "@loadedProfileSettings": {
     "description": "Message when profile settings are loaded",
     "placeholders": {
@@ -3192,7 +3192,7 @@
       }
     }
   },
-  "failedToLoadProfileSettings": "Det gick inte att läsa in {profile} profilinställningar.",
+  "failedToLoadProfileSettings": "Failed to load {profile} profile settings.",
   "@failedToLoadProfileSettings": {
     "description": "Error when profile settings fail to load",
     "placeholders": {
@@ -3201,7 +3201,7 @@
       }
     }
   },
-  "syncedSettingsToProfile": "Synkroniserade lokala inställningar till profilen {profile}.",
+  "syncedSettingsToProfile": "Synced local settings to {profile} profile.",
   "@syncedSettingsToProfile": {
     "description": "Message when settings are synced to a profile",
     "placeholders": {
@@ -3486,7 +3486,7 @@
   "@selectAll": {
     "description": "Button to select all items"
   },
-  "itemsSelected": "{count} har valts",
+  "itemsSelected": "{count} selected",
   "@itemsSelected": {
     "description": "Number of selected items",
     "placeholders": {
@@ -4021,7 +4021,7 @@
   "@hideAdultContent": {
     "description": "Description for NSFW filter"
   },
-  "loggedInAs": "Inloggad som: {username}",
+  "loggedInAs": "Logged in as: {username}",
   "@loggedInAs": {
     "description": "Label showing logged in username",
     "placeholders": {
@@ -4111,7 +4111,7 @@
   "@updateAvailable": {
     "description": "Message when an update is available"
   },
-  "updateAvailableVersion": "Uppdatering tillgänglig: v{version}",
+  "updateAvailableVersion": "Update available: v{version}",
   "@updateAvailableVersion": {
     "description": "Message with specific update version",
     "placeholders": {
@@ -4189,7 +4189,7 @@
   "@seerrRequestedStatus": {
     "description": "Seerr media status when item has been requested"
   },
-  "itemsCount": "{count} artiklar",
+  "itemsCount": "{count} Items",
   "@itemsCount": {
     "description": "Status bar item count",
     "placeholders": {
@@ -4218,7 +4218,7 @@
   "@playInMoonfin": {
     "description": "Button to play available media in Moonfin"
   },
-  "requestedByName": "Begärd av {name}",
+  "requestedByName": "Requested by {name}",
   "@requestedByName": {
     "description": "Label showing who requested media",
     "placeholders": {
@@ -4243,7 +4243,7 @@
   "@recommendations": {
     "description": "Section title for recommended media"
   },
-  "cancelRequestForTitle": "Vill du avbryta begäran om \"{title}\"?",
+  "cancelRequestForTitle": "Cancel request for \"{title}\"?",
   "@cancelRequestForTitle": {
     "description": "Confirmation message for single request cancellation",
     "placeholders": {
@@ -4252,7 +4252,7 @@
       }
     }
   },
-  "cancelCountRequestsForTitle": "Vill du avbryta {count}-förfrågningar för \"{title}\"?",
+  "cancelCountRequestsForTitle": "Cancel {count} requests for \"{title}\"?",
   "@cancelCountRequestsForTitle": {
     "description": "Confirmation message for multiple request cancellation",
     "placeholders": {
@@ -4285,7 +4285,7 @@
       }
     }
   },
-  "revenueAmount": "Intäkt: ${amount}",
+  "revenueAmount": "Revenue: ${amount}",
   "@revenueAmount": {
     "description": "Movie revenue display",
     "placeholders": {
@@ -4306,7 +4306,7 @@
       }
     }
   },
-  "requestSeriesOrMovie": "Begär {type}",
+  "requestSeriesOrMovie": "Request {type}",
   "@requestSeriesOrMovie": {
     "description": "Bottom sheet title for requesting media",
     "placeholders": {
@@ -4355,7 +4355,7 @@
   "@crewSection": {
     "description": "Section title for crew credits"
   },
-  "ageValue": "ålder {age}",
+  "ageValue": "age {age}",
   "@ageValue": {
     "description": "Person age display",
     "placeholders": {
@@ -4465,7 +4465,7 @@
   "adminMediaOverview": "Mediaöversikt",
   "adminMediaTotalsError": "Det gick inte att ladda serverns mediatotal.",
   "adminMediaOverviewSubtitle": "En snabb läsning om hur mycket innehåll som finns på denna server.",
-  "adminPluginUpdatesAvailable": "Pluginuppdateringar tillgängliga: {count}",
+  "adminPluginUpdatesAvailable": "Plugin updates available: {count}",
   "@adminPluginUpdatesAvailable": {
     "placeholders": {
       "count": {
@@ -4473,7 +4473,7 @@
       }
     }
   },
-  "adminPluginsRequiringRestart": "Plugins som kräver omstart: {count}",
+  "adminPluginsRequiringRestart": "Plugins requiring restart: {count}",
   "@adminPluginsRequiringRestart": {
     "placeholders": {
       "count": {
@@ -4481,7 +4481,7 @@
       }
     }
   },
-  "adminFailedScheduledTasks": "Misslyckade schemalagda uppgifter: {count}",
+  "adminFailedScheduledTasks": "Failed scheduled tasks: {count}",
   "@adminFailedScheduledTasks": {
     "placeholders": {
       "count": {
@@ -4489,7 +4489,7 @@
       }
     }
   },
-  "adminRecentAlertEntries": "Senaste varnings-/felposter: {count}",
+  "adminRecentAlertEntries": "Recent warning/error entries: {count}",
   "@adminRecentAlertEntries": {
     "placeholders": {
       "count": {
@@ -4515,7 +4515,7 @@
   "adminShutdownServer": "Stäng av server",
   "adminScanLibraries": "Skanna bibliotek",
   "adminLibraryScanStarted": "Biblioteksskanning startade",
-  "errorGeneric": "Fel: {error}",
+  "errorGeneric": "Error: {error}",
   "@errorGeneric": {
     "placeholders": {
       "error": {
@@ -4530,7 +4530,7 @@
   "adminNoActiveSessions": "Inga aktiva sessioner",
   "adminRecentActivity": "Senaste aktivitet",
   "adminNoRecentActivity": "Ingen senaste aktivitet",
-  "adminCommandFailed": "Kommandot misslyckades: {error}",
+  "adminCommandFailed": "Command failed: {error}",
   "@adminCommandFailed": {
     "placeholders": {
       "error": {
@@ -4557,7 +4557,7 @@
   "direct": "Direkt",
   "adminDisconnect": "Koppla från",
   "adminClearDates": "Klara datum",
-  "adminActivityLoadFailed": "Det gick inte att läsa in aktivitetsloggen: {error}",
+  "adminActivityLoadFailed": "Failed to load activity log: {error}",
   "@adminActivityLoadFailed": {
     "placeholders": {
       "error": {
@@ -4569,7 +4569,7 @@
   "adminEditDeviceName": "Redigera enhetsnamn",
   "adminCustomName": "Anpassat namn",
   "adminDeviceNameUpdated": "Enhetsnamnet har uppdaterats",
-  "adminDeviceUpdateFailed": "Det gick inte att uppdatera enheten: {error}",
+  "adminDeviceUpdateFailed": "Failed to update device: {error}",
   "@adminDeviceUpdateFailed": {
     "placeholders": {
       "error": {
@@ -4579,7 +4579,7 @@
   },
   "adminDeleteDevice": "Ta bort enhet",
   "adminDeviceDeleted": "Enheten har tagits bort",
-  "adminDeviceDeleteFailed": "Det gick inte att ta bort enheten: {error}",
+  "adminDeviceDeleteFailed": "Failed to delete device: {error}",
   "@adminDeviceDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4595,7 +4595,7 @@
   "adminNoLibraries": "Inga bibliotek har konfigurerats",
   "adminScanAllLibraries": "Skanna alla bibliotek",
   "adminAddLibrary": "Lägg till bibliotek",
-  "adminScanFailed": "Det gick inte att starta skanningen: {error}",
+  "adminScanFailed": "Failed to start scan: {error}",
   "@adminScanFailed": {
     "placeholders": {
       "error": {
@@ -4605,7 +4605,7 @@
   },
   "adminRenameLibrary": "Byt namn på bibliotek",
   "adminNewName": "Nytt namn",
-  "adminLibraryRenamed": "Biblioteket bytt namn till \"{name}\"",
+  "adminLibraryRenamed": "Library renamed to \"{name}\"",
   "@adminLibraryRenamed": {
     "placeholders": {
       "name": {
@@ -4613,7 +4613,7 @@
       }
     }
   },
-  "adminRenameFailed": "Det gick inte att byta namn på: {error}",
+  "adminRenameFailed": "Failed to rename: {error}",
   "@adminRenameFailed": {
     "placeholders": {
       "error": {
@@ -4622,7 +4622,7 @@
     }
   },
   "adminDeleteLibrary": "Ta bort bibliotek",
-  "adminLibraryDeleted": "Biblioteket \"{name}\" har tagits bort",
+  "adminLibraryDeleted": "Library \"{name}\" deleted",
   "@adminLibraryDeleted": {
     "placeholders": {
       "name": {
@@ -4630,7 +4630,7 @@
       }
     }
   },
-  "adminLibraryDeleteFailed": "Det gick inte att ta bort biblioteket: {error}",
+  "adminLibraryDeleteFailed": "Failed to delete library: {error}",
   "@adminLibraryDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4638,7 +4638,7 @@
       }
     }
   },
-  "adminAddPathFailed": "Det gick inte att lägga till sökväg: {error}",
+  "adminAddPathFailed": "Failed to add path: {error}",
   "@adminAddPathFailed": {
     "placeholders": {
       "error": {
@@ -4647,7 +4647,7 @@
     }
   },
   "adminRemovePath": "Ta bort sökväg",
-  "adminRemovePathConfirm": "Vill du ta bort \"{path}\" från det här biblioteket?",
+  "adminRemovePathConfirm": "Remove \"{path}\" from this library?",
   "@adminRemovePathConfirm": {
     "placeholders": {
       "path": {
@@ -4655,7 +4655,7 @@
       }
     }
   },
-  "adminRemovePathFailed": "Det gick inte att ta bort sökvägen: {error}",
+  "adminRemovePathFailed": "Failed to remove path: {error}",
   "@adminRemovePathFailed": {
     "placeholders": {
       "error": {
@@ -4664,7 +4664,7 @@
     }
   },
   "adminLibraryOptionsSaved": "Biblioteksalternativ har sparats",
-  "adminLibraryOptionsSaveFailed": "Det gick inte att spara alternativ: {error}",
+  "adminLibraryOptionsSaveFailed": "Failed to save options: {error}",
   "@adminLibraryOptionsSaveFailed": {
     "placeholders": {
       "error": {
@@ -4682,7 +4682,7 @@
   "adminMetadataCountryCode": "Metadata landskod",
   "adminMetadataCountryHint": "till exempel USA, DE, FR",
   "adminLibraryNameRequired": "Bibliotekets namn krävs",
-  "adminLibraryCreateFailed": "Det gick inte att skapa bibliotek: {error}",
+  "adminLibraryCreateFailed": "Failed to create library: {error}",
   "@adminLibraryCreateFailed": {
     "placeholders": {
       "error": {
@@ -4697,7 +4697,7 @@
   "paths": "Sökvägar:",
   "adminDisableUser": "Inaktivera användare",
   "adminEnableUser": "Aktivera användare",
-  "adminDisableUserConfirm": "Inaktivera {name}? De kommer inte att kunna logga in.",
+  "adminDisableUserConfirm": "Disable {name}? They will not be able to sign in.",
   "@adminDisableUserConfirm": {
     "placeholders": {
       "name": {
@@ -4705,7 +4705,7 @@
       }
     }
   },
-  "adminEnableUserConfirm": "Aktivera {name}? De kommer att kunna logga in igen.",
+  "adminEnableUserConfirm": "Enable {name}? They will be able to sign in again.",
   "@adminEnableUserConfirm": {
     "placeholders": {
       "name": {
@@ -4713,7 +4713,7 @@
       }
     }
   },
-  "adminUserDisabled": "Användaren \"{name}\" inaktiverad",
+  "adminUserDisabled": "User \"{name}\" disabled",
   "@adminUserDisabled": {
     "placeholders": {
       "name": {
@@ -4721,7 +4721,7 @@
       }
     }
   },
-  "adminUserEnabled": "Användaren \"{name}\" aktiverad",
+  "adminUserEnabled": "User \"{name}\" enabled",
   "@adminUserEnabled": {
     "placeholders": {
       "name": {
@@ -4729,7 +4729,7 @@
       }
     }
   },
-  "adminUserPolicyUpdateFailed": "Det gick inte att uppdatera användarpolicyn: {error}",
+  "adminUserPolicyUpdateFailed": "Failed to update user policy: {error}",
   "@adminUserPolicyUpdateFailed": {
     "placeholders": {
       "error": {
@@ -4741,7 +4741,7 @@
   "adminSearchUsers": "Sök användare",
   "adminEditUser": "Redigera användare",
   "adminAddUser": "Lägg till användare",
-  "adminUserCreateFailed": "Det gick inte att skapa användare: {error}",
+  "adminUserCreateFailed": "Failed to create user: {error}",
   "@adminUserCreateFailed": {
     "placeholders": {
       "error": {
@@ -4754,7 +4754,7 @@
   "adminUsernameRequired": "Användarnamnet får inte vara tomt",
   "adminNoProfileChanges": "Inga profiländringar att spara",
   "adminProfileSaved": "Profilen har sparats",
-  "adminSaveFailed": "Det gick inte att spara: {error}",
+  "adminSaveFailed": "Failed to save: {error}",
   "@adminSaveFailed": {
     "placeholders": {
       "error": {
@@ -4764,7 +4764,7 @@
   },
   "adminPermissionsSaved": "Behörigheterna har sparats",
   "adminPasswordsMismatch": "Lösenord stämmer inte överens",
-  "adminFailed": "Misslyckades: {error}",
+  "adminFailed": "Failed: {error}",
   "@adminFailed": {
     "placeholders": {
       "error": {
@@ -4807,7 +4807,7 @@
   "adminConfirmPassword": "Bekräfta lösenord",
   "adminSetPassword": "Ange lösenord",
   "adminResetPassword": "Återställ lösenord",
-  "adminDeleteUserConfirm": "Är du säker på att du vill ta bort {name}?",
+  "adminDeleteUserConfirm": "Are you sure you want to delete {name}?",
   "@adminDeleteUserConfirm": {
     "placeholders": {
       "name": {
@@ -4815,7 +4815,7 @@
       }
     }
   },
-  "adminUserDeleted": "Användaren \"{name}\" har tagits bort",
+  "adminUserDeleted": "User \"{name}\" deleted",
   "@adminUserDeleted": {
     "placeholders": {
       "name": {
@@ -4823,7 +4823,7 @@
       }
     }
   },
-  "adminUserDeleteFailed": "Det gick inte att ta bort användare: {error}",
+  "adminUserDeleteFailed": "Failed to delete user: {error}",
   "@adminUserDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4836,7 +4836,7 @@
   "adminApiKeyCreated": "API-nyckel skapad",
   "adminApiKeyCreatedNoToken": "Nyckel skapad framgångsrikt. Servern returnerade inte token. Kontrollera serverns API-nycklar.",
   "adminKeyCopied": "Nyckel kopierad till urklipp",
-  "adminApiKeyCreateFailed": "Det gick inte att skapa nyckel: {error}",
+  "adminApiKeyCreateFailed": "Failed to create key: {error}",
   "@adminApiKeyCreateFailed": {
     "placeholders": {
       "error": {
@@ -4846,7 +4846,7 @@
   },
   "adminKeyTokenMissing": "Nyckeltoken saknas från serversvaret",
   "adminRevokeApiKey": "Återkalla API-nyckel",
-  "adminRevokeKeyConfirm": "Återkalla nyckel för {name}?",
+  "adminRevokeKeyConfirm": "Revoke key for {name}?",
   "@adminRevokeKeyConfirm": {
     "placeholders": {
       "name": {
@@ -4855,7 +4855,7 @@
     }
   },
   "adminApiKeyRevoked": "API-nyckel återkallad",
-  "adminApiKeyRevokeFailed": "Det gick inte att återkalla nyckel: {error}",
+  "adminApiKeyRevokeFailed": "Failed to revoke key: {error}",
   "@adminApiKeyRevokeFailed": {
     "placeholders": {
       "error": {
@@ -4868,7 +4868,7 @@
   "adminNoApiKeys": "Inga API-nycklar hittades",
   "adminCreatingBackup": "Skapar säkerhetskopia...",
   "adminBackupCreated": "Säkerhetskopieringen har skapats",
-  "adminBackupCreateFailed": "Det gick inte att skapa säkerhetskopia: {error}",
+  "adminBackupCreateFailed": "Failed to create backup: {error}",
   "@adminBackupCreateFailed": {
     "placeholders": {
       "error": {
@@ -4885,7 +4885,7 @@
       }
     }
   },
-  "adminManifestLoadFailed": "Det gick inte att läsa in manifestet: {error}",
+  "adminManifestLoadFailed": "Failed to load manifest: {error}",
   "@adminManifestLoadFailed": {
     "placeholders": {
       "error": {
@@ -4895,7 +4895,7 @@
   },
   "adminConfirmRestore": "Bekräfta återställning",
   "adminRestoringBackup": "Återställer säkerhetskopian...",
-  "adminRestoreFailed": "Det gick inte att återställa säkerhetskopian: {error}",
+  "adminRestoreFailed": "Failed to restore backup: {error}",
   "@adminRestoreFailed": {
     "placeholders": {
       "error": {
@@ -4912,7 +4912,7 @@
   "adminNoLogFiles": "Inga loggfiler hittades",
   "adminLogCopied": "Loggen har kopierats till urklipp",
   "adminSaveLogFile": "Spara loggfil",
-  "adminSavedTo": "Sparad till {path}",
+  "adminSavedTo": "Saved to {path}",
   "@adminSavedTo": {
     "placeholders": {
       "path": {
@@ -4920,7 +4920,7 @@
       }
     }
   },
-  "adminFileSaveFailed": "Det gick inte att spara filen: {error}",
+  "adminFileSaveFailed": "Failed to save file: {error}",
   "@adminFileSaveFailed": {
     "placeholders": {
       "error": {
@@ -4928,7 +4928,7 @@
       }
     }
   },
-  "adminLogFileLoadFailed": "Det gick inte att ladda {fileName}",
+  "adminLogFileLoadFailed": "Failed to load {fileName}",
   "@adminLogFileLoadFailed": {
     "placeholders": {
       "fileName": {
@@ -4938,7 +4938,7 @@
   },
   "adminSearchInLog": "Sök i logg",
   "adminNoMatchingLines": "Inga matchande linjer",
-  "adminTasksLoadFailed": "Det gick inte att läsa in uppgifter: {error}",
+  "adminTasksLoadFailed": "Failed to load tasks: {error}",
   "@adminTasksLoadFailed": {
     "placeholders": {
       "error": {
@@ -4948,7 +4948,7 @@
   },
   "adminNoScheduledTasks": "Inga schemalagda uppgifter hittades",
   "adminNoTasksMatchFilter": "Inga uppgifter matchar det aktuella filtret",
-  "adminTaskStartFailed": "Det gick inte att starta uppgiften: {error}",
+  "adminTaskStartFailed": "Failed to start task: {error}",
   "@adminTaskStartFailed": {
     "placeholders": {
       "error": {
@@ -4956,7 +4956,7 @@
       }
     }
   },
-  "adminTaskStopFailed": "Det gick inte att stoppa uppgiften: {error}",
+  "adminTaskStopFailed": "Failed to stop task: {error}",
   "@adminTaskStopFailed": {
     "placeholders": {
       "error": {
@@ -4964,7 +4964,7 @@
       }
     }
   },
-  "adminTaskLoadFailed": "Det gick inte att läsa in uppgiften: {error}",
+  "adminTaskLoadFailed": "Failed to load task: {error}",
   "@adminTaskLoadFailed": {
     "placeholders": {
       "error": {
@@ -4973,7 +4973,7 @@
     }
   },
   "adminRunNow": "Kör nu",
-  "adminTriggerRemoveFailed": "Det gick inte att ta bort utlösaren: {error}",
+  "adminTriggerRemoveFailed": "Failed to remove trigger: {error}",
   "@adminTriggerRemoveFailed": {
     "placeholders": {
       "error": {
@@ -4981,7 +4981,7 @@
       }
     }
   },
-  "adminTriggerAddFailed": "Det gick inte att lägga till trigger: {error}",
+  "adminTriggerAddFailed": "Failed to add trigger: {error}",
   "@adminTriggerAddFailed": {
     "placeholders": {
       "error": {
@@ -4996,7 +4996,7 @@
   "adminTriggerType": "Triggertyp",
   "adminTimeLimit": "Tidsgräns (valfritt)",
   "adminNoLimit": "Ingen gräns",
-  "adminHours": "{hours} timme(r)",
+  "adminHours": "{hours} hour(s)",
   "@adminHours": {
     "placeholders": {
       "hours": {
@@ -5006,7 +5006,7 @@
   },
   "adminDayOfWeek": "Veckodag",
   "adminSearchPlugins": "Sök plugins...",
-  "adminPluginToggleFailed": "Det gick inte att växla plugin: {error}",
+  "adminPluginToggleFailed": "Failed to toggle plugin: {error}",
   "@adminPluginToggleFailed": {
     "placeholders": {
       "error": {
@@ -5015,7 +5015,7 @@
     }
   },
   "adminUninstallPlugin": "Avinstallera plugin",
-  "adminUninstallPluginConfirm": "Är du säker på att du vill avinstallera \"{name}\"?",
+  "adminUninstallPluginConfirm": "Are you sure you want to uninstall \"{name}\"?",
   "@adminUninstallPluginConfirm": {
     "placeholders": {
       "name": {
@@ -5023,7 +5023,7 @@
       }
     }
   },
-  "adminPluginUninstallFailed": "Det gick inte att avinstallera plugin: {error}",
+  "adminPluginUninstallFailed": "Failed to uninstall plugin: {error}",
   "@adminPluginUninstallFailed": {
     "placeholders": {
       "error": {
@@ -5031,7 +5031,7 @@
       }
     }
   },
-  "adminPackageInstallFailed": "Det gick inte att installera paketet: {error}",
+  "adminPackageInstallFailed": "Failed to install package: {error}",
   "@adminPackageInstallFailed": {
     "placeholders": {
       "error": {
@@ -5039,7 +5039,7 @@
       }
     }
   },
-  "adminPluginUpdateFailed": "Det gick inte att installera uppdateringen: {error}",
+  "adminPluginUpdateFailed": "Failed to install update: {error}",
   "@adminPluginUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5047,7 +5047,7 @@
       }
     }
   },
-  "adminPluginsLoadFailed": "Det gick inte att ladda plugins: {error}",
+  "adminPluginsLoadFailed": "Failed to load plugins: {error}",
   "@adminPluginsLoadFailed": {
     "placeholders": {
       "error": {
@@ -5057,7 +5057,7 @@
   },
   "adminNoPluginsMatchSearch": "Inga plugins matchar din sökning",
   "adminNoPluginsInstalled": "Inga plugins installerade",
-  "adminInstallUpdate": "Installera uppdatering (v{version})",
+  "adminInstallUpdate": "Install update (v{version})",
   "@adminInstallUpdate": {
     "placeholders": {
       "version": {
@@ -5065,7 +5065,7 @@
       }
     }
   },
-  "adminCatalogLoadFailed": "Det gick inte att ladda katalogen: {error}",
+  "adminCatalogLoadFailed": "Failed to load catalog: {error}",
   "@adminCatalogLoadFailed": {
     "placeholders": {
       "error": {
@@ -5078,7 +5078,7 @@
   "adminExperimentalIntegration": "Experimentell integration",
   "adminExperimentalWarning": "Integrering av plugininställningar är fortfarande experimentell. Vissa inställningssidor kanske inte återges korrekt.",
   "continueAction": "Fortsätta",
-  "adminPluginRemoveAfterRestart": "\"{name}\" kommer att tas bort efter omstart av servern",
+  "adminPluginRemoveAfterRestart": "\"{name}\" will be removed after server restart",
   "@adminPluginRemoveAfterRestart": {
     "placeholders": {
       "name": {
@@ -5086,7 +5086,7 @@
       }
     }
   },
-  "adminUninstallFailed": "Det gick inte att avinstallera: {error}",
+  "adminUninstallFailed": "Failed to uninstall: {error}",
   "@adminUninstallFailed": {
     "placeholders": {
       "error": {
@@ -5094,7 +5094,7 @@
       }
     }
   },
-  "adminPluginUpdating": "Uppdaterar \"{name}\" till v{version}...",
+  "adminPluginUpdating": "Updating \"{name}\" to v{version}...",
   "@adminPluginUpdating": {
     "placeholders": {
       "name": {
@@ -5106,7 +5106,7 @@
     }
   },
   "adminMissingAuthToken": "Det gick inte att öppna inställningarna: autentiseringstoken saknas.",
-  "adminPluginLoadFailed": "Det gick inte att ladda plugin: {error}",
+  "adminPluginLoadFailed": "Failed to load plugin: {error}",
   "@adminPluginLoadFailed": {
     "placeholders": {
       "error": {
@@ -5128,7 +5128,7 @@
   "adminRevisionHistory": "Revisionshistorik",
   "adminNoChangelog": "Ingen ändringslogg tillgänglig.",
   "adminRemoveRepository": "Ta bort repository",
-  "adminRemoveRepositoryConfirm": "Är du säker på att du vill ta bort \"{name}\"?",
+  "adminRemoveRepositoryConfirm": "Are you sure you want to remove \"{name}\"?",
   "@adminRemoveRepositoryConfirm": {
     "placeholders": {
       "name": {
@@ -5136,7 +5136,7 @@
       }
     }
   },
-  "adminRepositoriesSaveFailed": "Det gick inte att spara förråd: {error}",
+  "adminRepositoriesSaveFailed": "Failed to save repositories: {error}",
   "@adminRepositoriesSaveFailed": {
     "placeholders": {
       "error": {
@@ -5144,7 +5144,7 @@
       }
     }
   },
-  "adminRepositoriesLoadFailed": "Det gick inte att ladda arkiv: {error}",
+  "adminRepositoriesLoadFailed": "Failed to load repositories: {error}",
   "@adminRepositoriesLoadFailed": {
     "placeholders": {
       "error": {
@@ -5156,7 +5156,7 @@
   "adminRepositoryUrl": "Repository URL",
   "adminAddEntry": "Lägg till post",
   "adminInvalidUrl": "Ogiltig URL",
-  "adminPluginSettingsLoadFailed": "Det gick inte att ladda plugin-inställningarna: {error}",
+  "adminPluginSettingsLoadFailed": "Unable to load plugin settings: {error}",
   "@adminPluginSettingsLoadFailed": {
     "placeholders": {
       "error": {
@@ -5164,7 +5164,7 @@
       }
     }
   },
-  "adminCouldNotOpenUrl": "Kunde inte öppna {uri}",
+  "adminCouldNotOpenUrl": "Could not open {uri}",
   "@adminCouldNotOpenUrl": {
     "placeholders": {
       "uri": {
@@ -5257,7 +5257,7 @@
   "blacklist": "Svartlista",
   "notSet": "Inte inställt",
   "adminMetadataSaved": "Metadata har sparats",
-  "adminMetadataLoadFailed": "Det gick inte att läsa in metadata: {error}",
+  "adminMetadataLoadFailed": "Failed to load metadata: {error}",
   "@adminMetadataLoadFailed": {
     "placeholders": {
       "error": {
@@ -5265,7 +5265,7 @@
       }
     }
   },
-  "adminMetadataSaveFailed": "Det gick inte att spara metadata: {error}",
+  "adminMetadataSaveFailed": "Failed to save metadata: {error}",
   "@adminMetadataSaveFailed": {
     "placeholders": {
       "error": {
@@ -5278,7 +5278,7 @@
   "adminReplaceAllMetadata": "Ersätt all metadata",
   "adminReplaceAllImages": "Byt ut alla bilder",
   "adminMetadataRefreshRequested": "Metadatauppdatering har begärts",
-  "adminMetadataRefreshFailed": "Det gick inte att uppdatera metadata: {error}",
+  "adminMetadataRefreshFailed": "Failed to refresh metadata: {error}",
   "@adminMetadataRefreshFailed": {
     "placeholders": {
       "error": {
@@ -5290,7 +5290,7 @@
   "adminNoRemoteMatches": "Inga fjärrmatchningar hittades",
   "adminRemoteResults": "Fjärrresultat",
   "adminRemoteMetadataApplied": "Fjärrmetadata tillämpas",
-  "adminRemoteSearchFailed": "Fjärrsökning misslyckades: {error}",
+  "adminRemoteSearchFailed": "Remote search failed: {error}",
   "@adminRemoteSearchFailed": {
     "placeholders": {
       "error": {
@@ -5301,7 +5301,7 @@
   "adminUpdateContentType": "Uppdatera innehållstyp",
   "adminContentType": "Innehållstyp",
   "adminContentTypeUpdated": "Innehållstyp uppdaterad",
-  "adminContentTypeUpdateFailed": "Det gick inte att uppdatera innehållstypen: {error}",
+  "adminContentTypeUpdateFailed": "Failed to update content type: {error}",
   "@adminContentTypeUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5312,7 +5312,7 @@
   "adminMetadataEditorLoadFailed": "Det gick inte att läsa in metadataredigeraren",
   "adminNoPeopleEntries": "Inga personer inlägg",
   "adminNoExternalIds": "Inga externa ID:n är tillgängliga",
-  "adminImageUpdated": "{imageType} bild uppdaterad",
+  "adminImageUpdated": "{imageType} image updated",
   "@adminImageUpdated": {
     "placeholders": {
       "imageType": {
@@ -5320,7 +5320,7 @@
       }
     }
   },
-  "adminImageDownloadFailed": "Det gick inte att ladda ner bilden: {error}",
+  "adminImageDownloadFailed": "Failed to download image: {error}",
   "@adminImageDownloadFailed": {
     "placeholders": {
       "error": {
@@ -5330,7 +5330,7 @@
   },
   "adminUnsupportedImageFormat": "Bildformat som inte stöds",
   "adminImageReadFailed": "Det gick inte att läsa den valda bilden",
-  "adminImageUploaded": "{imageType} bild uppladdad",
+  "adminImageUploaded": "{imageType} image uploaded",
   "@adminImageUploaded": {
     "placeholders": {
       "imageType": {
@@ -5338,7 +5338,7 @@
       }
     }
   },
-  "adminImageUploadFailed": "Det gick inte att ladda upp bilden: {error}",
+  "adminImageUploadFailed": "Failed to upload image: {error}",
   "@adminImageUploadFailed": {
     "placeholders": {
       "error": {
@@ -5346,7 +5346,7 @@
       }
     }
   },
-  "adminDeleteImage": "Ta bort {imageType} bild",
+  "adminDeleteImage": "Delete {imageType} image",
   "@adminDeleteImage": {
     "placeholders": {
       "imageType": {
@@ -5354,7 +5354,7 @@
       }
     }
   },
-  "adminImageDeleted": "{imageType} bild raderad",
+  "adminImageDeleted": "{imageType} image deleted",
   "@adminImageDeleted": {
     "placeholders": {
       "imageType": {
@@ -5362,7 +5362,7 @@
       }
     }
   },
-  "adminImageDeleteFailed": "Det gick inte att ta bort bilden: {error}",
+  "adminImageDeleteFailed": "Failed to delete image: {error}",
   "@adminImageDeleteFailed": {
     "placeholders": {
       "error": {
@@ -5372,7 +5372,7 @@
   },
   "adminAllProviders": "Alla leverantörer",
   "adminNoRemoteImages": "Inga fjärrbilder hittades",
-  "adminTunerDiscoveryFailed": "Tuner upptäckt misslyckades: {error}",
+  "adminTunerDiscoveryFailed": "Tuner discovery failed: {error}",
   "@adminTunerDiscoveryFailed": {
     "placeholders": {
       "error": {
@@ -5386,7 +5386,7 @@
   "adminUrlPath": "URL / sökväg",
   "adminNameOptional": "Namn (valfritt)",
   "adminTunerAdded": "Tuner tillagd",
-  "adminTunerAddFailed": "Det gick inte att lägga till tuner: {error}",
+  "adminTunerAddFailed": "Failed to add tuner: {error}",
   "@adminTunerAddFailed": {
     "placeholders": {
       "error": {
@@ -5400,7 +5400,7 @@
   "adminUsernameOptional": "Användarnamn (valfritt)",
   "adminRefreshInterval": "Uppdateringsintervall (timmar)",
   "adminProviderAdded": "Leverantör har lagts till",
-  "adminProviderAddFailed": "Det gick inte att lägga till leverantör: {error}",
+  "adminProviderAddFailed": "Failed to add provider: {error}",
   "@adminProviderAddFailed": {
     "placeholders": {
       "error": {
@@ -5408,7 +5408,7 @@
       }
     }
   },
-  "adminTunerRemoveFailed": "Det gick inte att ta bort tunern: {error}",
+  "adminTunerRemoveFailed": "Failed to remove tuner: {error}",
   "@adminTunerRemoveFailed": {
     "placeholders": {
       "error": {
@@ -5417,7 +5417,7 @@
     }
   },
   "adminTunerResetRequested": "Tuneråterställning begärd",
-  "adminTunerResetFailed": "Det gick inte att återställa tunern: {error}",
+  "adminTunerResetFailed": "Failed to reset tuner: {error}",
   "@adminTunerResetFailed": {
     "placeholders": {
       "error": {
@@ -5425,7 +5425,7 @@
       }
     }
   },
-  "adminProviderRemoveFailed": "Det gick inte att ta bort leverantör: {error}",
+  "adminProviderRemoveFailed": "Failed to remove provider: {error}",
   "@adminProviderRemoveFailed": {
     "placeholders": {
       "error": {
@@ -5439,7 +5439,7 @@
   "adminRecordingPath": "Inspelningsväg",
   "adminSeriesRecordingPath": "Serieinspelningsväg",
   "adminRecordingSettingsSaved": "Inspelningsinställningar sparade",
-  "adminSettingsSaveFailed": "Det gick inte att spara inställningarna: {error}",
+  "adminSettingsSaveFailed": "Failed to save settings: {error}",
   "@adminSettingsSaveFailed": {
     "placeholders": {
       "error": {
@@ -5450,7 +5450,7 @@
   "adminSetChannelMappings": "Ställ in kanalmappningar",
   "adminMappingJson": "Kartläggning av JSON",
   "adminChannelMappingsUpdated": "Kanalmappningar har uppdaterats",
-  "adminMappingsUpdateFailed": "Det gick inte att uppdatera mappningar: {error}",
+  "adminMappingsUpdateFailed": "Failed to update mappings: {error}",
   "@adminMappingsUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5464,7 +5464,7 @@
   "adminGuideProviders": "Guide leverantörer",
   "adminAddProvider": "Lägg till leverantör",
   "adminNoListingProviders": "Inga listningsleverantörer har konfigurerats",
-  "adminRecordingPathDisplay": "Inspelningsväg: {path}",
+  "adminRecordingPathDisplay": "Recording path: {path}",
   "@adminRecordingPathDisplay": {
     "placeholders": {
       "path": {
@@ -5472,7 +5472,7 @@
       }
     }
   },
-  "adminSeriesPathDisplay": "Seriesökväg: {path}",
+  "adminSeriesPathDisplay": "Series path: {path}",
   "@adminSeriesPathDisplay": {
     "placeholders": {
       "path": {
@@ -5480,7 +5480,7 @@
       }
     }
   },
-  "adminPrePaddingDisplay": "Förstoppning: {minutes} min",
+  "adminPrePaddingDisplay": "Pre-padding: {minutes} min",
   "@adminPrePaddingDisplay": {
     "placeholders": {
       "minutes": {
@@ -5488,7 +5488,7 @@
       }
     }
   },
-  "adminPostPaddingDisplay": "Efterstoppning: {minutes} min",
+  "adminPostPaddingDisplay": "Post-padding: {minutes} min",
   "@adminPostPaddingDisplay": {
     "placeholders": {
       "minutes": {
@@ -5504,7 +5504,7 @@
   "adminRestoreWarning1": "Återställning kommer att ersätta ALLA aktuella serverdata med backupdata.",
   "adminRestoreWarning2": "Aktuella serverinställningar, användare och biblioteksdata kommer att skrivas över.",
   "adminRestoreWarning3": "Servern kommer att starta om efter återställning.",
-  "adminRestoreConfirmMessage": "Återställa säkerhetskopian {name} nu?",
+  "adminRestoreConfirmMessage": "Restore backup {name} now?",
   "@adminRestoreConfirmMessage": {
     "placeholders": {
       "name": {
@@ -5525,7 +5525,7 @@
   "adminLogsNewestFirst": "Nyaste först",
   "adminLogsOldestFirst": "Äldst först",
   "adminLogsJustNow": "Just nu",
-  "adminLogsMinutesAgo": "{minutes}m sedan",
+  "adminLogsMinutesAgo": "{minutes}m ago",
   "@adminLogsMinutesAgo": {
     "placeholders": {
       "minutes": {
@@ -5533,7 +5533,7 @@
       }
     }
   },
-  "adminLogsHoursAgo": "{hours}h sedan",
+  "adminLogsHoursAgo": "{hours}h ago",
   "@adminLogsHoursAgo": {
     "placeholders": {
       "hours": {
@@ -5541,7 +5541,7 @@
       }
     }
   },
-  "adminLogsDaysAgo": "{days}d sedan",
+  "adminLogsDaysAgo": "{days}d ago",
   "@adminLogsDaysAgo": {
     "placeholders": {
       "days": {
@@ -5549,7 +5549,7 @@
       }
     }
   },
-  "adminLogViewerLoadFailed": "Det gick inte att ladda {fileName}",
+  "adminLogViewerLoadFailed": "Failed to load {fileName}",
   "@adminLogViewerLoadFailed": {
     "placeholders": {
       "fileName": {
@@ -5557,7 +5557,7 @@
       }
     }
   },
-  "adminLogViewerMatches": "{count} matchar",
+  "adminLogViewerMatches": "{count} matches",
   "@adminLogViewerMatches": {
     "placeholders": {
       "count": {
@@ -5600,7 +5600,7 @@
   "adminMetadataImageThumb": "Tumme",
   "adminMetadataRecursive": "Rekursiv",
   "adminMetadataProvider": "Leverantör",
-  "adminMetadataImageUpdated": "{imageType} bild uppdaterad",
+  "adminMetadataImageUpdated": "{imageType} image updated",
   "@adminMetadataImageUpdated": {
     "placeholders": {
       "imageType": {
@@ -5608,7 +5608,7 @@
       }
     }
   },
-  "adminMetadataImageUploaded": "{imageType} bild uppladdad",
+  "adminMetadataImageUploaded": "{imageType} image uploaded",
   "@adminMetadataImageUploaded": {
     "placeholders": {
       "imageType": {
@@ -5616,7 +5616,7 @@
       }
     }
   },
-  "adminMetadataImageDeleted": "{imageType} bild raderad",
+  "adminMetadataImageDeleted": "{imageType} image deleted",
   "@adminMetadataImageDeleted": {
     "placeholders": {
       "imageType": {
@@ -5624,7 +5624,7 @@
       }
     }
   },
-  "adminMetadataImageDownloadFailed": "Det gick inte att ladda ner bilden: {error}",
+  "adminMetadataImageDownloadFailed": "Failed to download image: {error}",
   "@adminMetadataImageDownloadFailed": {
     "placeholders": {
       "error": {
@@ -5633,7 +5633,7 @@
     }
   },
   "adminMetadataImageReadFailed": "Det gick inte att läsa den valda bilden",
-  "adminMetadataImageUploadFailed": "Det gick inte att ladda upp bilden: {error}",
+  "adminMetadataImageUploadFailed": "Failed to upload image: {error}",
   "@adminMetadataImageUploadFailed": {
     "placeholders": {
       "error": {
@@ -5641,7 +5641,7 @@
       }
     }
   },
-  "adminMetadataDeleteImageTitle": "Ta bort {imageType} bild",
+  "adminMetadataDeleteImageTitle": "Delete {imageType} image",
   "@adminMetadataDeleteImageTitle": {
     "placeholders": {
       "imageType": {
@@ -5650,7 +5650,7 @@
     }
   },
   "adminMetadataDeleteImageContent": "Detta tar bort den aktuella bilden från objektet.",
-  "adminMetadataImageDeleteFailed": "Det gick inte att ta bort bilden: {error}",
+  "adminMetadataImageDeleteFailed": "Failed to delete image: {error}",
   "@adminMetadataImageDeleteFailed": {
     "placeholders": {
       "error": {
@@ -5658,7 +5658,7 @@
       }
     }
   },
-  "adminMetadataChooseImage": "Välj bild {imageType}",
+  "adminMetadataChooseImage": "Choose {imageType} image",
   "@adminMetadataChooseImage": {
     "placeholders": {
       "imageType": {
@@ -5675,7 +5675,7 @@
   "adminPluginsRestart": "Starta om",
   "adminPluginsNoSearchResults": "Inga plugins matchar din sökning",
   "adminPluginsNoneInstalled": "Inga plugins installerade",
-  "adminPluginsUpdateAvailable": "Uppdatering tillgänglig: v{version}",
+  "adminPluginsUpdateAvailable": "Update available: v{version}",
   "@adminPluginsUpdateAvailable": {
     "placeholders": {
       "version": {
@@ -5689,7 +5689,7 @@
   "adminPluginsEnable": "Aktivera",
   "adminPluginsDisable": "Inaktivera",
   "adminPluginsInstallUpdate": "Installera uppdatering",
-  "adminPluginsInstallUpdateVersioned": "Installera uppdatering (v{version})",
+  "adminPluginsInstallUpdateVersioned": "Install update (v{version})",
   "@adminPluginsInstallUpdateVersioned": {
     "placeholders": {
       "version": {
@@ -5699,7 +5699,7 @@
   },
   "adminPluginsCatalogNoSearchResults": "Inga paket matchar din sökning",
   "adminPluginsCatalogEmpty": "Inga paket tillgängliga",
-  "adminPluginsInstalling": "\"{name}\" håller på att installeras...",
+  "adminPluginsInstalling": "\"{name}\" is being installed...",
   "@adminPluginsInstalling": {
     "placeholders": {
       "name": {
@@ -5711,7 +5711,7 @@
   "adminPluginDetailExperimentalContent": "Integrering av plugininställningar är fortfarande experimentell. Vissa fält eller layouter kanske inte återges korrekt ännu.",
   "adminPluginDetailToggle404": "Det gick inte att växla plugin. Servern kunde inte hitta denna plugin-version. Prova att uppdatera plugins och försök sedan igen.",
   "adminPluginDetailToggleDioError": "Det gick inte att växla plugin. Kontrollera serverloggarna för detaljer.",
-  "adminPluginDetailSettingsTitle": "{name} Inställningar",
+  "adminPluginDetailSettingsTitle": "{name} Settings",
   "@adminPluginDetailSettingsTitle": {
     "placeholders": {
       "name": {
@@ -5729,7 +5729,7 @@
   "adminPluginDetailMalfunctioned": "Denna plugin har inte fungerat och kanske inte fungerar korrekt.",
   "adminPluginDetailNotSupported": "Denna plugin stöds inte av den aktuella serverversionen.",
   "adminPluginDetailSuperseded": "Detta plugin har ersatts av en nyare version.",
-  "adminReposLoadFailed": "Det gick inte att ladda arkiv: {error}",
+  "adminReposLoadFailed": "Failed to load repositories: {error}",
   "@adminReposLoadFailed": {
     "placeholders": {
       "error": {
@@ -5738,7 +5738,7 @@
     }
   },
   "adminReposRemoveTitle": "Ta bort repository",
-  "adminReposRemoveConfirm": "Är du säker på att du vill ta bort \"{name}\"?",
+  "adminReposRemoveConfirm": "Are you sure you want to remove \"{name}\"?",
   "@adminReposRemoveConfirm": {
     "placeholders": {
       "name": {
@@ -5747,7 +5747,7 @@
     }
   },
   "adminReposRemove": "Ta bort",
-  "adminReposSaveFailed": "Det gick inte att spara förråd: {error}",
+  "adminReposSaveFailed": "Failed to save repositories: {error}",
   "@adminReposSaveFailed": {
     "placeholders": {
       "error": {
@@ -5841,7 +5841,7 @@
   "adminTaskDetailEnded": "Avslutade",
   "adminTaskDetailDuration": "Varaktighet",
   "adminTaskDetailErrorLabel": "Fel:",
-  "adminTaskTriggerDaily": "Dagligen på {time}",
+  "adminTaskTriggerDaily": "Daily at {time}",
   "@adminTaskTriggerDaily": {
     "placeholders": {
       "time": {
@@ -5849,7 +5849,7 @@
       }
     }
   },
-  "adminTaskTriggerWeekly": "Varje {day} vid {time}",
+  "adminTaskTriggerWeekly": "Every {day} at {time}",
   "@adminTaskTriggerWeekly": {
     "placeholders": {
       "day": {
@@ -5860,7 +5860,7 @@
       }
     }
   },
-  "adminTaskTriggerInterval": "Varje {duration}",
+  "adminTaskTriggerInterval": "Every {duration}",
   "@adminTaskTriggerInterval": {
     "placeholders": {
       "duration": {
@@ -5893,7 +5893,7 @@
   "adminActivityToday": "I dag",
   "adminActivityYesterday": "I går",
   "adminActivityOlder": "Äldre",
-  "adminActivityDaysAgo": "{days}d sedan",
+  "adminActivityDaysAgo": "{days}d ago",
   "@adminActivityDaysAgo": {
     "placeholders": {
       "days": {
@@ -5901,7 +5901,7 @@
       }
     }
   },
-  "adminActivityHoursAgo": "{hours}h sedan",
+  "adminActivityHoursAgo": "{hours}h ago",
   "@adminActivityHoursAgo": {
     "placeholders": {
       "hours": {
@@ -5909,7 +5909,7 @@
       }
     }
   },
-  "adminActivityMinutesAgo": "{minutes}m sedan",
+  "adminActivityMinutesAgo": "{minutes}m ago",
   "@adminActivityMinutesAgo": {
     "placeholders": {
       "minutes": {
@@ -5981,7 +5981,7 @@
   "adminTrickplayWidthResolutions": "Breddupplösningar",
   "adminMetadataDefault": "Standard",
   "adminMetadataContentTypeUpdated": "Innehållstyp uppdaterad",
-  "adminMetadataContentTypeFailed": "Det gick inte att uppdatera innehållstypen: {error}",
+  "adminMetadataContentTypeFailed": "Failed to update content type: {error}",
   "@adminMetadataContentTypeFailed": {
     "placeholders": {
       "error": {
@@ -5995,7 +5995,7 @@
   "adminGeneralServerName": "Servernamn",
   "adminSettingsLoadFailed": "Det gick inte att läsa in inställningarna",
   "adminDiscover": "Upptäcka",
-  "adminChannelMappingsUpdateFailed": "Det gick inte att uppdatera mappningar: {error}",
+  "adminChannelMappingsUpdateFailed": "Failed to update mappings: {error}",
   "@adminChannelMappingsUpdateFailed": {
     "placeholders": {
       "error": {
@@ -6003,7 +6003,7 @@
       }
     }
   },
-  "adminTimeLimitDuration": "Tidsgräns: {duration}",
+  "adminTimeLimitDuration": "Time limit: {duration}",
   "@adminTimeLimitDuration": {
     "placeholders": {
       "duration": {
@@ -6029,7 +6029,7 @@
   "castAirPlay": "AirPlay",
   "castDlna": "DLNA",
   "castRemotePlayback": "Fjärruppspelning",
-  "castControlFailed": "Cast-kontrollen misslyckades: {error}",
+  "castControlFailed": "Cast control failed: {error}",
   "@castControlFailed": {
     "placeholders": {
       "error": {
@@ -6037,7 +6037,7 @@
       }
     }
   },
-  "castKindControls": "{kind} Kontroller",
+  "castKindControls": "{kind} Controls",
   "@castKindControls": {
     "placeholders": {
       "kind": {
@@ -6047,7 +6047,7 @@
   },
   "castDeviceVolume": "Enhetsvolym",
   "castVolumeUnavailable": "Inte tillgänglig",
-  "castStopKind": "Stoppa {kind}",
+  "castStopKind": "Stop {kind}",
   "@castStopKind": {
     "placeholders": {
       "kind": {
@@ -6061,7 +6061,7 @@
   "pinSetTitle": "Ställ in PIN-kod",
   "pinEnterTitle": "Ange PIN-kod",
   "pinReenterToConfirm": "Ange din PIN-kod igen för att bekräfta",
-  "pinEnterNDigit": "Ange en {length}-siffrig PIN-kod",
+  "pinEnterNDigit": "Enter a {length}-digit PIN",
   "@pinEnterNDigit": {
     "placeholders": {
       "length": {
@@ -6069,7 +6069,7 @@
       }
     }
   },
-  "pinEnterYourNDigit": "Ange din {length}-siffriga PIN-kod",
+  "pinEnterYourNDigit": "Enter your {length}-digit PIN",
   "@pinEnterYourNDigit": {
     "placeholders": {
       "length": {
@@ -6089,7 +6089,7 @@
   "quickConnectDisabled": "Quick Connect är inaktiverat på den här servern.",
   "quickConnectForbidden": "Ditt konto kan inte godkänna denna Quick Connect-begäran.",
   "quickConnectNotFound": "Snabbanslutningskoden hittades inte. Prova en ny kod.",
-  "quickConnectFailedWithMessage": "Snabbanslutningen misslyckades: {message}",
+  "quickConnectFailedWithMessage": "Quick Connect failed: {message}",
   "@quickConnectFailedWithMessage": {
     "placeholders": {
       "message": {
@@ -6099,7 +6099,7 @@
   },
   "quickConnectEnterCode": "Ange kod",
   "quickConnectAuthorize": "Godkänna",
-  "remoteCommandFailed": "Kommandot misslyckades: {error}",
+  "remoteCommandFailed": "Command failed: {error}",
   "@remoteCommandFailed": {
     "placeholders": {
       "error": {
@@ -6115,7 +6115,7 @@
   "unknownItem": "Okänd",
   "remoteNothingPlaying": "Ingenting spelas på den här sessionen",
   "castingStarted": "Castningen startade på den valda enheten",
-  "castingFailed": "Det gick inte att börja casta: {error}",
+  "castingFailed": "Failed to start casting: {error}",
   "@castingFailed": {
     "placeholders": {
       "error": {
@@ -6136,7 +6136,7 @@
   "trackActionAddToFavorites": "Lägg till i Favoriter",
   "trackActionGoToAlbum": "Gå till Album",
   "trackActionGoToArtist": "Gå till Artist",
-  "trackActionDownloading": "Laddar ned {name}...",
+  "trackActionDownloading": "Downloading {name}...",
   "@trackActionDownloading": {
     "placeholders": {
       "name": {
@@ -6171,7 +6171,7 @@
   "stillWatchingContent": "Uppspelningen har pausats. Tittar du fortfarande?",
   "stillWatchingStop": "Stopp",
   "stillWatchingContinue": "Fortsätta",
-  "skipSegment": "Hoppa över {segment}",
+  "skipSegment": "Skip {segment}",
   "@skipSegment": {
     "placeholders": {
       "segment": {
@@ -6181,7 +6181,7 @@
   },
   "liveTv": "Direktsänd TV",
   "continueWatchingAndNextUp": "Fortsätt titta och nästa",
-  "downloadingBatchProgress": "Laddar ner {current}/{total} — {fileName}",
+  "downloadingBatchProgress": "Downloading {current}/{total} — {fileName}",
   "@downloadingBatchProgress": {
     "placeholders": {
       "current": {
@@ -6195,7 +6195,7 @@
       }
     }
   },
-  "downloadingFile": "Laddar ner {fileName}",
+  "downloadingFile": "Downloading {fileName}",
   "@downloadingFile": {
     "placeholders": {
       "fileName": {
@@ -6257,7 +6257,7 @@
   "subtitlePreviewText": "Den kvicka bruna räven hoppar över den lata hunden",
   "libraryVisibilityDescription": "Växla hemsidans synlighet per bibliotek. Starta om Moonfin för att ändringarna ska träda i kraft.",
   "sourceCodeUrl": "https://github.com/Moonfin-Client/Mobile-Desktop",
-  "updateAvailableTitle": "v{version} Tillgänglig",
+  "updateAvailableTitle": "v{version} Available",
   "readReleaseNotes": "Läs Release Notes",
   "downloadingUpdate": "Laddar ned uppdatering...",
   "updateDownloadFailed": "Uppdateringsnedladdningen misslyckades. Försök igen.",
@@ -6283,10 +6283,10 @@
   "adminEnableAllDevices": "Aktivera åtkomst till alla enheter",
   "adminEnableAllChannels": "Aktivera åtkomst till alla kanaler",
   "adminResetPasswordWarning": "Detta tar bort lösenordet. Användaren kommer att kunna logga in utan lösenord.",
-  "adminServerReturnedHttp": "Servern returnerade HTTP {status}",
+  "adminServerReturnedHttp": "Server returned HTTP {status}",
   "adminApiKeysTitle": "API-nycklar",
   "adminUnknownApp": "Okänd app",
-  "adminApiKeyTokenCreated": "Token: {token}\\nSkapat: {created}",
+  "adminApiKeyTokenCreated": "Token: {token}\\nCreated: {created}",
   "adminMappingJsonHint": "Exempel: mappar JSON nyttolast",
   "syncPlayDisabledTitle": "SyncPlay inaktiverad",
   "syncPlayDisabledMessage": "Aktivera SyncPlay i Inställningar för att använda synkroniserad uppspelning.",
@@ -6306,7 +6306,7 @@
   "syncPlaySyncCurrentQueueSubtitle": "Byt ut gruppkön med det som spelas lokalt",
   "syncPlayLeaveGroup": "Lämna gruppen",
   "syncPlayGroupQueue": "Gruppkö",
-  "syncPlayQueueItemFallback": "Objekt {index}",
+  "syncPlayQueueItemFallback": "Item {index}",
   "syncPlayPlayNow": "Spela nu",
   "syncPlayCreateNewGroup": "Skapa en ny grupp",
   "syncPlayGroupName": "Gruppnamn",
@@ -6321,11 +6321,11 @@
   "syncPlayStateWaiting": "Väntan",
   "syncPlayStatePaused": "Pausad",
   "syncPlayStatePlaying": "Spelar",
-  "syncPlayUserJoinedGroup": "{userName} gick med i gruppen SyncPlay",
-  "syncPlayUserLeftGroup": "{userName} lämnade gruppen SyncPlay",
+  "syncPlayUserJoinedGroup": "{userName} joined SyncPlay group",
+  "syncPlayUserLeftGroup": "{userName} left SyncPlay group",
   "syncPlayAccessDeniedTitle": "SyncPlay åtkomst nekad",
   "syncPlayAccessDeniedMessage": "Du har inte åtkomst till ett eller flera objekt i den här gruppen SyncPlay. Be gruppägaren att verifiera biblioteksbehörigheter eller välja en annan kö.",
-  "syncPlaySyncingPlaybackToGroup": "Synkronisera uppspelning till {groupName}",
+  "syncPlaySyncingPlaybackToGroup": "Syncing playback to {groupName}",
   "voiceSearchUnavailable": "Röstsökning är inte tillgänglig.",
   "dolbyVisionDirectPlayFailedTitle": "Dolby Vision Direktuppspelning misslyckades",
   "dolbyVisionDirectPlayFailedMessage": "Direktuppspelning kunde inte starta för denna Dolby Vision-ström. Försök att använda serveromkodning igen?",
@@ -6480,7 +6480,7 @@
   "collections": "Samlingar",
   "lastPlayed": "Senast spelade",
   "libraryNameWithServer": "{libraryName} ({serverName})",
-  "latestLibraryName": "Senaste {libraryName}",
+  "latestLibraryName": "Latest {libraryName}",
   "@openLink": {
     "description": "Action label to open a URL externally"
   },
@@ -6753,5 +6753,13 @@
   },
   "@localAccount": {
     "description": "Auth option label for Seerr sign in using local Seerr credentials"
-  }
+  },
+  "seasonalEffectsDescription": "Visuella effekter och säsongsbetonade dekorationer",
+  "mediaSources": "Mediekällor",
+  "behavior": "Beteende",
+  "seconds": "sekunder",
+  "localPreviews": "Lokala förhandsvisningar",
+  "localPreviewsDescription": "Konfigurera förhandsvisningar av trailer, media och ljud.",
+  "mediaPreview": "Medieforhandsvisning",
+  "mediaPreviewDescription": "Spela en 30-sekunders inline-förhandsvisning på fokuserade, svävade eller långtryckta kort"
 }

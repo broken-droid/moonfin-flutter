@@ -12,7 +12,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get appTitle => 'Moonfin';
 
   @override
-  String get signIn => 'Sign In';
+  String get signIn => 'Kirjaudu sisään';
 
   @override
   String connectingToServer(String serverName) {
@@ -20,29 +20,32 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get quickConnect => 'Quick Connect';
+  String get quickConnect => 'Pikayhteys';
 
   @override
-  String get password => 'Password';
+  String get password => 'Salasana';
 
   @override
-  String get username => 'Username';
+  String get username => 'Käyttäjätunnus';
+
+  @override
+  String get email => 'Sähköposti';
 
   @override
   String get quickConnectInstruction =>
-      'Enter this code on your server\'s web dashboard:';
+      'Syötä tämä koodi palvelimesi web-hallintapaneeliin:';
 
   @override
-  String get waitingForAuthorization => 'Waiting for authorization...';
+  String get waitingForAuthorization => 'Odotetaan valtuutusta...';
 
   @override
-  String get back => 'Back';
+  String get back => 'Takaisin';
 
   @override
-  String get serverUnavailable => 'Server is unavailable';
+  String get serverUnavailable => 'Palvelin ei ole käytettävissä';
 
   @override
-  String get loginFailed => 'Login failed';
+  String get loginFailed => 'Kirjautuminen epäonnistui';
 
   @override
   String quickConnectUnavailable(String detail) {
@@ -55,13 +58,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get whosWatching => 'Who\'s watching?';
+  String get whosWatching => 'Kuka katsoo?';
 
   @override
-  String get addUser => 'Add User';
+  String get addUser => 'Lisää käyttäjä';
 
   @override
-  String get selectServer => 'Select Server';
+  String get selectServer => 'Valitse Palvelin';
 
   @override
   String appVersionFooter(String version) {
@@ -69,25 +72,26 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get savedServers => 'Saved Servers';
+  String get savedServers => 'Tallennetut palvelimet';
 
   @override
-  String get discoveredServers => 'Discovered Servers';
+  String get discoveredServers => 'Löydetyt palvelimet';
 
   @override
-  String get noneFound => 'None found';
+  String get noneFound => 'Ei löytynyt';
 
   @override
-  String get unableToConnectToServer => 'Unable to connect to server';
+  String get unableToConnectToServer =>
+      'Ei voida muodostaa yhteyttä palvelimeen';
 
   @override
-  String get addServer => 'Add Server';
+  String get addServer => 'Lisää palvelin';
 
   @override
-  String get embyConnect => 'Emby Connect';
+  String get embyConnect => 'Emby Yhdistä';
 
   @override
-  String get removeServer => 'Remove Server';
+  String get removeServer => 'Poista palvelin';
 
   @override
   String removeServerConfirmation(String serverName) {
@@ -95,99 +99,100 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Peruuttaa';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'Poistaa';
 
   @override
-  String get connectToServer => 'Connect to Server';
+  String get connectToServer => 'Yhdistä palvelimeen';
 
   @override
-  String get serverAddress => 'Server Address';
+  String get serverAddress => 'Palvelimen osoite';
 
   @override
   String get serverAddressHint => 'https://your-server.example.com';
 
   @override
-  String get connect => 'Connect';
+  String get connect => 'Yhdistä';
 
   @override
-  String get secureStorageUnavailable => 'Secure Storage Unavailable';
+  String get secureStorageUnavailable =>
+      'Suojattu tallennustila ei ole käytettävissä';
 
   @override
   String get secureStorageUnavailableMessage =>
-      'Moonfin could not access your system keyring. Login can continue, but secure token storage may be unavailable until the keyring is unlocked.';
+      'Moonfin ei voinut käyttää järjestelmäavaimenperääsi. Kirjautuminen voi jatkua, mutta suojattu tunnuksen tallennus ei välttämättä ole käytettävissä, ennen kuin avaimenperä on avattu.';
 
   @override
   String get ok => 'OK';
 
   @override
-  String get settingsAppearanceTheme => 'App Theme';
+  String get settingsAppearanceTheme => 'Sovelluksen teema';
 
   @override
   String get settingsAppearanceThemeSubtitle =>
-      'Switch between Moonfin and Neon Pulse without restarting the app';
+      'Vaihda Moonfin ja Neon Pulse välillä käynnistämättä sovellusta uudelleen';
 
   @override
   String get themeMoonfin => 'Moonfin';
 
   @override
   String get themeMoonfinSubtitle =>
-      'Current Moonfin look you\'ve all come to love';
+      'Nykyinen Moonfin look, johon olette kaikki rakastuneet';
 
   @override
-  String get themeNeonPulse => 'Neon Pulse';
+  String get themeNeonPulse => 'Neon pulssi';
 
   @override
   String get themeNeonPulseSubtitle =>
-      'Synthwave styling with magenta glow, cyan text, and stronger chrome contrast';
+      'Synthwave-tyyli magenta hehkulla, syaanilla tekstillä ja vahvemmalla kromikontrastilla';
 
   @override
   String get embyConnectSignInSubtitle =>
-      'Sign in with your Emby Connect account';
+      'Kirjaudu sisään Emby Connect -tililläsi';
 
   @override
-  String get emailOrUsername => 'Email or Username';
+  String get emailOrUsername => 'Sähköposti tai käyttäjätunnus';
 
   @override
-  String get selectAServer => 'Select a Server';
+  String get selectAServer => 'Valitse palvelin';
 
   @override
-  String get tryAgain => 'Try Again';
+  String get tryAgain => 'Yritä uudelleen';
 
   @override
   String get noLinkedServers =>
-      'No servers linked to this Emby Connect account';
+      'Tähän Emby Connect -tiliin ei ole linkitetty palvelimia';
 
   @override
   String get invalidEmbyConnectCredentials =>
-      'Invalid Emby Connect credentials';
+      'Virheelliset Emby Connect -tunnistetiedot';
 
   @override
   String get invalidEmbyConnectLogin =>
-      'Invalid Emby Connect username or password';
+      'Virheellinen Emby Connect -käyttäjätunnus tai salasana';
 
   @override
   String get embyConnectExchangeNotSupported =>
-      'Server does not support Emby Connect exchange';
+      'Palvelin ei tue Emby Connect -vaihtoa';
 
   @override
   String get embyConnectNetworkError =>
-      'Network error while contacting Emby Connect or the selected server';
+      'Verkkovirhe otettaessa yhteyttä Emby Connectiin tai valittuun palvelimeen';
 
   @override
-  String get loadingLinkedServers => 'Loading linked servers...';
+  String get loadingLinkedServers => 'Ladataan linkitettyjä palvelimia...';
 
   @override
-  String get connectingToServerEllipsis => 'Connecting to server...';
+  String get connectingToServerEllipsis => 'Yhdistetään palvelimeen...';
 
   @override
-  String get noReachableAddress => 'No reachable address provided';
+  String get noReachableAddress => 'Yhteysosoitetta ei ole annettu';
 
   @override
   String get invalidServerExchangeResponse =>
-      'Invalid response from server exchange endpoint';
+      'Virheellinen vastaus palvelimen vaihdon päätepisteestä';
 
   @override
   String unableToConnectTo(String target) {
@@ -195,81 +200,81 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get exitApp => 'Exit Moonfin?';
+  String get exitApp => 'Poistutko Moonfinista?';
 
   @override
-  String get exitAppConfirmation => 'Are you sure you want to exit?';
+  String get exitAppConfirmation => 'Haluatko varmasti poistua?';
 
   @override
-  String get exit => 'Exit';
+  String get exit => 'Poistu';
 
   @override
-  String get noHomeRowsLoaded => 'No home rows could be loaded';
+  String get noHomeRowsLoaded => 'Kotirivejä ei voitu ladata';
 
   @override
   String get noHomeRowsHint =>
-      'Try refreshing or reducing active home sections.';
+      'Yritä päivittää tai vähentää aktiivisia kotiosioita.';
 
   @override
-  String get retryHomeRows => 'Retry Home Rows';
+  String get retryHomeRows => 'Yritä kotirivejä uudelleen';
 
   @override
-  String get guide => 'Guide';
+  String get guide => 'Opas';
 
   @override
-  String get recordings => 'Recordings';
+  String get recordings => 'Tallenteet';
 
   @override
-  String get schedule => 'Schedule';
+  String get schedule => 'Ajoittaa';
 
   @override
-  String get series => 'Series';
+  String get series => 'Sarja';
 
   @override
-  String get noItemsFound => 'No items found';
+  String get noItemsFound => 'Kohteita ei löytynyt';
 
   @override
-  String get home => 'Home';
+  String get home => 'Kotiin';
 
   @override
-  String get browseAll => 'Browse All';
+  String get browseAll => 'Selaa kaikkia';
 
   @override
-  String get genres => 'Genres';
+  String get genres => 'Genret';
 
   @override
-  String get collectionPlaceholder => 'Collection items will appear here';
+  String get collectionPlaceholder => 'Kokoelman kohteet näkyvät täällä';
 
   @override
-  String get browseByLetter => 'Browse by Letter';
+  String get browseByLetter => 'Selaa kirjeen mukaan';
 
   @override
   String get alphabeticalBrowsePlaceholder =>
-      'Alphabetical browse will appear here';
+      'Aakkosellinen selaus tulee näkyviin tähän';
 
   @override
-  String get suggestions => 'Suggestions';
+  String get suggestions => 'ehdotuksia';
 
   @override
-  String get suggestionsPlaceholder => 'Suggested items will appear here';
+  String get suggestionsPlaceholder => 'Ehdotetut kohteet näkyvät täällä';
 
   @override
-  String get failedToLoadLibraries => 'Failed to load libraries';
+  String get failedToLoadLibraries => 'Kirjastojen lataaminen epäonnistui';
 
   @override
-  String get noLibrariesFound => 'No libraries found';
+  String get noLibrariesFound => 'Kirjastoja ei löytynyt';
 
   @override
-  String get library => 'Library';
+  String get library => 'Kirjasto';
 
   @override
-  String get displaySettings => 'Display Settings';
+  String get displaySettings => 'Näyttöasetukset';
 
   @override
-  String get allGenres => 'All Genres';
+  String get allGenres => 'Kaikki genret';
 
   @override
-  String get noGenresFound => 'No genres found';
+  String get noGenresFound => 'Genrejä ei löytynyt';
 
   @override
   String failedToLoadFolderError(String error) {
@@ -277,7 +282,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get thisFolderIsEmpty => 'This folder is empty';
+  String get thisFolderIsEmpty => 'Tämä kansio on tyhjä';
 
   @override
   String itemCountLabel(int count) {
@@ -285,16 +290,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadFavorites => 'Failed to load favorites';
+  String get failedToLoadFavorites => 'Suosikkien lataaminen epäonnistui';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Yritä uudelleen';
 
   @override
-  String get noFavoritesYet => 'No favorites yet';
+  String get noFavoritesYet => 'Ei vielä suosikkeja';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Suosikit';
 
   @override
   String totalCountItems(int count) {
@@ -302,40 +307,40 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get continuing => 'Continuing';
+  String get continuing => 'Jatkuu';
 
   @override
-  String get ended => 'Ended';
+  String get ended => 'Päättyi';
 
   @override
-  String get sortAndFilter => 'Sort & Filter';
+  String get sortAndFilter => 'Lajittele & Suodata';
 
   @override
-  String get type => 'Type';
+  String get type => 'Tyyppi';
 
   @override
-  String get sortBy => 'Sort By';
+  String get sortBy => 'Lajitteluperuste';
 
   @override
-  String get display => 'Display';
+  String get display => 'Näyttö';
 
   @override
-  String get imageType => 'Image Type';
+  String get imageType => 'Kuvatyyppi';
 
   @override
-  String get posterSize => 'Poster Size';
+  String get posterSize => 'Julisteen koko';
 
   @override
-  String get small => 'Small';
+  String get small => 'Pieni';
 
   @override
-  String get medium => 'Medium';
+  String get medium => 'Keskikokoinen';
 
   @override
-  String get large => 'Large';
+  String get large => 'Suuri';
 
   @override
-  String get extraLarge => 'Extra Large';
+  String get extraLarge => 'Erittäin suuri';
 
   @override
   String libraryGenresTitle(String name) {
@@ -343,37 +348,38 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get views => 'Views';
+  String get views => 'Näkymät';
 
   @override
-  String get albums => 'Albums';
+  String get albums => 'Albumit';
 
   @override
-  String get albumArtists => 'Album Artists';
+  String get albumArtists => 'Albumin artistit';
 
   @override
-  String get artists => 'Artists';
+  String get artists => 'Taiteilijat';
 
   @override
-  String get bookmarks => 'Bookmarks';
+  String get bookmarks => 'Kirjanmerkit';
 
   @override
-  String get noSavedBookmarks => 'No saved bookmarks for this title yet.';
+  String get noSavedBookmarks =>
+      'Tälle nimikkeelle ei ole vielä tallennettuja kirjanmerkkejä.';
 
   @override
-  String get openBook => 'Open Book';
+  String get openBook => 'Avaa Kirja';
 
   @override
-  String get chapter => 'Chapter';
+  String get chapter => 'Luku';
 
   @override
-  String get page => 'Page';
+  String get page => 'Sivu';
 
   @override
-  String get bookmark => 'Bookmark';
+  String get bookmark => 'Kirjanmerkki';
 
   @override
-  String get justNow => 'Just now';
+  String get justNow => 'Juuri nyt';
 
   @override
   String minutesAgo(int count) {
@@ -391,34 +397,34 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get discoverySubjects => 'Discovery Subjects';
+  String get discoverySubjects => 'Löytöaiheet';
 
   @override
   String get pickDiscoverySubjects =>
-      'Pick which subject feeds to show in Discover.';
+      'Valitse Discoverissa näytettävät aihesyötteet.';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'Käytä';
 
   @override
-  String get openLink => 'Open Link';
+  String get openLink => 'Avaa linkki';
 
   @override
-  String get scanWithYourPhone => 'Scan with your phone';
+  String get scanWithYourPhone => 'Skannaa puhelimellasi';
 
   @override
-  String get audiobookGenres => 'Audiobook Genres';
+  String get audiobookGenres => 'Äänikirjan tyylilajit';
 
   @override
   String get pickAudiobookGenres =>
-      'Pick which genres to show in Audiobook Discover.';
+      'Valitse äänikirja Discoverissa näytettävät tyylilajit.';
 
   @override
-  String get discoverAudiobooks => 'Discover Audiobooks';
+  String get discoverAudiobooks => 'Tutustu äänikirjoihin';
 
   @override
   String get librivoxDescription =>
-      'Popular public domain titles from LibriVox.';
+      'LibriVoxin suosittuja julkisia nimikkeitä.';
 
   @override
   String titlesCount(int count) {
@@ -426,84 +432,85 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get scrollLeft => 'Scroll left';
+  String get scrollLeft => 'Vieritä vasemmalle';
 
   @override
-  String get scrollRight => 'Scroll right';
+  String get scrollRight => 'Vieritä oikealle';
 
   @override
-  String get couldNotLoadGenre => 'Could not load this genre right now.';
+  String get couldNotLoadGenre => 'Tätä genreä ei voitu ladata juuri nyt.';
 
   @override
-  String get continueReading => 'Continue Reading';
+  String get continueReading => 'Jatka lukemista';
 
   @override
-  String get savedHighlights => 'Saved Highlights';
+  String get savedHighlights => 'Tallennetut kohokohdat';
 
   @override
-  String get continueListening => 'Continue Listening';
+  String get continueListening => 'Jatka kuuntelua';
 
   @override
-  String get listen => 'Listen';
+  String get listen => 'Kuunnella';
 
   @override
-  String get resume => 'Resume';
+  String get resume => 'Jatkaa';
 
   @override
-  String get failedToLoadLibrary => 'Failed to load library';
+  String get failedToLoadLibrary => 'Kirjaston lataaminen epäonnistui';
 
   @override
-  String get popularNow => 'Popular Now';
+  String get popularNow => 'Suosittu nyt';
 
   @override
-  String get savedForLater => 'Saved For Later';
+  String get savedForLater => 'Tallennettu myöhempää käyttöä varten';
 
   @override
   String get topListens => 'Top Listens';
 
   @override
-  String get unreadDiscoveries => 'Unread Discoveries';
+  String get unreadDiscoveries => 'Lukemattomat löydöt';
 
   @override
-  String get pickUpAgain => 'Pick Up Again';
+  String get pickUpAgain => 'Poimi uudelleen';
 
   @override
   String get bookHighlightsDescription =>
-      'Your books with highlights, favorites, or reading progress.';
+      'Kirjasi kohokohdista, suosikeista tai lukemisen edistymisestä.';
 
   @override
-  String get handPickedFromLibrary => 'Hand-picked from your library.';
+  String get handPickedFromLibrary => 'Käsin poimittu kirjastostasi.';
 
   @override
   String get handPickedFromListeningQueue =>
-      'Hand-picked from your listening queue.';
+      'Käsin poimittu kuuntelujonostasi.';
 
   @override
   String get booksWithHighlights =>
-      'Books with highlights, favorites, or reading progress.';
+      'Kirjat, joissa on kohokohtia, suosikkeja tai lukemisen edistymistä.';
 
   @override
   String get jumpBackNarration =>
-      'Jump back into narration without hunting for your place.';
+      'Hyppää takaisin selostukseen etsimättä paikkaasi.';
 
   @override
-  String get unreadBooksReady => 'Unread books ready for the next quiet hour.';
+  String get unreadBooksReady =>
+      'Lukemattomat kirjat valmiina seuraavaa hiljaista tuntia varten.';
 
   @override
   String get quickAccessFavorites =>
-      'Quick access to the books you keep coming back to.';
+      'Nopea pääsy kirjoihin, joihin palaat jatkuvasti.';
 
   @override
-  String get searchAudiobooks => 'Search audiobooks';
+  String get searchAudiobooks => 'Etsi äänikirjoja';
 
   @override
-  String get searchYourLibrary => 'Search your library';
+  String get searchYourLibrary => 'Hae kirjastostasi';
 
   @override
-  String get pickUpStory => 'Pick up the story where you left off';
+  String get pickUpStory => 'Jatka tarina siitä mihin jäit';
 
   @override
-  String get savedPlacesChapters => 'Your saved places and unfinished chapters';
+  String get savedPlacesChapters => 'Tallennetut paikat ja keskeneräiset luvut';
 
   @override
   String authorsCount(int count) {
@@ -521,16 +528,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get readyWhenYouAre => 'Ready when you are';
+  String get readyWhenYouAre => 'Valmiina kun olet';
 
   @override
-  String get details => 'Details';
+  String get details => 'Yksityiskohdat';
 
   @override
-  String get listeningRoom => 'Listening Room';
+  String get listeningRoom => 'Kuunteluhuone';
 
   @override
-  String get bookmarksAndProgress => 'Bookmarks & Progress';
+  String get bookmarksAndProgress => 'Kirjanmerkit ja edistyminen';
 
   @override
   String titlesArrangedForBrowsing(int count) {
@@ -538,36 +545,37 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get titles => 'Titles';
+  String get titles => 'Otsikot';
 
   @override
-  String get allTitles => 'All Titles';
+  String get allTitles => 'Kaikki otsikot';
 
   @override
-  String get authors => 'Authors';
+  String get authors => 'Tekijät';
 
   @override
-  String get browseByAuthor => 'Browse By Author';
+  String get browseByAuthor => 'Selaa tekijän mukaan';
 
   @override
-  String get browseByGenre => 'Browse By Genre';
+  String get browseByGenre => 'Selaa genren mukaan';
 
   @override
-  String get discover => 'Discover';
+  String get discover => 'Tutustu';
 
   @override
   String get trendingTitlesOpenLibrary =>
-      'Trending titles by subject from Open Library.';
+      'Nousussa olevat otsikot aiheittain alkaen Open Library.';
 
   @override
-  String get noBookmarkedItems => 'No bookmarked items yet';
+  String get noBookmarkedItems =>
+      'Ei vielä kirjanmerkkeihin merkittyjä kohteita';
 
   @override
   String get nothingMatchesSection =>
-      'Nothing matches this section yet. Try another tab or come back after the library sync finishes.';
+      'Mikään ei vielä vastaa tätä osiota. Kokeile toista välilehteä tai palaa kirjaston synkronoinnin päätyttyä.';
 
   @override
-  String get audiobooks => 'Audiobooks';
+  String get audiobooks => 'Äänikirjat';
 
   @override
   String noLabelFound(String label) {
@@ -575,71 +583,71 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get folder => 'Folder';
+  String get folder => 'Kansio';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'Suodattimet';
 
   @override
-  String get readingStatus => 'Reading Status';
+  String get readingStatus => 'Lukemisen tila';
 
   @override
-  String get playedStatus => 'Played Status';
+  String get playedStatus => 'Pelin tila';
 
   @override
-  String get readStatus => 'Read';
+  String get readStatus => 'Lukea';
 
   @override
-  String get watched => 'Watched';
+  String get watched => 'Katsottu';
 
   @override
-  String get unread => 'Unread';
+  String get unread => 'Lukematon';
 
   @override
-  String get unwatched => 'Unwatched';
+  String get unwatched => 'Katsomaton';
 
   @override
-  String get seriesStatus => 'Series Status';
+  String get seriesStatus => 'Sarjan tila';
 
   @override
-  String get allLibraries => 'All Libraries';
+  String get allLibraries => 'Kaikki kirjastot';
 
   @override
-  String get books => 'Books';
+  String get books => 'Kirjat';
 
   @override
-  String get author => 'Author';
+  String get author => 'Tekijä';
 
   @override
-  String get unknownAuthor => 'Unknown Author';
+  String get unknownAuthor => 'Tuntematon tekijä';
 
   @override
-  String get uncategorized => 'Uncategorized';
+  String get uncategorized => 'Luokittelematon';
 
   @override
-  String get overview => 'Overview';
+  String get overview => 'Yleiskatsaus';
 
   @override
   String get noLibrivoxDescription =>
-      'No description provided by LibriVox for this title yet.';
+      'LibriVox ei ole vielä toimittanut kuvausta tälle nimikkeelle.';
 
   @override
-  String get readers => 'Readers';
+  String get readers => 'Lukijat';
 
   @override
-  String get openLinks => 'Open Links';
+  String get openLinks => 'Avaa Linkit';
 
   @override
-  String get librivoxPage => 'LibriVox Page';
+  String get librivoxPage => 'LibriVox-sivu';
 
   @override
-  String get internetArchive => 'Internet Archive';
+  String get internetArchive => 'Internet-arkisto';
 
   @override
-  String get rssFeed => 'RSS Feed';
+  String get rssFeed => 'RSS-syöte';
 
   @override
-  String get downloadZip => 'Download Zip';
+  String get downloadZip => 'Lataa Zip';
 
   @override
   String sectionCountLabel(int count) {
@@ -653,13 +661,13 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get noOpenLibraryOverview =>
-      'No overview available from Open Library for this title yet.';
+      'Open Library ei ole vielä saatavilla yleiskatsausta tälle nimikkeelle.';
 
   @override
-  String get subjects => 'Subjects';
+  String get subjects => 'Aiheet';
 
   @override
-  String get all => 'All';
+  String get all => 'Kaikki';
 
   @override
   String booksCount(int count) {
@@ -667,10 +675,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get couldNotLoadSubject => 'Could not load this subject right now.';
+  String get couldNotLoadSubject => 'Tätä aihetta ei voitu ladata juuri nyt.';
 
   @override
-  String get audiobookDetails => 'Audiobook Details';
+  String get audiobookDetails => 'Äänikirjan tiedot';
 
   @override
   String authorsCountTitle(int count) {
@@ -689,83 +697,90 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get trackList => 'Track List';
+  String get trackList => 'Kappaleluettelo';
 
   @override
-  String get itemListPlaceholder => 'Item list will appear here';
+  String get itemListPlaceholder => 'Tuoteluettelo tulee näkyviin tähän';
 
   @override
-  String get favoriteTracksPlaceholder => 'Favorite tracks will appear here';
+  String get favoriteTracksPlaceholder => 'Suosikkikappaleet näkyvät täällä';
 
   @override
-  String get failedToLoad => 'Failed to load';
+  String get failedToLoad => 'Lataus epäonnistui';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Poistaa';
 
   @override
-  String get save => 'Save';
+  String get save => 'Tallentaa';
 
   @override
-  String get moreLikeThis => 'More Like This';
+  String get moreLikeThis => 'Lisää tällaista';
 
   @override
-  String get castAndCrew => 'Cast & Crew';
+  String get castAndCrew => 'Näyttelijät ja miehistö';
 
   @override
-  String get collection => 'Collection';
+  String get collection => 'Kokoelma';
 
   @override
-  String get episodes => 'Episodes';
+  String get episodes => 'Jaksot';
 
   @override
-  String get nextUp => 'Next Up';
+  String get nextUp => 'Seuraavaksi';
 
   @override
-  String get seasons => 'Seasons';
+  String get seasons => 'Vuodenajat';
 
   @override
-  String get chapters => 'Chapters';
+  String get chapters => 'Luvut';
 
   @override
-  String get features => 'Features';
+  String get features => 'Ominaisuudet';
 
   @override
-  String get movies => 'Movies';
+  String get movies => 'Elokuvat';
 
   @override
-  String get other => 'Other';
+  String get other => 'Muut';
 
   @override
-  String get discography => 'Discography';
+  String get discography => 'Diskografia';
 
   @override
-  String get similarArtists => 'Similar Artists';
+  String get similarArtists => 'Samanlaisia ​​taiteilijoita';
 
   @override
-  String get tableOfContents => 'Table of Contents';
+  String get tableOfContents => 'Sisällysluettelo';
 
   @override
-  String get tracklist => 'Tracklist';
+  String get tracklist => 'Kappalelista';
 
   @override
-  String get biography => 'Biography';
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
 
   @override
-  String get authorDetails => 'Author Details';
+  String get biography => 'Elämäkerta';
 
   @override
-  String get noOverviewAvailable => 'No overview available for this title yet.';
+  String get authorDetails => 'Tekijän tiedot';
 
   @override
-  String get noBiographyAvailable => 'No biography available for this author.';
+  String get noOverviewAvailable =>
+      'Tästä otsikosta ei ole vielä saatavilla yleiskatsausta.';
 
   @override
-  String get noBooksFound => 'No books found for this author.';
+  String get noBiographyAvailable =>
+      'Tämän kirjoittajan elämäkertaa ei ole saatavilla.';
+
+  @override
+  String get noBooksFound => 'Tälle kirjailijalle ei löytynyt kirjoja.';
 
   @override
   String get unableToLoadAuthorDetails =>
-      'Unable to load author details right now.';
+      'Tekijän tietoja ei voi ladata juuri nyt.';
 
   @override
   String published(int year) {
@@ -773,7 +788,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get publicationDateUnknown => 'Publication date unknown';
+  String get publicationDateUnknown => 'Julkaisupäivä tuntematon';
 
   @override
   String seasonCount(int count) {
@@ -792,13 +807,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get view => 'View';
+  String get view => 'Näytä';
 
   @override
-  String get resumeReading => 'Resume Reading';
+  String get resumeReading => 'Jatka lukemista';
 
   @override
-  String get read => 'Read';
+  String get read => 'Lukea';
 
   @override
   String resumeFrom(String position) {
@@ -806,97 +821,98 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get play => 'Play';
+  String get play => 'Pelata';
 
   @override
-  String get startOver => 'Start Over';
+  String get startOver => 'Aloita alusta';
 
   @override
-  String get restart => 'Restart';
+  String get restart => 'Käynnistä uudelleen';
 
   @override
-  String get readOffline => 'Read Offline';
+  String get readOffline => 'Lue offline-tilassa';
 
   @override
-  String get playOffline => 'Play Offline';
+  String get playOffline => 'Pelaa offline-tilassa';
 
   @override
   String get audio => 'Audio';
 
   @override
-  String get subtitles => 'Subtitles';
+  String get subtitles => 'Tekstitykset';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versio';
 
   @override
-  String get cast => 'Cast';
+  String get cast => 'Heittää';
 
   @override
-  String get trailer => 'Trailer';
+  String get trailer => 'Traileri';
 
   @override
-  String get finished => 'Finished';
+  String get finished => 'Valmis';
 
   @override
-  String get favorited => 'Favorited';
+  String get favorited => 'Suosikkiin';
 
   @override
-  String get favorite => 'Favorite';
+  String get favorite => 'Suosikki';
 
   @override
-  String get playlist => 'Playlist';
+  String get playlist => 'Soittolista';
 
   @override
-  String get downloaded => 'Downloaded';
+  String get downloaded => 'Ladattu';
 
   @override
-  String get downloadAll => 'Download All';
+  String get downloadAll => 'Lataa kaikki';
 
   @override
-  String get download => 'Download';
+  String get download => 'Lataa';
 
   @override
-  String get deleteDownloaded => 'Delete Downloaded';
+  String get deleteDownloaded => 'Poista ladatut';
 
   @override
-  String get goToSeries => 'Go to Series';
+  String get goToSeries => 'Siirry sarjaan';
 
   @override
-  String get editMetadata => 'Edit Metadata';
+  String get editMetadata => 'Muokkaa metatietoja';
 
   @override
-  String get less => 'Less';
+  String get less => 'Vähemmän';
 
   @override
-  String get more => 'More';
+  String get more => 'Lisää';
 
   @override
-  String get deleteItem => 'Delete Item';
+  String get deleteItem => 'Poista kohde';
 
   @override
-  String get deletePlaylist => 'Delete Playlist';
+  String get deletePlaylist => 'Poista soittolista';
 
   @override
-  String get deletePlaylistMessage => 'Delete this playlist from the server?';
+  String get deletePlaylistMessage =>
+      'Poistetaanko tämä soittolista palvelimelta?';
 
   @override
-  String get deleteItemMessage => 'Delete this item from the server?';
+  String get deleteItemMessage => 'Poistetaanko tämä kohde palvelimelta?';
 
   @override
-  String get failedToDeletePlaylist => 'Failed to delete playlist';
+  String get failedToDeletePlaylist => 'Soittolistan poistaminen epäonnistui';
 
   @override
-  String get failedToDeleteItem => 'Failed to delete item';
+  String get failedToDeleteItem => 'Kohteen poistaminen epäonnistui';
 
   @override
-  String get renamePlaylist => 'Rename Playlist';
+  String get renamePlaylist => 'Nimeä soittolista uudelleen';
 
   @override
-  String get playlistName => 'Playlist name';
+  String get playlistName => 'Soittolistan nimi';
 
   @override
-  String get deleteDownloadedAlbum => 'Delete Downloaded Album';
+  String get deleteDownloadedAlbum => 'Poista ladattu albumi';
 
   @override
   String deleteDownloadedTracksMessage(String title) {
@@ -904,14 +920,14 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get downloadedTracksDeleted => 'Downloaded tracks deleted';
+  String get downloadedTracksDeleted => 'Ladatut kappaleet poistettu';
 
   @override
   String get downloadedTracksDeleteFailed =>
-      'Some downloaded tracks could not be deleted';
+      'Joitakin ladattuja raitoja ei voitu poistaa';
 
   @override
-  String get noTracksLoaded => 'No tracks loaded';
+  String get noTracksLoaded => 'Ei ladattuja raitoja';
 
   @override
   String noItemsLoaded(String itemLabel) {
@@ -929,10 +945,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get itemDeleted => 'Item deleted';
+  String get itemDeleted => 'Kohde poistettu';
 
   @override
-  String get noPlayableTrailerFound => 'No playable trailer found.';
+  String get noPlayableTrailerFound => 'Toistettavaa traileria ei löytynyt.';
 
   @override
   String unsupportedBookFormat(String extension) {
@@ -940,26 +956,25 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get audioTrack => 'Audio Track';
+  String get audioTrack => 'Ääniraita';
 
   @override
-  String get subtitleTrack => 'Subtitle Track';
+  String get subtitleTrack => 'Tekstitysraita';
 
   @override
-  String get none => 'None';
+  String get none => 'Ei mitään';
 
   @override
-  String get downloadSubtitlesLabel => 'Download subtitles...';
+  String get downloadSubtitlesLabel => 'Lataa tekstitykset...';
 
   @override
-  String get searchOpenSubtitlesPlugin =>
-      'Search using the OpenSubtitles plugin';
+  String get searchOpenSubtitlesPlugin => 'Hae OpenSubtitles-laajennuksella';
 
   @override
-  String get downloadSubtitles => 'Download Subtitles';
+  String get downloadSubtitles => 'Lataa tekstitykset';
 
   @override
-  String get selectedSubtitleInvalid => 'The selected subtitle is invalid.';
+  String get selectedSubtitleInvalid => 'Valittu tekstitys on virheellinen.';
 
   @override
   String subtitleDownloadedSelected(String name) {
@@ -968,7 +983,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get subtitleDownloadedPending =>
-      'Subtitle downloaded. It may take a moment to appear while Jellyfin refreshes the item.';
+      'Tekstitys ladattu. Saattaa kestää hetken, ennen kuin Jellyfin päivittää kohteen.';
 
   @override
   String noRemoteSubtitlesFound(String language) {
@@ -976,7 +991,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get selectVersion => 'Select Version';
+  String get selectVersion => 'Valitse Versio';
 
   @override
   String versionNumber(int number) {
@@ -984,19 +999,21 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get downloadAllQuality => 'Download All — Quality';
+  String get downloadAllQuality => 'Lataa kaikki – Laatu';
 
   @override
-  String get downloadQuality => 'Download Quality';
+  String get downloadQuality => 'Lataa laatu';
 
   @override
-  String get originalFileNoReencoding => 'Original file, no re-encoding';
+  String get originalFileNoReencoding =>
+      'Alkuperäinen tiedosto, ei uudelleenkoodausta';
 
   @override
-  String get originalFilesNoReencoding => 'Original files, no re-encoding';
+  String get originalFilesNoReencoding =>
+      'Alkuperäiset tiedostot, ei uudelleenkoodausta';
 
   @override
-  String get noEpisodesLoaded => 'No episodes loaded';
+  String get noEpisodesLoaded => 'Ei ladattuja jaksoja';
 
   @override
   String downloadingItem(String name, String quality) {
@@ -1004,7 +1021,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get deleteDownloadedFiles => 'Delete Downloaded Files';
+  String get deleteDownloadedFiles => 'Poista ladatut tiedostot';
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
@@ -1012,19 +1029,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get downloadedFilesDeleted => 'Downloaded files deleted';
+  String get downloadedFilesDeleted => 'Ladatut tiedostot poistettu';
 
   @override
-  String get failedToDeleteFiles => 'Failed to delete files';
+  String get failedToDeleteFiles => 'Tiedostojen poistaminen epäonnistui';
 
   @override
-  String get deleteFiles => 'Delete Files';
+  String get deleteFiles => 'Poista tiedostot';
 
   @override
-  String get director => 'DIRECTOR';
+  String get director => 'JOHTAJA';
 
   @override
-  String get writers => 'WRITERS';
+  String get writers => 'KIRJOITTAJAT';
 
   @override
   String get studio => 'STUDIO';
@@ -1092,13 +1109,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get showLess => 'Show Less';
+  String get showLess => 'Näytä vähemmän';
 
   @override
-  String get readMore => 'Read More';
+  String get readMore => 'Lue lisää';
 
   @override
-  String get shuffle => 'Shuffle';
+  String get shuffle => 'Sekoita';
 
   @override
   String downloadsCount(int count) {
@@ -1106,7 +1123,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get perfectMatch => 'Perfect match';
+  String get perfectMatch => 'Täydellinen ottelu';
 
   @override
   String channelsCount(int count) {
@@ -1117,7 +1134,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get mono => 'Mono';
 
   @override
-  String get stereo => 'Stereo';
+  String get stereo => 'Stereot';
 
   @override
   String remoteSubtitlePermissionError(String action) {
@@ -1150,19 +1167,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get deleteSeasonFiles => 'all downloaded episodes in this season';
+  String get deleteSeasonFiles => 'kaikki ladatut jaksot tällä kaudella';
 
   @override
-  String get stillWatching => 'Still Watching?';
+  String get stillWatching => 'Katsotko edelleen?';
 
   @override
-  String get unableToLoadTrailerStream => 'Unable to load trailer stream.';
+  String get unableToLoadTrailerStream => 'Trailerivirtaa ei voi ladata.';
 
   @override
-  String get trailerTimedOut => 'Trailer timed out while loading.';
+  String get trailerTimedOut => 'Traileri aikakatkaistiin latauksen aikana.';
 
   @override
-  String get playbackFailedForTrailer => 'Playback failed for this trailer.';
+  String get playbackFailedForTrailer => 'Tämän trailerin toisto epäonnistui.';
 
   @override
   String photoCountOf(int current, int total) {
@@ -1171,7 +1188,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get castingUnavailableOffline =>
-      'Casting is unavailable during offline playback.';
+      'Suoratoisto ei ole käytettävissä offline-toiston aikana.';
 
   @override
   String castActionFailed(String label, String error) {
@@ -1189,16 +1206,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get deviceVolume => 'Device Volume';
+  String get deviceVolume => 'Laitteen äänenvoimakkuus';
 
   @override
-  String get unavailable => 'Unavailable';
+  String get unavailable => 'Ei saatavilla';
 
   @override
-  String get pause => 'Pause';
+  String get pause => 'Tauko';
 
   @override
-  String get syncPosition => 'Sync Position';
+  String get syncPosition => 'Synkronointipaikka';
 
   @override
   String stopCast(String label) {
@@ -1206,7 +1223,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get queueIsEmpty => 'Queue is empty';
+  String get queueIsEmpty => 'Jono on tyhjä';
 
   @override
   String trackNumber(int number) {
@@ -1214,16 +1231,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get remotePlayback => 'Remote Playback';
+  String get remotePlayback => 'Kaukotoisto';
 
   @override
-  String get castingToGoogleCast => 'Casting to Google Cast';
+  String get castingToGoogleCast => 'Lähetetään Google Castiin';
 
   @override
-  String get castingViaAirPlay => 'Casting via AirPlay';
+  String get castingViaAirPlay => 'Suoratoisto AirPlayn kautta';
 
   @override
-  String get castingViaDlna => 'Casting via DLNA';
+  String get castingViaDlna => 'Suoratoisto DLNA:n kautta';
 
   @override
   String secondsCount(int seconds) {
@@ -1231,10 +1248,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get longPressToUnlock => 'Long press to unlock';
+  String get longPressToUnlock => 'Avaa lukitus painamalla pitkään';
 
   @override
-  String get off => 'Off';
+  String get off => 'Pois';
 
   @override
   String streamTypeFallback(String streamType, int number) {
@@ -1250,10 +1267,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get bitrateOverride => 'Bitrate Override';
+  String get bitrateOverride => 'Bittinopeuden ohitus';
 
   @override
-  String get audioDelay => 'Audio Delay';
+  String get audioDelay => 'Äänen viive';
 
   @override
   String delayMinusMs(int value) {
@@ -1266,49 +1283,49 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get subtitleDelay => 'Subtitle Delay';
+  String get subtitleDelay => 'Tekstityksen viive';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'Nollaa';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Tuntematon';
 
   @override
-  String get playbackInformation => 'Playback Information';
+  String get playbackInformation => 'Toistotiedot';
 
   @override
-  String get playback => 'Playback';
+  String get playback => 'Toisto';
 
   @override
-  String get playMethod => 'Play Method';
+  String get playMethod => 'Pelitapa';
 
   @override
-  String get directPlay => 'Direct Play';
+  String get directPlay => 'Suora peli';
 
   @override
-  String get directStream => 'Direct Stream';
+  String get directStream => 'Suora stream';
 
   @override
-  String get transcoding => 'Transcoding';
+  String get transcoding => 'Transkoodaus';
 
   @override
-  String get transcodeReasons => 'Transcode Reasons';
+  String get transcodeReasons => 'Transkoodauksen syyt';
 
   @override
-  String get player => 'Player';
+  String get player => 'Pelaaja';
 
   @override
-  String get container => 'Container';
+  String get container => 'Säiliö';
 
   @override
-  String get bitrate => 'Bitrate';
+  String get bitrate => 'Bittinopeus';
 
   @override
   String get video => 'Video';
 
   @override
-  String get resolution => 'Resolution';
+  String get resolution => 'Resoluutio';
 
   @override
   String get hdr => 'HDR';
@@ -1317,28 +1334,28 @@ class AppLocalizationsFi extends AppLocalizations {
   String get codec => 'Codec';
 
   @override
-  String get videoBitrate => 'Video Bitrate';
+  String get videoBitrate => 'Videon bittinopeus';
 
   @override
-  String get track => 'Track';
+  String get track => 'Seurata';
 
   @override
-  String get channels => 'Channels';
+  String get channels => 'Kanavat';
 
   @override
-  String get audioBitrate => 'Audio Bitrate';
+  String get audioBitrate => 'Äänen bittinopeus';
 
   @override
-  String get sampleRate => 'Sample Rate';
+  String get sampleRate => 'Näytetaajuus';
 
   @override
-  String get format => 'Format';
+  String get format => 'Muoto';
 
   @override
-  String get external => 'External';
+  String get external => 'Ulkoinen';
 
   @override
-  String get embedded => 'Embedded';
+  String get embedded => 'Upotettu';
 
   @override
   String castSessionError(String protocol) {
@@ -1352,7 +1369,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get epubUnavailableOnPlatform =>
-      'EPUB rendering in-app is not available on this platform yet.';
+      'EPUB-renderöinti sovelluksen sisällä ei ole vielä saatavilla tällä alustalla.';
 
   @override
   String formatCannotRenderInApp(String extension) {
@@ -1361,10 +1378,11 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get embeddedRenderingUnavailable =>
-      'Embedded document rendering is unavailable on this platform.';
+      'Upotettu asiakirjojen renderöinti ei ole käytettävissä tällä alustalla.';
 
   @override
-  String get couldNotOpenExternalViewer => 'Could not open external viewer.';
+  String get couldNotOpenExternalViewer =>
+      'Ulkoista katseluohjelmaa ei voitu avata.';
 
   @override
   String failedToOpenInAppReader(String error) {
@@ -1383,10 +1401,11 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get noBookmarksYet =>
-      'No bookmarks yet.\nTap the bookmark icon while reading to save your position.';
+      'Ei vielä kirjanmerkkejä.\nTallenna sijaintisi napauttamalla kirjanmerkkikuvaketta lukiessasi.';
 
   @override
-  String get noTableOfContentsAvailable => 'No table of contents available';
+  String get noTableOfContentsAvailable =>
+      'Sisällysluetteloa ei ole saatavilla';
 
   @override
   String pageLabel(int number) {
@@ -1394,10 +1413,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get position => 'Position';
+  String get position => 'asema';
 
   @override
-  String get bookReader => 'Book Reader';
+  String get bookReader => 'Kirjan lukija';
 
   @override
   String formatExtension(String extension) {
@@ -1410,22 +1429,22 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get updating => 'Updating...';
+  String get updating => 'Päivitetään...';
 
   @override
-  String get markUnread => 'Mark Unread';
+  String get markUnread => 'Merkitse lukemattomaksi';
 
   @override
-  String get markAsRead => 'Mark as Read';
+  String get markAsRead => 'Merkitse luetuksi';
 
   @override
-  String get reloadReader => 'Reload Reader';
+  String get reloadReader => 'Lataa Reader uudelleen';
 
   @override
-  String get noPagesFound => 'No pages found.';
+  String get noPagesFound => 'Sivuja ei löytynyt.';
 
   @override
-  String get failedToDecodePageImage => 'Failed to decode page image.';
+  String get failedToDecodePageImage => 'Sivun kuvan purkaminen epäonnistui.';
 
   @override
   String resetZoom(String zoom) {
@@ -1433,22 +1452,22 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get singlePage => 'Single Page';
+  String get singlePage => 'Yksi sivu';
 
   @override
-  String get twoPageSpread => 'Two-Page Spread';
+  String get twoPageSpread => 'Kaksisivuinen levitys';
 
   @override
-  String get addBookmark => 'Add Bookmark';
+  String get addBookmark => 'Lisää kirjanmerkki';
 
   @override
-  String get bookmarksEllipsis => 'Bookmarks...';
+  String get bookmarksEllipsis => 'Kirjanmerkit...';
 
   @override
-  String get markedAsRead => 'Marked as read';
+  String get markedAsRead => 'Merkitty luetuksi';
 
   @override
-  String get markedAsUnread => 'Marked as unread';
+  String get markedAsUnread => 'Merkitty lukemattomaksi';
 
   @override
   String failedToUpdateReadState(String error) {
@@ -1456,31 +1475,32 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get themeSystem => 'Theme: System';
+  String get themeSystem => 'Teema: Järjestelmä';
 
   @override
-  String get themeLight => 'Theme: Light';
+  String get themeLight => 'Teema: Valo';
 
   @override
-  String get themeDark => 'Theme: Dark';
+  String get themeDark => 'Teema: Tumma';
 
   @override
-  String get themeSepia => 'Theme: Sepia';
+  String get themeSepia => 'Teema: Seepia';
 
   @override
-  String get invertColorsFixedLayout => 'Invert Colors (fixed layout)';
+  String get invertColorsFixedLayout => 'Käänteiset värit (kiinteä asettelu)';
 
   @override
-  String get invertColorsPdf => 'Invert Colors (PDF)';
+  String get invertColorsPdf => 'Käänteiset värit (PDF)';
 
   @override
-  String get preparingInAppReader => 'Preparing in-app reader...';
+  String get preparingInAppReader =>
+      'Valmistellaan sovelluksen sisäistä lukijaa...';
 
   @override
-  String get pdfDataNotAvailable => 'PDF data not available.';
+  String get pdfDataNotAvailable => 'PDF-tietoja ei ole saatavilla.';
 
   @override
-  String get readerFallbackModeActive => 'Reader fallback mode active';
+  String get readerFallbackModeActive => 'Lukijan varatila aktiivinen';
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
@@ -1489,37 +1509,37 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get reloadReaderPlatformHint =>
-      'Use Reload Reader after switching to a supported platform target (Android, iOS, macOS).';
+      'Käytä Reload Readeria vaihdettuasi tuettuun alustakohteeseen (Android, iOS, macOS).';
 
   @override
-  String get openExternally => 'Open Externally';
+  String get openExternally => 'Avaa ulkoisesti';
 
   @override
-  String get noEpubChaptersFound => 'No EPUB chapters found.';
+  String get noEpubChaptersFound => 'EPUB-lukuja ei löytynyt.';
 
   @override
-  String get readerNotReady => 'Reader not ready.';
+  String get readerNotReady => 'Lukija ei ole valmis.';
 
   @override
-  String get seriesRecordings => 'Series Recordings';
+  String get seriesRecordings => 'Sarjan tallenteet';
 
   @override
-  String get now => 'Now';
+  String get now => 'Nyt';
 
   @override
-  String get sports => 'Sports';
+  String get sports => 'Urheilu';
 
   @override
-  String get news => 'News';
+  String get news => 'Uutiset';
 
   @override
-  String get kids => 'Kids';
+  String get kids => 'Lapset';
 
   @override
-  String get premiere => 'Premiere';
+  String get premiere => 'Ensiesitys';
 
   @override
-  String get guideTimeline => 'Guide Timeline';
+  String get guideTimeline => 'Opas aikajana';
 
   @override
   String failedToLoadGuide(String error) {
@@ -1527,35 +1547,35 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get noChannelsFound => 'No channels found';
+  String get noChannelsFound => 'Kanavia ei löytynyt';
 
   @override
-  String get liveBadge => 'LIVE';
+  String get liveBadge => 'ELÄÄ';
 
   @override
-  String get movie => 'Movie';
+  String get movie => 'Elokuva';
 
   @override
-  String get removedFromFavoriteChannels => 'Removed from favorite channels';
+  String get removedFromFavoriteChannels => 'Poistettu suosikkikanavilta';
 
   @override
-  String get addedToFavoriteChannels => 'Added to favorite channels';
+  String get addedToFavoriteChannels => 'Lisätty suosikkikanaville';
 
   @override
   String get failedToUpdateFavoriteChannel =>
-      'Failed to update favorite channel';
+      'Suosikkikanavan päivittäminen epäonnistui';
 
   @override
-  String get unfavoriteChannel => 'Unfavorite Channel';
+  String get unfavoriteChannel => 'Suosikki kanava';
 
   @override
-  String get favoriteChannel => 'Favorite Channel';
+  String get favoriteChannel => 'Suosikki kanava';
 
   @override
-  String get watch => 'Watch';
+  String get watch => 'Katsella';
 
   @override
-  String get close => 'Close';
+  String get close => 'Lähellä';
 
   @override
   String failedToPlayChannel(String name) {
@@ -1563,25 +1583,25 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadRecordings => 'Failed to load recordings';
+  String get failedToLoadRecordings => 'Tallenteiden lataaminen epäonnistui';
 
   @override
-  String get scheduledInNext24Hours => 'Scheduled in Next 24 Hours';
+  String get scheduledInNext24Hours => 'Suunniteltu seuraavan 24 tunnin aikana';
 
   @override
-  String get recentRecordings => 'Recent Recordings';
+  String get recentRecordings => 'Viimeaikaiset tallenteet';
 
   @override
-  String get tvSeries => 'TV Series';
+  String get tvSeries => 'TV-sarja';
 
   @override
-  String get failedToLoadSchedule => 'Failed to load schedule';
+  String get failedToLoadSchedule => 'Aikataulun lataaminen epäonnistui';
 
   @override
-  String get noScheduledRecordings => 'No scheduled recordings';
+  String get noScheduledRecordings => 'Ei ajoitettuja tallennuksia';
 
   @override
-  String get cancelRecording => 'Cancel Recording?';
+  String get cancelRecording => 'Peruutetaanko tallennus?';
 
   @override
   String cancelScheduledRecordingOf(String name) {
@@ -1589,25 +1609,27 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get no => 'No';
+  String get no => 'Ei';
 
   @override
-  String get yesCancel => 'Yes, Cancel';
+  String get yesCancel => 'Kyllä, peruuta';
 
   @override
-  String get failedToCancelRecording => 'Failed to cancel recording';
+  String get failedToCancelRecording =>
+      'Tallennuksen peruuttaminen epäonnistui';
 
   @override
-  String get failedToLoadSeriesRecordings => 'Failed to load series recordings';
+  String get failedToLoadSeriesRecordings =>
+      'Sarjatallenteiden lataaminen epäonnistui';
 
   @override
-  String get noSeriesRecordings => 'No series recordings';
+  String get noSeriesRecordings => 'Ei sarjatallenteita';
 
   @override
-  String get cancelSeriesRecording => 'Cancel Series Recording';
+  String get cancelSeriesRecording => 'Peruuta sarjan tallennus';
 
   @override
-  String get cancelSeriesRecordingQuestion => 'Cancel Series Recording?';
+  String get cancelSeriesRecordingQuestion => 'Perutaanko sarjan tallennus?';
 
   @override
   String stopRecordingName(String name) {
@@ -1616,13 +1638,13 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get failedToCancelSeriesRecording =>
-      'Failed to cancel series recording';
+      'Sarjan tallennuksen peruuttaminen epäonnistui';
 
   @override
-  String get searchThisLibrary => 'Search this library...';
+  String get searchThisLibrary => 'Hae tästä kirjastosta...';
 
   @override
-  String get searchEllipsis => 'Search...';
+  String get searchEllipsis => 'Haku...';
 
   @override
   String noResultsForQuery(String query) {
@@ -1635,31 +1657,40 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get seerr => 'Seerr';
+  String get seerr => 'Näkijä';
 
   @override
-  String get savedMedia => 'Saved Media';
+  String get seerrAccountType => 'Näkijätilin tyyppi';
 
   @override
-  String get tvShows => 'TV Shows';
+  String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get music => 'Music';
+  String get localAccount => 'Paikallinen';
 
   @override
-  String get musicAlbums => 'Music Albums';
+  String get savedMedia => 'Tallennettu media';
 
   @override
-  String get noMediaInFilter => 'No media in this filter';
+  String get tvShows => 'TV-ohjelmat';
 
   @override
-  String get noDownloadedMediaYet => 'No downloaded media yet';
+  String get music => 'Musiikki';
 
   @override
-  String get browseLibrary => 'Browse Library';
+  String get musicAlbums => 'Musiikki-albumit';
 
   @override
-  String get deleteDownload => 'Delete Download';
+  String get noMediaInFilter => 'Tässä suodattimessa ei ole mediaa';
+
+  @override
+  String get noDownloadedMediaYet => 'Ei vielä ladattua mediaa';
+
+  @override
+  String get browseLibrary => 'Selaa kirjastoa';
+
+  @override
+  String get deleteDownload => 'Poista lataus';
 
   @override
   String removeItemAndFiles(String name) {
@@ -1672,10 +1703,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get album => 'Album';
+  String get album => 'Albumi';
 
   @override
-  String get playAlbum => 'Play Album';
+  String get playAlbum => 'Toista albumi';
 
   @override
   String failedToLoadAlbum(String error) {
@@ -1688,16 +1719,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get season => 'Season';
+  String get season => 'Kausi';
 
   @override
-  String get errorLoadingEpisodes => 'Error loading episodes';
+  String get errorLoadingEpisodes => 'Virhe ladattaessa jaksoja';
 
   @override
-  String get noDownloadedEpisodes => 'No downloaded episodes';
+  String get noDownloadedEpisodes => 'Ei ladattuja jaksoja';
 
   @override
-  String get deleteEpisode => 'Delete Episode';
+  String get deleteEpisode => 'Poista jakso';
 
   @override
   String removeName(String name) {
@@ -1720,13 +1751,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get seriesNotFound => 'Series not found';
+  String get seriesNotFound => 'Sarjaa ei löydy';
 
   @override
-  String get errorLoadingSeries => 'Error loading series';
+  String get errorLoadingSeries => 'Virhe ladattaessa sarjaa';
 
   @override
-  String get downloadedEpisodes => 'Downloaded Episodes';
+  String get downloadedEpisodes => 'Ladatut jaksot';
 
   @override
   String seasonNumber(int number) {
@@ -1739,10 +1770,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get specials => 'Specials';
+  String get specials => 'Erikoistarjoukset';
 
   @override
-  String get deleteSeason => 'Delete Season';
+  String get deleteSeason => 'Poista kausi';
 
   @override
   String deleteAllEpisodesInSeason(String season) {
@@ -1761,32 +1792,32 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get storageManagement => 'Storage Management';
+  String get storageManagement => 'Tallennuksen hallinta';
 
   @override
-  String get storageBreakdown => 'Storage Breakdown';
+  String get storageBreakdown => 'Varastoinnin erittely';
 
   @override
-  String get downloadedItems => 'Downloaded Items';
+  String get downloadedItems => 'Ladatut kohteet';
 
   @override
-  String get storageLimit => 'Storage Limit';
+  String get storageLimit => 'Tallennusrajoitus';
 
   @override
-  String get noLimit => 'No limit';
+  String get noLimit => 'Ei rajaa';
 
   @override
-  String get deleteAllDownloads => 'Delete All Downloads';
+  String get deleteAllDownloads => 'Poista kaikki lataukset';
 
   @override
   String get deleteAllDownloadsWarning =>
-      'This will remove all downloaded media files and cannot be undone.';
+      'Tämä poistaa kaikki ladatut mediatiedostot, eikä sitä voi kumota.';
 
   @override
-  String get deleteAll => 'Delete All';
+  String get deleteAll => 'Poista kaikki';
 
   @override
-  String get deleteSelected => 'Delete Selected';
+  String get deleteSelected => 'Poista valitut';
 
   @override
   String deleteSelectedCount(int count) {
@@ -1794,13 +1825,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get musicAndAudiobooks => 'Music & Audiobooks';
+  String get musicAndAudiobooks => 'Musiikki ja äänikirjat';
 
   @override
-  String get images => 'Images';
+  String get images => 'Kuvat';
 
   @override
-  String get database => 'Database';
+  String get database => 'Tietokanta';
 
   @override
   String ofStorageLimit(String limit) {
@@ -1808,81 +1839,84 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'Asetukset';
 
   @override
-  String get authentication => 'Authentication';
+  String get authentication => 'Todennus';
 
   @override
-  String get autoLoginServerManagement => 'Auto login, server management';
+  String get autoLoginServerManagement =>
+      'Automaattinen sisäänkirjautuminen, palvelimen hallinta';
 
   @override
-  String get pinCode => 'PIN Code';
+  String get pinCode => 'PIN-koodi';
 
   @override
-  String get setUpPinCodeProtection => 'Set up PIN code protection';
+  String get setUpPinCodeProtection => 'Aseta PIN-koodisuojaus';
 
   @override
-  String get parentalControls => 'Parental Controls';
+  String get parentalControls => 'Lapsilukko';
 
   @override
-  String get contentRatingRestrictions => 'Content rating restrictions';
+  String get contentRatingRestrictions => 'Sisällön ikärajoitukset';
 
   @override
-  String get bitRateResolutionBehavior => 'Bitrate, resolution, behavior';
+  String get bitRateResolutionBehavior =>
+      'Bittinopeus, resoluutio, käyttäytyminen';
 
   @override
-  String get languageSizeAppearance => 'Language, size, appearance';
+  String get languageSizeAppearance => 'Kieli, koko, ulkonäkö';
 
   @override
-  String get qualityStorage => 'Quality, storage';
+  String get qualityStorage => 'Laatu, säilytys';
 
   @override
-  String get serverSyncAndPluginStatus => 'Server sync and plugin status';
+  String get serverSyncAndPluginStatus =>
+      'Palvelimen synkronointi ja laajennuksen tila';
 
   @override
-  String get mediaRequestIntegration => 'Media request integration';
+  String get mediaRequestIntegration => 'Mediapyyntöjen integrointi';
 
   @override
-  String get switchServer => 'Switch Server';
+  String get switchServer => 'Vaihda palvelinta';
 
   @override
-  String get signOut => 'Sign Out';
+  String get signOut => 'Kirjaudu ulos';
 
   @override
-  String get versionLicenses => 'Version, licenses';
+  String get versionLicenses => 'Versio, lisenssit';
 
   @override
-  String get account => 'Account';
+  String get account => 'Tili';
 
   @override
-  String get signInAndSecurity => 'Sign-in and security';
+  String get signInAndSecurity => 'Sisäänkirjautuminen ja suojaus';
 
   @override
-  String get administration => 'Administration';
+  String get administration => 'Hallinto';
 
   @override
   String get serverSettingsUsersLibraries =>
-      'Server settings, users, libraries';
+      'Palvelinasetukset, käyttäjät, kirjastot';
 
   @override
-  String get customization => 'Customization';
+  String get customization => 'Räätälöinti';
 
   @override
-  String get themeAndLayout => 'Theme and layout';
+  String get themeAndLayout => 'Teema ja asettelu';
 
   @override
-  String get videoAndSubtitles => 'Video and subtitles';
+  String get videoAndSubtitles => 'Video ja tekstitykset';
 
   @override
-  String get integrations => 'Integrations';
+  String get integrations => 'Integraatiot';
 
   @override
-  String get pluginAndRequests => 'Plugin and requests';
+  String get pluginAndRequests => 'Plugin ja pyynnöt';
 
   @override
   String get customizeAccountPlaybackInterface =>
-      'Customize account, playback, and interface behavior';
+      'Mukauta tiliä, toistoa ja käyttöliittymän toimintaa';
 
   @override
   String optionsCount(int count) {
@@ -1890,84 +1924,93 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get themeAndAppearance => 'Theme & Appearance';
+  String get themeAndAppearance => 'Teema ja ulkoasu';
 
   @override
-  String get focusBorderColor => 'Focus Border Color';
+  String get focusBorderColor => 'Keskitä reunaväri';
 
   @override
-  String get watchedIndicators => 'Watched Indicators';
+  String get watchedIndicators => 'Katsotut indikaattorit';
 
   @override
-  String get always => 'Always';
+  String get always => 'Aina';
 
   @override
-  String get hideUnwatched => 'Hide Unwatched';
+  String get hideUnwatched => 'Piilota katsomattomat';
 
   @override
-  String get episodesOnly => 'Episodes Only';
+  String get episodesOnly => 'Vain jaksot';
 
   @override
-  String get never => 'Never';
+  String get never => 'Ei koskaan';
 
   @override
-  String get focusExpansionAnimation => 'Focus Expansion Animation';
+  String get focusExpansionAnimation => 'Focus Expansion Animaatio';
 
   @override
-  String get scaleFocusedCards => 'Scale focused or hovered cards and tiles';
+  String get desktopUiScale => 'Työpöytäkäyttöliittymän asteikko';
 
   @override
-  String get backgroundBackdrops => 'Background Backdrops';
+  String get scaleFocusedCards =>
+      'Skaalaa kohdennettuja tai leijuvia kortteja ja laattoja';
 
   @override
-  String get showBackdropImages => 'Show backdrop images behind content';
+  String get backgroundBackdrops => 'Tausta taustat';
 
   @override
-  String get seriesThumbnails => 'Series Thumbnails';
+  String get showBackdropImages => 'Näytä taustakuvat sisällön takana';
+
+  @override
+  String get seriesThumbnails => 'Sarjan pikkukuvat';
 
   @override
   String get seriesThumbnailsDescription =>
-      'Episodes only: use series artwork that matches each row image type';
+      'Vain jaksot: käytä sarjakuvia, jotka vastaavat kutakin rivikuvatyyppiä';
 
   @override
-  String get homeRowInfoOverlay => 'Home Row Info Overlay';
+  String get homeRowInfoOverlay => 'Kotirivin tiedot peittokuva';
 
   @override
   String get showTitleMetadataOnHomeRows =>
-      'Show title and metadata when browsing home rows';
+      'Näytä otsikko ja metatiedot, kun selaat kotirivejä';
 
   @override
-  String get clockDisplay => 'Clock Display';
+  String get clockDisplay => 'Kellon näyttö';
 
   @override
-  String get inMenus => 'In Menus';
+  String get inMenus => 'Valikoissa';
 
   @override
-  String get inVideo => 'In Video';
+  String get inVideo => 'Videossa';
 
   @override
-  String get seasonalEffects => 'Seasonal Effects';
+  String get seasonalEffects => 'Kausivaikutuksia';
 
   @override
-  String get snow => 'Snow';
+  String get seasonalEffectsDescription =>
+      'Visuaalisia tehosteita ja vuodenaikojen koristeita';
 
   @override
-  String get fireworks => 'Fireworks';
+  String get snow => 'Lumi';
 
   @override
-  String get confetti => 'Confetti';
+  String get fireworks => 'Ilotulitus';
 
   @override
-  String get fallingLeaves => 'Falling Leaves';
+  String get confetti => 'Konfetti';
 
   @override
-  String get themeMusic => 'Theme Music';
+  String get fallingLeaves => 'Putoavia lehtiä';
 
   @override
-  String get playThemeMusicOnDetailPages => 'Play theme music on detail pages';
+  String get themeMusic => 'Teema Musiikki';
 
   @override
-  String get themeMusicVolume => 'Theme Music Volume';
+  String get playThemeMusicOnDetailPages =>
+      'Toista teemamusiikkia tietosivuilla';
+
+  @override
+  String get themeMusicVolume => 'Teema Musiikki Volume';
 
   @override
   String percentValue(int value) {
@@ -1975,13 +2018,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get themeMusicOnHomeRows => 'Theme Music on Home Rows';
+  String get themeMusicOnHomeRows => 'Teemamusiikki kotiriveillä';
 
   @override
-  String get playWhenBrowsingHomeScreen => 'Play when browsing home screen';
+  String get playWhenBrowsingHomeScreen => 'Toista aloitusnäyttöä selatessasi';
 
   @override
-  String get detailsBackgroundBlur => 'Details Background Blur';
+  String get detailsBackgroundBlur => 'Tiedot taustan sumennus';
 
   @override
   String pixelValue(int value) {
@@ -1989,124 +2032,124 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get browsingBackgroundBlur => 'Browsing Background Blur';
+  String get browsingBackgroundBlur => 'Selailun taustan sumennus';
 
   @override
-  String get maxStreamingBitrate => 'Max Streaming Bitrate';
+  String get maxStreamingBitrate => 'Suurin suoratoiston bittinopeus';
 
   @override
-  String get maxResolution => 'Max Resolution';
+  String get maxResolution => 'Max resoluutio';
 
   @override
-  String get playerZoomMode => 'Player Zoom Mode';
+  String get playerZoomMode => 'Soittimen zoomaustila';
 
   @override
-  String get fit => 'Fit';
+  String get fit => 'Sopiva';
 
   @override
-  String get autoCrop => 'Auto Crop';
+  String get autoCrop => 'Automaattinen rajaus';
 
   @override
-  String get stretch => 'Stretch';
+  String get stretch => 'Venyttää';
 
   @override
-  String get refreshRateSwitching => 'Refresh Rate Switching';
+  String get refreshRateSwitching => 'Virkistystaajuuden vaihto';
 
   @override
-  String get disabled => 'Disabled';
+  String get disabled => 'Ei käytössä';
 
   @override
-  String get scaleOnTv => 'Scale on TV';
+  String get scaleOnTv => 'Asteikko televisiossa';
 
   @override
-  String get scaleOnDevice => 'Scale on Device';
+  String get scaleOnDevice => 'Skaalaa laitteessa';
 
   @override
   String get trickPlay => 'Trick Play';
 
   @override
   String get showPreviewThumbnailsWhenSeeking =>
-      'Show preview thumbnails when seeking';
+      'Näytä esikatselupikkukuvat etsiessäsi';
 
   @override
-  String get showDescriptionOnPause => 'Show Description on Pause';
+  String get showDescriptionOnPause => 'Näytä kuvaus tauolla';
 
   @override
   String get dimVideoShowOverview =>
-      'Dim video and show overview text while paused';
+      'Himmennä video ja näytä yleiskatsausteksti tauon aikana';
 
   @override
-  String get osdLockButton => 'OSD Lock Button';
+  String get osdLockButton => 'OSD-lukituspainike';
 
   @override
   String get osdLockButtonDescription =>
-      'Show a lock button that blocks touch input until long-pressed';
+      'Näytä lukituspainike, joka estää kosketussyötön, kunnes sitä painetaan pitkään';
 
   @override
-  String get audioBehavior => 'Audio Behavior';
+  String get audioBehavior => 'Äänen käyttäytyminen';
 
   @override
-  String get downmixToStereo => 'Downmix to Stereo';
+  String get downmixToStereo => 'Alasmiksaus stereoihin';
 
   @override
-  String get defaultAudioLanguage => 'Default Audio Language';
+  String get defaultAudioLanguage => 'Äänen oletuskieli';
 
   @override
-  String get autoServerDefault => 'Auto (Server Default)';
+  String get autoServerDefault => 'Automaattinen (palvelinoletus)';
 
   @override
-  String get english => 'English';
+  String get english => 'englanti';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'espanja';
 
   @override
-  String get french => 'French';
+  String get french => 'ranskalainen';
 
   @override
-  String get german => 'German';
+  String get german => 'saksaksi';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'italialainen';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'portugali';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'japanilainen';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'korealainen';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'kiinalainen';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'venäjäksi';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'arabia';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'hindi';
 
   @override
-  String get dutch => 'Dutch';
+  String get dutch => 'hollantilainen';
 
   @override
-  String get swedish => 'Swedish';
+  String get swedish => 'ruotsinkielinen';
 
   @override
-  String get norwegian => 'Norwegian';
+  String get norwegian => 'norjalainen';
 
   @override
-  String get danish => 'Danish';
+  String get danish => 'tanskalainen';
 
   @override
-  String get finnish => 'Finnish';
+  String get finnish => 'suomalainen';
 
   @override
-  String get polish => 'Polish';
+  String get polish => 'Kiillottaa';
 
   @override
   String get ac3Passthrough => 'AC3 Passthrough';
@@ -2115,60 +2158,60 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dtsPassthrough => 'DTS Passthrough';
 
   @override
-  String get trueHdSupport => 'TrueHD Support';
+  String get trueHdSupport => 'TrueHD-tuki';
 
   @override
   String get enableDtsPassthrough =>
-      'Bitstream DTS audio to AVR only; requires receiver support and DTS source track';
+      'Bittivirta DTS-ääni vain AVR:lle; vaatii vastaanottimen tuen ja DTS-lähderaidan';
 
   @override
   String get enableTrueHdAudio =>
-      'Enable TrueHD audio (may not work on all platforms)';
+      'Ota TrueHD-ääni käyttöön (ei välttämättä toimi kaikilla alustoilla)';
 
   @override
-  String get nightMode => 'Night Mode';
+  String get nightMode => 'Yötila';
 
   @override
-  String get compressDynamicRange => 'Compress dynamic range';
+  String get compressDynamicRange => 'Pakkaa dynaaminen alue';
 
   @override
-  String get advancedMpv => 'Advanced mpv';
+  String get advancedMpv => 'Kehittynyt mpv';
 
   @override
-  String get enableCustomMpvConf => 'Enable Custom mpv.conf';
+  String get enableCustomMpvConf => 'Ota mukautettu mpv.conf käyttöön';
 
   @override
   String get applyMpvConfBeforePlayback =>
-      'Apply a user-specified mpv.conf before playback starts';
+      'Käytä käyttäjän määrittämää mpv.conf-tiedostoa ennen toiston alkamista';
 
   @override
-  String get unsafeAdvancedMpvOptions => 'Unsafe Advanced mpv Options';
+  String get unsafeAdvancedMpvOptions => 'Vaaralliset mpv-lisäasetukset';
 
   @override
   String get unsafeMpvOptionsDescription =>
-      'Allow a wider set of mpv options. May break playback behavior.';
+      'Salli laajempi joukko mpv-vaihtoehtoja. Saattaa häiritä toistokäyttäytymistä.';
 
   @override
-  String get hardwareDecoding => 'Hardware decoding';
+  String get hardwareDecoding => 'Laitteiston dekoodaus';
 
   @override
   String get hardwareDecodingSubtitle =>
-      'May improve performance but can cause playback issues on some devices.';
+      'Saattaa parantaa suorituskykyä, mutta voi aiheuttaa toistoongelmia joissakin laitteissa.';
 
   @override
-  String get nextUpAndQueuing => 'Next Up & Queuing';
+  String get nextUpAndQueuing => 'Seuraava ylös ja jonotus';
 
   @override
-  String get nextUpBehavior => 'Next Up Behavior';
+  String get nextUpDisplay => 'Seuraava näyttö';
 
   @override
-  String get extended => 'Extended';
+  String get extended => 'Laajennettu';
 
   @override
-  String get minimal => 'Minimal';
+  String get minimal => 'Minimaalinen';
 
   @override
-  String get nextUpTimeout => 'Next Up Timeout';
+  String get nextUpTimeout => 'Seuraava aikakatkaisu';
 
   @override
   String secondsValue(int value) {
@@ -2176,13 +2219,14 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get mediaQueuing => 'Media Queuing';
+  String get mediaQueuing => 'Median jonotus';
 
   @override
-  String get autoQueueNextEpisodes => 'Auto-queue next episodes';
+  String get autoQueueNextEpisodes =>
+      'Aseta seuraavat jaksot automaattisesti jonoon';
 
   @override
-  String get stillWatchingPrompt => 'Still Watching Prompt';
+  String get stillWatchingPrompt => 'Katsotaan edelleen kehotetta';
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
@@ -2190,128 +2234,129 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get resumeAndSkip => 'Resume & Skip';
+  String get resumeAndSkip => 'Jatka & Ohita';
 
   @override
-  String get resumeRewind => 'Resume Rewind';
+  String get resumeRewind => 'Jatka taaksepäinkelausta';
 
   @override
-  String get unpauseRewind => 'Unpause Rewind';
+  String get unpauseRewind => 'Peruuta kelaus taaksepäin';
 
   @override
-  String get fiveSeconds => '5 seconds';
+  String get fiveSeconds => '5 sekuntia';
 
   @override
-  String get tenSeconds => '10 seconds';
+  String get tenSeconds => '10 sekuntia';
 
   @override
-  String get fifteenSeconds => '15 seconds';
+  String get fifteenSeconds => '15 sekuntia';
 
   @override
-  String get thirtySeconds => '30 seconds';
+  String get thirtySeconds => '30 sekuntia';
 
   @override
-  String get skipBackLength => 'Skip Back Length';
+  String get skipBackLength => 'Ohita takaosan pituus';
 
   @override
-  String get skipForwardLength => 'Skip Forward Length';
+  String get skipForwardLength => 'Ohita pituus eteenpäin';
 
   @override
-  String get customMpvConfPath => 'Custom mpv.conf Path';
+  String get customMpvConfPath => 'Mukautettu mpv.conf-polku';
 
   @override
   String get notSetMpvConf =>
-      'Not set. Moonfin will try a default mpv.conf in app/data folders.';
+      'Ei asetettu. Moonfin yrittää oletusarvoista mpv.conf-tiedostoa app/data-kansioissa.';
 
   @override
-  String get selectMpvConf => 'Select mpv.conf';
+  String get selectMpvConf => 'Valitse mpv.conf';
 
   @override
-  String get pathToMpvConf => '/path/to/mpv.conf';
+  String get pathToMpvConf => '/polku/mpv.conf';
 
   @override
   String get subtitleStyleDescription =>
-      'Style settings (size, color, offset) apply to text-based subtitles (SRT, VTT, TTML). ASS/SSA subtitles use their own embedded styling unless \"ASS/SSA Direct Play\" is turned off. Bitmap subtitles (PGS, DVB, VobSub) cannot be restyled.';
+      'Tyyliasetukset (koko, väri, offset) koskevat tekstipohjaisia ​​tekstityksiä (SRT, VTT, TTML). ASS/SSA-tekstitykset käyttävät omaa upotettua tyyliään, ellei \"ASS/SSA Direct Play\" ole poistettu käytöstä. Bittikarttatekstitystä (PGS, DVB, VobSub) ei voi muokata uudelleen.';
 
   @override
-  String get defaultSubtitleLanguage => 'Default Subtitle Language';
+  String get defaultSubtitleLanguage => 'Tekstityksen oletuskieli';
 
   @override
-  String get defaultToNoSubtitles => 'Default to No Subtitles';
+  String get defaultToNoSubtitles => 'Oletuksena Ei tekstityksiä';
 
   @override
-  String get turnOffSubtitlesByDefault => 'Turn off subtitles by default';
+  String get turnOffSubtitlesByDefault =>
+      'Poista tekstitykset oletusarvoisesti käytöstä';
 
   @override
-  String get subtitleSize => 'Subtitle Size';
+  String get subtitleSize => 'Tekstityksen koko';
 
   @override
-  String get textFillColor => 'Text Fill Color';
+  String get textFillColor => 'Tekstin täyttöväri';
 
   @override
-  String get backgroundColor => 'Background Color';
+  String get backgroundColor => 'Taustaväri';
 
   @override
-  String get textStrokeColor => 'Text Stroke Color';
+  String get textStrokeColor => 'Tekstin viivan väri';
 
   @override
-  String get subtitleCustomization => 'Subtitle Customization';
+  String get subtitleCustomization => 'Tekstityksen mukauttaminen';
 
   @override
   String get subtitleCustomizationDescription =>
-      'Customize subtitle appearance';
+      'Mukauta tekstityksen ulkoasua';
 
   @override
   String get subtitlePreviewText =>
-      'The quick brown fox jumps over the lazy dog';
+      'Nopea ruskea kettu hyppää laiskan koiran yli';
 
   @override
-  String get verticalOffset => 'Vertical Offset';
+  String get verticalOffset => 'Pystysuuntainen siirtymä';
 
   @override
   String get pgsDirectPlay => 'PGS Direct Play';
 
   @override
-  String get directPlayPgsSubtitles => 'Direct play PGS subtitles';
+  String get directPlayPgsSubtitles => 'Suoratoisto PGS-tekstitykset';
 
   @override
   String get assSsaDirectPlay => 'ASS/SSA Direct Play';
 
   @override
-  String get directPlayAssSsaSubtitles => 'Direct play ASS/SSA subtitles';
+  String get directPlayAssSsaSubtitles => 'Suoratoisto ASS/SSA tekstityksellä';
 
   @override
-  String get white => 'White';
+  String get white => 'Valkoinen';
 
   @override
-  String get black => 'Black';
+  String get black => 'Musta';
 
   @override
-  String get yellow => 'Yellow';
+  String get yellow => 'Keltainen';
 
   @override
-  String get green => 'Green';
+  String get green => 'Vihreä';
 
   @override
-  String get cyan => 'Cyan';
+  String get cyan => 'Syaani';
 
   @override
-  String get red => 'Red';
+  String get red => 'Punainen';
 
   @override
-  String get transparent => 'Transparent';
+  String get transparent => 'Läpinäkyvä';
 
   @override
-  String get semiTransparentBlack => 'Semi-transparent Black';
+  String get semiTransparentBlack => 'Puoliksi läpinäkyvä musta';
 
   @override
-  String get global => 'Global';
+  String get global => 'Maailmanlaajuinen';
 
   @override
-  String get desktop => 'Desktop';
+  String get desktop => 'Työpöytä';
 
   @override
-  String get mobile => 'Mobile';
+  String get mobile => 'mobiili';
 
   @override
   String get tv => 'TV';
@@ -2332,224 +2377,226 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get customizationProfile => 'Customization Profile';
+  String get customizationProfile => 'Räätälöintiprofiili';
 
   @override
   String get customizationProfileDescription =>
-      'Choose the profile to load, edit, and sync. Global applies everywhere unless a device profile overrides it. The green dot marks your current device profile.';
+      'Valitse ladattava, muokattava ja synkronoitava profiili. Yleinen koskee kaikkialla, ellei laiteprofiili ohita sitä. Vihreä piste merkitsee nykyistä laiteprofiiliasi.';
 
   @override
-  String get loadProfile => 'Load Profile';
+  String get loadProfile => 'Lataa profiili';
 
   @override
-  String get syncing => 'Syncing...';
+  String get syncing => 'Synkronoidaan...';
 
   @override
-  String get syncToProfile => 'Sync To Profile';
+  String get syncToProfile => 'Synkronoi profiiliin';
 
   @override
-  String get profileSyncHidden => 'Profile Sync Hidden';
+  String get profileSyncHidden => 'Profiilin synkronointi piilotettu';
 
   @override
   String get enablePluginSyncDescription =>
-      'Enable Server Plugin Sync in Plugin settings to show profile controls here.';
+      'Ota Palvelinlaajennuksen synkronointi käyttöön Plugin-asetuksissa, jotta profiiliohjaimet näkyvät tässä.';
 
   @override
-  String get quality => 'Quality';
+  String get quality => 'Laatu';
 
   @override
-  String get defaultDownloadQuality => 'Default Download Quality';
+  String get defaultDownloadQuality => 'Latauksen oletuslaatu';
 
   @override
-  String get network => 'Network';
+  String get network => 'Verkko';
 
   @override
-  String get wifiOnlyDownloads => 'WiFi-Only Downloads';
+  String get wifiOnlyDownloads => 'Vain WiFi-lataukset';
 
   @override
-  String get onlyDownloadOnWifi => 'Only download when connected to WiFi';
+  String get onlyDownloadOnWifi =>
+      'Lataa vain WiFi-yhteyden ollessa kytkettynä';
 
   @override
-  String get storage => 'Storage';
+  String get storage => 'Varastointi';
 
   @override
-  String get storageUsed => 'Storage Used';
+  String get storageUsed => 'Säilytys käytetty';
 
   @override
-  String get manage => 'Manage';
+  String get manage => 'Hallitse';
 
   @override
-  String get calculating => 'Calculating...';
+  String get calculating => 'Lasketaan...';
 
   @override
-  String get downloadLocation => 'Download Location';
+  String get downloadLocation => 'Lataa sijainti';
 
   @override
-  String get defaultLabel => 'Default';
+  String get defaultLabel => 'Oletus';
 
   @override
-  String get saveToDownloadsFolder => 'Save to Downloads folder';
+  String get saveToDownloadsFolder => 'Tallenna Lataukset-kansioon';
 
   @override
   String get downloadsVisibleToOtherApps =>
-      'Downloads/Moonfin — visible to other apps';
+      'Lataukset/Moonfin – näkyy muille sovelluksille';
 
   @override
-  String get dangerZone => 'Danger Zone';
+  String get dangerZone => 'Vaaravyöhyke';
 
   @override
-  String get clearAllDownloads => 'Clear All Downloads';
+  String get clearAllDownloads => 'Tyhjennä kaikki lataukset';
 
   @override
-  String get original => 'Original';
+  String get original => 'Alkuperäinen';
 
   @override
-  String get changeDownloadLocation => 'Change Download Location';
+  String get changeDownloadLocation => 'Muuta latauspaikkaa';
 
   @override
   String get changeDownloadLocationDescription =>
-      'New downloads will be saved to the selected folder. Existing downloads will remain in their current location and can be managed from Storage settings.';
+      'Uudet lataukset tallennetaan valittuun kansioon. Nykyiset lataukset pysyvät nykyisessä paikassaan, ja niitä voidaan hallita tallennusasetuksista.';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Vahvistaa';
 
   @override
   String get cannotWriteToFolder =>
-      'Cannot write to selected folder. Please choose a different location or grant storage permissions.';
+      'Valittuun kansioon ei voi kirjoittaa. Valitse toinen sijainti tai myönnä tallennusoikeudet.';
 
   @override
-  String get saveToDownloadsFolderQuestion => 'Save to Downloads folder?';
+  String get saveToDownloadsFolderQuestion =>
+      'Tallennetaanko Lataukset-kansioon?';
 
   @override
   String get saveToDownloadsFolderDescription =>
-      'Downloaded media will be saved to Downloads/Moonfin on your device. These files will be visible to other apps such as your gallery or music player.\n\nExisting downloads will remain in their current location.';
+      'Ladattu media tallennetaan laitteesi Downloads/Moonfin-kansioon. Nämä tiedostot näkyvät muille sovelluksille, kuten galleriallesi tai musiikkisoittimellesi.\n\nNykyiset lataukset säilyvät nykyisessä paikassaan.';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'Ota käyttöön';
 
   @override
   String get clearAllDownloadsWarning =>
-      'This will delete all downloaded media and cannot be undone.';
+      'Tämä poistaa kaiken ladatun median, eikä sitä voi kumota.';
 
   @override
-  String get clearAll => 'Clear All';
+  String get clearAll => 'Tyhjennä kaikki';
 
   @override
-  String get navigationStyle => 'Navigation Style';
+  String get navigationStyle => 'Navigointityyli';
 
   @override
-  String get topBar => 'Top Bar';
+  String get topBar => 'Yläpalkki';
 
   @override
-  String get leftSidebar => 'Left Sidebar';
+  String get leftSidebar => 'Vasen sivupalkki';
 
   @override
-  String get showShuffleButton => 'Show Shuffle Button';
+  String get showShuffleButton => 'Näytä satunnaistoistopainike';
 
   @override
-  String get showGenresButton => 'Show Genres Button';
+  String get showGenresButton => 'Näytä genret -painike';
 
   @override
-  String get showFavoritesButton => 'Show Favorites Button';
+  String get showFavoritesButton => 'Näytä suosikit-painike';
 
   @override
-  String get showLibrariesInToolbar => 'Show Libraries in Toolbar';
+  String get showLibrariesInToolbar => 'Näytä kirjastot työkalupalkissa';
 
   @override
-  String get navbarOpacity => 'Navbar Opacity';
+  String get navbarOpacity => 'Navbarin läpinäkyvyys';
 
   @override
-  String get navbarColor => 'Navbar Color';
+  String get navbarColor => 'Navipalkin väri';
 
   @override
-  String get gray => 'Gray';
+  String get gray => 'Harmaa';
 
   @override
-  String get darkBlue => 'Dark Blue';
+  String get darkBlue => 'Tummansininen';
 
   @override
-  String get purple => 'Purple';
+  String get purple => 'Violetti';
 
   @override
-  String get teal => 'Teal';
+  String get teal => 'Sinivihreä';
 
   @override
-  String get navy => 'Navy';
+  String get navy => 'Laivasto';
 
   @override
-  String get charcoal => 'Charcoal';
+  String get charcoal => 'Puuhiili';
 
   @override
-  String get brown => 'Brown';
+  String get brown => 'Ruskea';
 
   @override
-  String get darkRed => 'Dark Red';
+  String get darkRed => 'Tummanpunainen';
 
   @override
-  String get darkGreen => 'Dark Green';
+  String get darkGreen => 'Tummanvihreä';
 
   @override
-  String get slate => 'Slate';
+  String get slate => 'Liuskekivi';
 
   @override
   String get indigo => 'Indigo';
 
   @override
-  String get libraryDisplay => 'Library Display';
+  String get libraryDisplay => 'Kirjaston näyttö';
 
   @override
-  String get posterLabel => 'Poster';
+  String get posterLabel => 'Juliste';
 
   @override
-  String get thumbnailLabel => 'Thumbnail';
+  String get thumbnailLabel => 'Pikkukuva';
 
   @override
-  String get bannerLabel => 'Banner';
+  String get bannerLabel => 'Banneri';
 
   @override
-  String get overridePerLibrarySettings => 'Override Per-Library Settings';
+  String get overridePerLibrarySettings => 'Ohita kirjastokohtaiset asetukset';
 
   @override
   String get applyImageTypeToAllLibraries =>
-      'Apply image type to all libraries';
+      'Käytä kuvatyyppiä kaikissa kirjastoissa';
 
   @override
-  String get multiServerLibraries => 'Multi-Server Libraries';
+  String get multiServerLibraries => 'Usean palvelimen kirjastot';
 
   @override
   String get showLibrariesFromAllServers =>
-      'Show libraries from all connected servers';
+      'Näytä kaikkien yhdistettyjen palvelimien kirjastot';
 
   @override
-  String get enableFolderView => 'Enable Folder View';
+  String get enableFolderView => 'Ota käyttöön kansionäkymä';
 
   @override
-  String get showFolderBrowsingOption => 'Show folder browsing option';
+  String get showFolderBrowsingOption => 'Näytä kansion selausvaihtoehto';
 
   @override
-  String get libraryVisibility => 'Library Visibility';
+  String get libraryVisibility => 'Kirjaston näkyvyys';
 
   @override
   String get libraryVisibilityDescription =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'Vaihda etusivun näkyvyys kirjastoittain. Käynnistä Moonfin uudelleen, jotta muutokset tulevat voimaan.';
 
   @override
-  String get showInNavigation => 'Show in navigation';
+  String get showInNavigation => 'Näytä navigoinnissa';
 
   @override
-  String get showInLatestMedia => 'Show in latest media';
+  String get showInLatestMedia => 'Näytä uusimmassa mediassa';
 
   @override
-  String get sourceLibraries => 'Source Libraries';
+  String get sourceLibraries => 'Lähdekirjastot';
 
   @override
-  String get sourceCollections => 'Source Collections';
+  String get sourceCollections => 'Lähdekokoelmat';
 
   @override
-  String get excludedGenres => 'Excluded Genres';
+  String get excludedGenres => 'Poissuljetut genret';
 
   @override
-  String get selectAll => 'Select All';
+  String get selectAll => 'Valitse Kaikki';
 
   @override
   String itemsSelected(int count) {
@@ -2557,14 +2604,30 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get mediaBar => 'Media Bar';
+  String get mediaBar => 'Mediapalkki';
 
   @override
-  String get mediaBarMode => 'Media Bar Style';
+  String get mediaSources => 'Medialähteet';
+
+  @override
+  String get behavior => 'Käyttäytyminen';
+
+  @override
+  String get seconds => 'sekuntia';
+
+  @override
+  String get localPreviews => 'Paikalliset esikatselut';
+
+  @override
+  String get localPreviewsDescription =>
+      'Määritä trailerin, median ja äänen esikatselut.';
+
+  @override
+  String get mediaBarMode => 'Mediapalkin tyyli';
 
   @override
   String get mediaBarModeDescription =>
-      'Choose between Moonfin, MakD, or turn the media bar off';
+      'Valitse Moonfin tai MakD tai kytke mediapalkki pois päältä';
 
   @override
   String get mediaBarModeMoonfin => 'Moonfin';
@@ -2573,205 +2636,213 @@ class AppLocalizationsFi extends AppLocalizations {
   String get mediaBarModeMakd => 'MakD';
 
   @override
-  String get mediaBarModeOff => 'Off';
+  String get mediaBarModeOff => 'Pois';
 
   @override
-  String get enableMediaBar => 'Enable Media Bar';
+  String get enableMediaBar => 'Ota Media Bar käyttöön';
 
   @override
   String get showFeaturedContentSlideshow =>
-      'Show featured content slideshow on home';
+      'Näytä suositellun sisällön diaesitys kotona';
 
   @override
-  String get contentType => 'Content Type';
+  String get contentType => 'Sisältötyyppi';
 
   @override
-  String get moviesAndTvShows => 'Movies & TV Shows';
+  String get moviesAndTvShows => 'Elokuvat ja TV-ohjelmat';
 
   @override
-  String get moviesOnly => 'Movies Only';
+  String get moviesOnly => 'Vain elokuvat';
 
   @override
-  String get tvShowsOnly => 'TV Shows Only';
+  String get tvShowsOnly => 'Vain TV-ohjelmat';
 
   @override
-  String get itemCount => 'Item Count';
+  String get itemCount => 'Tuotemäärä';
 
   @override
-  String get noneSelected => 'None selected';
+  String get noneSelected => 'Ei valittu';
 
   @override
-  String get noneExcluded => 'None excluded';
+  String get noneExcluded => 'Ei poissuljettu';
 
   @override
-  String get autoAdvance => 'Auto Advance';
+  String get autoAdvance => 'Automaattinen eteneminen';
 
   @override
-  String get autoAdvanceSlides => 'Automatically advance to next slide';
+  String get autoAdvanceSlides => 'Siirry automaattisesti seuraavaan diaan';
 
   @override
   String get autoAdvanceInterval => 'Auto Advance Interval';
 
   @override
-  String get trailerPreview => 'Trailer Preview';
+  String get trailerPreview => 'Trailerin esikatselu';
 
   @override
   String get autoPlayTrailers =>
-      'Auto-play trailers in the media bar after 3 seconds';
+      'Toista trailerit automaattisesti mediapalkissa 3 sekunnin kuluttua';
 
   @override
-  String get episodePreview => 'Episode Preview';
+  String get episodePreview => 'Jakson esikatselu';
+
+  @override
+  String get mediaPreview => 'Median esikatselu';
 
   @override
   String get episodePreviewDescription =>
-      'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
+      'Pelaa 30 sekunnin rivin esikatselu tarkennetuilla, leijutetuilla tai pitkään painetuilla korteilla';
 
   @override
-  String get previewAudio => 'Preview Audio';
+  String get mediaPreviewDescription =>
+      'Pelaa 30 sekunnin rivin esikatselu tarkennetuilla, leijutetuilla tai pitkään painetuilla korteilla';
+
+  @override
+  String get previewAudio => 'Äänen esikatselu';
 
   @override
   String get enablePreviewAudio =>
-      'Enable audio for trailer and episode previews';
+      'Ota ääni käyttöön trailerien ja jaksojen esikatseluissa';
 
   @override
-  String get latestMedia => 'Latest Media';
+  String get latestMedia => 'Uusin Media';
 
   @override
-  String get recentlyReleased => 'Recently Released';
+  String get recentlyReleased => 'Äskettäin julkaistu';
 
   @override
-  String get myMedia => 'My Media';
+  String get myMedia => 'Oma Media';
 
   @override
-  String get myMediaSmall => 'My Media (Small)';
+  String get myMediaSmall => 'Oma media (pieni)';
 
   @override
-  String get continueWatching => 'Continue Watching';
+  String get continueWatching => 'Jatka katselua';
 
   @override
-  String get resumeAudio => 'Resume Audio';
+  String get resumeAudio => 'Jatka äänentoistoa';
 
   @override
-  String get resumeBooks => 'Resume Books';
+  String get resumeBooks => 'Jatka Kirjat';
 
   @override
-  String get activeRecordings => 'Active Recordings';
+  String get activeRecordings => 'Aktiiviset tallenteet';
 
   @override
-  String get playlists => 'Playlists';
+  String get playlists => 'Soittolistat';
 
   @override
-  String get liveTV => 'Live TV';
+  String get liveTV => 'Live-TV';
 
   @override
-  String get homeSections => 'Home Sections';
+  String get homeSections => 'Kotisivut';
 
   @override
-  String get resetToDefaults => 'Reset to defaults';
+  String get resetToDefaults => 'Palauta oletusasetukset';
 
   @override
-  String get homeRowPosterSize => 'Home Row Poster Size';
+  String get homeRowPosterSize => 'Kotirivin julisteen koko';
 
   @override
-  String get perRowImageTypeSelection => 'Per Row Image Type Selection';
+  String get perRowImageTypeSelection => 'Rivikohtainen kuvatyypin valinta';
 
   @override
   String get configureImageTypeForEachRow =>
-      'Configure image type for each enabled home row';
+      'Määritä kuvatyyppi kullekin käytössä olevalle kotiriville';
 
   @override
   String get mergeContinueWatchingAndNextUp =>
-      'Merge Continue Watching and Next Up';
+      'Yhdistä Jatka katselua ja Seuraava';
 
   @override
-  String get combineBothRows => 'Combine both rows into a single home section';
+  String get combineBothRows => 'Yhdistä molemmat rivit yhdeksi kotiosioon';
 
   @override
-  String get perRowImageType => 'Per Row Image Type';
+  String get perRowImageType => 'Rivikuvatyypin mukaan';
 
   @override
-  String get perRowSettings => 'Per-Row Settings';
+  String get perRowSettings => 'Rivikohtaiset asetukset';
 
   @override
-  String get autoLogin => 'Auto Login';
+  String get autoLogin => 'Automaattinen sisäänkirjautuminen';
 
   @override
-  String get lastUser => 'Last User';
+  String get lastUser => 'Viimeinen käyttäjä';
 
   @override
-  String get specificUser => 'Specific User';
+  String get specificUser => 'Tietty käyttäjä';
 
   @override
-  String get alwaysAuthenticate => 'Always Authenticate';
+  String get alwaysAuthenticate => 'Todenna aina';
 
   @override
   String get requirePasswordWithToken =>
-      'Require password even with stored token';
+      'Vaadi salasana jopa tallennetun tunnuksen kanssa';
 
   @override
-  String get confirmExit => 'Confirm Exit';
+  String get confirmExit => 'Vahvista poistuminen';
 
   @override
   String get showConfirmationBeforeExiting =>
-      'Show confirmation before exiting';
+      'Näytä vahvistus ennen poistumista';
 
   @override
   String get blockContentWithRatings =>
-      'Block content with the following ratings:';
+      'Estä sisältö seuraavilla luokituksilla:';
 
   @override
   String get noContentRatingsFound =>
-      'No content ratings were found on this server yet.';
+      'Tältä palvelimelta ei ole vielä löytynyt sisällön luokituksia.';
 
   @override
   String get couldNotLoadServerRatings =>
-      'Could not load server ratings. Showing saved ratings only.';
+      'Palvelimen arvioita ei voitu ladata. Näytetään vain tallennetut arviot.';
 
   @override
   String get couldNotRefreshRatings =>
-      'Could not refresh ratings from server. Showing saved ratings.';
+      'Arvioita ei voitu päivittää palvelimelta. Näytetään tallennetut arviot.';
 
   @override
-  String get enablePinCode => 'Enable PIN Code';
+  String get enablePinCode => 'Ota PIN-koodi käyttöön';
 
   @override
-  String get requirePinToAccess => 'Require a PIN to access your account';
+  String get requirePinToAccess => 'Vaadi PIN-koodi päästäksesi tilillesi';
 
   @override
-  String get changePin => 'Change PIN';
+  String get changePin => 'Vaihda PIN';
 
   @override
-  String get setNewPinCode => 'Set a new PIN code';
+  String get setNewPinCode => 'Aseta uusi PIN-koodi';
 
   @override
-  String get removePin => 'Remove PIN';
+  String get removePin => 'Poista PIN';
 
   @override
-  String get removePinProtection => 'Remove PIN code protection';
+  String get removePinProtection => 'Poista PIN-koodisuojaus';
 
   @override
-  String get screensaver => 'Screensaver';
+  String get screensaver => 'Näytönsäästäjä';
 
   @override
-  String get inAppScreensaver => 'In-App Screensaver';
+  String get inAppScreensaver => 'Sovelluksen sisäinen näytönsäästäjä';
 
   @override
-  String get enableBuiltInScreensaver => 'Enable the built-in screensaver';
+  String get enableBuiltInScreensaver =>
+      'Ota sisäänrakennettu näytönsäästäjä käyttöön';
 
   @override
-  String get mode => 'Mode';
+  String get mode => 'tila';
 
   @override
-  String get libraryArt => 'Library Art';
+  String get libraryArt => 'Kirjasto Art';
 
   @override
   String get logo => 'Logo';
 
   @override
-  String get clock => 'Clock';
+  String get clock => 'Kello';
 
   @override
-  String get timeout => 'Timeout';
+  String get timeout => 'Aikakatkaisu';
 
   @override
   String minutesShort(int minutes) {
@@ -2779,13 +2850,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get dimmingLevel => 'Dimming Level';
+  String get dimmingLevel => 'Himmennystaso';
 
   @override
-  String get maxAgeRating => 'Max Age Rating';
+  String get maxAgeRating => 'Max ikäluokitus';
 
   @override
-  String get any => 'Any';
+  String get any => 'Mikä tahansa';
 
   @override
   String agePlusValue(int age) {
@@ -2793,23 +2864,23 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get requireAgeRating => 'Require Age Rating';
+  String get requireAgeRating => 'Vaadi ikäluokitus';
 
   @override
-  String get onlyShowRatedContent => 'Only show rated content';
+  String get onlyShowRatedContent => 'Näytä vain arvioitu sisältö';
 
   @override
-  String get showClock => 'Show Clock';
+  String get showClock => 'Näytä kello';
 
   @override
   String get displayClockDuringScreensaver =>
-      'Display clock during screensaver';
+      'Näytä kello näytönsäästäjän aikana';
 
   @override
-  String get rottenTomatoesCritics => 'Rotten Tomatoes (Critics)';
+  String get rottenTomatoesCritics => 'Rotten Tomatoes (kriitikot)';
 
   @override
-  String get rottenTomatoesAudience => 'Rotten Tomatoes (Audience)';
+  String get rottenTomatoesAudience => 'Rotten Tomatoes (yleisö)';
 
   @override
   String get imdb => 'IMDb';
@@ -2818,16 +2889,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get tmdb => 'TMDB';
 
   @override
-  String get metacritic => 'Metacritic';
+  String get metacritic => 'Metakriittinen';
 
   @override
-  String get metacriticUser => 'Metacritic (User)';
+  String get metacriticUser => 'Metacritic (käyttäjä)';
 
   @override
   String get trakt => 'Trakt';
 
   @override
-  String get letterboxd => 'Letterboxd';
+  String get letterboxd => 'Kirjelaatikkod';
 
   @override
   String get myAnimeList => 'MyAnimeList';
@@ -2836,58 +2907,60 @@ class AppLocalizationsFi extends AppLocalizations {
   String get aniList => 'AniList';
 
   @override
-  String get communityRating => 'Community Rating';
+  String get communityRating => 'Yhteisön luokitus';
 
   @override
-  String get ratings => 'Ratings';
+  String get ratings => 'Arviot';
 
   @override
-  String get additionalRatings => 'Additional Ratings';
+  String get additionalRatings => 'Lisäluokitukset';
 
   @override
-  String get showMdbListAndTmdbRatings => 'Show MDBList and TMDB ratings';
+  String get showMdbListAndTmdbRatings => 'Näytä MDBList- ja TMDB-luokitukset';
 
   @override
-  String get ratingLabels => 'Rating Labels';
+  String get ratingLabels => 'Luokitustarrat';
 
   @override
-  String get showLabelsNextToIcons => 'Show labels next to rating icons';
+  String get showLabelsNextToIcons =>
+      'Näytä tunnisteet luokituskuvakkeiden vieressä';
 
   @override
-  String get ratingBadges => 'Rating Badges';
+  String get ratingBadges => 'Arviointimerkit';
 
   @override
-  String get showDecorativeBadges => 'Show decorative badges behind ratings';
+  String get showDecorativeBadges =>
+      'Näytä koristeelliset merkit arvioiden takana';
 
   @override
-  String get episodeRatings => 'Episode Ratings';
+  String get episodeRatings => 'Jaksojen arviot';
 
   @override
-  String get showRatingsOnEpisodes => 'Show ratings on individual episodes';
+  String get showRatingsOnEpisodes => 'Näytä yksittäisten jaksojen arviot';
 
   @override
-  String get ratingSources => 'Rating Sources';
+  String get ratingSources => 'Arviointilähteet';
 
   @override
   String get ratingSourcesDescription =>
-      'Enable and reorder the rating sources shown throughout the app';
+      'Ota käyttöön ja järjestele uudelleen sovelluksessa näkyvät luokituslähteet';
 
   @override
   String get pluginLabel => 'Plugin';
 
   @override
-  String get pluginDetected => 'Plugin Detected';
+  String get pluginDetected => 'Plugin havaittu';
 
   @override
-  String get pluginNotDetected => 'Plugin Not Detected';
+  String get pluginNotDetected => 'Laajennusta ei havaittu';
 
   @override
   String get pluginDetectedDescription =>
-      'Server plugin detected. Sync is enabled automatically the first time the plugin is found.';
+      'Palvelinlaajennus havaittu. Synkronointi otetaan käyttöön automaattisesti, kun laajennus löydetään ensimmäisen kerran.';
 
   @override
   String get pluginNotDetectedDescription =>
-      'Server plugin is not currently detected. Local settings still use their saved values or built-in defaults.';
+      'Palvelinlaajennusta ei tällä hetkellä havaita. Paikalliset asetukset käyttävät edelleen tallennettuja arvojaan tai sisäänrakennettuja oletusasetuksia.';
 
   @override
   String pluginStatusVersion(String status, String version) {
@@ -2895,73 +2968,75 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get availableServices => 'Available Services';
+  String get availableServices => 'Käytettävissä olevat palvelut';
 
   @override
-  String get serverPluginSync => 'Server Plugin Sync';
+  String get serverPluginSync => 'Palvelinlaajennuksen synkronointi';
 
   @override
-  String get syncSettingsWithPlugin => 'Sync settings with the server plugin';
+  String get syncSettingsWithPlugin =>
+      'Synkronoi asetukset palvelinlaajennuksen kanssa';
 
   @override
-  String get whatSyncControls => 'What sync controls';
+  String get whatSyncControls => 'Mitä synkronointia ohjataan';
 
   @override
   String get syncControlsDescription =>
-      'Sync only controls whether plugin-backed settings are pushed to and pulled from the server. Profile selection and profile sync actions are in Customization settings when plugin sync is enabled.';
+      'Synkronointi hallitsee vain sitä, lähetetäänkö laajennusten tukemat asetukset palvelimelle ja vedetäänkö ne sieltä. Profiilin valinta ja profiilin synkronointitoiminnot ovat mukautusasetuksissa, kun laajennuksen synkronointi on käytössä.';
 
   @override
-  String get recentRequests => 'Recent Requests';
+  String get recentRequests => 'Viimeaikaiset pyynnöt';
 
   @override
-  String get recentlyAdded => 'Recently Added';
+  String get recentlyAdded => 'Äskettäin lisätty';
 
   @override
-  String get trending => 'Trending';
+  String get trending => 'Trendaavat';
 
   @override
-  String get popularMovies => 'Popular Movies';
+  String get popularMovies => 'Suosittuja elokuvia';
 
   @override
-  String get movieGenres => 'Movie Genres';
+  String get movieGenres => 'Elokuvatyypit';
 
   @override
-  String get upcomingMovies => 'Upcoming Movies';
+  String get upcomingMovies => 'Tulevia elokuvia';
 
   @override
-  String get studios => 'Studios';
+  String get studios => 'Studiot';
 
   @override
-  String get popularSeries => 'Popular Series';
+  String get popularSeries => 'Suosittu sarja';
 
   @override
-  String get seriesGenres => 'Series Genres';
+  String get seriesGenres => 'Sarjan genret';
 
   @override
-  String get upcomingSeries => 'Upcoming Series';
+  String get upcomingSeries => 'Tuleva sarja';
 
   @override
-  String get networks => 'Networks';
+  String get networks => 'Verkot';
 
   @override
-  String get resetRowsToDefaults => 'Reset rows to defaults';
+  String get resetRowsToDefaults => 'Palauta rivit oletusarvoihin';
 
   @override
-  String get enableSeerr => 'Enable Seerr';
+  String get enableSeerr => 'Ota Seerr käyttöön';
 
   @override
   String get showSeerrInNavigation =>
-      'Show Seerr in navigation (requires server plugin)';
+      'Näytä Seerr navigoinnissa (vaatii palvelinlaajennuksen)';
 
   @override
   String get seerrUnavailable =>
-      'Unavailable because server plugin Seerr support is disabled.';
+      'Ei saatavilla, koska palvelinlaajennuksen Seerr-tuki on poistettu käytöstä.';
 
   @override
-  String get nsfwFilter => 'NSFW Filter';
+  String get nsfwFilter => 'NSFW suodatin';
 
   @override
-  String get hideAdultContent => 'Hide adult content in results';
+  String get hideAdultContent =>
+      'Piilota vain aikuisille suunnattu sisältö tuloksissa';
 
   @override
   String loggedInAs(String username) {
@@ -2969,24 +3044,24 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get discoverRows => 'Discover Rows';
+  String get discoverRows => 'Tutustu riviin';
 
   @override
   String get discoverRowsDescriptionPlugin =>
-      'Drag to reorder. Enable or disable rows. Enabled row order syncs with the Moonfin plugin.';
+      'Järjestä uudelleen vetämällä. Ota rivit käyttöön tai poista ne käytöstä. Käytössä oleva rivijärjestys synkronoituu Moonfin-laajennuksen kanssa.';
 
   @override
   String get discoverRowsDescription =>
-      'Drag to reorder. Enable or disable rows.';
+      'Järjestä uudelleen vetämällä. Ota rivit käyttöön tai poista ne käytöstä.';
 
   @override
-  String get enabled => 'Enabled';
+  String get enabled => 'Käytössä';
 
   @override
-  String get hidden => 'Hidden';
+  String get hidden => 'Piilotettu';
 
   @override
-  String get aboutTitle => 'About';
+  String get aboutTitle => 'Noin';
 
   @override
   String versionValue(String version) {
@@ -2994,49 +3069,50 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get openSourceLicenses => 'Open Source Licenses';
+  String get openSourceLicenses => 'Avoimen lähdekoodin lisenssit';
 
   @override
-  String get sourceCode => 'Source Code';
+  String get sourceCode => 'Lähdekoodi';
 
   @override
   String get sourceCodeUrl =>
       'https://github.com/Moonfin-Client/Mobile-Desktop';
 
   @override
-  String get checkForUpdatesNow => 'Check for Updates Now';
+  String get checkForUpdatesNow => 'Tarkista päivitykset nyt';
 
   @override
   String get checksLatestDesktopRelease =>
-      'Checks latest desktop release for this platform';
+      'Tarkistaa tämän alustan uusimman työpöytäjulkaisun';
 
   @override
-  String get youAreUpToDate => 'You are up to date.';
+  String get youAreUpToDate => 'Olet ajan tasalla.';
 
   @override
   String get couldNotCheckForUpdates =>
-      'Could not check for updates right now.';
+      'Päivityksiä ei voitu tarkistaa juuri nyt.';
 
   @override
   String get noCompatibleUpdate =>
-      'No compatible update package found for this platform.';
+      'Tälle alustalle ei löytynyt yhteensopivaa päivityspakettia.';
 
   @override
   String get updateChecksNotSupported =>
-      'Update checks are not supported on this platform.';
+      'Päivitystarkistuksia ei tueta tällä alustalla.';
 
   @override
   String get updateNotificationsDisabled =>
-      'Update notifications are disabled.';
+      'Päivitysilmoitukset on poistettu käytöstä.';
 
   @override
-  String get pleaseWaitBeforeChecking => 'Please wait before checking again.';
+  String get pleaseWaitBeforeChecking =>
+      'Odota ennen kuin tarkistat uudelleen.';
 
   @override
-  String get latestUpdateAlreadyShown => 'Latest update was already shown.';
+  String get latestUpdateAlreadyShown => 'Viimeisin päivitys näytettiin jo.';
 
   @override
-  String get updateAvailable => 'Update available.';
+  String get updateAvailable => 'Päivitys saatavilla.';
 
   @override
   String updateAvailableVersion(String version) {
@@ -3044,10 +3120,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get updateNotifications => 'Update Notifications';
+  String get updateNotifications => 'Päivitä ilmoitukset';
 
   @override
-  String get showWhenUpdatesAvailable => 'Show when updates are available';
+  String get showWhenUpdatesAvailable => 'Näytä, kun päivityksiä on saatavilla';
 
   @override
   String updateAvailableTitle(String version) {
@@ -3055,44 +3131,44 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get readReleaseNotes => 'Read Release Notes';
+  String get readReleaseNotes => 'Lue julkaisutiedot';
 
   @override
-  String get downloadingUpdate => 'Downloading update...';
+  String get downloadingUpdate => 'Ladataan päivitystä...';
 
   @override
   String get updateDownloadFailed =>
-      'Update download failed. Please try again.';
+      'Päivityksen lataus epäonnistui. Yritä uudelleen.';
 
   @override
-  String get openReleasesPage => 'Open Releases Page';
+  String get openReleasesPage => 'Avaa Julkaisusivu';
 
   @override
-  String get navigation => 'Navigation';
+  String get navigation => 'Navigointi';
 
   @override
-  String get watchedIndicatorsBackdrops => 'Watched indicators, backdrops';
+  String get watchedIndicatorsBackdrops => 'Katsotut indikaattorit, taustat';
 
   @override
   String get focusColorWatchedIndicatorsBackdrops =>
-      'Focus color, watched indicators, backdrops';
+      'Tarkennusväri, katsotut indikaattorit, taustat';
 
   @override
   String get navbarStyleToolbarAppearance =>
-      'Navbar style, toolbar buttons, appearance';
+      'Navigointipalkin tyyli, työkalupalkin painikkeet, ulkonäkö';
 
   @override
-  String get reorderToggleHomeRows => 'Reorder and toggle home rows';
+  String get reorderToggleHomeRows => 'Järjestä ja vaihda kotirivejä uudelleen';
 
   @override
-  String get featuredContentAppearance => 'Featured content, appearance';
+  String get featuredContentAppearance => 'Suositeltu sisältö, ulkonäkö';
 
   @override
   String get posterSizeImageTypeFolderView =>
-      'Poster size, image type, folder view';
+      'Julisteen koko, kuvatyyppi, kansionäkymä';
 
   @override
-  String get mdbListTmdbRatingSources => 'MDBList, TMDB, and rating sources';
+  String get mdbListTmdbRatingSources => 'MDBList, TMDB ja luokituslähteet';
 
   @override
   String gbValue(String value) {
@@ -3100,19 +3176,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Selkeä';
 
   @override
-  String get browse => 'Browse';
+  String get browse => 'Selaa';
 
   @override
-  String get noResults => 'No results';
+  String get noResults => 'Ei tuloksia';
 
   @override
-  String get seerrAvailableStatus => 'Available';
+  String get seerrAvailableStatus => 'Saatavilla';
 
   @override
-  String get seerrRequestedStatus => 'Requested';
+  String get seerrRequestedStatus => 'Pyydetty';
 
   @override
   String itemsCount(int count) {
@@ -3120,19 +3196,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get seerrSettings => 'Seerr Settings';
+  String get seerrSettings => 'Näkijän asetukset';
 
   @override
-  String get requestMore => 'Request More';
+  String get requestMore => 'Pyydä lisää';
 
   @override
-  String get request => 'Request';
+  String get request => 'Pyytää';
 
   @override
-  String get cancelRequest => 'Cancel Request';
+  String get cancelRequest => 'Peruuta pyyntö';
 
   @override
-  String get playInMoonfin => 'Play in Moonfin';
+  String get playInMoonfin => 'Pelaa Moonfinissä';
 
   @override
   String requestedByName(String name) {
@@ -3140,16 +3216,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get approve => 'Approve';
+  String get approve => 'Hyväksyä';
 
   @override
-  String get declineAction => 'Decline';
+  String get declineAction => 'Hylkää';
 
   @override
-  String get similar => 'Similar';
+  String get similar => 'Samanlainen';
 
   @override
-  String get recommendations => 'Recommendations';
+  String get recommendations => 'Suositukset';
 
   @override
   String cancelRequestForTitle(String title) {
@@ -3162,13 +3238,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get keep => 'Keep';
+  String get keep => 'Pitää';
 
   @override
-  String get itemNotFoundInLibrary => 'Item not found in your Moonfin library';
+  String get itemNotFoundInLibrary => 'Kohdetta ei löydy Moonfin-kirjastostasi';
 
   @override
-  String get errorSearchingLibrary => 'Error searching library';
+  String get errorSearchingLibrary => 'Virhe haettaessa kirjastoa';
 
   @override
   String budgetAmount(String amount) {
@@ -3191,34 +3267,35 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get submitRequest => 'Submit Request';
+  String get submitRequest => 'Lähetä pyyntö';
 
   @override
-  String get allSeasons => 'All Seasons';
+  String get allSeasons => 'Kaikki vuodenajat';
 
   @override
-  String get advancedOptions => 'Advanced Options';
+  String get advancedOptions => 'Lisäasetukset';
 
   @override
-  String get noServiceServersConfigured => 'No service servers configured';
+  String get noServiceServersConfigured =>
+      'Palvelupalvelimia ei ole määritetty';
 
   @override
-  String get server => 'Server';
+  String get server => 'Palvelin';
 
   @override
-  String get qualityProfile => 'Quality Profile';
+  String get qualityProfile => 'Laatuprofiili';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => 'Juurikansio';
 
   @override
-  String get showMore => 'Show More';
+  String get showMore => 'Näytä lisää';
 
   @override
-  String get appearances => 'Appearances';
+  String get appearances => 'Ulkonäkö';
 
   @override
-  String get crewSection => 'Crew';
+  String get crewSection => 'Miehistö';
 
   @override
   String ageValue(int age) {
@@ -3226,178 +3303,178 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get noRequests => 'No requests';
+  String get noRequests => 'Ei pyyntöjä';
 
   @override
-  String get pendingStatus => 'Pending';
+  String get pendingStatus => 'Odottaa';
 
   @override
-  String get declinedStatus => 'Declined';
+  String get declinedStatus => 'Hylätty';
 
   @override
-  String get partiallyAvailable => 'Partially Available';
+  String get partiallyAvailable => 'Osittain saatavilla';
 
   @override
-  String get downloadingStatus => 'Downloading';
+  String get downloadingStatus => 'Ladataan';
 
   @override
-  String get approvedStatus => 'Approved';
+  String get approvedStatus => 'Hyväksytty';
 
   @override
-  String get notRequestedStatus => 'Not Requested';
+  String get notRequestedStatus => 'Ei pyydetty';
 
   @override
-  String get blocklistedStatus => 'Blocklisted';
+  String get blocklistedStatus => 'Estolistalla';
 
   @override
-  String get deletedStatus => 'Deleted';
+  String get deletedStatus => 'Poistettu';
 
   @override
-  String get tmdbScore => 'TMDB Score';
+  String get tmdbScore => 'TMDB-pisteet';
 
   @override
-  String get releaseDateLabel => 'Release Date';
+  String get releaseDateLabel => 'Julkaisupäivä';
 
   @override
-  String get firstAirDateLabel => 'First Air Date';
+  String get firstAirDateLabel => 'Ensimmäinen lentopäivä';
 
   @override
-  String get revenueLabel => 'Revenue';
+  String get revenueLabel => 'Tulot';
 
   @override
-  String get runtimeLabel => 'Runtime';
+  String get runtimeLabel => 'Suoritusaika';
 
   @override
-  String get budgetLabel => 'Budget';
+  String get budgetLabel => 'Budjetti';
 
   @override
-  String get originalLanguageLabel => 'Original Language';
+  String get originalLanguageLabel => 'Alkuperäinen kieli';
 
   @override
-  String get seasonsLabel => 'Seasons';
+  String get seasonsLabel => 'Vuodenajat';
 
   @override
-  String get episodesLabel => 'Episodes';
+  String get episodesLabel => 'Jaksot';
 
   @override
-  String get access => 'Access';
+  String get access => 'Pääsy';
 
   @override
-  String get add => 'Add';
+  String get add => 'Lisätä';
 
   @override
-  String get address => 'Address';
+  String get address => 'Osoite';
 
   @override
   String get analytics => 'Analytics';
 
   @override
-  String get catalog => 'Catalog';
+  String get catalog => 'Luettelo';
 
   @override
-  String get content => 'Content';
+  String get content => 'Sisältö';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Kopioida';
 
   @override
-  String get create => 'Create';
+  String get create => 'Luoda';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Poista käytöstä';
 
   @override
-  String get done => 'Done';
+  String get done => 'Tehty';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Muokata';
 
   @override
-  String get encoding => 'Encoding';
+  String get encoding => 'Koodaus';
 
   @override
-  String get error => 'Error';
+  String get error => 'Virhe';
 
   @override
-  String get forward => 'Forward';
+  String get forward => 'Eteenpäin';
 
   @override
-  String get general => 'General';
+  String get general => 'Kenraali';
 
   @override
-  String get go => 'Go';
+  String get go => 'Mennä';
 
   @override
-  String get install => 'Install';
+  String get install => 'Asentaa';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'Asennettu';
 
   @override
-  String get interval => 'Interval';
+  String get interval => 'Intervalli';
 
   @override
-  String get name => 'Name';
+  String get name => 'Nimi';
 
   @override
-  String get networking => 'Networking';
+  String get networking => 'Verkostoituminen';
 
   @override
-  String get next => 'Next';
+  String get next => 'Seuraavaksi';
 
   @override
-  String get path => 'Path';
+  String get path => 'Polku';
 
   @override
-  String get paused => 'Paused';
+  String get paused => 'Keskeytetty';
 
   @override
-  String get permissions => 'Permissions';
+  String get permissions => 'Käyttöoikeudet';
 
   @override
-  String get processing => 'Processing';
+  String get processing => 'Käsittely';
 
   @override
-  String get profile => 'Profile';
+  String get profile => 'Profiili';
 
   @override
-  String get provider => 'Provider';
+  String get provider => 'Palveluntarjoaja';
 
   @override
-  String get refresh => 'Refresh';
+  String get refresh => 'Päivitä';
 
   @override
-  String get remote => 'Remote';
+  String get remote => 'Kauko';
 
   @override
-  String get rename => 'Rename';
+  String get rename => 'Nimeä uudelleen';
 
   @override
-  String get revoke => 'Revoke';
+  String get revoke => 'Peruuttaa';
 
   @override
-  String get role => 'Role';
+  String get role => 'Rooli';
 
   @override
-  String get root => 'Root';
+  String get root => 'Juuri';
 
   @override
-  String get run => 'Run';
+  String get run => 'Juokse';
 
   @override
-  String get search => 'Search';
+  String get search => 'Haku';
 
   @override
-  String get select => 'Select';
+  String get select => 'Valitse';
 
   @override
-  String get send => 'Send';
+  String get send => 'Lähetä';
 
   @override
-  String get sessions => 'Sessions';
+  String get sessions => 'Istunnot';
 
   @override
-  String get set => 'Set';
+  String get set => 'Sarja';
 
   @override
   String get status => 'Status';
@@ -3406,110 +3483,111 @@ class AppLocalizationsFi extends AppLocalizations {
   String get stop => 'Stop';
 
   @override
-  String get streaming => 'Streaming';
+  String get streaming => 'Suoratoisto';
 
   @override
-  String get time => 'Time';
+  String get time => 'Aika';
 
   @override
   String get trickplay => 'Trickplay';
 
   @override
-  String get uninstall => 'Uninstall';
+  String get uninstall => 'Poista asennus';
 
   @override
-  String get up => 'Up';
+  String get up => 'Ylös';
 
   @override
-  String get update => 'Update';
+  String get update => 'Päivittää';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'Lataa';
 
   @override
-  String get unmute => 'Unmute';
+  String get unmute => 'Poista mykistys';
 
   @override
-  String get mute => 'Mute';
+  String get mute => 'Mykistä';
 
   @override
-  String get branding => 'Branding';
+  String get branding => 'Brändäys';
 
   @override
-  String get adminDrawerDashboard => 'Dashboard';
+  String get adminDrawerDashboard => 'Kojelauta';
 
   @override
   String get adminDrawerAnalytics => 'Analytics';
 
   @override
-  String get adminDrawerSettings => 'Settings';
+  String get adminDrawerSettings => 'Asetukset';
 
   @override
-  String get adminDrawerBranding => 'Branding';
+  String get adminDrawerBranding => 'Brändäys';
 
   @override
-  String get adminDrawerUsers => 'Users';
+  String get adminDrawerUsers => 'Käyttäjät';
 
   @override
-  String get adminDrawerLibraries => 'Libraries';
+  String get adminDrawerLibraries => 'Kirjastot';
 
   @override
-  String get adminDrawerTranscoding => 'Transcoding';
+  String get adminDrawerTranscoding => 'Transkoodaus';
 
   @override
-  String get adminDrawerResume => 'Resume';
+  String get adminDrawerResume => 'Jatkaa';
 
   @override
-  String get adminDrawerStreaming => 'Streaming';
+  String get adminDrawerStreaming => 'Suoratoisto';
 
   @override
   String get adminDrawerTrickplay => 'Trickplay';
 
   @override
-  String get adminDrawerDevices => 'Devices';
+  String get adminDrawerDevices => 'Laitteet';
 
   @override
-  String get adminDrawerActivity => 'Activity';
+  String get adminDrawerActivity => 'Toiminta';
 
   @override
-  String get adminDrawerNetworking => 'Networking';
+  String get adminDrawerNetworking => 'Verkostoituminen';
 
   @override
-  String get adminDrawerApiKeys => 'API Keys';
+  String get adminDrawerApiKeys => 'API-avaimet';
 
   @override
-  String get adminDrawerBackups => 'Backups';
+  String get adminDrawerBackups => 'Varmuuskopiot';
 
   @override
-  String get adminDrawerLogs => 'Logs';
+  String get adminDrawerLogs => 'Lokit';
 
   @override
-  String get adminDrawerScheduledTasks => 'Scheduled Tasks';
+  String get adminDrawerScheduledTasks => 'Aikataulutetut tehtävät';
 
   @override
   String get adminDrawerPlugins => 'Plugins';
 
   @override
-  String get adminDrawerRepositories => 'Repositories';
+  String get adminDrawerRepositories => 'Tietovarastot';
 
   @override
-  String get adminDrawerLiveTv => 'Live TV';
+  String get adminDrawerLiveTv => 'Live-TV';
 
   @override
-  String get adminExitTooltip => 'Exit Admin';
+  String get adminExitTooltip => 'Poistu järjestelmänvalvojasta';
 
   @override
-  String get adminDashboardLoadFailed => 'Failed to load dashboard';
+  String get adminDashboardLoadFailed => 'Kojelaudan lataaminen epäonnistui';
 
   @override
-  String get adminMediaOverview => 'Media Overview';
+  String get adminMediaOverview => 'Median yleiskatsaus';
 
   @override
-  String get adminMediaTotalsError => 'Could not load server media totals.';
+  String get adminMediaTotalsError =>
+      'Palvelimen mediakokonaisuuksia ei voitu ladata.';
 
   @override
   String get adminMediaOverviewSubtitle =>
-      'A quick read on how much content is on this server.';
+      'Nopea luku siitä, kuinka paljon sisältöä tällä palvelimella on.';
 
   @override
   String adminPluginUpdatesAvailable(int count) {
@@ -3532,58 +3610,58 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get analyticsMediaDistribution => 'Media Distribution';
+  String get analyticsMediaDistribution => 'Median jakelu';
 
   @override
-  String get analyticsVideoCodecs => 'Video Codecs';
+  String get analyticsVideoCodecs => 'Videokoodekit';
 
   @override
-  String get analyticsAudioCodecs => 'Audio Codecs';
+  String get analyticsAudioCodecs => 'Äänikoodekit';
 
   @override
-  String get analyticsContainers => 'Containers';
+  String get analyticsContainers => 'Säiliöt';
 
   @override
-  String get analyticsTopGenres => 'Top Genres';
+  String get analyticsTopGenres => 'Suosituimmat genret';
 
   @override
-  String get analyticsReleaseYears => 'Release Years';
+  String get analyticsReleaseYears => 'Julkaisuvuodet';
 
   @override
-  String get analyticsContentRatings => 'Content Ratings';
+  String get analyticsContentRatings => 'Sisällön luokitukset';
 
   @override
-  String get analyticsRuntimeBuckets => 'Runtime Buckets';
+  String get analyticsRuntimeBuckets => 'Ajonaikaiset kauhat';
 
   @override
-  String get analyticsFileFormats => 'File Formats';
+  String get analyticsFileFormats => 'Tiedostomuodot';
 
   @override
-  String get analyticsNoData => 'No Data Available.';
+  String get analyticsNoData => 'Tietoja ei ole saatavilla.';
 
   @override
-  String get adminServerInfo => 'Server Info';
+  String get adminServerInfo => 'Palvelimen tiedot';
 
   @override
-  String get adminRestartPending => 'Restart Pending';
+  String get adminRestartPending => 'Uudelleenkäynnistys Odottaa';
 
   @override
-  String get adminServerPaths => 'Server Paths';
+  String get adminServerPaths => 'Palvelinpolut';
 
   @override
-  String get adminServerActions => 'Server Actions';
+  String get adminServerActions => 'Palvelimen toiminnot';
 
   @override
-  String get adminRestartServer => 'Restart Server';
+  String get adminRestartServer => 'Käynnistä palvelin uudelleen';
 
   @override
-  String get adminShutdownServer => 'Shutdown Server';
+  String get adminShutdownServer => 'Sammuta palvelin';
 
   @override
-  String get adminScanLibraries => 'Scan Libraries';
+  String get adminScanLibraries => 'Skannaa kirjastot';
 
   @override
-  String get adminLibraryScanStarted => 'Library scan started';
+  String get adminLibraryScanStarted => 'Kirjaston skannaus aloitettu';
 
   @override
   String errorGeneric(String error) {
@@ -3591,26 +3669,27 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminServerRebootInProgress => 'Server reboot in progress';
+  String get adminServerRebootInProgress =>
+      'Palvelimen uudelleenkäynnistys käynnissä';
 
   @override
   String get adminServerRebootMessage =>
-      'Server reboot in progress, please restart Moonfin';
+      'Palvelimen uudelleenkäynnistys käynnissä, käynnistä Moonfin uudelleen';
 
   @override
-  String get adminActiveSessions => 'Active Sessions';
+  String get adminActiveSessions => 'Aktiiviset istunnot';
 
   @override
-  String get adminSessionsLoadFailed => 'Failed to load sessions';
+  String get adminSessionsLoadFailed => 'Istuntojen lataaminen epäonnistui';
 
   @override
-  String get adminNoActiveSessions => 'No active sessions';
+  String get adminNoActiveSessions => 'Ei aktiivisia istuntoja';
 
   @override
-  String get adminRecentActivity => 'Recent Activity';
+  String get adminRecentActivity => 'Viimeaikainen toiminta';
 
   @override
-  String get adminNoRecentActivity => 'No recent activity';
+  String get adminNoRecentActivity => 'Ei viimeaikaista toimintaa';
 
   @override
   String adminCommandFailed(String error) {
@@ -3618,25 +3697,25 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminSendMessage => 'Send Message';
+  String get adminSendMessage => 'Lähetä Viesti';
 
   @override
-  String get adminMessageTextHint => 'Message text';
+  String get adminMessageTextHint => 'Viestin teksti';
 
   @override
-  String get adminSetVolume => 'Set Volume';
+  String get adminSetVolume => 'Aseta äänenvoimakkuus';
 
   @override
-  String get sessionPrev => 'Prev';
+  String get sessionPrev => 'Ed';
 
   @override
-  String get sessionRewind => 'Rewind';
+  String get sessionRewind => 'Kelaa taaksepäin';
 
   @override
-  String get sessionForward => 'Forward';
+  String get sessionForward => 'Eteenpäin';
 
   @override
-  String get sessionNext => 'Next';
+  String get sessionNext => 'Seuraavaksi';
 
   @override
   String get sessionVolumeDown => 'Vol –';
@@ -3648,34 +3727,34 @@ class AppLocalizationsFi extends AppLocalizations {
   String get uhd4k => '4K';
 
   @override
-  String get nowPlaying => 'Now Playing';
+  String get nowPlaying => 'Nyt pelaa';
 
   @override
-  String get volume => 'Volume';
+  String get volume => 'Äänenvoimakkuus';
 
   @override
-  String get actions => 'Actions';
+  String get actions => 'Toiminnot';
 
   @override
   String get videoCodec => 'Video Codec';
 
   @override
-  String get audioCodec => 'Audio Codec';
+  String get audioCodec => 'Äänikoodekki';
 
   @override
   String get hwAccel => 'HW Accel';
 
   @override
-  String get completion => 'Completion';
+  String get completion => 'Valmistuminen';
 
   @override
-  String get direct => 'Direct';
+  String get direct => 'Suoraan';
 
   @override
-  String get adminDisconnect => 'Disconnect';
+  String get adminDisconnect => 'Katkaise yhteys';
 
   @override
-  String get adminClearDates => 'Clear dates';
+  String get adminClearDates => 'Selkeät päivämäärät';
 
   @override
   String adminActivityLoadFailed(String error) {
@@ -3683,16 +3762,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminNoActivityEntries => 'No activity entries';
+  String get adminNoActivityEntries => 'Ei aktiviteettimerkintöjä';
 
   @override
-  String get adminEditDeviceName => 'Edit Device Name';
+  String get adminEditDeviceName => 'Muokkaa laitteen nimeä';
 
   @override
-  String get adminCustomName => 'Custom Name';
+  String get adminCustomName => 'Mukautettu nimi';
 
   @override
-  String get adminDeviceNameUpdated => 'Device name updated';
+  String get adminDeviceNameUpdated => 'Laitteen nimi päivitetty';
 
   @override
   String adminDeviceUpdateFailed(String error) {
@@ -3700,10 +3779,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteDevice => 'Delete Device';
+  String get adminDeleteDevice => 'Poista laite';
 
   @override
-  String get adminDeviceDeleted => 'Device deleted';
+  String get adminDeviceDeleted => 'Laite poistettu';
 
   @override
   String adminDeviceDeleteFailed(String error) {
@@ -3711,28 +3790,28 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminDevicesLoadFailed => 'Failed to load devices';
+  String get adminDevicesLoadFailed => 'Laitteiden lataaminen epäonnistui';
 
   @override
-  String get adminSearchDevices => 'Search devices';
+  String get adminSearchDevices => 'Etsi laitteita';
 
   @override
-  String get adminThisDevice => 'This Device';
+  String get adminThisDevice => 'Tämä laite';
 
   @override
-  String get adminEditName => 'Edit Name';
+  String get adminEditName => 'Muokkaa nimeä';
 
   @override
-  String get adminLibrariesLoadFailed => 'Failed to load libraries';
+  String get adminLibrariesLoadFailed => 'Kirjastojen lataaminen epäonnistui';
 
   @override
-  String get adminNoLibraries => 'No libraries configured';
+  String get adminNoLibraries => 'Ei määritettyjä kirjastoja';
 
   @override
-  String get adminScanAllLibraries => 'Scan All Libraries';
+  String get adminScanAllLibraries => 'Skannaa kaikki kirjastot';
 
   @override
-  String get adminAddLibrary => 'Add Library';
+  String get adminAddLibrary => 'Lisää kirjasto';
 
   @override
   String adminScanFailed(String error) {
@@ -3740,10 +3819,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminRenameLibrary => 'Rename Library';
+  String get adminRenameLibrary => 'Nimeä kirjasto uudelleen';
 
   @override
-  String get adminNewName => 'New name';
+  String get adminNewName => 'Uusi nimi';
 
   @override
   String adminLibraryRenamed(String name) {
@@ -3756,7 +3835,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteLibrary => 'Delete Library';
+  String get adminDeleteLibrary => 'Poista kirjasto';
 
   @override
   String adminLibraryDeleted(String name) {
@@ -3774,7 +3853,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminRemovePath => 'Remove Path';
+  String get adminRemovePath => 'Poista polku';
 
   @override
   String adminRemovePathConfirm(String path) {
@@ -3787,7 +3866,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryOptionsSaved => 'Library options saved';
+  String get adminLibraryOptionsSaved => 'Kirjastoasetukset tallennettu';
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
@@ -3795,34 +3874,35 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryLoadFailed => 'Failed to load library';
+  String get adminLibraryLoadFailed => 'Kirjaston lataaminen epäonnistui';
 
   @override
-  String get adminNoMediaPaths => 'No media paths configured';
+  String get adminNoMediaPaths => 'Mediapolkuja ei ole määritetty';
 
   @override
-  String get adminAddPath => 'Add Path';
+  String get adminAddPath => 'Lisää polku';
 
   @override
-  String get adminBrowseFilesystem => 'Browse server filesystem:';
+  String get adminBrowseFilesystem => 'Selaa palvelimen tiedostojärjestelmää:';
 
   @override
-  String get adminSaveOptions => 'Save Options';
+  String get adminSaveOptions => 'Tallenna asetukset';
 
   @override
-  String get adminPreferredMetadataLanguage => 'Preferred metadata language';
+  String get adminPreferredMetadataLanguage =>
+      'Ensisijainen metatietojen kieli';
 
   @override
-  String get adminMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminMetadataLanguageHint => 'esim. en, de, fr';
 
   @override
-  String get adminMetadataCountryCode => 'Metadata country code';
+  String get adminMetadataCountryCode => 'Metatietojen maakoodi';
 
   @override
-  String get adminMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminMetadataCountryHint => 'esim. USA, DE, FR';
 
   @override
-  String get adminLibraryNameRequired => 'Library name is required';
+  String get adminLibraryNameRequired => 'Kirjaston nimi on pakollinen';
 
   @override
   String adminLibraryCreateFailed(String error) {
@@ -3830,25 +3910,26 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryName => 'Library Name';
+  String get adminLibraryName => 'Kirjaston nimi';
 
   @override
-  String get adminSelectedPaths => 'Selected Paths:';
+  String get adminSelectedPaths => 'Valitut polut:';
 
   @override
-  String get adminNoPathsAdded => 'No paths added (can be added later)';
+  String get adminNoPathsAdded =>
+      'Polkuja ei lisätty (voidaan lisätä myöhemmin)';
 
   @override
-  String get adminCreateLibrary => 'Create Library';
+  String get adminCreateLibrary => 'Luo kirjasto';
 
   @override
-  String get paths => 'Paths:';
+  String get paths => 'Polut:';
 
   @override
-  String get adminDisableUser => 'Disable User';
+  String get adminDisableUser => 'Poista käyttäjä käytöstä';
 
   @override
-  String get adminEnableUser => 'Enable User';
+  String get adminEnableUser => 'Ota käyttäjä käyttöön';
 
   @override
   String adminDisableUserConfirm(String name) {
@@ -3876,16 +3957,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminUsersLoadFailed => 'Failed to load users';
+  String get adminUsersLoadFailed => 'Käyttäjien lataaminen epäonnistui';
 
   @override
-  String get adminSearchUsers => 'Search users';
+  String get adminSearchUsers => 'Etsi käyttäjiä';
 
   @override
-  String get adminEditUser => 'Edit User';
+  String get adminEditUser => 'Muokkaa käyttäjää';
 
   @override
-  String get adminAddUser => 'Add User';
+  String get adminAddUser => 'Lisää käyttäjä';
 
   @override
   String adminUserCreateFailed(String error) {
@@ -3893,19 +3974,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminCreateUser => 'Create User';
+  String get adminCreateUser => 'Luo käyttäjä';
 
   @override
-  String get adminPasswordOptional => 'Password (optional)';
+  String get adminPasswordOptional => 'Salasana (valinnainen)';
 
   @override
-  String get adminUsernameRequired => 'Username cannot be empty';
+  String get adminUsernameRequired => 'Käyttäjätunnus ei voi olla tyhjä';
 
   @override
-  String get adminNoProfileChanges => 'No profile changes to save';
+  String get adminNoProfileChanges => 'Ei tallennettavia profiilimuutoksia';
 
   @override
-  String get adminProfileSaved => 'Profile saved';
+  String get adminProfileSaved => 'Profiili tallennettu';
 
   @override
   String adminSaveFailed(String error) {
@@ -3913,10 +3994,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminPermissionsSaved => 'Permissions saved';
+  String get adminPermissionsSaved => 'Käyttöoikeudet tallennettu';
 
   @override
-  String get adminPasswordsMismatch => 'Passwords do not match';
+  String get adminPasswordsMismatch => 'Salasanat eivät täsmää';
 
   @override
   String adminFailed(String error) {
@@ -3924,135 +4005,136 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminUserLoadFailed => 'Failed to load user';
+  String get adminUserLoadFailed => 'Käyttäjän lataaminen epäonnistui';
 
   @override
-  String get adminBackToUsers => 'Back to Users';
+  String get adminBackToUsers => 'Takaisin Käyttäjiin';
 
   @override
-  String get adminSaveProfile => 'Save Profile';
+  String get adminSaveProfile => 'Tallenna profiili';
 
   @override
-  String get adminDeleteUser => 'Delete User';
+  String get adminDeleteUser => 'Poista käyttäjä';
 
   @override
   String get admin => 'Admin';
 
   @override
   String get adminFullAccessWarning =>
-      'Administrators have complete access to the server. Grant with caution.';
+      'Järjestelmänvalvojilla on täydellinen pääsy palvelimeen. Myönnä varoen.';
 
   @override
-  String get administrator => 'Administrator';
+  String get administrator => 'Järjestelmänvalvoja';
 
   @override
-  String get adminHiddenUser => 'Hidden user';
+  String get adminHiddenUser => 'Piilotettu käyttäjä';
 
   @override
-  String get adminAllowMediaPlayback => 'Allow media playback';
+  String get adminAllowMediaPlayback => 'Salli median toisto';
 
   @override
-  String get adminAllowAudioTranscoding => 'Allow audio transcoding';
+  String get adminAllowAudioTranscoding => 'Salli äänen transkoodaus';
 
   @override
-  String get adminAllowVideoTranscoding => 'Allow video transcoding';
+  String get adminAllowVideoTranscoding => 'Salli videon transkoodaus';
 
   @override
-  String get adminAllowRemuxing => 'Allow remuxing';
+  String get adminAllowRemuxing => 'Salli sekoittaminen';
 
   @override
-  String get adminForceRemoteTranscoding => 'Force remote source transcoding';
+  String get adminForceRemoteTranscoding => 'Pakota etälähteen transkoodaus';
 
   @override
-  String get adminAllowContentDeletion => 'Allow content deletion';
+  String get adminAllowContentDeletion => 'Salli sisällön poistaminen';
 
   @override
-  String get adminAllowContentDownloading => 'Allow content downloading';
+  String get adminAllowContentDownloading => 'Salli sisällön lataaminen';
 
   @override
-  String get adminAllowPublicSharing => 'Allow public sharing';
+  String get adminAllowPublicSharing => 'Salli julkinen jakaminen';
 
   @override
-  String get adminAllowRemoteControl => 'Allow remote control of other users';
+  String get adminAllowRemoteControl => 'Salli muiden käyttäjien kauko-ohjaus';
 
   @override
-  String get adminAllowSharedDeviceControl => 'Allow shared device control';
+  String get adminAllowSharedDeviceControl => 'Salli jaettu laitehallinta';
 
   @override
-  String get adminAllowRemoteAccess => 'Allow remote access';
+  String get adminAllowRemoteAccess => 'Salli etäkäyttö';
 
   @override
-  String get adminRemoteBitrateLimit => 'Remote client bitrate limit (bps)';
+  String get adminRemoteBitrateLimit =>
+      'Etäasiakkaan bittinopeusrajoitus (bps)';
 
   @override
-  String get adminLeaveEmptyNoLimit => 'Leave empty for no limit';
+  String get adminLeaveEmptyNoLimit => 'Jätä tyhjäksi ilman rajoituksia';
 
   @override
-  String get adminMaxActiveSessions => 'Max active sessions';
+  String get adminMaxActiveSessions => 'Aktiivisten istuntojen enimmäismäärä';
 
   @override
-  String get adminAllowLiveTvAccess => 'Allow Live TV access';
+  String get adminAllowLiveTvAccess => 'Salli suoran television käyttö';
 
   @override
-  String get adminAllowLiveTvManagement => 'Allow Live TV management';
+  String get adminAllowLiveTvManagement => 'Salli live-TV:n hallinta';
 
   @override
-  String get adminAllowCollectionManagement => 'Allow collection management';
+  String get adminAllowCollectionManagement => 'Salli kokoelman hallinta';
 
   @override
-  String get adminAllowSubtitleManagement => 'Allow subtitle management';
+  String get adminAllowSubtitleManagement => 'Salli tekstityksen hallinta';
 
   @override
-  String get adminAllowLyricManagement => 'Allow lyric management';
+  String get adminAllowLyricManagement => 'Salli sanoituksen hallinta';
 
   @override
-  String get adminSavePermissions => 'Save Permissions';
+  String get adminSavePermissions => 'Tallenna käyttöoikeudet';
 
   @override
-  String get adminEnableAllLibraryAccess => 'Enable access to all libraries';
+  String get adminEnableAllLibraryAccess => 'Salli pääsy kaikkiin kirjastoihin';
 
   @override
-  String get adminSaveAccess => 'Save Access';
+  String get adminSaveAccess => 'Tallenna käyttöoikeus';
 
   @override
-  String get adminChangePassword => 'Change Password';
+  String get adminChangePassword => 'Vaihda salasana';
 
   @override
-  String get adminNewPassword => 'New Password';
+  String get adminNewPassword => 'Uusi salasana';
 
   @override
-  String get adminConfirmPassword => 'Confirm Password';
+  String get adminConfirmPassword => 'Vahvista salasana';
 
   @override
-  String get adminSetPassword => 'Set Password';
+  String get adminSetPassword => 'Aseta salasana';
 
   @override
-  String get adminResetPassword => 'Reset Password';
+  String get adminResetPassword => 'Palauta salasana';
 
   @override
-  String get adminPasswordReset => 'Password reset';
+  String get adminPasswordReset => 'Salasanan palautus';
 
   @override
-  String get adminPasswordUpdated => 'Password updated';
+  String get adminPasswordUpdated => 'Salasana päivitetty';
 
   @override
-  String get adminUserSettings => 'User Settings';
+  String get adminUserSettings => 'Käyttäjäasetukset';
 
   @override
-  String get adminLibraryAccess => 'Library Access';
+  String get adminLibraryAccess => 'Kirjaston pääsy';
 
   @override
-  String get adminDeviceAndChannelAccess => 'Device & Channel Access';
+  String get adminDeviceAndChannelAccess => 'Laitteen ja kanavan käyttöoikeus';
 
   @override
-  String get adminEnableAllDevices => 'Enable access to all devices';
+  String get adminEnableAllDevices => 'Salli pääsy kaikkiin laitteisiin';
 
   @override
-  String get adminEnableAllChannels => 'Enable access to all channels';
+  String get adminEnableAllChannels => 'Salli pääsy kaikille kanaville';
 
   @override
   String get adminResetPasswordWarning =>
-      'This will remove the password. The user will be able to log in without a password.';
+      'Tämä poistaa salasanan. Käyttäjä voi kirjautua sisään ilman salasanaa.';
 
   @override
   String adminServerReturnedHttp(int status) {
@@ -4075,20 +4157,20 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminCreateApiKey => 'Create API Key';
+  String get adminCreateApiKey => 'Luo API-avain';
 
   @override
-  String get adminAppName => 'App name';
+  String get adminAppName => 'Sovelluksen nimi';
 
   @override
-  String get adminApiKeyCreated => 'API Key Created';
+  String get adminApiKeyCreated => 'API-avain luotu';
 
   @override
   String get adminApiKeyCreatedNoToken =>
-      'Key created successfully. The server did not return the token. Check server API keys.';
+      'Avain luotu onnistuneesti. Palvelin ei palauttanut merkkiä. Tarkista palvelimen API-avaimet.';
 
   @override
-  String get adminKeyCopied => 'Key copied to clipboard';
+  String get adminKeyCopied => 'Avain kopioitu leikepöydälle';
 
   @override
   String adminApiKeyCreateFailed(String error) {
@@ -4096,10 +4178,11 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminKeyTokenMissing => 'Key token missing from server response';
+  String get adminKeyTokenMissing =>
+      'Palvelimen vastauksesta puuttuu avaintunnus';
 
   @override
-  String get adminRevokeApiKey => 'Revoke API Key';
+  String get adminRevokeApiKey => 'Peruuta API-avain';
 
   @override
   String adminRevokeKeyConfirm(String name) {
@@ -4107,7 +4190,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeyRevoked => 'API key revoked';
+  String get adminApiKeyRevoked => 'API-avain peruutettu';
 
   @override
   String adminApiKeyRevokeFailed(String error) {
@@ -4115,19 +4198,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeysLoadFailed => 'Failed to load API keys';
+  String get adminApiKeysLoadFailed => 'API-avaimien lataaminen epäonnistui';
 
   @override
-  String get adminApiKeysTitle => 'API Keys';
+  String get adminApiKeysTitle => 'API-avaimet';
 
   @override
-  String get adminCreateKey => 'Create Key';
+  String get adminCreateKey => 'Luo avain';
 
   @override
-  String get adminNoApiKeys => 'No API keys found';
+  String get adminNoApiKeys => 'API-avaimia ei löytynyt';
 
   @override
-  String get adminUnknownApp => 'Unknown App';
+  String get adminUnknownApp => 'Tuntematon sovellus';
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
@@ -4135,10 +4218,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminCreatingBackup => 'Creating backup...';
+  String get adminCreatingBackup => 'Luodaan varmuuskopiota...';
 
   @override
-  String get adminBackupCreated => 'Backup created successfully';
+  String get adminBackupCreated => 'Varmuuskopion luominen onnistui';
 
   @override
   String adminBackupCreateFailed(String error) {
@@ -4146,7 +4229,8 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminBackupPathMissing => 'Backup path missing in server response';
+  String get adminBackupPathMissing =>
+      'Palvelimen vastauksesta puuttuu varmuuskopiopolku';
 
   @override
   String adminBackupManifest(String name) {
@@ -4159,10 +4243,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminConfirmRestore => 'Confirm Restore';
+  String get adminConfirmRestore => 'Vahvista palautus';
 
   @override
-  String get adminRestoringBackup => 'Restoring backup...';
+  String get adminRestoringBackup => 'Palautetaan varmuuskopiota...';
 
   @override
   String adminRestoreFailed(String error) {
@@ -4170,31 +4254,32 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminBackupsLoadFailed => 'Failed to load backups';
+  String get adminBackupsLoadFailed =>
+      'Varmuuskopioiden lataaminen epäonnistui';
 
   @override
-  String get adminCreateBackup => 'Create Backup';
+  String get adminCreateBackup => 'Luo varmuuskopio';
 
   @override
-  String get adminNoBackups => 'No backups found';
+  String get adminNoBackups => 'Varmuuskopioita ei löytynyt';
 
   @override
-  String get adminViewDetails => 'View Details';
+  String get adminViewDetails => 'Näytä tiedot';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Palauttaa';
 
   @override
-  String get adminLogsLoadFailed => 'Failed to load server logs';
+  String get adminLogsLoadFailed => 'Palvelinlokien lataaminen epäonnistui';
 
   @override
-  String get adminNoLogFiles => 'No log files found';
+  String get adminNoLogFiles => 'Lokitiedostoja ei löytynyt';
 
   @override
-  String get adminLogCopied => 'Log copied to clipboard';
+  String get adminLogCopied => 'Loki kopioitu leikepöydälle';
 
   @override
-  String get adminSaveLogFile => 'Save log file';
+  String get adminSaveLogFile => 'Tallenna lokitiedosto';
 
   @override
   String adminSavedTo(String path) {
@@ -4212,10 +4297,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminSearchInLog => 'Search in log';
+  String get adminSearchInLog => 'Hae lokista';
 
   @override
-  String get adminNoMatchingLines => 'No matching lines';
+  String get adminNoMatchingLines => 'Ei vastaavia rivejä';
 
   @override
   String adminTasksLoadFailed(String error) {
@@ -4223,10 +4308,11 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminNoScheduledTasks => 'No scheduled tasks found';
+  String get adminNoScheduledTasks => 'Ajastettuja tehtäviä ei löytynyt';
 
   @override
-  String get adminNoTasksMatchFilter => 'No tasks match the current filter';
+  String get adminNoTasksMatchFilter =>
+      'Yksikään tehtävä ei vastaa nykyistä suodatinta';
 
   @override
   String adminTaskStartFailed(String error) {
@@ -4244,7 +4330,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminRunNow => 'Run Now';
+  String get adminRunNow => 'Juokse nyt';
 
   @override
   String adminTriggerRemoveFailed(String error) {
@@ -4257,25 +4343,25 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminLastExecution => 'Last Execution';
+  String get adminLastExecution => 'Viimeinen teloitus';
 
   @override
-  String get adminTriggers => 'Triggers';
+  String get adminTriggers => 'Liipaisimet';
 
   @override
-  String get adminAddTrigger => 'Add Trigger';
+  String get adminAddTrigger => 'Lisää triggeri';
 
   @override
-  String get adminNoTriggers => 'No triggers configured';
+  String get adminNoTriggers => 'Liipaimia ei ole määritetty';
 
   @override
-  String get adminTriggerType => 'Trigger Type';
+  String get adminTriggerType => 'Liipaisimen tyyppi';
 
   @override
-  String get adminTimeLimit => 'Time limit (optional)';
+  String get adminTimeLimit => 'Aikaraja (valinnainen)';
 
   @override
-  String get adminNoLimit => 'No limit';
+  String get adminNoLimit => 'Ei rajaa';
 
   @override
   String adminHours(String hours) {
@@ -4283,10 +4369,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminDayOfWeek => 'Day of week';
+  String get adminDayOfWeek => 'Viikon päivä';
 
   @override
-  String get adminSearchPlugins => 'Search plugins...';
+  String get adminSearchPlugins => 'Hae laajennuksia...';
 
   @override
   String adminPluginToggleFailed(String error) {
@@ -4294,7 +4380,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminUninstallPlugin => 'Uninstall Plugin';
+  String get adminUninstallPlugin => 'Poista laajennus';
 
   @override
   String adminUninstallPluginConfirm(String name) {
@@ -4322,10 +4408,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminNoPluginsMatchSearch => 'No plugins match your search';
+  String get adminNoPluginsMatchSearch => 'Mikään laajennus ei vastaa hakuasi';
 
   @override
-  String get adminNoPluginsInstalled => 'No plugins installed';
+  String get adminNoPluginsInstalled => 'Laajennuksia ei ole asennettu';
 
   @override
   String adminInstallUpdate(String version) {
@@ -4338,20 +4424,20 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminNoPackagesMatchSearch => 'No packages match your search';
+  String get adminNoPackagesMatchSearch => 'Ei hakuasi vastaavia paketteja';
 
   @override
-  String get adminNoPackagesAvailable => 'No packages available';
+  String get adminNoPackagesAvailable => 'Paketteja ei ole saatavilla';
 
   @override
-  String get adminExperimentalIntegration => 'Experimental Integration';
+  String get adminExperimentalIntegration => 'Kokeellinen integraatio';
 
   @override
   String get adminExperimentalWarning =>
-      'Plugin settings integration is still experimental. Some settings pages may not render correctly.';
+      'Plugin-asetusten integrointi on vielä kokeellista. Jotkin asetussivut eivät välttämättä näy oikein.';
 
   @override
-  String get continueAction => 'Continue';
+  String get continueAction => 'Jatkaa';
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
@@ -4370,7 +4456,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get adminMissingAuthToken =>
-      'Unable to open settings: missing auth token.';
+      'Asetuksia ei voi avata: todennustunnus puuttuu.';
 
   @override
   String adminPluginLoadFailed(String error) {
@@ -4378,7 +4464,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginNotFound => 'Plugin not found';
+  String get adminPluginNotFound => 'Plugin ei löydy';
 
   @override
   String adminPluginVersion(String version) {
@@ -4386,19 +4472,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminEnablePlugin => 'Enable Plugin';
+  String get adminEnablePlugin => 'Ota laajennus käyttöön';
 
   @override
-  String get adminPluginSettingsPage => 'Plugin settings page';
+  String get adminPluginSettingsPage => 'Plugin asetussivu';
 
   @override
-  String get adminRevisionHistory => 'Revision History';
+  String get adminRevisionHistory => 'Versiohistoria';
 
   @override
-  String get adminNoChangelog => 'No changelog available.';
+  String get adminNoChangelog => 'Muutoslokia ei ole saatavilla.';
 
   @override
-  String get adminRemoveRepository => 'Remove Repository';
+  String get adminRemoveRepository => 'Poista arkisto';
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
@@ -4416,16 +4502,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminRepositoryNameHint => 'e.g. Jellyfin Stable';
+  String get adminRepositoryNameHint => 'esim. Jellyfin vakaa';
 
   @override
-  String get adminRepositoryUrl => 'Repository URL';
+  String get adminRepositoryUrl => 'Tietovaraston URL-osoite';
 
   @override
-  String get adminAddEntry => 'Add entry';
+  String get adminAddEntry => 'Lisää merkintä';
 
   @override
-  String get adminInvalidUrl => 'Invalid URL';
+  String get adminInvalidUrl => 'Virheellinen URL-osoite';
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
@@ -4438,269 +4524,283 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminOpenInBrowser => 'Open in Browser';
+  String get adminOpenInBrowser => 'Avaa selaimessa';
 
   @override
-  String get adminOpenExternally => 'Open externally';
+  String get adminOpenExternally => 'Avaa ulkoisesti';
 
   @override
-  String get adminGeneralSettings => 'General Settings';
+  String get adminGeneralSettings => 'Yleiset asetukset';
 
   @override
-  String get adminServerName => 'Server name';
+  String get adminServerName => 'Palvelimen nimi';
 
   @override
-  String get adminPreferredMetadataCountry => 'Preferred metadata country';
+  String get adminPreferredMetadataCountry => 'Ensisijainen metatietojen maa';
 
   @override
-  String get adminCachePath => 'Cache path';
+  String get adminCachePath => 'Välimuistin polku';
 
   @override
-  String get adminMetadataPath => 'Metadata path';
+  String get adminMetadataPath => 'Metatietojen polku';
 
   @override
-  String get adminLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminLibraryScanConcurrency =>
+      'Kirjastoskannauksen samanaikaisuus';
 
   @override
-  String get adminParallelImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminParallelImageEncodingLimit =>
+      'Rinnakkaiskuvan koodausrajoitus';
 
   @override
-  String get adminSlowResponseThreshold => 'Slow response threshold (ms)';
+  String get adminSlowResponseThreshold => 'Hitaan vasteen kynnys (ms)';
 
   @override
-  String get adminBrandingSaved => 'Branding settings saved';
+  String get adminBrandingSaved => 'Brändäysasetukset tallennettu';
 
   @override
-  String get adminBrandingLoadFailed => 'Failed to load branding settings';
+  String get adminBrandingLoadFailed =>
+      'Brändäysasetusten lataaminen epäonnistui';
 
   @override
-  String get adminLoginDisclaimer => 'Login disclaimer';
+  String get adminLoginDisclaimer => 'Kirjautumisen vastuuvapauslauseke';
 
   @override
-  String get adminLoginDisclaimerHint => 'HTML displayed below the login form';
+  String get adminLoginDisclaimerHint => 'HTML näkyy kirjautumislomakkeen alla';
 
   @override
-  String get adminCustomCss => 'Custom CSS';
+  String get adminCustomCss => 'Mukautettu CSS';
 
   @override
-  String get adminCustomCssHint => 'Custom CSS applied to the web interface';
+  String get adminCustomCssHint =>
+      'Verkkokäyttöliittymään sovellettu mukautettu CSS';
 
   @override
-  String get adminEnableSplashScreen => 'Enable splash screen';
+  String get adminEnableSplashScreen => 'Ota aloitusnäyttö käyttöön';
 
   @override
-  String get adminStreamingSaved => 'Streaming settings saved';
+  String get adminStreamingSaved => 'Suoratoistoasetukset tallennettu';
 
   @override
-  String get adminStreamingLoadFailed => 'Failed to load streaming settings';
+  String get adminStreamingLoadFailed =>
+      'Suoratoistoasetusten lataaminen epäonnistui';
 
   @override
   String get adminStreamingDescription =>
-      'Set global streaming bitrate limits for remote connections.';
+      'Aseta globaalit suoratoiston bittinopeusrajoitukset etäyhteyksille.';
 
   @override
   String get adminRemoteBitrateLimitMbps =>
-      'Remote client bitrate limit (Mbps)';
+      'Etäasiakkaan bittinopeusrajoitus (Mbps)';
 
   @override
-  String get adminLeaveEmptyForUnlimited => 'Leave empty or 0 for unlimited';
+  String get adminLeaveEmptyForUnlimited => 'Jätä tyhjäksi tai 0 rajattomasti';
 
   @override
-  String get adminPlaybackSaved => 'Playback settings saved';
+  String get adminPlaybackSaved => 'Toistoasetukset tallennettu';
 
   @override
-  String get adminPlaybackLoadFailed => 'Failed to load playback settings';
+  String get adminPlaybackLoadFailed =>
+      'Toistoasetusten lataaminen epäonnistui';
 
   @override
-  String get adminPlaybackTranscoding => 'Playback / Transcoding';
+  String get adminPlaybackTranscoding => 'Toisto / Transkoodaus';
 
   @override
-  String get adminHardwareAcceleration => 'Hardware acceleration';
+  String get adminHardwareAcceleration => 'Laitteistokiihdytys';
 
   @override
-  String get adminVaapiDevice => 'VA-API device';
+  String get adminVaapiDevice => 'VA-API laite';
 
   @override
-  String get adminEnableHardwareEncoding => 'Enable hardware encoding';
+  String get adminEnableHardwareEncoding => 'Ota käyttöön laitteistokoodaus';
 
   @override
-  String get adminEnableHardwareDecoding => 'Enable hardware decoding for:';
+  String get adminEnableHardwareDecoding =>
+      'Ota laitteiston dekoodaus käyttöön:';
 
   @override
-  String get adminEncodingThreads => 'Encoding threads';
+  String get adminEncodingThreads => 'Säikeiden koodaus';
 
   @override
-  String get adminAutomatic => '0 = automatic';
+  String get adminAutomatic => '0 = automaattinen';
 
   @override
-  String get adminTranscodingTempPath => 'Transcoding temp path';
+  String get adminTranscodingTempPath => 'Transkoodaus lämpötilapolku';
 
   @override
-  String get adminEnableFallbackFont => 'Enable fallback font';
+  String get adminEnableFallbackFont => 'Ota varafontti käyttöön';
 
   @override
-  String get adminFallbackFontPath => 'Fallback font path';
+  String get adminFallbackFontPath => 'Varafontin polku';
 
   @override
-  String get adminAllowSegmentDeletion => 'Allow segment deletion';
+  String get adminAllowSegmentDeletion => 'Salli segmentin poistaminen';
 
   @override
-  String get adminSegmentKeepSeconds => 'Segment keep (seconds)';
+  String get adminSegmentKeepSeconds => 'Segmentin säilytys (sekuntia)';
 
   @override
-  String get adminThrottleBuffering => 'Throttle buffering';
+  String get adminThrottleBuffering => 'Kaasun puskurointi';
 
   @override
-  String get adminTrickplaySaved => 'Trickplay settings saved';
+  String get adminTrickplaySaved => 'Trickplay-asetukset tallennettu';
 
   @override
-  String get adminTrickplayLoadFailed => 'Failed to load trickplay settings';
+  String get adminTrickplayLoadFailed =>
+      'Trickplay-asetusten lataaminen epäonnistui';
 
   @override
-  String get adminEnableHardwareAcceleration => 'Enable hardware acceleration';
+  String get adminEnableHardwareAcceleration =>
+      'Ota käyttöön laitteistokiihdytys';
 
   @override
   String get adminEnableKeyFrameExtraction =>
-      'Enable key frame only extraction';
+      'Ota käyttöön vain avainkehysten purkaminen';
 
   @override
-  String get adminKeyFrameSubtitle => 'Faster but lower accuracy';
+  String get adminKeyFrameSubtitle => 'Nopeampi mutta pienempi tarkkuus';
 
   @override
-  String get adminScanBehavior => 'Scan behavior';
+  String get adminScanBehavior => 'Skannauskäyttäytyminen';
 
   @override
-  String get adminProcessPriority => 'Process priority';
+  String get adminProcessPriority => 'Prosessin prioriteetti';
 
   @override
-  String get adminImageSettings => 'Image Settings';
+  String get adminImageSettings => 'Kuva-asetukset';
 
   @override
-  String get adminIntervalMs => 'Interval (ms)';
+  String get adminIntervalMs => 'Aikaväli (ms)';
 
   @override
-  String get adminCaptureFrameSubtitle => 'How often to capture frames';
+  String get adminCaptureFrameSubtitle => 'Kuinka usein ottaa kuvia';
 
   @override
-  String get adminWidthResolutions => 'Width resolutions';
+  String get adminWidthResolutions => 'Leveyden resoluutiot';
 
   @override
-  String get adminTileWidth => 'Tile width';
+  String get adminTileWidth => 'Laattojen leveys';
 
   @override
-  String get adminTileHeight => 'Tile height';
+  String get adminTileHeight => 'Laattojen korkeus';
 
   @override
   String get adminQualitySubtitle =>
-      'Lower values = better quality, larger files';
+      'Pienemmät arvot = parempi laatu, suuremmat tiedostot';
 
   @override
-  String get adminProcessThreads => 'Process threads';
+  String get adminProcessThreads => 'Käsittele säikeitä';
 
   @override
-  String get adminResumeSaved => 'Resume settings saved';
+  String get adminResumeSaved => 'Jatka asetukset tallennettu';
 
   @override
-  String get adminResumeLoadFailed => 'Failed to load resume settings';
+  String get adminResumeLoadFailed =>
+      'Jatkamisasetusten lataaminen epäonnistui';
 
   @override
   String get adminResumeDescription =>
-      'Configure when content should be marked as partially played or fully played.';
+      'Määritä, milloin sisältö merkitään osittain tai kokonaan toistetuksi.';
 
   @override
-  String get adminMinResumePercentage => 'Minimum resume percentage';
+  String get adminMinResumePercentage => 'Minimi jatkamisprosentti';
 
   @override
   String get adminMinResumeSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'Sisältöä on toistettava tämän prosenttiosuuden yli, jotta edistyminen tallentuu';
 
   @override
-  String get adminMaxResumePercentage => 'Maximum resume percentage';
+  String get adminMaxResumePercentage => 'Maksimi jatkamisprosentti';
 
   @override
   String get adminMaxResumeSubtitle =>
-      'Content is considered fully played after this percentage';
+      'Sisältö katsotaan kokonaan toistetuksi tämän prosenttiosuuden jälkeen';
 
   @override
-  String get adminMinResumeDuration => 'Minimum resume duration (seconds)';
+  String get adminMinResumeDuration =>
+      'Ansioluettelon vähimmäiskesto (sekuntia)';
 
   @override
   String get adminMinResumeDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Tätä lyhyempiä tuotteita ei voida jatkaa';
 
   @override
-  String get adminMinAudiobookResume => 'Minimum audiobook resume percentage';
+  String get adminMinAudiobookResume =>
+      'Äänikirjan ansioluettelon vähimmäisprosentti';
 
   @override
-  String get adminMaxAudiobookResume => 'Maximum audiobook resume percentage';
+  String get adminMaxAudiobookResume =>
+      'Äänikirjan ansioluettelon enimmäisprosentti';
 
   @override
   String get adminNetworkingSaved =>
-      'Networking settings saved. A server restart may be required.';
+      'Verkkoasetukset tallennettu. Palvelin voi olla tarpeen käynnistää uudelleen.';
 
   @override
-  String get adminNetworkingLoadFailed => 'Failed to load networking settings';
+  String get adminNetworkingLoadFailed =>
+      'Verkkoasetusten lataaminen epäonnistui';
 
   @override
   String get adminNetworkingWarning =>
-      'Changes to networking settings may require a server restart.';
+      'Verkkoasetusten muutokset voivat vaatia palvelimen uudelleenkäynnistyksen.';
 
   @override
-  String get adminEnableRemoteAccess => 'Enable remote access';
+  String get adminEnableRemoteAccess => 'Ota etäkäyttö käyttöön';
 
   @override
-  String get ports => 'Ports';
+  String get ports => 'Portit';
 
   @override
-  String get adminHttpPort => 'HTTP port';
+  String get adminHttpPort => 'HTTP-portti';
 
   @override
-  String get adminHttpsPort => 'HTTPS port';
+  String get adminHttpsPort => 'HTTPS-portti';
 
   @override
-  String get adminPublicHttpsPort => 'Public HTTPS port';
+  String get adminPublicHttpsPort => 'Julkinen HTTPS-portti';
 
   @override
-  String get adminBaseUrl => 'Base URL';
+  String get adminBaseUrl => 'Perus-URL-osoite';
 
   @override
-  String get adminBaseUrlHint => 'e.g. /jellyfin';
+  String get adminBaseUrlHint => 'esim. /jellyfin';
 
   @override
   String get https => 'HTTPS';
 
   @override
-  String get adminEnableHttps => 'Enable HTTPS';
+  String get adminEnableHttps => 'Ota HTTPS käyttöön';
 
   @override
-  String get adminLocalNetwork => 'Local Network';
+  String get adminLocalNetwork => 'Paikallinen verkko';
 
   @override
-  String get adminLocalNetworkAddresses => 'Local network addresses';
+  String get adminLocalNetworkAddresses => 'Paikalliset verkko-osoitteet';
 
   @override
-  String get adminKnownProxies => 'Known proxies';
+  String get adminKnownProxies => 'Tunnetut välityspalvelimet';
 
   @override
-  String get adminRemoteIpFilter => 'Remote IP Filter';
+  String get adminRemoteIpFilter => 'Etä-IP-suodatin';
 
   @override
-  String get adminRemoteIpFilterEntries => 'Remote IP filter';
+  String get adminRemoteIpFilterEntries => 'Etä-IP-suodatin';
 
   @override
-  String get adminCertificatePath => 'Certificate path';
+  String get adminCertificatePath => 'Varmenteen polku';
 
   @override
-  String get whitelist => 'Whitelist';
+  String get whitelist => 'Valkoinen lista';
 
   @override
-  String get blacklist => 'Blacklist';
+  String get blacklist => 'Musta lista';
 
   @override
-  String get notSet => 'Not set';
+  String get notSet => 'Ei asetettu';
 
   @override
-  String get adminMetadataSaved => 'Metadata saved';
+  String get adminMetadataSaved => 'Metatiedot tallennettu';
 
   @override
   String adminMetadataLoadFailed(String error) {
@@ -4713,19 +4813,20 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminRefreshMetadata => 'Refresh Metadata';
+  String get adminRefreshMetadata => 'Päivitä metatiedot';
 
   @override
-  String get recursive => 'Recursive';
+  String get recursive => 'Rekursiivinen';
 
   @override
-  String get adminReplaceAllMetadata => 'Replace all metadata';
+  String get adminReplaceAllMetadata => 'Korvaa kaikki metatiedot';
 
   @override
-  String get adminReplaceAllImages => 'Replace all images';
+  String get adminReplaceAllImages => 'Korvaa kaikki kuvat';
 
   @override
-  String get adminMetadataRefreshRequested => 'Metadata refresh requested';
+  String get adminMetadataRefreshRequested =>
+      'Metatietojen päivitystä pyydetty';
 
   @override
   String adminMetadataRefreshFailed(String error) {
@@ -4733,16 +4834,17 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminSearchRemotePerson => 'Search Remote Person';
+  String get adminSearchRemotePerson => 'Etsi etähenkilö';
 
   @override
-  String get adminNoRemoteMatches => 'No remote matches found';
+  String get adminNoRemoteMatches => 'Etäosumia ei löytynyt';
 
   @override
-  String get adminRemoteResults => 'Remote Results';
+  String get adminRemoteResults => 'Etätulokset';
 
   @override
-  String get adminRemoteMetadataApplied => 'Remote metadata applied';
+  String get adminRemoteMetadataApplied =>
+      'Etäsisällönkuvaustiedot otettu käyttöön';
 
   @override
   String adminRemoteSearchFailed(String error) {
@@ -4750,13 +4852,13 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminUpdateContentType => 'Update Content Type';
+  String get adminUpdateContentType => 'Päivitä sisältötyyppi';
 
   @override
-  String get adminContentType => 'Content type';
+  String get adminContentType => 'Sisällön tyyppi';
 
   @override
-  String get adminContentTypeUpdated => 'Content type updated';
+  String get adminContentTypeUpdated => 'Sisältötyyppi päivitetty';
 
   @override
   String adminContentTypeUpdateFailed(String error) {
@@ -4764,13 +4866,14 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataEditorLoadFailed => 'Failed to load metadata editor';
+  String get adminMetadataEditorLoadFailed =>
+      'Metatietoeditorin lataaminen epäonnistui';
 
   @override
-  String get adminNoPeopleEntries => 'No people entries';
+  String get adminNoPeopleEntries => 'Ei henkilömerkintöjä';
 
   @override
-  String get adminNoExternalIds => 'No external IDs available';
+  String get adminNoExternalIds => 'Ulkoisia tunnuksia ei ole saatavilla';
 
   @override
   String adminImageUpdated(String imageType) {
@@ -4783,10 +4886,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminUnsupportedImageFormat => 'Unsupported image format';
+  String get adminUnsupportedImageFormat => 'Kuvamuotoa ei tueta';
 
   @override
-  String get adminImageReadFailed => 'Failed to read selected image';
+  String get adminImageReadFailed => 'Valitun kuvan lukeminen epäonnistui';
 
   @override
   String adminImageUploaded(String imageType) {
@@ -4814,10 +4917,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminAllProviders => 'All providers';
+  String get adminAllProviders => 'Kaikki palveluntarjoajat';
 
   @override
-  String get adminNoRemoteImages => 'No remote images found';
+  String get adminNoRemoteImages => 'Etäkuvia ei löytynyt';
 
   @override
   String adminTunerDiscoveryFailed(String error) {
@@ -4825,22 +4928,22 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminAddTuner => 'Add Tuner';
+  String get adminAddTuner => 'Lisää viritin';
 
   @override
-  String get adminTunerType => 'Tuner Type';
+  String get adminTunerType => 'Virittimen tyyppi';
 
   @override
-  String get adminTunerTypeHint => 'HDHomeRun, M3U, Other';
+  String get adminTunerTypeHint => 'HDHomeRun, M3U, muu';
 
   @override
-  String get adminUrlPath => 'URL / Path';
+  String get adminUrlPath => 'URL / polku';
 
   @override
-  String get adminNameOptional => 'Name (optional)';
+  String get adminNameOptional => 'Nimi (valinnainen)';
 
   @override
-  String get adminTunerAdded => 'Tuner added';
+  String get adminTunerAdded => 'Viritin lisätty';
 
   @override
   String adminTunerAddFailed(String error) {
@@ -4848,22 +4951,22 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminAddGuideProvider => 'Add Guide Provider';
+  String get adminAddGuideProvider => 'Lisää oppaan tarjoaja';
 
   @override
-  String get adminProviderType => 'Provider Type';
+  String get adminProviderType => 'Palveluntarjoajan tyyppi';
 
   @override
-  String get adminProviderTypeHint => 'SchedulesDirect or XMLTV';
+  String get adminProviderTypeHint => 'SchedulesDirect tai XMLTV';
 
   @override
-  String get adminUsernameOptional => 'Username (optional)';
+  String get adminUsernameOptional => 'Käyttäjätunnus (valinnainen)';
 
   @override
-  String get adminRefreshInterval => 'Refresh interval (hours)';
+  String get adminRefreshInterval => 'Päivitysväli (tunteja)';
 
   @override
-  String get adminProviderAdded => 'Provider added';
+  String get adminProviderAdded => 'Palveluntarjoaja lisätty';
 
   @override
   String adminProviderAddFailed(String error) {
@@ -4876,7 +4979,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminTunerResetRequested => 'Tuner reset requested';
+  String get adminTunerResetRequested => 'Virittimen nollauspyyntö';
 
   @override
   String adminTunerResetFailed(String error) {
@@ -4889,22 +4992,22 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminRecordingSettings => 'Recording Settings';
+  String get adminRecordingSettings => 'Tallennusasetukset';
 
   @override
-  String get adminPrePadding => 'Pre-padding (minutes)';
+  String get adminPrePadding => 'Esitäyttö (minuutteja)';
 
   @override
-  String get adminPostPadding => 'Post-padding (minutes)';
+  String get adminPostPadding => 'Jälkitäyte (minuutteja)';
 
   @override
-  String get adminRecordingPath => 'Recording path';
+  String get adminRecordingPath => 'Tallennuspolku';
 
   @override
-  String get adminSeriesRecordingPath => 'Series recording path';
+  String get adminSeriesRecordingPath => 'Sarjan tallennuspolku';
 
   @override
-  String get adminRecordingSettingsSaved => 'Recording settings saved';
+  String get adminRecordingSettingsSaved => 'Tallennusasetukset tallennettu';
 
   @override
   String adminSettingsSaveFailed(String error) {
@@ -4912,16 +5015,16 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminSetChannelMappings => 'Set Channel Mappings';
+  String get adminSetChannelMappings => 'Aseta kanavakartoitukset';
 
   @override
-  String get adminMappingJson => 'Mapping JSON';
+  String get adminMappingJson => 'Kartoitus JSON';
 
   @override
-  String get adminMappingJsonHint => 'Example: mappings JSON payload';
+  String get adminMappingJsonHint => 'Esimerkki: kartoittaa JSON-hyötykuorma';
 
   @override
-  String get adminChannelMappingsUpdated => 'Channel mappings updated';
+  String get adminChannelMappingsUpdated => 'Kanavakartoitukset päivitetty';
 
   @override
   String adminMappingsUpdateFailed(String error) {
@@ -4929,22 +5032,23 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminLiveTvLoadFailed => 'Failed to load Live TV administration';
+  String get adminLiveTvLoadFailed =>
+      'Live-TV-hallinnan lataaminen epäonnistui';
 
   @override
-  String get adminTunerDevices => 'Tuner Devices';
+  String get adminTunerDevices => 'Viritinlaitteet';
 
   @override
-  String get adminNoTunerHosts => 'No tuner hosts configured';
+  String get adminNoTunerHosts => 'Viritinisäntiä ei ole määritetty';
 
   @override
-  String get adminGuideProviders => 'Guide Providers';
+  String get adminGuideProviders => 'Opaspalveluntarjoajat';
 
   @override
-  String get adminAddProvider => 'Add Provider';
+  String get adminAddProvider => 'Lisää Palveluntarjoaja';
 
   @override
-  String get adminNoListingProviders => 'No listing providers configured';
+  String get adminNoListingProviders => 'Tietojen tarjoajia ei ole määritetty';
 
   @override
   String adminRecordingPathDisplay(String path) {
@@ -4967,32 +5071,32 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminTunerDiscovery => 'Tuner Discovery';
+  String get adminTunerDiscovery => 'Virittimen löytö';
 
   @override
-  String get adminChannelMappings => 'Channel Mappings';
+  String get adminChannelMappings => 'Kanavakartoitukset';
 
   @override
-  String get adminNoDiscoveredTuners => 'No discovered tuners yet';
+  String get adminNoDiscoveredTuners => 'Ei vielä löydetty virittimiä';
 
   @override
-  String get adminSettingsSaved => 'Settings saved';
+  String get adminSettingsSaved => 'Asetukset tallennettu';
 
   @override
   String get adminBackupsNotAvailable =>
-      'Backups are not available on this server build.';
+      'Varmuuskopiot eivät ole käytettävissä tässä palvelinversiossa.';
 
   @override
   String get adminRestoreWarning1 =>
-      'Restoring will replace ALL current server data with the backup data.';
+      'Palauttaminen korvaa KAIKKI nykyiset palvelintiedot varmuuskopiotiedoilla.';
 
   @override
   String get adminRestoreWarning2 =>
-      'Current server settings, users, and library data will be overwritten.';
+      'Nykyiset palvelinasetukset, käyttäjät ja kirjastotiedot korvataan.';
 
   @override
   String get adminRestoreWarning3 =>
-      'The server will restart after restoration.';
+      'Palvelin käynnistyy uudelleen palautuksen jälkeen.';
 
   @override
   String adminRestoreConfirmMessage(String name) {
@@ -5001,44 +5105,44 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get adminRestoreRequested =>
-      'Restore requested. Server restart may disconnect this session.';
+      'Palautusta pyydetty. Palvelimen uudelleenkäynnistys saattaa katkaista tämän istunnon yhteyden.';
 
   @override
-  String get adminBackupsTitle => 'Backups';
+  String get adminBackupsTitle => 'Varmuuskopiot';
 
   @override
-  String get adminUnknownDate => 'Unknown date';
+  String get adminUnknownDate => 'Tuntematon päivämäärä';
 
   @override
-  String get adminUnnamedBackup => 'Unnamed Backup';
+  String get adminUnnamedBackup => 'Nimetön varmuuskopio';
 
   @override
   String get adminLiveTvNotAvailable =>
-      'Live TV administration is not available on this server build.';
+      'Live-TV-hallinta ei ole käytettävissä tässä palvelinversiossa.';
 
   @override
-  String get adminLiveTvTitle => 'Live TV Administration';
+  String get adminLiveTvTitle => 'Live-TV:n hallinto';
 
   @override
-  String get adminApply => 'Apply';
+  String get adminApply => 'Käytä';
 
   @override
-  String get adminNotSet => 'Not set';
+  String get adminNotSet => 'Ei asetettu';
 
   @override
-  String get adminReset => 'Reset';
+  String get adminReset => 'Nollaa';
 
   @override
-  String get adminLogsTitle => 'Server Logs';
+  String get adminLogsTitle => 'Palvelimen lokit';
 
   @override
-  String get adminLogsNewestFirst => 'Newest First';
+  String get adminLogsNewestFirst => 'Uusin ensin';
 
   @override
-  String get adminLogsOldestFirst => 'Oldest First';
+  String get adminLogsOldestFirst => 'Vanhin ensin';
 
   @override
-  String get adminLogsJustNow => 'Just now';
+  String get adminLogsJustNow => 'Juuri nyt';
 
   @override
   String adminLogsMinutesAgo(int minutes) {
@@ -5066,109 +5170,109 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminLogViewerNoMatches => 'No matching lines';
+  String get adminLogViewerNoMatches => 'Ei vastaavia rivejä';
 
   @override
-  String get adminMetadataEditorTitle => 'Metadata Editor';
+  String get adminMetadataEditorTitle => 'Metatietoeditori';
 
   @override
-  String get adminMetadataRemote => 'Remote';
+  String get adminMetadataRemote => 'Kauko';
 
   @override
-  String get adminMetadataType => 'Type';
+  String get adminMetadataType => 'Tyyppi';
 
   @override
-  String get adminMetadataDetails => 'Details';
+  String get adminMetadataDetails => 'Yksityiskohdat';
 
   @override
-  String get adminMetadataExternalIds => 'External IDs';
+  String get adminMetadataExternalIds => 'Ulkoiset tunnukset';
 
   @override
-  String get adminMetadataImages => 'Images';
+  String get adminMetadataImages => 'Kuvat';
 
   @override
-  String get adminMetadataFieldTitle => 'Title';
+  String get adminMetadataFieldTitle => 'Otsikko';
 
   @override
-  String get adminMetadataFieldSortTitle => 'Sort title';
+  String get adminMetadataFieldSortTitle => 'Lajittele otsikko';
 
   @override
-  String get adminMetadataFieldOriginalTitle => 'Original title';
+  String get adminMetadataFieldOriginalTitle => 'Alkuperäinen otsikko';
 
   @override
-  String get adminMetadataFieldPremiereDate => 'Premiere date (YYYY-MM-DD)';
+  String get adminMetadataFieldPremiereDate => 'Ensiesityspäivä (VVVV-KK-PP)';
 
   @override
-  String get adminMetadataFieldEndDate => 'End date (YYYY-MM-DD)';
+  String get adminMetadataFieldEndDate => 'Päättymispäivä (VVVV-KK-PP)';
 
   @override
-  String get adminMetadataFieldProductionYear => 'Production year';
+  String get adminMetadataFieldProductionYear => 'Tuotantovuosi';
 
   @override
-  String get adminMetadataFieldOfficialRating => 'Official rating';
+  String get adminMetadataFieldOfficialRating => 'Virallinen luokitus';
 
   @override
-  String get adminMetadataFieldCommunityRating => 'Community rating';
+  String get adminMetadataFieldCommunityRating => 'yhteisön luokitus';
 
   @override
-  String get adminMetadataFieldCriticRating => 'Critic rating';
+  String get adminMetadataFieldCriticRating => 'Kriitikoiden luokitus';
 
   @override
-  String get adminMetadataFieldTagline => 'Tagline';
+  String get adminMetadataFieldTagline => 'Tunnuslause';
 
   @override
-  String get adminMetadataFieldOverview => 'Overview';
+  String get adminMetadataFieldOverview => 'Yleiskatsaus';
 
   @override
-  String get adminMetadataGenres => 'Genres';
+  String get adminMetadataGenres => 'Genret';
 
   @override
-  String get adminMetadataTags => 'Tags';
+  String get adminMetadataTags => 'Tunnisteet';
 
   @override
-  String get adminMetadataStudios => 'Studios';
+  String get adminMetadataStudios => 'Studiot';
 
   @override
-  String get adminMetadataPeople => 'People';
+  String get adminMetadataPeople => 'Ihmiset';
 
   @override
-  String get adminMetadataAddGenre => 'Add genre';
+  String get adminMetadataAddGenre => 'Lisää genre';
 
   @override
-  String get adminMetadataAddTag => 'Add tag';
+  String get adminMetadataAddTag => 'Lisää tunniste';
 
   @override
-  String get adminMetadataAddStudio => 'Add studio';
+  String get adminMetadataAddStudio => 'Lisää studio';
 
   @override
-  String get adminMetadataAddPerson => 'Add Person';
+  String get adminMetadataAddPerson => 'Lisää henkilö';
 
   @override
-  String get adminMetadataEditPerson => 'Edit Person';
+  String get adminMetadataEditPerson => 'Muokkaa henkilöä';
 
   @override
-  String get adminMetadataRole => 'Role';
+  String get adminMetadataRole => 'Rooli';
 
   @override
-  String get adminMetadataImagePrimary => 'Primary';
+  String get adminMetadataImagePrimary => 'Ensisijainen';
 
   @override
-  String get adminMetadataImageBackdrop => 'Backdrop';
+  String get adminMetadataImageBackdrop => 'Tausta';
 
   @override
   String get adminMetadataImageLogo => 'Logo';
 
   @override
-  String get adminMetadataImageBanner => 'Banner';
+  String get adminMetadataImageBanner => 'Banneri';
 
   @override
-  String get adminMetadataImageThumb => 'Thumb';
+  String get adminMetadataImageThumb => 'Peukalo';
 
   @override
-  String get adminMetadataRecursive => 'Recursive';
+  String get adminMetadataRecursive => 'Rekursiivinen';
 
   @override
-  String get adminMetadataProvider => 'Provider';
+  String get adminMetadataProvider => 'Palveluntarjoaja';
 
   @override
   String adminMetadataImageUpdated(String imageType) {
@@ -5191,7 +5295,8 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataImageReadFailed => 'Failed to read selected image';
+  String get adminMetadataImageReadFailed =>
+      'Valitun kuvan lukeminen epäonnistui';
 
   @override
   String adminMetadataImageUploadFailed(String error) {
@@ -5205,7 +5310,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get adminMetadataDeleteImageContent =>
-      'This removes the current image from the item.';
+      'Tämä poistaa nykyisen kuvan kohteesta.';
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
@@ -5218,31 +5323,32 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataUpload => 'Upload';
+  String get adminMetadataUpload => 'Lataa';
 
   @override
-  String get adminMetadataUpdate => 'Update';
+  String get adminMetadataUpdate => 'Päivittää';
 
   @override
-  String get adminMetadataRemoteImage => 'Remote image';
+  String get adminMetadataRemoteImage => 'Kaukokuva';
 
   @override
-  String get adminPluginsInstalled => 'Installed';
+  String get adminPluginsInstalled => 'Asennettu';
 
   @override
-  String get adminPluginsCatalog => 'Catalog';
+  String get adminPluginsCatalog => 'Luettelo';
 
   @override
-  String get adminPluginsActive => 'Active';
+  String get adminPluginsActive => 'Aktiivinen';
 
   @override
-  String get adminPluginsRestart => 'Restart';
+  String get adminPluginsRestart => 'Käynnistä uudelleen';
 
   @override
-  String get adminPluginsNoSearchResults => 'No plugins match your search';
+  String get adminPluginsNoSearchResults =>
+      'Mikään laajennus ei vastaa hakuasi';
 
   @override
-  String get adminPluginsNoneInstalled => 'No plugins installed';
+  String get adminPluginsNoneInstalled => 'Laajennuksia ei ole asennettu';
 
   @override
   String adminPluginsUpdateAvailable(String version) {
@@ -5250,22 +5356,24 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginsUpdateAvailableGeneric => 'Update available';
+  String get adminPluginsUpdateAvailableGeneric => 'Päivitys saatavilla';
 
   @override
-  String get adminPluginsPendingRemoval => 'Pending removal after restart';
+  String get adminPluginsPendingRemoval =>
+      'Odottaa poistamista uudelleenkäynnistyksen jälkeen';
 
   @override
-  String get adminPluginsChangesPending => 'Changes pending restart';
+  String get adminPluginsChangesPending =>
+      'Muutokset odottavat uudelleenkäynnistystä';
 
   @override
-  String get adminPluginsEnable => 'Enable';
+  String get adminPluginsEnable => 'Ota käyttöön';
 
   @override
-  String get adminPluginsDisable => 'Disable';
+  String get adminPluginsDisable => 'Poista käytöstä';
 
   @override
-  String get adminPluginsInstallUpdate => 'Install update';
+  String get adminPluginsInstallUpdate => 'Asenna päivitys';
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
@@ -5274,10 +5382,10 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get adminPluginsCatalogNoSearchResults =>
-      'No packages match your search';
+      'Ei hakuasi vastaavia paketteja';
 
   @override
-  String get adminPluginsCatalogEmpty => 'No packages available';
+  String get adminPluginsCatalogEmpty => 'Paketteja ei ole saatavilla';
 
   @override
   String adminPluginsInstalling(String name) {
@@ -5285,19 +5393,19 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailExperimental => 'Experimental Integration';
+  String get adminPluginDetailExperimental => 'Kokeellinen integraatio';
 
   @override
   String get adminPluginDetailExperimentalContent =>
-      'Plugin settings integration is still experimental. Some fields or layouts may not render correctly yet.';
+      'Plugin-asetusten integrointi on vielä kokeellista. Jotkin kentät tai asettelut eivät ehkä vielä näy oikein.';
 
   @override
   String get adminPluginDetailToggle404 =>
-      'Failed to toggle plugin. The server could not find this plugin version. Try refreshing plugins, then retry.';
+      'Plugin vaihto epäonnistui. Palvelin ei löytänyt tätä laajennusversiota. Yritä päivittää laajennukset ja yritä sitten uudelleen.';
 
   @override
   String get adminPluginDetailToggleDioError =>
-      'Failed to toggle plugin. Please check server logs for details.';
+      'Plugin vaihto epäonnistui. Tarkista lisätietoja palvelimen lokeista.';
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
@@ -5305,39 +5413,39 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailDetails => 'Details';
+  String get adminPluginDetailDetails => 'Yksityiskohdat';
 
   @override
-  String get adminPluginDetailDeveloper => 'Developer';
+  String get adminPluginDetailDeveloper => 'Kehittäjä';
 
   @override
-  String get adminPluginDetailRepository => 'Repository';
+  String get adminPluginDetailRepository => 'Arkisto';
 
   @override
-  String get adminPluginDetailBundled => 'Bundled';
+  String get adminPluginDetailBundled => 'Mukana';
 
   @override
-  String get adminPluginDetailEnablePlugin => 'Enable Plugin';
+  String get adminPluginDetailEnablePlugin => 'Ota laajennus käyttöön';
 
   @override
   String get adminPluginDetailRestartRequired =>
-      'A server restart is required for changes to take effect.';
+      'Palvelin on käynnistettävä uudelleen, jotta muutokset tulevat voimaan.';
 
   @override
   String get adminPluginDetailRemovalPending =>
-      'This plugin will be removed after server restart.';
+      'Tämä laajennus poistetaan palvelimen uudelleenkäynnistyksen jälkeen.';
 
   @override
   String get adminPluginDetailMalfunctioned =>
-      'This plugin has malfunctioned and may not work correctly.';
+      'Tämä laajennus on toiminut väärin, eikä se välttämättä toimi oikein.';
 
   @override
   String get adminPluginDetailNotSupported =>
-      'This plugin is not supported by the current server version.';
+      'Nykyinen palvelinversio ei tue tätä laajennusta.';
 
   @override
   String get adminPluginDetailSuperseded =>
-      'This plugin has been superseded by a newer version.';
+      'Tämä laajennus on korvattu uudemmalla versiolla.';
 
   @override
   String adminReposLoadFailed(String error) {
@@ -5345,7 +5453,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemoveTitle => 'Remove Repository';
+  String get adminReposRemoveTitle => 'Poista arkisto';
 
   @override
   String adminReposRemoveConfirm(String name) {
@@ -5353,7 +5461,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemove => 'Remove';
+  String get adminReposRemove => 'Poistaa';
 
   @override
   String adminReposSaveFailed(String error) {
@@ -5361,270 +5469,279 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminReposEmpty => 'No repositories configured';
+  String get adminReposEmpty => 'Tietovarastoja ei ole määritetty';
 
   @override
   String get adminReposEmptySubtitle =>
-      'Add a repository to browse available plugins';
+      'Lisää arkisto selataksesi saatavilla olevia laajennuksia';
 
   @override
-  String get adminReposUnnamed => '(unnamed)';
+  String get adminReposUnnamed => '(nimetön)';
 
   @override
-  String get adminReposEditTitle => 'Edit Repository';
+  String get adminReposEditTitle => 'Muokkaa arkistoa';
 
   @override
-  String get adminReposAddTitle => 'Add Repository';
+  String get adminReposAddTitle => 'Lisää arkisto';
 
   @override
-  String get adminReposUrl => 'Repository URL';
+  String get adminReposUrl => 'Tietovaraston URL-osoite';
 
   @override
-  String get adminReposNameHint => 'e.g. Jellyfin Stable';
+  String get adminReposNameHint => 'esim. Jellyfin vakaa';
 
   @override
-  String get adminPluginSettingsInvalidUrl => 'Invalid URL';
+  String get adminPluginSettingsInvalidUrl => 'Virheellinen URL-osoite';
 
   @override
-  String get adminGeneralSettingsTitle => 'General Settings';
+  String get adminGeneralSettingsTitle => 'Yleiset asetukset';
 
   @override
-  String get adminGeneralMetadataLanguage => 'Preferred metadata language';
+  String get adminGeneralMetadataLanguage => 'Ensisijainen metatietojen kieli';
 
   @override
-  String get adminGeneralMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminGeneralMetadataLanguageHint => 'esim. en, de, fr';
 
   @override
-  String get adminGeneralMetadataCountry => 'Preferred metadata country';
+  String get adminGeneralMetadataCountry => 'Ensisijainen metatietojen maa';
 
   @override
-  String get adminGeneralMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminGeneralMetadataCountryHint => 'esim. USA, DE, FR';
 
   @override
-  String get adminGeneralLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminGeneralLibraryScanConcurrency =>
+      'Kirjastoskannauksen samanaikaisuus';
 
   @override
-  String get adminGeneralImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminGeneralImageEncodingLimit =>
+      'Rinnakkaiskuvan koodausrajoitus';
 
   @override
-  String get adminUnknownError => 'Unknown error';
+  String get adminUnknownError => 'Tuntematon virhe';
 
   @override
-  String get adminBrowse => 'Browse';
+  String get adminBrowse => 'Selaa';
 
   @override
-  String get adminCloseBrowser => 'Close browser';
+  String get adminCloseBrowser => 'Sulje selain';
 
   @override
-  String get adminNetworkingTitle => 'Networking';
+  String get adminNetworkingTitle => 'Verkostoituminen';
 
   @override
   String get adminNetworkingRestartWarning =>
-      'Changes to networking settings may require a server restart.';
+      'Verkkoasetusten muutokset voivat vaatia palvelimen uudelleenkäynnistyksen.';
 
   @override
-  String get adminNetworkingRemoteAccess => 'Enable remote access';
+  String get adminNetworkingRemoteAccess => 'Ota etäkäyttö käyttöön';
 
   @override
-  String get adminNetworkingPorts => 'Ports';
+  String get adminNetworkingPorts => 'Portit';
 
   @override
-  String get adminNetworkingHttpPort => 'HTTP port';
+  String get adminNetworkingHttpPort => 'HTTP-portti';
 
   @override
-  String get adminNetworkingHttpsPort => 'HTTPS port';
+  String get adminNetworkingHttpsPort => 'HTTPS-portti';
 
   @override
-  String get adminNetworkingEnableHttps => 'Enable HTTPS';
+  String get adminNetworkingEnableHttps => 'Ota HTTPS käyttöön';
 
   @override
-  String get adminNetworkingLocalNetwork => 'Local Network';
+  String get adminNetworkingLocalNetwork => 'Paikallinen verkko';
 
   @override
-  String get adminNetworkingLocalAddresses => 'Local network addresses';
+  String get adminNetworkingLocalAddresses => 'Paikalliset verkko-osoitteet';
 
   @override
-  String get adminNetworkingAddressHint => 'e.g. 192.168.1.0/24';
+  String get adminNetworkingAddressHint => 'esim. 192.168.1.0/24';
 
   @override
-  String get adminNetworkingKnownProxies => 'Known proxies';
+  String get adminNetworkingKnownProxies => 'Tunnetut välityspalvelimet';
 
   @override
-  String get adminNetworkingProxyHint => 'e.g. 10.0.0.1';
+  String get adminNetworkingProxyHint => 'esim. 10.0.0.1';
 
   @override
-  String get adminNetworkingWhitelist => 'Whitelist';
+  String get adminNetworkingWhitelist => 'Valkoinen lista';
 
   @override
-  String get adminNetworkingBlacklist => 'Blacklist';
+  String get adminNetworkingBlacklist => 'Musta lista';
 
   @override
-  String get adminNetworkingAddEntry => 'Add entry';
+  String get adminNetworkingAddEntry => 'Lisää merkintä';
 
   @override
-  String get adminBrandingTitle => 'Branding';
+  String get adminBrandingTitle => 'Brändäys';
 
   @override
-  String get adminBrandingLoginDisclaimer => 'Login disclaimer';
+  String get adminBrandingLoginDisclaimer =>
+      'Kirjautumisen vastuuvapauslauseke';
 
   @override
   String get adminBrandingLoginDisclaimerHint =>
-      'HTML displayed below the login form';
+      'HTML näkyy kirjautumislomakkeen alla';
 
   @override
-  String get adminBrandingCustomCss => 'Custom CSS';
+  String get adminBrandingCustomCss => 'Mukautettu CSS';
 
   @override
   String get adminBrandingCustomCssHint =>
-      'Custom CSS applied to the web interface';
+      'Verkkokäyttöliittymään sovellettu mukautettu CSS';
 
   @override
-  String get adminBrandingEnableSplash => 'Enable splash screen';
+  String get adminBrandingEnableSplash => 'Ota aloitusnäyttö käyttöön';
 
   @override
-  String get adminPlaybackHwAccel => 'Hardware Acceleration';
+  String get adminPlaybackHwAccel => 'Laitteistokiihdytys';
 
   @override
-  String get adminPlaybackHwAccelLabel => 'Hardware acceleration';
+  String get adminPlaybackHwAccelLabel => 'Laitteistokiihdytys';
 
   @override
-  String get adminPlaybackEnableHwEncoding => 'Enable hardware encoding';
+  String get adminPlaybackEnableHwEncoding => 'Ota käyttöön laitteistokoodaus';
 
   @override
-  String get adminPlaybackEnableHwDecoding => 'Enable hardware decoding for:';
+  String get adminPlaybackEnableHwDecoding =>
+      'Ota laitteiston dekoodaus käyttöön:';
 
   @override
-  String get adminPlaybackEncoding => 'Encoding';
+  String get adminPlaybackEncoding => 'Koodaus';
 
   @override
-  String get adminPlaybackEncodingThreads => 'Encoding threads';
+  String get adminPlaybackEncodingThreads => 'Säikeiden koodaus';
 
   @override
-  String get adminPlaybackFallbackFont => 'Enable fallback font';
+  String get adminPlaybackFallbackFont => 'Ota varafontti käyttöön';
 
   @override
-  String get adminPlaybackFallbackFontPath => 'Fallback font path';
+  String get adminPlaybackFallbackFontPath => 'Varafontin polku';
 
   @override
-  String get adminPlaybackStreaming => 'Streaming';
+  String get adminPlaybackStreaming => 'Suoratoisto';
 
   @override
   String get adminResumeVideo => 'Video';
 
   @override
-  String get adminResumeAudiobooks => 'Audiobooks';
+  String get adminResumeAudiobooks => 'Äänikirjat';
 
   @override
   String get adminResumeMinAudiobookPct =>
-      'Minimum audiobook resume percentage';
+      'Äänikirjan ansioluettelon vähimmäisprosentti';
 
   @override
   String get adminResumeMaxAudiobookPct =>
-      'Maximum audiobook resume percentage';
+      'Äänikirjan ansioluettelon enimmäisprosentti';
 
   @override
-  String get adminStreamingBitrateLimit => 'Remote client bitrate limit (Mbps)';
+  String get adminStreamingBitrateLimit =>
+      'Etäasiakkaan bittinopeusrajoitus (Mbps)';
 
   @override
-  String get adminStreamingBitrateLimitHint => 'Leave empty or 0 for unlimited';
+  String get adminStreamingBitrateLimitHint =>
+      'Jätä tyhjäksi tai 0 rajattomasti';
 
   @override
-  String get adminTrickplayHwAccel => 'Enable hardware acceleration';
+  String get adminTrickplayHwAccel => 'Ota käyttöön laitteistokiihdytys';
 
   @override
-  String get adminTrickplayHwEncoding => 'Enable hardware encoding';
+  String get adminTrickplayHwEncoding => 'Ota käyttöön laitteistokoodaus';
 
   @override
-  String get adminTrickplayKeyFrameOnly => 'Enable key frame only extraction';
+  String get adminTrickplayKeyFrameOnly =>
+      'Ota käyttöön vain avainkehysten purkaminen';
 
   @override
-  String get adminTrickplayKeyFrameOnlySubtitle => 'Faster but lower accuracy';
+  String get adminTrickplayKeyFrameOnlySubtitle =>
+      'Nopeampi mutta pienempi tarkkuus';
 
   @override
-  String get adminTrickplayNonBlocking => 'Non-Blocking';
+  String get adminTrickplayNonBlocking => 'Ei-esto';
 
   @override
-  String get adminTrickplayBlocking => 'Blocking';
+  String get adminTrickplayBlocking => 'Estäminen';
 
   @override
-  String get adminTrickplayPriorityHigh => 'High';
+  String get adminTrickplayPriorityHigh => 'Korkea';
 
   @override
-  String get adminTrickplayPriorityAboveNormal => 'Above Normal';
+  String get adminTrickplayPriorityAboveNormal => 'Normaalia korkeampi';
 
   @override
-  String get adminTrickplayPriorityNormal => 'Normal';
+  String get adminTrickplayPriorityNormal => 'Normaali';
 
   @override
-  String get adminTrickplayPriorityBelowNormal => 'Below Normal';
+  String get adminTrickplayPriorityBelowNormal => 'Normaalin alapuolella';
 
   @override
-  String get adminTrickplayPriorityIdle => 'Idle';
+  String get adminTrickplayPriorityIdle => 'Tyhjäkäynti';
 
   @override
-  String get adminTrickplayImageSettings => 'Image Settings';
+  String get adminTrickplayImageSettings => 'Kuva-asetukset';
 
   @override
-  String get adminTrickplayInterval => 'Interval (ms)';
+  String get adminTrickplayInterval => 'Aikaväli (ms)';
 
   @override
-  String get adminTrickplayIntervalSubtitle => 'How often to capture frames';
+  String get adminTrickplayIntervalSubtitle => 'Kuinka usein ottaa kuvia';
 
   @override
   String get adminTrickplayWidthResolutionsHint =>
-      'Comma-separated pixel widths (e.g. 320)';
+      'Pilkuilla erotetut pikselien leveydet (esim. 320)';
 
   @override
-  String get adminTrickplayQuality => 'Quality';
+  String get adminTrickplayQuality => 'Laatu';
 
   @override
-  String get adminTrickplayQScale => 'Quality scale';
+  String get adminTrickplayQScale => 'Laatuasteikko';
 
   @override
   String get adminTrickplayQScaleSubtitle =>
-      'Lower values = better quality, larger files';
+      'Pienemmät arvot = parempi laatu, suuremmat tiedostot';
 
   @override
-  String get adminTrickplayJpegQuality => 'JPEG quality';
+  String get adminTrickplayJpegQuality => 'JPEG laatu';
 
   @override
-  String get adminTrickplayProcessing => 'Processing';
+  String get adminTrickplayProcessing => 'Käsittely';
 
   @override
-  String get adminTasksEmpty => 'No scheduled tasks found';
+  String get adminTasksEmpty => 'Ajastettuja tehtäviä ei löytynyt';
 
   @override
-  String get adminTasksNoFilterMatch => 'No tasks match the current filter';
+  String get adminTasksNoFilterMatch =>
+      'Yksikään tehtävä ei vastaa nykyistä suodatinta';
 
   @override
-  String get adminTaskCancelling => 'Cancelling...';
+  String get adminTaskCancelling => 'Peruutetaan...';
 
   @override
-  String get adminTaskRunning => 'Running...';
+  String get adminTaskRunning => 'Juokse...';
 
   @override
-  String get adminTaskNeverRun => 'Never run';
+  String get adminTaskNeverRun => 'Älä koskaan juokse';
 
   @override
   String get adminTaskStop => 'Stop';
 
   @override
-  String get adminTaskRun => 'Run';
+  String get adminTaskRun => 'Juokse';
 
   @override
-  String get adminTaskDetailLastExecution => 'Last Execution';
+  String get adminTaskDetailLastExecution => 'Viimeinen teloitus';
 
   @override
-  String get adminTaskDetailStarted => 'Started';
+  String get adminTaskDetailStarted => 'Aloitettu';
 
   @override
-  String get adminTaskDetailEnded => 'Ended';
+  String get adminTaskDetailEnded => 'Päättyi';
 
   @override
-  String get adminTaskDetailDuration => 'Duration';
+  String get adminTaskDetailDuration => 'Kesto';
 
   @override
-  String get adminTaskDetailErrorLabel => 'Error:';
+  String get adminTaskDetailErrorLabel => 'Virhe:';
 
   @override
   String adminTaskTriggerDaily(String time) {
@@ -5642,34 +5759,34 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerStartup => 'On application startup';
+  String get adminTaskTriggerStartup => 'Sovelluksen käynnistyksen yhteydessä';
 
   @override
-  String get adminTaskTriggerTypeDaily => 'Daily';
+  String get adminTaskTriggerTypeDaily => 'Päivittäin';
 
   @override
-  String get adminTaskTriggerTypeWeekly => 'Weekly';
+  String get adminTaskTriggerTypeWeekly => 'Viikoittain';
 
   @override
-  String get adminTaskTriggerTypeInterval => 'On an interval';
+  String get adminTaskTriggerTypeInterval => 'Välillä';
 
   @override
-  String get adminTaskTriggerIntervalLabel => 'Interval';
+  String get adminTaskTriggerIntervalLabel => 'Intervalli';
 
   @override
-  String get adminTaskTriggerEveryHour => 'Every hour';
+  String get adminTaskTriggerEveryHour => 'Joka tunti';
 
   @override
-  String get adminTaskTriggerEvery6Hours => 'Every 6 hours';
+  String get adminTaskTriggerEvery6Hours => '6 tunnin välein';
 
   @override
-  String get adminTaskTriggerEvery12Hours => 'Every 12 hours';
+  String get adminTaskTriggerEvery12Hours => '12 tunnin välein';
 
   @override
-  String get adminTaskTriggerEvery24Hours => 'Every 24 hours';
+  String get adminTaskTriggerEvery24Hours => '24 tunnin välein';
 
   @override
-  String get adminTaskTriggerEvery2Days => 'Every 2 days';
+  String get adminTaskTriggerEvery2Days => '2 päivän välein';
 
   @override
   String adminTaskTriggerHours(int count) {
@@ -5683,25 +5800,25 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerTime => 'Time';
+  String get adminTaskTriggerTime => 'Aika';
 
   @override
-  String get adminTaskTriggerNoLimit => 'No limit';
+  String get adminTaskTriggerNoLimit => 'Ei rajaa';
 
   @override
-  String get adminActivityJustNow => 'Just now';
+  String get adminActivityJustNow => 'Juuri nyt';
 
   @override
-  String get adminActivityLastHour => 'Last hour';
+  String get adminActivityLastHour => 'Viimeinen tunti';
 
   @override
-  String get adminActivityToday => 'Today';
+  String get adminActivityToday => 'Tänään';
 
   @override
-  String get adminActivityYesterday => 'Yesterday';
+  String get adminActivityYesterday => 'Eilen';
 
   @override
-  String get adminActivityOlder => 'Older';
+  String get adminActivityOlder => 'Vanhempi';
 
   @override
   String adminActivityDaysAgo(int days) {
@@ -5719,7 +5836,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminActivityNow => 'now';
+  String get adminActivityNow => 'nyt';
 
   @override
   String adminActivityMinutesShort(int minutes) {
@@ -5743,91 +5860,92 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get adminTrickplayDescription =>
-      'Configure trickplay image generation for seek preview thumbnails.';
+      'Määritä trickplay-kuvien luominen esikatselun pikkukuvien etsimistä varten.';
 
   @override
-  String get adminNetworkingPublicHttpsPort => 'Public HTTPS port';
+  String get adminNetworkingPublicHttpsPort => 'Julkinen HTTPS-portti';
 
   @override
-  String get adminNetworkingBaseUrl => 'Base URL';
+  String get adminNetworkingBaseUrl => 'Perus-URL-osoite';
 
   @override
-  String get adminNetworkingBaseUrlHint => 'e.g. /jellyfin';
+  String get adminNetworkingBaseUrlHint => 'esim. /jellyfin';
 
   @override
   String get adminNetworkingHttps => 'HTTPS';
 
   @override
-  String get adminNetworkingCertPath => 'Certificate path';
+  String get adminNetworkingCertPath => 'Varmenteen polku';
 
   @override
-  String get adminNetworkingRemoteIpFilter => 'Remote IP Filter';
+  String get adminNetworkingRemoteIpFilter => 'Etä-IP-suodatin';
 
   @override
-  String get adminNetworkingRemoteIpFilterLabel => 'Remote IP filter';
+  String get adminNetworkingRemoteIpFilterLabel => 'Etä-IP-suodatin';
 
   @override
-  String get adminPlaybackVaapiDevice => 'VA-API device';
+  String get adminPlaybackVaapiDevice => 'VA-API laite';
 
   @override
-  String get adminPlaybackAutomatic => '0 = automatic';
+  String get adminPlaybackAutomatic => '0 = automaattinen';
 
   @override
-  String get adminPlaybackTranscodeTempPath => 'Transcoding temp path';
+  String get adminPlaybackTranscodeTempPath => 'Transkoodaus lämpötilapolku';
 
   @override
-  String get adminPlaybackSegmentDeletion => 'Allow segment deletion';
+  String get adminPlaybackSegmentDeletion => 'Salli segmentin poistaminen';
 
   @override
-  String get adminPlaybackSegmentKeep => 'Segment keep (seconds)';
+  String get adminPlaybackSegmentKeep => 'Segmentin säilytys (sekuntia)';
 
   @override
-  String get adminPlaybackThrottleBuffering => 'Throttle buffering';
+  String get adminPlaybackThrottleBuffering => 'Kaasun puskurointi';
 
   @override
-  String get adminResumeMinPct => 'Minimum resume percentage';
+  String get adminResumeMinPct => 'Minimi jatkamisprosentti';
 
   @override
   String get adminResumeMinPctSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'Sisältöä on toistettava tämän prosenttiosuuden yli, jotta edistyminen tallentuu';
 
   @override
-  String get adminResumeMaxPct => 'Maximum resume percentage';
+  String get adminResumeMaxPct => 'Maksimi jatkamisprosentti';
 
   @override
   String get adminResumeMaxPctSubtitle =>
-      'Content is considered fully played after this percentage';
+      'Sisältö katsotaan kokonaan toistetuksi tämän prosenttiosuuden jälkeen';
 
   @override
-  String get adminResumeMinDuration => 'Minimum resume duration (seconds)';
+  String get adminResumeMinDuration =>
+      'Ansioluettelon vähimmäiskesto (sekuntia)';
 
   @override
   String get adminResumeMinDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Tätä lyhyempiä tuotteita ei voida jatkaa';
 
   @override
-  String get adminTrickplayScanBehavior => 'Scan behavior';
+  String get adminTrickplayScanBehavior => 'Skannauskäyttäytyminen';
 
   @override
-  String get adminTrickplayProcessPriority => 'Process priority';
+  String get adminTrickplayProcessPriority => 'Prosessin prioriteetti';
 
   @override
-  String get adminTrickplayTileWidth => 'Tile width';
+  String get adminTrickplayTileWidth => 'Laattojen leveys';
 
   @override
-  String get adminTrickplayTileHeight => 'Tile height';
+  String get adminTrickplayTileHeight => 'Laattojen korkeus';
 
   @override
-  String get adminTrickplayProcessThreads => 'Process threads';
+  String get adminTrickplayProcessThreads => 'Käsittele säikeitä';
 
   @override
-  String get adminTrickplayWidthResolutions => 'Width resolutions';
+  String get adminTrickplayWidthResolutions => 'Leveyden resoluutiot';
 
   @override
-  String get adminMetadataDefault => 'Default';
+  String get adminMetadataDefault => 'Oletus';
 
   @override
-  String get adminMetadataContentTypeUpdated => 'Content type updated';
+  String get adminMetadataContentTypeUpdated => 'Sisältötyyppi päivitetty';
 
   @override
   String adminMetadataContentTypeFailed(String error) {
@@ -5835,23 +5953,22 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get adminGeneralSlowResponseThreshold =>
-      'Slow response threshold (ms)';
+  String get adminGeneralSlowResponseThreshold => 'Hitaan vasteen kynnys (ms)';
 
   @override
-  String get adminGeneralCachePath => 'Cache path';
+  String get adminGeneralCachePath => 'Välimuistin polku';
 
   @override
-  String get adminGeneralMetadataPath => 'Metadata path';
+  String get adminGeneralMetadataPath => 'Metatietojen polku';
 
   @override
-  String get adminGeneralServerName => 'Server name';
+  String get adminGeneralServerName => 'Palvelimen nimi';
 
   @override
-  String get adminSettingsLoadFailed => 'Failed to load settings';
+  String get adminSettingsLoadFailed => 'Asetusten lataaminen epäonnistui';
 
   @override
-  String get adminDiscover => 'Discover';
+  String get adminDiscover => 'Tutustu';
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
@@ -5864,33 +5981,33 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get folders => 'Folders';
+  String get folders => 'Kansiot';
 
   @override
-  String get libraries => 'Libraries';
+  String get libraries => 'Kirjastot';
 
   @override
   String get syncPlay => 'SyncPlay';
 
   @override
-  String get syncPlayDisabledTitle => 'SyncPlay disabled';
+  String get syncPlayDisabledTitle => 'SyncPlay pois käytöstä';
 
   @override
   String get syncPlayDisabledMessage =>
-      'Enable SyncPlay in Settings to use synchronized playback.';
+      'Ota SyncPlay käyttöön asetuksissa, jos haluat käyttää synkronoitua toistoa.';
 
   @override
-  String get syncPlayServerUnsupportedTitle => 'Server unsupported';
+  String get syncPlayServerUnsupportedTitle => 'Palvelinta ei tueta';
 
   @override
   String get syncPlayServerUnsupportedMessage =>
-      'SyncPlay requires a Jellyfin server. The current server does not support it.';
+      'SyncPlay vaatii Jellyfin-palvelimen. Nykyinen palvelin ei tue sitä.';
 
   @override
-  String get syncPlayGroupFallbackName => 'SyncPlay Group';
+  String get syncPlayGroupFallbackName => 'SyncPlay Ryhmä';
 
   @override
-  String get syncPlayGroupTooltip => 'SyncPlay group';
+  String get syncPlayGroupTooltip => 'SyncPlay-ryhmä';
 
   @override
   String syncPlayParticipantCount(int count) {
@@ -5904,40 +6021,40 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get syncPlayIgnoreWait => 'Ignore wait';
+  String get syncPlayIgnoreWait => 'Ohita odotus';
 
   @override
   String get syncPlayIgnoreWaitSubtitle =>
-      'Don\'t hold the group up while this device buffers';
+      'Älä pidä ryhmää pystyssä, kun tämä laite puskuroi';
 
   @override
   String get syncPlayContinueLocallyNoWait =>
-      'Continue locally without waiting for slow members';
+      'Jatka paikallisesti odottamatta hitaita jäseniä';
 
   @override
-  String get syncPlayRepeat => 'Repeat';
+  String get syncPlayRepeat => 'Toistaa';
 
   @override
-  String get syncPlayRepeatOne => 'One';
+  String get syncPlayRepeatOne => 'Yksi';
 
   @override
-  String get syncPlayShuffleModeShuffled => 'Shuffled';
+  String get syncPlayShuffleModeShuffled => 'Sekoitettu';
 
   @override
-  String get syncPlayShuffleModeSorted => 'Sorted';
+  String get syncPlayShuffleModeSorted => 'Lajiteltu';
 
   @override
-  String get syncPlaySyncCurrentQueue => 'Sync current playback queue';
+  String get syncPlaySyncCurrentQueue => 'Synkronoi nykyinen toistojono';
 
   @override
   String get syncPlaySyncCurrentQueueSubtitle =>
-      'Replace the group queue with what is playing locally';
+      'Korvaa ryhmäjono sillä, mitä soitetaan paikallisesti';
 
   @override
-  String get syncPlayLeaveGroup => 'Leave group';
+  String get syncPlayLeaveGroup => 'Poistu ryhmästä';
 
   @override
-  String get syncPlayGroupQueue => 'Group queue';
+  String get syncPlayGroupQueue => 'Ryhmän jono';
 
   @override
   String syncPlayQueueItemFallback(int index) {
@@ -5945,47 +6062,47 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get syncPlayPlayNow => 'Play now';
+  String get syncPlayPlayNow => 'Pelaa nyt';
 
   @override
-  String get syncPlayCreateNewGroup => 'Create a new group';
+  String get syncPlayCreateNewGroup => 'Luo uusi ryhmä';
 
   @override
-  String get syncPlayGroupName => 'Group name';
+  String get syncPlayGroupName => 'Ryhmän nimi';
 
   @override
-  String get syncPlayDefaultGroupName => 'My SyncPlay Group';
+  String get syncPlayDefaultGroupName => 'Oma SyncPlay-ryhmä';
 
   @override
-  String get syncPlayCreateGroup => 'Create group';
+  String get syncPlayCreateGroup => 'Luo ryhmä';
 
   @override
-  String get syncPlayAvailableGroups => 'Available groups';
+  String get syncPlayAvailableGroups => 'Saatavilla olevat ryhmät';
 
   @override
-  String get syncPlayNoGroupsAvailable => 'No groups available';
+  String get syncPlayNoGroupsAvailable => 'Ryhmiä ei ole saatavilla';
 
   @override
-  String get syncPlayJoinGroupQuestion => 'Join SyncPlay group?';
+  String get syncPlayJoinGroupQuestion => 'Liitytkö SyncPlay-ryhmään?';
 
   @override
   String get syncPlayJoinGroupWarning =>
-      'Joining a SyncPlay group may replace your current playback queue. Continue?';
+      'SyncPlay-ryhmään liittyminen voi korvata nykyisen toistojonosi. Jatkaa?';
 
   @override
-  String get syncPlayJoin => 'Join';
+  String get syncPlayJoin => 'Liity';
 
   @override
-  String get syncPlayStateIdle => 'Idle';
+  String get syncPlayStateIdle => 'Tyhjäkäynti';
 
   @override
-  String get syncPlayStateWaiting => 'Waiting';
+  String get syncPlayStateWaiting => 'Odottaa';
 
   @override
-  String get syncPlayStatePaused => 'Paused';
+  String get syncPlayStatePaused => 'Keskeytetty';
 
   @override
-  String get syncPlayStatePlaying => 'Playing';
+  String get syncPlayStatePlaying => 'Pelaaminen';
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
@@ -5998,11 +6115,11 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get syncPlayAccessDeniedTitle => 'SyncPlay access denied';
+  String get syncPlayAccessDeniedTitle => 'SyncPlay-käyttö estetty';
 
   @override
   String get syncPlayAccessDeniedMessage =>
-      'You do not have access to one or more items in this SyncPlay group. Ask the group owner to verify library permissions or choose a different queue.';
+      'Sinulla ei ole pääsyä yhteen tai useampaan kohteeseen tässä SyncPlay-ryhmässä. Pyydä ryhmän omistajaa vahvistamaan kirjaston käyttöoikeudet tai valitse toinen jono.';
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
@@ -6010,63 +6127,64 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get voiceSearchUnavailable => 'Voice search is unavailable.';
+  String get voiceSearchUnavailable => 'Puhehaku ei ole käytettävissä.';
 
   @override
   String get dolbyVisionDirectPlayFailedTitle =>
-      'Dolby Vision Direct Play Failed';
+      'Dolby Vision Direct Play epäonnistui';
 
   @override
   String get dolbyVisionDirectPlayFailedMessage =>
-      'Direct play failed to start for this Dolby Vision stream. Retry using server transcode?';
+      'Tämän Dolby Vision -virran suoratoisto epäonnistui. Yritetäänkö palvelimen transkoodaus uudelleen?';
 
   @override
-  String get retryWithTranscode => 'Retry with transcode';
+  String get retryWithTranscode => 'Yritä uudelleen transkoodauksella';
 
   @override
-  String get dolbyVisionNotSupportedTitle => 'Dolby Vision Not Supported';
+  String get dolbyVisionNotSupportedTitle => 'Dolby Visionia ei tueta';
 
   @override
   String get dolbyVisionNotSupportedMessage =>
-      'This device cannot decode Dolby Vision content directly. Use HDR10 fallback or request server transcoding.';
+      'Tämä laite ei voi purkaa Dolby Vision -sisältöä suoraan. Käytä HDR10-varaa tai pyydä palvelimen transkoodausta.';
 
   @override
-  String get rememberMyChoice => 'Remember my choice';
+  String get rememberMyChoice => 'Muista valintani';
 
   @override
-  String get playHdr10Fallback => 'Play HDR10 fallback';
+  String get playHdr10Fallback => 'Pelaa HDR10-varaa';
 
   @override
-  String get requestTranscode => 'Request transcode';
+  String get requestTranscode => 'Pyydä transkoodausta';
 
   @override
   String get homeScreenSectionsIntegrationDescription =>
-      'Detect rows exposed by IAmParadox27\'s \"Home Screen Sections\" plugin. Rows can be enabled and reordered below.';
+      'Tunnista IAmParadox27:n \"Home Screen Sections\" -laajennuksen paljastamat rivit. Rivit voidaan ottaa käyttöön ja järjestää uudelleen alla.';
 
   @override
   String get homeScreenSectionsIntegrationNoServers =>
-      'No Jellyfin servers reporting the plugin yet.';
+      'Yksikään Jellyfin-palvelin ei ole vielä ilmoittanut laajennuksesta.';
 
   @override
   String get kefinTweaksIntegrationDescription =>
-      'Detect rows configured via ranaldsgift\'s \"KefinTweaks\" plugin. Custom sections, recently released, watch again, seasonal, and recently added in library are mirrored from the KefinTweaks configuration on each Jellyfin server.';
+      'Tunnista ranaldsgiftin KefinTweaks-laajennuksen kautta määritetyt rivit. Äskettäin julkaistut mukautetut osiot, katso uudelleen, kausiluonteiset ja äskettäin kirjastoon lisätyt osiot peilataan jokaisen Jellyfin-palvelimen KefinTweaks-kokoonpanosta.';
 
   @override
   String get kefinTweaksIntegrationNoServers =>
-      'No Jellyfin servers reporting KefinTweaks yet.';
+      'Yksikään Jellyfin-palvelin ei raportoi vielä KefinTweaksista.';
 
   @override
-  String get integrationOpenHomeSections => 'Open Home Sections';
+  String get integrationOpenHomeSections => 'Avaa Koti-osiot';
 
   @override
   String get integrationOpenHomeSectionsSubtitle =>
-      'Enable, disable, and reorder rows';
+      'Ota rivejä käyttöön, poista se käytöstä ja järjestä uudelleen';
 
   @override
-  String get integrationInstalledButDisabled => 'Installed but disabled';
+  String get integrationInstalledButDisabled =>
+      'Asennettu mutta poistettu käytöstä';
 
   @override
-  String get integrationNotInstalled => 'Not installed';
+  String get integrationNotInstalled => 'Ei asennettu';
 
   @override
   String integrationSectionsCount(int count) {
@@ -6094,39 +6212,39 @@ class AppLocalizationsFi extends AppLocalizations {
   String get jellyseerr => 'Jellyseerr';
 
   @override
-  String get seeAll => 'See All';
+  String get seeAll => 'Katso kaikki';
 
   @override
-  String get noItems => 'No items';
+  String get noItems => 'Ei kohteita';
 
   @override
-  String get switchUser => 'Switch User';
+  String get switchUser => 'Vaihda käyttäjää';
 
   @override
-  String get remoteControl => 'Remote Control';
+  String get remoteControl => 'Kaukosäädin';
 
   @override
-  String get mediaBarLoading => 'Loading media bar...';
+  String get mediaBarLoading => 'Ladataan mediapalkkia...';
 
   @override
-  String get mediaBarError => 'Media bar failed to load';
+  String get mediaBarError => 'Mediapalkin lataaminen epäonnistui';
 
   @override
   String get offlineServerUnavailable =>
-      'Connected to the internet, but the current server is unavailable.';
+      'Yhteys Internetiin, mutta nykyinen palvelin ei ole käytettävissä.';
 
   @override
   String get offlineNoInternet =>
-      'You are offline. Only downloaded content is available.';
+      'Olet offline-tilassa. Vain ladattu sisältö on saatavilla.';
 
   @override
-  String get offlineFileNotAvailable => 'File not available';
+  String get offlineFileNotAvailable => 'Tiedosto ei ole käytettävissä';
 
   @override
-  String get offlineSwitchServer => 'Switch Server';
+  String get offlineSwitchServer => 'Vaihda palvelinta';
 
   @override
-  String get offlineSavedMedia => 'Saved Media';
+  String get offlineSavedMedia => 'Tallennettu media';
 
   @override
   String get castGoogleCast => 'Google Cast';
@@ -6138,7 +6256,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get castDlna => 'DLNA';
 
   @override
-  String get castRemotePlayback => 'Remote Playback';
+  String get castRemotePlayback => 'Kaukotoisto';
 
   @override
   String castControlFailed(String error) {
@@ -6151,10 +6269,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get castDeviceVolume => 'Device Volume';
+  String get castDeviceVolume => 'Laitteen äänenvoimakkuus';
 
   @override
-  String get castVolumeUnavailable => 'Unavailable';
+  String get castVolumeUnavailable => 'Ei saatavilla';
 
   @override
   String castStopKind(String kind) {
@@ -6165,19 +6283,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get audioLabel => 'Audio';
 
   @override
-  String get subtitlesLabel => 'Subtitles';
+  String get subtitlesLabel => 'Tekstitykset';
 
   @override
-  String get pinConfirmTitle => 'Confirm PIN';
+  String get pinConfirmTitle => 'Vahvista PIN';
 
   @override
-  String get pinSetTitle => 'Set PIN';
+  String get pinSetTitle => 'Aseta PIN';
 
   @override
-  String get pinEnterTitle => 'Enter PIN';
+  String get pinEnterTitle => 'Anna PIN-koodi';
 
   @override
-  String get pinReenterToConfirm => 'Re-enter your PIN to confirm';
+  String get pinReenterToConfirm => 'Vahvista syöttämällä PIN-koodi uudelleen';
 
   @override
   String pinEnterNDigit(int length) {
@@ -6190,46 +6308,46 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get pinIncorrect => 'Incorrect PIN';
+  String get pinIncorrect => 'Väärä PIN-koodi';
 
   @override
-  String get pinMismatch => 'PINs do not match';
+  String get pinMismatch => 'PIN-koodit eivät täsmää';
 
   @override
-  String get pinForgot => 'Forgot PIN?';
+  String get pinForgot => 'Unohditko PIN-koodin?';
 
   @override
-  String get pinClear => 'Clear';
+  String get pinClear => 'Selkeä';
 
   @override
-  String get pinBackspace => 'Backspace';
+  String get pinBackspace => 'Askelpalautin';
 
   @override
-  String get quickConnectAuthorized => 'Quick Connect request authorized.';
+  String get quickConnectAuthorized => 'Pikayhteyspyyntö hyväksytty.';
 
   @override
   String get quickConnectInvalidOrExpired =>
-      'Quick Connect code is invalid or expired.';
+      'Pikayhteyskoodi on virheellinen tai vanhentunut.';
 
   @override
   String get quickConnectNotSupported =>
-      'Quick Connect is not supported on this server.';
+      'Pikayhteyttä ei tueta tällä palvelimella.';
 
   @override
   String get quickConnectAuthorizeFailed =>
-      'Failed to authorize Quick Connect code.';
+      'Pikayhteyskoodin valtuuttaminen epäonnistui.';
 
   @override
   String get quickConnectDisabled =>
-      'Quick Connect is disabled on this server.';
+      'Pikayhteys on poistettu käytöstä tällä palvelimella.';
 
   @override
   String get quickConnectForbidden =>
-      'Your account cannot authorize this Quick Connect request.';
+      'Tilisi ei voi valtuuttaa tätä pikayhteyspyyntöä.';
 
   @override
   String get quickConnectNotFound =>
-      'Quick Connect code was not found. Try a new code.';
+      'Pikayhteyskoodia ei löytynyt. Kokeile uutta koodia.';
 
   @override
   String quickConnectFailedWithMessage(String message) {
@@ -6237,10 +6355,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get quickConnectEnterCode => 'Enter code';
+  String get quickConnectEnterCode => 'Syötä koodi';
 
   @override
-  String get quickConnectAuthorize => 'Authorize';
+  String get quickConnectAuthorize => 'Valtuuta';
 
   @override
   String remoteCommandFailed(String error) {
@@ -6248,28 +6366,28 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get remoteControlTitle => 'Remote Control';
+  String get remoteControlTitle => 'Kaukosäädin';
 
   @override
-  String get remoteFailedToLoadSessions => 'Failed to load sessions';
+  String get remoteFailedToLoadSessions => 'Istuntojen lataaminen epäonnistui';
 
   @override
-  String get remoteNoSessions => 'No controllable sessions';
+  String get remoteNoSessions => 'Ei ohjattavia istuntoja';
 
   @override
-  String get remoteStartPlayback => 'Start playback on another device';
+  String get remoteStartPlayback => 'Aloita toisto toisella laitteella';
 
   @override
-  String get unknownUser => 'Unknown';
+  String get unknownUser => 'Tuntematon';
 
   @override
-  String get unknownItem => 'Unknown';
+  String get unknownItem => 'Tuntematon';
 
   @override
-  String get remoteNothingPlaying => 'Nothing playing on this session';
+  String get remoteNothingPlaying => 'Tässä istunnossa ei toisteta mitään';
 
   @override
-  String get castingStarted => 'Casting started on selected device';
+  String get castingStarted => 'Suoratoisto aloitettiin valitulla laitteella';
 
   @override
   String castingFailed(String error) {
@@ -6277,44 +6395,44 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get noRemoteDevices => 'No remote playback devices available.';
+  String get noRemoteDevices => 'Etätoistolaitteita ei ole saatavilla.';
 
   @override
   String get noRemoteDevicesIos =>
-      'No remote playback devices available.\n\nOn iOS, AirPlay targets may be unavailable in the simulator.';
+      'Etätoistolaitteita ei ole saatavilla.\n\niOS:ssä AirPlay-kohteet eivät ehkä ole käytettävissä simulaattorissa.';
 
   @override
-  String get trackActionPlayNext => 'Play Next';
+  String get trackActionPlayNext => 'Pelaa seuraavaksi';
 
   @override
-  String get trackActionAddToQueue => 'Add to Queue';
+  String get trackActionAddToQueue => 'Lisää jonoon';
 
   @override
-  String get trackActionAddToPlaylist => 'Add to Playlist';
+  String get trackActionAddToPlaylist => 'Lisää soittolistaan';
 
   @override
-  String get trackActionCancelDownload => 'Cancel Download';
+  String get trackActionCancelDownload => 'Peruuta lataus';
 
   @override
-  String get trackActionDeleteFromPlaylist => 'Delete from Playlist';
+  String get trackActionDeleteFromPlaylist => 'Poista soittolistasta';
 
   @override
-  String get trackActionMoveUp => 'Move Up';
+  String get trackActionMoveUp => 'Siirrä ylös';
 
   @override
-  String get trackActionMoveDown => 'Move Down';
+  String get trackActionMoveDown => 'Siirrä alas';
 
   @override
-  String get trackActionRemoveFromFavorites => 'Remove from Favorites';
+  String get trackActionRemoveFromFavorites => 'Poista suosikeista';
 
   @override
-  String get trackActionAddToFavorites => 'Add to Favorites';
+  String get trackActionAddToFavorites => 'Lisää suosikkeihin';
 
   @override
-  String get trackActionGoToAlbum => 'Go to Album';
+  String get trackActionGoToAlbum => 'Siirry albumiin';
 
   @override
-  String get trackActionGoToArtist => 'Go to Artist';
+  String get trackActionGoToArtist => 'Siirry Artistiin';
 
   @override
   String trackActionDownloading(String name) {
@@ -6322,86 +6440,87 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get trackActionDeletedFile => 'Deleted downloaded file';
+  String get trackActionDeletedFile => 'Ladattu tiedosto poistettu';
 
   @override
-  String get trackActionDeleteFileFailed => 'Could not delete downloaded file';
+  String get trackActionDeleteFileFailed =>
+      'Ladattua tiedostoa ei voitu poistaa';
 
   @override
   String get shuffleBy => 'Shuffle By';
 
   @override
-  String get shuffleSelectLibrary => 'Select Library';
+  String get shuffleSelectLibrary => 'Valitse Kirjasto';
 
   @override
-  String get shuffleSelectGenre => 'Select Genre';
+  String get shuffleSelectGenre => 'Valitse Genre';
 
   @override
-  String get shuffleLibrary => 'Library';
+  String get shuffleLibrary => 'Kirjasto';
 
   @override
   String get shuffleGenre => 'Genre';
 
   @override
-  String get shuffleNoLibraries => 'No compatible libraries available.';
+  String get shuffleNoLibraries =>
+      'Yhteensopivia kirjastoja ei ole saatavilla.';
 
   @override
-  String get shuffleNoGenres => 'No genres found for this shuffle mode.';
+  String get shuffleNoGenres => 'Tälle sekoitustilalle ei löytynyt genrejä.';
 
   @override
-  String get posterDisplayTitle => 'Display';
+  String get posterDisplayTitle => 'Näyttö';
 
   @override
-  String get posterImageType => 'Image Type';
+  String get posterImageType => 'Kuvatyyppi';
 
   @override
-  String get imageTypePoster => 'Poster';
+  String get imageTypePoster => 'Juliste';
 
   @override
-  String get imageTypeThumbnail => 'Thumbnail';
+  String get imageTypeThumbnail => 'Pikkukuva';
 
   @override
-  String get imageTypeBanner => 'Banner';
+  String get imageTypeBanner => 'Banneri';
 
   @override
-  String get playlistAddFailed => 'Failed to add to playlist';
+  String get playlistAddFailed => 'Lisääminen soittolistaan ​​epäonnistui';
 
   @override
-  String get playlistCreateFailed => 'Failed to create playlist';
+  String get playlistCreateFailed => 'Soittolistan luominen epäonnistui';
 
   @override
-  String get playlistNew => 'New Playlist';
+  String get playlistNew => 'Uusi soittolista';
 
   @override
-  String get playlistCreate => 'Create';
+  String get playlistCreate => 'Luoda';
 
   @override
-  String get playlistCreateNew => 'Create New Playlist';
+  String get playlistCreateNew => 'Luo uusi soittolista';
 
   @override
-  String get playlistNoneFound => 'No playlists found';
+  String get playlistNoneFound => 'Soittolistoja ei löytynyt';
 
   @override
-  String get addToPlaylist => 'Add to Playlist';
+  String get addToPlaylist => 'Lisää soittolistaan';
 
   @override
-  String get lyricsNotAvailable => 'No lyrics available';
+  String get lyricsNotAvailable => 'Sanoja ei ole saatavilla';
 
   @override
-  String get upNext => 'Up Next';
+  String get upNext => 'Seuraavaksi ylös';
 
   @override
-  String get playNext => 'Play Next';
+  String get playNext => 'Pelaa seuraavaksi';
 
   @override
-  String get stillWatchingContent =>
-      'Playback has been paused. Are you still watching?';
+  String get stillWatchingContent => 'Toisto on keskeytetty. Katsotko vielä?';
 
   @override
   String get stillWatchingStop => 'Stop';
 
   @override
-  String get stillWatchingContinue => 'Continue';
+  String get stillWatchingContinue => 'Jatkaa';
 
   @override
   String skipSegment(String segment) {
@@ -6409,10 +6528,10 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get liveTv => 'Live TV';
+  String get liveTv => 'Live-TV';
 
   @override
-  String get continueWatchingAndNextUp => 'Continue Watching & Next Up';
+  String get continueWatchingAndNextUp => 'Jatka katselua ja seuraavaksi';
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
@@ -6425,246 +6544,257 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get nextEpisode => 'Next Episode';
+  String get nextEpisode => 'Seuraava jakso';
 
   @override
-  String get moreFromThisSeason => 'More From This Season';
+  String get moreFromThisSeason => 'Lisää tältä kaudelta';
 
   @override
-  String get playerTooltipPlaybackSpeed => 'Playback speed';
+  String get playerTooltipPlaybackSpeed => 'Toistonopeus';
 
   @override
-  String get playerTooltipCastControls => 'Cast controls';
+  String get playerTooltipCastControls => 'Cast-ohjaimet';
 
   @override
-  String get playerTooltipPlaybackQuality => 'Bitrate';
+  String get playerTooltipPlaybackQuality => 'Bittinopeus';
 
   @override
-  String get playerTooltipEnterFullscreen => 'Enter fullscreen';
+  String get playerTooltipEnterFullscreen => 'Siirry koko näytön tilaan';
 
   @override
-  String get playerTooltipExitFullscreen => 'Exit fullscreen';
+  String get playerTooltipExitFullscreen => 'Poistu koko näytöstä';
 
   @override
-  String get playerTooltipLockLandscape => 'Lock landscape';
+  String get playerTooltipFloatOnTop => 'Kellu päälle';
 
   @override
-  String get playerTooltipUnlockOrientation => 'Allow rotation';
+  String get playerTooltipExitFloatOnTop => 'Poista float päällä';
 
   @override
-  String get playerTooltipPrevious => 'Previous';
+  String get playerTooltipLockLandscape => 'Lukko maisema';
 
   @override
-  String get playerTooltipSeekBack => 'Seek back';
+  String get playerTooltipUnlockOrientation => 'Salli pyöritys';
 
   @override
-  String get playerTooltipSeekForward => 'Seek forward';
+  String get playerTooltipPrevious => 'Edellinen';
 
   @override
-  String get contextMenuMarkWatched => 'Mark as Watched';
+  String get playerTooltipSeekBack => 'Etsi takaisin';
 
   @override
-  String get contextMenuMarkUnwatched => 'Mark as Unwatched';
+  String get playerTooltipSeekForward => 'Etsi eteenpäin';
 
   @override
-  String get contextMenuAddToFavorites => 'Add to Favorites';
+  String get contextMenuMarkWatched => 'Merkitse katsotuksi';
 
   @override
-  String get contextMenuRemoveFromFavorites => 'Remove from Favorites';
+  String get contextMenuMarkUnwatched => 'Merkitse katsomattomaksi';
 
   @override
-  String get contextMenuGoToSeries => 'Go to Series';
+  String get contextMenuAddToFavorites => 'Lisää suosikkeihin';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Poista suosikeista';
+
+  @override
+  String get contextMenuGoToSeries => 'Siirry sarjaan';
 
   @override
   String get settingsAdministrationSubtitle =>
-      'Access the server administration panel';
+      'Siirry palvelimen hallintapaneeliin';
 
   @override
-  String get settingsAccountSecurity => 'Account & Security';
+  String get settingsAccountSecurity => 'Tili ja suojaus';
 
   @override
   String get settingsAccountSecuritySubtitle =>
-      'Authentication, PIN code, and parental controls';
+      'Todennus, PIN-koodi ja lapsilukko';
 
   @override
-  String get settingsPersonalization => 'Personalization';
+  String get settingsPersonalization => 'Personointi';
 
   @override
   String get settingsPersonalizationSubtitle =>
-      'Theme, navigation, home rows, and library visibility';
+      'Teema, navigointi, kotirivit ja kirjaston näkyvyys';
 
   @override
-  String get settingsDynamicContent => 'Dynamic Content';
+  String get settingsDynamicContent => 'Dynaaminen sisältö';
 
   @override
-  String get settingsDynamicContentSubtitle => 'Media Bar and visual overlays';
+  String get settingsDynamicContentSubtitle =>
+      'Mediapalkki ja visuaaliset peittokuvat';
 
   @override
-  String get settingsPlaybackSyncplay => 'Playback & SyncPlay';
+  String get settingsPlaybackSyncplay => 'Toisto ja SyncPlay';
 
   @override
   String get settingsPlaybackSyncplaySubtitle =>
-      'Audio/video settings, subtitles, downloads, and SyncPlay controls';
+      'Ääni-/videoasetukset, tekstitykset, lataukset ja SyncPlay-ohjaimet';
 
   @override
   String get settingsIntegrationsSubtitle =>
-      'Plugin sync, Seerr, ratings, and more';
+      'Plugin sync, Seerr, luokitukset ja paljon muuta';
 
   @override
   String get settingsAboutSubtitle =>
-      'App version, legal information, and credits';
+      'Sovelluksen versio, lakitiedot ja krediitit';
 
   @override
-  String get settingsAuthenticationSection => 'AUTHENTICATION';
+  String get settingsAuthenticationSection => 'TODENNUS';
 
   @override
-  String get settingsSortServersBy => 'Sort Servers By';
+  String get settingsSortServersBy => 'Lajittele palvelimet';
 
   @override
-  String get settingsLastUsed => 'Last Used';
+  String get settingsLastUsed => 'Viimeksi käytetty';
 
   @override
-  String get settingsAlphabetical => 'Alphabetical';
+  String get settingsAlphabetical => 'Aakkosellinen';
 
   @override
-  String get settingsPrivacyAndSafetySection => 'PRIVACY & SAFETY';
+  String get settingsPrivacyAndSafetySection =>
+      'YKSITYISYYDEN SUOJA JA TURVALLISUUS';
 
   @override
-  String get settingsBlockedRatings => 'Blocked Ratings';
+  String get settingsBlockedRatings => 'Estetyt luokitukset';
 
   @override
-  String get settingsGeneralStyle => 'General Style';
+  String get settingsGeneralStyle => 'Yleinen tyyli';
 
   @override
   String get settingsGeneralStyleSubtitle =>
-      'Theme accents, backdrops, watched indicators, and theme music';
+      'Teeman korostukset, taustat, katsotut indikaattorit ja teemamusiikki';
 
   @override
-  String get settingsHomePage => 'Home Page';
+  String get settingsHomePage => 'Kotisivu';
 
   @override
   String get settingsHomePageSubtitle =>
-      'Sections, image types, overlays, and media previews';
+      'Osat, kuvatyypit, peittokuvat ja median esikatselut';
 
   @override
   String get settingsLibrariesSubtitle =>
-      'Library visibility, folder view, and multi-server behavior';
+      'Kirjaston näkyvyys, kansionäkymä ja usean palvelimen toiminta';
 
   @override
-  String get settingsTwentyFourHourClock => '24-Hour Clock';
+  String get settingsTwentyFourHourClock => '24 tunnin kello';
 
   @override
   String get settingsTwentyFourHourClockSubtitle =>
-      'Use 24-hour time formatting wherever the clock is shown';
+      'Käytä 24 tunnin ajan muotoilua kaikkialla, missä kello näkyy';
 
   @override
   String get settingsShowShuffleButtonInNavigation =>
-      'Show the shuffle button in the navigation bar';
+      'Näytä sekoituspainike navigointipalkissa';
 
   @override
   String get settingsShowGenresButtonInNavigation =>
-      'Show the genres button in the navigation bar';
+      'Näytä genre-painike navigointipalkissa';
 
   @override
   String get settingsShowFavoritesButtonInNavigation =>
-      'Show the favorites button in the navigation bar';
+      'Näytä suosikit-painike navigointipalkissa';
 
   @override
   String get settingsShowLibrariesButtonInNavigation =>
-      'Show the libraries button in the navigation bar';
+      'Näytä kirjastot-painike navigointipalkissa';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'Vaihda etusivun näkyvyys kirjastoittain. Käynnistä Moonfin uudelleen, jotta muutokset tulevat voimaan.';
 
   @override
-  String get settingsMediaBarAndLocalPreviews => 'Media Bar & Local Previews';
+  String get settingsMediaBarAndLocalPreviews =>
+      'Mediapalkki ja paikalliset esikatselut';
 
   @override
-  String get settingsVisualOverlays => 'Visual Overlays';
+  String get settingsVisualOverlays => 'Visuaaliset peittokuvat';
 
   @override
-  String get settingsSeasonalSurprise => 'Seasonal Surprise';
+  String get settingsSeasonalSurprise => 'Kauden yllätys';
 
   @override
-  String get settingsMetadataAndRatings => 'Metadata & Ratings';
+  String get settingsMetadataAndRatings => 'Metatiedot ja luokitukset';
 
   @override
   String get settingsPluginScreenDescription =>
-      'Moonbase powers server-side integrations including additional rating sources, Seerr requests, and synced preferences.';
+      'Moonbase tukee palvelinpuolen integraatioita, mukaan lukien lisäluokituslähteet, Seerr-pyynnöt ja synkronoidut asetukset.';
 
   @override
-  String get settingsOfflineDownloads => 'Offline Downloads';
+  String get settingsOfflineDownloads => 'Offline-lataukset';
 
   @override
-  String get settingsHigh => 'High';
+  String get settingsHigh => 'Korkea';
 
   @override
-  String get settingsLow => 'Low';
+  String get settingsLow => 'Matala';
 
   @override
-  String get settingsCustomPath => 'Custom Path';
+  String get settingsCustomPath => 'Mukautettu polku';
 
   @override
-  String get settingsEnterDownloadFolderPath => 'Enter download folder path';
+  String get settingsEnterDownloadFolderPath => 'Anna latauskansion polku';
 
   @override
-  String get settingsConcurrentDownloads => 'Concurrent Downloads';
+  String get settingsConcurrentDownloads => 'Samanaikaiset lataukset';
 
   @override
   String get settingsConcurrentDownloadsDescription =>
-      'Maximum number of items to download at once.';
+      'Enimmäismäärä kerralla ladattavia kohteita.';
 
   @override
-  String get settingsAppInfo => 'APP INFO';
+  String get settingsAppInfo => 'SOVELLUSTIEDOT';
 
   @override
-  String get settingsReportAnIssue => 'Report an Issue';
+  String get settingsReportAnIssue => 'Ilmoita ongelmasta';
 
   @override
   String get settingsReportAnIssueSubtitle =>
-      'Open the issue tracker on GitHub';
+      'Avaa ongelmanseuranta GitHubissa';
 
   @override
-  String get settingsJoinDiscord => 'Join Discord';
+  String get settingsJoinDiscord => 'Liity Discordiin';
 
   @override
-  String get settingsJoinDiscordSubtitle => 'Chat with the community';
+  String get settingsJoinDiscordSubtitle => 'Keskustele yhteisön kanssa';
 
   @override
-  String get settingsJoinTheDiscord => 'Join the Discord';
+  String get settingsJoinTheDiscord => 'Liity Discordiin';
 
   @override
-  String get settingsSupportMoonfin => 'Support Moonfin';
+  String get settingsSupportMoonfin => 'Tue Moonfin';
 
   @override
   String get settingsSupportMoonfinSubtitle =>
-      'Star the project on GitHub or contribute';
+      'Tähtää projekti GitHubissa tai osallistu';
 
   @override
-  String get settingsLegal => 'LEGAL';
+  String get settingsLegal => 'LAKI';
 
   @override
-  String get settingsLicenses => 'Licenses';
+  String get settingsLicenses => 'Lisenssit';
 
   @override
-  String get settingsOpenSourceLicenseNotices => 'Open-source license notices';
+  String get settingsOpenSourceLicenseNotices =>
+      'Avoimen lähdekoodin lisenssiilmoitukset';
 
   @override
-  String get settingsPrivacyPolicy => 'Privacy Policy';
+  String get settingsPrivacyPolicy => 'Tietosuojakäytäntö';
 
   @override
-  String get settingsPrivacyPolicySubtitle => 'How Moonfin handles your data';
+  String get settingsPrivacyPolicySubtitle =>
+      'Kuinka Moonfin käsittelee tietojasi';
 
   @override
-  String get settingsCheckForUpdates => 'Check for Updates';
+  String get settingsCheckForUpdates => 'Tarkista päivitykset';
 
   @override
   String get settingsCheckForUpdatesSubtitle =>
-      'Check for the latest Moonfin release';
+      'Tarkista viimeisin Moonfin-julkaisu';
 
   @override
-  String get settingsPoweredByFlutter => 'Powered by Flutter';
+  String get settingsPoweredByFlutter => 'Voimanlähteenä Flutter';
 
   @override
   String settingsLicenseNoticesCount(int count) {
@@ -6678,168 +6808,170 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get settingsBoth => 'Both';
+  String get settingsBoth => 'Molemmat';
 
   @override
-  String get settingsShuffleContentTypeFilter => 'Shuffle Content Type Filter';
+  String get settingsShuffleContentTypeFilter =>
+      'Sekoita sisältötyyppisuodatin';
 
   @override
-  String get settingsVideoPlaybackPreferences => 'Video Playback Preferences';
+  String get settingsVideoPlaybackPreferences => 'Videon toistoasetukset';
 
   @override
   String get settingsVideoPlaybackPreferencesSubtitle =>
-      'Core video engine and streaming quality settings';
+      'Ydinvideomoottori ja suoratoiston laatuasetukset';
 
   @override
-  String get settingsAudioPreferences => 'Audio Preferences';
+  String get settingsAudioPreferences => 'Ääniasetukset';
 
   @override
   String get settingsAudioPreferencesSubtitle =>
-      'Audio tracks, processing, and passthrough options';
+      'Ääniraidat, käsittely ja läpivientivaihtoehdot';
 
   @override
-  String get settingsAutomationAndQueue => 'Automation & Queue';
+  String get settingsAutomationAndQueue => 'Automaatio ja jono';
 
   @override
   String get settingsAutomationAndQueueSubtitle =>
-      'Automated playback and sequencing';
+      'Automaattinen toisto ja sekvenssi';
 
   @override
   String get settingsOfflineDownloadsSubtitle =>
-      'Download quality, storage limits, and queue size';
+      'Latausten laatu, tallennusrajat ja jonon koko';
 
   @override
   String get settingsSyncplaySubtitle =>
-      'Synchronization logic for group sessions';
+      'Synkronointilogiikka ryhmäistunnoille';
 
   @override
   String get settingsAdvancedOptionsSubtitle =>
-      'Specialized player features. Use with caution, as some options may cause playback issues';
+      'Erikoistuneet soittimen ominaisuudet. Käytä varoen, sillä jotkin vaihtoehdot voivat aiheuttaa toistoongelmia';
 
   @override
-  String get settingsSkipIntrosAndOutros => 'Skip Intros and Outros?';
+  String get settingsSkipIntrosAndOutros => 'Ohitetaanko introt ja loppupalat?';
 
   @override
-  String get settingsPromptUser => 'Prompt User';
+  String get settingsPromptUser => 'Kehota käyttäjää';
 
   @override
-  String get settingsSkip => 'Skip';
+  String get settingsSkip => 'Ohita';
 
   @override
-  String get settingsDoNothing => 'Do Nothing';
+  String get settingsDoNothing => 'Älä tee mitään';
 
   @override
   String get settingsMaxBitrateDescription =>
-      'Cap the streaming bitrate. Content above this threshold will be transcoded to fit.';
+      'Rajoita suoratoiston bittinopeus. Tämän kynnyksen ylittävä sisältö muunnetaan sopivaksi.';
 
   @override
   String get settingsMaxResolutionDescription =>
-      'Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.';
+      'Rajoita soittimen pyytämää enimmäisresoluutiota. Korkeamman resoluution sisältö transkoodataan alaspäin.';
 
   @override
   String get settingsPlayerZoomDescription =>
-      'How video should be scaled to fit the screen.';
+      'Kuinka video tulee skaalata näytölle sopivaksi.';
 
   @override
   String get settingsPlaybackEngineAndroidTv => 'Playback Engine (Android TV)';
 
   @override
   String get settingsPlaybackEngineAndroidTvDescription =>
-      'Choose the default playback engine on Android TV devices. Changes apply to the next playback session.';
+      'Valitse oletustoistomoottori Android TV -laitteissa. Muutokset koskevat seuraavaa toistokertaa.';
 
   @override
-  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (recommended)';
+  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (suositus)';
 
   @override
-  String get settingsPlaybackEngineMpvLegacy => 'mpv (legacy)';
+  String get settingsPlaybackEngineMpvLegacy => 'mpv (perintö)';
 
   @override
-  String get settingsDolbyVisionFallback => 'Dolby Vision Fallback';
+  String get settingsDolbyVisionFallback => 'Dolby Vision Varavaihtoehto';
 
   @override
   String get settingsDolbyVisionFallbackDescription =>
-      'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.';
+      'Dolby Vision -nimikkeiden käyttäytyminen laitteissa, joissa ei ole Dolby Vision -dekoodausta.';
 
   @override
-  String get settingsAskEachTime => 'Ask each time';
+  String get settingsAskEachTime => 'Kysy joka kerta';
 
   @override
-  String get settingsPreferHdr10Fallback => 'Prefer HDR10 fallback';
+  String get settingsPreferHdr10Fallback => 'Suosi HDR10-varausvaihtoehtoa';
 
   @override
-  String get settingsPreferServerTranscode => 'Prefer server transcode';
+  String get settingsPreferServerTranscode => 'Suosi palvelimen transkoodausta';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlay =>
-      'Dolby Vision Profile 7 Direct Play';
+      'Dolby Vision Profiili 7 Suoratoisto';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlayDescription =>
-      'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.';
+      'Ohjaa, ohjataanko Dolby Vision -profiili 7 -parannuskerroksen streameja.';
 
   @override
-  String get settingsAutoAftkrtEnabled => 'Auto (AFTKRT enabled)';
+  String get settingsAutoAftkrtEnabled => 'Automaattinen (AFTKRT käytössä)';
 
   @override
-  String get settingsEnabledOnThisDevice => 'Enabled on this device';
+  String get settingsEnabledOnThisDevice => 'Käytössä tässä laitteessa';
 
   @override
-  String get settingsDisabledPreferTranscode => 'Disabled (prefer transcode)';
+  String get settingsDisabledPreferTranscode =>
+      'Ei käytössä (ensisijaisesti transkoodaus)';
 
   @override
   String get settingsResumeRewindDescription =>
-      'When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?';
+      'Kun toistoa jatketaan (Jatka katselua -sivulta tai mediakohdesivulta), kuinka monta sekuntia tulee kelata taaksepäin?';
 
   @override
   String get settingsUnpauseRewindDescription =>
-      'When resuming playback after pressing the pause button, how many seconds should be rewound?';
+      'Kun toistoa jatketaan taukopainikkeen painamisen jälkeen, kuinka monta sekuntia tulee kelata taaksepäin?';
 
   @override
   String get settingsSkipBackLengthDescription =>
-      'How many seconds to jump back after pressing the rewind button.';
+      'Kuinka monta sekuntia palataan taaksepäin kelauspainikkeen painamisen jälkeen.';
 
   @override
-  String get settingsOneSecond => '1 second';
+  String get settingsOneSecond => '1 sekunti';
 
   @override
-  String get settingsThreeSeconds => '3 seconds';
+  String get settingsThreeSeconds => '3 sekuntia';
 
   @override
-  String get settingsFortyFiveSeconds => '45 seconds';
+  String get settingsFortyFiveSeconds => '45 sekuntia';
 
   @override
-  String get settingsSixtySeconds => '60 seconds';
+  String get settingsSixtySeconds => '60 sekuntia';
 
   @override
   String get settingsSkipForwardLengthDescription =>
-      'How many seconds to jump forward after pressing the fast forward button.';
+      'Kuinka monta sekuntia hyppää eteenpäin eteenpäinkelauspainikkeen painamisen jälkeen.';
 
   @override
   String get settingsBitstreamAc3ToExternalDecoder =>
-      'Bitstream AC3 to external decoder';
+      'Bittivirta AC3 ulkoiseen dekooderiin';
 
   @override
-  String get settingsCinemaMode => 'Cinema Mode';
+  String get settingsCinemaMode => 'Elokuvatila';
 
   @override
   String get settingsCinemaModeSubtitle =>
-      'Play trailers/prerolls before a main feature';
+      'Toista trailereita/esivideoita ennen pääominaisuutta';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
-      'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.';
+  String get settingsNextUpDisplayDescription =>
+      'Laajennettu näyttää täyden kortin jakson kuvituksella ja kuvauksella. Minimi näyttää kompaktin lähtölaskentapeittokuvan. Pois käytöstä piilottaa kehotteen kokonaan.';
 
   @override
-  String get settingsShort => 'Short';
+  String get settingsShort => 'Lyhyt';
 
   @override
-  String get settingsLong => 'Long';
+  String get settingsLong => 'Pitkä';
 
   @override
-  String get settingsVeryLong => 'Very Long';
+  String get settingsVeryLong => 'Erittäin pitkä';
 
   @override
-  String get settingsVideoStartDelay => 'Video Start Delay';
+  String get settingsVideoStartDelay => 'Videon aloitusviive';
 
   @override
   String settingsMillisecondsValue(int value) {
@@ -6847,82 +6979,84 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get settingsLiveTvDirect => 'Live TV Direct';
+  String get settingsLiveTvDirect => 'Suora TV-lähetys';
 
   @override
-  String get settingsLiveTvDirectSubtitle => 'Enable direct play for Live TV';
+  String get settingsLiveTvDirectSubtitle =>
+      'Ota suora toisto käyttöön live-TV:ssä';
 
   @override
-  String get settingsOpenGroups => 'Open Groups';
+  String get settingsOpenGroups => 'Avaa Ryhmät';
 
   @override
   String get settingsOpenGroupsSubtitle =>
-      'Create, join, or manage SyncPlay groups';
+      'Luo SyncPlay-ryhmiä, liity niihin tai hallinnoi niitä';
 
   @override
-  String get settingsSyncplayEnabled => 'SyncPlay Enabled';
+  String get settingsSyncplayEnabled => 'SyncPlay käytössä';
 
   @override
   String get settingsSyncplayEnabledSubtitle =>
-      'Enable group watching features';
+      'Ota ryhmäkatseluominaisuudet käyttöön';
 
   @override
-  String get settingsSyncplayButton => 'SyncPlay Button';
+  String get settingsSyncplayButton => 'SyncPlay-painike';
 
   @override
   String get settingsSyncplayButtonSubtitle =>
-      'Show the SyncPlay button on the navigation bar';
+      'Näytä SyncPlay-painike navigointipalkissa';
 
   @override
-  String get settingsSyncplayAdvancedCorrection => 'Advanced Correction';
+  String get settingsSyncplayAdvancedCorrection => 'Edistynyt korjaus';
 
   @override
   String get settingsSyncplayAdvancedCorrectionSubtitle =>
-      'Enable fine-grained sync logic';
+      'Ota hienorakeinen synkronointilogiikka käyttöön';
 
   @override
-  String get settingsSyncplaySyncCorrection => 'Sync Correction';
+  String get settingsSyncplaySyncCorrection => 'Synkronoinnin korjaus';
 
   @override
   String get settingsSyncplaySyncCorrectionSubtitle =>
-      'Automatically adjust playback to stay in sync';
+      'Säädä toisto automaattisesti pysyäksesi synkronoituna';
 
   @override
-  String get settingsSyncplaySpeedToSync => 'Speed to Sync';
+  String get settingsSyncplaySpeedToSync => 'Synkronointinopeus';
 
   @override
   String get settingsSyncplaySpeedToSyncSubtitle =>
-      'Use playback speed adjustment to sync';
+      'Käytä synkronointiin toistonopeuden säätöä';
 
   @override
-  String get settingsSyncplaySkipToSync => 'Skip to Sync';
+  String get settingsSyncplaySkipToSync => 'Siirry synkronointiin';
 
   @override
-  String get settingsSyncplaySkipToSyncSubtitle => 'Use seeking to sync';
+  String get settingsSyncplaySkipToSyncSubtitle =>
+      'Käytä etsintää synkronointiin';
 
   @override
-  String get settingsSyncplayMinimumSpeedDelay => 'Minimum Speed Delay';
+  String get settingsSyncplayMinimumSpeedDelay => 'Miniminopeusviive';
 
   @override
-  String get settingsSyncplayMaximumSpeedDelay => 'Maximum Speed Delay';
+  String get settingsSyncplayMaximumSpeedDelay => 'Suurin nopeuden viive';
 
   @override
-  String get settingsSyncplaySpeedDuration => 'Speed Duration';
+  String get settingsSyncplaySpeedDuration => 'Nopeuden kesto';
 
   @override
-  String get settingsSyncplayMinimumSkipDelay => 'Minimum Skip Delay';
+  String get settingsSyncplayMinimumSkipDelay => 'Minimi ohitusviive';
 
   @override
-  String get settingsSyncplayExtraOffset => 'SyncPlay Extra Offset';
+  String get settingsSyncplayExtraOffset => 'SyncPlay Ylimääräinen offset';
 
   @override
-  String get onNow => 'On Now';
+  String get onNow => 'Käytössä Nyt';
 
   @override
-  String get collections => 'Collections';
+  String get collections => 'Kokoelmat';
 
   @override
-  String get lastPlayed => 'Last Played';
+  String get lastPlayed => 'Viimeksi pelattu';
 
   @override
   String libraryNameWithServer(String libraryName, String serverName) {

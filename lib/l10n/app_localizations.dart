@@ -3593,6 +3593,12 @@ abstract class AppLocalizations {
   /// **'Seasonal Effects'**
   String get seasonalEffects;
 
+  /// Description for seasonal effects settings
+  ///
+  /// In en, this message translates to:
+  /// **'Visual effects and seasonal decorations'**
+  String get seasonalEffectsDescription;
+
   /// Seasonal effect: snow
   ///
   /// In en, this message translates to:
@@ -4739,6 +4745,36 @@ abstract class AppLocalizations {
   /// **'Media Bar'**
   String get mediaBar;
 
+  /// Section heading for media source options
+  ///
+  /// In en, this message translates to:
+  /// **'Media Sources'**
+  String get mediaSources;
+
+  /// Section heading for behavior options
+  ///
+  /// In en, this message translates to:
+  /// **'Behavior'**
+  String get behavior;
+
+  /// Time unit label in seconds
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get seconds;
+
+  /// Local previews settings screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Local Previews'**
+  String get localPreviews;
+
+  /// Description for local previews settings
+  ///
+  /// In en, this message translates to:
+  /// **'Configure trailer, media, and audio previews.'**
+  String get localPreviewsDescription;
+
   /// Setting for choosing media bar style
   ///
   /// In en, this message translates to:
@@ -4859,11 +4895,23 @@ abstract class AppLocalizations {
   /// **'Episode Preview'**
   String get episodePreview;
 
+  /// Setting for media preview
+  ///
+  /// In en, this message translates to:
+  /// **'Media Preview'**
+  String get mediaPreview;
+
   /// Description for episode preview
   ///
   /// In en, this message translates to:
   /// **'Play a 30-second inline preview on focused, hovered, or long-pressed cards'**
   String get episodePreviewDescription;
+
+  /// Description for media preview
+  ///
+  /// In en, this message translates to:
+  /// **'Play a 30-second inline preview on focused, hovered, or long-pressed cards'**
+  String get mediaPreviewDescription;
 
   /// Setting for preview audio
   ///

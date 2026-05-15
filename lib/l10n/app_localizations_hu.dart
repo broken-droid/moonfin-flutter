@@ -9,10 +9,10 @@ class AppLocalizationsHu extends AppLocalizations {
   AppLocalizationsHu([String locale = 'hu']) : super(locale);
 
   @override
-  String get appTitle => 'Moonfin';
+  String get appTitle => 'Holdfin';
 
   @override
-  String get signIn => 'Sign In';
+  String get signIn => 'Jelentkezzen be';
 
   @override
   String connectingToServer(String serverName) {
@@ -20,29 +20,32 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get quickConnect => 'Quick Connect';
+  String get quickConnect => 'Gyors csatlakozás';
 
   @override
-  String get password => 'Password';
+  String get password => 'Jelszó';
 
   @override
-  String get username => 'Username';
+  String get username => 'Felhasználónév';
+
+  @override
+  String get email => 'Email';
 
   @override
   String get quickConnectInstruction =>
-      'Enter this code on your server\'s web dashboard:';
+      'Írja be ezt a kódot szervere webes irányítópultján:';
 
   @override
-  String get waitingForAuthorization => 'Waiting for authorization...';
+  String get waitingForAuthorization => 'Várakozás az engedélyezésre...';
 
   @override
-  String get back => 'Back';
+  String get back => 'Vissza';
 
   @override
-  String get serverUnavailable => 'Server is unavailable';
+  String get serverUnavailable => 'A szerver nem elérhető';
 
   @override
-  String get loginFailed => 'Login failed';
+  String get loginFailed => 'Sikertelen bejelentkezés';
 
   @override
   String quickConnectUnavailable(String detail) {
@@ -55,13 +58,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get whosWatching => 'Who\'s watching?';
+  String get whosWatching => 'Ki figyel?';
 
   @override
-  String get addUser => 'Add User';
+  String get addUser => 'Felhasználó hozzáadása';
 
   @override
-  String get selectServer => 'Select Server';
+  String get selectServer => 'Válassza a Szerver lehetőséget';
 
   @override
   String appVersionFooter(String version) {
@@ -69,25 +72,25 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get savedServers => 'Saved Servers';
+  String get savedServers => 'Mentett szerverek';
 
   @override
-  String get discoveredServers => 'Discovered Servers';
+  String get discoveredServers => 'Felfedezett szerverek';
 
   @override
-  String get noneFound => 'None found';
+  String get noneFound => 'Egyik sem található';
 
   @override
-  String get unableToConnectToServer => 'Unable to connect to server';
+  String get unableToConnectToServer => 'Nem lehet csatlakozni a szerverhez';
 
   @override
-  String get addServer => 'Add Server';
+  String get addServer => 'Szerver hozzáadása';
 
   @override
-  String get embyConnect => 'Emby Connect';
+  String get embyConnect => 'Emby Csatlakozás';
 
   @override
-  String get removeServer => 'Remove Server';
+  String get removeServer => 'Szerver eltávolítása';
 
   @override
   String removeServerConfirmation(String serverName) {
@@ -95,99 +98,99 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Mégsem';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'Távolítsa el';
 
   @override
-  String get connectToServer => 'Connect to Server';
+  String get connectToServer => 'Csatlakozás a szerverhez';
 
   @override
-  String get serverAddress => 'Server Address';
+  String get serverAddress => 'Szerver címe';
 
   @override
   String get serverAddressHint => 'https://your-server.example.com';
 
   @override
-  String get connect => 'Connect';
+  String get connect => 'Csatlakozás';
 
   @override
-  String get secureStorageUnavailable => 'Secure Storage Unavailable';
+  String get secureStorageUnavailable => 'Biztonságos tárhely nem érhető el';
 
   @override
   String get secureStorageUnavailableMessage =>
-      'Moonfin could not access your system keyring. Login can continue, but secure token storage may be unavailable until the keyring is unlocked.';
+      'A Moonfin nem tudott hozzáférni a rendszer kulcstartójához. A bejelentkezés folytatódhat, de előfordulhat, hogy a biztonságos tokentároló nem érhető el, amíg a kulcstartót fel nem oldják.';
 
   @override
-  String get ok => 'OK';
+  String get ok => 'RENDBEN';
 
   @override
-  String get settingsAppearanceTheme => 'App Theme';
+  String get settingsAppearanceTheme => 'App téma';
 
   @override
   String get settingsAppearanceThemeSubtitle =>
-      'Switch between Moonfin and Neon Pulse without restarting the app';
+      'Váltson a Moonfin és a Neon Pulse között az alkalmazás újraindítása nélkül';
 
   @override
-  String get themeMoonfin => 'Moonfin';
+  String get themeMoonfin => 'Holdfin';
 
   @override
   String get themeMoonfinSubtitle =>
-      'Current Moonfin look you\'ve all come to love';
+      'A Moonfin jelenlegi megjelenése, amelyet mindannyian megszerettek';
 
   @override
   String get themeNeonPulse => 'Neon Pulse';
 
   @override
   String get themeNeonPulseSubtitle =>
-      'Synthwave styling with magenta glow, cyan text, and stronger chrome contrast';
+      'Synthwave stílus bíbor fénnyel, ciánkék szöveggel és erősebb króm kontraszttal';
 
   @override
   String get embyConnectSignInSubtitle =>
-      'Sign in with your Emby Connect account';
+      'Jelentkezzen be Emby Connect fiókjával';
 
   @override
-  String get emailOrUsername => 'Email or Username';
+  String get emailOrUsername => 'E-mail vagy Felhasználónév';
 
   @override
-  String get selectAServer => 'Select a Server';
+  String get selectAServer => 'Válasszon ki egy szervert';
 
   @override
-  String get tryAgain => 'Try Again';
+  String get tryAgain => 'Próbáld újra';
 
   @override
   String get noLinkedServers =>
-      'No servers linked to this Emby Connect account';
+      'Ehhez az Emby Connect fiókhoz nem kapcsolódnak szerverek';
 
   @override
   String get invalidEmbyConnectCredentials =>
-      'Invalid Emby Connect credentials';
+      'Érvénytelen Emby Connect hitelesítési adatok';
 
   @override
   String get invalidEmbyConnectLogin =>
-      'Invalid Emby Connect username or password';
+      'Érvénytelen Emby Connect felhasználónév vagy jelszó';
 
   @override
   String get embyConnectExchangeNotSupported =>
-      'Server does not support Emby Connect exchange';
+      'A szerver nem támogatja az Emby Connect cserét';
 
   @override
   String get embyConnectNetworkError =>
-      'Network error while contacting Emby Connect or the selected server';
+      'Hálózati hiba az Emby Connect vagy a kiválasztott szerver kapcsolatfelvétele közben';
 
   @override
-  String get loadingLinkedServers => 'Loading linked servers...';
+  String get loadingLinkedServers => 'Összekapcsolt szerverek betöltése...';
 
   @override
-  String get connectingToServerEllipsis => 'Connecting to server...';
+  String get connectingToServerEllipsis => 'Csatlakozás a szerverhez...';
 
   @override
-  String get noReachableAddress => 'No reachable address provided';
+  String get noReachableAddress => 'Nincs elérhető cím';
 
   @override
   String get invalidServerExchangeResponse =>
-      'Invalid response from server exchange endpoint';
+      'Érvénytelen válasz a szervercsere-végponttól';
 
   @override
   String unableToConnectTo(String target) {
@@ -195,81 +198,81 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get exitApp => 'Exit Moonfin?';
+  String get exitApp => 'Kilép a Moonfinből?';
 
   @override
-  String get exitAppConfirmation => 'Are you sure you want to exit?';
+  String get exitAppConfirmation => 'Biztos, hogy ki akar lépni?';
 
   @override
-  String get exit => 'Exit';
+  String get exit => 'Kijárat';
 
   @override
-  String get noHomeRowsLoaded => 'No home rows could be loaded';
+  String get noHomeRowsLoaded => 'Egyetlen kezdősor sem tölthető be';
 
   @override
   String get noHomeRowsHint =>
-      'Try refreshing or reducing active home sections.';
+      'Próbálja meg frissíteni vagy csökkenteni az aktív otthoni részeket.';
 
   @override
-  String get retryHomeRows => 'Retry Home Rows';
+  String get retryHomeRows => 'Próbálja újra a kezdősorokat';
 
   @override
-  String get guide => 'Guide';
+  String get guide => 'Útmutató';
 
   @override
-  String get recordings => 'Recordings';
+  String get recordings => 'Felvételek';
 
   @override
-  String get schedule => 'Schedule';
+  String get schedule => 'Menetrend';
 
   @override
-  String get series => 'Series';
+  String get series => 'Sorozat';
 
   @override
-  String get noItemsFound => 'No items found';
+  String get noItemsFound => 'Nem található elemek';
 
   @override
-  String get home => 'Home';
+  String get home => 'Otthon';
 
   @override
-  String get browseAll => 'Browse All';
+  String get browseAll => 'Tallózás az összesben';
 
   @override
-  String get genres => 'Genres';
+  String get genres => 'Műfajok';
 
   @override
-  String get collectionPlaceholder => 'Collection items will appear here';
+  String get collectionPlaceholder => 'Itt jelennek meg a gyűjtemény elemei';
 
   @override
-  String get browseByLetter => 'Browse by Letter';
+  String get browseByLetter => 'Böngésszen betű szerint';
 
   @override
   String get alphabeticalBrowsePlaceholder =>
-      'Alphabetical browse will appear here';
+      'Itt jelenik meg az ábécé szerinti böngészés';
 
   @override
-  String get suggestions => 'Suggestions';
+  String get suggestions => 'Javaslatok';
 
   @override
-  String get suggestionsPlaceholder => 'Suggested items will appear here';
+  String get suggestionsPlaceholder => 'A javasolt elemek itt jelennek meg';
 
   @override
-  String get failedToLoadLibraries => 'Failed to load libraries';
+  String get failedToLoadLibraries => 'Nem sikerült betölteni a könyvtárakat';
 
   @override
-  String get noLibrariesFound => 'No libraries found';
+  String get noLibrariesFound => 'Nem található könyvtár';
 
   @override
-  String get library => 'Library';
+  String get library => 'Könyvtár';
 
   @override
-  String get displaySettings => 'Display Settings';
+  String get displaySettings => 'Megjelenítési beállítások';
 
   @override
-  String get allGenres => 'All Genres';
+  String get allGenres => 'Minden műfaj';
 
   @override
-  String get noGenresFound => 'No genres found';
+  String get noGenresFound => 'Nem található műfaj';
 
   @override
   String failedToLoadFolderError(String error) {
@@ -277,7 +280,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get thisFolderIsEmpty => 'This folder is empty';
+  String get thisFolderIsEmpty => 'Ez a mappa üres';
 
   @override
   String itemCountLabel(int count) {
@@ -285,16 +288,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadFavorites => 'Failed to load favorites';
+  String get failedToLoadFavorites => 'Nem sikerült betölteni a kedvenceket';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Próbálja újra';
 
   @override
-  String get noFavoritesYet => 'No favorites yet';
+  String get noFavoritesYet => 'Még nincs kedvenc';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Kedvencek';
 
   @override
   String totalCountItems(int count) {
@@ -302,40 +305,40 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get continuing => 'Continuing';
+  String get continuing => 'Folytatás';
 
   @override
-  String get ended => 'Ended';
+  String get ended => 'Véget ért';
 
   @override
-  String get sortAndFilter => 'Sort & Filter';
+  String get sortAndFilter => 'Rendezés és szűrés';
 
   @override
-  String get type => 'Type';
+  String get type => 'Írja be';
 
   @override
-  String get sortBy => 'Sort By';
+  String get sortBy => 'Rendezés alapja';
 
   @override
-  String get display => 'Display';
+  String get display => 'Kijelző';
 
   @override
-  String get imageType => 'Image Type';
+  String get imageType => 'Kép típusa';
 
   @override
-  String get posterSize => 'Poster Size';
+  String get posterSize => 'Poszter mérete';
 
   @override
-  String get small => 'Small';
+  String get small => 'Kicsi';
 
   @override
-  String get medium => 'Medium';
+  String get medium => 'Közepes';
 
   @override
-  String get large => 'Large';
+  String get large => 'Nagy';
 
   @override
-  String get extraLarge => 'Extra Large';
+  String get extraLarge => 'Extra nagy';
 
   @override
   String libraryGenresTitle(String name) {
@@ -343,37 +346,38 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get views => 'Views';
+  String get views => 'Nézetek';
 
   @override
-  String get albums => 'Albums';
+  String get albums => 'Albumok';
 
   @override
-  String get albumArtists => 'Album Artists';
+  String get albumArtists => 'Album előadói';
 
   @override
-  String get artists => 'Artists';
+  String get artists => 'Művészek';
 
   @override
-  String get bookmarks => 'Bookmarks';
+  String get bookmarks => 'Könyvjelzők';
 
   @override
-  String get noSavedBookmarks => 'No saved bookmarks for this title yet.';
+  String get noSavedBookmarks =>
+      'Ehhez a címhez még nincsenek mentett könyvjelzők.';
 
   @override
-  String get openBook => 'Open Book';
+  String get openBook => 'Nyissa meg a Könyvet';
 
   @override
-  String get chapter => 'Chapter';
+  String get chapter => 'Fejezet';
 
   @override
-  String get page => 'Page';
+  String get page => 'oldal';
 
   @override
-  String get bookmark => 'Bookmark';
+  String get bookmark => 'Könyvjelző';
 
   @override
-  String get justNow => 'Just now';
+  String get justNow => 'Éppen most';
 
   @override
   String minutesAgo(int count) {
@@ -391,34 +395,34 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get discoverySubjects => 'Discovery Subjects';
+  String get discoverySubjects => 'Felfedezési alanyok';
 
   @override
   String get pickDiscoverySubjects =>
-      'Pick which subject feeds to show in Discover.';
+      'Válassza ki, hogy mely tárgyhírcsatornák jelenjenek meg a Discoverben.';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'Alkalmazni';
 
   @override
-  String get openLink => 'Open Link';
+  String get openLink => 'Link megnyitása';
 
   @override
-  String get scanWithYourPhone => 'Scan with your phone';
+  String get scanWithYourPhone => 'Szkennelés a telefonnal';
 
   @override
-  String get audiobookGenres => 'Audiobook Genres';
+  String get audiobookGenres => 'Hangoskönyv műfajok';
 
   @override
   String get pickAudiobookGenres =>
-      'Pick which genres to show in Audiobook Discover.';
+      'Válassza ki, mely műfajokat szeretné megjeleníteni a Hangoskönyv Discoverben.';
 
   @override
-  String get discoverAudiobooks => 'Discover Audiobooks';
+  String get discoverAudiobooks => 'Fedezze fel a hangoskönyveket';
 
   @override
   String get librivoxDescription =>
-      'Popular public domain titles from LibriVox.';
+      'Népszerű nyilvános címek a következőtől: LibriVox.';
 
   @override
   String titlesCount(int count) {
@@ -426,84 +430,87 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get scrollLeft => 'Scroll left';
+  String get scrollLeft => 'Görgessen balra';
 
   @override
-  String get scrollRight => 'Scroll right';
+  String get scrollRight => 'Görgessen jobbra';
 
   @override
-  String get couldNotLoadGenre => 'Could not load this genre right now.';
+  String get couldNotLoadGenre =>
+      'Jelenleg nem sikerült betölteni ezt a műfajt.';
 
   @override
-  String get continueReading => 'Continue Reading';
+  String get continueReading => 'Olvasás folytatása';
 
   @override
-  String get savedHighlights => 'Saved Highlights';
+  String get savedHighlights => 'Mentett kiemelések';
 
   @override
-  String get continueListening => 'Continue Listening';
+  String get continueListening => 'Hallgassa tovább';
 
   @override
-  String get listen => 'Listen';
+  String get listen => 'Hallgat';
 
   @override
-  String get resume => 'Resume';
+  String get resume => 'Folytatás';
 
   @override
-  String get failedToLoadLibrary => 'Failed to load library';
+  String get failedToLoadLibrary => 'Nem sikerült betölteni a könyvtárat';
 
   @override
-  String get popularNow => 'Popular Now';
+  String get popularNow => 'Most népszerű';
 
   @override
-  String get savedForLater => 'Saved For Later';
+  String get savedForLater => 'Későbbre mentve';
 
   @override
   String get topListens => 'Top Listens';
 
   @override
-  String get unreadDiscoveries => 'Unread Discoveries';
+  String get unreadDiscoveries => 'Olvasatlan felfedezések';
 
   @override
-  String get pickUpAgain => 'Pick Up Again';
+  String get pickUpAgain => 'Vedd fel újra';
 
   @override
   String get bookHighlightsDescription =>
-      'Your books with highlights, favorites, or reading progress.';
+      'Könyvei kiemeléseket, kedvenceket vagy olvasási folyamatot.';
 
   @override
-  String get handPickedFromLibrary => 'Hand-picked from your library.';
+  String get handPickedFromLibrary => 'Kézzel válogatott a könyvtárából.';
 
   @override
   String get handPickedFromListeningQueue =>
-      'Hand-picked from your listening queue.';
+      'Kézzel válogatva a hallgatási sorból.';
 
   @override
   String get booksWithHighlights =>
-      'Books with highlights, favorites, or reading progress.';
+      'Könyvek kiemelésekkel, kedvencekkel vagy olvasási folyamattal.';
 
   @override
   String get jumpBackNarration =>
-      'Jump back into narration without hunting for your place.';
+      'Ugorjon vissza a narrációba anélkül, hogy keresné a helyét.';
 
   @override
-  String get unreadBooksReady => 'Unread books ready for the next quiet hour.';
+  String get unreadBooksReady =>
+      'Olvasatlan könyvek készen állnak a következő csendes órára.';
 
   @override
   String get quickAccessFavorites =>
-      'Quick access to the books you keep coming back to.';
+      'Gyors hozzáférés a könyvekhez, amelyekhez folyamatosan visszatér.';
 
   @override
-  String get searchAudiobooks => 'Search audiobooks';
+  String get searchAudiobooks => 'Hangoskönyvek keresése';
 
   @override
-  String get searchYourLibrary => 'Search your library';
+  String get searchYourLibrary => 'Keressen a könyvtárában';
 
   @override
-  String get pickUpStory => 'Pick up the story where you left off';
+  String get pickUpStory => 'Folytasd a történetet ott, ahol abbahagytad';
 
   @override
-  String get savedPlacesChapters => 'Your saved places and unfinished chapters';
+  String get savedPlacesChapters =>
+      'Az Ön mentett helyei és befejezetlen fejezetei';
 
   @override
   String authorsCount(int count) {
@@ -521,16 +528,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get readyWhenYouAre => 'Ready when you are';
+  String get readyWhenYouAre => 'Készen állsz, ha vagy';
 
   @override
-  String get details => 'Details';
+  String get details => 'Részletek';
 
   @override
-  String get listeningRoom => 'Listening Room';
+  String get listeningRoom => 'Hallgatószoba';
 
   @override
-  String get bookmarksAndProgress => 'Bookmarks & Progress';
+  String get bookmarksAndProgress => 'Könyvjelzők és folyamat';
 
   @override
   String titlesArrangedForBrowsing(int count) {
@@ -538,36 +545,37 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get titles => 'Titles';
+  String get titles => 'Címek';
 
   @override
-  String get allTitles => 'All Titles';
+  String get allTitles => 'Minden cím';
 
   @override
-  String get authors => 'Authors';
+  String get authors => 'Szerzői';
 
   @override
-  String get browseByAuthor => 'Browse By Author';
+  String get browseByAuthor => 'Tallózás szerző szerint';
 
   @override
-  String get browseByGenre => 'Browse By Genre';
+  String get browseByGenre => 'Tallózás műfaj szerint';
 
   @override
-  String get discover => 'Discover';
+  String get discover => 'Fedezze fel';
 
   @override
   String get trendingTitlesOpenLibrary =>
-      'Trending titles by subject from Open Library.';
+      'Felkapott címek téma szerint Open Library.';
 
   @override
-  String get noBookmarkedItems => 'No bookmarked items yet';
+  String get noBookmarkedItems =>
+      'Még nincsenek könyvjelzővel ellátott tételek';
 
   @override
   String get nothingMatchesSection =>
-      'Nothing matches this section yet. Try another tab or come back after the library sync finishes.';
+      'Ennek a szakasznak még semmi sem egyezik. Próbáljon ki egy másik lapot, vagy térjen vissza a könyvtár szinkronizálása után.';
 
   @override
-  String get audiobooks => 'Audiobooks';
+  String get audiobooks => 'Hangoskönyvek';
 
   @override
   String noLabelFound(String label) {
@@ -575,71 +583,71 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get folder => 'Folder';
+  String get folder => 'Mappa';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'Szűrők';
 
   @override
-  String get readingStatus => 'Reading Status';
+  String get readingStatus => 'Olvasási állapot';
 
   @override
-  String get playedStatus => 'Played Status';
+  String get playedStatus => 'Lejátszott állapot';
 
   @override
-  String get readStatus => 'Read';
+  String get readStatus => 'Olvas';
 
   @override
-  String get watched => 'Watched';
+  String get watched => 'Figyelt';
 
   @override
-  String get unread => 'Unread';
+  String get unread => 'Nem olvasott';
 
   @override
-  String get unwatched => 'Unwatched';
+  String get unwatched => 'Nézetlen';
 
   @override
-  String get seriesStatus => 'Series Status';
+  String get seriesStatus => 'Sorozat állapota';
 
   @override
-  String get allLibraries => 'All Libraries';
+  String get allLibraries => 'Minden könyvtár';
 
   @override
-  String get books => 'Books';
+  String get books => 'Könyvek';
 
   @override
-  String get author => 'Author';
+  String get author => 'Szerző';
 
   @override
-  String get unknownAuthor => 'Unknown Author';
+  String get unknownAuthor => 'Ismeretlen szerző';
 
   @override
-  String get uncategorized => 'Uncategorized';
+  String get uncategorized => 'Nincs kategorizálva';
 
   @override
-  String get overview => 'Overview';
+  String get overview => 'Áttekintés';
 
   @override
   String get noLibrivoxDescription =>
-      'No description provided by LibriVox for this title yet.';
+      'LibriVox még nem adott leírást ehhez a címhez.';
 
   @override
-  String get readers => 'Readers';
+  String get readers => 'Olvasók';
 
   @override
-  String get openLinks => 'Open Links';
+  String get openLinks => 'Nyissa meg a hivatkozásokat';
 
   @override
-  String get librivoxPage => 'LibriVox Page';
+  String get librivoxPage => 'LibriVox oldal';
 
   @override
-  String get internetArchive => 'Internet Archive';
+  String get internetArchive => 'Internetes archívum';
 
   @override
   String get rssFeed => 'RSS Feed';
 
   @override
-  String get downloadZip => 'Download Zip';
+  String get downloadZip => 'Letöltés Zip';
 
   @override
   String sectionCountLabel(int count) {
@@ -653,13 +661,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get noOpenLibraryOverview =>
-      'No overview available from Open Library for this title yet.';
+      'Ehhez a címhez még nem áll rendelkezésre áttekintés a Open Library-tól.';
 
   @override
-  String get subjects => 'Subjects';
+  String get subjects => 'Tantárgyak';
 
   @override
-  String get all => 'All';
+  String get all => 'Minden';
 
   @override
   String booksCount(int count) {
@@ -667,10 +675,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get couldNotLoadSubject => 'Could not load this subject right now.';
+  String get couldNotLoadSubject => 'Ez a téma jelenleg nem tölthető be.';
 
   @override
-  String get audiobookDetails => 'Audiobook Details';
+  String get audiobookDetails => 'Hangoskönyv Részletek';
 
   @override
   String authorsCountTitle(int count) {
@@ -689,83 +697,89 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get trackList => 'Track List';
+  String get trackList => 'Számlista';
 
   @override
-  String get itemListPlaceholder => 'Item list will appear here';
+  String get itemListPlaceholder => 'Itt fog megjelenni a tétellista';
 
   @override
-  String get favoriteTracksPlaceholder => 'Favorite tracks will appear here';
+  String get favoriteTracksPlaceholder => 'A kedvenc számok itt jelennek meg';
 
   @override
-  String get failedToLoad => 'Failed to load';
+  String get failedToLoad => 'Nem sikerült betölteni';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Töröl';
 
   @override
-  String get save => 'Save';
+  String get save => 'Megtakarítás';
 
   @override
-  String get moreLikeThis => 'More Like This';
+  String get moreLikeThis => 'Még több ilyen';
 
   @override
-  String get castAndCrew => 'Cast & Crew';
+  String get castAndCrew => 'Szereplők és stáb';
 
   @override
-  String get collection => 'Collection';
+  String get collection => 'Gyűjtemény';
 
   @override
-  String get episodes => 'Episodes';
+  String get episodes => 'Epizódok';
 
   @override
-  String get nextUp => 'Next Up';
+  String get nextUp => 'Következő Fel';
 
   @override
-  String get seasons => 'Seasons';
+  String get seasons => 'Évszakok';
 
   @override
-  String get chapters => 'Chapters';
+  String get chapters => 'Fejezetek';
 
   @override
-  String get features => 'Features';
+  String get features => 'Jellemzők';
 
   @override
-  String get movies => 'Movies';
+  String get movies => 'Filmek';
 
   @override
-  String get other => 'Other';
+  String get other => 'Más';
 
   @override
-  String get discography => 'Discography';
+  String get discography => 'Diskográfia';
 
   @override
-  String get similarArtists => 'Similar Artists';
+  String get similarArtists => 'Hasonló művészek';
 
   @override
-  String get tableOfContents => 'Table of Contents';
+  String get tableOfContents => 'Tartalomjegyzék';
 
   @override
   String get tracklist => 'Tracklist';
 
   @override
-  String get biography => 'Biography';
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
 
   @override
-  String get authorDetails => 'Author Details';
+  String get biography => 'Életrajz';
 
   @override
-  String get noOverviewAvailable => 'No overview available for this title yet.';
+  String get authorDetails => 'A szerző adatai';
 
   @override
-  String get noBiographyAvailable => 'No biography available for this author.';
+  String get noOverviewAvailable =>
+      'Erről a címről még nem áll rendelkezésre áttekintés.';
 
   @override
-  String get noBooksFound => 'No books found for this author.';
+  String get noBiographyAvailable => 'A szerző életrajza nem érhető el.';
+
+  @override
+  String get noBooksFound => 'Nem található könyv ehhez a szerzőhöz.';
 
   @override
   String get unableToLoadAuthorDetails =>
-      'Unable to load author details right now.';
+      'Jelenleg nem lehet betölteni a szerző adatait.';
 
   @override
   String published(int year) {
@@ -773,7 +787,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get publicationDateUnknown => 'Publication date unknown';
+  String get publicationDateUnknown => 'A megjelenés dátuma ismeretlen';
 
   @override
   String seasonCount(int count) {
@@ -792,13 +806,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get view => 'View';
+  String get view => 'Kilátás';
 
   @override
-  String get resumeReading => 'Resume Reading';
+  String get resumeReading => 'Olvasás folytatása';
 
   @override
-  String get read => 'Read';
+  String get read => 'Olvas';
 
   @override
   String resumeFrom(String position) {
@@ -806,97 +820,99 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get play => 'Play';
+  String get play => 'Játék';
 
   @override
-  String get startOver => 'Start Over';
+  String get startOver => 'Kezdje újra';
 
   @override
-  String get restart => 'Restart';
+  String get restart => 'Indítsa újra';
 
   @override
-  String get readOffline => 'Read Offline';
+  String get readOffline => 'Offline olvasás';
 
   @override
-  String get playOffline => 'Play Offline';
+  String get playOffline => 'Játssz offline módban';
 
   @override
-  String get audio => 'Audio';
+  String get audio => 'Hang';
 
   @override
-  String get subtitles => 'Subtitles';
+  String get subtitles => 'Feliratok';
 
   @override
-  String get version => 'Version';
+  String get version => 'Változat';
 
   @override
-  String get cast => 'Cast';
+  String get cast => 'Öntvény';
 
   @override
-  String get trailer => 'Trailer';
+  String get trailer => 'Utánfutó';
 
   @override
-  String get finished => 'Finished';
+  String get finished => 'Befejezett';
 
   @override
-  String get favorited => 'Favorited';
+  String get favorited => 'Kedvenc';
 
   @override
-  String get favorite => 'Favorite';
+  String get favorite => 'Kedvenc';
 
   @override
-  String get playlist => 'Playlist';
+  String get playlist => 'Lejátszási lista elemre';
 
   @override
-  String get downloaded => 'Downloaded';
+  String get downloaded => 'Letöltve';
 
   @override
-  String get downloadAll => 'Download All';
+  String get downloadAll => 'Az összes letöltése';
 
   @override
-  String get download => 'Download';
+  String get download => 'Letöltés';
 
   @override
-  String get deleteDownloaded => 'Delete Downloaded';
+  String get deleteDownloaded => 'Törlés Letöltött';
 
   @override
-  String get goToSeries => 'Go to Series';
+  String get goToSeries => 'Ugrás a sorozathoz';
 
   @override
-  String get editMetadata => 'Edit Metadata';
+  String get editMetadata => 'Metaadatok szerkesztése';
 
   @override
-  String get less => 'Less';
+  String get less => 'Kevesebb';
 
   @override
-  String get more => 'More';
+  String get more => 'Több';
 
   @override
-  String get deleteItem => 'Delete Item';
+  String get deleteItem => 'Elem törlése';
 
   @override
-  String get deletePlaylist => 'Delete Playlist';
+  String get deletePlaylist => 'Lejátszási lista törlése';
 
   @override
-  String get deletePlaylistMessage => 'Delete this playlist from the server?';
+  String get deletePlaylistMessage =>
+      'Törli ezt a lejátszási listát a szerverről?';
 
   @override
-  String get deleteItemMessage => 'Delete this item from the server?';
+  String get deleteItemMessage => 'Törli ezt az elemet a szerverről?';
 
   @override
-  String get failedToDeletePlaylist => 'Failed to delete playlist';
+  String get failedToDeletePlaylist =>
+      'Nem sikerült törölni a lejátszási listát';
 
   @override
-  String get failedToDeleteItem => 'Failed to delete item';
+  String get failedToDeleteItem => 'Nem sikerült törölni az elemet';
 
   @override
-  String get renamePlaylist => 'Rename Playlist';
+  String get renamePlaylist => 'Lejátszási lista átnevezése';
 
   @override
-  String get playlistName => 'Playlist name';
+  String get playlistName => 'Lejátszási lista neve';
 
   @override
-  String get deleteDownloadedAlbum => 'Delete Downloaded Album';
+  String get deleteDownloadedAlbum => 'Letöltött album törlése';
 
   @override
   String deleteDownloadedTracksMessage(String title) {
@@ -904,14 +920,14 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get downloadedTracksDeleted => 'Downloaded tracks deleted';
+  String get downloadedTracksDeleted => 'A letöltött számok törölve';
 
   @override
   String get downloadedTracksDeleteFailed =>
-      'Some downloaded tracks could not be deleted';
+      'Néhány letöltött zeneszámot nem sikerült törölni';
 
   @override
-  String get noTracksLoaded => 'No tracks loaded';
+  String get noTracksLoaded => 'Nincsenek betöltve számok';
 
   @override
   String noItemsLoaded(String itemLabel) {
@@ -929,10 +945,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get itemDeleted => 'Item deleted';
+  String get itemDeleted => 'Elem törölve';
 
   @override
-  String get noPlayableTrailerFound => 'No playable trailer found.';
+  String get noPlayableTrailerFound => 'Nem található lejátszható előzetes.';
 
   @override
   String unsupportedBookFormat(String extension) {
@@ -940,26 +956,26 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get audioTrack => 'Audio Track';
+  String get audioTrack => 'Hangsáv';
 
   @override
-  String get subtitleTrack => 'Subtitle Track';
+  String get subtitleTrack => 'Feliratsáv';
 
   @override
-  String get none => 'None';
+  String get none => 'Egyik sem';
 
   @override
-  String get downloadSubtitlesLabel => 'Download subtitles...';
+  String get downloadSubtitlesLabel => 'Feliratok letöltése...';
 
   @override
   String get searchOpenSubtitlesPlugin =>
-      'Search using the OpenSubtitles plugin';
+      'Keresés a OpenSubtitles beépülő modul használatával';
 
   @override
-  String get downloadSubtitles => 'Download Subtitles';
+  String get downloadSubtitles => 'Feliratok letöltése';
 
   @override
-  String get selectedSubtitleInvalid => 'The selected subtitle is invalid.';
+  String get selectedSubtitleInvalid => 'A kiválasztott felirat érvénytelen.';
 
   @override
   String subtitleDownloadedSelected(String name) {
@@ -968,7 +984,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get subtitleDownloadedPending =>
-      'Subtitle downloaded. It may take a moment to appear while Jellyfin refreshes the item.';
+      'Felirat letöltve. Eltarthat egy ideig, amíg a Jellyfin frissíti az elemet, amíg megjelenik.';
 
   @override
   String noRemoteSubtitlesFound(String language) {
@@ -976,7 +992,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get selectVersion => 'Select Version';
+  String get selectVersion => 'Válassza a Verzió lehetőséget';
 
   @override
   String versionNumber(int number) {
@@ -984,19 +1000,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get downloadAllQuality => 'Download All — Quality';
+  String get downloadAllQuality => 'Az összes letöltése — minőség';
 
   @override
-  String get downloadQuality => 'Download Quality';
+  String get downloadQuality => 'Letöltés minősége';
 
   @override
-  String get originalFileNoReencoding => 'Original file, no re-encoding';
+  String get originalFileNoReencoding => 'Eredeti fájl, nincs újrakódolás';
 
   @override
-  String get originalFilesNoReencoding => 'Original files, no re-encoding';
+  String get originalFilesNoReencoding => 'Eredeti fájlok, nincs újrakódolás';
 
   @override
-  String get noEpisodesLoaded => 'No episodes loaded';
+  String get noEpisodesLoaded => 'Nincsenek betöltve epizódok';
 
   @override
   String downloadingItem(String name, String quality) {
@@ -1004,7 +1020,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get deleteDownloadedFiles => 'Delete Downloaded Files';
+  String get deleteDownloadedFiles => 'Letöltött fájlok törlése';
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
@@ -1012,22 +1028,22 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get downloadedFilesDeleted => 'Downloaded files deleted';
+  String get downloadedFilesDeleted => 'A letöltött fájlok törölve';
 
   @override
-  String get failedToDeleteFiles => 'Failed to delete files';
+  String get failedToDeleteFiles => 'Nem sikerült törölni a fájlokat';
 
   @override
-  String get deleteFiles => 'Delete Files';
+  String get deleteFiles => 'Fájlok törlése';
 
   @override
-  String get director => 'DIRECTOR';
+  String get director => 'IGAZGATÓ';
 
   @override
-  String get writers => 'WRITERS';
+  String get writers => 'ÍRÓK';
 
   @override
-  String get studio => 'STUDIO';
+  String get studio => 'STÚDIÓ';
 
   @override
   String studioMoreCount(int count) {
@@ -1092,13 +1108,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get showLess => 'Show Less';
+  String get showLess => 'Mutass kevesebbet';
 
   @override
-  String get readMore => 'Read More';
+  String get readMore => 'Olvasson tovább';
 
   @override
-  String get shuffle => 'Shuffle';
+  String get shuffle => 'Keverés';
 
   @override
   String downloadsCount(int count) {
@@ -1106,7 +1122,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get perfectMatch => 'Perfect match';
+  String get perfectMatch => 'Tökéletes párosítás';
 
   @override
   String channelsCount(int count) {
@@ -1114,10 +1130,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get mono => 'Mono';
+  String get mono => 'Monó';
 
   @override
-  String get stereo => 'Stereo';
+  String get stereo => 'Sztereó';
 
   @override
   String remoteSubtitlePermissionError(String action) {
@@ -1150,19 +1166,21 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get deleteSeasonFiles => 'all downloaded episodes in this season';
+  String get deleteSeasonFiles => 'az összes letöltött epizód ebben az évadban';
 
   @override
-  String get stillWatching => 'Still Watching?';
+  String get stillWatching => 'Még mindig nézed?';
 
   @override
-  String get unableToLoadTrailerStream => 'Unable to load trailer stream.';
+  String get unableToLoadTrailerStream =>
+      'Nem sikerült betölteni az előzetes adatfolyamot.';
 
   @override
-  String get trailerTimedOut => 'Trailer timed out while loading.';
+  String get trailerTimedOut => 'A pótkocsi időtúllépése betöltés közben.';
 
   @override
-  String get playbackFailedForTrailer => 'Playback failed for this trailer.';
+  String get playbackFailedForTrailer =>
+      'Ennek az előzetesnek a lejátszása nem sikerült.';
 
   @override
   String photoCountOf(int current, int total) {
@@ -1171,7 +1189,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get castingUnavailableOffline =>
-      'Casting is unavailable during offline playback.';
+      'Az átküldés nem érhető el offline lejátszás közben.';
 
   @override
   String castActionFailed(String label, String error) {
@@ -1189,16 +1207,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get deviceVolume => 'Device Volume';
+  String get deviceVolume => 'Eszköz hangereje';
 
   @override
-  String get unavailable => 'Unavailable';
+  String get unavailable => 'Nem elérhető';
 
   @override
-  String get pause => 'Pause';
+  String get pause => 'Szünet';
 
   @override
-  String get syncPosition => 'Sync Position';
+  String get syncPosition => 'Szinkronizálási pozíció';
 
   @override
   String stopCast(String label) {
@@ -1206,7 +1224,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get queueIsEmpty => 'Queue is empty';
+  String get queueIsEmpty => 'A sor üres';
 
   @override
   String trackNumber(int number) {
@@ -1214,16 +1232,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get remotePlayback => 'Remote Playback';
+  String get remotePlayback => 'Távoli lejátszás';
 
   @override
-  String get castingToGoogleCast => 'Casting to Google Cast';
+  String get castingToGoogleCast => 'Átküldés ide: Google Cast';
 
   @override
-  String get castingViaAirPlay => 'Casting via AirPlay';
+  String get castingViaAirPlay => 'Átküldés a következőn keresztül: AirPlay';
 
   @override
-  String get castingViaDlna => 'Casting via DLNA';
+  String get castingViaDlna => 'Átküldés a következőn keresztül: DLNA';
 
   @override
   String secondsCount(int seconds) {
@@ -1231,10 +1249,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get longPressToUnlock => 'Long press to unlock';
+  String get longPressToUnlock => 'Nyomja meg hosszan a feloldáshoz';
 
   @override
-  String get off => 'Off';
+  String get off => 'Le';
 
   @override
   String streamTypeFallback(String streamType, int number) {
@@ -1250,10 +1268,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get bitrateOverride => 'Bitrate Override';
+  String get bitrateOverride => 'Bitráta felülírása';
 
   @override
-  String get audioDelay => 'Audio Delay';
+  String get audioDelay => 'Hang késleltetés';
 
   @override
   String delayMinusMs(int value) {
@@ -1266,49 +1284,49 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get subtitleDelay => 'Subtitle Delay';
+  String get subtitleDelay => 'Felirat késleltetése';
 
   @override
   String get reset => 'Reset';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Ismeretlen';
 
   @override
-  String get playbackInformation => 'Playback Information';
+  String get playbackInformation => 'Lejátszási információk';
 
   @override
-  String get playback => 'Playback';
+  String get playback => 'Lejátszás';
 
   @override
-  String get playMethod => 'Play Method';
+  String get playMethod => 'Játékmód';
 
   @override
-  String get directPlay => 'Direct Play';
+  String get directPlay => 'Közvetlen lejátszás';
 
   @override
-  String get directStream => 'Direct Stream';
+  String get directStream => 'Közvetlen közvetítés';
 
   @override
-  String get transcoding => 'Transcoding';
+  String get transcoding => 'Átkódolás';
 
   @override
-  String get transcodeReasons => 'Transcode Reasons';
+  String get transcodeReasons => 'Átkódolási okok';
 
   @override
-  String get player => 'Player';
+  String get player => 'Játékos';
 
   @override
-  String get container => 'Container';
+  String get container => 'Tartály';
 
   @override
-  String get bitrate => 'Bitrate';
+  String get bitrate => 'Bitráta';
 
   @override
-  String get video => 'Video';
+  String get video => 'Videó';
 
   @override
-  String get resolution => 'Resolution';
+  String get resolution => 'Felbontás';
 
   @override
   String get hdr => 'HDR';
@@ -1317,28 +1335,28 @@ class AppLocalizationsHu extends AppLocalizations {
   String get codec => 'Codec';
 
   @override
-  String get videoBitrate => 'Video Bitrate';
+  String get videoBitrate => 'Videó Bitráta';
 
   @override
-  String get track => 'Track';
+  String get track => 'Pálya';
 
   @override
-  String get channels => 'Channels';
+  String get channels => 'Csatornák';
 
   @override
-  String get audioBitrate => 'Audio Bitrate';
+  String get audioBitrate => 'Audio bitráta';
 
   @override
-  String get sampleRate => 'Sample Rate';
+  String get sampleRate => 'Mintavételi arány';
 
   @override
-  String get format => 'Format';
+  String get format => 'Formátum';
 
   @override
-  String get external => 'External';
+  String get external => 'Külső';
 
   @override
-  String get embedded => 'Embedded';
+  String get embedded => 'Beágyazott';
 
   @override
   String castSessionError(String protocol) {
@@ -1352,7 +1370,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get epubUnavailableOnPlatform =>
-      'EPUB rendering in-app is not available on this platform yet.';
+      'Az alkalmazáson belüli EPUB-megjelenítés még nem érhető el ezen a platformon.';
 
   @override
   String formatCannotRenderInApp(String extension) {
@@ -1361,10 +1379,11 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get embeddedRenderingUnavailable =>
-      'Embedded document rendering is unavailable on this platform.';
+      'A beágyazott dokumentum-megjelenítés nem érhető el ezen a platformon.';
 
   @override
-  String get couldNotOpenExternalViewer => 'Could not open external viewer.';
+  String get couldNotOpenExternalViewer =>
+      'Nem sikerült megnyitni a külső megjelenítőt.';
 
   @override
   String failedToOpenInAppReader(String error) {
@@ -1383,10 +1402,10 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get noBookmarksYet =>
-      'No bookmarks yet.\nTap the bookmark icon while reading to save your position.';
+      'Még nincsenek könyvjelzők.\nÉrintse meg a könyvjelző ikont olvasás közben a pozíció mentéséhez.';
 
   @override
-  String get noTableOfContentsAvailable => 'No table of contents available';
+  String get noTableOfContentsAvailable => 'Nincs elérhető tartalomjegyzék';
 
   @override
   String pageLabel(int number) {
@@ -1394,10 +1413,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get position => 'Position';
+  String get position => 'Pozíció';
 
   @override
-  String get bookReader => 'Book Reader';
+  String get bookReader => 'Könyvolvasó';
 
   @override
   String formatExtension(String extension) {
@@ -1410,22 +1429,23 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get updating => 'Updating...';
+  String get updating => 'Frissítés...';
 
   @override
-  String get markUnread => 'Mark Unread';
+  String get markUnread => 'Megjelölés olvasatlanként';
 
   @override
-  String get markAsRead => 'Mark as Read';
+  String get markAsRead => 'Megjelölés olvasottként';
 
   @override
-  String get reloadReader => 'Reload Reader';
+  String get reloadReader => 'Olvassa újra';
 
   @override
-  String get noPagesFound => 'No pages found.';
+  String get noPagesFound => 'Nem található oldal.';
 
   @override
-  String get failedToDecodePageImage => 'Failed to decode page image.';
+  String get failedToDecodePageImage =>
+      'Nem sikerült dekódolni az oldal képét.';
 
   @override
   String resetZoom(String zoom) {
@@ -1433,22 +1453,22 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get singlePage => 'Single Page';
+  String get singlePage => 'Egyoldalas';
 
   @override
-  String get twoPageSpread => 'Two-Page Spread';
+  String get twoPageSpread => 'Kétoldalas terítés';
 
   @override
-  String get addBookmark => 'Add Bookmark';
+  String get addBookmark => 'Könyvjelző hozzáadása';
 
   @override
-  String get bookmarksEllipsis => 'Bookmarks...';
+  String get bookmarksEllipsis => 'Könyvjelzők...';
 
   @override
-  String get markedAsRead => 'Marked as read';
+  String get markedAsRead => 'Olvasottként megjelölve';
 
   @override
-  String get markedAsUnread => 'Marked as unread';
+  String get markedAsUnread => 'Olvasatlanként megjelölve';
 
   @override
   String failedToUpdateReadState(String error) {
@@ -1456,31 +1476,33 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get themeSystem => 'Theme: System';
+  String get themeSystem => 'Téma: Rendszer';
 
   @override
-  String get themeLight => 'Theme: Light';
+  String get themeLight => 'Téma: Fény';
 
   @override
-  String get themeDark => 'Theme: Dark';
+  String get themeDark => 'Téma: Sötét';
 
   @override
-  String get themeSepia => 'Theme: Sepia';
+  String get themeSepia => 'Téma: Szépia';
 
   @override
-  String get invertColorsFixedLayout => 'Invert Colors (fixed layout)';
+  String get invertColorsFixedLayout =>
+      'Színek megfordítása (rögzített elrendezés)';
 
   @override
-  String get invertColorsPdf => 'Invert Colors (PDF)';
+  String get invertColorsPdf => 'Színek megfordítása (PDF)';
 
   @override
-  String get preparingInAppReader => 'Preparing in-app reader...';
+  String get preparingInAppReader =>
+      'Alkalmazáson belüli olvasó előkészítése...';
 
   @override
-  String get pdfDataNotAvailable => 'PDF data not available.';
+  String get pdfDataNotAvailable => 'PDF adatok nem állnak rendelkezésre.';
 
   @override
-  String get readerFallbackModeActive => 'Reader fallback mode active';
+  String get readerFallbackModeActive => 'Az olvasó tartalék üzemmódja aktív';
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
@@ -1489,37 +1511,37 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get reloadReaderPlatformHint =>
-      'Use Reload Reader after switching to a supported platform target (Android, iOS, macOS).';
+      'Használja a Reload Readert, miután támogatott platformcélra váltott (Android, iOS, macOS).';
 
   @override
-  String get openExternally => 'Open Externally';
+  String get openExternally => 'Megnyitás külsőleg';
 
   @override
-  String get noEpubChaptersFound => 'No EPUB chapters found.';
+  String get noEpubChaptersFound => 'Nem található EPUB fejezet.';
 
   @override
-  String get readerNotReady => 'Reader not ready.';
+  String get readerNotReady => 'Az olvasó nem áll készen.';
 
   @override
-  String get seriesRecordings => 'Series Recordings';
+  String get seriesRecordings => 'Sorozatfelvételek';
 
   @override
-  String get now => 'Now';
+  String get now => 'Jelenleg';
 
   @override
-  String get sports => 'Sports';
+  String get sports => 'Sport';
 
   @override
-  String get news => 'News';
+  String get news => 'Hír';
 
   @override
-  String get kids => 'Kids';
+  String get kids => 'Gyerekek';
 
   @override
-  String get premiere => 'Premiere';
+  String get premiere => 'Bemutató';
 
   @override
-  String get guideTimeline => 'Guide Timeline';
+  String get guideTimeline => 'Útmutató Idővonal';
 
   @override
   String failedToLoadGuide(String error) {
@@ -1527,35 +1549,36 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get noChannelsFound => 'No channels found';
+  String get noChannelsFound => 'Nem található csatorna';
 
   @override
-  String get liveBadge => 'LIVE';
+  String get liveBadge => 'ÉLŐ';
 
   @override
-  String get movie => 'Movie';
+  String get movie => 'Film';
 
   @override
-  String get removedFromFavoriteChannels => 'Removed from favorite channels';
+  String get removedFromFavoriteChannels =>
+      'Eltávolítva a kedvenc csatornák közül';
 
   @override
-  String get addedToFavoriteChannels => 'Added to favorite channels';
+  String get addedToFavoriteChannels => 'Hozzáadva a kedvenc csatornákhoz';
 
   @override
   String get failedToUpdateFavoriteChannel =>
-      'Failed to update favorite channel';
+      'Nem sikerült frissíteni a kedvenc csatornát';
 
   @override
-  String get unfavoriteChannel => 'Unfavorite Channel';
+  String get unfavoriteChannel => 'Kedvenc csatorna';
 
   @override
-  String get favoriteChannel => 'Favorite Channel';
+  String get favoriteChannel => 'Kedvenc Csatorna';
 
   @override
-  String get watch => 'Watch';
+  String get watch => 'Óra';
 
   @override
-  String get close => 'Close';
+  String get close => 'Közeli';
 
   @override
   String failedToPlayChannel(String name) {
@@ -1563,25 +1586,25 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadRecordings => 'Failed to load recordings';
+  String get failedToLoadRecordings => 'Nem sikerült betölteni a felvételeket';
 
   @override
-  String get scheduledInNext24Hours => 'Scheduled in Next 24 Hours';
+  String get scheduledInNext24Hours => 'Tervezett a következő 24 órában';
 
   @override
-  String get recentRecordings => 'Recent Recordings';
+  String get recentRecordings => 'Legutóbbi felvételek';
 
   @override
-  String get tvSeries => 'TV Series';
+  String get tvSeries => 'TV sorozat';
 
   @override
-  String get failedToLoadSchedule => 'Failed to load schedule';
+  String get failedToLoadSchedule => 'Nem sikerült betölteni az ütemezést';
 
   @override
-  String get noScheduledRecordings => 'No scheduled recordings';
+  String get noScheduledRecordings => 'Nincsenek ütemezett felvételek';
 
   @override
-  String get cancelRecording => 'Cancel Recording?';
+  String get cancelRecording => 'Megszakítja a felvételt?';
 
   @override
   String cancelScheduledRecordingOf(String name) {
@@ -1589,25 +1612,26 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get no => 'No';
+  String get no => 'Nem';
 
   @override
-  String get yesCancel => 'Yes, Cancel';
+  String get yesCancel => 'Igen, Mégse';
 
   @override
-  String get failedToCancelRecording => 'Failed to cancel recording';
+  String get failedToCancelRecording => 'Nem sikerült megszakítani a felvételt';
 
   @override
-  String get failedToLoadSeriesRecordings => 'Failed to load series recordings';
+  String get failedToLoadSeriesRecordings =>
+      'Nem sikerült betölteni a sorozatfelvételeket';
 
   @override
-  String get noSeriesRecordings => 'No series recordings';
+  String get noSeriesRecordings => 'Nincsenek sorozatfelvételek';
 
   @override
-  String get cancelSeriesRecording => 'Cancel Series Recording';
+  String get cancelSeriesRecording => 'Sorozatfelvétel megszakítása';
 
   @override
-  String get cancelSeriesRecordingQuestion => 'Cancel Series Recording?';
+  String get cancelSeriesRecordingQuestion => 'Megszakítja a sorozatfelvételt?';
 
   @override
   String stopRecordingName(String name) {
@@ -1616,13 +1640,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get failedToCancelSeriesRecording =>
-      'Failed to cancel series recording';
+      'Nem sikerült megszakítani a sorozatfelvételt';
 
   @override
-  String get searchThisLibrary => 'Search this library...';
+  String get searchThisLibrary => 'Keresés ebben a könyvtárban...';
 
   @override
-  String get searchEllipsis => 'Search...';
+  String get searchEllipsis => 'Keresés...';
 
   @override
   String noResultsForQuery(String query) {
@@ -1635,31 +1659,40 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get seerr => 'Seerr';
+  String get seerr => 'Látnok';
 
   @override
-  String get savedMedia => 'Saved Media';
+  String get seerrAccountType => 'Látó fiók típusa';
 
   @override
-  String get tvShows => 'TV Shows';
+  String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get music => 'Music';
+  String get localAccount => 'Helyi';
 
   @override
-  String get musicAlbums => 'Music Albums';
+  String get savedMedia => 'Mentett média';
 
   @override
-  String get noMediaInFilter => 'No media in this filter';
+  String get tvShows => 'TV-műsorok';
 
   @override
-  String get noDownloadedMediaYet => 'No downloaded media yet';
+  String get music => 'Zene';
 
   @override
-  String get browseLibrary => 'Browse Library';
+  String get musicAlbums => 'Zenei albumok';
 
   @override
-  String get deleteDownload => 'Delete Download';
+  String get noMediaInFilter => 'Nincs adathordozó ebben a szűrőben';
+
+  @override
+  String get noDownloadedMediaYet => 'Még nincs letöltött média';
+
+  @override
+  String get browseLibrary => 'Tallózás a könyvtárban';
+
+  @override
+  String get deleteDownload => 'Letöltés törlése';
 
   @override
   String removeItemAndFiles(String name) {
@@ -1675,7 +1708,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get album => 'Album';
 
   @override
-  String get playAlbum => 'Play Album';
+  String get playAlbum => 'Album lejátszása';
 
   @override
   String failedToLoadAlbum(String error) {
@@ -1688,16 +1721,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get season => 'Season';
+  String get season => 'Évad';
 
   @override
-  String get errorLoadingEpisodes => 'Error loading episodes';
+  String get errorLoadingEpisodes => 'Hiba az epizódok betöltésekor';
 
   @override
-  String get noDownloadedEpisodes => 'No downloaded episodes';
+  String get noDownloadedEpisodes => 'Nincsenek letöltött epizódok';
 
   @override
-  String get deleteEpisode => 'Delete Episode';
+  String get deleteEpisode => 'Epizód törlése';
 
   @override
   String removeName(String name) {
@@ -1720,13 +1753,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get seriesNotFound => 'Series not found';
+  String get seriesNotFound => 'A sorozat nem található';
 
   @override
-  String get errorLoadingSeries => 'Error loading series';
+  String get errorLoadingSeries => 'Hiba a sorozat betöltésekor';
 
   @override
-  String get downloadedEpisodes => 'Downloaded Episodes';
+  String get downloadedEpisodes => 'Letöltött epizódok';
 
   @override
   String seasonNumber(int number) {
@@ -1739,10 +1772,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get specials => 'Specials';
+  String get specials => 'Különlegességek';
 
   @override
-  String get deleteSeason => 'Delete Season';
+  String get deleteSeason => 'Szezon törlése';
 
   @override
   String deleteAllEpisodesInSeason(String season) {
@@ -1761,32 +1794,32 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get storageManagement => 'Storage Management';
+  String get storageManagement => 'Tároláskezelés';
 
   @override
-  String get storageBreakdown => 'Storage Breakdown';
+  String get storageBreakdown => 'Tárolási bontás';
 
   @override
-  String get downloadedItems => 'Downloaded Items';
+  String get downloadedItems => 'Letöltött elemek';
 
   @override
-  String get storageLimit => 'Storage Limit';
+  String get storageLimit => 'Tárolási korlát';
 
   @override
-  String get noLimit => 'No limit';
+  String get noLimit => 'Nincs korlátozás';
 
   @override
-  String get deleteAllDownloads => 'Delete All Downloads';
+  String get deleteAllDownloads => 'Az összes letöltés törlése';
 
   @override
   String get deleteAllDownloadsWarning =>
-      'This will remove all downloaded media files and cannot be undone.';
+      'Ezzel eltávolítja az összes letöltött médiafájlt, és nem vonható vissza.';
 
   @override
-  String get deleteAll => 'Delete All';
+  String get deleteAll => 'Összes törlése';
 
   @override
-  String get deleteSelected => 'Delete Selected';
+  String get deleteSelected => 'Kijelölt törlése';
 
   @override
   String deleteSelectedCount(int count) {
@@ -1794,13 +1827,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get musicAndAudiobooks => 'Music & Audiobooks';
+  String get musicAndAudiobooks => 'Zene és hangoskönyvek';
 
   @override
-  String get images => 'Images';
+  String get images => 'Képek';
 
   @override
-  String get database => 'Database';
+  String get database => 'Adatbázis';
 
   @override
   String ofStorageLimit(String limit) {
@@ -1808,81 +1841,83 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'Beállítások elemre';
 
   @override
-  String get authentication => 'Authentication';
+  String get authentication => 'Hitelesítés';
 
   @override
-  String get autoLoginServerManagement => 'Auto login, server management';
+  String get autoLoginServerManagement =>
+      'Automatikus bejelentkezés, szerverkezelés';
 
   @override
-  String get pinCode => 'PIN Code';
+  String get pinCode => 'PIN kód';
 
   @override
-  String get setUpPinCodeProtection => 'Set up PIN code protection';
+  String get setUpPinCodeProtection => 'Állítsa be a PIN kódos védelmet';
 
   @override
-  String get parentalControls => 'Parental Controls';
+  String get parentalControls => 'Szülői felügyelet';
 
   @override
-  String get contentRatingRestrictions => 'Content rating restrictions';
+  String get contentRatingRestrictions => 'Tartalombesorolási korlátozások';
 
   @override
-  String get bitRateResolutionBehavior => 'Bitrate, resolution, behavior';
+  String get bitRateResolutionBehavior => 'Bitráta, felbontás, viselkedés';
 
   @override
-  String get languageSizeAppearance => 'Language, size, appearance';
+  String get languageSizeAppearance => 'Nyelv, méret, megjelenés';
 
   @override
-  String get qualityStorage => 'Quality, storage';
+  String get qualityStorage => 'Minőség, tárolás';
 
   @override
-  String get serverSyncAndPluginStatus => 'Server sync and plugin status';
+  String get serverSyncAndPluginStatus =>
+      'Szerver szinkronizálása és beépülő modul állapota';
 
   @override
-  String get mediaRequestIntegration => 'Media request integration';
+  String get mediaRequestIntegration => 'Médiakérelem integráció';
 
   @override
-  String get switchServer => 'Switch Server';
+  String get switchServer => 'Szerver váltása';
 
   @override
-  String get signOut => 'Sign Out';
+  String get signOut => 'Jelentkezzen ki';
 
   @override
-  String get versionLicenses => 'Version, licenses';
+  String get versionLicenses => 'Verzió, licencek';
 
   @override
-  String get account => 'Account';
+  String get account => 'fiók';
 
   @override
-  String get signInAndSecurity => 'Sign-in and security';
+  String get signInAndSecurity => 'Bejelentkezés és biztonság';
 
   @override
-  String get administration => 'Administration';
+  String get administration => 'Adminisztráció';
 
   @override
   String get serverSettingsUsersLibraries =>
-      'Server settings, users, libraries';
+      'Szerverbeállítások, felhasználók, könyvtárak';
 
   @override
-  String get customization => 'Customization';
+  String get customization => 'Testreszabás';
 
   @override
-  String get themeAndLayout => 'Theme and layout';
+  String get themeAndLayout => 'Téma és elrendezés';
 
   @override
-  String get videoAndSubtitles => 'Video and subtitles';
+  String get videoAndSubtitles => 'Videó és felirat';
 
   @override
-  String get integrations => 'Integrations';
+  String get integrations => 'Integrációk';
 
   @override
-  String get pluginAndRequests => 'Plugin and requests';
+  String get pluginAndRequests => 'Plugin és kérések';
 
   @override
   String get customizeAccountPlaybackInterface =>
-      'Customize account, playback, and interface behavior';
+      'A fiók, a lejátszás és a felület viselkedésének testreszabása';
 
   @override
   String optionsCount(int count) {
@@ -1890,84 +1925,94 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get themeAndAppearance => 'Theme & Appearance';
+  String get themeAndAppearance => 'Téma és megjelenés';
 
   @override
-  String get focusBorderColor => 'Focus Border Color';
+  String get focusBorderColor => 'Fókusz határszín';
 
   @override
-  String get watchedIndicators => 'Watched Indicators';
+  String get watchedIndicators => 'Figyelt mutatók';
 
   @override
-  String get always => 'Always';
+  String get always => 'Mindig';
 
   @override
-  String get hideUnwatched => 'Hide Unwatched';
+  String get hideUnwatched => 'A Nem figyeltek elrejtése';
 
   @override
-  String get episodesOnly => 'Episodes Only';
+  String get episodesOnly => 'Csak epizódok';
 
   @override
-  String get never => 'Never';
+  String get never => 'Soha';
 
   @override
-  String get focusExpansionAnimation => 'Focus Expansion Animation';
+  String get focusExpansionAnimation => 'Focus Expansion Animáció';
 
   @override
-  String get scaleFocusedCards => 'Scale focused or hovered cards and tiles';
+  String get desktopUiScale => 'Asztali felhasználói felület skála';
 
   @override
-  String get backgroundBackdrops => 'Background Backdrops';
+  String get scaleFocusedCards =>
+      'Fókuszált vagy lebegtetett kártyák és lapkák skálázása';
 
   @override
-  String get showBackdropImages => 'Show backdrop images behind content';
+  String get backgroundBackdrops => 'Háttér hátterek';
 
   @override
-  String get seriesThumbnails => 'Series Thumbnails';
+  String get showBackdropImages =>
+      'Háttérképek megjelenítése a tartalom mögött';
+
+  @override
+  String get seriesThumbnails => 'Sorozat miniatűrök';
 
   @override
   String get seriesThumbnailsDescription =>
-      'Episodes only: use series artwork that matches each row image type';
+      'Csak epizódok: használjon minden sorképtípusnak megfelelő sorozatgrafikát';
 
   @override
-  String get homeRowInfoOverlay => 'Home Row Info Overlay';
+  String get homeRowInfoOverlay => 'Kezdőlap sor információs fedvény';
 
   @override
   String get showTitleMetadataOnHomeRows =>
-      'Show title and metadata when browsing home rows';
+      'Cím és metaadatok megjelenítése a kezdősorok böngészésekor';
 
   @override
-  String get clockDisplay => 'Clock Display';
+  String get clockDisplay => 'Óra kijelző';
 
   @override
-  String get inMenus => 'In Menus';
+  String get inMenus => 'Menükben';
 
   @override
-  String get inVideo => 'In Video';
+  String get inVideo => 'Videóban';
 
   @override
-  String get seasonalEffects => 'Seasonal Effects';
+  String get seasonalEffects => 'Szezonális hatások';
 
   @override
-  String get snow => 'Snow';
+  String get seasonalEffectsDescription =>
+      'Vizuális effektusok és szezonális dekorációk';
 
   @override
-  String get fireworks => 'Fireworks';
+  String get snow => 'Hó';
 
   @override
-  String get confetti => 'Confetti';
+  String get fireworks => 'Tűzijáték';
 
   @override
-  String get fallingLeaves => 'Falling Leaves';
+  String get confetti => 'Konfetti';
 
   @override
-  String get themeMusic => 'Theme Music';
+  String get fallingLeaves => 'Lehulló levelek';
 
   @override
-  String get playThemeMusicOnDetailPages => 'Play theme music on detail pages';
+  String get themeMusic => 'Téma Zene';
 
   @override
-  String get themeMusicVolume => 'Theme Music Volume';
+  String get playThemeMusicOnDetailPages =>
+      'Játssz téma zenét a részletező oldalakon';
+
+  @override
+  String get themeMusicVolume => 'Téma Zene kötet';
 
   @override
   String percentValue(int value) {
@@ -1975,13 +2020,14 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get themeMusicOnHomeRows => 'Theme Music on Home Rows';
+  String get themeMusicOnHomeRows => 'Témazene a Home Rows-on';
 
   @override
-  String get playWhenBrowsingHomeScreen => 'Play when browsing home screen';
+  String get playWhenBrowsingHomeScreen =>
+      'Játssz a kezdőképernyőn való böngészés közben';
 
   @override
-  String get detailsBackgroundBlur => 'Details Background Blur';
+  String get detailsBackgroundBlur => 'Részletek Háttér életlenítés';
 
   @override
   String pixelValue(int value) {
@@ -1989,124 +2035,124 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get browsingBackgroundBlur => 'Browsing Background Blur';
+  String get browsingBackgroundBlur => 'Böngészés Háttér életlenítés';
 
   @override
-  String get maxStreamingBitrate => 'Max Streaming Bitrate';
+  String get maxStreamingBitrate => 'Max Streaming Bitráta';
 
   @override
-  String get maxResolution => 'Max Resolution';
+  String get maxResolution => 'Max felbontás';
 
   @override
-  String get playerZoomMode => 'Player Zoom Mode';
+  String get playerZoomMode => 'Játékos zoom mód';
 
   @override
   String get fit => 'Fit';
 
   @override
-  String get autoCrop => 'Auto Crop';
+  String get autoCrop => 'Automatikus kivágás';
 
   @override
-  String get stretch => 'Stretch';
+  String get stretch => 'Nyújtsd';
 
   @override
-  String get refreshRateSwitching => 'Refresh Rate Switching';
+  String get refreshRateSwitching => 'Frissítési gyakoriság váltás';
 
   @override
-  String get disabled => 'Disabled';
+  String get disabled => 'Letiltva';
 
   @override
-  String get scaleOnTv => 'Scale on TV';
+  String get scaleOnTv => 'Skála a tévében';
 
   @override
-  String get scaleOnDevice => 'Scale on Device';
+  String get scaleOnDevice => 'Méretezés az eszközön';
 
   @override
   String get trickPlay => 'Trick Play';
 
   @override
   String get showPreviewThumbnailsWhenSeeking =>
-      'Show preview thumbnails when seeking';
+      'Az előnézeti bélyegképek megjelenítése kereséskor';
 
   @override
-  String get showDescriptionOnPause => 'Show Description on Pause';
+  String get showDescriptionOnPause => 'Leírás megjelenítése a Szünetnél';
 
   @override
   String get dimVideoShowOverview =>
-      'Dim video and show overview text while paused';
+      'A videó halványítása és az áttekintő szöveg megjelenítése szüneteltetés közben';
 
   @override
-  String get osdLockButton => 'OSD Lock Button';
+  String get osdLockButton => 'OSD zár gomb';
 
   @override
   String get osdLockButtonDescription =>
-      'Show a lock button that blocks touch input until long-pressed';
+      'Mutasson meg egy zárgombot, amely blokkolja az érintéses bevitelt, amíg hosszan meg nem nyomja';
 
   @override
-  String get audioBehavior => 'Audio Behavior';
+  String get audioBehavior => 'Hangviselkedés';
 
   @override
-  String get downmixToStereo => 'Downmix to Stereo';
+  String get downmixToStereo => 'Lekeverés sztereóra';
 
   @override
-  String get defaultAudioLanguage => 'Default Audio Language';
+  String get defaultAudioLanguage => 'Alapértelmezett hangnyelv';
 
   @override
-  String get autoServerDefault => 'Auto (Server Default)';
+  String get autoServerDefault => 'Automatikus (alapértelmezett szerver)';
 
   @override
-  String get english => 'English';
+  String get english => 'angol';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'spanyol';
 
   @override
-  String get french => 'French';
+  String get french => 'francia';
 
   @override
-  String get german => 'German';
+  String get german => 'német';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'olasz';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'portugál';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'japán';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'koreai';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'kínai';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'orosz';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'arab';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'hindi';
 
   @override
-  String get dutch => 'Dutch';
+  String get dutch => 'holland';
 
   @override
-  String get swedish => 'Swedish';
+  String get swedish => 'svéd';
 
   @override
-  String get norwegian => 'Norwegian';
+  String get norwegian => 'norvég';
 
   @override
-  String get danish => 'Danish';
+  String get danish => 'dán';
 
   @override
-  String get finnish => 'Finnish';
+  String get finnish => 'finn';
 
   @override
-  String get polish => 'Polish';
+  String get polish => 'lengyel';
 
   @override
   String get ac3Passthrough => 'AC3 Passthrough';
@@ -2115,57 +2161,57 @@ class AppLocalizationsHu extends AppLocalizations {
   String get dtsPassthrough => 'DTS Passthrough';
 
   @override
-  String get trueHdSupport => 'TrueHD Support';
+  String get trueHdSupport => 'TrueHD támogatás';
 
   @override
   String get enableDtsPassthrough =>
-      'Bitstream DTS audio to AVR only; requires receiver support and DTS source track';
+      'Bitstream DTS audio csak AVR-hez; vevő támogatást és DTS forrássávot igényel';
 
   @override
   String get enableTrueHdAudio =>
-      'Enable TrueHD audio (may not work on all platforms)';
+      'Engedélyezze a TrueHD hangot (lehet, hogy nem működik minden platformon)';
 
   @override
-  String get nightMode => 'Night Mode';
+  String get nightMode => 'Éjszakai mód';
 
   @override
-  String get compressDynamicRange => 'Compress dynamic range';
+  String get compressDynamicRange => 'Dinamikus tartomány tömörítése';
 
   @override
-  String get advancedMpv => 'Advanced mpv';
+  String get advancedMpv => 'Haladó mpv';
 
   @override
-  String get enableCustomMpvConf => 'Enable Custom mpv.conf';
+  String get enableCustomMpvConf => 'Egyéni mpv.conf engedélyezése';
 
   @override
   String get applyMpvConfBeforePlayback =>
-      'Apply a user-specified mpv.conf before playback starts';
+      'Alkalmazza a felhasználó által megadott mpv.conf fájlt a lejátszás megkezdése előtt';
 
   @override
-  String get unsafeAdvancedMpvOptions => 'Unsafe Advanced mpv Options';
+  String get unsafeAdvancedMpvOptions => 'Nem biztonságos Speciális mpv Opciók';
 
   @override
   String get unsafeMpvOptionsDescription =>
-      'Allow a wider set of mpv options. May break playback behavior.';
+      'Engedélyezzen az mpv opciók szélesebb készletét. Megzavarhatja a lejátszási viselkedést.';
 
   @override
-  String get hardwareDecoding => 'Hardware decoding';
+  String get hardwareDecoding => 'Hardveres dekódolás';
 
   @override
   String get hardwareDecodingSubtitle =>
-      'May improve performance but can cause playback issues on some devices.';
+      'Javíthatja a teljesítményt, de bizonyos eszközökön lejátszási problémákat okozhat.';
 
   @override
   String get nextUpAndQueuing => 'Next Up & Queuing';
 
   @override
-  String get nextUpBehavior => 'Next Up Behavior';
+  String get nextUpDisplay => 'Következő képernyő';
 
   @override
-  String get extended => 'Extended';
+  String get extended => 'Kiterjedt';
 
   @override
-  String get minimal => 'Minimal';
+  String get minimal => 'Minimális';
 
   @override
   String get nextUpTimeout => 'Next Up Timeout';
@@ -2179,10 +2225,11 @@ class AppLocalizationsHu extends AppLocalizations {
   String get mediaQueuing => 'Media Queuing';
 
   @override
-  String get autoQueueNextEpisodes => 'Auto-queue next episodes';
+  String get autoQueueNextEpisodes =>
+      'A következő epizódok automatikus sorba állítása';
 
   @override
-  String get stillWatchingPrompt => 'Still Watching Prompt';
+  String get stillWatchingPrompt => 'Továbbra is nézi a promptot';
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
@@ -2190,131 +2237,132 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get resumeAndSkip => 'Resume & Skip';
+  String get resumeAndSkip => 'Folytatás és kihagyás';
 
   @override
-  String get resumeRewind => 'Resume Rewind';
+  String get resumeRewind => 'Visszatekerés folytatása';
 
   @override
-  String get unpauseRewind => 'Unpause Rewind';
+  String get unpauseRewind => 'Visszatekerés szüneteltetése';
 
   @override
-  String get fiveSeconds => '5 seconds';
+  String get fiveSeconds => '5 másodperc';
 
   @override
-  String get tenSeconds => '10 seconds';
+  String get tenSeconds => '10 másodperc';
 
   @override
-  String get fifteenSeconds => '15 seconds';
+  String get fifteenSeconds => '15 másodperc';
 
   @override
-  String get thirtySeconds => '30 seconds';
+  String get thirtySeconds => '30 másodperc';
 
   @override
-  String get skipBackLength => 'Skip Back Length';
+  String get skipBackLength => 'Ugrás vissza hossza';
 
   @override
-  String get skipForwardLength => 'Skip Forward Length';
+  String get skipForwardLength => 'Ugrás előre hossza';
 
   @override
-  String get customMpvConfPath => 'Custom mpv.conf Path';
+  String get customMpvConfPath => 'Egyéni mpv.conf elérési út';
 
   @override
   String get notSetMpvConf =>
-      'Not set. Moonfin will try a default mpv.conf in app/data folders.';
+      'Nincs beállítva. A Moonfin megpróbálja az alapértelmezett mpv.conf fájlt az alkalmazás/adat mappákban.';
 
   @override
-  String get selectMpvConf => 'Select mpv.conf';
+  String get selectMpvConf => 'Válassza a mpv.conf lehetőséget';
 
   @override
-  String get pathToMpvConf => '/path/to/mpv.conf';
+  String get pathToMpvConf => '/útvonala/mpv.conf';
 
   @override
   String get subtitleStyleDescription =>
-      'Style settings (size, color, offset) apply to text-based subtitles (SRT, VTT, TTML). ASS/SSA subtitles use their own embedded styling unless \"ASS/SSA Direct Play\" is turned off. Bitmap subtitles (PGS, DVB, VobSub) cannot be restyled.';
+      'A stílusbeállítások (méret, szín, eltolás) a szöveges feliratokra vonatkoznak (SRT, VTT, TTML). Az ASS/SSA feliratok saját beágyazott stílusukat használják, kivéve, ha az „ASS/SSA Direct Play” ki van kapcsolva. A bittérképes feliratok (PGS, DVB, VobSub) nem alakíthatók át.';
 
   @override
-  String get defaultSubtitleLanguage => 'Default Subtitle Language';
+  String get defaultSubtitleLanguage => 'Alapértelmezett feliratnyelv';
 
   @override
-  String get defaultToNoSubtitles => 'Default to No Subtitles';
+  String get defaultToNoSubtitles => 'Alapértelmezés szerint nincs felirat';
 
   @override
-  String get turnOffSubtitlesByDefault => 'Turn off subtitles by default';
+  String get turnOffSubtitlesByDefault =>
+      'Alapértelmezés szerint kapcsolja ki a feliratokat';
 
   @override
-  String get subtitleSize => 'Subtitle Size';
+  String get subtitleSize => 'Felirat mérete';
 
   @override
-  String get textFillColor => 'Text Fill Color';
+  String get textFillColor => 'Szöveg kitöltési színe';
 
   @override
-  String get backgroundColor => 'Background Color';
+  String get backgroundColor => 'Háttérszín';
 
   @override
-  String get textStrokeColor => 'Text Stroke Color';
+  String get textStrokeColor => 'Szöveg körvonal színe';
 
   @override
-  String get subtitleCustomization => 'Subtitle Customization';
+  String get subtitleCustomization => 'Felirat testreszabása';
 
   @override
   String get subtitleCustomizationDescription =>
-      'Customize subtitle appearance';
+      'A felirat megjelenésének testreszabása';
 
   @override
-  String get subtitlePreviewText =>
-      'The quick brown fox jumps over the lazy dog';
+  String get subtitlePreviewText => 'A gyors barna róka átugrik a lusta kutyán';
 
   @override
-  String get verticalOffset => 'Vertical Offset';
+  String get verticalOffset => 'Függőleges eltolás';
 
   @override
   String get pgsDirectPlay => 'PGS Direct Play';
 
   @override
-  String get directPlayPgsSubtitles => 'Direct play PGS subtitles';
+  String get directPlayPgsSubtitles => 'Közvetlen lejátszású PGS-felirat';
 
   @override
-  String get assSsaDirectPlay => 'ASS/SSA Direct Play';
+  String get assSsaDirectPlay => 'ASS/SSA közvetlen lejátszás';
 
   @override
-  String get directPlayAssSsaSubtitles => 'Direct play ASS/SSA subtitles';
+  String get directPlayAssSsaSubtitles =>
+      'Közvetlen lejátszás ASS/SSA felirattal';
 
   @override
-  String get white => 'White';
+  String get white => 'Fehér';
 
   @override
-  String get black => 'Black';
+  String get black => 'Fekete';
 
   @override
-  String get yellow => 'Yellow';
+  String get yellow => 'Sárga';
 
   @override
-  String get green => 'Green';
+  String get green => 'Zöld';
 
   @override
-  String get cyan => 'Cyan';
+  String get cyan => 'Cián';
 
   @override
-  String get red => 'Red';
+  String get red => 'Piros';
 
   @override
-  String get transparent => 'Transparent';
+  String get transparent => 'Átlátszó';
 
   @override
-  String get semiTransparentBlack => 'Semi-transparent Black';
+  String get semiTransparentBlack => 'Félig átlátszó fekete';
 
   @override
-  String get global => 'Global';
+  String get global => 'Globális';
 
   @override
-  String get desktop => 'Desktop';
+  String get desktop => 'Asztali';
 
   @override
-  String get mobile => 'Mobile';
+  String get mobile => 'Mozgó';
 
   @override
-  String get tv => 'TV';
+  String get tv => 'tv';
 
   @override
   String loadedProfileSettings(String profile) {
@@ -2332,224 +2380,227 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get customizationProfile => 'Customization Profile';
+  String get customizationProfile => 'Testreszabási profil';
 
   @override
   String get customizationProfileDescription =>
-      'Choose the profile to load, edit, and sync. Global applies everywhere unless a device profile overrides it. The green dot marks your current device profile.';
+      'Válassza ki a betölteni, szerkeszteni és szinkronizálni kívánt profilt. A globális mindenhol érvényes, hacsak egy eszközprofil nem írja felül. A zöld pont az aktuális eszközprofilját jelöli.';
 
   @override
-  String get loadProfile => 'Load Profile';
+  String get loadProfile => 'Profil betöltése';
 
   @override
-  String get syncing => 'Syncing...';
+  String get syncing => 'Szinkronizálás...';
 
   @override
-  String get syncToProfile => 'Sync To Profile';
+  String get syncToProfile => 'Szinkronizálás profillal';
 
   @override
-  String get profileSyncHidden => 'Profile Sync Hidden';
+  String get profileSyncHidden => 'A profilszinkronizálás elrejtve';
 
   @override
   String get enablePluginSyncDescription =>
-      'Enable Server Plugin Sync in Plugin settings to show profile controls here.';
+      'A profilvezérlők megjelenítéséhez engedélyezze a Szerver beépülő modul szinkronizálását a beépülő modul beállításaiban.';
 
   @override
-  String get quality => 'Quality';
+  String get quality => 'Minőség';
 
   @override
-  String get defaultDownloadQuality => 'Default Download Quality';
+  String get defaultDownloadQuality => 'Alapértelmezett letöltési minőség';
 
   @override
-  String get network => 'Network';
+  String get network => 'Hálózat';
 
   @override
-  String get wifiOnlyDownloads => 'WiFi-Only Downloads';
+  String get wifiOnlyDownloads => 'Csak WiFi letöltések';
 
   @override
-  String get onlyDownloadOnWifi => 'Only download when connected to WiFi';
+  String get onlyDownloadOnWifi =>
+      'Csak akkor töltse le, ha csatlakozik WiFi-hez';
 
   @override
-  String get storage => 'Storage';
+  String get storage => 'Tárolás';
 
   @override
-  String get storageUsed => 'Storage Used';
+  String get storageUsed => 'Tárolás használt';
 
   @override
-  String get manage => 'Manage';
+  String get manage => 'Kezelése';
 
   @override
-  String get calculating => 'Calculating...';
+  String get calculating => 'Számító...';
 
   @override
-  String get downloadLocation => 'Download Location';
+  String get downloadLocation => 'Letöltés helye';
 
   @override
-  String get defaultLabel => 'Default';
+  String get defaultLabel => 'Alapértelmezett';
 
   @override
-  String get saveToDownloadsFolder => 'Save to Downloads folder';
+  String get saveToDownloadsFolder => 'Mentse a Letöltések mappába';
 
   @override
   String get downloadsVisibleToOtherApps =>
-      'Downloads/Moonfin — visible to other apps';
+      'Letöltések/Moonfin – más alkalmazások számára látható';
 
   @override
-  String get dangerZone => 'Danger Zone';
+  String get dangerZone => 'Veszélyzóna';
 
   @override
-  String get clearAllDownloads => 'Clear All Downloads';
+  String get clearAllDownloads => 'Minden letöltés törlése';
 
   @override
-  String get original => 'Original';
+  String get original => 'Eredeti';
 
   @override
-  String get changeDownloadLocation => 'Change Download Location';
+  String get changeDownloadLocation => 'Letöltési hely módosítása';
 
   @override
   String get changeDownloadLocationDescription =>
-      'New downloads will be saved to the selected folder. Existing downloads will remain in their current location and can be managed from Storage settings.';
+      'Az új letöltések a kiválasztott mappába kerülnek. A meglévő letöltések a jelenlegi helyükön maradnak, és a Tárhely beállításai között kezelhetők.';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Erősítse meg';
 
   @override
   String get cannotWriteToFolder =>
-      'Cannot write to selected folder. Please choose a different location or grant storage permissions.';
+      'Nem lehet írni a kiválasztott mappába. Kérjük, válasszon másik helyet, vagy adjon tárolási engedélyeket.';
 
   @override
-  String get saveToDownloadsFolderQuestion => 'Save to Downloads folder?';
+  String get saveToDownloadsFolderQuestion => 'Menti a Letöltések mappába?';
 
   @override
   String get saveToDownloadsFolderDescription =>
-      'Downloaded media will be saved to Downloads/Moonfin on your device. These files will be visible to other apps such as your gallery or music player.\n\nExisting downloads will remain in their current location.';
+      'A letöltött médiát a rendszer a Letöltések/Moonfin mappába menti eszközén. Ezeket a fájlokat más alkalmazások is láthatják, például a galéria vagy a zenelejátszó.\n\nA meglévő letöltések a jelenlegi helyükön maradnak.';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'Engedélyezés';
 
   @override
   String get clearAllDownloadsWarning =>
-      'This will delete all downloaded media and cannot be undone.';
+      'Ezzel törli az összes letöltött adathordozót, és nem vonható vissza.';
 
   @override
-  String get clearAll => 'Clear All';
+  String get clearAll => 'Összes törlése';
 
   @override
-  String get navigationStyle => 'Navigation Style';
+  String get navigationStyle => 'Navigációs stílus';
 
   @override
-  String get topBar => 'Top Bar';
+  String get topBar => 'Felső sáv';
 
   @override
-  String get leftSidebar => 'Left Sidebar';
+  String get leftSidebar => 'Bal oldalsáv';
 
   @override
-  String get showShuffleButton => 'Show Shuffle Button';
+  String get showShuffleButton => 'Véletlenszerű lejátszás gomb megjelenítése';
 
   @override
-  String get showGenresButton => 'Show Genres Button';
+  String get showGenresButton => 'Műfajok megjelenítése gomb';
 
   @override
-  String get showFavoritesButton => 'Show Favorites Button';
+  String get showFavoritesButton => 'Kedvencek gomb megjelenítése';
 
   @override
-  String get showLibrariesInToolbar => 'Show Libraries in Toolbar';
+  String get showLibrariesInToolbar =>
+      'Könyvtárak megjelenítése az Eszköztárban';
 
   @override
-  String get navbarOpacity => 'Navbar Opacity';
+  String get navbarOpacity => 'Navbar Opacitás';
 
   @override
   String get navbarColor => 'Navbar Color';
 
   @override
-  String get gray => 'Gray';
+  String get gray => 'Szürke';
 
   @override
-  String get darkBlue => 'Dark Blue';
+  String get darkBlue => 'Sötétkék';
 
   @override
-  String get purple => 'Purple';
+  String get purple => 'Lila';
 
   @override
-  String get teal => 'Teal';
+  String get teal => 'Böjti réce';
 
   @override
-  String get navy => 'Navy';
+  String get navy => 'Haditengerészet';
 
   @override
-  String get charcoal => 'Charcoal';
+  String get charcoal => 'Faszén';
 
   @override
-  String get brown => 'Brown';
+  String get brown => 'Barna';
 
   @override
-  String get darkRed => 'Dark Red';
+  String get darkRed => 'Sötétvörös';
 
   @override
-  String get darkGreen => 'Dark Green';
+  String get darkGreen => 'Sötétzöld';
 
   @override
-  String get slate => 'Slate';
+  String get slate => 'Pala';
 
   @override
-  String get indigo => 'Indigo';
+  String get indigo => 'Indigó';
 
   @override
-  String get libraryDisplay => 'Library Display';
+  String get libraryDisplay => 'Könyvtári megjelenítés';
 
   @override
-  String get posterLabel => 'Poster';
+  String get posterLabel => 'Poszter';
 
   @override
-  String get thumbnailLabel => 'Thumbnail';
+  String get thumbnailLabel => 'Miniatűr';
 
   @override
-  String get bannerLabel => 'Banner';
+  String get bannerLabel => 'Transzparens';
 
   @override
-  String get overridePerLibrarySettings => 'Override Per-Library Settings';
+  String get overridePerLibrarySettings =>
+      'Könyvtáronkénti beállítások felülbírálása';
 
   @override
   String get applyImageTypeToAllLibraries =>
-      'Apply image type to all libraries';
+      'Képtípus alkalmazása az összes könyvtárra';
 
   @override
-  String get multiServerLibraries => 'Multi-Server Libraries';
+  String get multiServerLibraries => 'Többkiszolgálós könyvtárak';
 
   @override
   String get showLibrariesFromAllServers =>
-      'Show libraries from all connected servers';
+      'Az összes csatlakoztatott szerver könyvtárainak megjelenítése';
 
   @override
-  String get enableFolderView => 'Enable Folder View';
+  String get enableFolderView => 'Mappanézet engedélyezése';
 
   @override
-  String get showFolderBrowsingOption => 'Show folder browsing option';
+  String get showFolderBrowsingOption => 'Mappaböngészési opció megjelenítése';
 
   @override
-  String get libraryVisibility => 'Library Visibility';
+  String get libraryVisibility => 'Könyvtár láthatósága';
 
   @override
   String get libraryVisibilityDescription =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'A kezdőlap láthatóságának váltása könyvtáronként. A módosítások életbe lépéséhez indítsa újra a Moonfin alkalmazást.';
 
   @override
-  String get showInNavigation => 'Show in navigation';
+  String get showInNavigation => 'Megjelenítés a navigációban';
 
   @override
-  String get showInLatestMedia => 'Show in latest media';
+  String get showInLatestMedia => 'Megjelenítés a legújabb médiában';
 
   @override
-  String get sourceLibraries => 'Source Libraries';
+  String get sourceLibraries => 'Forráskönyvtárak';
 
   @override
-  String get sourceCollections => 'Source Collections';
+  String get sourceCollections => 'Forrásgyűjtemények';
 
   @override
-  String get excludedGenres => 'Excluded Genres';
+  String get excludedGenres => 'Kizárt műfajok';
 
   @override
-  String get selectAll => 'Select All';
+  String get selectAll => 'Válassza az Összes lehetőséget';
 
   @override
   String itemsSelected(int count) {
@@ -2560,11 +2611,27 @@ class AppLocalizationsHu extends AppLocalizations {
   String get mediaBar => 'Media Bar';
 
   @override
-  String get mediaBarMode => 'Media Bar Style';
+  String get mediaSources => 'Médiaforrások';
+
+  @override
+  String get behavior => 'Viselkedés';
+
+  @override
+  String get seconds => 'másodpercig';
+
+  @override
+  String get localPreviews => 'Helyi előnézetek';
+
+  @override
+  String get localPreviewsDescription =>
+      'Előzetes, média és audio előnézetek konfigurálása.';
+
+  @override
+  String get mediaBarMode => 'Médiasáv stílusa';
 
   @override
   String get mediaBarModeDescription =>
-      'Choose between Moonfin, MakD, or turn the media bar off';
+      'Válasszon a Moonfin, MakD közül, vagy kapcsolja ki a médiasávot';
 
   @override
   String get mediaBarModeMoonfin => 'Moonfin';
@@ -2573,205 +2640,213 @@ class AppLocalizationsHu extends AppLocalizations {
   String get mediaBarModeMakd => 'MakD';
 
   @override
-  String get mediaBarModeOff => 'Off';
+  String get mediaBarModeOff => 'Le';
 
   @override
-  String get enableMediaBar => 'Enable Media Bar';
+  String get enableMediaBar => 'Médiasáv engedélyezése';
 
   @override
   String get showFeaturedContentSlideshow =>
-      'Show featured content slideshow on home';
+      'Kiemelt tartalom diavetítésének megjelenítése a kezdőlapon';
 
   @override
-  String get contentType => 'Content Type';
+  String get contentType => 'Tartalom típusa';
 
   @override
-  String get moviesAndTvShows => 'Movies & TV Shows';
+  String get moviesAndTvShows => 'Filmek és tévéműsorok';
 
   @override
-  String get moviesOnly => 'Movies Only';
+  String get moviesOnly => 'Csak filmek';
 
   @override
-  String get tvShowsOnly => 'TV Shows Only';
+  String get tvShowsOnly => 'Csak tévéműsorok';
 
   @override
-  String get itemCount => 'Item Count';
+  String get itemCount => 'Tételszám';
 
   @override
-  String get noneSelected => 'None selected';
+  String get noneSelected => 'Nincs kiválasztva';
 
   @override
-  String get noneExcluded => 'None excluded';
+  String get noneExcluded => 'Egyik sem kizárt';
 
   @override
-  String get autoAdvance => 'Auto Advance';
+  String get autoAdvance => 'Automatikus előrelépés';
 
   @override
-  String get autoAdvanceSlides => 'Automatically advance to next slide';
+  String get autoAdvanceSlides => 'Automatikus ugrás a következő diára';
 
   @override
   String get autoAdvanceInterval => 'Auto Advance Interval';
 
   @override
-  String get trailerPreview => 'Trailer Preview';
+  String get trailerPreview => 'Előzetes előnézet';
 
   @override
   String get autoPlayTrailers =>
-      'Auto-play trailers in the media bar after 3 seconds';
+      'Előzetesek automatikus lejátszása a médiasávon 3 másodperc után';
 
   @override
-  String get episodePreview => 'Episode Preview';
+  String get episodePreview => 'Epizód előnézete';
+
+  @override
+  String get mediaPreview => 'Média előnézet';
 
   @override
   String get episodePreviewDescription =>
-      'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
+      'Játssz le egy 30 másodperces soros előnézetet fókuszált, lebegtetett vagy hosszan lenyomott kártyákon';
 
   @override
-  String get previewAudio => 'Preview Audio';
+  String get mediaPreviewDescription =>
+      'Játssz le egy 30 másodperces soros előnézetet fókuszált, lebegtetett vagy hosszan lenyomott kártyákon';
+
+  @override
+  String get previewAudio => 'Hang előnézete';
 
   @override
   String get enablePreviewAudio =>
-      'Enable audio for trailer and episode previews';
+      'Hang engedélyezése az előzetes és az epizód előnézetéhez';
 
   @override
-  String get latestMedia => 'Latest Media';
+  String get latestMedia => 'Legújabb média';
 
   @override
-  String get recentlyReleased => 'Recently Released';
+  String get recentlyReleased => 'Nemrég Megjelent';
 
   @override
-  String get myMedia => 'My Media';
+  String get myMedia => 'Saját médiám';
 
   @override
-  String get myMediaSmall => 'My Media (Small)';
+  String get myMediaSmall => 'Saját média (kicsi)';
 
   @override
-  String get continueWatching => 'Continue Watching';
+  String get continueWatching => 'Folytassa a nézést';
 
   @override
-  String get resumeAudio => 'Resume Audio';
+  String get resumeAudio => 'Hang folytatása';
 
   @override
-  String get resumeBooks => 'Resume Books';
+  String get resumeBooks => 'Folytatás Könyvek';
 
   @override
-  String get activeRecordings => 'Active Recordings';
+  String get activeRecordings => 'Aktív felvételek';
 
   @override
-  String get playlists => 'Playlists';
+  String get playlists => 'Lejátszási listák';
 
   @override
-  String get liveTV => 'Live TV';
+  String get liveTV => 'Élő TV';
 
   @override
-  String get homeSections => 'Home Sections';
+  String get homeSections => 'Kezdőlap szakaszok';
 
   @override
-  String get resetToDefaults => 'Reset to defaults';
+  String get resetToDefaults => 'Állítsa vissza az alapértelmezett értékeket';
 
   @override
-  String get homeRowPosterSize => 'Home Row Poster Size';
+  String get homeRowPosterSize => 'Főoldali sor poszter mérete';
 
   @override
-  String get perRowImageTypeSelection => 'Per Row Image Type Selection';
+  String get perRowImageTypeSelection => 'Soronkénti képtípus kiválasztása';
 
   @override
   String get configureImageTypeForEachRow =>
-      'Configure image type for each enabled home row';
+      'Konfigurálja a képtípust minden engedélyezett kezdősorhoz';
 
   @override
   String get mergeContinueWatchingAndNextUp =>
-      'Merge Continue Watching and Next Up';
+      'Egyesítse a Megtekintés folytatása és a Következő elemet';
 
   @override
-  String get combineBothRows => 'Combine both rows into a single home section';
+  String get combineBothRows =>
+      'Kombinálja mindkét sort egyetlen kezdőszakaszba';
 
   @override
-  String get perRowImageType => 'Per Row Image Type';
+  String get perRowImageType => 'Soronkénti képtípus';
 
   @override
-  String get perRowSettings => 'Per-Row Settings';
+  String get perRowSettings => 'Soronkénti beállítások';
 
   @override
-  String get autoLogin => 'Auto Login';
+  String get autoLogin => 'Automatikus bejelentkezés';
 
   @override
-  String get lastUser => 'Last User';
+  String get lastUser => 'Utolsó felhasználó';
 
   @override
-  String get specificUser => 'Specific User';
+  String get specificUser => 'Konkrét felhasználó';
 
   @override
-  String get alwaysAuthenticate => 'Always Authenticate';
+  String get alwaysAuthenticate => 'Mindig hitelesítsen';
 
   @override
-  String get requirePasswordWithToken =>
-      'Require password even with stored token';
+  String get requirePasswordWithToken => 'Jelszó kérése tárolt token esetén is';
 
   @override
-  String get confirmExit => 'Confirm Exit';
+  String get confirmExit => 'Kilépés megerősítése';
 
   @override
   String get showConfirmationBeforeExiting =>
-      'Show confirmation before exiting';
+      'Megerősítés megjelenítése kilépés előtt';
 
   @override
   String get blockContentWithRatings =>
-      'Block content with the following ratings:';
+      'A következő besorolású tartalom letiltása:';
 
   @override
   String get noContentRatingsFound =>
-      'No content ratings were found on this server yet.';
+      'Ezen a szerveren még nem található tartalombesorolás.';
 
   @override
   String get couldNotLoadServerRatings =>
-      'Could not load server ratings. Showing saved ratings only.';
+      'Nem sikerült betölteni a szerver értékelését. Csak a mentett értékelések megjelenítése.';
 
   @override
   String get couldNotRefreshRatings =>
-      'Could not refresh ratings from server. Showing saved ratings.';
+      'Nem sikerült frissíteni az értékeléseket a szerverről. Mentett értékelések megjelenítése.';
 
   @override
-  String get enablePinCode => 'Enable PIN Code';
+  String get enablePinCode => 'PIN kód engedélyezése';
 
   @override
-  String get requirePinToAccess => 'Require a PIN to access your account';
+  String get requirePinToAccess => 'A fiók eléréséhez PIN-kód szükséges';
 
   @override
-  String get changePin => 'Change PIN';
+  String get changePin => 'PIN módosítása';
 
   @override
-  String get setNewPinCode => 'Set a new PIN code';
+  String get setNewPinCode => 'Állítson be új PIN kódot';
 
   @override
-  String get removePin => 'Remove PIN';
+  String get removePin => 'Távolítsa el a PIN-kódot';
 
   @override
-  String get removePinProtection => 'Remove PIN code protection';
+  String get removePinProtection => 'Távolítsa el a PIN kód védelmet';
 
   @override
-  String get screensaver => 'Screensaver';
+  String get screensaver => 'Képernyővédő';
 
   @override
-  String get inAppScreensaver => 'In-App Screensaver';
+  String get inAppScreensaver => 'Alkalmazáson belüli képernyővédő';
 
   @override
-  String get enableBuiltInScreensaver => 'Enable the built-in screensaver';
+  String get enableBuiltInScreensaver =>
+      'Engedélyezze a beépített képernyővédőt';
 
   @override
-  String get mode => 'Mode';
+  String get mode => 'Mód';
 
   @override
-  String get libraryArt => 'Library Art';
+  String get libraryArt => 'Könyvtár Art';
 
   @override
-  String get logo => 'Logo';
+  String get logo => 'Logó';
 
   @override
-  String get clock => 'Clock';
+  String get clock => 'Óra';
 
   @override
-  String get timeout => 'Timeout';
+  String get timeout => 'Időtúllépés';
 
   @override
   String minutesShort(int minutes) {
@@ -2779,13 +2854,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get dimmingLevel => 'Dimming Level';
+  String get dimmingLevel => 'Tompítási szint';
 
   @override
-  String get maxAgeRating => 'Max Age Rating';
+  String get maxAgeRating => 'Maximális korhatár';
 
   @override
-  String get any => 'Any';
+  String get any => 'Bármilyen';
 
   @override
   String agePlusValue(int age) {
@@ -2793,23 +2868,24 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get requireAgeRating => 'Require Age Rating';
+  String get requireAgeRating => 'Korhatár-besorolás szükséges';
 
   @override
-  String get onlyShowRatedContent => 'Only show rated content';
+  String get onlyShowRatedContent =>
+      'Csak a minősített tartalmat jelenítse meg';
 
   @override
-  String get showClock => 'Show Clock';
+  String get showClock => 'Óra megjelenítése';
 
   @override
   String get displayClockDuringScreensaver =>
-      'Display clock during screensaver';
+      'Óra megjelenítése képernyővédő közben';
 
   @override
-  String get rottenTomatoesCritics => 'Rotten Tomatoes (Critics)';
+  String get rottenTomatoesCritics => 'Rotten Tomatoes (kritikusok)';
 
   @override
-  String get rottenTomatoesAudience => 'Rotten Tomatoes (Audience)';
+  String get rottenTomatoesAudience => 'Rotten Tomatoes (közönség)';
 
   @override
   String get imdb => 'IMDb';
@@ -2818,10 +2894,10 @@ class AppLocalizationsHu extends AppLocalizations {
   String get tmdb => 'TMDB';
 
   @override
-  String get metacritic => 'Metacritic';
+  String get metacritic => 'Metakritikus';
 
   @override
-  String get metacriticUser => 'Metacritic (User)';
+  String get metacriticUser => 'Metacritic (felhasználó)';
 
   @override
   String get trakt => 'Trakt';
@@ -2836,58 +2912,62 @@ class AppLocalizationsHu extends AppLocalizations {
   String get aniList => 'AniList';
 
   @override
-  String get communityRating => 'Community Rating';
+  String get communityRating => 'Közösségi értékelés';
 
   @override
-  String get ratings => 'Ratings';
+  String get ratings => 'Értékelések';
 
   @override
-  String get additionalRatings => 'Additional Ratings';
+  String get additionalRatings => 'További értékelések';
 
   @override
-  String get showMdbListAndTmdbRatings => 'Show MDBList and TMDB ratings';
+  String get showMdbListAndTmdbRatings =>
+      'MDBList és TMDB értékelések megjelenítése';
 
   @override
-  String get ratingLabels => 'Rating Labels';
+  String get ratingLabels => 'Értékelési címkék';
 
   @override
-  String get showLabelsNextToIcons => 'Show labels next to rating icons';
+  String get showLabelsNextToIcons =>
+      'Címkék megjelenítése az értékelési ikonok mellett';
 
   @override
-  String get ratingBadges => 'Rating Badges';
+  String get ratingBadges => 'Értékelési jelvények';
 
   @override
-  String get showDecorativeBadges => 'Show decorative badges behind ratings';
+  String get showDecorativeBadges =>
+      'Díszítő jelvények megjelenítése az értékelések mögött';
 
   @override
-  String get episodeRatings => 'Episode Ratings';
+  String get episodeRatings => 'Az epizódok értékelései';
 
   @override
-  String get showRatingsOnEpisodes => 'Show ratings on individual episodes';
+  String get showRatingsOnEpisodes =>
+      'Az egyes epizódok értékeléseinek megjelenítése';
 
   @override
-  String get ratingSources => 'Rating Sources';
+  String get ratingSources => 'Értékelési források';
 
   @override
   String get ratingSourcesDescription =>
-      'Enable and reorder the rating sources shown throughout the app';
+      'Az alkalmazásban megjelenő értékelési források engedélyezése és átrendezése';
 
   @override
   String get pluginLabel => 'Plugin';
 
   @override
-  String get pluginDetected => 'Plugin Detected';
+  String get pluginDetected => 'Beépülő modul észlelve';
 
   @override
-  String get pluginNotDetected => 'Plugin Not Detected';
+  String get pluginNotDetected => 'A beépülő modul nem észlelhető';
 
   @override
   String get pluginDetectedDescription =>
-      'Server plugin detected. Sync is enabled automatically the first time the plugin is found.';
+      'Szerverbővítmény észlelve. A szinkronizálás automatikusan engedélyezve van a bővítmény első megtalálásakor.';
 
   @override
   String get pluginNotDetectedDescription =>
-      'Server plugin is not currently detected. Local settings still use their saved values or built-in defaults.';
+      'A kiszolgálóbővítmény jelenleg nem észlelhető. A helyi beállítások továbbra is a mentett értékeket vagy a beépített alapértelmezett értékeket használják.';
 
   @override
   String pluginStatusVersion(String status, String version) {
@@ -2895,73 +2975,76 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get availableServices => 'Available Services';
+  String get availableServices => 'Elérhető szolgáltatások';
 
   @override
-  String get serverPluginSync => 'Server Plugin Sync';
+  String get serverPluginSync => 'Szerver beépülő modul szinkronizálása';
 
   @override
-  String get syncSettingsWithPlugin => 'Sync settings with the server plugin';
+  String get syncSettingsWithPlugin =>
+      'Szinkronizálja a beállításokat a szerver beépülő modullal';
 
   @override
-  String get whatSyncControls => 'What sync controls';
+  String get whatSyncControls => 'Milyen szinkronizálást vezérel';
 
   @override
   String get syncControlsDescription =>
-      'Sync only controls whether plugin-backed settings are pushed to and pulled from the server. Profile selection and profile sync actions are in Customization settings when plugin sync is enabled.';
+      'A szinkronizálás csak azt szabályozza, hogy a beépülő modulok által támogatott beállítások elküldésre kerülnek-e a kiszolgálóra, illetve lekérhetők-e onnan. A profil kiválasztása és a profilszinkronizálási műveletek a Testreszabási beállításokban találhatók, ha a beépülő modul szinkronizálása engedélyezett.';
 
   @override
-  String get recentRequests => 'Recent Requests';
+  String get recentRequests => 'Legutóbbi kérések';
 
   @override
-  String get recentlyAdded => 'Recently Added';
+  String get recentlyAdded => 'Nemrég hozzáadva';
 
   @override
-  String get trending => 'Trending';
+  String get trending => 'Felkapott';
 
   @override
-  String get popularMovies => 'Popular Movies';
+  String get popularMovies => 'Népszerű filmek';
 
   @override
-  String get movieGenres => 'Movie Genres';
+  String get movieGenres => 'Film műfajok';
 
   @override
-  String get upcomingMovies => 'Upcoming Movies';
+  String get upcomingMovies => 'Közelgő filmek';
 
   @override
-  String get studios => 'Studios';
+  String get studios => 'Stúdiók';
 
   @override
-  String get popularSeries => 'Popular Series';
+  String get popularSeries => 'Népszerű sorozat';
 
   @override
-  String get seriesGenres => 'Series Genres';
+  String get seriesGenres => 'Sorozat műfajai';
 
   @override
-  String get upcomingSeries => 'Upcoming Series';
+  String get upcomingSeries => 'Közelgő sorozat';
 
   @override
-  String get networks => 'Networks';
+  String get networks => 'Hálózatok';
 
   @override
-  String get resetRowsToDefaults => 'Reset rows to defaults';
+  String get resetRowsToDefaults =>
+      'A sorok visszaállítása az alapértelmezett értékekre';
 
   @override
-  String get enableSeerr => 'Enable Seerr';
+  String get enableSeerr => 'Látó engedélyezése';
 
   @override
   String get showSeerrInNavigation =>
-      'Show Seerr in navigation (requires server plugin)';
+      'Látó megjelenítése a navigációban (szerver beépülő modul szükséges)';
 
   @override
   String get seerrUnavailable =>
-      'Unavailable because server plugin Seerr support is disabled.';
+      'Nem érhető el, mert a Seerr szerverbővítmény támogatása le van tiltva.';
 
   @override
-  String get nsfwFilter => 'NSFW Filter';
+  String get nsfwFilter => 'NSFW szűrő';
 
   @override
-  String get hideAdultContent => 'Hide adult content in results';
+  String get hideAdultContent =>
+      'A felnőtteknek szánt tartalom elrejtése a találatok között';
 
   @override
   String loggedInAs(String username) {
@@ -2969,24 +3052,24 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get discoverRows => 'Discover Rows';
+  String get discoverRows => 'Fedezze fel a sorokat';
 
   @override
   String get discoverRowsDescriptionPlugin =>
-      'Drag to reorder. Enable or disable rows. Enabled row order syncs with the Moonfin plugin.';
+      'Húzza át az átrendezéshez. Sorok engedélyezése vagy letiltása. Az engedélyezett sorsorrend szinkronizálása a Moonfin beépülő modullal.';
 
   @override
   String get discoverRowsDescription =>
-      'Drag to reorder. Enable or disable rows.';
+      'Húzza át az átrendezéshez. Sorok engedélyezése vagy letiltása.';
 
   @override
-  String get enabled => 'Enabled';
+  String get enabled => 'Engedélyezve';
 
   @override
-  String get hidden => 'Hidden';
+  String get hidden => 'Rejtett';
 
   @override
-  String get aboutTitle => 'About';
+  String get aboutTitle => 'Körülbelül';
 
   @override
   String versionValue(String version) {
@@ -2994,49 +3077,50 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get openSourceLicenses => 'Open Source Licenses';
+  String get openSourceLicenses => 'Nyílt forráskódú licencek';
 
   @override
-  String get sourceCode => 'Source Code';
+  String get sourceCode => 'Forráskód';
 
   @override
   String get sourceCodeUrl =>
       'https://github.com/Moonfin-Client/Mobile-Desktop';
 
   @override
-  String get checkForUpdatesNow => 'Check for Updates Now';
+  String get checkForUpdatesNow => 'Keressen frissítéseket most';
 
   @override
   String get checksLatestDesktopRelease =>
-      'Checks latest desktop release for this platform';
+      'Ellenőrzi a platform legújabb asztali kiadását';
 
   @override
-  String get youAreUpToDate => 'You are up to date.';
+  String get youAreUpToDate => 'Ön naprakész.';
 
   @override
   String get couldNotCheckForUpdates =>
-      'Could not check for updates right now.';
+      'Jelenleg nem sikerült ellenőrizni a frissítéseket.';
 
   @override
   String get noCompatibleUpdate =>
-      'No compatible update package found for this platform.';
+      'Nem található kompatibilis frissítési csomag ehhez a platformhoz.';
 
   @override
   String get updateChecksNotSupported =>
-      'Update checks are not supported on this platform.';
+      'A frissítések ellenőrzése nem támogatott ezen a platformon.';
 
   @override
   String get updateNotificationsDisabled =>
-      'Update notifications are disabled.';
+      'A frissítési értesítések le vannak tiltva.';
 
   @override
-  String get pleaseWaitBeforeChecking => 'Please wait before checking again.';
+  String get pleaseWaitBeforeChecking =>
+      'Kérjük, várjon, mielőtt újra ellenőrizné.';
 
   @override
-  String get latestUpdateAlreadyShown => 'Latest update was already shown.';
+  String get latestUpdateAlreadyShown => 'A legutóbbi frissítés már megjelent.';
 
   @override
-  String get updateAvailable => 'Update available.';
+  String get updateAvailable => 'Frissítés elérhető.';
 
   @override
   String updateAvailableVersion(String version) {
@@ -3044,10 +3128,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get updateNotifications => 'Update Notifications';
+  String get updateNotifications => 'Frissítse az értesítéseket';
 
   @override
-  String get showWhenUpdatesAvailable => 'Show when updates are available';
+  String get showWhenUpdatesAvailable =>
+      'Megjeleníti, mikor érhetők el frissítések';
 
   @override
   String updateAvailableTitle(String version) {
@@ -3055,44 +3140,44 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get readReleaseNotes => 'Read Release Notes';
+  String get readReleaseNotes => 'Olvassa el a kiadási megjegyzéseket';
 
   @override
-  String get downloadingUpdate => 'Downloading update...';
+  String get downloadingUpdate => 'Frissítés letöltése...';
 
   @override
   String get updateDownloadFailed =>
-      'Update download failed. Please try again.';
+      'A frissítés letöltése sikertelen. Kérjük, próbálja újra.';
 
   @override
-  String get openReleasesPage => 'Open Releases Page';
+  String get openReleasesPage => 'Nyissa meg a Kiadások oldalát';
 
   @override
-  String get navigation => 'Navigation';
+  String get navigation => 'Navigáció';
 
   @override
-  String get watchedIndicatorsBackdrops => 'Watched indicators, backdrops';
+  String get watchedIndicatorsBackdrops => 'Nézett indikátorok, hátterek';
 
   @override
   String get focusColorWatchedIndicatorsBackdrops =>
-      'Focus color, watched indicators, backdrops';
+      'Fókuszszín, figyelt indikátorok, hátterek';
 
   @override
   String get navbarStyleToolbarAppearance =>
-      'Navbar style, toolbar buttons, appearance';
+      'Navigációs stílus, eszköztár gombjai, megjelenés';
 
   @override
-  String get reorderToggleHomeRows => 'Reorder and toggle home rows';
+  String get reorderToggleHomeRows => 'A kezdősorok átrendezése és átváltása';
 
   @override
-  String get featuredContentAppearance => 'Featured content, appearance';
+  String get featuredContentAppearance => 'Kiemelt tartalom, megjelenés';
 
   @override
   String get posterSizeImageTypeFolderView =>
-      'Poster size, image type, folder view';
+      'Poszter mérete, képtípus, mappanézet';
 
   @override
-  String get mdbListTmdbRatingSources => 'MDBList, TMDB, and rating sources';
+  String get mdbListTmdbRatingSources => 'MDBList, TMDB és értékelési források';
 
   @override
   String gbValue(String value) {
@@ -3100,19 +3185,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Világos';
 
   @override
-  String get browse => 'Browse';
+  String get browse => 'Tallózás';
 
   @override
-  String get noResults => 'No results';
+  String get noResults => 'Nincs eredmény';
 
   @override
-  String get seerrAvailableStatus => 'Available';
+  String get seerrAvailableStatus => 'Elérhető';
 
   @override
-  String get seerrRequestedStatus => 'Requested';
+  String get seerrRequestedStatus => 'Kért';
 
   @override
   String itemsCount(int count) {
@@ -3120,19 +3205,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get seerrSettings => 'Seerr Settings';
+  String get seerrSettings => 'Látó beállításai';
 
   @override
-  String get requestMore => 'Request More';
+  String get requestMore => 'Kérjen többet';
 
   @override
-  String get request => 'Request';
+  String get request => 'Kér';
 
   @override
-  String get cancelRequest => 'Cancel Request';
+  String get cancelRequest => 'Kérelem visszavonása';
 
   @override
-  String get playInMoonfin => 'Play in Moonfin';
+  String get playInMoonfin => 'Lejátszás Moonfin';
 
   @override
   String requestedByName(String name) {
@@ -3140,16 +3225,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get approve => 'Approve';
+  String get approve => 'Jóváhagyni';
 
   @override
-  String get declineAction => 'Decline';
+  String get declineAction => 'Hanyatlás';
 
   @override
-  String get similar => 'Similar';
+  String get similar => 'Hasonló';
 
   @override
-  String get recommendations => 'Recommendations';
+  String get recommendations => 'Ajánlások';
 
   @override
   String cancelRequestForTitle(String title) {
@@ -3162,13 +3247,14 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get keep => 'Keep';
+  String get keep => 'Tartsa';
 
   @override
-  String get itemNotFoundInLibrary => 'Item not found in your Moonfin library';
+  String get itemNotFoundInLibrary =>
+      'Az elem nem található a Moonfin könyvtárában';
 
   @override
-  String get errorSearchingLibrary => 'Error searching library';
+  String get errorSearchingLibrary => 'Hiba a könyvtár keresése közben';
 
   @override
   String budgetAmount(String amount) {
@@ -3191,34 +3277,35 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get submitRequest => 'Submit Request';
+  String get submitRequest => 'Kérés benyújtása';
 
   @override
-  String get allSeasons => 'All Seasons';
+  String get allSeasons => 'Minden évszak';
 
   @override
-  String get advancedOptions => 'Advanced Options';
+  String get advancedOptions => 'Speciális beállítások';
 
   @override
-  String get noServiceServersConfigured => 'No service servers configured';
+  String get noServiceServersConfigured =>
+      'Nincsenek konfigurálva szervizkiszolgálók';
 
   @override
-  String get server => 'Server';
+  String get server => 'Szerver';
 
   @override
-  String get qualityProfile => 'Quality Profile';
+  String get qualityProfile => 'Minőségi profil';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => 'Gyökérmappa';
 
   @override
-  String get showMore => 'Show More';
+  String get showMore => 'Továbbiak megjelenítése';
 
   @override
-  String get appearances => 'Appearances';
+  String get appearances => 'Megjelenések';
 
   @override
-  String get crewSection => 'Crew';
+  String get crewSection => 'Legénység';
 
   @override
   String ageValue(int age) {
@@ -3226,290 +3313,292 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get noRequests => 'No requests';
+  String get noRequests => 'Nincsenek kérések';
 
   @override
-  String get pendingStatus => 'Pending';
+  String get pendingStatus => 'Függőben levő';
 
   @override
-  String get declinedStatus => 'Declined';
+  String get declinedStatus => 'Elutasítva';
 
   @override
-  String get partiallyAvailable => 'Partially Available';
+  String get partiallyAvailable => 'Részben elérhető';
 
   @override
-  String get downloadingStatus => 'Downloading';
+  String get downloadingStatus => 'Letöltés';
 
   @override
-  String get approvedStatus => 'Approved';
+  String get approvedStatus => 'Jóváhagyott';
 
   @override
-  String get notRequestedStatus => 'Not Requested';
+  String get notRequestedStatus => 'Nem kért';
 
   @override
-  String get blocklistedStatus => 'Blocklisted';
+  String get blocklistedStatus => 'Blokklistán';
 
   @override
-  String get deletedStatus => 'Deleted';
+  String get deletedStatus => 'Törölve';
 
   @override
-  String get tmdbScore => 'TMDB Score';
+  String get tmdbScore => 'TMDB pontszám';
 
   @override
-  String get releaseDateLabel => 'Release Date';
+  String get releaseDateLabel => 'Megjelenés dátuma';
 
   @override
-  String get firstAirDateLabel => 'First Air Date';
+  String get firstAirDateLabel => 'Első légi dátum';
 
   @override
-  String get revenueLabel => 'Revenue';
+  String get revenueLabel => 'Bevétel';
 
   @override
-  String get runtimeLabel => 'Runtime';
+  String get runtimeLabel => 'Futásidő';
 
   @override
-  String get budgetLabel => 'Budget';
+  String get budgetLabel => 'Költségvetés';
 
   @override
-  String get originalLanguageLabel => 'Original Language';
+  String get originalLanguageLabel => 'Eredeti nyelv';
 
   @override
-  String get seasonsLabel => 'Seasons';
+  String get seasonsLabel => 'Évszakok';
 
   @override
-  String get episodesLabel => 'Episodes';
+  String get episodesLabel => 'Epizódok';
 
   @override
-  String get access => 'Access';
+  String get access => 'Hozzáférés';
 
   @override
-  String get add => 'Add';
+  String get add => 'Hozzáadás';
 
   @override
-  String get address => 'Address';
+  String get address => 'Cím';
 
   @override
-  String get analytics => 'Analytics';
+  String get analytics => 'Analitika';
 
   @override
-  String get catalog => 'Catalog';
+  String get catalog => 'Katalógus';
 
   @override
-  String get content => 'Content';
+  String get content => 'Tartalom';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Másolat';
 
   @override
-  String get create => 'Create';
+  String get create => 'Teremt';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Letiltás';
 
   @override
-  String get done => 'Done';
+  String get done => 'Kész';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Szerkesztés';
 
   @override
-  String get encoding => 'Encoding';
+  String get encoding => 'Kódolás';
 
   @override
-  String get error => 'Error';
+  String get error => 'Hiba';
 
   @override
-  String get forward => 'Forward';
+  String get forward => 'Előre';
 
   @override
-  String get general => 'General';
+  String get general => 'Általános';
 
   @override
-  String get go => 'Go';
+  String get go => 'Megy';
 
   @override
-  String get install => 'Install';
+  String get install => 'Telepítés';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'Telepítve';
 
   @override
-  String get interval => 'Interval';
+  String get interval => 'Intervallum';
 
   @override
-  String get name => 'Name';
+  String get name => 'Név';
 
   @override
-  String get networking => 'Networking';
+  String get networking => 'Hálózatépítés';
 
   @override
-  String get next => 'Next';
+  String get next => 'Következő';
 
   @override
-  String get path => 'Path';
+  String get path => 'Útvonal';
 
   @override
-  String get paused => 'Paused';
+  String get paused => 'Szüneteltetve';
 
   @override
-  String get permissions => 'Permissions';
+  String get permissions => 'Engedélyek';
 
   @override
-  String get processing => 'Processing';
+  String get processing => 'Feldolgozás';
 
   @override
-  String get profile => 'Profile';
+  String get profile => 'Profil';
 
   @override
-  String get provider => 'Provider';
+  String get provider => 'Szolgáltató';
 
   @override
-  String get refresh => 'Refresh';
+  String get refresh => 'Frissítés';
 
   @override
-  String get remote => 'Remote';
+  String get remote => 'Távoli';
 
   @override
-  String get rename => 'Rename';
+  String get rename => 'Átnevezés';
 
   @override
-  String get revoke => 'Revoke';
+  String get revoke => 'Visszavonás';
 
   @override
-  String get role => 'Role';
+  String get role => 'Szerep';
 
   @override
-  String get root => 'Root';
+  String get root => 'Gyökér';
 
   @override
-  String get run => 'Run';
+  String get run => 'Fut';
 
   @override
-  String get search => 'Search';
+  String get search => 'Keresés';
 
   @override
-  String get select => 'Select';
+  String get select => 'Válassza ki';
 
   @override
-  String get send => 'Send';
+  String get send => 'Elküld';
 
   @override
-  String get sessions => 'Sessions';
+  String get sessions => 'Munkamenetek';
 
   @override
-  String get set => 'Set';
+  String get set => 'Készlet';
 
   @override
-  String get status => 'Status';
+  String get status => 'Állapot';
 
   @override
   String get stop => 'Stop';
 
   @override
-  String get streaming => 'Streaming';
+  String get streaming => 'Folyó';
 
   @override
-  String get time => 'Time';
+  String get time => 'Idő';
 
   @override
-  String get trickplay => 'Trickplay';
+  String get trickplay => 'Trükkös játék';
 
   @override
-  String get uninstall => 'Uninstall';
+  String get uninstall => 'Eltávolítás';
 
   @override
-  String get up => 'Up';
+  String get up => 'Fel';
 
   @override
-  String get update => 'Update';
+  String get update => 'Frissítés';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'Feltöltés';
 
   @override
-  String get unmute => 'Unmute';
+  String get unmute => 'Némítás feloldása';
 
   @override
-  String get mute => 'Mute';
+  String get mute => 'Néma';
 
   @override
-  String get branding => 'Branding';
+  String get branding => 'Márkaépítés';
 
   @override
-  String get adminDrawerDashboard => 'Dashboard';
+  String get adminDrawerDashboard => 'Műszerfal';
 
   @override
-  String get adminDrawerAnalytics => 'Analytics';
+  String get adminDrawerAnalytics => 'Analitika';
 
   @override
-  String get adminDrawerSettings => 'Settings';
+  String get adminDrawerSettings => 'Beállítások elemre';
 
   @override
-  String get adminDrawerBranding => 'Branding';
+  String get adminDrawerBranding => 'Márkaépítés';
 
   @override
-  String get adminDrawerUsers => 'Users';
+  String get adminDrawerUsers => 'Felhasználók';
 
   @override
-  String get adminDrawerLibraries => 'Libraries';
+  String get adminDrawerLibraries => 'Könyvtárak';
 
   @override
-  String get adminDrawerTranscoding => 'Transcoding';
+  String get adminDrawerTranscoding => 'Átkódolás';
 
   @override
-  String get adminDrawerResume => 'Resume';
+  String get adminDrawerResume => 'Folytatás';
 
   @override
-  String get adminDrawerStreaming => 'Streaming';
+  String get adminDrawerStreaming => 'Folyó';
 
   @override
-  String get adminDrawerTrickplay => 'Trickplay';
+  String get adminDrawerTrickplay => 'Trükkös játék';
 
   @override
-  String get adminDrawerDevices => 'Devices';
+  String get adminDrawerDevices => 'Eszközök';
 
   @override
-  String get adminDrawerActivity => 'Activity';
+  String get adminDrawerActivity => 'Tevékenység';
 
   @override
-  String get adminDrawerNetworking => 'Networking';
+  String get adminDrawerNetworking => 'Hálózatépítés';
 
   @override
-  String get adminDrawerApiKeys => 'API Keys';
+  String get adminDrawerApiKeys => 'API kulcsok';
 
   @override
-  String get adminDrawerBackups => 'Backups';
+  String get adminDrawerBackups => 'Biztonsági mentések';
 
   @override
-  String get adminDrawerLogs => 'Logs';
+  String get adminDrawerLogs => 'Naplók';
 
   @override
-  String get adminDrawerScheduledTasks => 'Scheduled Tasks';
+  String get adminDrawerScheduledTasks => 'Ütemezett feladatok';
 
   @override
-  String get adminDrawerPlugins => 'Plugins';
+  String get adminDrawerPlugins => 'Beépülő modulok';
 
   @override
-  String get adminDrawerRepositories => 'Repositories';
+  String get adminDrawerRepositories => 'Adattárak';
 
   @override
-  String get adminDrawerLiveTv => 'Live TV';
+  String get adminDrawerLiveTv => 'Élő TV';
 
   @override
-  String get adminExitTooltip => 'Exit Admin';
+  String get adminExitTooltip => 'Lépjen ki az Adminisztrátorból';
 
   @override
-  String get adminDashboardLoadFailed => 'Failed to load dashboard';
+  String get adminDashboardLoadFailed =>
+      'Nem sikerült betölteni az irányítópultot';
 
   @override
-  String get adminMediaOverview => 'Media Overview';
+  String get adminMediaOverview => 'Média áttekintése';
 
   @override
-  String get adminMediaTotalsError => 'Could not load server media totals.';
+  String get adminMediaTotalsError =>
+      'Nem sikerült betölteni a szerver média összesített adatát.';
 
   @override
   String get adminMediaOverviewSubtitle =>
-      'A quick read on how much content is on this server.';
+      'Gyors olvasmány arról, hogy mennyi tartalom van ezen a szerveren.';
 
   @override
   String adminPluginUpdatesAvailable(int count) {
@@ -3532,58 +3621,58 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get analyticsMediaDistribution => 'Media Distribution';
+  String get analyticsMediaDistribution => 'Médiaterjesztés';
 
   @override
-  String get analyticsVideoCodecs => 'Video Codecs';
+  String get analyticsVideoCodecs => 'Videó kodekek';
 
   @override
-  String get analyticsAudioCodecs => 'Audio Codecs';
+  String get analyticsAudioCodecs => 'Audio kodekek';
 
   @override
-  String get analyticsContainers => 'Containers';
+  String get analyticsContainers => 'Konténerek';
 
   @override
-  String get analyticsTopGenres => 'Top Genres';
+  String get analyticsTopGenres => 'Legjobb műfajok';
 
   @override
-  String get analyticsReleaseYears => 'Release Years';
+  String get analyticsReleaseYears => 'Kiadási Évek';
 
   @override
-  String get analyticsContentRatings => 'Content Ratings';
+  String get analyticsContentRatings => 'Tartalomértékelések';
 
   @override
-  String get analyticsRuntimeBuckets => 'Runtime Buckets';
+  String get analyticsRuntimeBuckets => 'Futásidejű gyűjtők';
 
   @override
-  String get analyticsFileFormats => 'File Formats';
+  String get analyticsFileFormats => 'Fájlformátumok';
 
   @override
-  String get analyticsNoData => 'No Data Available.';
+  String get analyticsNoData => 'Nincs adat.';
 
   @override
-  String get adminServerInfo => 'Server Info';
+  String get adminServerInfo => 'Szerver Info';
 
   @override
-  String get adminRestartPending => 'Restart Pending';
+  String get adminRestartPending => 'Újraindítás függőben';
 
   @override
-  String get adminServerPaths => 'Server Paths';
+  String get adminServerPaths => 'Szerver útvonalak';
 
   @override
-  String get adminServerActions => 'Server Actions';
+  String get adminServerActions => 'Szerverműveletek';
 
   @override
-  String get adminRestartServer => 'Restart Server';
+  String get adminRestartServer => 'Indítsa újra a szervert';
 
   @override
-  String get adminShutdownServer => 'Shutdown Server';
+  String get adminShutdownServer => 'Szerver leállítása';
 
   @override
-  String get adminScanLibraries => 'Scan Libraries';
+  String get adminScanLibraries => 'Könyvtárak beolvasása';
 
   @override
-  String get adminLibraryScanStarted => 'Library scan started';
+  String get adminLibraryScanStarted => 'A könyvtári vizsgálat elindult';
 
   @override
   String errorGeneric(String error) {
@@ -3591,26 +3680,28 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminServerRebootInProgress => 'Server reboot in progress';
+  String get adminServerRebootInProgress =>
+      'A szerver újraindítása folyamatban van';
 
   @override
   String get adminServerRebootMessage =>
-      'Server reboot in progress, please restart Moonfin';
+      'A szerver újraindítása folyamatban van, kérjük, indítsa újra a Moonfin';
 
   @override
-  String get adminActiveSessions => 'Active Sessions';
+  String get adminActiveSessions => 'Aktív munkamenetek';
 
   @override
-  String get adminSessionsLoadFailed => 'Failed to load sessions';
+  String get adminSessionsLoadFailed =>
+      'Nem sikerült betölteni a munkameneteket';
 
   @override
-  String get adminNoActiveSessions => 'No active sessions';
+  String get adminNoActiveSessions => 'Nincsenek aktív munkamenetek';
 
   @override
-  String get adminRecentActivity => 'Recent Activity';
+  String get adminRecentActivity => 'Legutóbbi tevékenység';
 
   @override
-  String get adminNoRecentActivity => 'No recent activity';
+  String get adminNoRecentActivity => 'Nincs közelmúltbeli tevékenység';
 
   @override
   String adminCommandFailed(String error) {
@@ -3618,28 +3709,28 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminSendMessage => 'Send Message';
+  String get adminSendMessage => 'Üzenet küldése';
 
   @override
-  String get adminMessageTextHint => 'Message text';
+  String get adminMessageTextHint => 'Üzenet szövege';
 
   @override
-  String get adminSetVolume => 'Set Volume';
+  String get adminSetVolume => 'Hangerő beállítása';
 
   @override
-  String get sessionPrev => 'Prev';
+  String get sessionPrev => 'Előző';
 
   @override
-  String get sessionRewind => 'Rewind';
+  String get sessionRewind => 'Visszatekerés';
 
   @override
-  String get sessionForward => 'Forward';
+  String get sessionForward => 'Előre';
 
   @override
-  String get sessionNext => 'Next';
+  String get sessionNext => 'Következő';
 
   @override
-  String get sessionVolumeDown => 'Vol –';
+  String get sessionVolumeDown => 'kötet –';
 
   @override
   String get sessionVolumeUp => 'Vol +';
@@ -3648,34 +3739,34 @@ class AppLocalizationsHu extends AppLocalizations {
   String get uhd4k => '4K';
 
   @override
-  String get nowPlaying => 'Now Playing';
+  String get nowPlaying => 'Most játszik';
 
   @override
-  String get volume => 'Volume';
+  String get volume => 'Kötet';
 
   @override
-  String get actions => 'Actions';
+  String get actions => 'Akciók';
 
   @override
   String get videoCodec => 'Video Codec';
 
   @override
-  String get audioCodec => 'Audio Codec';
+  String get audioCodec => 'Audio kodek';
 
   @override
   String get hwAccel => 'HW Accel';
 
   @override
-  String get completion => 'Completion';
+  String get completion => 'Befejezés';
 
   @override
-  String get direct => 'Direct';
+  String get direct => 'Közvetlen';
 
   @override
-  String get adminDisconnect => 'Disconnect';
+  String get adminDisconnect => 'Leválasztás';
 
   @override
-  String get adminClearDates => 'Clear dates';
+  String get adminClearDates => 'Világos dátumok';
 
   @override
   String adminActivityLoadFailed(String error) {
@@ -3683,16 +3774,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminNoActivityEntries => 'No activity entries';
+  String get adminNoActivityEntries => 'Nincsenek tevékenységbejegyzések';
 
   @override
-  String get adminEditDeviceName => 'Edit Device Name';
+  String get adminEditDeviceName => 'Szerkessze az eszköz nevét';
 
   @override
-  String get adminCustomName => 'Custom Name';
+  String get adminCustomName => 'Egyéni név';
 
   @override
-  String get adminDeviceNameUpdated => 'Device name updated';
+  String get adminDeviceNameUpdated => 'Az eszköz neve frissítve';
 
   @override
   String adminDeviceUpdateFailed(String error) {
@@ -3700,10 +3791,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteDevice => 'Delete Device';
+  String get adminDeleteDevice => 'Eszköz törlése';
 
   @override
-  String get adminDeviceDeleted => 'Device deleted';
+  String get adminDeviceDeleted => 'Eszköz törölve';
 
   @override
   String adminDeviceDeleteFailed(String error) {
@@ -3711,28 +3802,29 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminDevicesLoadFailed => 'Failed to load devices';
+  String get adminDevicesLoadFailed => 'Nem sikerült betölteni az eszközöket';
 
   @override
-  String get adminSearchDevices => 'Search devices';
+  String get adminSearchDevices => 'Eszközök keresése';
 
   @override
-  String get adminThisDevice => 'This Device';
+  String get adminThisDevice => 'Ez a Készülék';
 
   @override
-  String get adminEditName => 'Edit Name';
+  String get adminEditName => 'Név szerkesztése';
 
   @override
-  String get adminLibrariesLoadFailed => 'Failed to load libraries';
+  String get adminLibrariesLoadFailed =>
+      'Nem sikerült betölteni a könyvtárakat';
 
   @override
-  String get adminNoLibraries => 'No libraries configured';
+  String get adminNoLibraries => 'Nincsenek konfigurálva könyvtárak';
 
   @override
-  String get adminScanAllLibraries => 'Scan All Libraries';
+  String get adminScanAllLibraries => 'Az összes könyvtár beolvasása';
 
   @override
-  String get adminAddLibrary => 'Add Library';
+  String get adminAddLibrary => 'Könyvtár hozzáadása elemre';
 
   @override
   String adminScanFailed(String error) {
@@ -3740,10 +3832,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminRenameLibrary => 'Rename Library';
+  String get adminRenameLibrary => 'Könyvtár átnevezése';
 
   @override
-  String get adminNewName => 'New name';
+  String get adminNewName => 'Új név';
 
   @override
   String adminLibraryRenamed(String name) {
@@ -3756,7 +3848,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteLibrary => 'Delete Library';
+  String get adminDeleteLibrary => 'Könyvtár törlése';
 
   @override
   String adminLibraryDeleted(String name) {
@@ -3774,7 +3866,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminRemovePath => 'Remove Path';
+  String get adminRemovePath => 'Eltávolítási útvonal';
 
   @override
   String adminRemovePathConfirm(String path) {
@@ -3787,7 +3879,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryOptionsSaved => 'Library options saved';
+  String get adminLibraryOptionsSaved => 'A könyvtári beállítások elmentve';
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
@@ -3795,34 +3887,35 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryLoadFailed => 'Failed to load library';
+  String get adminLibraryLoadFailed => 'Nem sikerült betölteni a könyvtárat';
 
   @override
-  String get adminNoMediaPaths => 'No media paths configured';
+  String get adminNoMediaPaths => 'Nincsenek konfigurálva médiaútvonalak';
 
   @override
-  String get adminAddPath => 'Add Path';
+  String get adminAddPath => 'Útvonal hozzáadása';
 
   @override
-  String get adminBrowseFilesystem => 'Browse server filesystem:';
+  String get adminBrowseFilesystem => 'Tallózás a szerver fájlrendszerében:';
 
   @override
-  String get adminSaveOptions => 'Save Options';
+  String get adminSaveOptions => 'Beállítások mentése';
 
   @override
-  String get adminPreferredMetadataLanguage => 'Preferred metadata language';
+  String get adminPreferredMetadataLanguage =>
+      'Előnyben részesített metaadat-nyelv';
 
   @override
-  String get adminMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminMetadataLanguageHint => 'például en, de, fr';
 
   @override
-  String get adminMetadataCountryCode => 'Metadata country code';
+  String get adminMetadataCountryCode => 'A metaadatok országkódja';
 
   @override
-  String get adminMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminMetadataCountryHint => 'például USA, DE, FR';
 
   @override
-  String get adminLibraryNameRequired => 'Library name is required';
+  String get adminLibraryNameRequired => 'A könyvtár neve kötelező';
 
   @override
   String adminLibraryCreateFailed(String error) {
@@ -3830,25 +3923,26 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryName => 'Library Name';
+  String get adminLibraryName => 'Könyvtár neve';
 
   @override
-  String get adminSelectedPaths => 'Selected Paths:';
+  String get adminSelectedPaths => 'Kiválasztott útvonalak:';
 
   @override
-  String get adminNoPathsAdded => 'No paths added (can be added later)';
+  String get adminNoPathsAdded =>
+      'Nincsenek hozzáadott útvonalak (később is hozzáadhatók)';
 
   @override
-  String get adminCreateLibrary => 'Create Library';
+  String get adminCreateLibrary => 'Könyvtár létrehozása';
 
   @override
-  String get paths => 'Paths:';
+  String get paths => 'Útvonalak:';
 
   @override
-  String get adminDisableUser => 'Disable User';
+  String get adminDisableUser => 'Felhasználó letiltása';
 
   @override
-  String get adminEnableUser => 'Enable User';
+  String get adminEnableUser => 'Felhasználó engedélyezése';
 
   @override
   String adminDisableUserConfirm(String name) {
@@ -3876,16 +3970,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminUsersLoadFailed => 'Failed to load users';
+  String get adminUsersLoadFailed => 'Nem sikerült betölteni a felhasználókat';
 
   @override
-  String get adminSearchUsers => 'Search users';
+  String get adminSearchUsers => 'Felhasználók keresése';
 
   @override
-  String get adminEditUser => 'Edit User';
+  String get adminEditUser => 'Felhasználó szerkesztése';
 
   @override
-  String get adminAddUser => 'Add User';
+  String get adminAddUser => 'Felhasználó hozzáadása';
 
   @override
   String adminUserCreateFailed(String error) {
@@ -3893,19 +3987,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminCreateUser => 'Create User';
+  String get adminCreateUser => 'Felhasználó létrehozása';
 
   @override
-  String get adminPasswordOptional => 'Password (optional)';
+  String get adminPasswordOptional => 'Jelszó (nem kötelező)';
 
   @override
-  String get adminUsernameRequired => 'Username cannot be empty';
+  String get adminUsernameRequired => 'A felhasználónév nem lehet üres';
 
   @override
-  String get adminNoProfileChanges => 'No profile changes to save';
+  String get adminNoProfileChanges => 'Nincs mentendő profilmódosítás';
 
   @override
-  String get adminProfileSaved => 'Profile saved';
+  String get adminProfileSaved => 'Profil mentve';
 
   @override
   String adminSaveFailed(String error) {
@@ -3913,10 +4007,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminPermissionsSaved => 'Permissions saved';
+  String get adminPermissionsSaved => 'Az engedélyek mentve';
 
   @override
-  String get adminPasswordsMismatch => 'Passwords do not match';
+  String get adminPasswordsMismatch => 'A jelszavak nem egyeznek';
 
   @override
   String adminFailed(String error) {
@@ -3924,135 +4018,144 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminUserLoadFailed => 'Failed to load user';
+  String get adminUserLoadFailed => 'Nem sikerült betölteni a felhasználót';
 
   @override
-  String get adminBackToUsers => 'Back to Users';
+  String get adminBackToUsers => 'Vissza a felhasználókhoz';
 
   @override
-  String get adminSaveProfile => 'Save Profile';
+  String get adminSaveProfile => 'Profil mentése';
 
   @override
-  String get adminDeleteUser => 'Delete User';
+  String get adminDeleteUser => 'Felhasználó törlése';
 
   @override
-  String get admin => 'Admin';
+  String get admin => 'Adminisztrátor';
 
   @override
   String get adminFullAccessWarning =>
-      'Administrators have complete access to the server. Grant with caution.';
+      'A rendszergazdák teljes hozzáféréssel rendelkeznek a szerverhez. Óvatosan adja meg.';
 
   @override
-  String get administrator => 'Administrator';
+  String get administrator => 'Adminisztrátor';
 
   @override
-  String get adminHiddenUser => 'Hidden user';
+  String get adminHiddenUser => 'Rejtett felhasználó';
 
   @override
-  String get adminAllowMediaPlayback => 'Allow media playback';
+  String get adminAllowMediaPlayback => 'Médialejátszás engedélyezése';
 
   @override
-  String get adminAllowAudioTranscoding => 'Allow audio transcoding';
+  String get adminAllowAudioTranscoding => 'Hang átkódolásának engedélyezése';
 
   @override
-  String get adminAllowVideoTranscoding => 'Allow video transcoding';
+  String get adminAllowVideoTranscoding => 'Engedélyezze a videó átkódolását';
 
   @override
-  String get adminAllowRemuxing => 'Allow remuxing';
+  String get adminAllowRemuxing => 'Engedje meg az újrakeverést';
 
   @override
-  String get adminForceRemoteTranscoding => 'Force remote source transcoding';
+  String get adminForceRemoteTranscoding =>
+      'A távoli forrás átkódolásának kényszerítése';
 
   @override
-  String get adminAllowContentDeletion => 'Allow content deletion';
+  String get adminAllowContentDeletion => 'Tartalomtörlés engedélyezése';
 
   @override
-  String get adminAllowContentDownloading => 'Allow content downloading';
+  String get adminAllowContentDownloading =>
+      'Tartalom letöltésének engedélyezése';
 
   @override
-  String get adminAllowPublicSharing => 'Allow public sharing';
+  String get adminAllowPublicSharing => 'Nyilvános megosztás engedélyezése';
 
   @override
-  String get adminAllowRemoteControl => 'Allow remote control of other users';
+  String get adminAllowRemoteControl =>
+      'Más felhasználók távvezérlésének engedélyezése';
 
   @override
-  String get adminAllowSharedDeviceControl => 'Allow shared device control';
+  String get adminAllowSharedDeviceControl =>
+      'Megosztott eszközvezérlés engedélyezése';
 
   @override
-  String get adminAllowRemoteAccess => 'Allow remote access';
+  String get adminAllowRemoteAccess => 'Távoli hozzáférés engedélyezése';
 
   @override
-  String get adminRemoteBitrateLimit => 'Remote client bitrate limit (bps)';
+  String get adminRemoteBitrateLimit =>
+      'Távoli kliens bitsebesség-korlátja (bps)';
 
   @override
-  String get adminLeaveEmptyNoLimit => 'Leave empty for no limit';
+  String get adminLeaveEmptyNoLimit => 'Hagyja üresen korlátozás nélkül';
 
   @override
-  String get adminMaxActiveSessions => 'Max active sessions';
+  String get adminMaxActiveSessions => 'Max aktív munkamenetek';
 
   @override
-  String get adminAllowLiveTvAccess => 'Allow Live TV access';
+  String get adminAllowLiveTvAccess => 'Élő TV-hozzáférés engedélyezése';
 
   @override
-  String get adminAllowLiveTvManagement => 'Allow Live TV management';
+  String get adminAllowLiveTvManagement => 'Élő TV-kezelés engedélyezése';
 
   @override
-  String get adminAllowCollectionManagement => 'Allow collection management';
+  String get adminAllowCollectionManagement =>
+      'Gyűjteménykezelés engedélyezése';
 
   @override
-  String get adminAllowSubtitleManagement => 'Allow subtitle management';
+  String get adminAllowSubtitleManagement => 'Feliratkezelés engedélyezése';
 
   @override
-  String get adminAllowLyricManagement => 'Allow lyric management';
+  String get adminAllowLyricManagement => 'Dalszövegkezelés engedélyezése';
 
   @override
-  String get adminSavePermissions => 'Save Permissions';
+  String get adminSavePermissions => 'Engedélyek mentése';
 
   @override
-  String get adminEnableAllLibraryAccess => 'Enable access to all libraries';
+  String get adminEnableAllLibraryAccess =>
+      'Hozzáférés engedélyezése az összes könyvtárhoz';
 
   @override
-  String get adminSaveAccess => 'Save Access';
+  String get adminSaveAccess => 'Hozzáférés mentése';
 
   @override
-  String get adminChangePassword => 'Change Password';
+  String get adminChangePassword => 'Jelszó módosítása';
 
   @override
-  String get adminNewPassword => 'New Password';
+  String get adminNewPassword => 'Új jelszó';
 
   @override
-  String get adminConfirmPassword => 'Confirm Password';
+  String get adminConfirmPassword => 'Jelszó megerősítése';
 
   @override
-  String get adminSetPassword => 'Set Password';
+  String get adminSetPassword => 'Jelszó beállítása';
 
   @override
-  String get adminResetPassword => 'Reset Password';
+  String get adminResetPassword => 'Jelszó visszaállítása';
 
   @override
-  String get adminPasswordReset => 'Password reset';
+  String get adminPasswordReset => 'Jelszó visszaállítása';
 
   @override
-  String get adminPasswordUpdated => 'Password updated';
+  String get adminPasswordUpdated => 'Jelszó frissítve';
 
   @override
-  String get adminUserSettings => 'User Settings';
+  String get adminUserSettings => 'Felhasználói beállítások';
 
   @override
-  String get adminLibraryAccess => 'Library Access';
+  String get adminLibraryAccess => 'Hozzáférés a könyvtárhoz';
 
   @override
-  String get adminDeviceAndChannelAccess => 'Device & Channel Access';
+  String get adminDeviceAndChannelAccess => 'Eszköz és csatorna hozzáférés';
 
   @override
-  String get adminEnableAllDevices => 'Enable access to all devices';
+  String get adminEnableAllDevices =>
+      'Engedélyezze a hozzáférést az összes eszközhöz';
 
   @override
-  String get adminEnableAllChannels => 'Enable access to all channels';
+  String get adminEnableAllChannels =>
+      'Az összes csatornához való hozzáférés engedélyezése';
 
   @override
   String get adminResetPasswordWarning =>
-      'This will remove the password. The user will be able to log in without a password.';
+      'Ezzel eltávolítja a jelszót. A felhasználó jelszó nélkül tud majd bejelentkezni.';
 
   @override
   String adminServerReturnedHttp(int status) {
@@ -4075,20 +4178,20 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminCreateApiKey => 'Create API Key';
+  String get adminCreateApiKey => 'API-kulcs létrehozása';
 
   @override
-  String get adminAppName => 'App name';
+  String get adminAppName => 'Alkalmazás neve';
 
   @override
-  String get adminApiKeyCreated => 'API Key Created';
+  String get adminApiKeyCreated => 'API kulcs létrehozva';
 
   @override
   String get adminApiKeyCreatedNoToken =>
-      'Key created successfully. The server did not return the token. Check server API keys.';
+      'A kulcs sikeresen létrehozva. A szerver nem küldte vissza a tokent. Ellenőrizze a szerver API kulcsait.';
 
   @override
-  String get adminKeyCopied => 'Key copied to clipboard';
+  String get adminKeyCopied => 'A kulcs a vágólapra másolva';
 
   @override
   String adminApiKeyCreateFailed(String error) {
@@ -4096,10 +4199,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminKeyTokenMissing => 'Key token missing from server response';
+  String get adminKeyTokenMissing =>
+      'A kulcstoken hiányzik a szerver válaszából';
 
   @override
-  String get adminRevokeApiKey => 'Revoke API Key';
+  String get adminRevokeApiKey => 'API-kulcs visszavonása';
 
   @override
   String adminRevokeKeyConfirm(String name) {
@@ -4107,7 +4211,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeyRevoked => 'API key revoked';
+  String get adminApiKeyRevoked => 'API-kulcs visszavonva';
 
   @override
   String adminApiKeyRevokeFailed(String error) {
@@ -4115,19 +4219,20 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeysLoadFailed => 'Failed to load API keys';
+  String get adminApiKeysLoadFailed =>
+      'Nem sikerült betölteni az API-kulcsokat';
 
   @override
-  String get adminApiKeysTitle => 'API Keys';
+  String get adminApiKeysTitle => 'API kulcsok';
 
   @override
-  String get adminCreateKey => 'Create Key';
+  String get adminCreateKey => 'Kulcs létrehozása';
 
   @override
-  String get adminNoApiKeys => 'No API keys found';
+  String get adminNoApiKeys => 'Nem található API-kulcs';
 
   @override
-  String get adminUnknownApp => 'Unknown App';
+  String get adminUnknownApp => 'Ismeretlen alkalmazás';
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
@@ -4135,10 +4240,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminCreatingBackup => 'Creating backup...';
+  String get adminCreatingBackup => 'Biztonsági másolat létrehozása...';
 
   @override
-  String get adminBackupCreated => 'Backup created successfully';
+  String get adminBackupCreated => 'A biztonsági mentés sikeresen létrehozva';
 
   @override
   String adminBackupCreateFailed(String error) {
@@ -4146,7 +4251,8 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminBackupPathMissing => 'Backup path missing in server response';
+  String get adminBackupPathMissing =>
+      'A szerver válaszában hiányzik a biztonsági mentési útvonal';
 
   @override
   String adminBackupManifest(String name) {
@@ -4159,10 +4265,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminConfirmRestore => 'Confirm Restore';
+  String get adminConfirmRestore => 'Erősítse meg a visszaállítást';
 
   @override
-  String get adminRestoringBackup => 'Restoring backup...';
+  String get adminRestoringBackup => 'Biztonsági mentés visszaállítása...';
 
   @override
   String adminRestoreFailed(String error) {
@@ -4170,31 +4276,32 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminBackupsLoadFailed => 'Failed to load backups';
+  String get adminBackupsLoadFailed =>
+      'Nem sikerült betölteni a biztonsági másolatokat';
 
   @override
-  String get adminCreateBackup => 'Create Backup';
+  String get adminCreateBackup => 'Biztonsági másolat létrehozása';
 
   @override
-  String get adminNoBackups => 'No backups found';
+  String get adminNoBackups => 'Nem található biztonsági másolat';
 
   @override
-  String get adminViewDetails => 'View Details';
+  String get adminViewDetails => 'Részletek megtekintése';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Visszaállítás';
 
   @override
-  String get adminLogsLoadFailed => 'Failed to load server logs';
+  String get adminLogsLoadFailed => 'Nem sikerült betölteni a szervernaplókat';
 
   @override
-  String get adminNoLogFiles => 'No log files found';
+  String get adminNoLogFiles => 'Nem található naplófájl';
 
   @override
-  String get adminLogCopied => 'Log copied to clipboard';
+  String get adminLogCopied => 'Napló a vágólapra másolva';
 
   @override
-  String get adminSaveLogFile => 'Save log file';
+  String get adminSaveLogFile => 'Mentse a naplófájlt';
 
   @override
   String adminSavedTo(String path) {
@@ -4212,10 +4319,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminSearchInLog => 'Search in log';
+  String get adminSearchInLog => 'Keresés a naplóban';
 
   @override
-  String get adminNoMatchingLines => 'No matching lines';
+  String get adminNoMatchingLines => 'Nincsenek egyező sorok';
 
   @override
   String adminTasksLoadFailed(String error) {
@@ -4223,10 +4330,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminNoScheduledTasks => 'No scheduled tasks found';
+  String get adminNoScheduledTasks => 'Nem található ütemezett feladat';
 
   @override
-  String get adminNoTasksMatchFilter => 'No tasks match the current filter';
+  String get adminNoTasksMatchFilter =>
+      'Egyetlen feladat sem felel meg az aktuális szűrőnek';
 
   @override
   String adminTaskStartFailed(String error) {
@@ -4244,7 +4352,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminRunNow => 'Run Now';
+  String get adminRunNow => 'Fuss most';
 
   @override
   String adminTriggerRemoveFailed(String error) {
@@ -4257,25 +4365,25 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminLastExecution => 'Last Execution';
+  String get adminLastExecution => 'Utolsó Kivégzés';
 
   @override
-  String get adminTriggers => 'Triggers';
+  String get adminTriggers => 'Kiváltók';
 
   @override
-  String get adminAddTrigger => 'Add Trigger';
+  String get adminAddTrigger => 'Trigger hozzáadása';
 
   @override
-  String get adminNoTriggers => 'No triggers configured';
+  String get adminNoTriggers => 'Nincsenek konfigurálva triggerek';
 
   @override
-  String get adminTriggerType => 'Trigger Type';
+  String get adminTriggerType => 'Trigger típusa';
 
   @override
-  String get adminTimeLimit => 'Time limit (optional)';
+  String get adminTimeLimit => 'Időkorlát (nem kötelező)';
 
   @override
-  String get adminNoLimit => 'No limit';
+  String get adminNoLimit => 'Nincs korlátozás';
 
   @override
   String adminHours(String hours) {
@@ -4283,10 +4391,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminDayOfWeek => 'Day of week';
+  String get adminDayOfWeek => 'A hét napja';
 
   @override
-  String get adminSearchPlugins => 'Search plugins...';
+  String get adminSearchPlugins => 'Beépülő modulok keresése...';
 
   @override
   String adminPluginToggleFailed(String error) {
@@ -4322,10 +4430,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminNoPluginsMatchSearch => 'No plugins match your search';
+  String get adminNoPluginsMatchSearch =>
+      'Egyetlen bővítmény sem felel meg a keresésnek';
 
   @override
-  String get adminNoPluginsInstalled => 'No plugins installed';
+  String get adminNoPluginsInstalled => 'Nincs telepítve plugin';
 
   @override
   String adminInstallUpdate(String version) {
@@ -4338,20 +4447,21 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminNoPackagesMatchSearch => 'No packages match your search';
+  String get adminNoPackagesMatchSearch =>
+      'Nincs a keresésnek megfelelő csomag';
 
   @override
-  String get adminNoPackagesAvailable => 'No packages available';
+  String get adminNoPackagesAvailable => 'Nincsenek elérhető csomagok';
 
   @override
-  String get adminExperimentalIntegration => 'Experimental Integration';
+  String get adminExperimentalIntegration => 'Kísérleti integráció';
 
   @override
   String get adminExperimentalWarning =>
-      'Plugin settings integration is still experimental. Some settings pages may not render correctly.';
+      'A beépülő modul-beállítások integrációja még csak kísérleti jellegű. Előfordulhat, hogy egyes beállítások oldalak nem jelennek meg megfelelően.';
 
   @override
-  String get continueAction => 'Continue';
+  String get continueAction => 'Folytatás';
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
@@ -4370,7 +4480,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get adminMissingAuthToken =>
-      'Unable to open settings: missing auth token.';
+      'Nem lehet megnyitni a beállításokat: hiányzik a hitelesítési token.';
 
   @override
   String adminPluginLoadFailed(String error) {
@@ -4378,7 +4488,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminPluginNotFound => 'Plugin not found';
+  String get adminPluginNotFound => 'A beépülő modul nem található';
 
   @override
   String adminPluginVersion(String version) {
@@ -4386,19 +4496,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminEnablePlugin => 'Enable Plugin';
+  String get adminEnablePlugin => 'Beépülő modul engedélyezése';
 
   @override
-  String get adminPluginSettingsPage => 'Plugin settings page';
+  String get adminPluginSettingsPage => 'Beépülő modul beállítási oldal';
 
   @override
-  String get adminRevisionHistory => 'Revision History';
+  String get adminRevisionHistory => 'Revíziótörténet';
 
   @override
-  String get adminNoChangelog => 'No changelog available.';
+  String get adminNoChangelog => 'Nem érhető el változásnapló.';
 
   @override
-  String get adminRemoveRepository => 'Remove Repository';
+  String get adminRemoveRepository => 'Távolítsa el a tárhelyet';
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
@@ -4416,16 +4526,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminRepositoryNameHint => 'e.g. Jellyfin Stable';
+  String get adminRepositoryNameHint => 'például Jellyfin Stabil';
 
   @override
-  String get adminRepositoryUrl => 'Repository URL';
+  String get adminRepositoryUrl => 'Adattár URL-je';
 
   @override
-  String get adminAddEntry => 'Add entry';
+  String get adminAddEntry => 'Bejegyzés hozzáadása';
 
   @override
-  String get adminInvalidUrl => 'Invalid URL';
+  String get adminInvalidUrl => 'Érvénytelen URL';
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
@@ -4438,218 +4548,233 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminOpenInBrowser => 'Open in Browser';
+  String get adminOpenInBrowser => 'Nyissa meg a böngészőben';
 
   @override
-  String get adminOpenExternally => 'Open externally';
+  String get adminOpenExternally => 'Nyissa meg kívülről';
 
   @override
-  String get adminGeneralSettings => 'General Settings';
+  String get adminGeneralSettings => 'Általános beállítások';
 
   @override
-  String get adminServerName => 'Server name';
+  String get adminServerName => 'Szerver neve';
 
   @override
-  String get adminPreferredMetadataCountry => 'Preferred metadata country';
+  String get adminPreferredMetadataCountry =>
+      'Előnyben részesített metaadatok országa';
 
   @override
-  String get adminCachePath => 'Cache path';
+  String get adminCachePath => 'Gyorsítótár elérési útja';
 
   @override
-  String get adminMetadataPath => 'Metadata path';
+  String get adminMetadataPath => 'Metaadat elérési út';
 
   @override
-  String get adminLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminLibraryScanConcurrency =>
+      'A könyvtári szkennelés párhuzamossága';
 
   @override
-  String get adminParallelImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminParallelImageEncodingLimit => 'Párhuzamos képkódolási korlát';
 
   @override
-  String get adminSlowResponseThreshold => 'Slow response threshold (ms)';
+  String get adminSlowResponseThreshold => 'Lassú válaszküszöb (ms)';
 
   @override
-  String get adminBrandingSaved => 'Branding settings saved';
+  String get adminBrandingSaved => 'A márkaépítési beállítások elmentve';
 
   @override
-  String get adminBrandingLoadFailed => 'Failed to load branding settings';
+  String get adminBrandingLoadFailed =>
+      'Nem sikerült betölteni a márkaépítési beállításokat';
 
   @override
-  String get adminLoginDisclaimer => 'Login disclaimer';
+  String get adminLoginDisclaimer => 'Bejelentkezési felelősség kizárása';
 
   @override
-  String get adminLoginDisclaimerHint => 'HTML displayed below the login form';
+  String get adminLoginDisclaimerHint => 'HTML a bejelentkezési űrlap alatt';
 
   @override
-  String get adminCustomCss => 'Custom CSS';
+  String get adminCustomCss => 'Egyedi CSS';
 
   @override
-  String get adminCustomCssHint => 'Custom CSS applied to the web interface';
+  String get adminCustomCssHint => 'Egyéni CSS alkalmazva a webes felületen';
 
   @override
-  String get adminEnableSplashScreen => 'Enable splash screen';
+  String get adminEnableSplashScreen => 'Indítóképernyő engedélyezése';
 
   @override
-  String get adminStreamingSaved => 'Streaming settings saved';
+  String get adminStreamingSaved => 'A streamelési beállítások elmentve';
 
   @override
-  String get adminStreamingLoadFailed => 'Failed to load streaming settings';
+  String get adminStreamingLoadFailed =>
+      'Nem sikerült betölteni a streamelési beállításokat';
 
   @override
   String get adminStreamingDescription =>
-      'Set global streaming bitrate limits for remote connections.';
+      'Globális adatfolyam-bitráta-korlátok beállítása a távoli kapcsolatokhoz.';
 
   @override
   String get adminRemoteBitrateLimitMbps =>
-      'Remote client bitrate limit (Mbps)';
+      'Távoli kliens bitsebesség-korlátja (Mbps)';
 
   @override
-  String get adminLeaveEmptyForUnlimited => 'Leave empty or 0 for unlimited';
+  String get adminLeaveEmptyForUnlimited =>
+      'Hagyja üresen, vagy 0-t a korlátlanul';
 
   @override
-  String get adminPlaybackSaved => 'Playback settings saved';
+  String get adminPlaybackSaved => 'A lejátszási beállítások elmentve';
 
   @override
-  String get adminPlaybackLoadFailed => 'Failed to load playback settings';
+  String get adminPlaybackLoadFailed =>
+      'Nem sikerült betölteni a lejátszási beállításokat';
 
   @override
-  String get adminPlaybackTranscoding => 'Playback / Transcoding';
+  String get adminPlaybackTranscoding => 'Lejátszás / Átkódolás';
 
   @override
-  String get adminHardwareAcceleration => 'Hardware acceleration';
+  String get adminHardwareAcceleration => 'Hardveres gyorsítás';
 
   @override
-  String get adminVaapiDevice => 'VA-API device';
+  String get adminVaapiDevice => 'VA-API eszköz';
 
   @override
-  String get adminEnableHardwareEncoding => 'Enable hardware encoding';
+  String get adminEnableHardwareEncoding => 'Engedélyezze a hardveres kódolást';
 
   @override
-  String get adminEnableHardwareDecoding => 'Enable hardware decoding for:';
+  String get adminEnableHardwareDecoding =>
+      'Hardveres dekódolás engedélyezése:';
 
   @override
-  String get adminEncodingThreads => 'Encoding threads';
+  String get adminEncodingThreads => 'Kódolási szálak';
 
   @override
-  String get adminAutomatic => '0 = automatic';
+  String get adminAutomatic => '0 = automatikus';
 
   @override
-  String get adminTranscodingTempPath => 'Transcoding temp path';
+  String get adminTranscodingTempPath => 'Átkódolási hőmérsékleti útvonal';
 
   @override
-  String get adminEnableFallbackFont => 'Enable fallback font';
+  String get adminEnableFallbackFont => 'Tartalék betűtípus engedélyezése';
 
   @override
-  String get adminFallbackFontPath => 'Fallback font path';
+  String get adminFallbackFontPath => 'Tartalék betűtípus elérési útja';
 
   @override
-  String get adminAllowSegmentDeletion => 'Allow segment deletion';
+  String get adminAllowSegmentDeletion => 'Szegmens törlésének engedélyezése';
 
   @override
-  String get adminSegmentKeepSeconds => 'Segment keep (seconds)';
+  String get adminSegmentKeepSeconds => 'Szegmens megtartása (másodperc)';
 
   @override
-  String get adminThrottleBuffering => 'Throttle buffering';
+  String get adminThrottleBuffering => 'Fojtószelep pufferelés';
 
   @override
-  String get adminTrickplaySaved => 'Trickplay settings saved';
+  String get adminTrickplaySaved => 'A trükkjáték beállításai mentve';
 
   @override
-  String get adminTrickplayLoadFailed => 'Failed to load trickplay settings';
+  String get adminTrickplayLoadFailed =>
+      'Nem sikerült betölteni a trükkös lejátszási beállításokat';
 
   @override
-  String get adminEnableHardwareAcceleration => 'Enable hardware acceleration';
+  String get adminEnableHardwareAcceleration =>
+      'Engedélyezze a hardveres gyorsítást';
 
   @override
   String get adminEnableKeyFrameExtraction =>
-      'Enable key frame only extraction';
+      'Csak kulcskeret kivonat engedélyezése';
 
   @override
-  String get adminKeyFrameSubtitle => 'Faster but lower accuracy';
+  String get adminKeyFrameSubtitle => 'Gyorsabb, de kisebb pontosság';
 
   @override
-  String get adminScanBehavior => 'Scan behavior';
+  String get adminScanBehavior => 'Szkennelési viselkedés';
 
   @override
-  String get adminProcessPriority => 'Process priority';
+  String get adminProcessPriority => 'A folyamat prioritása';
 
   @override
-  String get adminImageSettings => 'Image Settings';
+  String get adminImageSettings => 'Képbeállítások';
 
   @override
-  String get adminIntervalMs => 'Interval (ms)';
+  String get adminIntervalMs => 'Időköz (ms)';
 
   @override
-  String get adminCaptureFrameSubtitle => 'How often to capture frames';
+  String get adminCaptureFrameSubtitle =>
+      'Milyen gyakran rögzítse a képkockákat';
 
   @override
-  String get adminWidthResolutions => 'Width resolutions';
+  String get adminWidthResolutions => 'Szélesség felbontások';
 
   @override
-  String get adminTileWidth => 'Tile width';
+  String get adminTileWidth => 'Csempe szélessége';
 
   @override
-  String get adminTileHeight => 'Tile height';
+  String get adminTileHeight => 'Csempe magassága';
 
   @override
   String get adminQualitySubtitle =>
-      'Lower values = better quality, larger files';
+      'Alacsonyabb érték = jobb minőség, nagyobb fájlok';
 
   @override
-  String get adminProcessThreads => 'Process threads';
+  String get adminProcessThreads => 'Folyamat szálak';
 
   @override
-  String get adminResumeSaved => 'Resume settings saved';
+  String get adminResumeSaved => 'Folytatási beállítások mentve';
 
   @override
-  String get adminResumeLoadFailed => 'Failed to load resume settings';
+  String get adminResumeLoadFailed =>
+      'Nem sikerült betölteni az önéletrajzi beállításokat';
 
   @override
   String get adminResumeDescription =>
-      'Configure when content should be marked as partially played or fully played.';
+      'Konfigurálja, hogy mikor jelölje meg a tartalmat részben vagy teljesen lejátszottként.';
 
   @override
-  String get adminMinResumePercentage => 'Minimum resume percentage';
+  String get adminMinResumePercentage => 'Minimális önéletrajzi százalék';
 
   @override
   String get adminMinResumeSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'A haladás mentéséhez a tartalmat ezen a százalékon túl kell lejátszani';
 
   @override
-  String get adminMaxResumePercentage => 'Maximum resume percentage';
+  String get adminMaxResumePercentage => 'Maximális önéletrajzi százalék';
 
   @override
   String get adminMaxResumeSubtitle =>
-      'Content is considered fully played after this percentage';
+      'A tartalom e százalék után teljesen lejátszottnak minősül';
 
   @override
-  String get adminMinResumeDuration => 'Minimum resume duration (seconds)';
+  String get adminMinResumeDuration =>
+      'Az önéletrajz minimális időtartama (másodperc)';
 
   @override
   String get adminMinResumeDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Az ennél rövidebb tételek nem cserélhetők újra';
 
   @override
-  String get adminMinAudiobookResume => 'Minimum audiobook resume percentage';
+  String get adminMinAudiobookResume =>
+      'A hangoskönyv önéletrajzának minimális százaléka';
 
   @override
-  String get adminMaxAudiobookResume => 'Maximum audiobook resume percentage';
+  String get adminMaxAudiobookResume =>
+      'A hangoskönyv önéletrajzának maximális százaléka';
 
   @override
   String get adminNetworkingSaved =>
-      'Networking settings saved. A server restart may be required.';
+      'A hálózati beállítások elmentve. A szerver újraindítására lehet szükség.';
 
   @override
-  String get adminNetworkingLoadFailed => 'Failed to load networking settings';
+  String get adminNetworkingLoadFailed =>
+      'Nem sikerült betölteni a hálózati beállításokat';
 
   @override
   String get adminNetworkingWarning =>
-      'Changes to networking settings may require a server restart.';
+      'A hálózati beállítások módosítása a szerver újraindítását teheti szükségessé.';
 
   @override
-  String get adminEnableRemoteAccess => 'Enable remote access';
+  String get adminEnableRemoteAccess => 'Távoli hozzáférés engedélyezése';
 
   @override
-  String get ports => 'Ports';
+  String get ports => 'Portok';
 
   @override
   String get adminHttpPort => 'HTTP port';
@@ -4658,49 +4783,49 @@ class AppLocalizationsHu extends AppLocalizations {
   String get adminHttpsPort => 'HTTPS port';
 
   @override
-  String get adminPublicHttpsPort => 'Public HTTPS port';
+  String get adminPublicHttpsPort => 'Nyilvános HTTPS port';
 
   @override
-  String get adminBaseUrl => 'Base URL';
+  String get adminBaseUrl => 'Alap URL';
 
   @override
-  String get adminBaseUrlHint => 'e.g. /jellyfin';
+  String get adminBaseUrlHint => 'például /zselé';
 
   @override
   String get https => 'HTTPS';
 
   @override
-  String get adminEnableHttps => 'Enable HTTPS';
+  String get adminEnableHttps => 'HTTPS engedélyezése';
 
   @override
-  String get adminLocalNetwork => 'Local Network';
+  String get adminLocalNetwork => 'Helyi hálózat';
 
   @override
-  String get adminLocalNetworkAddresses => 'Local network addresses';
+  String get adminLocalNetworkAddresses => 'Helyi hálózati címek';
 
   @override
-  String get adminKnownProxies => 'Known proxies';
+  String get adminKnownProxies => 'Ismert proxyk';
 
   @override
-  String get adminRemoteIpFilter => 'Remote IP Filter';
+  String get adminRemoteIpFilter => 'Távoli IP-szűrő';
 
   @override
-  String get adminRemoteIpFilterEntries => 'Remote IP filter';
+  String get adminRemoteIpFilterEntries => 'Távoli IP szűrő';
 
   @override
-  String get adminCertificatePath => 'Certificate path';
+  String get adminCertificatePath => 'Tanúsítvány elérési útja';
 
   @override
-  String get whitelist => 'Whitelist';
+  String get whitelist => 'Fehérlista';
 
   @override
-  String get blacklist => 'Blacklist';
+  String get blacklist => 'Feketelista';
 
   @override
-  String get notSet => 'Not set';
+  String get notSet => 'Nincs beállítva';
 
   @override
-  String get adminMetadataSaved => 'Metadata saved';
+  String get adminMetadataSaved => 'A metaadatok mentve';
 
   @override
   String adminMetadataLoadFailed(String error) {
@@ -4713,19 +4838,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminRefreshMetadata => 'Refresh Metadata';
+  String get adminRefreshMetadata => 'Frissítse a metaadatokat';
 
   @override
-  String get recursive => 'Recursive';
+  String get recursive => 'Rekurzív';
 
   @override
-  String get adminReplaceAllMetadata => 'Replace all metadata';
+  String get adminReplaceAllMetadata => 'Cserélje ki az összes metaadatot';
 
   @override
-  String get adminReplaceAllImages => 'Replace all images';
+  String get adminReplaceAllImages => 'Cserélje ki az összes képet';
 
   @override
-  String get adminMetadataRefreshRequested => 'Metadata refresh requested';
+  String get adminMetadataRefreshRequested => 'Metaadatok frissítése kérve';
 
   @override
   String adminMetadataRefreshFailed(String error) {
@@ -4733,16 +4858,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminSearchRemotePerson => 'Search Remote Person';
+  String get adminSearchRemotePerson => 'Távoli személy keresése';
 
   @override
-  String get adminNoRemoteMatches => 'No remote matches found';
+  String get adminNoRemoteMatches => 'Nem található távoli egyezés';
 
   @override
-  String get adminRemoteResults => 'Remote Results';
+  String get adminRemoteResults => 'Távoli eredmények';
 
   @override
-  String get adminRemoteMetadataApplied => 'Remote metadata applied';
+  String get adminRemoteMetadataApplied => 'Távoli metaadatok alkalmazva';
 
   @override
   String adminRemoteSearchFailed(String error) {
@@ -4750,13 +4875,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminUpdateContentType => 'Update Content Type';
+  String get adminUpdateContentType => 'Tartalomtípus frissítése';
 
   @override
-  String get adminContentType => 'Content type';
+  String get adminContentType => 'Tartalom típusa';
 
   @override
-  String get adminContentTypeUpdated => 'Content type updated';
+  String get adminContentTypeUpdated => 'Tartalomtípus frissítve';
 
   @override
   String adminContentTypeUpdateFailed(String error) {
@@ -4764,13 +4889,14 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataEditorLoadFailed => 'Failed to load metadata editor';
+  String get adminMetadataEditorLoadFailed =>
+      'Nem sikerült betölteni a metaadatszerkesztőt';
 
   @override
-  String get adminNoPeopleEntries => 'No people entries';
+  String get adminNoPeopleEntries => 'Nincsenek személyek bejegyzései';
 
   @override
-  String get adminNoExternalIds => 'No external IDs available';
+  String get adminNoExternalIds => 'Nem állnak rendelkezésre külső azonosítók';
 
   @override
   String adminImageUpdated(String imageType) {
@@ -4783,10 +4909,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminUnsupportedImageFormat => 'Unsupported image format';
+  String get adminUnsupportedImageFormat => 'Nem támogatott képformátum';
 
   @override
-  String get adminImageReadFailed => 'Failed to read selected image';
+  String get adminImageReadFailed =>
+      'Nem sikerült beolvasni a kiválasztott képet';
 
   @override
   String adminImageUploaded(String imageType) {
@@ -4814,10 +4941,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminAllProviders => 'All providers';
+  String get adminAllProviders => 'Minden szolgáltató';
 
   @override
-  String get adminNoRemoteImages => 'No remote images found';
+  String get adminNoRemoteImages => 'Nem találhatók távoli képek';
 
   @override
   String adminTunerDiscoveryFailed(String error) {
@@ -4825,22 +4952,22 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminAddTuner => 'Add Tuner';
+  String get adminAddTuner => 'Hangoló hozzáadása';
 
   @override
-  String get adminTunerType => 'Tuner Type';
+  String get adminTunerType => 'Tuner típusa';
 
   @override
-  String get adminTunerTypeHint => 'HDHomeRun, M3U, Other';
+  String get adminTunerTypeHint => 'HDHomeRun, M3U, egyéb';
 
   @override
-  String get adminUrlPath => 'URL / Path';
+  String get adminUrlPath => 'URL / elérési út';
 
   @override
-  String get adminNameOptional => 'Name (optional)';
+  String get adminNameOptional => 'Név (nem kötelező)';
 
   @override
-  String get adminTunerAdded => 'Tuner added';
+  String get adminTunerAdded => 'Tuner hozzá';
 
   @override
   String adminTunerAddFailed(String error) {
@@ -4848,22 +4975,22 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminAddGuideProvider => 'Add Guide Provider';
+  String get adminAddGuideProvider => 'Útmutató-szolgáltató hozzáadása';
 
   @override
-  String get adminProviderType => 'Provider Type';
+  String get adminProviderType => 'Szolgáltató típusa';
 
   @override
-  String get adminProviderTypeHint => 'SchedulesDirect or XMLTV';
+  String get adminProviderTypeHint => 'SchedulesDirect vagy XMLTV';
 
   @override
-  String get adminUsernameOptional => 'Username (optional)';
+  String get adminUsernameOptional => 'Felhasználónév (nem kötelező)';
 
   @override
-  String get adminRefreshInterval => 'Refresh interval (hours)';
+  String get adminRefreshInterval => 'Frissítési időköz (óra)';
 
   @override
-  String get adminProviderAdded => 'Provider added';
+  String get adminProviderAdded => 'A szolgáltató hozzáadva';
 
   @override
   String adminProviderAddFailed(String error) {
@@ -4876,7 +5003,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminTunerResetRequested => 'Tuner reset requested';
+  String get adminTunerResetRequested => 'Tuner reset kérve';
 
   @override
   String adminTunerResetFailed(String error) {
@@ -4889,22 +5016,22 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminRecordingSettings => 'Recording Settings';
+  String get adminRecordingSettings => 'Felvételi beállítások';
 
   @override
-  String get adminPrePadding => 'Pre-padding (minutes)';
+  String get adminPrePadding => 'Előtöltés (perc)';
 
   @override
-  String get adminPostPadding => 'Post-padding (minutes)';
+  String get adminPostPadding => 'Utólagos kitöltés (perc)';
 
   @override
-  String get adminRecordingPath => 'Recording path';
+  String get adminRecordingPath => 'Felvételi útvonal';
 
   @override
-  String get adminSeriesRecordingPath => 'Series recording path';
+  String get adminSeriesRecordingPath => 'Sorozat rögzítési útvonala';
 
   @override
-  String get adminRecordingSettingsSaved => 'Recording settings saved';
+  String get adminRecordingSettingsSaved => 'A rögzítési beállítások elmentve';
 
   @override
   String adminSettingsSaveFailed(String error) {
@@ -4912,16 +5039,16 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminSetChannelMappings => 'Set Channel Mappings';
+  String get adminSetChannelMappings => 'Csatornaleképezések beállítása';
 
   @override
-  String get adminMappingJson => 'Mapping JSON';
+  String get adminMappingJson => 'JSON leképezése';
 
   @override
-  String get adminMappingJsonHint => 'Example: mappings JSON payload';
+  String get adminMappingJsonHint => 'Példa: JSON hasznos terhelés leképezése';
 
   @override
-  String get adminChannelMappingsUpdated => 'Channel mappings updated';
+  String get adminChannelMappingsUpdated => 'A csatornaleképezések frissítve';
 
   @override
   String adminMappingsUpdateFailed(String error) {
@@ -4929,22 +5056,24 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminLiveTvLoadFailed => 'Failed to load Live TV administration';
+  String get adminLiveTvLoadFailed =>
+      'Nem sikerült betölteni az élő tévéadás adminisztrációját';
 
   @override
-  String get adminTunerDevices => 'Tuner Devices';
+  String get adminTunerDevices => 'Tuner eszközök';
 
   @override
-  String get adminNoTunerHosts => 'No tuner hosts configured';
+  String get adminNoTunerHosts => 'Nincs beállítva tunergazda';
 
   @override
-  String get adminGuideProviders => 'Guide Providers';
+  String get adminGuideProviders => 'Útmutató-szolgáltatók';
 
   @override
-  String get adminAddProvider => 'Add Provider';
+  String get adminAddProvider => 'Szolgáltató hozzáadása';
 
   @override
-  String get adminNoListingProviders => 'No listing providers configured';
+  String get adminNoListingProviders =>
+      'Nincsenek konfigurálva listaszolgáltatók';
 
   @override
   String adminRecordingPathDisplay(String path) {
@@ -4970,29 +5099,29 @@ class AppLocalizationsHu extends AppLocalizations {
   String get adminTunerDiscovery => 'Tuner Discovery';
 
   @override
-  String get adminChannelMappings => 'Channel Mappings';
+  String get adminChannelMappings => 'Csatornaleképezések';
 
   @override
-  String get adminNoDiscoveredTuners => 'No discovered tuners yet';
+  String get adminNoDiscoveredTuners => 'Még nincsenek felfedezett tunerek';
 
   @override
-  String get adminSettingsSaved => 'Settings saved';
+  String get adminSettingsSaved => 'A beállítások elmentve';
 
   @override
   String get adminBackupsNotAvailable =>
-      'Backups are not available on this server build.';
+      'Biztonsági másolatok nem érhetők el ezen a szerver builden.';
 
   @override
   String get adminRestoreWarning1 =>
-      'Restoring will replace ALL current server data with the backup data.';
+      'A visszaállítás az ÖSSZES jelenlegi szerveradatot lecseréli a biztonsági mentési adatokra.';
 
   @override
   String get adminRestoreWarning2 =>
-      'Current server settings, users, and library data will be overwritten.';
+      'A jelenlegi szerverbeállítások, felhasználók és könyvtáradatok felülíródnak.';
 
   @override
   String get adminRestoreWarning3 =>
-      'The server will restart after restoration.';
+      'A szerver a visszaállítás után újraindul.';
 
   @override
   String adminRestoreConfirmMessage(String name) {
@@ -5001,44 +5130,44 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get adminRestoreRequested =>
-      'Restore requested. Server restart may disconnect this session.';
+      'Visszaállítás kérve. A szerver újraindítása megszakíthatja a munkamenetet.';
 
   @override
-  String get adminBackupsTitle => 'Backups';
+  String get adminBackupsTitle => 'Biztonsági mentések';
 
   @override
-  String get adminUnknownDate => 'Unknown date';
+  String get adminUnknownDate => 'Ismeretlen dátum';
 
   @override
-  String get adminUnnamedBackup => 'Unnamed Backup';
+  String get adminUnnamedBackup => 'Névtelen biztonsági mentés';
 
   @override
   String get adminLiveTvNotAvailable =>
-      'Live TV administration is not available on this server build.';
+      'Élő TV adminisztráció nem érhető el ezen a szerver builden.';
 
   @override
-  String get adminLiveTvTitle => 'Live TV Administration';
+  String get adminLiveTvTitle => 'Élő TV adminisztráció';
 
   @override
-  String get adminApply => 'Apply';
+  String get adminApply => 'Alkalmazni';
 
   @override
-  String get adminNotSet => 'Not set';
+  String get adminNotSet => 'Nincs beállítva';
 
   @override
   String get adminReset => 'Reset';
 
   @override
-  String get adminLogsTitle => 'Server Logs';
+  String get adminLogsTitle => 'Szervernaplók';
 
   @override
-  String get adminLogsNewestFirst => 'Newest First';
+  String get adminLogsNewestFirst => 'Legújabb első';
 
   @override
-  String get adminLogsOldestFirst => 'Oldest First';
+  String get adminLogsOldestFirst => 'A legrégebbi első';
 
   @override
-  String get adminLogsJustNow => 'Just now';
+  String get adminLogsJustNow => 'Éppen most';
 
   @override
   String adminLogsMinutesAgo(int minutes) {
@@ -5066,109 +5195,109 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminLogViewerNoMatches => 'No matching lines';
+  String get adminLogViewerNoMatches => 'Nincsenek egyező sorok';
 
   @override
-  String get adminMetadataEditorTitle => 'Metadata Editor';
+  String get adminMetadataEditorTitle => 'Metaadat-szerkesztő';
 
   @override
-  String get adminMetadataRemote => 'Remote';
+  String get adminMetadataRemote => 'Távoli';
 
   @override
-  String get adminMetadataType => 'Type';
+  String get adminMetadataType => 'Írja be';
 
   @override
-  String get adminMetadataDetails => 'Details';
+  String get adminMetadataDetails => 'Részletek';
 
   @override
-  String get adminMetadataExternalIds => 'External IDs';
+  String get adminMetadataExternalIds => 'Külső azonosítók';
 
   @override
-  String get adminMetadataImages => 'Images';
+  String get adminMetadataImages => 'Képek';
 
   @override
-  String get adminMetadataFieldTitle => 'Title';
+  String get adminMetadataFieldTitle => 'Cím';
 
   @override
-  String get adminMetadataFieldSortTitle => 'Sort title';
+  String get adminMetadataFieldSortTitle => 'Rendezési cím';
 
   @override
-  String get adminMetadataFieldOriginalTitle => 'Original title';
+  String get adminMetadataFieldOriginalTitle => 'Eredeti cím';
 
   @override
-  String get adminMetadataFieldPremiereDate => 'Premiere date (YYYY-MM-DD)';
+  String get adminMetadataFieldPremiereDate => 'Premier dátuma (ÉÉÉÉ-HH-NN)';
 
   @override
-  String get adminMetadataFieldEndDate => 'End date (YYYY-MM-DD)';
+  String get adminMetadataFieldEndDate => 'Befejezés dátuma (ÉÉÉÉ-HH-NN)';
 
   @override
-  String get adminMetadataFieldProductionYear => 'Production year';
+  String get adminMetadataFieldProductionYear => 'Gyártási év';
 
   @override
-  String get adminMetadataFieldOfficialRating => 'Official rating';
+  String get adminMetadataFieldOfficialRating => 'Hivatalos minősítés';
 
   @override
-  String get adminMetadataFieldCommunityRating => 'Community rating';
+  String get adminMetadataFieldCommunityRating => 'Közösségi minősítés';
 
   @override
-  String get adminMetadataFieldCriticRating => 'Critic rating';
+  String get adminMetadataFieldCriticRating => 'Kritikus értékelés';
 
   @override
-  String get adminMetadataFieldTagline => 'Tagline';
+  String get adminMetadataFieldTagline => 'Címsor';
 
   @override
-  String get adminMetadataFieldOverview => 'Overview';
+  String get adminMetadataFieldOverview => 'Áttekintés';
 
   @override
-  String get adminMetadataGenres => 'Genres';
+  String get adminMetadataGenres => 'Műfajok';
 
   @override
-  String get adminMetadataTags => 'Tags';
+  String get adminMetadataTags => 'Címkék';
 
   @override
-  String get adminMetadataStudios => 'Studios';
+  String get adminMetadataStudios => 'Stúdiók';
 
   @override
-  String get adminMetadataPeople => 'People';
+  String get adminMetadataPeople => 'Emberek';
 
   @override
-  String get adminMetadataAddGenre => 'Add genre';
+  String get adminMetadataAddGenre => 'Műfaj hozzáadása';
 
   @override
-  String get adminMetadataAddTag => 'Add tag';
+  String get adminMetadataAddTag => 'Címke hozzáadása';
 
   @override
-  String get adminMetadataAddStudio => 'Add studio';
+  String get adminMetadataAddStudio => 'Stúdió hozzáadása';
 
   @override
-  String get adminMetadataAddPerson => 'Add Person';
+  String get adminMetadataAddPerson => 'Személy hozzáadása';
 
   @override
-  String get adminMetadataEditPerson => 'Edit Person';
+  String get adminMetadataEditPerson => 'Személy szerkesztése';
 
   @override
-  String get adminMetadataRole => 'Role';
+  String get adminMetadataRole => 'Szerep';
 
   @override
-  String get adminMetadataImagePrimary => 'Primary';
+  String get adminMetadataImagePrimary => 'Elsődleges';
 
   @override
-  String get adminMetadataImageBackdrop => 'Backdrop';
+  String get adminMetadataImageBackdrop => 'Háttér';
 
   @override
-  String get adminMetadataImageLogo => 'Logo';
+  String get adminMetadataImageLogo => 'Logó';
 
   @override
-  String get adminMetadataImageBanner => 'Banner';
+  String get adminMetadataImageBanner => 'Transzparens';
 
   @override
-  String get adminMetadataImageThumb => 'Thumb';
+  String get adminMetadataImageThumb => 'Hüvelykujj';
 
   @override
-  String get adminMetadataRecursive => 'Recursive';
+  String get adminMetadataRecursive => 'Rekurzív';
 
   @override
-  String get adminMetadataProvider => 'Provider';
+  String get adminMetadataProvider => 'Szolgáltató';
 
   @override
   String adminMetadataImageUpdated(String imageType) {
@@ -5191,7 +5320,8 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataImageReadFailed => 'Failed to read selected image';
+  String get adminMetadataImageReadFailed =>
+      'Nem sikerült beolvasni a kiválasztott képet';
 
   @override
   String adminMetadataImageUploadFailed(String error) {
@@ -5205,7 +5335,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get adminMetadataDeleteImageContent =>
-      'This removes the current image from the item.';
+      'Ezzel eltávolítja az aktuális képet az elemből.';
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
@@ -5218,31 +5348,32 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataUpload => 'Upload';
+  String get adminMetadataUpload => 'Feltöltés';
 
   @override
-  String get adminMetadataUpdate => 'Update';
+  String get adminMetadataUpdate => 'Frissítés';
 
   @override
-  String get adminMetadataRemoteImage => 'Remote image';
+  String get adminMetadataRemoteImage => 'Távoli kép';
 
   @override
-  String get adminPluginsInstalled => 'Installed';
+  String get adminPluginsInstalled => 'Telepítve';
 
   @override
-  String get adminPluginsCatalog => 'Catalog';
+  String get adminPluginsCatalog => 'Katalógus';
 
   @override
-  String get adminPluginsActive => 'Active';
+  String get adminPluginsActive => 'Aktív';
 
   @override
-  String get adminPluginsRestart => 'Restart';
+  String get adminPluginsRestart => 'Indítsa újra';
 
   @override
-  String get adminPluginsNoSearchResults => 'No plugins match your search';
+  String get adminPluginsNoSearchResults =>
+      'Egyetlen bővítmény sem felel meg a keresésnek';
 
   @override
-  String get adminPluginsNoneInstalled => 'No plugins installed';
+  String get adminPluginsNoneInstalled => 'Nincs telepítve plugin';
 
   @override
   String adminPluginsUpdateAvailable(String version) {
@@ -5250,22 +5381,24 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminPluginsUpdateAvailableGeneric => 'Update available';
+  String get adminPluginsUpdateAvailableGeneric => 'Frissítés elérhető';
 
   @override
-  String get adminPluginsPendingRemoval => 'Pending removal after restart';
+  String get adminPluginsPendingRemoval =>
+      'Újraindítás utáni eltávolításra vár';
 
   @override
-  String get adminPluginsChangesPending => 'Changes pending restart';
+  String get adminPluginsChangesPending =>
+      'A változtatások újraindításra várnak';
 
   @override
-  String get adminPluginsEnable => 'Enable';
+  String get adminPluginsEnable => 'Engedélyezés';
 
   @override
-  String get adminPluginsDisable => 'Disable';
+  String get adminPluginsDisable => 'Letiltás';
 
   @override
-  String get adminPluginsInstallUpdate => 'Install update';
+  String get adminPluginsInstallUpdate => 'Frissítés telepítése';
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
@@ -5274,10 +5407,10 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get adminPluginsCatalogNoSearchResults =>
-      'No packages match your search';
+      'Nincs a keresésnek megfelelő csomag';
 
   @override
-  String get adminPluginsCatalogEmpty => 'No packages available';
+  String get adminPluginsCatalogEmpty => 'Nincsenek elérhető csomagok';
 
   @override
   String adminPluginsInstalling(String name) {
@@ -5285,19 +5418,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailExperimental => 'Experimental Integration';
+  String get adminPluginDetailExperimental => 'Kísérleti integráció';
 
   @override
   String get adminPluginDetailExperimentalContent =>
-      'Plugin settings integration is still experimental. Some fields or layouts may not render correctly yet.';
+      'A beépülő modul-beállítások integrációja még csak kísérleti jellegű. Előfordulhat, hogy egyes mezők vagy elrendezések még nem jelennek meg megfelelően.';
 
   @override
   String get adminPluginDetailToggle404 =>
-      'Failed to toggle plugin. The server could not find this plugin version. Try refreshing plugins, then retry.';
+      'Nem sikerült átkapcsolni a bővítményt. A szerver nem találta ezt a bővítményverziót. Próbálja meg frissíteni a beépülő modulokat, majd próbálkozzon újra.';
 
   @override
   String get adminPluginDetailToggleDioError =>
-      'Failed to toggle plugin. Please check server logs for details.';
+      'Nem sikerült átkapcsolni a bővítményt. Kérjük, ellenőrizze a szervernaplókat a részletekért.';
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
@@ -5305,39 +5438,39 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailDetails => 'Details';
+  String get adminPluginDetailDetails => 'Részletek';
 
   @override
-  String get adminPluginDetailDeveloper => 'Developer';
+  String get adminPluginDetailDeveloper => 'Fejlesztő';
 
   @override
-  String get adminPluginDetailRepository => 'Repository';
+  String get adminPluginDetailRepository => 'Adattár';
 
   @override
-  String get adminPluginDetailBundled => 'Bundled';
+  String get adminPluginDetailBundled => 'Csomagban';
 
   @override
-  String get adminPluginDetailEnablePlugin => 'Enable Plugin';
+  String get adminPluginDetailEnablePlugin => 'Beépülő modul engedélyezése';
 
   @override
   String get adminPluginDetailRestartRequired =>
-      'A server restart is required for changes to take effect.';
+      'A változtatások életbe léptetéséhez a szerver újraindítása szükséges.';
 
   @override
   String get adminPluginDetailRemovalPending =>
-      'This plugin will be removed after server restart.';
+      'Ez a beépülő modul eltávolításra kerül a szerver újraindítása után.';
 
   @override
   String get adminPluginDetailMalfunctioned =>
-      'This plugin has malfunctioned and may not work correctly.';
+      'Ez a bővítmény meghibásodott, és előfordulhat, hogy nem működik megfelelően.';
 
   @override
   String get adminPluginDetailNotSupported =>
-      'This plugin is not supported by the current server version.';
+      'Ezt a beépülő modult a jelenlegi szerververzió nem támogatja.';
 
   @override
   String get adminPluginDetailSuperseded =>
-      'This plugin has been superseded by a newer version.';
+      'Ezt a bővítményt egy újabb verzió váltotta fel.';
 
   @override
   String adminReposLoadFailed(String error) {
@@ -5345,7 +5478,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemoveTitle => 'Remove Repository';
+  String get adminReposRemoveTitle => 'Távolítsa el a tárhelyet';
 
   @override
   String adminReposRemoveConfirm(String name) {
@@ -5353,7 +5486,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemove => 'Remove';
+  String get adminReposRemove => 'Távolítsa el';
 
   @override
   String adminReposSaveFailed(String error) {
@@ -5361,72 +5494,75 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminReposEmpty => 'No repositories configured';
+  String get adminReposEmpty => 'Nincsenek beállítva tárolók';
 
   @override
   String get adminReposEmptySubtitle =>
-      'Add a repository to browse available plugins';
+      'Adjon hozzá egy tárat az elérhető bővítmények böngészéséhez';
 
   @override
-  String get adminReposUnnamed => '(unnamed)';
+  String get adminReposUnnamed => '(névtelen)';
 
   @override
-  String get adminReposEditTitle => 'Edit Repository';
+  String get adminReposEditTitle => 'Adattár szerkesztése';
 
   @override
-  String get adminReposAddTitle => 'Add Repository';
+  String get adminReposAddTitle => 'Adattár hozzáadása';
 
   @override
-  String get adminReposUrl => 'Repository URL';
+  String get adminReposUrl => 'Adattár URL-je';
 
   @override
-  String get adminReposNameHint => 'e.g. Jellyfin Stable';
+  String get adminReposNameHint => 'például Jellyfin Stabil';
 
   @override
-  String get adminPluginSettingsInvalidUrl => 'Invalid URL';
+  String get adminPluginSettingsInvalidUrl => 'Érvénytelen URL';
 
   @override
-  String get adminGeneralSettingsTitle => 'General Settings';
+  String get adminGeneralSettingsTitle => 'Általános beállítások';
 
   @override
-  String get adminGeneralMetadataLanguage => 'Preferred metadata language';
+  String get adminGeneralMetadataLanguage =>
+      'Előnyben részesített metaadat-nyelv';
 
   @override
-  String get adminGeneralMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminGeneralMetadataLanguageHint => 'például en, de, fr';
 
   @override
-  String get adminGeneralMetadataCountry => 'Preferred metadata country';
+  String get adminGeneralMetadataCountry =>
+      'Előnyben részesített metaadatok országa';
 
   @override
-  String get adminGeneralMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminGeneralMetadataCountryHint => 'például USA, DE, FR';
 
   @override
-  String get adminGeneralLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminGeneralLibraryScanConcurrency =>
+      'A könyvtári szkennelés párhuzamossága';
 
   @override
-  String get adminGeneralImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminGeneralImageEncodingLimit => 'Párhuzamos képkódolási korlát';
 
   @override
-  String get adminUnknownError => 'Unknown error';
+  String get adminUnknownError => 'Ismeretlen hiba';
 
   @override
-  String get adminBrowse => 'Browse';
+  String get adminBrowse => 'Tallózás';
 
   @override
-  String get adminCloseBrowser => 'Close browser';
+  String get adminCloseBrowser => 'Zárja be a böngészőt';
 
   @override
-  String get adminNetworkingTitle => 'Networking';
+  String get adminNetworkingTitle => 'Hálózatépítés';
 
   @override
   String get adminNetworkingRestartWarning =>
-      'Changes to networking settings may require a server restart.';
+      'A hálózati beállítások módosítása a szerver újraindítását teheti szükségessé.';
 
   @override
-  String get adminNetworkingRemoteAccess => 'Enable remote access';
+  String get adminNetworkingRemoteAccess => 'Távoli hozzáférés engedélyezése';
 
   @override
-  String get adminNetworkingPorts => 'Ports';
+  String get adminNetworkingPorts => 'Portok';
 
   @override
   String get adminNetworkingHttpPort => 'HTTP port';
@@ -5435,196 +5571,205 @@ class AppLocalizationsHu extends AppLocalizations {
   String get adminNetworkingHttpsPort => 'HTTPS port';
 
   @override
-  String get adminNetworkingEnableHttps => 'Enable HTTPS';
+  String get adminNetworkingEnableHttps => 'HTTPS engedélyezése';
 
   @override
-  String get adminNetworkingLocalNetwork => 'Local Network';
+  String get adminNetworkingLocalNetwork => 'Helyi hálózat';
 
   @override
-  String get adminNetworkingLocalAddresses => 'Local network addresses';
+  String get adminNetworkingLocalAddresses => 'Helyi hálózati címek';
 
   @override
-  String get adminNetworkingAddressHint => 'e.g. 192.168.1.0/24';
+  String get adminNetworkingAddressHint => 'például 192.168.1.0/24';
 
   @override
-  String get adminNetworkingKnownProxies => 'Known proxies';
+  String get adminNetworkingKnownProxies => 'Ismert proxyk';
 
   @override
-  String get adminNetworkingProxyHint => 'e.g. 10.0.0.1';
+  String get adminNetworkingProxyHint => 'például 10.0.0.1';
 
   @override
-  String get adminNetworkingWhitelist => 'Whitelist';
+  String get adminNetworkingWhitelist => 'Fehérlista';
 
   @override
-  String get adminNetworkingBlacklist => 'Blacklist';
+  String get adminNetworkingBlacklist => 'Feketelista';
 
   @override
-  String get adminNetworkingAddEntry => 'Add entry';
+  String get adminNetworkingAddEntry => 'Bejegyzés hozzáadása';
 
   @override
-  String get adminBrandingTitle => 'Branding';
+  String get adminBrandingTitle => 'Márkaépítés';
 
   @override
-  String get adminBrandingLoginDisclaimer => 'Login disclaimer';
+  String get adminBrandingLoginDisclaimer =>
+      'Bejelentkezési felelősség kizárása';
 
   @override
   String get adminBrandingLoginDisclaimerHint =>
-      'HTML displayed below the login form';
+      'HTML a bejelentkezési űrlap alatt';
 
   @override
-  String get adminBrandingCustomCss => 'Custom CSS';
+  String get adminBrandingCustomCss => 'Egyedi CSS';
 
   @override
   String get adminBrandingCustomCssHint =>
-      'Custom CSS applied to the web interface';
+      'Egyéni CSS alkalmazva a webes felületen';
 
   @override
-  String get adminBrandingEnableSplash => 'Enable splash screen';
+  String get adminBrandingEnableSplash => 'Indítóképernyő engedélyezése';
 
   @override
-  String get adminPlaybackHwAccel => 'Hardware Acceleration';
+  String get adminPlaybackHwAccel => 'Hardveres gyorsítás';
 
   @override
-  String get adminPlaybackHwAccelLabel => 'Hardware acceleration';
+  String get adminPlaybackHwAccelLabel => 'Hardveres gyorsítás';
 
   @override
-  String get adminPlaybackEnableHwEncoding => 'Enable hardware encoding';
+  String get adminPlaybackEnableHwEncoding =>
+      'Engedélyezze a hardveres kódolást';
 
   @override
-  String get adminPlaybackEnableHwDecoding => 'Enable hardware decoding for:';
+  String get adminPlaybackEnableHwDecoding =>
+      'Hardveres dekódolás engedélyezése:';
 
   @override
-  String get adminPlaybackEncoding => 'Encoding';
+  String get adminPlaybackEncoding => 'Kódolás';
 
   @override
-  String get adminPlaybackEncodingThreads => 'Encoding threads';
+  String get adminPlaybackEncodingThreads => 'Kódolási szálak';
 
   @override
-  String get adminPlaybackFallbackFont => 'Enable fallback font';
+  String get adminPlaybackFallbackFont => 'Tartalék betűtípus engedélyezése';
 
   @override
-  String get adminPlaybackFallbackFontPath => 'Fallback font path';
+  String get adminPlaybackFallbackFontPath => 'Tartalék betűtípus elérési útja';
 
   @override
-  String get adminPlaybackStreaming => 'Streaming';
+  String get adminPlaybackStreaming => 'Folyó';
 
   @override
-  String get adminResumeVideo => 'Video';
+  String get adminResumeVideo => 'Videó';
 
   @override
-  String get adminResumeAudiobooks => 'Audiobooks';
+  String get adminResumeAudiobooks => 'Hangoskönyvek';
 
   @override
   String get adminResumeMinAudiobookPct =>
-      'Minimum audiobook resume percentage';
+      'A hangoskönyv önéletrajzának minimális százaléka';
 
   @override
   String get adminResumeMaxAudiobookPct =>
-      'Maximum audiobook resume percentage';
+      'A hangoskönyv önéletrajzának maximális százaléka';
 
   @override
-  String get adminStreamingBitrateLimit => 'Remote client bitrate limit (Mbps)';
+  String get adminStreamingBitrateLimit =>
+      'Távoli kliens bitsebesség-korlátja (Mbps)';
 
   @override
-  String get adminStreamingBitrateLimitHint => 'Leave empty or 0 for unlimited';
+  String get adminStreamingBitrateLimitHint =>
+      'Hagyja üresen, vagy 0-t a korlátlanul';
 
   @override
-  String get adminTrickplayHwAccel => 'Enable hardware acceleration';
+  String get adminTrickplayHwAccel => 'Engedélyezze a hardveres gyorsítást';
 
   @override
-  String get adminTrickplayHwEncoding => 'Enable hardware encoding';
+  String get adminTrickplayHwEncoding => 'Engedélyezze a hardveres kódolást';
 
   @override
-  String get adminTrickplayKeyFrameOnly => 'Enable key frame only extraction';
+  String get adminTrickplayKeyFrameOnly =>
+      'Csak kulcskeret kivonat engedélyezése';
 
   @override
-  String get adminTrickplayKeyFrameOnlySubtitle => 'Faster but lower accuracy';
+  String get adminTrickplayKeyFrameOnlySubtitle =>
+      'Gyorsabb, de kisebb pontosság';
 
   @override
-  String get adminTrickplayNonBlocking => 'Non-Blocking';
+  String get adminTrickplayNonBlocking => 'Nem blokkoló';
 
   @override
-  String get adminTrickplayBlocking => 'Blocking';
+  String get adminTrickplayBlocking => 'Blokkolás';
 
   @override
-  String get adminTrickplayPriorityHigh => 'High';
+  String get adminTrickplayPriorityHigh => 'Magas';
 
   @override
-  String get adminTrickplayPriorityAboveNormal => 'Above Normal';
+  String get adminTrickplayPriorityAboveNormal => 'Normál felett';
 
   @override
-  String get adminTrickplayPriorityNormal => 'Normal';
+  String get adminTrickplayPriorityNormal => 'Normál';
 
   @override
-  String get adminTrickplayPriorityBelowNormal => 'Below Normal';
+  String get adminTrickplayPriorityBelowNormal => 'Normál alatt';
 
   @override
-  String get adminTrickplayPriorityIdle => 'Idle';
+  String get adminTrickplayPriorityIdle => 'Tétlen';
 
   @override
-  String get adminTrickplayImageSettings => 'Image Settings';
+  String get adminTrickplayImageSettings => 'Képbeállítások';
 
   @override
-  String get adminTrickplayInterval => 'Interval (ms)';
+  String get adminTrickplayInterval => 'Időköz (ms)';
 
   @override
-  String get adminTrickplayIntervalSubtitle => 'How often to capture frames';
+  String get adminTrickplayIntervalSubtitle =>
+      'Milyen gyakran rögzítse a képkockákat';
 
   @override
   String get adminTrickplayWidthResolutionsHint =>
-      'Comma-separated pixel widths (e.g. 320)';
+      'Vesszővel elválasztott képpontszélességek (pl. 320)';
 
   @override
-  String get adminTrickplayQuality => 'Quality';
+  String get adminTrickplayQuality => 'Minőség';
 
   @override
-  String get adminTrickplayQScale => 'Quality scale';
+  String get adminTrickplayQScale => 'Minőségi skála';
 
   @override
   String get adminTrickplayQScaleSubtitle =>
-      'Lower values = better quality, larger files';
+      'Alacsonyabb érték = jobb minőség, nagyobb fájlok';
 
   @override
-  String get adminTrickplayJpegQuality => 'JPEG quality';
+  String get adminTrickplayJpegQuality => 'JPEG minőség';
 
   @override
-  String get adminTrickplayProcessing => 'Processing';
+  String get adminTrickplayProcessing => 'Feldolgozás';
 
   @override
-  String get adminTasksEmpty => 'No scheduled tasks found';
+  String get adminTasksEmpty => 'Nem található ütemezett feladat';
 
   @override
-  String get adminTasksNoFilterMatch => 'No tasks match the current filter';
+  String get adminTasksNoFilterMatch =>
+      'Egyetlen feladat sem felel meg az aktuális szűrőnek';
 
   @override
-  String get adminTaskCancelling => 'Cancelling...';
+  String get adminTaskCancelling => 'Lemondás...';
 
   @override
-  String get adminTaskRunning => 'Running...';
+  String get adminTaskRunning => 'Futás...';
 
   @override
-  String get adminTaskNeverRun => 'Never run';
+  String get adminTaskNeverRun => 'Soha ne fuss';
 
   @override
   String get adminTaskStop => 'Stop';
 
   @override
-  String get adminTaskRun => 'Run';
+  String get adminTaskRun => 'Fut';
 
   @override
-  String get adminTaskDetailLastExecution => 'Last Execution';
+  String get adminTaskDetailLastExecution => 'Utolsó Kivégzés';
 
   @override
-  String get adminTaskDetailStarted => 'Started';
+  String get adminTaskDetailStarted => 'Elindult';
 
   @override
-  String get adminTaskDetailEnded => 'Ended';
+  String get adminTaskDetailEnded => 'Véget ért';
 
   @override
-  String get adminTaskDetailDuration => 'Duration';
+  String get adminTaskDetailDuration => 'Időtartam';
 
   @override
-  String get adminTaskDetailErrorLabel => 'Error:';
+  String get adminTaskDetailErrorLabel => 'Hiba:';
 
   @override
   String adminTaskTriggerDaily(String time) {
@@ -5642,34 +5787,34 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerStartup => 'On application startup';
+  String get adminTaskTriggerStartup => 'Az alkalmazás indításakor';
 
   @override
-  String get adminTaskTriggerTypeDaily => 'Daily';
+  String get adminTaskTriggerTypeDaily => 'Napi';
 
   @override
-  String get adminTaskTriggerTypeWeekly => 'Weekly';
+  String get adminTaskTriggerTypeWeekly => 'Heti';
 
   @override
-  String get adminTaskTriggerTypeInterval => 'On an interval';
+  String get adminTaskTriggerTypeInterval => 'Időközönként';
 
   @override
-  String get adminTaskTriggerIntervalLabel => 'Interval';
+  String get adminTaskTriggerIntervalLabel => 'Intervallum';
 
   @override
-  String get adminTaskTriggerEveryHour => 'Every hour';
+  String get adminTaskTriggerEveryHour => 'Minden órában';
 
   @override
-  String get adminTaskTriggerEvery6Hours => 'Every 6 hours';
+  String get adminTaskTriggerEvery6Hours => '6 óránként';
 
   @override
-  String get adminTaskTriggerEvery12Hours => 'Every 12 hours';
+  String get adminTaskTriggerEvery12Hours => '12 óránként';
 
   @override
-  String get adminTaskTriggerEvery24Hours => 'Every 24 hours';
+  String get adminTaskTriggerEvery24Hours => '24 óránként';
 
   @override
-  String get adminTaskTriggerEvery2Days => 'Every 2 days';
+  String get adminTaskTriggerEvery2Days => '2 naponta';
 
   @override
   String adminTaskTriggerHours(int count) {
@@ -5683,25 +5828,25 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerTime => 'Time';
+  String get adminTaskTriggerTime => 'Idő';
 
   @override
-  String get adminTaskTriggerNoLimit => 'No limit';
+  String get adminTaskTriggerNoLimit => 'Nincs korlátozás';
 
   @override
-  String get adminActivityJustNow => 'Just now';
+  String get adminActivityJustNow => 'Éppen most';
 
   @override
-  String get adminActivityLastHour => 'Last hour';
+  String get adminActivityLastHour => 'Utolsó óra';
 
   @override
-  String get adminActivityToday => 'Today';
+  String get adminActivityToday => 'Ma';
 
   @override
-  String get adminActivityYesterday => 'Yesterday';
+  String get adminActivityYesterday => 'Tegnap';
 
   @override
-  String get adminActivityOlder => 'Older';
+  String get adminActivityOlder => 'Régebbi';
 
   @override
   String adminActivityDaysAgo(int days) {
@@ -5719,7 +5864,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminActivityNow => 'now';
+  String get adminActivityNow => 'jelenleg';
 
   @override
   String adminActivityMinutesShort(int minutes) {
@@ -5743,91 +5888,94 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get adminTrickplayDescription =>
-      'Configure trickplay image generation for seek preview thumbnails.';
+      'Állítsa be a trükkös lejátszás képgenerálását az előnézeti bélyegképek kereséséhez.';
 
   @override
-  String get adminNetworkingPublicHttpsPort => 'Public HTTPS port';
+  String get adminNetworkingPublicHttpsPort => 'Nyilvános HTTPS port';
 
   @override
-  String get adminNetworkingBaseUrl => 'Base URL';
+  String get adminNetworkingBaseUrl => 'Alap URL';
 
   @override
-  String get adminNetworkingBaseUrlHint => 'e.g. /jellyfin';
+  String get adminNetworkingBaseUrlHint => 'például /zselé';
 
   @override
   String get adminNetworkingHttps => 'HTTPS';
 
   @override
-  String get adminNetworkingCertPath => 'Certificate path';
+  String get adminNetworkingCertPath => 'Tanúsítvány elérési útja';
 
   @override
-  String get adminNetworkingRemoteIpFilter => 'Remote IP Filter';
+  String get adminNetworkingRemoteIpFilter => 'Távoli IP-szűrő';
 
   @override
-  String get adminNetworkingRemoteIpFilterLabel => 'Remote IP filter';
+  String get adminNetworkingRemoteIpFilterLabel => 'Távoli IP szűrő';
 
   @override
-  String get adminPlaybackVaapiDevice => 'VA-API device';
+  String get adminPlaybackVaapiDevice => 'VA-API eszköz';
 
   @override
-  String get adminPlaybackAutomatic => '0 = automatic';
+  String get adminPlaybackAutomatic => '0 = automatikus';
 
   @override
-  String get adminPlaybackTranscodeTempPath => 'Transcoding temp path';
+  String get adminPlaybackTranscodeTempPath =>
+      'Átkódolási hőmérsékleti útvonal';
 
   @override
-  String get adminPlaybackSegmentDeletion => 'Allow segment deletion';
+  String get adminPlaybackSegmentDeletion =>
+      'Szegmens törlésének engedélyezése';
 
   @override
-  String get adminPlaybackSegmentKeep => 'Segment keep (seconds)';
+  String get adminPlaybackSegmentKeep => 'Szegmens megtartása (másodperc)';
 
   @override
-  String get adminPlaybackThrottleBuffering => 'Throttle buffering';
+  String get adminPlaybackThrottleBuffering => 'Fojtószelep pufferelés';
 
   @override
-  String get adminResumeMinPct => 'Minimum resume percentage';
+  String get adminResumeMinPct => 'Minimális önéletrajzi százalék';
 
   @override
   String get adminResumeMinPctSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'A haladás mentéséhez a tartalmat ezen a százalékon túl kell lejátszani';
 
   @override
-  String get adminResumeMaxPct => 'Maximum resume percentage';
+  String get adminResumeMaxPct => 'Maximális önéletrajzi százalék';
 
   @override
   String get adminResumeMaxPctSubtitle =>
-      'Content is considered fully played after this percentage';
+      'A tartalom e százalék után teljesen lejátszottnak minősül';
 
   @override
-  String get adminResumeMinDuration => 'Minimum resume duration (seconds)';
+  String get adminResumeMinDuration =>
+      'Az önéletrajz minimális időtartama (másodperc)';
 
   @override
   String get adminResumeMinDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Az ennél rövidebb tételek nem cserélhetők újra';
 
   @override
-  String get adminTrickplayScanBehavior => 'Scan behavior';
+  String get adminTrickplayScanBehavior => 'Szkennelési viselkedés';
 
   @override
-  String get adminTrickplayProcessPriority => 'Process priority';
+  String get adminTrickplayProcessPriority => 'A folyamat prioritása';
 
   @override
-  String get adminTrickplayTileWidth => 'Tile width';
+  String get adminTrickplayTileWidth => 'Csempe szélessége';
 
   @override
-  String get adminTrickplayTileHeight => 'Tile height';
+  String get adminTrickplayTileHeight => 'Csempe magassága';
 
   @override
-  String get adminTrickplayProcessThreads => 'Process threads';
+  String get adminTrickplayProcessThreads => 'Folyamat szálak';
 
   @override
-  String get adminTrickplayWidthResolutions => 'Width resolutions';
+  String get adminTrickplayWidthResolutions => 'Szélesség felbontások';
 
   @override
-  String get adminMetadataDefault => 'Default';
+  String get adminMetadataDefault => 'Alapértelmezett';
 
   @override
-  String get adminMetadataContentTypeUpdated => 'Content type updated';
+  String get adminMetadataContentTypeUpdated => 'Tartalomtípus frissítve';
 
   @override
   String adminMetadataContentTypeFailed(String error) {
@@ -5835,23 +5983,23 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get adminGeneralSlowResponseThreshold =>
-      'Slow response threshold (ms)';
+  String get adminGeneralSlowResponseThreshold => 'Lassú válaszküszöb (ms)';
 
   @override
-  String get adminGeneralCachePath => 'Cache path';
+  String get adminGeneralCachePath => 'Gyorsítótár elérési útja';
 
   @override
-  String get adminGeneralMetadataPath => 'Metadata path';
+  String get adminGeneralMetadataPath => 'Metaadat elérési út';
 
   @override
-  String get adminGeneralServerName => 'Server name';
+  String get adminGeneralServerName => 'Szerver neve';
 
   @override
-  String get adminSettingsLoadFailed => 'Failed to load settings';
+  String get adminSettingsLoadFailed =>
+      'Nem sikerült betölteni a beállításokat';
 
   @override
-  String get adminDiscover => 'Discover';
+  String get adminDiscover => 'Fedezze fel';
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
@@ -5864,33 +6012,33 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get folders => 'Folders';
+  String get folders => 'Mappák';
 
   @override
-  String get libraries => 'Libraries';
+  String get libraries => 'Könyvtárak';
 
   @override
   String get syncPlay => 'SyncPlay';
 
   @override
-  String get syncPlayDisabledTitle => 'SyncPlay disabled';
+  String get syncPlayDisabledTitle => 'SyncPlay letiltva';
 
   @override
   String get syncPlayDisabledMessage =>
-      'Enable SyncPlay in Settings to use synchronized playback.';
+      'A szinkronizált lejátszás használatához engedélyezze a SyncPlay beállítást a Beállításokban.';
 
   @override
-  String get syncPlayServerUnsupportedTitle => 'Server unsupported';
+  String get syncPlayServerUnsupportedTitle => 'A szerver nem támogatott';
 
   @override
   String get syncPlayServerUnsupportedMessage =>
-      'SyncPlay requires a Jellyfin server. The current server does not support it.';
+      'A SyncPlay Jellyfin szervert igényel. A jelenlegi szerver nem támogatja.';
 
   @override
-  String get syncPlayGroupFallbackName => 'SyncPlay Group';
+  String get syncPlayGroupFallbackName => 'SyncPlay Csoport';
 
   @override
-  String get syncPlayGroupTooltip => 'SyncPlay group';
+  String get syncPlayGroupTooltip => 'SyncPlay csoport';
 
   @override
   String syncPlayParticipantCount(int count) {
@@ -5904,40 +6052,41 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get syncPlayIgnoreWait => 'Ignore wait';
+  String get syncPlayIgnoreWait => 'Figyelmen kívül hagyja a várakozást';
 
   @override
   String get syncPlayIgnoreWaitSubtitle =>
-      'Don\'t hold the group up while this device buffers';
+      'Ne tartsa fenn a csoportot, amíg az eszköz pufferel';
 
   @override
   String get syncPlayContinueLocallyNoWait =>
-      'Continue locally without waiting for slow members';
+      'Folytassa helyben, anélkül, hogy a lassú tagokra várna';
 
   @override
-  String get syncPlayRepeat => 'Repeat';
+  String get syncPlayRepeat => 'Ismétlés';
 
   @override
-  String get syncPlayRepeatOne => 'One';
+  String get syncPlayRepeatOne => 'Egy';
 
   @override
-  String get syncPlayShuffleModeShuffled => 'Shuffled';
+  String get syncPlayShuffleModeShuffled => 'Megkeverve';
 
   @override
-  String get syncPlayShuffleModeSorted => 'Sorted';
+  String get syncPlayShuffleModeSorted => 'Rendezett';
 
   @override
-  String get syncPlaySyncCurrentQueue => 'Sync current playback queue';
+  String get syncPlaySyncCurrentQueue =>
+      'Az aktuális lejátszási sor szinkronizálása';
 
   @override
   String get syncPlaySyncCurrentQueueSubtitle =>
-      'Replace the group queue with what is playing locally';
+      'Cserélje le a csoportos sort a helyileg lejátszottra';
 
   @override
-  String get syncPlayLeaveGroup => 'Leave group';
+  String get syncPlayLeaveGroup => 'Kilépés a csoportból';
 
   @override
-  String get syncPlayGroupQueue => 'Group queue';
+  String get syncPlayGroupQueue => 'Csoportos várólista';
 
   @override
   String syncPlayQueueItemFallback(int index) {
@@ -5945,47 +6094,47 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get syncPlayPlayNow => 'Play now';
+  String get syncPlayPlayNow => 'Játssz most';
 
   @override
-  String get syncPlayCreateNewGroup => 'Create a new group';
+  String get syncPlayCreateNewGroup => 'Hozzon létre egy új csoportot';
 
   @override
-  String get syncPlayGroupName => 'Group name';
+  String get syncPlayGroupName => 'Csoport neve';
 
   @override
-  String get syncPlayDefaultGroupName => 'My SyncPlay Group';
+  String get syncPlayDefaultGroupName => 'Saját SyncPlay csoportom';
 
   @override
-  String get syncPlayCreateGroup => 'Create group';
+  String get syncPlayCreateGroup => 'Csoport létrehozása';
 
   @override
-  String get syncPlayAvailableGroups => 'Available groups';
+  String get syncPlayAvailableGroups => 'Elérhető csoportok';
 
   @override
-  String get syncPlayNoGroupsAvailable => 'No groups available';
+  String get syncPlayNoGroupsAvailable => 'Nincsenek elérhető csoportok';
 
   @override
-  String get syncPlayJoinGroupQuestion => 'Join SyncPlay group?';
+  String get syncPlayJoinGroupQuestion => 'Csatlakozik a SyncPlay csoporthoz?';
 
   @override
   String get syncPlayJoinGroupWarning =>
-      'Joining a SyncPlay group may replace your current playback queue. Continue?';
+      'Egy SyncPlay csoporthoz való csatlakozás lecserélheti a jelenlegi lejátszási sort. Folytatja?';
 
   @override
-  String get syncPlayJoin => 'Join';
+  String get syncPlayJoin => 'Csatlakozik';
 
   @override
-  String get syncPlayStateIdle => 'Idle';
+  String get syncPlayStateIdle => 'Tétlen';
 
   @override
-  String get syncPlayStateWaiting => 'Waiting';
+  String get syncPlayStateWaiting => 'Várakozás';
 
   @override
-  String get syncPlayStatePaused => 'Paused';
+  String get syncPlayStatePaused => 'Szüneteltetve';
 
   @override
-  String get syncPlayStatePlaying => 'Playing';
+  String get syncPlayStatePlaying => 'Játék';
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
@@ -5998,11 +6147,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get syncPlayAccessDeniedTitle => 'SyncPlay access denied';
+  String get syncPlayAccessDeniedTitle => 'SyncPlay hozzáférés megtagadva';
 
   @override
   String get syncPlayAccessDeniedMessage =>
-      'You do not have access to one or more items in this SyncPlay group. Ask the group owner to verify library permissions or choose a different queue.';
+      'Nincs hozzáférése egy vagy több elemhez ebben a SyncPlay csoportban. Kérje meg a csoport tulajdonosát, hogy ellenőrizze a könyvtári engedélyeket, vagy válasszon másik sort.';
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
@@ -6010,63 +6159,63 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get voiceSearchUnavailable => 'Voice search is unavailable.';
+  String get voiceSearchUnavailable => 'A hangalapú keresés nem érhető el.';
 
   @override
   String get dolbyVisionDirectPlayFailedTitle =>
-      'Dolby Vision Direct Play Failed';
+      'Dolby Vision A közvetlen lejátszás nem sikerült';
 
   @override
   String get dolbyVisionDirectPlayFailedMessage =>
-      'Direct play failed to start for this Dolby Vision stream. Retry using server transcode?';
+      'Nem sikerült elindítani a közvetlen lejátszást ehhez a Dolby Vision adatfolyamhoz. Megpróbálja újra a szerver átkódolását?';
 
   @override
-  String get retryWithTranscode => 'Retry with transcode';
+  String get retryWithTranscode => 'Próbálja újra átkódolással';
 
   @override
-  String get dolbyVisionNotSupportedTitle => 'Dolby Vision Not Supported';
+  String get dolbyVisionNotSupportedTitle => 'Dolby Vision Nem támogatott';
 
   @override
   String get dolbyVisionNotSupportedMessage =>
-      'This device cannot decode Dolby Vision content directly. Use HDR10 fallback or request server transcoding.';
+      'Ez az eszköz nem tudja közvetlenül dekódolni a Dolby Vision tartalmat. Használja a HDR10 tartalékot, vagy kérje a szerver átkódolását.';
 
   @override
-  String get rememberMyChoice => 'Remember my choice';
+  String get rememberMyChoice => 'Emlékezz a választásomra';
 
   @override
-  String get playHdr10Fallback => 'Play HDR10 fallback';
+  String get playHdr10Fallback => 'HDR10 tartalék lejátszása';
 
   @override
-  String get requestTranscode => 'Request transcode';
+  String get requestTranscode => 'Átkódolás kérése';
 
   @override
   String get homeScreenSectionsIntegrationDescription =>
-      'Detect rows exposed by IAmParadox27\'s \"Home Screen Sections\" plugin. Rows can be enabled and reordered below.';
+      'Az IAmParadox27 „Home Screen Sections” beépülő modulja által közzétett sorok észlelése. A sorokat alább engedélyezheti és átrendezheti.';
 
   @override
   String get homeScreenSectionsIntegrationNoServers =>
-      'No Jellyfin servers reporting the plugin yet.';
+      'Még nincs Jellyfin szerver, amely jelentené a beépülő modult.';
 
   @override
   String get kefinTweaksIntegrationDescription =>
-      'Detect rows configured via ranaldsgift\'s \"KefinTweaks\" plugin. Custom sections, recently released, watch again, seasonal, and recently added in library are mirrored from the KefinTweaks configuration on each Jellyfin server.';
+      'A ranaldsgift „KefinTweaks” bővítményével konfigurált sorok észlelése. A közelmúltban megjelent, újból megtekinthető, szezonális és nemrégiben a könyvtárba felvett egyéni szakaszok tükröződnek a KefinTweaks konfigurációjában minden Jellyfin szerveren.';
 
   @override
   String get kefinTweaksIntegrationNoServers =>
-      'No Jellyfin servers reporting KefinTweaks yet.';
+      'Még nincs olyan Jellyfin szerver, amely jelentené a KefinTweaks-et.';
 
   @override
-  String get integrationOpenHomeSections => 'Open Home Sections';
+  String get integrationOpenHomeSections => 'Nyissa meg a Kezdőlap szakaszokat';
 
   @override
   String get integrationOpenHomeSectionsSubtitle =>
-      'Enable, disable, and reorder rows';
+      'A sorok engedélyezése, letiltása és átrendezése';
 
   @override
-  String get integrationInstalledButDisabled => 'Installed but disabled';
+  String get integrationInstalledButDisabled => 'Telepítve, de letiltva';
 
   @override
-  String get integrationNotInstalled => 'Not installed';
+  String get integrationNotInstalled => 'Nincs telepítve';
 
   @override
   String integrationSectionsCount(int count) {
@@ -6094,39 +6243,39 @@ class AppLocalizationsHu extends AppLocalizations {
   String get jellyseerr => 'Jellyseerr';
 
   @override
-  String get seeAll => 'See All';
+  String get seeAll => 'Összes megtekintése';
 
   @override
-  String get noItems => 'No items';
+  String get noItems => 'Nincsenek tételek';
 
   @override
-  String get switchUser => 'Switch User';
+  String get switchUser => 'Felhasználóváltás';
 
   @override
-  String get remoteControl => 'Remote Control';
+  String get remoteControl => 'Távirányító';
 
   @override
-  String get mediaBarLoading => 'Loading media bar...';
+  String get mediaBarLoading => 'Médiasáv betöltése...';
 
   @override
-  String get mediaBarError => 'Media bar failed to load';
+  String get mediaBarError => 'A médiasáv betöltése nem sikerült';
 
   @override
   String get offlineServerUnavailable =>
-      'Connected to the internet, but the current server is unavailable.';
+      'Csatlakozva az internethez, de a jelenlegi szerver nem elérhető.';
 
   @override
   String get offlineNoInternet =>
-      'You are offline. Only downloaded content is available.';
+      'Ön offline állapotban van. Csak a letöltött tartalom érhető el.';
 
   @override
-  String get offlineFileNotAvailable => 'File not available';
+  String get offlineFileNotAvailable => 'A fájl nem érhető el';
 
   @override
-  String get offlineSwitchServer => 'Switch Server';
+  String get offlineSwitchServer => 'Szerver váltása';
 
   @override
-  String get offlineSavedMedia => 'Saved Media';
+  String get offlineSavedMedia => 'Mentett média';
 
   @override
   String get castGoogleCast => 'Google Cast';
@@ -6138,7 +6287,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get castDlna => 'DLNA';
 
   @override
-  String get castRemotePlayback => 'Remote Playback';
+  String get castRemotePlayback => 'Távoli lejátszás';
 
   @override
   String castControlFailed(String error) {
@@ -6151,10 +6300,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get castDeviceVolume => 'Device Volume';
+  String get castDeviceVolume => 'Eszköz hangereje';
 
   @override
-  String get castVolumeUnavailable => 'Unavailable';
+  String get castVolumeUnavailable => 'Nem elérhető';
 
   @override
   String castStopKind(String kind) {
@@ -6162,22 +6311,22 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get audioLabel => 'Audio';
+  String get audioLabel => 'Hang';
 
   @override
-  String get subtitlesLabel => 'Subtitles';
+  String get subtitlesLabel => 'Feliratok';
 
   @override
-  String get pinConfirmTitle => 'Confirm PIN';
+  String get pinConfirmTitle => 'Erősítse meg a PIN kódot';
 
   @override
-  String get pinSetTitle => 'Set PIN';
+  String get pinSetTitle => 'PIN-kód beállítása';
 
   @override
-  String get pinEnterTitle => 'Enter PIN';
+  String get pinEnterTitle => 'Írja be a PIN-kódot';
 
   @override
-  String get pinReenterToConfirm => 'Re-enter your PIN to confirm';
+  String get pinReenterToConfirm => 'A megerősítéshez írja be újra a PIN-kódot';
 
   @override
   String pinEnterNDigit(int length) {
@@ -6190,46 +6339,47 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get pinIncorrect => 'Incorrect PIN';
+  String get pinIncorrect => 'Helytelen PIN-kód';
 
   @override
-  String get pinMismatch => 'PINs do not match';
+  String get pinMismatch => 'A PIN-kódok nem egyeznek';
 
   @override
-  String get pinForgot => 'Forgot PIN?';
+  String get pinForgot => 'Elfelejtette a PIN-kódot?';
 
   @override
-  String get pinClear => 'Clear';
+  String get pinClear => 'Világos';
 
   @override
   String get pinBackspace => 'Backspace';
 
   @override
-  String get quickConnectAuthorized => 'Quick Connect request authorized.';
+  String get quickConnectAuthorized =>
+      'A gyorscsatlakozási kérés engedélyezve.';
 
   @override
   String get quickConnectInvalidOrExpired =>
-      'Quick Connect code is invalid or expired.';
+      'A gyorscsatlakozási kód érvénytelen vagy lejárt.';
 
   @override
   String get quickConnectNotSupported =>
-      'Quick Connect is not supported on this server.';
+      'A gyorscsatlakozás nem támogatott ezen a szerveren.';
 
   @override
   String get quickConnectAuthorizeFailed =>
-      'Failed to authorize Quick Connect code.';
+      'Nem sikerült engedélyezni a Quick Connect kódot.';
 
   @override
   String get quickConnectDisabled =>
-      'Quick Connect is disabled on this server.';
+      'A gyors csatlakozás le van tiltva ezen a szerveren.';
 
   @override
   String get quickConnectForbidden =>
-      'Your account cannot authorize this Quick Connect request.';
+      'Fiókja nem tudja engedélyezni ezt a gyorscsatlakozási kérést.';
 
   @override
   String get quickConnectNotFound =>
-      'Quick Connect code was not found. Try a new code.';
+      'A gyorscsatlakozási kód nem található. Próbáljon ki egy új kódot.';
 
   @override
   String quickConnectFailedWithMessage(String message) {
@@ -6237,10 +6387,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get quickConnectEnterCode => 'Enter code';
+  String get quickConnectEnterCode => 'Írja be a kódot';
 
   @override
-  String get quickConnectAuthorize => 'Authorize';
+  String get quickConnectAuthorize => 'Engedélyezze';
 
   @override
   String remoteCommandFailed(String error) {
@@ -6248,28 +6398,31 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get remoteControlTitle => 'Remote Control';
+  String get remoteControlTitle => 'Távirányító';
 
   @override
-  String get remoteFailedToLoadSessions => 'Failed to load sessions';
+  String get remoteFailedToLoadSessions =>
+      'Nem sikerült betölteni a munkameneteket';
 
   @override
-  String get remoteNoSessions => 'No controllable sessions';
+  String get remoteNoSessions => 'Nincsenek vezérelhető munkamenetek';
 
   @override
-  String get remoteStartPlayback => 'Start playback on another device';
+  String get remoteStartPlayback =>
+      'Indítsa el a lejátszást egy másik eszközön';
 
   @override
-  String get unknownUser => 'Unknown';
+  String get unknownUser => 'Ismeretlen';
 
   @override
-  String get unknownItem => 'Unknown';
+  String get unknownItem => 'Ismeretlen';
 
   @override
-  String get remoteNothingPlaying => 'Nothing playing on this session';
+  String get remoteNothingPlaying => 'Semmi sem játszik le ezen a munkameneten';
 
   @override
-  String get castingStarted => 'Casting started on selected device';
+  String get castingStarted =>
+      'Az átküldés megkezdődött a kiválasztott eszközön';
 
   @override
   String castingFailed(String error) {
@@ -6277,44 +6430,45 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get noRemoteDevices => 'No remote playback devices available.';
+  String get noRemoteDevices =>
+      'Nem állnak rendelkezésre távoli lejátszó eszközök.';
 
   @override
   String get noRemoteDevicesIos =>
-      'No remote playback devices available.\n\nOn iOS, AirPlay targets may be unavailable in the simulator.';
+      'Nem állnak rendelkezésre távoli lejátszó eszközök.\n\niOS rendszeren előfordulhat, hogy a AirPlay célpontok nem érhetők el a szimulátorban.';
 
   @override
   String get trackActionPlayNext => 'Play Next';
 
   @override
-  String get trackActionAddToQueue => 'Add to Queue';
+  String get trackActionAddToQueue => 'Hozzáadás a sorhoz';
 
   @override
-  String get trackActionAddToPlaylist => 'Add to Playlist';
+  String get trackActionAddToPlaylist => 'Hozzáadás a lejátszási listához';
 
   @override
-  String get trackActionCancelDownload => 'Cancel Download';
+  String get trackActionCancelDownload => 'Letöltés megszakítása';
 
   @override
-  String get trackActionDeleteFromPlaylist => 'Delete from Playlist';
+  String get trackActionDeleteFromPlaylist => 'Törlés a lejátszási listáról';
 
   @override
-  String get trackActionMoveUp => 'Move Up';
+  String get trackActionMoveUp => 'Mozgás felfelé';
 
   @override
-  String get trackActionMoveDown => 'Move Down';
+  String get trackActionMoveDown => 'Mozgás Le';
 
   @override
-  String get trackActionRemoveFromFavorites => 'Remove from Favorites';
+  String get trackActionRemoveFromFavorites => 'Eltávolítás a Kedvencek közül';
 
   @override
-  String get trackActionAddToFavorites => 'Add to Favorites';
+  String get trackActionAddToFavorites => 'Hozzáadás a kedvencekhez';
 
   @override
-  String get trackActionGoToAlbum => 'Go to Album';
+  String get trackActionGoToAlbum => 'Ugrás az Albumhoz';
 
   @override
-  String get trackActionGoToArtist => 'Go to Artist';
+  String get trackActionGoToArtist => 'Lépjen a Művész oldalra';
 
   @override
   String trackActionDownloading(String name) {
@@ -6322,86 +6476,90 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get trackActionDeletedFile => 'Deleted downloaded file';
+  String get trackActionDeletedFile => 'A letöltött fájl törölve';
 
   @override
-  String get trackActionDeleteFileFailed => 'Could not delete downloaded file';
+  String get trackActionDeleteFileFailed =>
+      'Nem sikerült törölni a letöltött fájlt';
 
   @override
   String get shuffleBy => 'Shuffle By';
 
   @override
-  String get shuffleSelectLibrary => 'Select Library';
+  String get shuffleSelectLibrary => 'Válassza a Könyvtár lehetőséget';
 
   @override
-  String get shuffleSelectGenre => 'Select Genre';
+  String get shuffleSelectGenre => 'Válassza ki a Műfajt';
 
   @override
-  String get shuffleLibrary => 'Library';
+  String get shuffleLibrary => 'Könyvtár';
 
   @override
-  String get shuffleGenre => 'Genre';
+  String get shuffleGenre => 'Műfaj';
 
   @override
-  String get shuffleNoLibraries => 'No compatible libraries available.';
+  String get shuffleNoLibraries =>
+      'Nem állnak rendelkezésre kompatibilis könyvtárak.';
 
   @override
-  String get shuffleNoGenres => 'No genres found for this shuffle mode.';
+  String get shuffleNoGenres =>
+      'Nem található műfaj ehhez a véletlenszerű lejátszási módhoz.';
 
   @override
-  String get posterDisplayTitle => 'Display';
+  String get posterDisplayTitle => 'Kijelző';
 
   @override
-  String get posterImageType => 'Image Type';
+  String get posterImageType => 'Kép típusa';
 
   @override
-  String get imageTypePoster => 'Poster';
+  String get imageTypePoster => 'Poszter';
 
   @override
-  String get imageTypeThumbnail => 'Thumbnail';
+  String get imageTypeThumbnail => 'Miniatűr';
 
   @override
-  String get imageTypeBanner => 'Banner';
+  String get imageTypeBanner => 'Transzparens';
 
   @override
-  String get playlistAddFailed => 'Failed to add to playlist';
+  String get playlistAddFailed =>
+      'Nem sikerült hozzáadni a lejátszási listához';
 
   @override
-  String get playlistCreateFailed => 'Failed to create playlist';
+  String get playlistCreateFailed =>
+      'Nem sikerült létrehozni a lejátszási listát';
 
   @override
-  String get playlistNew => 'New Playlist';
+  String get playlistNew => 'Új lejátszási lista';
 
   @override
-  String get playlistCreate => 'Create';
+  String get playlistCreate => 'Teremt';
 
   @override
-  String get playlistCreateNew => 'Create New Playlist';
+  String get playlistCreateNew => 'Új lejátszási lista létrehozása';
 
   @override
-  String get playlistNoneFound => 'No playlists found';
+  String get playlistNoneFound => 'Nem található lejátszási lista';
 
   @override
-  String get addToPlaylist => 'Add to Playlist';
+  String get addToPlaylist => 'Hozzáadás a lejátszási listához';
 
   @override
-  String get lyricsNotAvailable => 'No lyrics available';
+  String get lyricsNotAvailable => 'Nincs elérhető dalszöveg';
 
   @override
-  String get upNext => 'Up Next';
+  String get upNext => 'Fel Következő';
 
   @override
   String get playNext => 'Play Next';
 
   @override
-  String get stillWatchingContent =>
-      'Playback has been paused. Are you still watching?';
+  String get stillWatchingContent => 'A lejátszás szünetel. Még mindig nézed?';
 
   @override
   String get stillWatchingStop => 'Stop';
 
   @override
-  String get stillWatchingContinue => 'Continue';
+  String get stillWatchingContinue => 'Folytatás';
 
   @override
   String skipSegment(String segment) {
@@ -6409,10 +6567,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get liveTv => 'Live TV';
+  String get liveTv => 'Élő TV';
 
   @override
-  String get continueWatchingAndNextUp => 'Continue Watching & Next Up';
+  String get continueWatchingAndNextUp =>
+      'Folytassa a megtekintést és a következőt';
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
@@ -6425,243 +6584,252 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get nextEpisode => 'Next Episode';
+  String get nextEpisode => 'Következő epizód';
 
   @override
-  String get moreFromThisSeason => 'More From This Season';
+  String get moreFromThisSeason => 'Még több ebből az évadból';
 
   @override
-  String get playerTooltipPlaybackSpeed => 'Playback speed';
+  String get playerTooltipPlaybackSpeed => 'Lejátszási sebesség';
 
   @override
-  String get playerTooltipCastControls => 'Cast controls';
+  String get playerTooltipCastControls => 'Cast vezérlők';
 
   @override
-  String get playerTooltipPlaybackQuality => 'Bitrate';
+  String get playerTooltipPlaybackQuality => 'Bitráta';
 
   @override
-  String get playerTooltipEnterFullscreen => 'Enter fullscreen';
+  String get playerTooltipEnterFullscreen => 'Lépjen be a teljes képernyőre';
 
   @override
-  String get playerTooltipExitFullscreen => 'Exit fullscreen';
+  String get playerTooltipExitFullscreen => 'Lépjen ki a teljes képernyőről';
 
   @override
-  String get playerTooltipLockLandscape => 'Lock landscape';
+  String get playerTooltipFloatOnTop => 'Lebegjen a tetején';
 
   @override
-  String get playerTooltipUnlockOrientation => 'Allow rotation';
+  String get playerTooltipExitFloatOnTop => 'Tiltsa le az úszót a tetején';
 
   @override
-  String get playerTooltipPrevious => 'Previous';
+  String get playerTooltipLockLandscape => 'Lock táj';
 
   @override
-  String get playerTooltipSeekBack => 'Seek back';
+  String get playerTooltipUnlockOrientation => 'Forgatás engedélyezése';
 
   @override
-  String get playerTooltipSeekForward => 'Seek forward';
+  String get playerTooltipPrevious => 'Előző';
 
   @override
-  String get contextMenuMarkWatched => 'Mark as Watched';
+  String get playerTooltipSeekBack => 'Keress vissza';
 
   @override
-  String get contextMenuMarkUnwatched => 'Mark as Unwatched';
+  String get playerTooltipSeekForward => 'Keress előre';
 
   @override
-  String get contextMenuAddToFavorites => 'Add to Favorites';
+  String get contextMenuMarkWatched => 'Megjelölés figyeltként';
 
   @override
-  String get contextMenuRemoveFromFavorites => 'Remove from Favorites';
+  String get contextMenuMarkUnwatched => 'Megjelölés nem figyeltként';
 
   @override
-  String get contextMenuGoToSeries => 'Go to Series';
+  String get contextMenuAddToFavorites => 'Hozzáadás a kedvencekhez';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Eltávolítás a Kedvencek közül';
+
+  @override
+  String get contextMenuGoToSeries => 'Ugrás a sorozathoz';
 
   @override
   String get settingsAdministrationSubtitle =>
-      'Access the server administration panel';
+      'Nyissa meg a szerveradminisztrációs panelt';
 
   @override
-  String get settingsAccountSecurity => 'Account & Security';
+  String get settingsAccountSecurity => 'Fiók és biztonság';
 
   @override
   String get settingsAccountSecuritySubtitle =>
-      'Authentication, PIN code, and parental controls';
+      'Hitelesítés, PIN-kód és szülői felügyelet';
 
   @override
-  String get settingsPersonalization => 'Personalization';
+  String get settingsPersonalization => 'Személyre szabás';
 
   @override
   String get settingsPersonalizationSubtitle =>
-      'Theme, navigation, home rows, and library visibility';
+      'Téma, navigáció, kezdősorok és könyvtár láthatósága';
 
   @override
-  String get settingsDynamicContent => 'Dynamic Content';
+  String get settingsDynamicContent => 'Dinamikus tartalom';
 
   @override
-  String get settingsDynamicContentSubtitle => 'Media Bar and visual overlays';
+  String get settingsDynamicContentSubtitle => 'Médiasáv és vizuális fedvények';
 
   @override
-  String get settingsPlaybackSyncplay => 'Playback & SyncPlay';
+  String get settingsPlaybackSyncplay => 'Lejátszás és SyncPlay';
 
   @override
   String get settingsPlaybackSyncplaySubtitle =>
-      'Audio/video settings, subtitles, downloads, and SyncPlay controls';
+      'Audio/video beállítások, feliratok, letöltések és SyncPlay vezérlők';
 
   @override
   String get settingsIntegrationsSubtitle =>
-      'Plugin sync, Seerr, ratings, and more';
+      'Beépülő modulok szinkronizálása, Seerr, értékelések és egyebek';
 
   @override
   String get settingsAboutSubtitle =>
-      'App version, legal information, and credits';
+      'Az alkalmazás verziója, jogi információk és kreditek';
 
   @override
-  String get settingsAuthenticationSection => 'AUTHENTICATION';
+  String get settingsAuthenticationSection => 'HITELESÍTÉS';
 
   @override
-  String get settingsSortServersBy => 'Sort Servers By';
+  String get settingsSortServersBy => 'Szerverek rendezése szerint';
 
   @override
-  String get settingsLastUsed => 'Last Used';
+  String get settingsLastUsed => 'Utoljára használt';
 
   @override
-  String get settingsAlphabetical => 'Alphabetical';
+  String get settingsAlphabetical => 'Betűrendes';
 
   @override
-  String get settingsPrivacyAndSafetySection => 'PRIVACY & SAFETY';
+  String get settingsPrivacyAndSafetySection => 'ADATVÉDELEM ÉS BIZTONSÁG';
 
   @override
-  String get settingsBlockedRatings => 'Blocked Ratings';
+  String get settingsBlockedRatings => 'Blokkolt értékelések';
 
   @override
-  String get settingsGeneralStyle => 'General Style';
+  String get settingsGeneralStyle => 'Általános stílus';
 
   @override
   String get settingsGeneralStyleSubtitle =>
-      'Theme accents, backdrops, watched indicators, and theme music';
+      'Téma hangsúlyok, hátterek, figyelt indikátorok és témazene';
 
   @override
-  String get settingsHomePage => 'Home Page';
+  String get settingsHomePage => 'Kezdőlap';
 
   @override
   String get settingsHomePageSubtitle =>
-      'Sections, image types, overlays, and media previews';
+      'Szakaszok, képtípusok, lefedések és média előnézetek';
 
   @override
   String get settingsLibrariesSubtitle =>
-      'Library visibility, folder view, and multi-server behavior';
+      'Könyvtár láthatósága, mappanézet és többkiszolgálós viselkedés';
 
   @override
-  String get settingsTwentyFourHourClock => '24-Hour Clock';
+  String get settingsTwentyFourHourClock => '24 órás óra';
 
   @override
   String get settingsTwentyFourHourClockSubtitle =>
-      'Use 24-hour time formatting wherever the clock is shown';
+      'Használja a 24 órás időformátumot, ahol az óra látható';
 
   @override
   String get settingsShowShuffleButtonInNavigation =>
-      'Show the shuffle button in the navigation bar';
+      'Jelenítse meg a keverés gombot a navigációs sávban';
 
   @override
   String get settingsShowGenresButtonInNavigation =>
-      'Show the genres button in the navigation bar';
+      'A műfajok gomb megjelenítése a navigációs sávban';
 
   @override
   String get settingsShowFavoritesButtonInNavigation =>
-      'Show the favorites button in the navigation bar';
+      'A kedvencek gomb megjelenítése a navigációs sávban';
 
   @override
   String get settingsShowLibrariesButtonInNavigation =>
-      'Show the libraries button in the navigation bar';
+      'Jelenítse meg a könyvtárak gombot a navigációs sávban';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'A kezdőlap láthatóságának váltása könyvtáronként. Indítsa újra a Moonfin alkalmazást, hogy a változtatások életbe lépjenek.';
 
   @override
-  String get settingsMediaBarAndLocalPreviews => 'Media Bar & Local Previews';
+  String get settingsMediaBarAndLocalPreviews => 'Médiasáv és helyi előnézetek';
 
   @override
-  String get settingsVisualOverlays => 'Visual Overlays';
+  String get settingsVisualOverlays => 'Vizuális lefedések';
 
   @override
-  String get settingsSeasonalSurprise => 'Seasonal Surprise';
+  String get settingsSeasonalSurprise => 'Szezonális meglepetés';
 
   @override
-  String get settingsMetadataAndRatings => 'Metadata & Ratings';
+  String get settingsMetadataAndRatings => 'Metaadatok és értékelések';
 
   @override
   String get settingsPluginScreenDescription =>
-      'Moonbase powers server-side integrations including additional rating sources, Seerr requests, and synced preferences.';
+      'A Moonbase a szerveroldali integrációt támogatja, beleértve a további minősítési forrásokat, a Seerr kéréseket és a szinkronizált beállításokat.';
 
   @override
-  String get settingsOfflineDownloads => 'Offline Downloads';
+  String get settingsOfflineDownloads => 'Offline letöltések';
 
   @override
-  String get settingsHigh => 'High';
+  String get settingsHigh => 'Magas';
 
   @override
-  String get settingsLow => 'Low';
+  String get settingsLow => 'Alacsony';
 
   @override
-  String get settingsCustomPath => 'Custom Path';
+  String get settingsCustomPath => 'Egyéni elérési út';
 
   @override
-  String get settingsEnterDownloadFolderPath => 'Enter download folder path';
+  String get settingsEnterDownloadFolderPath =>
+      'Adja meg a letöltési mappa elérési útját';
 
   @override
-  String get settingsConcurrentDownloads => 'Concurrent Downloads';
+  String get settingsConcurrentDownloads => 'Egyidejű letöltések';
 
   @override
   String get settingsConcurrentDownloadsDescription =>
-      'Maximum number of items to download at once.';
+      'Az egyszerre letölthető elemek maximális száma.';
 
   @override
-  String get settingsAppInfo => 'APP INFO';
+  String get settingsAppInfo => 'APP INFORMÁCIÓ';
 
   @override
-  String get settingsReportAnIssue => 'Report an Issue';
+  String get settingsReportAnIssue => 'Probléma bejelentése';
 
   @override
   String get settingsReportAnIssueSubtitle =>
-      'Open the issue tracker on GitHub';
+      'Nyissa meg a problémakövetőt a következőn: GitHub';
 
   @override
-  String get settingsJoinDiscord => 'Join Discord';
+  String get settingsJoinDiscord => 'Csatlakozás Discord';
 
   @override
-  String get settingsJoinDiscordSubtitle => 'Chat with the community';
+  String get settingsJoinDiscordSubtitle => 'Csevegés a közösséggel';
 
   @override
-  String get settingsJoinTheDiscord => 'Join the Discord';
+  String get settingsJoinTheDiscord => 'Csatlakozzon a Discord';
 
   @override
-  String get settingsSupportMoonfin => 'Support Moonfin';
+  String get settingsSupportMoonfin => 'Támogatás Moonfin';
 
   @override
   String get settingsSupportMoonfinSubtitle =>
-      'Star the project on GitHub or contribute';
+      'Csillagozza meg a projektet a következőn: GitHub, vagy járuljon hozzá';
 
   @override
-  String get settingsLegal => 'LEGAL';
+  String get settingsLegal => 'JOGI';
 
   @override
-  String get settingsLicenses => 'Licenses';
+  String get settingsLicenses => 'Licencek';
 
   @override
-  String get settingsOpenSourceLicenseNotices => 'Open-source license notices';
+  String get settingsOpenSourceLicenseNotices =>
+      'Nyílt forráskódú licenc megjegyzések';
 
   @override
-  String get settingsPrivacyPolicy => 'Privacy Policy';
+  String get settingsPrivacyPolicy => 'Adatvédelmi szabályzat';
 
   @override
-  String get settingsPrivacyPolicySubtitle => 'How Moonfin handles your data';
+  String get settingsPrivacyPolicySubtitle =>
+      'Hogyan kezeli a Moonfin az Ön adatait';
 
   @override
-  String get settingsCheckForUpdates => 'Check for Updates';
+  String get settingsCheckForUpdates => 'Ellenőrizze a frissítéseket';
 
   @override
   String get settingsCheckForUpdatesSubtitle =>
-      'Check for the latest Moonfin release';
+      'Ellenőrizze a legújabb Moonfin kiadást';
 
   @override
   String get settingsPoweredByFlutter => 'Powered by Flutter';
@@ -6678,168 +6846,171 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get settingsBoth => 'Both';
+  String get settingsBoth => 'Mindkét';
 
   @override
-  String get settingsShuffleContentTypeFilter => 'Shuffle Content Type Filter';
+  String get settingsShuffleContentTypeFilter =>
+      'Véletlenszerű tartalomtípus szűrő';
 
   @override
-  String get settingsVideoPlaybackPreferences => 'Video Playback Preferences';
+  String get settingsVideoPlaybackPreferences => 'Videó lejátszási beállítások';
 
   @override
   String get settingsVideoPlaybackPreferencesSubtitle =>
-      'Core video engine and streaming quality settings';
+      'Alapvető videómotor és streaming minőségi beállítások';
 
   @override
-  String get settingsAudioPreferences => 'Audio Preferences';
+  String get settingsAudioPreferences => 'Hangbeállítások';
 
   @override
   String get settingsAudioPreferencesSubtitle =>
-      'Audio tracks, processing, and passthrough options';
+      'Hangsávok, feldolgozás és áthárítási lehetőségek';
 
   @override
-  String get settingsAutomationAndQueue => 'Automation & Queue';
+  String get settingsAutomationAndQueue => 'Automatizálás és sor';
 
   @override
   String get settingsAutomationAndQueueSubtitle =>
-      'Automated playback and sequencing';
+      'Automatikus lejátszás és szekvenálás';
 
   @override
   String get settingsOfflineDownloadsSubtitle =>
-      'Download quality, storage limits, and queue size';
+      'A letöltési minőség, a tárolási korlátok és a sor mérete';
 
   @override
   String get settingsSyncplaySubtitle =>
-      'Synchronization logic for group sessions';
+      'Szinkronizálási logika a csoportos munkamenetekhez';
 
   @override
   String get settingsAdvancedOptionsSubtitle =>
-      'Specialized player features. Use with caution, as some options may cause playback issues';
+      'Speciális lejátszó funkciók. Használja körültekintően, mert egyes opciók lejátszási problémákat okozhatnak';
 
   @override
-  String get settingsSkipIntrosAndOutros => 'Skip Intros and Outros?';
+  String get settingsSkipIntrosAndOutros =>
+      'Kihagyja a bevezetőket és a végeket?';
 
   @override
-  String get settingsPromptUser => 'Prompt User';
+  String get settingsPromptUser => 'Felhasználó kérése';
 
   @override
-  String get settingsSkip => 'Skip';
+  String get settingsSkip => 'Kihagyás';
 
   @override
-  String get settingsDoNothing => 'Do Nothing';
+  String get settingsDoNothing => 'Ne csinálj semmit';
 
   @override
   String get settingsMaxBitrateDescription =>
-      'Cap the streaming bitrate. Content above this threshold will be transcoded to fit.';
+      'Korlátozza a streaming bitrátát. A küszöbérték feletti tartalmat a rendszer átkódolja, hogy illeszkedjen.';
 
   @override
   String get settingsMaxResolutionDescription =>
-      'Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.';
+      'Korlátozza a játékos által kért maximális felbontást. A nagyobb felbontású tartalom le lesz kódolva.';
 
   @override
   String get settingsPlayerZoomDescription =>
-      'How video should be scaled to fit the screen.';
+      'Hogyan kell a videót a képernyőhöz igazítani.';
 
   @override
   String get settingsPlaybackEngineAndroidTv => 'Playback Engine (Android TV)';
 
   @override
   String get settingsPlaybackEngineAndroidTvDescription =>
-      'Choose the default playback engine on Android TV devices. Changes apply to the next playback session.';
+      'Válassza ki az alapértelmezett lejátszási motort Android TV-eszközökön. A változtatások a következő lejátszási munkamenetre vonatkoznak.';
 
   @override
-  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (recommended)';
+  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (ajánlott)';
 
   @override
-  String get settingsPlaybackEngineMpvLegacy => 'mpv (legacy)';
+  String get settingsPlaybackEngineMpvLegacy => 'mpv (örökölt)';
 
   @override
-  String get settingsDolbyVisionFallback => 'Dolby Vision Fallback';
+  String get settingsDolbyVisionFallback => 'Dolby Vision Tartalék';
 
   @override
   String get settingsDolbyVisionFallbackDescription =>
-      'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.';
+      'Viselkedés a Dolby Vision címekhez Dolby Vision dekódolás nélküli eszközökön.';
 
   @override
-  String get settingsAskEachTime => 'Ask each time';
+  String get settingsAskEachTime => 'Kérdezd meg minden alkalommal';
 
   @override
-  String get settingsPreferHdr10Fallback => 'Prefer HDR10 fallback';
+  String get settingsPreferHdr10Fallback => 'Inkább HDR10 tartalék';
 
   @override
-  String get settingsPreferServerTranscode => 'Prefer server transcode';
+  String get settingsPreferServerTranscode =>
+      'Szerver átkódolás előnyben részesítése';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlay =>
-      'Dolby Vision Profile 7 Direct Play';
+      'Dolby Vision Profil 7 Közvetlen lejátszás';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlayDescription =>
-      'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.';
+      'Azt szabályozza, hogy a Dolby Vision 7. profil 7. bővítőrétegű adatfolyamai irányítsák-e a lejátszást.';
 
   @override
-  String get settingsAutoAftkrtEnabled => 'Auto (AFTKRT enabled)';
+  String get settingsAutoAftkrtEnabled => 'Automatikus (AFTKRT engedélyezve)';
 
   @override
-  String get settingsEnabledOnThisDevice => 'Enabled on this device';
+  String get settingsEnabledOnThisDevice => 'Engedélyezve ezen az eszközön';
 
   @override
-  String get settingsDisabledPreferTranscode => 'Disabled (prefer transcode)';
+  String get settingsDisabledPreferTranscode => 'Letiltva (inkább átkódolás)';
 
   @override
   String get settingsResumeRewindDescription =>
-      'When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?';
+      'A lejátszás folytatásakor (a Megtekintés folytatása vagy egy médiaelem oldaláról) hány másodpercet kell visszatekerni?';
 
   @override
   String get settingsUnpauseRewindDescription =>
-      'When resuming playback after pressing the pause button, how many seconds should be rewound?';
+      'Ha a szünet gomb megnyomása után folytatja a lejátszást, hány másodpercet kell visszatekerni?';
 
   @override
   String get settingsSkipBackLengthDescription =>
-      'How many seconds to jump back after pressing the rewind button.';
+      'Hány másodpercet kell visszaugrani a visszatekerés gomb megnyomása után.';
 
   @override
-  String get settingsOneSecond => '1 second';
+  String get settingsOneSecond => '1 másodperc';
 
   @override
-  String get settingsThreeSeconds => '3 seconds';
+  String get settingsThreeSeconds => '3 másodperc';
 
   @override
-  String get settingsFortyFiveSeconds => '45 seconds';
+  String get settingsFortyFiveSeconds => '45 másodperc';
 
   @override
-  String get settingsSixtySeconds => '60 seconds';
+  String get settingsSixtySeconds => '60 másodperc';
 
   @override
   String get settingsSkipForwardLengthDescription =>
-      'How many seconds to jump forward after pressing the fast forward button.';
+      'Hány másodpercet kell előre ugrani a gyors előretekerés gomb megnyomása után.';
 
   @override
   String get settingsBitstreamAc3ToExternalDecoder =>
-      'Bitstream AC3 to external decoder';
+      'Bitfolyam AC3 külső dekóderhez';
 
   @override
-  String get settingsCinemaMode => 'Cinema Mode';
+  String get settingsCinemaMode => 'Mozi mód';
 
   @override
   String get settingsCinemaModeSubtitle =>
-      'Play trailers/prerolls before a main feature';
+      'Játssz előzeteseket/prerollokat egy fő funkció előtt';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
-      'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.';
+  String get settingsNextUpDisplayDescription =>
+      'Az Extended egy teljes kártyát jelenít meg az epizód grafikájával és leírásával. A Minimál egy kompakt visszaszámláló fedvényt mutat. A Letiltva teljesen elrejti a promptot.';
 
   @override
-  String get settingsShort => 'Short';
+  String get settingsShort => 'Rövid';
 
   @override
-  String get settingsLong => 'Long';
+  String get settingsLong => 'Hosszú';
 
   @override
-  String get settingsVeryLong => 'Very Long';
+  String get settingsVeryLong => 'Nagyon hosszú';
 
   @override
-  String get settingsVideoStartDelay => 'Video Start Delay';
+  String get settingsVideoStartDelay => 'Videó indítási késleltetése';
 
   @override
   String settingsMillisecondsValue(int value) {
@@ -6847,82 +7018,87 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get settingsLiveTvDirect => 'Live TV Direct';
+  String get settingsLiveTvDirect => 'Élő TV közvetlen';
 
   @override
-  String get settingsLiveTvDirectSubtitle => 'Enable direct play for Live TV';
+  String get settingsLiveTvDirectSubtitle =>
+      'Közvetlen lejátszás engedélyezése az élő tévéadáshoz';
 
   @override
-  String get settingsOpenGroups => 'Open Groups';
+  String get settingsOpenGroups => 'Nyissa meg a Csoportokat';
 
   @override
   String get settingsOpenGroupsSubtitle =>
-      'Create, join, or manage SyncPlay groups';
+      'SyncPlay csoport létrehozása, csatlakozása vagy kezelése';
 
   @override
-  String get settingsSyncplayEnabled => 'SyncPlay Enabled';
+  String get settingsSyncplayEnabled => 'SyncPlay Engedélyezve';
 
   @override
   String get settingsSyncplayEnabledSubtitle =>
-      'Enable group watching features';
+      'Csoportfigyelő funkciók engedélyezése';
 
   @override
-  String get settingsSyncplayButton => 'SyncPlay Button';
+  String get settingsSyncplayButton => 'SyncPlay Gomb';
 
   @override
   String get settingsSyncplayButtonSubtitle =>
-      'Show the SyncPlay button on the navigation bar';
+      'Jelenítse meg a SyncPlay gombot a navigációs sávon';
 
   @override
-  String get settingsSyncplayAdvancedCorrection => 'Advanced Correction';
+  String get settingsSyncplayAdvancedCorrection => 'Speciális javítás';
 
   @override
   String get settingsSyncplayAdvancedCorrectionSubtitle =>
-      'Enable fine-grained sync logic';
+      'Finomszemcsés szinkronizálási logika engedélyezése';
 
   @override
-  String get settingsSyncplaySyncCorrection => 'Sync Correction';
+  String get settingsSyncplaySyncCorrection => 'Szinkronizálás korrekciója';
 
   @override
   String get settingsSyncplaySyncCorrectionSubtitle =>
-      'Automatically adjust playback to stay in sync';
+      'A lejátszás automatikus beállítása, hogy szinkronban maradjon';
 
   @override
-  String get settingsSyncplaySpeedToSync => 'Speed to Sync';
+  String get settingsSyncplaySpeedToSync => 'Szinkronizálási sebesség';
 
   @override
   String get settingsSyncplaySpeedToSyncSubtitle =>
-      'Use playback speed adjustment to sync';
+      'A szinkronizáláshoz használja a lejátszási sebesség beállítását';
 
   @override
-  String get settingsSyncplaySkipToSync => 'Skip to Sync';
+  String get settingsSyncplaySkipToSync => 'Ugrás a Szinkronizáláshoz';
 
   @override
-  String get settingsSyncplaySkipToSyncSubtitle => 'Use seeking to sync';
+  String get settingsSyncplaySkipToSyncSubtitle =>
+      'Használja a keresést a szinkronizáláshoz';
 
   @override
-  String get settingsSyncplayMinimumSpeedDelay => 'Minimum Speed Delay';
+  String get settingsSyncplayMinimumSpeedDelay =>
+      'Minimális sebesség késleltetés';
 
   @override
-  String get settingsSyncplayMaximumSpeedDelay => 'Maximum Speed Delay';
+  String get settingsSyncplayMaximumSpeedDelay =>
+      'Maximális sebesség késleltetés';
 
   @override
-  String get settingsSyncplaySpeedDuration => 'Speed Duration';
+  String get settingsSyncplaySpeedDuration => 'Sebesség időtartama';
 
   @override
-  String get settingsSyncplayMinimumSkipDelay => 'Minimum Skip Delay';
+  String get settingsSyncplayMinimumSkipDelay =>
+      'Minimális kihagyási késleltetés';
 
   @override
-  String get settingsSyncplayExtraOffset => 'SyncPlay Extra Offset';
+  String get settingsSyncplayExtraOffset => 'SyncPlay Extra eltolás';
 
   @override
-  String get onNow => 'On Now';
+  String get onNow => 'Be Most';
 
   @override
-  String get collections => 'Collections';
+  String get collections => 'Gyűjtemények';
 
   @override
-  String get lastPlayed => 'Last Played';
+  String get lastPlayed => 'Utoljára játszott';
 
   @override
   String libraryNameWithServer(String libraryName, String serverName) {

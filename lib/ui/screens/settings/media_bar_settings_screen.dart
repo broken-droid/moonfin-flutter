@@ -276,98 +276,200 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
 
   Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: buildSettingsAppBar(
-        context,
-        Text(l10n.settingsMediaBarAndLocalPreviews),
-      ),
-      body: ListView(
-        children: [
-          StringPickerPreferenceTile(
-            preference: UserPreferences.mediaBarMode,
-            title: l10n.mediaBarMode,
-            description: l10n.mediaBarModeDescription,
-            icon: Icons.featured_play_list,
-            options: {
-              UserPreferences.mediaBarModeMoonfin: l10n.mediaBarModeMoonfin,
-              UserPreferences.mediaBarModeMakd: l10n.mediaBarModeMakd,
-              UserPreferences.mediaBarModeOff: l10n.mediaBarModeOff,
-            },
-            onChanged: _pushSync,
-          ),
-          _MediaBarContentTypePickerTile(onChanged: _pushSync),
-          _MediaBarItemCountPickerTile(onChanged: _pushSync),
-          const Divider(),
-          _MediaBarActionTile(
-            leading: Image.asset(
-              'assets/icons/clapperboard.png',
-              width: 24,
-              height: 24,
-              color: AppColorScheme.onSurface,
-              fit: BoxFit.contain,
+      return Scaffold(
+        appBar: buildSettingsAppBar(
+          context,
+          Text(l10n.mediaBar),
+        ),
+        body: ListView(
+          children: [
+            StringPickerPreferenceTile(
+              preference: UserPreferences.mediaBarMode,
+              title: l10n.mediaBarMode,
+              description: l10n.mediaBarModeDescription,
+              icon: Icons.featured_play_list,
+              options: {
+                UserPreferences.mediaBarModeMoonfin: l10n.mediaBarModeMoonfin,
+                UserPreferences.mediaBarModeMakd: l10n.mediaBarModeMakd,
+                UserPreferences.mediaBarModeOff: l10n.mediaBarModeOff,
+              },
+              onChanged: _pushSync,
             ),
-            title: Text(l10n.sourceLibraries),
-            subtitle: Text(
-              _sourceSubtitle(
-                  UserPreferences.mediaBarLibraryIds, l10n.allLibraries, l10n),
+            _MediaBarContentTypePickerTile(onChanged: _pushSync),
+            _MediaBarItemCountPickerTile(onChanged: _pushSync),
+
+            // --- Media Sources Heading ---
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              child: Text(
+                l10n.mediaSources,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
-            onTap: _showLibrarySelector,
-          ),
-          _MediaBarActionTile(
-            leading: const Icon(Icons.collections_bookmark),
-            title: Text(l10n.sourceCollections),
-            subtitle: Text(
-              _sourceSubtitle(
-                  UserPreferences.mediaBarCollectionIds, l10n.noneSelected, l10n),
+            _MediaBarActionTile(
+              leading: Image.asset(
+                'assets/icons/clapperboard.png',
+                width: 24,
+                height: 24,
+                color: AppColorScheme.onSurface,
+                fit: BoxFit.contain,
+              ),
+              title: Text(l10n.sourceLibraries),
+              subtitle: Text(
+                _sourceSubtitle(
+                    UserPreferences.mediaBarLibraryIds, l10n.allLibraries, l10n),
+              ),
+              onTap: _showLibrarySelector,
             ),
-            onTap: _showCollectionSelector,
-          ),
-          _MediaBarActionTile(
-            leading: const Icon(Icons.label_off),
-            title: Text(l10n.excludedGenres),
-            subtitle: Text(
-              _sourceSubtitle(
-                  UserPreferences.mediaBarExcludedGenres, l10n.noneExcluded, l10n),
+            _MediaBarActionTile(
+              leading: const Icon(Icons.collections_bookmark),
+              title: Text(l10n.sourceCollections),
+              subtitle: Text(
+                _sourceSubtitle(
+                    UserPreferences.mediaBarCollectionIds, l10n.noneSelected, l10n),
+              ),
+              onTap: _showCollectionSelector,
             ),
-            onTap: _showGenreSelector,
+            _MediaBarActionTile(
+              leading: const Icon(Icons.label_off),
+              title: Text(l10n.excludedGenres),
+              subtitle: Text(
+                _sourceSubtitle(
+                    UserPreferences.mediaBarExcludedGenres, l10n.noneExcluded, l10n),
+              ),
+              onTap: _showGenreSelector,
+            ),
+
+            // --- Behavior Heading ---
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              child: Text(
+                l10n.behavior,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            SwitchPreferenceTile(
+              preference: UserPreferences.mediaBarAutoAdvance,
+              title: l10n.autoAdvance,
+              subtitle: l10n.autoAdvanceSlides,
+              icon: Icons.skip_next,
+            ),
+            // Replace slider with discrete picker for interval
+            _MediaBarIntervalPickerTile(onChanged: _pushSync),
+          ],
+        ),
+      );
+}
+
+}
+
+class _MediaBarIntervalPickerTile extends StatefulWidget {
+  final VoidCallback? onChanged;
+
+  const _MediaBarIntervalPickerTile({this.onChanged});
+
+  @override
+  State<_MediaBarIntervalPickerTile> createState() => _MediaBarIntervalPickerTileState();
+}
+
+class _MediaBarIntervalPickerTileState extends State<_MediaBarIntervalPickerTile> {
+  static const _intervalOptions = <int, String>{
+    5000: '5',
+    10000: '10',
+    15000: '15',
+    30000: '30',
+  };
+
+  late final PreferenceBinding<int> _binding;
+  bool _pickerOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _binding = PreferenceBinding(
+      GetIt.instance<PreferenceStore>(),
+      UserPreferences.mediaBarIntervalMs,
+    );
+  }
+
+  @override
+  void dispose() {
+    _binding.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return ValueListenableBuilder<int>(
+      valueListenable: _binding,
+      builder: (context, value, _) => TvFocusHighlight(
+        builder: (ctx, _) => ListTile(
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          leading: const Icon(Icons.timer),
+          title: Text(l10n.autoAdvanceInterval),
+          subtitle: Text(
+            '${_intervalOptions[value] ?? (value / 1000).round().toString()} ${l10n.seconds}',
           ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.mediaBarAutoAdvance,
-            title: l10n.autoAdvance,
-            subtitle: l10n.autoAdvanceSlides,
-            icon: Icons.skip_next,
-          ),
-          SliderPreferenceTile(
-            preference: UserPreferences.mediaBarIntervalMs,
-            title: l10n.autoAdvanceInterval,
-            icon: Icons.timer,
-            min: 3000,
-            max: 15000,
-            divisions: 12,
-            labelOf: (v) => l10n.secondsValue((v / 1000).round()),
-          ),
-          const Divider(),
-          SwitchPreferenceTile(
-            preference: UserPreferences.mediaBarTrailerPreview,
-            title: l10n.trailerPreview,
-            subtitle: l10n.autoPlayTrailers,
-            icon: Icons.movie_outlined,
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.episodePreviewEnabled,
-            title: l10n.episodePreview,
-            subtitle: l10n.episodePreviewDescription,
-            icon: Icons.ondemand_video,
-          ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.previewAudioEnabled,
-            title: l10n.previewAudio,
-            subtitle: l10n.enablePreviewAudio,
-            icon: Icons.volume_up,
-          ),
-        ],
+          onTap: () => _showPicker(context, value),
+        ),
       ),
     );
+  }
+
+  Future<void> _showPicker(BuildContext context, int current) async {
+    if (_pickerOpen) return;
+    _pickerOpen = true;
+    final l10n = AppLocalizations.of(context);
+    final entries = _intervalOptions.entries.toList();
+    final selectedIndex = entries.indexWhere((e) => e.key == current);
+    final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
+    try {
+      final result = await showFocusRestoringDialog<int>(
+        context: context,
+        useRootNavigator: false,
+        builder: (ctx) {
+          final closeOnce = createDialogBackCloseHandler(ctx);
+          return Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onKeyEvent: (_, event) {
+              if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
+              if (event is KeyDownEvent || event is KeyUpEvent) {
+                closeOnce();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: SimpleDialog(
+                title: Text(l10n.autoAdvanceInterval),
+                children: entries.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final e = entry.value;
+                  final selected = e.key == current;
+                  return TvFocusHighlight(
+                    builder: (_, _) => ListTile(
+                      autofocus: i == autofocusIndex,
+                      title: Text('${e.value} ${l10n.seconds}'),
+                      trailing: selected ? const Icon(Icons.check) : null,
+                      onTap: () => Navigator.pop(ctx, e.key),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        },
+      );
+      if (!mounted || result == null || result == _binding.value) return;
+      _binding.value = result;
+      widget.onChanged?.call();
+    } finally {
+      _pickerOpen = false;
+    }
   }
 }
 

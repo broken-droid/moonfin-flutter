@@ -16,7 +16,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String connectingToServer(String serverName) {
-    return 'Verbindung zu $serverName';
+    return 'Connecting to $serverName';
   }
 
   @override
@@ -29,7 +29,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get username => 'Benutzername';
 
   @override
-  String get email => 'Email';
+  String get email => 'E-Mail';
 
   @override
   String get quickConnectInstruction =>
@@ -49,12 +49,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'Schnellverbindung nicht verfügbar: $detail';
+    return 'QuickConnect unavailable: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'Schnellverbindung nicht verfügbar ($status): $detail';
+    return 'QuickConnect unavailable ($status): $detail';
   }
 
   @override
@@ -68,7 +68,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String appVersionFooter(String version) {
-    return 'Moonfin Version $version';
+    return 'Moonfin version $version';
   }
 
   @override
@@ -87,14 +87,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addServer => 'Server hinzufügen';
 
   @override
-  String get embyConnect => 'Emby Connect';
+  String get embyConnect => 'Emby Verbinden';
 
   @override
   String get removeServer => 'Server entfernen';
 
   @override
   String removeServerConfirmation(String serverName) {
-    return '„$serverName“ von deinen Servern entfernen?';
+    return 'Remove \"$serverName\" from your servers?';
   }
 
   @override
@@ -195,7 +195,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String unableToConnectTo(String target) {
-    return 'Verbindung zu $target nicht möglich';
+    return 'Unable to connect to $target';
   }
 
   @override
@@ -279,7 +279,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String failedToLoadFolderError(String error) {
-    return 'Ordner konnte nicht geladen werden: $error';
+    return 'Failed to load folder: $error';
   }
 
   @override
@@ -287,7 +287,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String itemCountLabel(int count) {
-    return '$count Einträge';
+    return '$count items';
   }
 
   @override
@@ -304,7 +304,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String totalCountItems(int count) {
-    return '$count Einträge';
+    return '$count Items';
   }
 
   @override
@@ -345,7 +345,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String libraryGenresTitle(String name) {
-    return '$name – Genres';
+    return '$name — Genres';
   }
 
   @override
@@ -384,17 +384,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String minutesAgo(int count) {
-    return 'vor $count Min.';
+    return '${count}m ago';
   }
 
   @override
   String hoursAgo(int count) {
-    return 'vor $count Std.';
+    return '${count}h ago';
   }
 
   @override
   String daysAgo(int count) {
-    return 'vor $count T.';
+    return '${count}d ago';
   }
 
   @override
@@ -428,7 +428,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String titlesCount(int count) {
-    return '$count Titel';
+    return '$count titles';
   }
 
   @override
@@ -517,17 +517,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String authorsCount(int count) {
-    return '$count Autoren';
+    return '$count authors';
   }
 
   @override
   String genresCount(int count) {
-    return '$count Genres';
+    return '$count genres';
   }
 
   @override
   String percentCompleted(int percent) {
-    return '$percent % abgeschlossen';
+    return '$percent% completed';
   }
 
   @override
@@ -544,7 +544,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String titlesArrangedForBrowsing(int count) {
-    return '$count Titel zum Stöbern angeordnet.';
+    return '$count titles arranged for reading-first browsing.';
   }
 
   @override
@@ -582,7 +582,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String noLabelFound(String label) {
-    return 'Keine $label gefunden';
+    return 'No $label found';
   }
 
   @override
@@ -654,12 +654,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String sectionCountLabel(int count) {
-    return '$count Abschnitte';
+    return '$count sections';
   }
 
   @override
   String firstPublished(int year) {
-    return 'Erstveröffentlichung $year';
+    return 'First published $year';
   }
 
   @override
@@ -674,7 +674,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String booksCount(int count) {
-    return '$count Bücher';
+    return '$count books';
   }
 
   @override
@@ -686,7 +686,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String authorsCountTitle(int count) {
-    return '$count Autoren';
+    return '$count Authors';
   }
 
   @override
@@ -694,8 +694,8 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Hörbücher',
-      one: '1 Hörbuch',
+      other: '$count audiobooks',
+      one: '1 audiobook',
     );
     return '$_temp0';
   }
@@ -763,7 +763,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String discNumber(int number) {
-    return 'CD $number';
+    return 'Disc $number';
   }
 
   @override
@@ -789,7 +789,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String published(int year) {
-    return 'Veröffentlicht $year';
+    return 'Published $year';
   }
 
   @override
@@ -800,15 +800,15 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Staffeln',
-      one: '1 Staffel',
+      other: '$count Seasons',
+      one: '1 Season',
     );
     return '$_temp0';
   }
 
   @override
   String endsAt(String time) {
-    return 'Endet um $time';
+    return 'Ends at $time';
   }
 
   @override
@@ -822,7 +822,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String resumeFrom(String position) {
-    return 'Fortsetzen ab $position';
+    return 'Resume from $position';
   }
 
   @override
@@ -922,7 +922,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String deleteDownloadedTracksMessage(String title) {
-    return 'Heruntergeladene Titel für „$title“ löschen?';
+    return 'Delete downloaded tracks for \"$title\"?';
   }
 
   @override
@@ -937,17 +937,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String noItemsLoaded(String itemLabel) {
-    return 'Keine $itemLabel geladen';
+    return 'No $itemLabel loaded';
   }
 
   @override
   String downloadingTitle(String title, int count) {
-    return '$title wird heruntergeladen ($count Einträge)...';
+    return 'Downloading $title ($count items)...';
   }
 
   @override
   String deleteConfirmMessage(String name) {
-    return 'Möchtest du „$name“ wirklich vom Server löschen? Diese Aktion kann nicht rückgängig gemacht werden.';
+    return 'Are you sure you want to delete \"$name\" from the server? This action cannot be undone.';
   }
 
   @override
@@ -958,7 +958,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String unsupportedBookFormat(String extension) {
-    return 'Nicht unterstütztes Buchformat: .$extension';
+    return 'Unsupported book format: .$extension';
   }
 
   @override
@@ -985,7 +985,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String subtitleDownloadedSelected(String name) {
-    return 'Untertitel heruntergeladen und ausgewählt: $name';
+    return 'Subtitle downloaded and selected: $name';
   }
 
   @override
@@ -994,7 +994,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String noRemoteSubtitlesFound(String language) {
-    return 'Keine Remote-Untertitel für $language gefunden.';
+    return 'No remote subtitles found for $language.';
   }
 
   @override
@@ -1022,7 +1022,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String downloadingItem(String name, String quality) {
-    return '$name wird heruntergeladen ($quality)...';
+    return 'Downloading $name ($quality)...';
   }
 
   @override
@@ -1030,7 +1030,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
-    return 'Lokale Dateien für $typeLabel löschen?\n\nDies gibt Speicherplatz frei. Du kannst sie später erneut herunterladen.';
+    return 'Delete local files for $typeLabel?\n\nThis will free up storage space. You can re-download later.';
   }
 
   @override
@@ -1053,12 +1053,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String studioMoreCount(int count) {
-    return '+$count weitere';
+    return '+$count more';
   }
 
   @override
   String totalEpisodes(int count) {
-    return '$count Episoden';
+    return '$count Episodes';
   }
 
   @override
@@ -1068,12 +1068,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String episodeLabel(int number) {
-    return 'Folge $number';
+    return 'Episode $number';
   }
 
   @override
   String chapterNumber(int number) {
-    return 'Kapitel $number';
+    return 'Chapter $number';
   }
 
   @override
@@ -1081,8 +1081,8 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Titel',
-      one: '1 Titel',
+      other: '$count tracks',
+      one: '1 track',
     );
     return '$_temp0';
   }
@@ -1092,25 +1092,25 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Kapitel',
-      one: '1 Kapitel',
+      other: '$count chapters',
+      one: '1 chapter',
     );
     return '$_temp0';
   }
 
   @override
   String born(String date) {
-    return 'Geboren $date';
+    return 'Born $date';
   }
 
   @override
   String died(String date) {
-    return 'Gestorben $date';
+    return 'Died $date';
   }
 
   @override
   String age(int age) {
-    return 'Alter $age';
+    return 'Age $age';
   }
 
   @override
@@ -1124,7 +1124,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String downloadsCount(int count) {
-    return '$count Downloads';
+    return '$count downloads';
   }
 
   @override
@@ -1132,7 +1132,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String channelsCount(int count) {
-    return '$count Kanäle';
+    return '${count}ch';
   }
 
   @override
@@ -1143,32 +1143,32 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String remoteSubtitlePermissionError(String action) {
-    return 'Remote-Untertitel-$action erfordert die Jellyfin-Untertitelverwaltungsberechtigung für diesen Benutzer.';
+    return 'Remote subtitle $action requires the Jellyfin subtitle management permission for this user.';
   }
 
   @override
   String remoteSubtitleNotFoundError(String action) {
-    return 'Dieses Element konnte auf dem Server für Remote-Untertitel-$action nicht gefunden werden.';
+    return 'This item could not be found on the server for remote subtitle $action.';
   }
 
   @override
   String remoteSubtitleDetailError(String action, String detail) {
-    return 'Remote-Untertitel-$action fehlgeschlagen: $detail';
+    return 'Remote subtitle $action failed: $detail';
   }
 
   @override
   String remoteSubtitleHttpError(String action, int status) {
-    return 'Remote-Untertitel-$action fehlgeschlagen (HTTP $status).';
+    return 'Remote subtitle $action failed (HTTP $status).';
   }
 
   @override
   String remoteSubtitleGenericError(String action) {
-    return 'Remote-Untertitel konnten nicht $action werden.';
+    return 'Failed to $action remote subtitles.';
   }
 
   @override
   String deleteSeriesFiles(String name) {
-    return 'alle heruntergeladenen Episoden für „$name“';
+    return 'all downloaded episodes for \"$name\"';
   }
 
   @override
@@ -1200,17 +1200,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String castActionFailed(String label, String error) {
-    return '$label-Aktion fehlgeschlagen: $error';
+    return '$label action failed: $error';
   }
 
   @override
   String failedToSetCastVolume(String error) {
-    return 'Cast-Lautstärke konnte nicht eingestellt werden: $error';
+    return 'Failed to set cast volume: $error';
   }
 
   @override
   String castControlsTitle(String label) {
-    return '$label-Steuerung';
+    return '$label Controls';
   }
 
   @override
@@ -1227,7 +1227,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String stopCast(String label) {
-    return '$label stoppen';
+    return 'Stop $label';
   }
 
   @override
@@ -1235,7 +1235,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String trackNumber(int number) {
-    return 'Titel $number';
+    return 'Track $number';
   }
 
   @override
@@ -1252,7 +1252,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String secondsCount(int seconds) {
-    return '$seconds Sekunden';
+    return '$seconds seconds';
   }
 
   @override
@@ -1271,7 +1271,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String bitrateValueMbps(int mbps) {
-    return '$mbps Mbit/s';
+    return '$mbps Mbps';
   }
 
   @override
@@ -1367,12 +1367,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String castSessionError(String protocol) {
-    return '$protocol-Sitzungsfehler';
+    return '$protocol session error';
   }
 
   @override
   String failedToLoadBookDetails(String error) {
-    return 'Buchdetails konnten nicht geladen werden: $error';
+    return 'Failed to load book details: $error';
   }
 
   @override
@@ -1381,7 +1381,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String formatCannotRenderInApp(String extension) {
-    return 'Dieses Format (.$extension) kann in der App noch nicht dargestellt werden.';
+    return 'This format (.$extension) cannot be rendered in-app yet.';
   }
 
   @override
@@ -1394,17 +1394,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String failedToOpenInAppReader(String error) {
-    return 'In-App-Reader konnte nicht geöffnet werden: $error';
+    return 'Failed to open in-app reader: $error';
   }
 
   @override
   String bookmarkAlreadySaved(String label) {
-    return 'Lesezeichen bereits bei $label gespeichert.';
+    return 'Bookmark already saved at $label.';
   }
 
   @override
   String bookmarkAdded(String label) {
-    return 'Lesezeichen hinzugefügt: $label';
+    return 'Bookmark added: $label';
   }
 
   @override
@@ -1416,7 +1416,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String pageLabel(int number) {
-    return 'Seite $number';
+    return 'Page $number';
   }
 
   @override
@@ -1432,7 +1432,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String percentRead(String percent) {
-    return '$percent % gelesen';
+    return '$percent% read';
   }
 
   @override
@@ -1456,7 +1456,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String resetZoom(String zoom) {
-    return 'Zoom zurücksetzen (${zoom}x)';
+    return 'Reset Zoom (${zoom}x)';
   }
 
   @override
@@ -1479,7 +1479,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String failedToUpdateReadState(String error) {
-    return 'Lesestatus konnte nicht aktualisiert werden: $error';
+    return 'Failed to update read state: $error';
   }
 
   @override
@@ -1511,7 +1511,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
-    return 'Diese Plattform kann die eingebettete Dokument-Engine für $extension-Dateien nicht hosten.';
+    return 'This platform cannot host the embedded document engine for $extension files.';
   }
 
   @override
@@ -1550,7 +1550,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String failedToLoadGuide(String error) {
-    return 'Programmführer konnte nicht geladen werden: $error';
+    return 'Failed to load guide: $error';
   }
 
   @override
@@ -1586,7 +1586,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String failedToPlayChannel(String name) {
-    return '$name konnte nicht abgespielt werden';
+    return 'Failed to play $name';
   }
 
   @override
@@ -1612,7 +1612,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String cancelScheduledRecordingOf(String name) {
-    return 'Geplante Aufnahme von „$name“ abbrechen?';
+    return 'Cancel scheduled recording of \"$name\"?';
   }
 
   @override
@@ -1640,7 +1640,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String stopRecordingName(String name) {
-    return 'Aufnahme von „$name“ stoppen?';
+    return 'Stop recording \"$name\"?';
   }
 
   @override
@@ -1655,25 +1655,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String noResultsForQuery(String query) {
-    return 'Keine Ergebnisse für „$query“';
+    return 'No results for \"$query\"';
   }
 
   @override
   String searchFailedError(String error) {
-    return 'Suche fehlgeschlagen: $error';
+    return 'Search failed: $error';
   }
 
   @override
   String get seerr => 'Seerr';
 
   @override
-  String get seerrAccountType => 'Seerr Account Type';
+  String get seerrAccountType => 'Seerr-Kontotyp';
 
   @override
   String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get localAccount => 'Local';
+  String get localAccount => 'Lokal';
 
   @override
   String get savedMedia => 'Gespeicherte Medien';
@@ -1701,12 +1701,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String removeItemAndFiles(String name) {
-    return '„$name“ und zugehörige Dateien entfernen?';
+    return 'Remove \"$name\" and its files?';
   }
 
   @override
   String tracksCount(int count) {
-    return '$count Titel';
+    return '$count tracks';
   }
 
   @override
@@ -1717,12 +1717,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String failedToLoadAlbum(String error) {
-    return 'Album konnte nicht geladen werden: $error';
+    return 'Failed to load album: $error';
   }
 
   @override
   String noDownloadedTracksForAlbum(String name) {
-    return 'Keine heruntergeladenen Titel für $name gefunden.';
+    return 'No downloaded tracks found for $name.';
   }
 
   @override
@@ -1739,12 +1739,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String removeName(String name) {
-    return '„$name“ entfernen?';
+    return 'Remove \"$name\"?';
   }
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes Min.';
+    return '$minutes min';
   }
 
   @override
@@ -1754,7 +1754,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String episodeNumber(int number) {
-    return 'Folge $number';
+    return 'Episode $number';
   }
 
   @override
@@ -1768,7 +1768,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String seasonNumber(int number) {
-    return 'Staffel $number';
+    return 'Season $number';
   }
 
   @override
@@ -1784,7 +1784,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String deleteAllEpisodesInSeason(String season) {
-    return 'Alle heruntergeladenen Episoden in $season löschen?';
+    return 'Delete all downloaded episodes in $season?';
   }
 
   @override
@@ -1792,8 +1792,8 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Episoden',
-      one: '1 Episode',
+      other: '$count episodes',
+      one: '1 episode',
     );
     return '$_temp0';
   }
@@ -1828,7 +1828,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String deleteSelectedCount(int count) {
-    return '$count heruntergeladene Elemente löschen?';
+    return 'Delete $count downloaded items?';
   }
 
   @override
@@ -1842,7 +1842,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String ofStorageLimit(String limit) {
-    return 'von $limit Limit';
+    return 'of $limit limit';
   }
 
   @override
@@ -1926,7 +1926,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String optionsCount(int count) {
-    return '$count Optionen';
+    return '$count options';
   }
 
   @override
@@ -1954,7 +1954,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get focusExpansionAnimation => 'Fokus-Vergrößerungsanimation';
 
   @override
-  String get desktopUiScale => 'Desktop UI Scale';
+  String get desktopUiScale => 'Desktop-UI-Skalierung';
 
   @override
   String get scaleFocusedCards =>
@@ -1993,6 +1993,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get seasonalEffects => 'Saisonale Effekte';
 
   @override
+  String get seasonalEffectsDescription =>
+      'Visuelle Effekte und saisonale Dekorationen';
+
+  @override
   String get snow => 'Schnee';
 
   @override
@@ -2016,7 +2020,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String percentValue(int value) {
-    return '$value %';
+    return '$value%';
   }
 
   @override
@@ -2031,7 +2035,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String pixelValue(int value) {
-    return '$value px';
+    return '${value}px';
   }
 
   @override
@@ -2218,7 +2222,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String secondsValue(int value) {
-    return '$value s';
+    return '${value}s';
   }
 
   @override
@@ -2232,7 +2236,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
-    return 'Nach $episodes Episoden / $hours Std.';
+    return 'After $episodes episodes / ${hours}h';
   }
 
   @override
@@ -2366,17 +2370,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String loadedProfileSettings(String profile) {
-    return '$profile-Profileinstellungen geladen.';
+    return 'Loaded $profile profile settings.';
   }
 
   @override
   String failedToLoadProfileSettings(String profile) {
-    return '$profile-Profileinstellungen konnten nicht geladen werden.';
+    return 'Failed to load $profile profile settings.';
   }
 
   @override
   String syncedSettingsToProfile(String profile) {
-    return 'Lokale Einstellungen mit $profile-Profil synchronisiert.';
+    return 'Synced local settings to $profile profile.';
   }
 
   @override
@@ -2603,11 +2607,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String itemsSelected(int count) {
-    return '$count ausgewählt';
+    return '$count selected';
   }
 
   @override
   String get mediaBar => 'Medienleiste';
+
+  @override
+  String get mediaSources => 'Medienquellen';
+
+  @override
+  String get behavior => 'Verhalten';
+
+  @override
+  String get seconds => 'Sekunden';
+
+  @override
+  String get localPreviews => 'Lokale Vorschauen';
+
+  @override
+  String get localPreviewsDescription =>
+      'Konfigurieren Sie Trailer-, Medien- und Audiovorschauen.';
 
   @override
   String get mediaBarMode => 'Stil der Medienleiste';
@@ -2675,8 +2695,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get episodePreview => 'Episodenvorschau';
 
   @override
+  String get mediaPreview => 'Medienvorschau';
+
+  @override
   String get episodePreviewDescription =>
       '30-Sekunden-Inline-Vorschau bei fokussierten, überfahrenen oder lange gedrückten Karten abspielen';
+
+  @override
+  String get mediaPreviewDescription =>
+      'Spielen Sie eine 30-sekündige Inline-Vorschau auf fokussierten, schwebenden oder lange gedrückten Karten ab';
 
   @override
   String get previewAudio => 'Vorschau-Audio';
@@ -2830,7 +2857,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String minutesShort(int minutes) {
-    return '$minutes Min.';
+    return '$minutes min';
   }
 
   @override
@@ -3026,7 +3053,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String loggedInAs(String username) {
-    return 'Angemeldet als: $username';
+    return 'Logged in as: $username';
   }
 
   @override
@@ -3102,7 +3129,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String updateAvailableVersion(String version) {
-    return 'Update verfügbar: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -3114,7 +3141,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String updateAvailableTitle(String version) {
-    return 'v$version Verfügbar';
+    return 'v$version Available';
   }
 
   @override
@@ -3182,7 +3209,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String itemsCount(int count) {
-    return '$count Einträge';
+    return '$count Items';
   }
 
   @override
@@ -3202,7 +3229,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String requestedByName(String name) {
-    return 'Angefragt von $name';
+    return 'Requested by $name';
   }
 
   @override
@@ -3219,12 +3246,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String cancelRequestForTitle(String title) {
-    return 'Anfrage für „$title“ abbrechen?';
+    return 'Cancel request for \"$title\"?';
   }
 
   @override
   String cancelCountRequestsForTitle(int count, String title) {
-    return '$count Anfragen für „$title“ abbrechen?';
+    return 'Cancel $count requests for \"$title\"?';
   }
 
   @override
@@ -3239,12 +3266,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String budgetAmount(String amount) {
-    return 'Budget: $amount \$';
+    return 'Budget: \$$amount';
   }
 
   @override
   String revenueAmount(String amount) {
-    return 'Einnahmen: $amount \$';
+    return 'Revenue: \$$amount';
   }
 
   @override
@@ -3254,7 +3281,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String requestSeriesOrMovie(String type) {
-    return '$type anfordern';
+    return 'Request $type';
   }
 
   @override
@@ -3289,7 +3316,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String ageValue(int age) {
-    return 'Alter $age';
+    return 'age $age';
   }
 
   @override
@@ -3527,7 +3554,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get adminDrawerResume => 'Fortsetzen';
 
   @override
-  String get adminDrawerStreaming => 'Streaming';
+  String get adminDrawerStreaming => 'Studios';
 
   @override
   String get adminDrawerTrickplay => 'Trickspiel';
@@ -3582,22 +3609,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginUpdatesAvailable(int count) {
-    return 'Plugin-Updates verfügbar: $count';
+    return 'Plugin updates available: $count';
   }
 
   @override
   String adminPluginsRequiringRestart(int count) {
-    return 'Plugins erfordern Neustart: $count';
+    return 'Plugins requiring restart: $count';
   }
 
   @override
   String adminFailedScheduledTasks(int count) {
-    return 'Fehlgeschlagene geplante Aufgaben: $count';
+    return 'Failed scheduled tasks: $count';
   }
 
   @override
   String adminRecentAlertEntries(int count) {
-    return 'Aktuelle Warn-/Fehlereinträge: $count';
+    return 'Recent warning/error entries: $count';
   }
 
   @override
@@ -3656,7 +3683,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String errorGeneric(String error) {
-    return 'Fehler: $error';
+    return 'Error: $error';
   }
 
   @override
@@ -3684,7 +3711,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminCommandFailed(String error) {
-    return 'Befehl fehlgeschlagen: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -3749,7 +3776,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminActivityLoadFailed(String error) {
-    return 'Aktivitätsprotokoll konnte nicht geladen werden: $error';
+    return 'Failed to load activity log: $error';
   }
 
   @override
@@ -3766,7 +3793,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminDeviceUpdateFailed(String error) {
-    return 'Gerät konnte nicht aktualisiert werden: $error';
+    return 'Failed to update device: $error';
   }
 
   @override
@@ -3777,7 +3804,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminDeviceDeleteFailed(String error) {
-    return 'Gerät konnte nicht gelöscht werden: $error';
+    return 'Failed to delete device: $error';
   }
 
   @override
@@ -3807,7 +3834,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminScanFailed(String error) {
-    return 'Scan konnte nicht gestartet werden: $error';
+    return 'Failed to start scan: $error';
   }
 
   @override
@@ -3818,12 +3845,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminLibraryRenamed(String name) {
-    return 'Bibliothek umbenannt in „$name“';
+    return 'Library renamed to \"$name\"';
   }
 
   @override
   String adminRenameFailed(String error) {
-    return 'Umbenennen fehlgeschlagen: $error';
+    return 'Failed to rename: $error';
   }
 
   @override
@@ -3831,17 +3858,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminLibraryDeleted(String name) {
-    return 'Bibliothek „$name“ gelöscht';
+    return 'Library \"$name\" deleted';
   }
 
   @override
   String adminLibraryDeleteFailed(String error) {
-    return 'Bibliothek konnte nicht gelöscht werden: $error';
+    return 'Failed to delete library: $error';
   }
 
   @override
   String adminAddPathFailed(String error) {
-    return 'Pfad konnte nicht hinzugefügt werden: $error';
+    return 'Failed to add path: $error';
   }
 
   @override
@@ -3849,12 +3876,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminRemovePathConfirm(String path) {
-    return '„$path“ aus dieser Bibliothek entfernen?';
+    return 'Remove \"$path\" from this library?';
   }
 
   @override
   String adminRemovePathFailed(String error) {
-    return 'Pfad konnte nicht entfernt werden: $error';
+    return 'Failed to remove path: $error';
   }
 
   @override
@@ -3862,7 +3889,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
-    return 'Optionen konnten nicht gespeichert werden: $error';
+    return 'Failed to save options: $error';
   }
 
   @override
@@ -3897,7 +3924,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminLibraryCreateFailed(String error) {
-    return 'Bibliothek konnte nicht erstellt werden: $error';
+    return 'Failed to create library: $error';
   }
 
   @override
@@ -3924,27 +3951,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminDisableUserConfirm(String name) {
-    return '$name deaktivieren? Die Anmeldung wird nicht mehr möglich sein.';
+    return 'Disable $name? They will not be able to sign in.';
   }
 
   @override
   String adminEnableUserConfirm(String name) {
-    return '$name aktivieren? Die Anmeldung wird wieder möglich sein.';
+    return 'Enable $name? They will be able to sign in again.';
   }
 
   @override
   String adminUserDisabled(String name) {
-    return 'Benutzer „$name“ deaktiviert';
+    return 'User \"$name\" disabled';
   }
 
   @override
   String adminUserEnabled(String name) {
-    return 'Benutzer „$name“ aktiviert';
+    return 'User \"$name\" enabled';
   }
 
   @override
   String adminUserPolicyUpdateFailed(String error) {
-    return 'Benutzerrichtlinie konnte nicht aktualisiert werden: $error';
+    return 'Failed to update user policy: $error';
   }
 
   @override
@@ -3961,7 +3988,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminUserCreateFailed(String error) {
-    return 'Benutzer konnte nicht erstellt werden: $error';
+    return 'Failed to create user: $error';
   }
 
   @override
@@ -3981,7 +4008,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminSaveFailed(String error) {
-    return 'Speichern fehlgeschlagen: $error';
+    return 'Failed to save: $error';
   }
 
   @override
@@ -3992,7 +4019,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminFailed(String error) {
-    return 'Fehlgeschlagen: $error';
+    return 'Failed: $error';
   }
 
   @override
@@ -4134,22 +4161,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminServerReturnedHttp(int status) {
-    return 'Der Server hat HTTP $status zurückgegeben.';
+    return 'Server returned HTTP $status';
   }
 
   @override
   String adminDeleteUserConfirm(String name) {
-    return 'Möchtest du $name wirklich löschen?';
+    return 'Are you sure you want to delete $name?';
   }
 
   @override
   String adminUserDeleted(String name) {
-    return 'Benutzer „$name“ gelöscht';
+    return 'User \"$name\" deleted';
   }
 
   @override
   String adminUserDeleteFailed(String error) {
-    return 'Benutzer konnte nicht gelöscht werden: $error';
+    return 'Failed to delete user: $error';
   }
 
   @override
@@ -4170,7 +4197,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminApiKeyCreateFailed(String error) {
-    return 'Schlüssel konnte nicht erstellt werden: $error';
+    return 'Failed to create key: $error';
   }
 
   @override
@@ -4182,7 +4209,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminRevokeKeyConfirm(String name) {
-    return 'Schlüssel für $name widerrufen?';
+    return 'Revoke key for $name?';
   }
 
   @override
@@ -4190,7 +4217,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminApiKeyRevokeFailed(String error) {
-    return 'Schlüssel konnte nicht widerrufen werden: $error';
+    return 'Failed to revoke key: $error';
   }
 
   @override
@@ -4211,7 +4238,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
-    return 'Token: $token\\nErstellt: $created';
+    return 'Token: $token\\nCreated: $created';
   }
 
   @override
@@ -4222,7 +4249,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminBackupCreateFailed(String error) {
-    return 'Backup konnte nicht erstellt werden: $error';
+    return 'Failed to create backup: $error';
   }
 
   @override
@@ -4235,7 +4262,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminManifestLoadFailed(String error) {
-    return 'Manifest konnte nicht geladen werden: $error';
+    return 'Failed to load manifest: $error';
   }
 
   @override
@@ -4246,7 +4273,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminRestoreFailed(String error) {
-    return 'Wiederherstellung fehlgeschlagen: $error';
+    return 'Failed to restore backup: $error';
   }
 
   @override
@@ -4279,17 +4306,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminSavedTo(String path) {
-    return 'Gespeichert in $path';
+    return 'Saved to $path';
   }
 
   @override
   String adminFileSaveFailed(String error) {
-    return 'Datei konnte nicht gespeichert werden: $error';
+    return 'Failed to save file: $error';
   }
 
   @override
   String adminLogFileLoadFailed(String fileName) {
-    return '$fileName konnte nicht geladen werden';
+    return 'Failed to load $fileName';
   }
 
   @override
@@ -4300,7 +4327,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminTasksLoadFailed(String error) {
-    return 'Aufgaben konnten nicht geladen werden: $error';
+    return 'Failed to load tasks: $error';
   }
 
   @override
@@ -4312,17 +4339,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminTaskStartFailed(String error) {
-    return 'Aufgabe konnte nicht gestartet werden: $error';
+    return 'Failed to start task: $error';
   }
 
   @override
   String adminTaskStopFailed(String error) {
-    return 'Aufgabe konnte nicht gestoppt werden: $error';
+    return 'Failed to stop task: $error';
   }
 
   @override
   String adminTaskLoadFailed(String error) {
-    return 'Aufgabe konnte nicht geladen werden: $error';
+    return 'Failed to load task: $error';
   }
 
   @override
@@ -4330,12 +4357,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminTriggerRemoveFailed(String error) {
-    return 'Auslöser konnte nicht entfernt werden: $error';
+    return 'Failed to remove trigger: $error';
   }
 
   @override
   String adminTriggerAddFailed(String error) {
-    return 'Auslöser konnte nicht hinzugefügt werden: $error';
+    return 'Failed to add trigger: $error';
   }
 
   @override
@@ -4361,7 +4388,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminHours(String hours) {
-    return '$hours Stunde(n)';
+    return '$hours hour(s)';
   }
 
   @override
@@ -4372,7 +4399,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginToggleFailed(String error) {
-    return 'Plugin konnte nicht umgeschaltet werden: $error';
+    return 'Failed to toggle plugin: $error';
   }
 
   @override
@@ -4380,27 +4407,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminUninstallPluginConfirm(String name) {
-    return 'Möchtest du „$name“ wirklich deinstallieren?';
+    return 'Are you sure you want to uninstall \"$name\"?';
   }
 
   @override
   String adminPluginUninstallFailed(String error) {
-    return 'Plugin konnte nicht deinstalliert werden: $error';
+    return 'Failed to uninstall plugin: $error';
   }
 
   @override
   String adminPackageInstallFailed(String error) {
-    return 'Paket konnte nicht installiert werden: $error';
+    return 'Failed to install package: $error';
   }
 
   @override
   String adminPluginUpdateFailed(String error) {
-    return 'Update konnte nicht installiert werden: $error';
+    return 'Failed to install update: $error';
   }
 
   @override
   String adminPluginsLoadFailed(String error) {
-    return 'Plugins konnten nicht geladen werden: $error';
+    return 'Failed to load plugins: $error';
   }
 
   @override
@@ -4412,12 +4439,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminInstallUpdate(String version) {
-    return 'Update installieren (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
   String adminCatalogLoadFailed(String error) {
-    return 'Katalog konnte nicht geladen werden: $error';
+    return 'Failed to load catalog: $error';
   }
 
   @override
@@ -4439,17 +4466,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
-    return '„$name“ wird nach dem Serverneustart entfernt';
+    return '\"$name\" will be removed after server restart';
   }
 
   @override
   String adminUninstallFailed(String error) {
-    return 'Deinstallation fehlgeschlagen: $error';
+    return 'Failed to uninstall: $error';
   }
 
   @override
   String adminPluginUpdating(String name, String version) {
-    return '„$name“ wird auf v$version aktualisiert...';
+    return 'Updating \"$name\" to v$version...';
   }
 
   @override
@@ -4458,7 +4485,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginLoadFailed(String error) {
-    return 'Plugin konnte nicht geladen werden: $error';
+    return 'Failed to load plugin: $error';
   }
 
   @override
@@ -4486,17 +4513,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
-    return 'Möchtest du „$name“ wirklich entfernen?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
   String adminRepositoriesSaveFailed(String error) {
-    return 'Repositories konnten nicht gespeichert werden: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
   String adminRepositoriesLoadFailed(String error) {
-    return 'Repositories konnten nicht geladen werden: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -4513,12 +4540,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
-    return 'Plugin-Einstellungen konnten nicht geladen werden: $error';
+    return 'Unable to load plugin settings: $error';
   }
 
   @override
   String adminCouldNotOpenUrl(String uri) {
-    return '$uri konnte nicht geöffnet werden';
+    return 'Could not open $uri';
   }
 
   @override
@@ -4802,12 +4829,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminMetadataLoadFailed(String error) {
-    return 'Metadaten konnten nicht geladen werden: $error';
+    return 'Failed to load metadata: $error';
   }
 
   @override
   String adminMetadataSaveFailed(String error) {
-    return 'Metadaten konnten nicht gespeichert werden: $error';
+    return 'Failed to save metadata: $error';
   }
 
   @override
@@ -4828,7 +4855,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminMetadataRefreshFailed(String error) {
-    return 'Metadatenaktualisierung fehlgeschlagen: $error';
+    return 'Failed to refresh metadata: $error';
   }
 
   @override
@@ -4845,7 +4872,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminRemoteSearchFailed(String error) {
-    return 'Remote-Suche fehlgeschlagen: $error';
+    return 'Remote search failed: $error';
   }
 
   @override
@@ -4859,7 +4886,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminContentTypeUpdateFailed(String error) {
-    return 'Inhaltstyp konnte nicht aktualisiert werden: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -4874,12 +4901,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminImageUpdated(String imageType) {
-    return '$imageType-Bild aktualisiert';
+    return '$imageType image updated';
   }
 
   @override
   String adminImageDownloadFailed(String error) {
-    return 'Bild konnte nicht heruntergeladen werden: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -4891,27 +4918,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminImageUploaded(String imageType) {
-    return '$imageType-Bild hochgeladen';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminImageUploadFailed(String error) {
-    return 'Bild konnte nicht hochgeladen werden: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminDeleteImage(String imageType) {
-    return '$imageType-Bild löschen';
+    return 'Delete $imageType image';
   }
 
   @override
   String adminImageDeleted(String imageType) {
-    return '$imageType-Bild gelöscht';
+    return '$imageType image deleted';
   }
 
   @override
   String adminImageDeleteFailed(String error) {
-    return 'Bild konnte nicht gelöscht werden: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
@@ -4922,7 +4949,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminTunerDiscoveryFailed(String error) {
-    return 'Tuner-Erkennung fehlgeschlagen: $error';
+    return 'Tuner discovery failed: $error';
   }
 
   @override
@@ -4945,7 +4972,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminTunerAddFailed(String error) {
-    return 'Tuner konnte nicht hinzugefügt werden: $error';
+    return 'Failed to add tuner: $error';
   }
 
   @override
@@ -4968,12 +4995,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminProviderAddFailed(String error) {
-    return 'Anbieter konnte nicht hinzugefügt werden: $error';
+    return 'Failed to add provider: $error';
   }
 
   @override
   String adminTunerRemoveFailed(String error) {
-    return 'Tuner konnte nicht entfernt werden: $error';
+    return 'Failed to remove tuner: $error';
   }
 
   @override
@@ -4981,12 +5008,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminTunerResetFailed(String error) {
-    return 'Tuner konnte nicht zurückgesetzt werden: $error';
+    return 'Failed to reset tuner: $error';
   }
 
   @override
   String adminProviderRemoveFailed(String error) {
-    return 'Anbieter konnte nicht entfernt werden: $error';
+    return 'Failed to remove provider: $error';
   }
 
   @override
@@ -5010,7 +5037,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminSettingsSaveFailed(String error) {
-    return 'Einstellungen konnten nicht gespeichert werden: $error';
+    return 'Failed to save settings: $error';
   }
 
   @override
@@ -5027,7 +5054,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminMappingsUpdateFailed(String error) {
-    return 'Zuordnungen konnten nicht aktualisiert werden: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
@@ -5051,22 +5078,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminRecordingPathDisplay(String path) {
-    return 'Aufnahmepfad: $path';
+    return 'Recording path: $path';
   }
 
   @override
   String adminSeriesPathDisplay(String path) {
-    return 'Serienpfad: $path';
+    return 'Series path: $path';
   }
 
   @override
   String adminPrePaddingDisplay(int minutes) {
-    return 'Vorlaufzeit: $minutes Min.';
+    return 'Pre-padding: $minutes min';
   }
 
   @override
   String adminPostPaddingDisplay(int minutes) {
-    return 'Nachlaufzeit: $minutes Min.';
+    return 'Post-padding: $minutes min';
   }
 
   @override
@@ -5099,7 +5126,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminRestoreConfirmMessage(String name) {
-    return 'Backup $name jetzt wiederherstellen?';
+    return 'Restore backup $name now?';
   }
 
   @override
@@ -5145,27 +5172,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminLogsMinutesAgo(int minutes) {
-    return 'vor $minutes Min.';
+    return '${minutes}m ago';
   }
 
   @override
   String adminLogsHoursAgo(int hours) {
-    return 'vor $hours Std.';
+    return '${hours}h ago';
   }
 
   @override
   String adminLogsDaysAgo(int days) {
-    return 'vor $days T.';
+    return '${days}d ago';
   }
 
   @override
   String adminLogViewerLoadFailed(String fileName) {
-    return '$fileName konnte nicht geladen werden';
+    return 'Failed to load $fileName';
   }
 
   @override
   String adminLogViewerMatches(int count) {
-    return '$count Treffer';
+    return '$count matches';
   }
 
   @override
@@ -5275,22 +5302,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminMetadataImageUpdated(String imageType) {
-    return '$imageType-Bild aktualisiert';
+    return '$imageType image updated';
   }
 
   @override
   String adminMetadataImageUploaded(String imageType) {
-    return '$imageType-Bild hochgeladen';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminMetadataImageDeleted(String imageType) {
-    return '$imageType-Bild gelöscht';
+    return '$imageType image deleted';
   }
 
   @override
   String adminMetadataImageDownloadFailed(String error) {
-    return 'Bild konnte nicht heruntergeladen werden: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -5299,12 +5326,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminMetadataImageUploadFailed(String error) {
-    return 'Bild konnte nicht hochgeladen werden: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminMetadataDeleteImageTitle(String imageType) {
-    return '$imageType-Bild löschen';
+    return 'Delete $imageType image';
   }
 
   @override
@@ -5313,12 +5340,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
-    return 'Bild konnte nicht gelöscht werden: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
   String adminMetadataChooseImage(String imageType) {
-    return '$imageType-Bild auswählen';
+    return 'Choose $imageType image';
   }
 
   @override
@@ -5351,7 +5378,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginsUpdateAvailable(String version) {
-    return 'Update verfügbar: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -5375,7 +5402,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
-    return 'Update installieren (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
@@ -5387,7 +5414,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginsInstalling(String name) {
-    return '„$name“ wird installiert...';
+    return '\"$name\" is being installed...';
   }
 
   @override
@@ -5407,7 +5434,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
-    return '$name-Einstellungen';
+    return '$name Settings';
   }
 
   @override
@@ -5447,7 +5474,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminReposLoadFailed(String error) {
-    return 'Repositories konnten nicht geladen werden: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -5455,7 +5482,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminReposRemoveConfirm(String name) {
-    return 'Möchtest du „$name“ wirklich entfernen?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
@@ -5463,7 +5490,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminReposSaveFailed(String error) {
-    return 'Repositories konnten nicht gespeichert werden: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
@@ -5741,17 +5768,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminTaskTriggerDaily(String time) {
-    return 'Täglich um $time';
+    return 'Daily at $time';
   }
 
   @override
   String adminTaskTriggerWeekly(String day, String time) {
-    return 'Jeden $day um $time';
+    return 'Every $day at $time';
   }
 
   @override
   String adminTaskTriggerInterval(String duration) {
-    return 'Alle $duration';
+    return 'Every $duration';
   }
 
   @override
@@ -5789,8 +5816,8 @@ class AppLocalizationsDe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Stunden',
-      one: '1 Stunde',
+      other: '$count hours',
+      one: '1 hour',
     );
     return '$_temp0';
   }
@@ -5818,17 +5845,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminActivityDaysAgo(int days) {
-    return 'vor $days T.';
+    return '${days}d ago';
   }
 
   @override
   String adminActivityHoursAgo(int hours) {
-    return 'vor $hours Std.';
+    return '${hours}h ago';
   }
 
   @override
   String adminActivityMinutesAgo(int minutes) {
-    return 'vor $minutes Min.';
+    return '${minutes}m ago';
   }
 
   @override
@@ -5836,17 +5863,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminActivityMinutesShort(int minutes) {
-    return '$minutes Min.';
+    return '${minutes}m';
   }
 
   @override
   String adminActivityHoursShort(int hours) {
-    return '$hours Std.';
+    return '${hours}h';
   }
 
   @override
   String adminActivityDaysShort(int days) {
-    return '$days T.';
+    return '${days}d';
   }
 
   @override
@@ -5944,7 +5971,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminMetadataContentTypeFailed(String error) {
-    return 'Inhaltstyp konnte nicht aktualisiert werden: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -5969,12 +5996,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
-    return 'Zuordnungen konnten nicht aktualisiert werden: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
   String adminTimeLimitDuration(String duration) {
-    return 'Zeitlimit: $duration';
+    return 'Time limit: $duration';
   }
 
   @override
@@ -6056,7 +6083,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String syncPlayQueueItemFallback(int index) {
-    return 'Artikel $index';
+    return 'Item $index';
   }
 
   @override
@@ -6104,12 +6131,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
-    return '$userName ist der SyncPlay-Gruppe beigetreten';
+    return '$userName joined SyncPlay group';
   }
 
   @override
   String syncPlayUserLeftGroup(String userName) {
-    return '$userName hat die SyncPlay-Gruppe verlassen';
+    return '$userName left SyncPlay group';
   }
 
   @override
@@ -6121,7 +6148,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
-    return 'Synchronisierung der Wiedergabe mit $groupName';
+    return 'Syncing playback to $groupName';
   }
 
   @override
@@ -6258,12 +6285,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String castControlFailed(String error) {
-    return 'Cast-Steuerung fehlgeschlagen: $error';
+    return 'Cast control failed: $error';
   }
 
   @override
   String castKindControls(String kind) {
-    return '$kind-Steuerung';
+    return '$kind Controls';
   }
 
   @override
@@ -6274,7 +6301,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String castStopKind(String kind) {
-    return '$kind stoppen';
+    return 'Stop $kind';
   }
 
   @override
@@ -6297,12 +6324,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String pinEnterNDigit(int length) {
-    return 'Gib eine $length-stellige PIN ein';
+    return 'Enter a $length-digit PIN';
   }
 
   @override
   String pinEnterYourNDigit(int length) {
-    return 'Gib deine $length-stellige PIN ein';
+    return 'Enter your $length-digit PIN';
   }
 
   @override
@@ -6350,7 +6377,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String quickConnectFailedWithMessage(String message) {
-    return 'Schnellverbindung fehlgeschlagen: $message';
+    return 'Quick Connect failed: $message';
   }
 
   @override
@@ -6361,7 +6388,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String remoteCommandFailed(String error) {
-    return 'Befehl fehlgeschlagen: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -6393,7 +6420,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String castingFailed(String error) {
-    return 'Streaming konnte nicht gestartet werden: $error';
+    return 'Failed to start casting: $error';
   }
 
   @override
@@ -6438,7 +6465,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String trackActionDownloading(String name) {
-    return '$name wird heruntergeladen...';
+    return 'Downloading $name...';
   }
 
   @override
@@ -6529,7 +6556,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String skipSegment(String segment) {
-    return '$segment überspringen';
+    return 'Skip $segment';
   }
 
   @override
@@ -6540,12 +6567,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
-    return 'Heruntergeladen $current/$total — $fileName';
+    return 'Downloading $current/$total — $fileName';
   }
 
   @override
   String downloadingFile(String fileName) {
-    return '$fileName wird heruntergeladen';
+    return 'Downloading $fileName';
   }
 
   @override
@@ -6570,10 +6597,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get playerTooltipExitFullscreen => 'Vollbild verlassen';
 
   @override
-  String get playerTooltipFloatOnTop => 'Float on top';
+  String get playerTooltipFloatOnTop => 'Oben schweben';
 
   @override
-  String get playerTooltipExitFloatOnTop => 'Disable float on top';
+  String get playerTooltipExitFloatOnTop =>
+      'Deaktivieren Sie den Schwimmer oben';
 
   @override
   String get playerTooltipLockLandscape => 'Landschaft sperren';
@@ -7074,6 +7102,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String latestLibraryName(String libraryName) {
-    return 'Neueste $libraryName';
+    return 'Latest $libraryName';
   }
 }

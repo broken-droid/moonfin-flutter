@@ -9,10 +9,10 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get appTitle => 'Moonfin';
+  String get appTitle => 'मूनफ़िन';
 
   @override
-  String get signIn => 'Sign In';
+  String get signIn => 'दाखिल करना';
 
   @override
   String connectingToServer(String serverName) {
@@ -20,29 +20,32 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get quickConnect => 'Quick Connect';
+  String get quickConnect => 'त्वरित कनेक्ट';
 
   @override
-  String get password => 'Password';
+  String get password => 'पासवर्ड';
 
   @override
-  String get username => 'Username';
+  String get username => 'उपयोगकर्ता नाम';
+
+  @override
+  String get email => 'ईमेल';
 
   @override
   String get quickConnectInstruction =>
-      'Enter this code on your server\'s web dashboard:';
+      'इस कोड को अपने सर्वर के वेब डैशबोर्ड पर दर्ज करें:';
 
   @override
-  String get waitingForAuthorization => 'Waiting for authorization...';
+  String get waitingForAuthorization => 'प्राधिकरण के लिए इंतजार करो...';
 
   @override
-  String get back => 'Back';
+  String get back => 'पीछे';
 
   @override
-  String get serverUnavailable => 'Server is unavailable';
+  String get serverUnavailable => 'सर्वर अनुपलब्ध है';
 
   @override
-  String get loginFailed => 'Login failed';
+  String get loginFailed => 'लॉगिन विफल';
 
   @override
   String quickConnectUnavailable(String detail) {
@@ -55,13 +58,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get whosWatching => 'Who\'s watching?';
+  String get whosWatching => 'कौन देख रहा है?';
 
   @override
-  String get addUser => 'Add User';
+  String get addUser => 'उपयोगकर्ता जोड़ें';
 
   @override
-  String get selectServer => 'Select Server';
+  String get selectServer => 'सर्वर का चयन करें';
 
   @override
   String appVersionFooter(String version) {
@@ -69,25 +72,25 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get savedServers => 'Saved Servers';
+  String get savedServers => 'सहेजे गए सर्वर';
 
   @override
-  String get discoveredServers => 'Discovered Servers';
+  String get discoveredServers => 'खोजे गए सर्वर';
 
   @override
-  String get noneFound => 'None found';
+  String get noneFound => 'कोई नहीं मिला';
 
   @override
-  String get unableToConnectToServer => 'Unable to connect to server';
+  String get unableToConnectToServer => 'सर्वर से कनेक्ट करने में असमर्थ है';
 
   @override
-  String get addServer => 'Add Server';
+  String get addServer => 'सर्वर जोड़ें';
 
   @override
-  String get embyConnect => 'Emby Connect';
+  String get embyConnect => 'Emby कनेक्ट करें';
 
   @override
-  String get removeServer => 'Remove Server';
+  String get removeServer => 'सर्वर हटाएँ';
 
   @override
   String removeServerConfirmation(String serverName) {
@@ -95,99 +98,98 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'रद्द करना';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'निकालना';
 
   @override
-  String get connectToServer => 'Connect to Server';
+  String get connectToServer => 'सर्वर से कनेक्ट करें';
 
   @override
-  String get serverAddress => 'Server Address';
+  String get serverAddress => 'सर्वर पता';
 
   @override
   String get serverAddressHint => 'https://your-server.example.com';
 
   @override
-  String get connect => 'Connect';
+  String get connect => 'जोड़ना';
 
   @override
-  String get secureStorageUnavailable => 'Secure Storage Unavailable';
+  String get secureStorageUnavailable => 'सुरक्षित भंडारण अनुपलब्ध';
 
   @override
   String get secureStorageUnavailableMessage =>
-      'Moonfin could not access your system keyring. Login can continue, but secure token storage may be unavailable until the keyring is unlocked.';
+      'Moonfin आपके सिस्टम कीरिंग तक नहीं पहुंच सका। लॉगिन जारी रह सकता है, लेकिन कीरिंग अनलॉक होने तक सुरक्षित टोकन संग्रहण अनुपलब्ध हो सकता है।';
 
   @override
-  String get ok => 'OK';
+  String get ok => 'ठीक है';
 
   @override
-  String get settingsAppearanceTheme => 'App Theme';
+  String get settingsAppearanceTheme => 'ऐप थीम';
 
   @override
   String get settingsAppearanceThemeSubtitle =>
-      'Switch between Moonfin and Neon Pulse without restarting the app';
+      'ऐप को पुनरारंभ किए बिना Moonfin और Neon Pulse के बीच स्विच करें';
 
   @override
-  String get themeMoonfin => 'Moonfin';
+  String get themeMoonfin => 'मूनफ़िन';
 
   @override
   String get themeMoonfinSubtitle =>
-      'Current Moonfin look you\'ve all come to love';
+      'वर्तमान Moonfin देखो आप सभी को पसंद आ गया है';
 
   @override
-  String get themeNeonPulse => 'Neon Pulse';
+  String get themeNeonPulse => 'नियॉन पल्स';
 
   @override
   String get themeNeonPulseSubtitle =>
-      'Synthwave styling with magenta glow, cyan text, and stronger chrome contrast';
+      'मैजेंटा चमक, सियान टेक्स्ट और मजबूत क्रोम कंट्रास्ट के साथ सिंथवेव स्टाइल';
 
   @override
   String get embyConnectSignInSubtitle =>
-      'Sign in with your Emby Connect account';
+      'Emby कनेक्ट या चयनित सर्वर से संपर्क करते समय नेटवर्क त्रुटि';
 
   @override
-  String get emailOrUsername => 'Email or Username';
+  String get emailOrUsername => 'ईमेल या उपयोगकर्ता का नाम';
 
   @override
-  String get selectAServer => 'Select a Server';
+  String get selectAServer => 'एक सर्वर चुनें';
 
   @override
-  String get tryAgain => 'Try Again';
+  String get tryAgain => 'पुनः प्रयास करें';
 
   @override
-  String get noLinkedServers =>
-      'No servers linked to this Emby Connect account';
+  String get noLinkedServers => 'इस Emby कनेक्ट खाते से कोई सर्वर लिंक नहीं है';
 
   @override
   String get invalidEmbyConnectCredentials =>
-      'Invalid Emby Connect credentials';
+      'अमान्य Emby क्रेडेंशियल कनेक्ट करें';
 
   @override
   String get invalidEmbyConnectLogin =>
-      'Invalid Emby Connect username or password';
+      'अमान्य Emby उपयोगकर्ता नाम या पासवर्ड कनेक्ट करें';
 
   @override
   String get embyConnectExchangeNotSupported =>
-      'Server does not support Emby Connect exchange';
+      'सर्वर Emby कनेक्ट एक्सचेंज का समर्थन नहीं करता है';
 
   @override
   String get embyConnectNetworkError =>
-      'Network error while contacting Emby Connect or the selected server';
+      'Emby कनेक्ट या चयनित सर्वर से संपर्क करते समय नेटवर्क त्रुटि';
 
   @override
-  String get loadingLinkedServers => 'Loading linked servers...';
+  String get loadingLinkedServers => 'लिंक किए गए सर्वर लोड हो रहे हैं...';
 
   @override
-  String get connectingToServerEllipsis => 'Connecting to server...';
+  String get connectingToServerEllipsis => 'सर्वर से कनेक्ट हो रहा है...';
 
   @override
-  String get noReachableAddress => 'No reachable address provided';
+  String get noReachableAddress => 'कोई पहुंच योग्य पता नहीं दिया गया';
 
   @override
   String get invalidServerExchangeResponse =>
-      'Invalid response from server exchange endpoint';
+      'सर्वर एक्सचेंज एंडपॉइंट से अमान्य प्रतिक्रिया';
 
   @override
   String unableToConnectTo(String target) {
@@ -195,81 +197,82 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get exitApp => 'Exit Moonfin?';
+  String get exitApp => 'Moonfin से बाहर निकलें?';
 
   @override
-  String get exitAppConfirmation => 'Are you sure you want to exit?';
+  String get exitAppConfirmation =>
+      'क्या आप निश्चित हैं आपकी बाहर निकलने की इच्छा है?';
 
   @override
-  String get exit => 'Exit';
+  String get exit => 'बाहर निकलना';
 
   @override
-  String get noHomeRowsLoaded => 'No home rows could be loaded';
+  String get noHomeRowsLoaded => 'कोई होम रो लोड नहीं किया जा सका';
 
   @override
   String get noHomeRowsHint =>
-      'Try refreshing or reducing active home sections.';
+      'सक्रिय होम अनुभागों को ताज़ा करने या कम करने का प्रयास करें।';
 
   @override
-  String get retryHomeRows => 'Retry Home Rows';
+  String get retryHomeRows => 'होम पंक्तियाँ पुनः प्रयास करें';
 
   @override
-  String get guide => 'Guide';
+  String get guide => 'मार्गदर्शक';
 
   @override
-  String get recordings => 'Recordings';
+  String get recordings => 'रिकॉर्डिंग';
 
   @override
-  String get schedule => 'Schedule';
+  String get schedule => 'अनुसूची';
 
   @override
-  String get series => 'Series';
+  String get series => 'शृंखला';
 
   @override
-  String get noItemsFound => 'No items found';
+  String get noItemsFound => 'कोई आइटम नहीं मिला';
 
   @override
-  String get home => 'Home';
+  String get home => 'घर';
 
   @override
-  String get browseAll => 'Browse All';
+  String get browseAll => 'सभी ब्राउज़ करें';
 
   @override
-  String get genres => 'Genres';
+  String get genres => 'शैलियां';
 
   @override
-  String get collectionPlaceholder => 'Collection items will appear here';
+  String get collectionPlaceholder => 'संग्रह आइटम यहां दिखाई देंगे';
 
   @override
-  String get browseByLetter => 'Browse by Letter';
+  String get browseByLetter => 'पत्र द्वारा ब्राउज़ करें';
 
   @override
   String get alphabeticalBrowsePlaceholder =>
-      'Alphabetical browse will appear here';
+      'यहां वर्णमाला क्रम में ब्राउज़ दिखाई देगा';
 
   @override
-  String get suggestions => 'Suggestions';
+  String get suggestions => 'सुझाव';
 
   @override
-  String get suggestionsPlaceholder => 'Suggested items will appear here';
+  String get suggestionsPlaceholder => 'सुझाए गए आइटम यहां दिखाई देंगे';
 
   @override
-  String get failedToLoadLibraries => 'Failed to load libraries';
+  String get failedToLoadLibraries => 'लाइब्रेरीज़ लोड करने में विफल';
 
   @override
-  String get noLibrariesFound => 'No libraries found';
+  String get noLibrariesFound => 'कोई लाइब्रेरी नहीं मिली';
 
   @override
-  String get library => 'Library';
+  String get library => 'पुस्तकालय';
 
   @override
-  String get displaySettings => 'Display Settings';
+  String get displaySettings => 'प्रदर्शन सेटिंग्स';
 
   @override
-  String get allGenres => 'All Genres';
+  String get allGenres => 'सभी शैलियाँ';
 
   @override
-  String get noGenresFound => 'No genres found';
+  String get noGenresFound => 'कोई शैलियाँ नहीं मिलीं';
 
   @override
   String failedToLoadFolderError(String error) {
@@ -277,7 +280,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get thisFolderIsEmpty => 'This folder is empty';
+  String get thisFolderIsEmpty => 'यह फ़ोल्डर खाली है';
 
   @override
   String itemCountLabel(int count) {
@@ -285,16 +288,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadFavorites => 'Failed to load favorites';
+  String get failedToLoadFavorites => 'पसंदीदा लोड करने में विफल';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'पुन: प्रयास करें';
 
   @override
-  String get noFavoritesYet => 'No favorites yet';
+  String get noFavoritesYet => 'अभी तक कोई पसंदीदा नहीं';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'पसंदीदा';
 
   @override
   String totalCountItems(int count) {
@@ -302,40 +305,40 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get continuing => 'Continuing';
+  String get continuing => 'सतत';
 
   @override
-  String get ended => 'Ended';
+  String get ended => 'समाप्त';
 
   @override
-  String get sortAndFilter => 'Sort & Filter';
+  String get sortAndFilter => 'क्रमबद्ध एवं फ़िल्टर करें';
 
   @override
-  String get type => 'Type';
+  String get type => 'प्रकार';
 
   @override
-  String get sortBy => 'Sort By';
+  String get sortBy => 'इसके अनुसार क्रमबद्ध करें';
 
   @override
-  String get display => 'Display';
+  String get display => 'प्रदर्शन';
 
   @override
-  String get imageType => 'Image Type';
+  String get imageType => 'छवि प्रकार';
 
   @override
-  String get posterSize => 'Poster Size';
+  String get posterSize => 'पोस्टर का आकार';
 
   @override
-  String get small => 'Small';
+  String get small => 'छोटा';
 
   @override
-  String get medium => 'Medium';
+  String get medium => 'मध्यम';
 
   @override
-  String get large => 'Large';
+  String get large => 'बड़ा';
 
   @override
-  String get extraLarge => 'Extra Large';
+  String get extraLarge => 'एक्स्ट्रा लार्ज';
 
   @override
   String libraryGenresTitle(String name) {
@@ -343,37 +346,38 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get views => 'Views';
+  String get views => 'दृश्य';
 
   @override
-  String get albums => 'Albums';
+  String get albums => 'एलबम';
 
   @override
-  String get albumArtists => 'Album Artists';
+  String get albumArtists => 'एल्बम कलाकार';
 
   @override
-  String get artists => 'Artists';
+  String get artists => 'कलाकार';
 
   @override
-  String get bookmarks => 'Bookmarks';
+  String get bookmarks => 'बुकमार्क';
 
   @override
-  String get noSavedBookmarks => 'No saved bookmarks for this title yet.';
+  String get noSavedBookmarks =>
+      'इस शीर्षक के लिए अभी तक कोई सहेजा गया बुकमार्क नहीं है.';
 
   @override
-  String get openBook => 'Open Book';
+  String get openBook => 'किताब खोलें';
 
   @override
-  String get chapter => 'Chapter';
+  String get chapter => 'अध्याय';
 
   @override
-  String get page => 'Page';
+  String get page => 'पेज';
 
   @override
-  String get bookmark => 'Bookmark';
+  String get bookmark => 'बुकमार्क';
 
   @override
-  String get justNow => 'Just now';
+  String get justNow => 'बस अब';
 
   @override
   String minutesAgo(int count) {
@@ -391,34 +395,34 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get discoverySubjects => 'Discovery Subjects';
+  String get discoverySubjects => 'खोज विषय';
 
   @override
   String get pickDiscoverySubjects =>
-      'Pick which subject feeds to show in Discover.';
+      'चुनें कि डिस्कवर में कौन सा विषय फ़ीड दिखाना है।';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'आवेदन करना';
 
   @override
-  String get openLink => 'Open Link';
+  String get openLink => 'खुला लिंक';
 
   @override
-  String get scanWithYourPhone => 'Scan with your phone';
+  String get scanWithYourPhone => 'अपने फ़ोन से स्कैन करें';
 
   @override
-  String get audiobookGenres => 'Audiobook Genres';
+  String get audiobookGenres => 'ऑडियोबुक शैलियाँ';
 
   @override
   String get pickAudiobookGenres =>
-      'Pick which genres to show in Audiobook Discover.';
+      'चुनें कि ऑडियोबुक डिस्कवर में कौन सी शैलियाँ दिखानी हैं।';
 
   @override
-  String get discoverAudiobooks => 'Discover Audiobooks';
+  String get discoverAudiobooks => 'ऑडियोबुक खोजें';
 
   @override
   String get librivoxDescription =>
-      'Popular public domain titles from LibriVox.';
+      'LibriVox से लोकप्रिय सार्वजनिक डोमेन शीर्षक।';
 
   @override
   String titlesCount(int count) {
@@ -426,84 +430,84 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get scrollLeft => 'Scroll left';
+  String get scrollLeft => 'बाएँ स्क्रॉल करें';
 
   @override
-  String get scrollRight => 'Scroll right';
+  String get scrollRight => 'दाईं ओर स्क्रॉल करें';
 
   @override
-  String get couldNotLoadGenre => 'Could not load this genre right now.';
+  String get couldNotLoadGenre => 'अभी इस शैली को लोड नहीं किया जा सका.';
 
   @override
-  String get continueReading => 'Continue Reading';
+  String get continueReading => 'जारी रखें पढ़ रहे हैं';
 
   @override
-  String get savedHighlights => 'Saved Highlights';
+  String get savedHighlights => 'सहेजे गए हाइलाइट्स';
 
   @override
-  String get continueListening => 'Continue Listening';
+  String get continueListening => 'सुनना जारी रखें';
 
   @override
-  String get listen => 'Listen';
+  String get listen => 'सुनना';
 
   @override
-  String get resume => 'Resume';
+  String get resume => 'फिर शुरू करना';
 
   @override
-  String get failedToLoadLibrary => 'Failed to load library';
+  String get failedToLoadLibrary => 'लाइब्रेरी लोड करने में विफल';
 
   @override
-  String get popularNow => 'Popular Now';
+  String get popularNow => 'अब लोकप्रिय';
 
   @override
-  String get savedForLater => 'Saved For Later';
+  String get savedForLater => 'बाद के लिए सहेजा गया';
 
   @override
-  String get topListens => 'Top Listens';
+  String get topListens => 'शीर्ष श्रोता';
 
   @override
-  String get unreadDiscoveries => 'Unread Discoveries';
+  String get unreadDiscoveries => 'अपठित खोजें';
 
   @override
-  String get pickUpAgain => 'Pick Up Again';
+  String get pickUpAgain => 'फिर से उठाओ';
 
   @override
   String get bookHighlightsDescription =>
-      'Your books with highlights, favorites, or reading progress.';
+      'हाइलाइट्स, पसंदीदा या पढ़ने की प्रगति वाली आपकी किताबें।';
 
   @override
-  String get handPickedFromLibrary => 'Hand-picked from your library.';
+  String get handPickedFromLibrary => 'आपकी लाइब्रेरी से हाथ से चुना गया।';
 
   @override
   String get handPickedFromListeningQueue =>
-      'Hand-picked from your listening queue.';
+      'आपकी सुनने वाली कतार से हाथ से चुना गया।';
 
   @override
   String get booksWithHighlights =>
-      'Books with highlights, favorites, or reading progress.';
+      'हाइलाइट्स, पसंदीदा या पढ़ने की प्रगति वाली किताबें।';
 
   @override
-  String get jumpBackNarration =>
-      'Jump back into narration without hunting for your place.';
+  String get jumpBackNarration => 'अपनी जगह की तलाश किए बिना कथन में वापस आएँ।';
 
   @override
-  String get unreadBooksReady => 'Unread books ready for the next quiet hour.';
+  String get unreadBooksReady =>
+      'अपठित पुस्तकें अगले शांत घंटे के लिए तैयार हैं।';
 
   @override
   String get quickAccessFavorites =>
-      'Quick access to the books you keep coming back to.';
+      'जिन पुस्तकों पर आप बार-बार आते हैं उन तक त्वरित पहुंच।';
 
   @override
-  String get searchAudiobooks => 'Search audiobooks';
+  String get searchAudiobooks => 'ऑडियोबुक खोजें';
 
   @override
-  String get searchYourLibrary => 'Search your library';
+  String get searchYourLibrary => 'अपनी लाइब्रेरी खोजें';
 
   @override
-  String get pickUpStory => 'Pick up the story where you left off';
+  String get pickUpStory => 'कहानी वहीं से शुरू करें जहां आपने छोड़ी थी';
 
   @override
-  String get savedPlacesChapters => 'Your saved places and unfinished chapters';
+  String get savedPlacesChapters => 'आपके सहेजे गए स्थान और अधूरे अध्याय';
 
   @override
   String authorsCount(int count) {
@@ -521,16 +525,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get readyWhenYouAre => 'Ready when you are';
+  String get readyWhenYouAre => 'तैयार जब आप हैं';
 
   @override
-  String get details => 'Details';
+  String get details => 'विवरण';
 
   @override
-  String get listeningRoom => 'Listening Room';
+  String get listeningRoom => 'श्रवण कक्ष';
 
   @override
-  String get bookmarksAndProgress => 'Bookmarks & Progress';
+  String get bookmarksAndProgress => 'बुकमार्क और प्रगति';
 
   @override
   String titlesArrangedForBrowsing(int count) {
@@ -538,36 +542,36 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get titles => 'Titles';
+  String get titles => 'टाइटल';
 
   @override
-  String get allTitles => 'All Titles';
+  String get allTitles => 'सभी शीर्षक';
 
   @override
-  String get authors => 'Authors';
+  String get authors => 'लेखक';
 
   @override
-  String get browseByAuthor => 'Browse By Author';
+  String get browseByAuthor => 'लेखक द्वारा ब्राउज़ करें';
 
   @override
-  String get browseByGenre => 'Browse By Genre';
+  String get browseByGenre => 'शैली के अनुसार ब्राउज़ करें';
 
   @override
-  String get discover => 'Discover';
+  String get discover => 'खोज करना';
 
   @override
   String get trendingTitlesOpenLibrary =>
-      'Trending titles by subject from Open Library.';
+      'Open Library से विषय के अनुसार रुझान वाले शीर्षक।';
 
   @override
-  String get noBookmarkedItems => 'No bookmarked items yet';
+  String get noBookmarkedItems => 'अभी तक कोई बुकमार्क किया गया आइटम नहीं';
 
   @override
   String get nothingMatchesSection =>
-      'Nothing matches this section yet. Try another tab or come back after the library sync finishes.';
+      'अभी तक इस अनुभाग से कुछ भी मेल नहीं खाता है. कोई अन्य टैब आज़माएँ या लाइब्रेरी सिंक समाप्त होने के बाद वापस आएँ।';
 
   @override
-  String get audiobooks => 'Audiobooks';
+  String get audiobooks => 'ऑडियो पुस्तकें';
 
   @override
   String noLabelFound(String label) {
@@ -575,71 +579,71 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get folder => 'Folder';
+  String get folder => 'फ़ोल्डर';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'फिल्टर';
 
   @override
-  String get readingStatus => 'Reading Status';
+  String get readingStatus => 'पढ़ने की स्थिति';
 
   @override
-  String get playedStatus => 'Played Status';
+  String get playedStatus => 'खेला स्थिति';
 
   @override
-  String get readStatus => 'Read';
+  String get readStatus => 'पढ़ना';
 
   @override
-  String get watched => 'Watched';
+  String get watched => 'देखे';
 
   @override
-  String get unread => 'Unread';
+  String get unread => 'अपठित ग';
 
   @override
-  String get unwatched => 'Unwatched';
+  String get unwatched => 'नहीं देखा गया';
 
   @override
-  String get seriesStatus => 'Series Status';
+  String get seriesStatus => 'शृंखला स्थिति';
 
   @override
-  String get allLibraries => 'All Libraries';
+  String get allLibraries => 'सभी पुस्तकालय';
 
   @override
-  String get books => 'Books';
+  String get books => 'किताबें';
 
   @override
-  String get author => 'Author';
+  String get author => 'लेखक';
 
   @override
-  String get unknownAuthor => 'Unknown Author';
+  String get unknownAuthor => 'अज्ञात लेखक';
 
   @override
-  String get uncategorized => 'Uncategorized';
+  String get uncategorized => 'अवर्गीकृत';
 
   @override
-  String get overview => 'Overview';
+  String get overview => 'सिंहावलोकन';
 
   @override
   String get noLibrivoxDescription =>
-      'No description provided by LibriVox for this title yet.';
+      'इस शीर्षक के लिए LibriVox द्वारा अभी तक कोई विवरण उपलब्ध नहीं कराया गया है।';
 
   @override
-  String get readers => 'Readers';
+  String get readers => 'पाठकों';
 
   @override
-  String get openLinks => 'Open Links';
+  String get openLinks => 'लिंक खोलें';
 
   @override
-  String get librivoxPage => 'LibriVox Page';
+  String get librivoxPage => 'LibriVox पेज';
 
   @override
-  String get internetArchive => 'Internet Archive';
+  String get internetArchive => 'इंटरनेट पुरालेख';
 
   @override
-  String get rssFeed => 'RSS Feed';
+  String get rssFeed => 'आरएसएस फीड';
 
   @override
-  String get downloadZip => 'Download Zip';
+  String get downloadZip => 'ज़िप डाउनलोड करें';
 
   @override
   String sectionCountLabel(int count) {
@@ -653,13 +657,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get noOpenLibraryOverview =>
-      'No overview available from Open Library for this title yet.';
+      'इस शीर्षक के लिए Open Library से अभी तक कोई अवलोकन उपलब्ध नहीं है।';
 
   @override
-  String get subjects => 'Subjects';
+  String get subjects => 'विषयों';
 
   @override
-  String get all => 'All';
+  String get all => 'सभी';
 
   @override
   String booksCount(int count) {
@@ -667,10 +671,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get couldNotLoadSubject => 'Could not load this subject right now.';
+  String get couldNotLoadSubject => 'इस विषय को अभी लोड नहीं किया जा सका.';
 
   @override
-  String get audiobookDetails => 'Audiobook Details';
+  String get audiobookDetails => 'ऑडियोबुक विवरण';
 
   @override
   String authorsCountTitle(int count) {
@@ -689,83 +693,88 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get trackList => 'Track List';
+  String get trackList => 'ट्रैक सूची';
 
   @override
-  String get itemListPlaceholder => 'Item list will appear here';
+  String get itemListPlaceholder => 'आइटम सूची यहां दिखाई देगी';
 
   @override
-  String get favoriteTracksPlaceholder => 'Favorite tracks will appear here';
+  String get favoriteTracksPlaceholder => 'पसंदीदा ट्रैक यहां दिखाई देंगे';
 
   @override
-  String get failedToLoad => 'Failed to load';
+  String get failedToLoad => 'लोड करने में विफल';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'मिटाना';
 
   @override
-  String get save => 'Save';
+  String get save => 'बचाना';
 
   @override
-  String get moreLikeThis => 'More Like This';
+  String get moreLikeThis => 'इसे और भी पसंद करें';
 
   @override
-  String get castAndCrew => 'Cast & Crew';
+  String get castAndCrew => 'कलाकार समूह';
 
   @override
-  String get collection => 'Collection';
+  String get collection => 'संग्रह';
 
   @override
-  String get episodes => 'Episodes';
+  String get episodes => 'एपिसोड';
 
   @override
-  String get nextUp => 'Next Up';
+  String get nextUp => 'अगला ऊपर';
 
   @override
-  String get seasons => 'Seasons';
+  String get seasons => 'मौसम के';
 
   @override
-  String get chapters => 'Chapters';
+  String get chapters => 'अध्याय';
 
   @override
-  String get features => 'Features';
+  String get features => 'विशेषताएँ';
 
   @override
-  String get movies => 'Movies';
+  String get movies => 'चलचित्र';
 
   @override
-  String get other => 'Other';
+  String get other => 'अन्य';
 
   @override
-  String get discography => 'Discography';
+  String get discography => 'डिस्कोग्राफी';
 
   @override
-  String get similarArtists => 'Similar Artists';
+  String get similarArtists => 'समान कलाकार';
 
   @override
-  String get tableOfContents => 'Table of Contents';
+  String get tableOfContents => 'विषयसूची';
 
   @override
-  String get tracklist => 'Tracklist';
+  String get tracklist => 'ट्रैकलिस्ट';
 
   @override
-  String get biography => 'Biography';
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
 
   @override
-  String get authorDetails => 'Author Details';
+  String get biography => 'जीवनी';
 
   @override
-  String get noOverviewAvailable => 'No overview available for this title yet.';
+  String get authorDetails => 'लेखक विवरण';
 
   @override
-  String get noBiographyAvailable => 'No biography available for this author.';
+  String get noOverviewAvailable =>
+      'इस शीर्षक के लिए अभी तक कोई अवलोकन उपलब्ध नहीं है.';
 
   @override
-  String get noBooksFound => 'No books found for this author.';
+  String get noBiographyAvailable => 'इस लेखक की कोई जीवनी उपलब्ध नहीं है.';
 
   @override
-  String get unableToLoadAuthorDetails =>
-      'Unable to load author details right now.';
+  String get noBooksFound => 'इस लेखक के लिए कोई पुस्तक नहीं मिली.';
+
+  @override
+  String get unableToLoadAuthorDetails => 'अभी लेखक विवरण लोड करने में असमर्थ.';
 
   @override
   String published(int year) {
@@ -773,7 +782,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get publicationDateUnknown => 'Publication date unknown';
+  String get publicationDateUnknown => 'प्रकाशन तिथि अज्ञात';
 
   @override
   String seasonCount(int count) {
@@ -792,13 +801,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get view => 'View';
+  String get view => 'देखना';
 
   @override
-  String get resumeReading => 'Resume Reading';
+  String get resumeReading => 'पढ़ना फिर से शुरू करें';
 
   @override
-  String get read => 'Read';
+  String get read => 'पढ़ना';
 
   @override
   String resumeFrom(String position) {
@@ -806,97 +815,97 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get play => 'Play';
+  String get play => 'खेल';
 
   @override
-  String get startOver => 'Start Over';
+  String get startOver => 'प्रारंभ करें';
 
   @override
-  String get restart => 'Restart';
+  String get restart => 'पुनः आरंभ करें';
 
   @override
-  String get readOffline => 'Read Offline';
+  String get readOffline => 'ऑफ़लाइन पढ़ें';
 
   @override
-  String get playOffline => 'Play Offline';
+  String get playOffline => 'ऑफ़लाइन खेले';
 
   @override
-  String get audio => 'Audio';
+  String get audio => 'ऑडियो';
 
   @override
-  String get subtitles => 'Subtitles';
+  String get subtitles => 'उपशीर्षक';
 
   @override
-  String get version => 'Version';
+  String get version => 'संस्करण';
 
   @override
-  String get cast => 'Cast';
+  String get cast => 'ढालना';
 
   @override
-  String get trailer => 'Trailer';
+  String get trailer => 'ट्रेलर';
 
   @override
-  String get finished => 'Finished';
+  String get finished => 'खत्म';
 
   @override
-  String get favorited => 'Favorited';
+  String get favorited => 'पसंदीदा';
 
   @override
-  String get favorite => 'Favorite';
+  String get favorite => 'पसंदीदा';
 
   @override
-  String get playlist => 'Playlist';
+  String get playlist => 'प्लेलिस्ट';
 
   @override
-  String get downloaded => 'Downloaded';
+  String get downloaded => 'डाउनलोड';
 
   @override
-  String get downloadAll => 'Download All';
+  String get downloadAll => 'सभी डाउनलोड करें';
 
   @override
-  String get download => 'Download';
+  String get download => 'डाउनलोड करना';
 
   @override
-  String get deleteDownloaded => 'Delete Downloaded';
+  String get deleteDownloaded => 'डाउनलोड हटाएँ';
 
   @override
-  String get goToSeries => 'Go to Series';
+  String get goToSeries => 'श्रृंखला पर जाएँ';
 
   @override
-  String get editMetadata => 'Edit Metadata';
+  String get editMetadata => 'मेटाडेटा संपादित करें';
 
   @override
-  String get less => 'Less';
+  String get less => 'कम';
 
   @override
-  String get more => 'More';
+  String get more => 'अधिक';
 
   @override
-  String get deleteItem => 'Delete Item';
+  String get deleteItem => 'आइटम हटाएँ';
 
   @override
-  String get deletePlaylist => 'Delete Playlist';
+  String get deletePlaylist => 'प्लेलिस्ट हटाएँ';
 
   @override
-  String get deletePlaylistMessage => 'Delete this playlist from the server?';
+  String get deletePlaylistMessage => 'सर्वर से यह प्लेलिस्ट हटाएं?';
 
   @override
-  String get deleteItemMessage => 'Delete this item from the server?';
+  String get deleteItemMessage => 'सर्वर से यह आइटम हटाएं?';
 
   @override
-  String get failedToDeletePlaylist => 'Failed to delete playlist';
+  String get failedToDeletePlaylist => 'प्लेलिस्ट हटाने में विफल';
 
   @override
-  String get failedToDeleteItem => 'Failed to delete item';
+  String get failedToDeleteItem => 'आइटम हटाने में विफल';
 
   @override
-  String get renamePlaylist => 'Rename Playlist';
+  String get renamePlaylist => 'प्लेलिस्ट का नाम बदलें';
 
   @override
-  String get playlistName => 'Playlist name';
+  String get playlistName => 'प्लेलिस्ट का नाम';
 
   @override
-  String get deleteDownloadedAlbum => 'Delete Downloaded Album';
+  String get deleteDownloadedAlbum => 'डाउनलोड किया गया एल्बम हटाएँ';
 
   @override
   String deleteDownloadedTracksMessage(String title) {
@@ -904,14 +913,14 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get downloadedTracksDeleted => 'Downloaded tracks deleted';
+  String get downloadedTracksDeleted => 'डाउनलोड किए गए ट्रैक हटा दिए गए';
 
   @override
   String get downloadedTracksDeleteFailed =>
-      'Some downloaded tracks could not be deleted';
+      'कुछ डाउनलोड किए गए ट्रैक हटाए नहीं जा सके';
 
   @override
-  String get noTracksLoaded => 'No tracks loaded';
+  String get noTracksLoaded => 'कोई ट्रैक लोड नहीं किया गया';
 
   @override
   String noItemsLoaded(String itemLabel) {
@@ -929,10 +938,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get itemDeleted => 'Item deleted';
+  String get itemDeleted => 'आइटम हटा दिया गया';
 
   @override
-  String get noPlayableTrailerFound => 'No playable trailer found.';
+  String get noPlayableTrailerFound => 'कोई चलाने योग्य ट्रेलर नहीं मिला.';
 
   @override
   String unsupportedBookFormat(String extension) {
@@ -940,26 +949,26 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get audioTrack => 'Audio Track';
+  String get audioTrack => 'ऑडियो ट्रैक';
 
   @override
-  String get subtitleTrack => 'Subtitle Track';
+  String get subtitleTrack => 'उपशीर्षक ट्रैक';
 
   @override
-  String get none => 'None';
+  String get none => 'कोई नहीं';
 
   @override
-  String get downloadSubtitlesLabel => 'Download subtitles...';
+  String get downloadSubtitlesLabel => 'उपशीर्षक डाउनलोड करें...';
 
   @override
   String get searchOpenSubtitlesPlugin =>
-      'Search using the OpenSubtitles plugin';
+      'OpenSubtitles प्लगइन का उपयोग करके खोजें';
 
   @override
-  String get downloadSubtitles => 'Download Subtitles';
+  String get downloadSubtitles => 'उपशीर्षक डाउनलोड करें';
 
   @override
-  String get selectedSubtitleInvalid => 'The selected subtitle is invalid.';
+  String get selectedSubtitleInvalid => 'चयनित उपशीर्षक अमान्य है.';
 
   @override
   String subtitleDownloadedSelected(String name) {
@@ -968,7 +977,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get subtitleDownloadedPending =>
-      'Subtitle downloaded. It may take a moment to appear while Jellyfin refreshes the item.';
+      'उपशीर्षक डाउनलोड किया गया. Jellyfin आइटम को रीफ्रेश करते समय इसे प्रदर्शित होने में कुछ समय लग सकता है।';
 
   @override
   String noRemoteSubtitlesFound(String language) {
@@ -976,7 +985,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get selectVersion => 'Select Version';
+  String get selectVersion => 'संस्करण चुनें';
 
   @override
   String versionNumber(int number) {
@@ -984,19 +993,20 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get downloadAllQuality => 'Download All — Quality';
+  String get downloadAllQuality => 'सभी डाउनलोड करें - गुणवत्ता';
 
   @override
-  String get downloadQuality => 'Download Quality';
+  String get downloadQuality => 'गुणवत्ता डाउनलोड करें';
 
   @override
-  String get originalFileNoReencoding => 'Original file, no re-encoding';
+  String get originalFileNoReencoding => 'मूल फ़ाइल, कोई पुनः एन्कोडिंग नहीं';
 
   @override
-  String get originalFilesNoReencoding => 'Original files, no re-encoding';
+  String get originalFilesNoReencoding =>
+      'मूल फ़ाइलें, कोई पुनः एन्कोडिंग नहीं';
 
   @override
-  String get noEpisodesLoaded => 'No episodes loaded';
+  String get noEpisodesLoaded => 'कोई एपिसोड लोड नहीं किया गया';
 
   @override
   String downloadingItem(String name, String quality) {
@@ -1004,7 +1014,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get deleteDownloadedFiles => 'Delete Downloaded Files';
+  String get deleteDownloadedFiles => 'डाउनलोड की गई फ़ाइलें हटाएँ';
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
@@ -1012,19 +1022,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get downloadedFilesDeleted => 'Downloaded files deleted';
+  String get downloadedFilesDeleted => 'डाउनलोड की गई फ़ाइलें हटा दी गईं';
 
   @override
-  String get failedToDeleteFiles => 'Failed to delete files';
+  String get failedToDeleteFiles => 'फ़ाइलें हटाने में विफल';
 
   @override
-  String get deleteFiles => 'Delete Files';
+  String get deleteFiles => 'फाइलों को नष्ट';
 
   @override
-  String get director => 'DIRECTOR';
+  String get director => 'निदेशक';
 
   @override
-  String get writers => 'WRITERS';
+  String get writers => 'लेखक';
 
   @override
   String get studio => 'STUDIO';
@@ -1092,13 +1102,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get showLess => 'Show Less';
+  String get showLess => 'कम दिखाएँ';
 
   @override
-  String get readMore => 'Read More';
+  String get readMore => 'और पढ़ें';
 
   @override
-  String get shuffle => 'Shuffle';
+  String get shuffle => 'मिश्रण';
 
   @override
   String downloadsCount(int count) {
@@ -1106,7 +1116,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get perfectMatch => 'Perfect match';
+  String get perfectMatch => 'बहतरीन मैच';
 
   @override
   String channelsCount(int count) {
@@ -1114,10 +1124,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get mono => 'Mono';
+  String get mono => 'मोनो';
 
   @override
-  String get stereo => 'Stereo';
+  String get stereo => 'स्टीरियो';
 
   @override
   String remoteSubtitlePermissionError(String action) {
@@ -1150,19 +1160,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get deleteSeasonFiles => 'all downloaded episodes in this season';
+  String get deleteSeasonFiles => 'इस सीज़न में सभी डाउनलोड किए गए एपिसोड';
 
   @override
-  String get stillWatching => 'Still Watching?';
+  String get stillWatching => 'अभी भी देख रहे हैं?';
 
   @override
-  String get unableToLoadTrailerStream => 'Unable to load trailer stream.';
+  String get unableToLoadTrailerStream => 'ट्रेलर स्ट्रीम लोड करने में असमर्थ.';
 
   @override
-  String get trailerTimedOut => 'Trailer timed out while loading.';
+  String get trailerTimedOut => 'लोड करते समय ट्रेलर का समय समाप्त हो गया।';
 
   @override
-  String get playbackFailedForTrailer => 'Playback failed for this trailer.';
+  String get playbackFailedForTrailer => 'इस ट्रेलर के लिए प्लेबैक विफल रहा.';
 
   @override
   String photoCountOf(int current, int total) {
@@ -1171,7 +1181,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get castingUnavailableOffline =>
-      'Casting is unavailable during offline playback.';
+      'ऑफ़लाइन प्लेबैक के दौरान कास्टिंग अनुपलब्ध है.';
 
   @override
   String castActionFailed(String label, String error) {
@@ -1189,16 +1199,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get deviceVolume => 'Device Volume';
+  String get deviceVolume => 'डिवाइस वॉल्यूम';
 
   @override
-  String get unavailable => 'Unavailable';
+  String get unavailable => 'अनुपलब्ध';
 
   @override
-  String get pause => 'Pause';
+  String get pause => 'विराम';
 
   @override
-  String get syncPosition => 'Sync Position';
+  String get syncPosition => 'सिंक स्थिति';
 
   @override
   String stopCast(String label) {
@@ -1206,7 +1216,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get queueIsEmpty => 'Queue is empty';
+  String get queueIsEmpty => 'कतार खाली है';
 
   @override
   String trackNumber(int number) {
@@ -1214,16 +1224,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get remotePlayback => 'Remote Playback';
+  String get remotePlayback => 'रिमोट प्लेबैक';
 
   @override
-  String get castingToGoogleCast => 'Casting to Google Cast';
+  String get castingToGoogleCast => 'Google Cast पर कास्टिंग';
 
   @override
-  String get castingViaAirPlay => 'Casting via AirPlay';
+  String get castingViaAirPlay => 'AirPlay के माध्यम से कास्टिंग';
 
   @override
-  String get castingViaDlna => 'Casting via DLNA';
+  String get castingViaDlna => 'DLNA के माध्यम से कास्टिंग';
 
   @override
   String secondsCount(int seconds) {
@@ -1231,10 +1241,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get longPressToUnlock => 'Long press to unlock';
+  String get longPressToUnlock => 'अनलॉक करने के लिए देर तक दबाएं';
 
   @override
-  String get off => 'Off';
+  String get off => 'बंद';
 
   @override
   String streamTypeFallback(String streamType, int number) {
@@ -1242,7 +1252,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get auto => 'Auto';
+  String get auto => 'ऑटो';
 
   @override
   String bitrateValueMbps(int mbps) {
@@ -1250,10 +1260,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get bitrateOverride => 'Bitrate Override';
+  String get bitrateOverride => 'बिटरेट ओवरराइड';
 
   @override
-  String get audioDelay => 'Audio Delay';
+  String get audioDelay => 'ऑडियो विलंब';
 
   @override
   String delayMinusMs(int value) {
@@ -1266,79 +1276,79 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get subtitleDelay => 'Subtitle Delay';
+  String get subtitleDelay => 'उपशीर्षक विलंब';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'रीसेट करें';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'अज्ञात';
 
   @override
-  String get playbackInformation => 'Playback Information';
+  String get playbackInformation => 'प्लेबैक सूचना';
 
   @override
-  String get playback => 'Playback';
+  String get playback => 'प्लेबैक';
 
   @override
-  String get playMethod => 'Play Method';
+  String get playMethod => 'खेलने की विधि';
 
   @override
-  String get directPlay => 'Direct Play';
+  String get directPlay => 'डायरेक्ट प्ले';
 
   @override
-  String get directStream => 'Direct Stream';
+  String get directStream => 'सीधी धारा';
 
   @override
-  String get transcoding => 'Transcoding';
+  String get transcoding => 'ट्रांसकोडिंग';
 
   @override
-  String get transcodeReasons => 'Transcode Reasons';
+  String get transcodeReasons => 'ट्रांसकोड कारण';
 
   @override
-  String get player => 'Player';
+  String get player => 'खिलाड़ी';
 
   @override
-  String get container => 'Container';
+  String get container => 'पात्र';
 
   @override
-  String get bitrate => 'Bitrate';
+  String get bitrate => 'बिटरेट';
 
   @override
-  String get video => 'Video';
+  String get video => 'वीडियो';
 
   @override
-  String get resolution => 'Resolution';
+  String get resolution => 'संकल्प';
 
   @override
-  String get hdr => 'HDR';
+  String get hdr => 'एचडीआर';
 
   @override
-  String get codec => 'Codec';
+  String get codec => 'कोडेक';
 
   @override
-  String get videoBitrate => 'Video Bitrate';
+  String get videoBitrate => 'वीडियो बिटरेट';
 
   @override
-  String get track => 'Track';
+  String get track => 'रास्ता';
 
   @override
-  String get channels => 'Channels';
+  String get channels => 'चैनल';
 
   @override
-  String get audioBitrate => 'Audio Bitrate';
+  String get audioBitrate => 'ऑडियो बिटरेट';
 
   @override
-  String get sampleRate => 'Sample Rate';
+  String get sampleRate => 'नमूना दर';
 
   @override
-  String get format => 'Format';
+  String get format => 'प्रारूप';
 
   @override
-  String get external => 'External';
+  String get external => 'बाहरी';
 
   @override
-  String get embedded => 'Embedded';
+  String get embedded => 'अंतर्निहित';
 
   @override
   String castSessionError(String protocol) {
@@ -1352,7 +1362,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get epubUnavailableOnPlatform =>
-      'EPUB rendering in-app is not available on this platform yet.';
+      'EPUB रेंडरिंग इन-ऐप अभी इस प्लेटफ़ॉर्म पर उपलब्ध नहीं है।';
 
   @override
   String formatCannotRenderInApp(String extension) {
@@ -1361,10 +1371,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get embeddedRenderingUnavailable =>
-      'Embedded document rendering is unavailable on this platform.';
+      'इस प्लेटफ़ॉर्म पर एंबेडेड दस्तावेज़ रेंडरिंग उपलब्ध नहीं है।';
 
   @override
-  String get couldNotOpenExternalViewer => 'Could not open external viewer.';
+  String get couldNotOpenExternalViewer => 'बाहरी व्यूअर नहीं खुल सका.';
 
   @override
   String failedToOpenInAppReader(String error) {
@@ -1383,10 +1393,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get noBookmarksYet =>
-      'No bookmarks yet.\nTap the bookmark icon while reading to save your position.';
+      'अभी तक कोई बुकमार्क नहीं.\nअपनी स्थिति बचाने के लिए पढ़ते समय बुकमार्क आइकन पर टैप करें।';
 
   @override
-  String get noTableOfContentsAvailable => 'No table of contents available';
+  String get noTableOfContentsAvailable =>
+      'सामग्री की कोई तालिका उपलब्ध नहीं है';
 
   @override
   String pageLabel(int number) {
@@ -1394,10 +1405,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get position => 'Position';
+  String get position => 'पद';
 
   @override
-  String get bookReader => 'Book Reader';
+  String get bookReader => 'पुस्तक पाठक';
 
   @override
   String formatExtension(String extension) {
@@ -1410,22 +1421,22 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get updating => 'Updating...';
+  String get updating => 'अद्यतन किया जा रहा है...';
 
   @override
-  String get markUnread => 'Mark Unread';
+  String get markUnread => 'अपठित चिन्हित करो';
 
   @override
-  String get markAsRead => 'Mark as Read';
+  String get markAsRead => 'पढ़े हुए का चिह्न';
 
   @override
-  String get reloadReader => 'Reload Reader';
+  String get reloadReader => 'रीडर पुनः लोड करें';
 
   @override
-  String get noPagesFound => 'No pages found.';
+  String get noPagesFound => 'कोई पेज नहीं मिला.';
 
   @override
-  String get failedToDecodePageImage => 'Failed to decode page image.';
+  String get failedToDecodePageImage => 'पृष्ठ छवि को डिकोड करने में विफल.';
 
   @override
   String resetZoom(String zoom) {
@@ -1433,22 +1444,22 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get singlePage => 'Single Page';
+  String get singlePage => 'एकल पृष्ठ';
 
   @override
-  String get twoPageSpread => 'Two-Page Spread';
+  String get twoPageSpread => 'दो पेज का प्रसार';
 
   @override
-  String get addBookmark => 'Add Bookmark';
+  String get addBookmark => 'बुकमार्क जोड़ें';
 
   @override
-  String get bookmarksEllipsis => 'Bookmarks...';
+  String get bookmarksEllipsis => 'बुकमार्क...';
 
   @override
-  String get markedAsRead => 'Marked as read';
+  String get markedAsRead => 'पठित के रूप में चिह्नित किया गया';
 
   @override
-  String get markedAsUnread => 'Marked as unread';
+  String get markedAsUnread => 'अपठित के रूप में चिह्नित किया गया';
 
   @override
   String failedToUpdateReadState(String error) {
@@ -1456,31 +1467,31 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get themeSystem => 'Theme: System';
+  String get themeSystem => 'थीम: सिस्टम';
 
   @override
-  String get themeLight => 'Theme: Light';
+  String get themeLight => 'थीम: प्रकाश';
 
   @override
-  String get themeDark => 'Theme: Dark';
+  String get themeDark => 'थीम: अंधेरा';
 
   @override
-  String get themeSepia => 'Theme: Sepia';
+  String get themeSepia => 'थीम: सीपिया';
 
   @override
-  String get invertColorsFixedLayout => 'Invert Colors (fixed layout)';
+  String get invertColorsFixedLayout => 'रंग उलटा करें (निश्चित लेआउट)';
 
   @override
-  String get invertColorsPdf => 'Invert Colors (PDF)';
+  String get invertColorsPdf => 'रंग उलटें (पीडीएफ)';
 
   @override
-  String get preparingInAppReader => 'Preparing in-app reader...';
+  String get preparingInAppReader => 'इन-ऐप रीडर तैयार किया जा रहा है...';
 
   @override
-  String get pdfDataNotAvailable => 'PDF data not available.';
+  String get pdfDataNotAvailable => 'पीडीएफ डेटा उपलब्ध नहीं है.';
 
   @override
-  String get readerFallbackModeActive => 'Reader fallback mode active';
+  String get readerFallbackModeActive => 'रीडर फ़ॉलबैक मोड सक्रिय';
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
@@ -1489,37 +1500,37 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get reloadReaderPlatformHint =>
-      'Use Reload Reader after switching to a supported platform target (Android, iOS, macOS).';
+      'समर्थित प्लेटफ़ॉर्म लक्ष्य (एंड्रॉइड, आईओएस, मैकओएस) पर स्विच करने के बाद रीलोड रीडर का उपयोग करें।';
 
   @override
-  String get openExternally => 'Open Externally';
+  String get openExternally => 'बाह्य रूप से खोलें';
 
   @override
-  String get noEpubChaptersFound => 'No EPUB chapters found.';
+  String get noEpubChaptersFound => 'कोई EPUB अध्याय नहीं मिला.';
 
   @override
-  String get readerNotReady => 'Reader not ready.';
+  String get readerNotReady => 'पाठक तैयार नहीं.';
 
   @override
-  String get seriesRecordings => 'Series Recordings';
+  String get seriesRecordings => 'श्रृंखला रिकॉर्डिंग';
 
   @override
-  String get now => 'Now';
+  String get now => 'अब';
 
   @override
-  String get sports => 'Sports';
+  String get sports => 'खेल';
 
   @override
-  String get news => 'News';
+  String get news => 'समाचार';
 
   @override
-  String get kids => 'Kids';
+  String get kids => 'बच्चे';
 
   @override
   String get premiere => 'Premiere';
 
   @override
-  String get guideTimeline => 'Guide Timeline';
+  String get guideTimeline => 'गाइड टाइमलाइन';
 
   @override
   String failedToLoadGuide(String error) {
@@ -1527,35 +1538,35 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get noChannelsFound => 'No channels found';
+  String get noChannelsFound => 'कोई चैनल नहीं मिला';
 
   @override
-  String get liveBadge => 'LIVE';
+  String get liveBadge => 'रहना';
 
   @override
-  String get movie => 'Movie';
+  String get movie => 'चलचित्र';
 
   @override
-  String get removedFromFavoriteChannels => 'Removed from favorite channels';
+  String get removedFromFavoriteChannels => 'पसंदीदा चैनलों से हटा दिया गया';
 
   @override
-  String get addedToFavoriteChannels => 'Added to favorite channels';
+  String get addedToFavoriteChannels => 'पसंदीदा चैनलों में जोड़ा गया';
 
   @override
   String get failedToUpdateFavoriteChannel =>
-      'Failed to update favorite channel';
+      'पसंदीदा चैनल अपडेट करने में विफल';
 
   @override
-  String get unfavoriteChannel => 'Unfavorite Channel';
+  String get unfavoriteChannel => 'पसंदीदा चैनल';
 
   @override
-  String get favoriteChannel => 'Favorite Channel';
+  String get favoriteChannel => 'पसंदीदा चैनल';
 
   @override
-  String get watch => 'Watch';
+  String get watch => 'घड़ी';
 
   @override
-  String get close => 'Close';
+  String get close => 'बंद करना';
 
   @override
   String failedToPlayChannel(String name) {
@@ -1563,25 +1574,25 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadRecordings => 'Failed to load recordings';
+  String get failedToLoadRecordings => 'रिकॉर्डिंग लोड करने में विफल';
 
   @override
-  String get scheduledInNext24Hours => 'Scheduled in Next 24 Hours';
+  String get scheduledInNext24Hours => 'अगले 24 घंटों में शेड्यूल किया गया';
 
   @override
-  String get recentRecordings => 'Recent Recordings';
+  String get recentRecordings => 'हाल की रिकॉर्डिंग';
 
   @override
-  String get tvSeries => 'TV Series';
+  String get tvSeries => 'टीवी श्रृंखला';
 
   @override
-  String get failedToLoadSchedule => 'Failed to load schedule';
+  String get failedToLoadSchedule => 'शेड्यूल लोड करने में विफल';
 
   @override
-  String get noScheduledRecordings => 'No scheduled recordings';
+  String get noScheduledRecordings => 'कोई निर्धारित रिकॉर्डिंग नहीं';
 
   @override
-  String get cancelRecording => 'Cancel Recording?';
+  String get cancelRecording => 'रिकॉर्डिंग रद्द करें?';
 
   @override
   String cancelScheduledRecordingOf(String name) {
@@ -1589,25 +1600,26 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get no => 'No';
+  String get no => 'नहीं';
 
   @override
-  String get yesCancel => 'Yes, Cancel';
+  String get yesCancel => 'हाँ, रद्द करें';
 
   @override
-  String get failedToCancelRecording => 'Failed to cancel recording';
+  String get failedToCancelRecording => 'रिकॉर्डिंग रद्द करने में विफल';
 
   @override
-  String get failedToLoadSeriesRecordings => 'Failed to load series recordings';
+  String get failedToLoadSeriesRecordings =>
+      'श्रृंखला रिकॉर्डिंग लोड करने में विफल';
 
   @override
-  String get noSeriesRecordings => 'No series recordings';
+  String get noSeriesRecordings => 'कोई श्रृंखला रिकॉर्डिंग नहीं';
 
   @override
-  String get cancelSeriesRecording => 'Cancel Series Recording';
+  String get cancelSeriesRecording => 'सीरीज रिकॉर्डिंग रद्द करें';
 
   @override
-  String get cancelSeriesRecordingQuestion => 'Cancel Series Recording?';
+  String get cancelSeriesRecordingQuestion => 'श्रृंखला रिकॉर्डिंग रद्द करें?';
 
   @override
   String stopRecordingName(String name) {
@@ -1616,13 +1628,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get failedToCancelSeriesRecording =>
-      'Failed to cancel series recording';
+      'श्रृंखला रिकॉर्डिंग रद्द करने में विफल';
 
   @override
-  String get searchThisLibrary => 'Search this library...';
+  String get searchThisLibrary => 'यह लाइब्रेरी खोजें...';
 
   @override
-  String get searchEllipsis => 'Search...';
+  String get searchEllipsis => 'खोज...';
 
   @override
   String noResultsForQuery(String query) {
@@ -1635,31 +1647,40 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get seerr => 'Seerr';
+  String get seerr => 'द्रष्टा';
 
   @override
-  String get savedMedia => 'Saved Media';
+  String get seerrAccountType => 'द्रष्टा खाता प्रकार';
 
   @override
-  String get tvShows => 'TV Shows';
+  String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get music => 'Music';
+  String get localAccount => 'स्थानीय';
 
   @override
-  String get musicAlbums => 'Music Albums';
+  String get savedMedia => 'सहेजा गया मीडिया';
 
   @override
-  String get noMediaInFilter => 'No media in this filter';
+  String get tvShows => 'टीवी शो';
 
   @override
-  String get noDownloadedMediaYet => 'No downloaded media yet';
+  String get music => 'संगीत';
 
   @override
-  String get browseLibrary => 'Browse Library';
+  String get musicAlbums => 'संगीत एलबम';
 
   @override
-  String get deleteDownload => 'Delete Download';
+  String get noMediaInFilter => 'इस फ़िल्टर में कोई मीडिया नहीं';
+
+  @override
+  String get noDownloadedMediaYet => 'अभी तक कोई डाउनलोड किया गया मीडिया नहीं';
+
+  @override
+  String get browseLibrary => 'लाइब्रेरी ब्राउज़ करें';
+
+  @override
+  String get deleteDownload => 'डाउनलोड हटाएँ';
 
   @override
   String removeItemAndFiles(String name) {
@@ -1672,10 +1693,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get album => 'Album';
+  String get album => 'एल्बम';
 
   @override
-  String get playAlbum => 'Play Album';
+  String get playAlbum => 'एल्बम चलायें';
 
   @override
   String failedToLoadAlbum(String error) {
@@ -1688,16 +1709,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get season => 'Season';
+  String get season => 'मौसम';
 
   @override
-  String get errorLoadingEpisodes => 'Error loading episodes';
+  String get errorLoadingEpisodes => 'एपिसोड लोड करने में त्रुटि';
 
   @override
-  String get noDownloadedEpisodes => 'No downloaded episodes';
+  String get noDownloadedEpisodes => 'कोई डाउनलोड किया गया एपिसोड नहीं';
 
   @override
-  String get deleteEpisode => 'Delete Episode';
+  String get deleteEpisode => 'एपिसोड हटाएँ';
 
   @override
   String removeName(String name) {
@@ -1720,13 +1741,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get seriesNotFound => 'Series not found';
+  String get seriesNotFound => 'श्रृंखला नहीं मिली';
 
   @override
-  String get errorLoadingSeries => 'Error loading series';
+  String get errorLoadingSeries => 'श्रृंखला लोड करने में त्रुटि';
 
   @override
-  String get downloadedEpisodes => 'Downloaded Episodes';
+  String get downloadedEpisodes => 'डाउनलोड किए गए एपिसोड';
 
   @override
   String seasonNumber(int number) {
@@ -1739,10 +1760,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get specials => 'Specials';
+  String get specials => 'स्पेशल';
 
   @override
-  String get deleteSeason => 'Delete Season';
+  String get deleteSeason => 'सीज़न हटाएँ';
 
   @override
   String deleteAllEpisodesInSeason(String season) {
@@ -1761,32 +1782,32 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get storageManagement => 'Storage Management';
+  String get storageManagement => 'भंडारण प्रबंधन';
 
   @override
-  String get storageBreakdown => 'Storage Breakdown';
+  String get storageBreakdown => 'भंडारण टूटना';
 
   @override
-  String get downloadedItems => 'Downloaded Items';
+  String get downloadedItems => 'डाउनलोड किए गए आइटम';
 
   @override
-  String get storageLimit => 'Storage Limit';
+  String get storageLimit => 'भंडारण सीमा';
 
   @override
-  String get noLimit => 'No limit';
+  String get noLimit => 'कोई सीमा नहीं';
 
   @override
-  String get deleteAllDownloads => 'Delete All Downloads';
+  String get deleteAllDownloads => 'सभी डाउनलोड हटाएँ';
 
   @override
   String get deleteAllDownloadsWarning =>
-      'This will remove all downloaded media files and cannot be undone.';
+      'यह सभी डाउनलोड की गई मीडिया फ़ाइलों को हटा देगा और इसे पूर्ववत नहीं किया जा सकेगा।';
 
   @override
-  String get deleteAll => 'Delete All';
+  String get deleteAll => 'सभी हटा दो';
 
   @override
-  String get deleteSelected => 'Delete Selected';
+  String get deleteSelected => 'चयनित को हटाओ';
 
   @override
   String deleteSelectedCount(int count) {
@@ -1794,13 +1815,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get musicAndAudiobooks => 'Music & Audiobooks';
+  String get musicAndAudiobooks => 'संगीत और ऑडियोबुक';
 
   @override
-  String get images => 'Images';
+  String get images => 'इमेजिस';
 
   @override
-  String get database => 'Database';
+  String get database => 'डेटाबेस';
 
   @override
   String ofStorageLimit(String limit) {
@@ -1808,81 +1829,81 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'सेटिंग्स';
 
   @override
-  String get authentication => 'Authentication';
+  String get authentication => 'प्रमाणीकरण';
 
   @override
-  String get autoLoginServerManagement => 'Auto login, server management';
+  String get autoLoginServerManagement => 'ऑटो लॉगिन, सर्वर प्रबंधन';
 
   @override
-  String get pinCode => 'PIN Code';
+  String get pinCode => 'पिन कोड';
 
   @override
-  String get setUpPinCodeProtection => 'Set up PIN code protection';
+  String get setUpPinCodeProtection => 'पिन कोड सुरक्षा सेट करें';
 
   @override
-  String get parentalControls => 'Parental Controls';
+  String get parentalControls => 'माता-पिता का नियंत्रण';
 
   @override
-  String get contentRatingRestrictions => 'Content rating restrictions';
+  String get contentRatingRestrictions => 'सामग्री रेटिंग प्रतिबंध';
 
   @override
-  String get bitRateResolutionBehavior => 'Bitrate, resolution, behavior';
+  String get bitRateResolutionBehavior => 'बिटरेट, रिज़ॉल्यूशन, व्यवहार';
 
   @override
-  String get languageSizeAppearance => 'Language, size, appearance';
+  String get languageSizeAppearance => 'भाषा, आकार, रूप';
 
   @override
-  String get qualityStorage => 'Quality, storage';
+  String get qualityStorage => 'गुणवत्ता, भंडारण';
 
   @override
-  String get serverSyncAndPluginStatus => 'Server sync and plugin status';
+  String get serverSyncAndPluginStatus => 'सर्वर सिंक और प्लगइन स्थिति';
 
   @override
-  String get mediaRequestIntegration => 'Media request integration';
+  String get mediaRequestIntegration => 'मीडिया अनुरोध एकीकरण';
 
   @override
-  String get switchServer => 'Switch Server';
+  String get switchServer => 'सर्वर स्विच करें';
 
   @override
-  String get signOut => 'Sign Out';
+  String get signOut => 'साइन आउट';
 
   @override
-  String get versionLicenses => 'Version, licenses';
+  String get versionLicenses => 'संस्करण, लाइसेंस';
 
   @override
-  String get account => 'Account';
+  String get account => 'खाता';
 
   @override
-  String get signInAndSecurity => 'Sign-in and security';
+  String get signInAndSecurity => 'साइन-इन और सुरक्षा';
 
   @override
-  String get administration => 'Administration';
+  String get administration => 'प्रशासन';
 
   @override
   String get serverSettingsUsersLibraries =>
-      'Server settings, users, libraries';
+      'सर्वर सेटिंग्स, उपयोगकर्ता, लाइब्रेरीज़';
 
   @override
-  String get customization => 'Customization';
+  String get customization => 'अनुकूलन';
 
   @override
-  String get themeAndLayout => 'Theme and layout';
+  String get themeAndLayout => 'थीम और लेआउट';
 
   @override
-  String get videoAndSubtitles => 'Video and subtitles';
+  String get videoAndSubtitles => 'वीडियो और उपशीर्षक';
 
   @override
-  String get integrations => 'Integrations';
+  String get integrations => 'एकीकरण';
 
   @override
-  String get pluginAndRequests => 'Plugin and requests';
+  String get pluginAndRequests => 'प्लगइन और अनुरोध';
 
   @override
   String get customizeAccountPlaybackInterface =>
-      'Customize account, playback, and interface behavior';
+      'खाता, प्लेबैक और इंटरफ़ेस व्यवहार अनुकूलित करें';
 
   @override
   String optionsCount(int count) {
@@ -1890,84 +1911,90 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get themeAndAppearance => 'Theme & Appearance';
+  String get themeAndAppearance => 'थीम और उपस्थिति';
 
   @override
-  String get focusBorderColor => 'Focus Border Color';
+  String get focusBorderColor => 'फोकस बॉर्डर रंग';
 
   @override
-  String get watchedIndicators => 'Watched Indicators';
+  String get watchedIndicators => 'संकेतक देखे';
 
   @override
-  String get always => 'Always';
+  String get always => 'हमेशा';
 
   @override
-  String get hideUnwatched => 'Hide Unwatched';
+  String get hideUnwatched => 'बिना देखे छिपाएँ';
 
   @override
-  String get episodesOnly => 'Episodes Only';
+  String get episodesOnly => 'केवल एपिसोड';
 
   @override
-  String get never => 'Never';
+  String get never => 'कभी नहीं';
 
   @override
-  String get focusExpansionAnimation => 'Focus Expansion Animation';
+  String get focusExpansionAnimation => 'फोकस विस्तार एनीमेशन';
 
   @override
-  String get scaleFocusedCards => 'Scale focused or hovered cards and tiles';
+  String get desktopUiScale => 'डेस्कटॉप यूआई स्केल';
 
   @override
-  String get backgroundBackdrops => 'Background Backdrops';
+  String get scaleFocusedCards => 'स्केल केंद्रित या मँडरा कार्ड और टाइल्स';
 
   @override
-  String get showBackdropImages => 'Show backdrop images behind content';
+  String get backgroundBackdrops => 'पृष्ठभूमि पृष्ठभूमि';
 
   @override
-  String get seriesThumbnails => 'Series Thumbnails';
+  String get showBackdropImages => 'सामग्री के पीछे पृष्ठभूमि छवियाँ दिखाएँ';
+
+  @override
+  String get seriesThumbnails => 'श्रृंखला थंबनेल';
 
   @override
   String get seriesThumbnailsDescription =>
-      'Episodes only: use series artwork that matches each row image type';
+      'केवल एपिसोड: श्रृंखला कलाकृति का उपयोग करें जो प्रत्येक पंक्ति छवि प्रकार से मेल खाती हो';
 
   @override
-  String get homeRowInfoOverlay => 'Home Row Info Overlay';
+  String get homeRowInfoOverlay => 'होम पंक्ति जानकारी ओवरले';
 
   @override
   String get showTitleMetadataOnHomeRows =>
-      'Show title and metadata when browsing home rows';
+      'होम पंक्तियाँ ब्राउज़ करते समय शीर्षक और मेटाडेटा दिखाएँ';
 
   @override
-  String get clockDisplay => 'Clock Display';
+  String get clockDisplay => 'घड़ी का प्रदर्शन';
 
   @override
-  String get inMenus => 'In Menus';
+  String get inMenus => 'मेनू में';
 
   @override
-  String get inVideo => 'In Video';
+  String get inVideo => 'वीडियो में';
 
   @override
-  String get seasonalEffects => 'Seasonal Effects';
+  String get seasonalEffects => 'मौसमी प्रभाव';
 
   @override
-  String get snow => 'Snow';
+  String get seasonalEffectsDescription => 'दृश्य प्रभाव और मौसमी सजावट';
 
   @override
-  String get fireworks => 'Fireworks';
+  String get snow => 'बर्फ';
 
   @override
-  String get confetti => 'Confetti';
+  String get fireworks => 'आतिशबाजी';
 
   @override
-  String get fallingLeaves => 'Falling Leaves';
+  String get confetti => 'कंफ़ेद्दी';
 
   @override
-  String get themeMusic => 'Theme Music';
+  String get fallingLeaves => 'गिरते पत्ते';
 
   @override
-  String get playThemeMusicOnDetailPages => 'Play theme music on detail pages';
+  String get themeMusic => 'थीम संगीत';
 
   @override
-  String get themeMusicVolume => 'Theme Music Volume';
+  String get playThemeMusicOnDetailPages => 'विवरण पृष्ठों पर थीम संगीत चलाएँ';
+
+  @override
+  String get themeMusicVolume => 'थीम संगीत वॉल्यूम';
 
   @override
   String percentValue(int value) {
@@ -1975,13 +2002,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get themeMusicOnHomeRows => 'Theme Music on Home Rows';
+  String get themeMusicOnHomeRows => 'होम रो पर थीम संगीत';
 
   @override
-  String get playWhenBrowsingHomeScreen => 'Play when browsing home screen';
+  String get playWhenBrowsingHomeScreen => 'होम स्क्रीन ब्राउज़ करते समय चलाएं';
 
   @override
-  String get detailsBackgroundBlur => 'Details Background Blur';
+  String get detailsBackgroundBlur => 'विवरण पृष्ठभूमि धुंधला';
 
   @override
   String pixelValue(int value) {
@@ -1989,186 +2016,186 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get browsingBackgroundBlur => 'Browsing Background Blur';
+  String get browsingBackgroundBlur => 'ब्राउज़िंग पृष्ठभूमि धुंधला';
 
   @override
-  String get maxStreamingBitrate => 'Max Streaming Bitrate';
+  String get maxStreamingBitrate => 'अधिकतम स्ट्रीमिंग बिटरेट';
 
   @override
-  String get maxResolution => 'Max Resolution';
+  String get maxResolution => 'अधिकतम रिज़ॉल्यूशन';
 
   @override
-  String get playerZoomMode => 'Player Zoom Mode';
+  String get playerZoomMode => 'प्लेयर ज़ूम मोड';
 
   @override
-  String get fit => 'Fit';
+  String get fit => 'उपयुक्त';
 
   @override
-  String get autoCrop => 'Auto Crop';
+  String get autoCrop => 'ऑटो क्रॉप';
 
   @override
-  String get stretch => 'Stretch';
+  String get stretch => 'खींचना';
 
   @override
-  String get refreshRateSwitching => 'Refresh Rate Switching';
+  String get refreshRateSwitching => 'ताज़ा दर स्विचिंग';
 
   @override
-  String get disabled => 'Disabled';
+  String get disabled => 'अक्षम';
 
   @override
-  String get scaleOnTv => 'Scale on TV';
+  String get scaleOnTv => 'टीवी पर स्केल';
 
   @override
-  String get scaleOnDevice => 'Scale on Device';
+  String get scaleOnDevice => 'डिवाइस पर स्केल';
 
   @override
-  String get trickPlay => 'Trick Play';
+  String get trickPlay => 'ट्रिक प्ले';
 
   @override
   String get showPreviewThumbnailsWhenSeeking =>
-      'Show preview thumbnails when seeking';
+      'मांगते समय पूर्वावलोकन थंबनेल दिखाएं';
 
   @override
-  String get showDescriptionOnPause => 'Show Description on Pause';
+  String get showDescriptionOnPause => 'विराम पर विवरण दिखाएँ';
 
   @override
   String get dimVideoShowOverview =>
-      'Dim video and show overview text while paused';
+      'वीडियो को मंद करें और रुके रहने पर अवलोकन टेक्स्ट दिखाएं';
 
   @override
-  String get osdLockButton => 'OSD Lock Button';
+  String get osdLockButton => 'ओएसडी लॉक बटन';
 
   @override
   String get osdLockButtonDescription =>
-      'Show a lock button that blocks touch input until long-pressed';
+      'एक लॉक बटन दिखाएं जो लंबे समय तक दबाए जाने तक टच इनपुट को ब्लॉक कर देता है';
 
   @override
-  String get audioBehavior => 'Audio Behavior';
+  String get audioBehavior => 'ऑडियो व्यवहार';
 
   @override
-  String get downmixToStereo => 'Downmix to Stereo';
+  String get downmixToStereo => 'स्टीरियो में डाउनमिक्स';
 
   @override
-  String get defaultAudioLanguage => 'Default Audio Language';
+  String get defaultAudioLanguage => 'डिफ़ॉल्ट ऑडियो भाषा';
 
   @override
-  String get autoServerDefault => 'Auto (Server Default)';
+  String get autoServerDefault => 'ऑटो (सर्वर डिफ़ॉल्ट)';
 
   @override
-  String get english => 'English';
+  String get english => 'अंग्रेज़ी';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'स्पैनिश';
 
   @override
-  String get french => 'French';
+  String get french => 'फ़्रेंच';
 
   @override
-  String get german => 'German';
+  String get german => 'जर्मन';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'इतालवी';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'पुर्तगाली';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'जापानी';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'कोरियाई';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'चीनी';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'रूसी';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'अरबी';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'हिंदी';
 
   @override
-  String get dutch => 'Dutch';
+  String get dutch => 'डच';
 
   @override
-  String get swedish => 'Swedish';
+  String get swedish => 'स्वीडिश';
 
   @override
-  String get norwegian => 'Norwegian';
+  String get norwegian => 'नार्वेजियन';
 
   @override
-  String get danish => 'Danish';
+  String get danish => 'डेनिश';
 
   @override
-  String get finnish => 'Finnish';
+  String get finnish => 'फिनिश';
 
   @override
-  String get polish => 'Polish';
+  String get polish => 'पोलिश';
 
   @override
-  String get ac3Passthrough => 'AC3 Passthrough';
+  String get ac3Passthrough => 'AC3 पासथ्रू';
 
   @override
-  String get dtsPassthrough => 'DTS Passthrough';
+  String get dtsPassthrough => 'डीटीएस पासथ्रू';
 
   @override
-  String get trueHdSupport => 'TrueHD Support';
+  String get trueHdSupport => 'ट्रूएचडी सपोर्ट';
 
   @override
   String get enableDtsPassthrough =>
-      'Bitstream DTS audio to AVR only; requires receiver support and DTS source track';
+      'बिटस्ट्रीम डीटीएस ऑडियो केवल एवीआर के लिए; रिसीवर समर्थन और डीटीएस स्रोत ट्रैक की आवश्यकता है';
 
   @override
   String get enableTrueHdAudio =>
-      'Enable TrueHD audio (may not work on all platforms)';
+      'ट्रूएचडी ऑडियो सक्षम करें (सभी प्लेटफ़ॉर्म पर काम नहीं कर सकता)';
 
   @override
-  String get nightMode => 'Night Mode';
+  String get nightMode => 'रात का मोड';
 
   @override
-  String get compressDynamicRange => 'Compress dynamic range';
+  String get compressDynamicRange => 'गतिशील रेंज को संपीड़ित करें';
 
   @override
-  String get advancedMpv => 'Advanced mpv';
+  String get advancedMpv => 'उन्नत mpv';
 
   @override
-  String get enableCustomMpvConf => 'Enable Custom mpv.conf';
+  String get enableCustomMpvConf => 'कस्टम mpv.conf सक्षम करें';
 
   @override
   String get applyMpvConfBeforePlayback =>
-      'Apply a user-specified mpv.conf before playback starts';
+      'प्लेबैक शुरू होने से पहले उपयोगकर्ता द्वारा निर्दिष्ट mpv.conf लागू करें';
 
   @override
-  String get unsafeAdvancedMpvOptions => 'Unsafe Advanced mpv Options';
+  String get unsafeAdvancedMpvOptions => 'असुरक्षित उन्नत mpv विकल्प';
 
   @override
   String get unsafeMpvOptionsDescription =>
-      'Allow a wider set of mpv options. May break playback behavior.';
+      'mpv विकल्पों के व्यापक सेट की अनुमति दें। प्लेबैक व्यवहार ख़राब हो सकता है.';
 
   @override
-  String get hardwareDecoding => 'Hardware decoding';
+  String get hardwareDecoding => 'हार्डवेयर डिकोडिंग';
 
   @override
   String get hardwareDecodingSubtitle =>
-      'May improve performance but can cause playback issues on some devices.';
+      'प्रदर्शन में सुधार हो सकता है लेकिन कुछ उपकरणों पर प्लेबैक समस्याएँ पैदा हो सकती हैं।';
 
   @override
-  String get nextUpAndQueuing => 'Next Up & Queuing';
+  String get nextUpAndQueuing => 'अगला ऊपर और कतारबद्ध';
 
   @override
-  String get nextUpBehavior => 'Next Up Behavior';
+  String get nextUpDisplay => 'अगला प्रदर्शन';
 
   @override
-  String get extended => 'Extended';
+  String get extended => 'विस्तारित';
 
   @override
-  String get minimal => 'Minimal';
+  String get minimal => 'न्यूनतम';
 
   @override
-  String get nextUpTimeout => 'Next Up Timeout';
+  String get nextUpTimeout => 'अगला अप टाइमआउट';
 
   @override
   String secondsValue(int value) {
@@ -2176,13 +2203,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get mediaQueuing => 'Media Queuing';
+  String get mediaQueuing => 'मीडिया कतार';
 
   @override
-  String get autoQueueNextEpisodes => 'Auto-queue next episodes';
+  String get autoQueueNextEpisodes => 'अगले एपिसोड स्वतः कतारबद्ध करें';
 
   @override
-  String get stillWatchingPrompt => 'Still Watching Prompt';
+  String get stillWatchingPrompt => 'अभी भी प्रॉम्प्ट देख रहा हूँ';
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
@@ -2190,131 +2217,131 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get resumeAndSkip => 'Resume & Skip';
+  String get resumeAndSkip => 'फिर से शुरू करें और छोड़ें';
 
   @override
-  String get resumeRewind => 'Resume Rewind';
+  String get resumeRewind => 'रिवाइंड फिर से शुरू करें';
 
   @override
-  String get unpauseRewind => 'Unpause Rewind';
+  String get unpauseRewind => 'रिवाइंड को रोकें';
 
   @override
-  String get fiveSeconds => '5 seconds';
+  String get fiveSeconds => '5 सेकंड';
 
   @override
-  String get tenSeconds => '10 seconds';
+  String get tenSeconds => '10 सेकंड';
 
   @override
-  String get fifteenSeconds => '15 seconds';
+  String get fifteenSeconds => '15 सेकंड';
 
   @override
-  String get thirtySeconds => '30 seconds';
+  String get thirtySeconds => '30 सेकंड';
 
   @override
-  String get skipBackLength => 'Skip Back Length';
+  String get skipBackLength => 'पीछे की लंबाई छोड़ें';
 
   @override
-  String get skipForwardLength => 'Skip Forward Length';
+  String get skipForwardLength => 'आगे की लंबाई छोड़ें';
 
   @override
-  String get customMpvConfPath => 'Custom mpv.conf Path';
+  String get customMpvConfPath => 'कस्टम mpv.conf पथ';
 
   @override
   String get notSetMpvConf =>
-      'Not set. Moonfin will try a default mpv.conf in app/data folders.';
+      'सेट नहीं। Moonfin ऐप/डेटा फ़ोल्डर में एक डिफ़ॉल्ट mpv.conf आज़माएगा।';
 
   @override
-  String get selectMpvConf => 'Select mpv.conf';
+  String get selectMpvConf => 'mpv.conf चुनें';
 
   @override
   String get pathToMpvConf => '/path/to/mpv.conf';
 
   @override
   String get subtitleStyleDescription =>
-      'Style settings (size, color, offset) apply to text-based subtitles (SRT, VTT, TTML). ASS/SSA subtitles use their own embedded styling unless \"ASS/SSA Direct Play\" is turned off. Bitmap subtitles (PGS, DVB, VobSub) cannot be restyled.';
+      'शैली सेटिंग्स (आकार, रंग, ऑफसेट) पाठ-आधारित उपशीर्षक (एसआरटी, वीटीटी, टीटीएमएल) पर लागू होती हैं। जब तक \"एएसएस/एसएसए डायरेक्ट प्ले\" बंद न हो, एएसएस/एसएसए उपशीर्षक अपनी स्वयं की एम्बेडेड स्टाइल का उपयोग करते हैं। बिटमैप उपशीर्षक (PGS, DVB, VobSub) को पुनः स्टाइल नहीं किया जा सकता।';
 
   @override
-  String get defaultSubtitleLanguage => 'Default Subtitle Language';
+  String get defaultSubtitleLanguage => 'डिफ़ॉल्ट उपशीर्षक भाषा';
 
   @override
-  String get defaultToNoSubtitles => 'Default to No Subtitles';
+  String get defaultToNoSubtitles => 'कोई उपशीर्षक नहीं के लिए डिफ़ॉल्ट';
 
   @override
-  String get turnOffSubtitlesByDefault => 'Turn off subtitles by default';
+  String get turnOffSubtitlesByDefault =>
+      'उपशीर्षक को डिफ़ॉल्ट रूप से बंद करें';
 
   @override
-  String get subtitleSize => 'Subtitle Size';
+  String get subtitleSize => 'उपशीर्षक आकार';
 
   @override
-  String get textFillColor => 'Text Fill Color';
+  String get textFillColor => 'टेक्स्ट भरें रंग';
 
   @override
-  String get backgroundColor => 'Background Color';
+  String get backgroundColor => 'पृष्ठभूमि का रंग';
 
   @override
-  String get textStrokeColor => 'Text Stroke Color';
+  String get textStrokeColor => 'टेक्स्ट स्ट्रोक रंग';
 
   @override
-  String get subtitleCustomization => 'Subtitle Customization';
+  String get subtitleCustomization => 'उपशीर्षक अनुकूलन';
 
   @override
   String get subtitleCustomizationDescription =>
-      'Customize subtitle appearance';
+      'उपशीर्षक उपस्थिति को अनुकूलित करें';
 
   @override
-  String get subtitlePreviewText =>
-      'The quick brown fox jumps over the lazy dog';
+  String get subtitlePreviewText => 'तेज, भूरी लोमडी आलसी कुत्ते के उपर कूद गई';
 
   @override
-  String get verticalOffset => 'Vertical Offset';
+  String get verticalOffset => 'लंबवत ऑफसेट';
 
   @override
-  String get pgsDirectPlay => 'PGS Direct Play';
+  String get pgsDirectPlay => 'पीजीएस डायरेक्ट प्ले';
 
   @override
-  String get directPlayPgsSubtitles => 'Direct play PGS subtitles';
+  String get directPlayPgsSubtitles => 'सीधे प्ले पीजीएस उपशीर्षक';
 
   @override
-  String get assSsaDirectPlay => 'ASS/SSA Direct Play';
+  String get assSsaDirectPlay => 'एएसएस/एसएसए डायरेक्ट प्ले';
 
   @override
-  String get directPlayAssSsaSubtitles => 'Direct play ASS/SSA subtitles';
+  String get directPlayAssSsaSubtitles => 'एएसएस/एसएसए उपशीर्षक सीधे चलाएं';
 
   @override
-  String get white => 'White';
+  String get white => 'सफ़ेद';
 
   @override
-  String get black => 'Black';
+  String get black => 'काला';
 
   @override
-  String get yellow => 'Yellow';
+  String get yellow => 'पीला';
 
   @override
-  String get green => 'Green';
+  String get green => 'हरा';
 
   @override
-  String get cyan => 'Cyan';
+  String get cyan => 'सियान';
 
   @override
-  String get red => 'Red';
+  String get red => 'लाल';
 
   @override
-  String get transparent => 'Transparent';
+  String get transparent => 'पारदर्शी';
 
   @override
-  String get semiTransparentBlack => 'Semi-transparent Black';
+  String get semiTransparentBlack => 'अर्ध-पारदर्शी काला';
 
   @override
-  String get global => 'Global';
+  String get global => 'वैश्विक';
 
   @override
-  String get desktop => 'Desktop';
+  String get desktop => 'डेस्कटॉप';
 
   @override
-  String get mobile => 'Mobile';
+  String get mobile => 'गतिमान';
 
   @override
-  String get tv => 'TV';
+  String get tv => 'टीवी';
 
   @override
   String loadedProfileSettings(String profile) {
@@ -2332,224 +2359,225 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get customizationProfile => 'Customization Profile';
+  String get customizationProfile => 'अनुकूलन प्रोफ़ाइल';
 
   @override
   String get customizationProfileDescription =>
-      'Choose the profile to load, edit, and sync. Global applies everywhere unless a device profile overrides it. The green dot marks your current device profile.';
+      'लोड करने, संपादित करने और सिंक करने के लिए प्रोफ़ाइल चुनें। ग्लोबल हर जगह लागू होता है जब तक कि कोई डिवाइस प्रोफ़ाइल इसे ओवरराइड न कर दे। हरा बिंदु आपके वर्तमान डिवाइस प्रोफ़ाइल को चिह्नित करता है।';
 
   @override
-  String get loadProfile => 'Load Profile';
+  String get loadProfile => 'प्रोफ़ाइल लोड करें';
 
   @override
-  String get syncing => 'Syncing...';
+  String get syncing => 'सिंक हो रहा है...';
 
   @override
-  String get syncToProfile => 'Sync To Profile';
+  String get syncToProfile => 'प्रोफ़ाइल से सिंक करें';
 
   @override
-  String get profileSyncHidden => 'Profile Sync Hidden';
+  String get profileSyncHidden => 'प्रोफ़ाइल सिंक छिपा हुआ';
 
   @override
   String get enablePluginSyncDescription =>
-      'Enable Server Plugin Sync in Plugin settings to show profile controls here.';
+      'यहां प्रोफ़ाइल नियंत्रण दिखाने के लिए प्लगइन सेटिंग्स में सर्वर प्लगइन सिंक सक्षम करें।';
 
   @override
-  String get quality => 'Quality';
+  String get quality => 'गुणवत्ता';
 
   @override
-  String get defaultDownloadQuality => 'Default Download Quality';
+  String get defaultDownloadQuality => 'डिफ़ॉल्ट डाउनलोड गुणवत्ता';
 
   @override
-  String get network => 'Network';
+  String get network => 'नेटवर्क';
 
   @override
-  String get wifiOnlyDownloads => 'WiFi-Only Downloads';
+  String get wifiOnlyDownloads => 'वाईफ़ाई-केवल डाउनलोड';
 
   @override
-  String get onlyDownloadOnWifi => 'Only download when connected to WiFi';
+  String get onlyDownloadOnWifi => 'वाईफाई से कनेक्ट होने पर ही डाउनलोड करें';
 
   @override
-  String get storage => 'Storage';
+  String get storage => 'भंडारण';
 
   @override
-  String get storageUsed => 'Storage Used';
+  String get storageUsed => 'उपयोग किया गया भंडारण';
 
   @override
-  String get manage => 'Manage';
+  String get manage => 'प्रबंधित करना';
 
   @override
-  String get calculating => 'Calculating...';
+  String get calculating => 'हिसाब लगाया जा रहा है...';
 
   @override
-  String get downloadLocation => 'Download Location';
+  String get downloadLocation => 'स्थान डाउनलोड करें';
 
   @override
-  String get defaultLabel => 'Default';
+  String get defaultLabel => 'गलती करना';
 
   @override
-  String get saveToDownloadsFolder => 'Save to Downloads folder';
+  String get saveToDownloadsFolder => 'डाउनलोड फ़ोल्डर में सहेजें';
 
   @override
   String get downloadsVisibleToOtherApps =>
-      'Downloads/Moonfin — visible to other apps';
+      'डाउनलोड/Moonfin — अन्य ऐप्स के लिए दृश्यमान';
 
   @override
-  String get dangerZone => 'Danger Zone';
+  String get dangerZone => 'खतरा क्षेत्र';
 
   @override
-  String get clearAllDownloads => 'Clear All Downloads';
+  String get clearAllDownloads => 'सभी डाउनलोड साफ़ करें';
 
   @override
-  String get original => 'Original';
+  String get original => 'मूल';
 
   @override
-  String get changeDownloadLocation => 'Change Download Location';
+  String get changeDownloadLocation => 'डाउनलोड स्थान बदलें';
 
   @override
   String get changeDownloadLocationDescription =>
-      'New downloads will be saved to the selected folder. Existing downloads will remain in their current location and can be managed from Storage settings.';
+      'नए डाउनलोड चयनित फ़ोल्डर में सहेजे जाएंगे. मौजूदा डाउनलोड अपने वर्तमान स्थान पर बने रहेंगे और स्टोरेज सेटिंग्स से प्रबंधित किए जा सकते हैं।';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'पुष्टि करना';
 
   @override
   String get cannotWriteToFolder =>
-      'Cannot write to selected folder. Please choose a different location or grant storage permissions.';
+      'चयनित फ़ोल्डर में नहीं लिखा जा सकता. कृपया कोई भिन्न स्थान चुनें या भंडारण की अनुमति प्रदान करें।';
 
   @override
-  String get saveToDownloadsFolderQuestion => 'Save to Downloads folder?';
+  String get saveToDownloadsFolderQuestion => 'डाउनलोड फ़ोल्डर में सहेजें?';
 
   @override
   String get saveToDownloadsFolderDescription =>
-      'Downloaded media will be saved to Downloads/Moonfin on your device. These files will be visible to other apps such as your gallery or music player.\n\nExisting downloads will remain in their current location.';
+      'डाउनलोड किया गया मीडिया आपके डिवाइस पर डाउनलोड/Moonfin में सहेजा जाएगा। ये फ़ाइलें आपकी गैलरी या म्यूज़िक प्लेयर जैसे अन्य ऐप्स पर दिखाई देंगी।\n\nमौजूदा डाउनलोड अपने वर्तमान स्थान पर बने रहेंगे.';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'सक्षम';
 
   @override
   String get clearAllDownloadsWarning =>
-      'This will delete all downloaded media and cannot be undone.';
+      'यह सभी डाउनलोड किए गए मीडिया को हटा देगा और इसे पूर्ववत नहीं किया जा सकेगा।';
 
   @override
-  String get clearAll => 'Clear All';
+  String get clearAll => 'सभी साफ करें';
 
   @override
-  String get navigationStyle => 'Navigation Style';
+  String get navigationStyle => 'नेविगेशन शैली';
 
   @override
-  String get topBar => 'Top Bar';
+  String get topBar => 'शीर्ष बार';
 
   @override
-  String get leftSidebar => 'Left Sidebar';
+  String get leftSidebar => 'बाईं साइडबार';
 
   @override
-  String get showShuffleButton => 'Show Shuffle Button';
+  String get showShuffleButton => 'शफ़ल बटन दिखाएँ';
 
   @override
-  String get showGenresButton => 'Show Genres Button';
+  String get showGenresButton => 'शैलियाँ बटन दिखाएँ';
 
   @override
-  String get showFavoritesButton => 'Show Favorites Button';
+  String get showFavoritesButton => 'पसंदीदा बटन दिखाएँ';
 
   @override
-  String get showLibrariesInToolbar => 'Show Libraries in Toolbar';
+  String get showLibrariesInToolbar => 'टूलबार में लाइब्रेरी दिखाएं';
 
   @override
-  String get navbarOpacity => 'Navbar Opacity';
+  String get navbarOpacity => 'नेवबार अपारदर्शिता';
 
   @override
-  String get navbarColor => 'Navbar Color';
+  String get navbarColor => 'नेवबार रंग';
 
   @override
-  String get gray => 'Gray';
+  String get gray => 'स्लेटी';
 
   @override
-  String get darkBlue => 'Dark Blue';
+  String get darkBlue => 'गहरा नीला';
 
   @override
-  String get purple => 'Purple';
+  String get purple => 'बैंगनी';
 
   @override
-  String get teal => 'Teal';
+  String get teal => 'टील';
 
   @override
-  String get navy => 'Navy';
+  String get navy => 'नौसेना';
 
   @override
-  String get charcoal => 'Charcoal';
+  String get charcoal => 'लकड़ी का कोयला';
 
   @override
-  String get brown => 'Brown';
+  String get brown => 'भूरा';
 
   @override
-  String get darkRed => 'Dark Red';
+  String get darkRed => 'गहरा लाल';
 
   @override
-  String get darkGreen => 'Dark Green';
+  String get darkGreen => 'गहरा हरा';
 
   @override
-  String get slate => 'Slate';
+  String get slate => 'स्लेट';
 
   @override
-  String get indigo => 'Indigo';
+  String get indigo => 'नील';
 
   @override
-  String get libraryDisplay => 'Library Display';
+  String get libraryDisplay => 'पुस्तकालय प्रदर्शन';
 
   @override
-  String get posterLabel => 'Poster';
+  String get posterLabel => 'पोस्टर';
 
   @override
-  String get thumbnailLabel => 'Thumbnail';
+  String get thumbnailLabel => 'थंबनेल';
 
   @override
-  String get bannerLabel => 'Banner';
+  String get bannerLabel => 'बैनर';
 
   @override
-  String get overridePerLibrarySettings => 'Override Per-Library Settings';
+  String get overridePerLibrarySettings =>
+      'प्रति-लाइब्रेरी सेटिंग्स को ओवरराइड करें';
 
   @override
   String get applyImageTypeToAllLibraries =>
-      'Apply image type to all libraries';
+      'सभी पुस्तकालयों में छवि प्रकार लागू करें';
 
   @override
-  String get multiServerLibraries => 'Multi-Server Libraries';
+  String get multiServerLibraries => 'मल्टी-सर्वर लाइब्रेरीज़';
 
   @override
   String get showLibrariesFromAllServers =>
-      'Show libraries from all connected servers';
+      'सभी कनेक्टेड सर्वर से लाइब्रेरी दिखाएं';
 
   @override
-  String get enableFolderView => 'Enable Folder View';
+  String get enableFolderView => 'फ़ोल्डर दृश्य सक्षम करें';
 
   @override
-  String get showFolderBrowsingOption => 'Show folder browsing option';
+  String get showFolderBrowsingOption => 'फ़ोल्डर ब्राउज़िंग विकल्प दिखाएँ';
 
   @override
-  String get libraryVisibility => 'Library Visibility';
+  String get libraryVisibility => 'पुस्तकालय दृश्यता';
 
   @override
   String get libraryVisibilityDescription =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'प्रति लाइब्रेरी होम पेज दृश्यता टॉगल करें। परिवर्तनों को प्रभावी करने के लिए Moonfin को पुनः आरंभ करें।';
 
   @override
-  String get showInNavigation => 'Show in navigation';
+  String get showInNavigation => 'नेविगेशन में दिखाएँ';
 
   @override
-  String get showInLatestMedia => 'Show in latest media';
+  String get showInLatestMedia => 'नवीनतम मीडिया में दिखाएँ';
 
   @override
-  String get sourceLibraries => 'Source Libraries';
+  String get sourceLibraries => 'स्रोत पुस्तकालय';
 
   @override
-  String get sourceCollections => 'Source Collections';
+  String get sourceCollections => 'स्रोत संग्रह';
 
   @override
-  String get excludedGenres => 'Excluded Genres';
+  String get excludedGenres => 'बहिष्कृत शैलियाँ';
 
   @override
-  String get selectAll => 'Select All';
+  String get selectAll => 'सबका चयन करें';
 
   @override
   String itemsSelected(int count) {
@@ -2557,221 +2585,246 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get mediaBar => 'Media Bar';
+  String get mediaBar => 'मीडिया बार';
 
   @override
-  String get mediaBarMode => 'Media Bar Style';
+  String get mediaSources => 'मीडिया स्रोत';
+
+  @override
+  String get behavior => 'व्यवहार';
+
+  @override
+  String get seconds => 'सेकंड';
+
+  @override
+  String get localPreviews => 'स्थानीय पूर्वावलोकन';
+
+  @override
+  String get localPreviewsDescription =>
+      'ट्रेलर, मीडिया और ऑडियो पूर्वावलोकन कॉन्फ़िगर करें।';
+
+  @override
+  String get mediaBarMode => 'मीडिया बार शैली';
 
   @override
   String get mediaBarModeDescription =>
-      'Choose between Moonfin, MakD, or turn the media bar off';
+      'Moonfin, MakD में से चुनें, या मीडिया बार बंद करें';
 
   @override
-  String get mediaBarModeMoonfin => 'Moonfin';
+  String get mediaBarModeMoonfin => 'मूनफ़िन';
 
   @override
   String get mediaBarModeMakd => 'MakD';
 
   @override
-  String get mediaBarModeOff => 'Off';
+  String get mediaBarModeOff => 'बंद';
 
   @override
-  String get enableMediaBar => 'Enable Media Bar';
+  String get enableMediaBar => 'मीडिया बार सक्षम करें';
 
   @override
   String get showFeaturedContentSlideshow =>
-      'Show featured content slideshow on home';
+      'होम पर विशेष सामग्री स्लाइड शो दिखाएं';
 
   @override
-  String get contentType => 'Content Type';
+  String get contentType => 'सामग्री प्रकार';
 
   @override
-  String get moviesAndTvShows => 'Movies & TV Shows';
+  String get moviesAndTvShows => 'फ़िल्में और टीवी शो';
 
   @override
-  String get moviesOnly => 'Movies Only';
+  String get moviesOnly => 'केवल फिल्में';
 
   @override
-  String get tvShowsOnly => 'TV Shows Only';
+  String get tvShowsOnly => 'केवल टीवी शो';
 
   @override
-  String get itemCount => 'Item Count';
+  String get itemCount => 'चीज़ों की गिनती';
 
   @override
-  String get noneSelected => 'None selected';
+  String get noneSelected => 'कोई भी चयनित नहीं';
 
   @override
-  String get noneExcluded => 'None excluded';
+  String get noneExcluded => 'किसी को भी बहिष्कृत नहीं किया गया';
 
   @override
-  String get autoAdvance => 'Auto Advance';
+  String get autoAdvance => 'ऑटो एडवांस';
 
   @override
-  String get autoAdvanceSlides => 'Automatically advance to next slide';
+  String get autoAdvanceSlides => 'स्वचालित रूप से अगली स्लाइड पर आगे बढ़ें';
 
   @override
-  String get autoAdvanceInterval => 'Auto Advance Interval';
+  String get autoAdvanceInterval => 'ऑटो एडवांस अंतराल';
 
   @override
-  String get trailerPreview => 'Trailer Preview';
+  String get trailerPreview => 'ट्रेलर पूर्वावलोकन';
 
   @override
   String get autoPlayTrailers =>
-      'Auto-play trailers in the media bar after 3 seconds';
+      '3 सेकंड के बाद मीडिया बार में ट्रेलरों को ऑटो-प्ले करें';
 
   @override
-  String get episodePreview => 'Episode Preview';
+  String get episodePreview => 'एपिसोड पूर्वावलोकन';
+
+  @override
+  String get mediaPreview => 'मीडिया पूर्वावलोकन';
 
   @override
   String get episodePreviewDescription =>
-      'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
+      'फ़ोकस किए गए, होवर किए गए या लंबे समय से दबाए गए कार्डों पर 30 सेकंड का इनलाइन पूर्वावलोकन चलाएं';
 
   @override
-  String get previewAudio => 'Preview Audio';
+  String get mediaPreviewDescription =>
+      'फ़ोकस किए गए, होवर किए गए या लंबे समय से दबाए गए कार्डों पर 30 सेकंड का इनलाइन पूर्वावलोकन चलाएं';
+
+  @override
+  String get previewAudio => 'ऑडियो का पूर्वावलोकन करें';
 
   @override
   String get enablePreviewAudio =>
-      'Enable audio for trailer and episode previews';
+      'ट्रेलर और एपिसोड पूर्वावलोकन के लिए ऑडियो सक्षम करें';
 
   @override
-  String get latestMedia => 'Latest Media';
+  String get latestMedia => 'नवीनतम मीडिया';
 
   @override
-  String get recentlyReleased => 'Recently Released';
+  String get recentlyReleased => 'हाल ही में जारी किया गया';
 
   @override
-  String get myMedia => 'My Media';
+  String get myMedia => 'मेरा मीडिया';
 
   @override
-  String get myMediaSmall => 'My Media (Small)';
+  String get myMediaSmall => 'मेरा मीडिया (छोटा)';
 
   @override
-  String get continueWatching => 'Continue Watching';
+  String get continueWatching => 'देखना जारी रखें';
 
   @override
-  String get resumeAudio => 'Resume Audio';
+  String get resumeAudio => 'ऑडियो फिर से शुरू करें';
 
   @override
-  String get resumeBooks => 'Resume Books';
+  String get resumeBooks => 'पुस्तकें फिर से शुरू करें';
 
   @override
-  String get activeRecordings => 'Active Recordings';
+  String get activeRecordings => 'सक्रिय रिकॉर्डिंग';
 
   @override
-  String get playlists => 'Playlists';
+  String get playlists => 'प्लेलिस्ट';
 
   @override
-  String get liveTV => 'Live TV';
+  String get liveTV => 'लाइव टीवी';
 
   @override
-  String get homeSections => 'Home Sections';
+  String get homeSections => 'गृह अनुभाग';
 
   @override
-  String get resetToDefaults => 'Reset to defaults';
+  String get resetToDefaults => 'डिफ़ॉल्ट पर पुनः सेट करें';
 
   @override
-  String get homeRowPosterSize => 'Home Row Poster Size';
+  String get homeRowPosterSize => 'होम रो पोस्टर का आकार';
 
   @override
-  String get perRowImageTypeSelection => 'Per Row Image Type Selection';
+  String get perRowImageTypeSelection => 'प्रति पंक्ति छवि प्रकार चयन';
 
   @override
   String get configureImageTypeForEachRow =>
-      'Configure image type for each enabled home row';
+      'प्रत्येक सक्षम होम पंक्ति के लिए छवि प्रकार कॉन्फ़िगर करें';
 
   @override
   String get mergeContinueWatchingAndNextUp =>
-      'Merge Continue Watching and Next Up';
+      'मर्ज करें, देखना जारी रखें और आगे बढ़ें';
 
   @override
-  String get combineBothRows => 'Combine both rows into a single home section';
+  String get combineBothRows =>
+      'दोनों पंक्तियों को एक ही होम सेक्शन में संयोजित करें';
 
   @override
-  String get perRowImageType => 'Per Row Image Type';
+  String get perRowImageType => 'प्रति पंक्ति छवि प्रकार';
 
   @override
-  String get perRowSettings => 'Per-Row Settings';
+  String get perRowSettings => 'प्रति-पंक्ति सेटिंग्स';
 
   @override
-  String get autoLogin => 'Auto Login';
+  String get autoLogin => 'स्व - लॉगिन';
 
   @override
-  String get lastUser => 'Last User';
+  String get lastUser => 'अंतिम उपयोगकर्ता';
 
   @override
-  String get specificUser => 'Specific User';
+  String get specificUser => 'विशिष्ट उपयोगकर्ता';
 
   @override
-  String get alwaysAuthenticate => 'Always Authenticate';
+  String get alwaysAuthenticate => 'हमेशा प्रमाणित करें';
 
   @override
   String get requirePasswordWithToken =>
-      'Require password even with stored token';
+      'संग्रहीत टोकन के साथ भी पासवर्ड की आवश्यकता होती है';
 
   @override
-  String get confirmExit => 'Confirm Exit';
+  String get confirmExit => 'बाहर निकलने की पुष्टि करें';
 
   @override
   String get showConfirmationBeforeExiting =>
-      'Show confirmation before exiting';
+      'बाहर निकलने से पहले पुष्टि दिखाएँ';
 
   @override
   String get blockContentWithRatings =>
-      'Block content with the following ratings:';
+      'निम्नलिखित रेटिंग वाली सामग्री को ब्लॉक करें:';
 
   @override
   String get noContentRatingsFound =>
-      'No content ratings were found on this server yet.';
+      'इस सर्वर पर अभी तक कोई सामग्री रेटिंग नहीं मिली।';
 
   @override
   String get couldNotLoadServerRatings =>
-      'Could not load server ratings. Showing saved ratings only.';
+      'सर्वर रेटिंग लोड नहीं हो सकी. केवल सहेजी गई रेटिंग दिखा रहा है।';
 
   @override
   String get couldNotRefreshRatings =>
-      'Could not refresh ratings from server. Showing saved ratings.';
+      'सर्वर से रेटिंग ताज़ा नहीं की जा सकी. सहेजी गई रेटिंग दिखाई जा रही हैं.';
 
   @override
-  String get enablePinCode => 'Enable PIN Code';
+  String get enablePinCode => 'पिन कोड सक्षम करें';
 
   @override
-  String get requirePinToAccess => 'Require a PIN to access your account';
+  String get requirePinToAccess =>
+      'अपने खाते तक पहुंचने के लिए एक पिन की आवश्यकता है';
 
   @override
-  String get changePin => 'Change PIN';
+  String get changePin => 'पिन बदलें';
 
   @override
-  String get setNewPinCode => 'Set a new PIN code';
+  String get setNewPinCode => 'एक नया पिन कोड सेट करें';
 
   @override
-  String get removePin => 'Remove PIN';
+  String get removePin => 'पिन निकालें';
 
   @override
-  String get removePinProtection => 'Remove PIN code protection';
+  String get removePinProtection => 'पिन कोड सुरक्षा हटाएँ';
 
   @override
-  String get screensaver => 'Screensaver';
+  String get screensaver => 'स्क्रीन सेवर';
 
   @override
-  String get inAppScreensaver => 'In-App Screensaver';
+  String get inAppScreensaver => 'इन-ऐप स्क्रीनसेवर';
 
   @override
-  String get enableBuiltInScreensaver => 'Enable the built-in screensaver';
+  String get enableBuiltInScreensaver => 'अंतर्निर्मित स्क्रीनसेवर सक्षम करें';
 
   @override
-  String get mode => 'Mode';
+  String get mode => 'तरीका';
 
   @override
-  String get libraryArt => 'Library Art';
+  String get libraryArt => 'पुस्तकालय कला';
 
   @override
-  String get logo => 'Logo';
+  String get logo => 'प्रतीक चिन्ह';
 
   @override
-  String get clock => 'Clock';
+  String get clock => 'घड़ी';
 
   @override
-  String get timeout => 'Timeout';
+  String get timeout => 'समयबाह्य';
 
   @override
   String minutesShort(int minutes) {
@@ -2779,13 +2832,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get dimmingLevel => 'Dimming Level';
+  String get dimmingLevel => 'डिमिंग लेवल';
 
   @override
-  String get maxAgeRating => 'Max Age Rating';
+  String get maxAgeRating => 'अधिकतम आयु रेटिंग';
 
   @override
-  String get any => 'Any';
+  String get any => 'कोई';
 
   @override
   String agePlusValue(int age) {
@@ -2793,35 +2846,35 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get requireAgeRating => 'Require Age Rating';
+  String get requireAgeRating => 'आयु रेटिंग की आवश्यकता है';
 
   @override
-  String get onlyShowRatedContent => 'Only show rated content';
+  String get onlyShowRatedContent => 'केवल रेटेड सामग्री दिखाएं';
 
   @override
-  String get showClock => 'Show Clock';
+  String get showClock => 'घड़ी दिखाओ';
 
   @override
   String get displayClockDuringScreensaver =>
-      'Display clock during screensaver';
+      'स्क्रीनसेवर के दौरान घड़ी प्रदर्शित करें';
 
   @override
-  String get rottenTomatoesCritics => 'Rotten Tomatoes (Critics)';
+  String get rottenTomatoesCritics => 'सड़े हुए टमाटर (आलोचक)';
 
   @override
-  String get rottenTomatoesAudience => 'Rotten Tomatoes (Audience)';
+  String get rottenTomatoesAudience => 'सड़े हुए टमाटर (दर्शक)';
 
   @override
-  String get imdb => 'IMDb';
+  String get imdb => 'आईएमडीबी';
 
   @override
-  String get tmdb => 'TMDB';
+  String get tmdb => 'टीएमडीबी';
 
   @override
-  String get metacritic => 'Metacritic';
+  String get metacritic => 'मेटाक्रिटिक';
 
   @override
-  String get metacriticUser => 'Metacritic (User)';
+  String get metacriticUser => 'मेटाक्रिटिक (उपयोगकर्ता)';
 
   @override
   String get trakt => 'Trakt';
@@ -2833,61 +2886,62 @@ class AppLocalizationsHi extends AppLocalizations {
   String get myAnimeList => 'MyAnimeList';
 
   @override
-  String get aniList => 'AniList';
+  String get aniList => 'एनीलिस्ट';
 
   @override
-  String get communityRating => 'Community Rating';
+  String get communityRating => 'सामुदायिक रेटिंग';
 
   @override
-  String get ratings => 'Ratings';
+  String get ratings => 'रेटिंग';
 
   @override
-  String get additionalRatings => 'Additional Ratings';
+  String get additionalRatings => 'अतिरिक्त रेटिंग';
 
   @override
-  String get showMdbListAndTmdbRatings => 'Show MDBList and TMDB ratings';
+  String get showMdbListAndTmdbRatings =>
+      'एमडीबीलिस्ट और टीएमडीबी रेटिंग दिखाएं';
 
   @override
-  String get ratingLabels => 'Rating Labels';
+  String get ratingLabels => 'रेटिंग लेबल';
 
   @override
-  String get showLabelsNextToIcons => 'Show labels next to rating icons';
+  String get showLabelsNextToIcons => 'रेटिंग आइकन के आगे लेबल दिखाएँ';
 
   @override
-  String get ratingBadges => 'Rating Badges';
+  String get ratingBadges => 'रेटिंग बैज';
 
   @override
-  String get showDecorativeBadges => 'Show decorative badges behind ratings';
+  String get showDecorativeBadges => 'रेटिंग के पीछे सजावटी बैज दिखाएँ';
 
   @override
-  String get episodeRatings => 'Episode Ratings';
+  String get episodeRatings => 'एपिसोड रेटिंग';
 
   @override
-  String get showRatingsOnEpisodes => 'Show ratings on individual episodes';
+  String get showRatingsOnEpisodes => 'अलग-अलग एपिसोड पर रेटिंग दिखाएं';
 
   @override
-  String get ratingSources => 'Rating Sources';
+  String get ratingSources => 'रेटिंग स्रोत';
 
   @override
   String get ratingSourcesDescription =>
-      'Enable and reorder the rating sources shown throughout the app';
+      'पूरे ऐप में दिखाए गए रेटिंग स्रोतों को सक्षम और पुन: व्यवस्थित करें';
 
   @override
-  String get pluginLabel => 'Plugin';
+  String get pluginLabel => 'लगाना';
 
   @override
-  String get pluginDetected => 'Plugin Detected';
+  String get pluginDetected => 'प्लगइन का पता चला';
 
   @override
-  String get pluginNotDetected => 'Plugin Not Detected';
+  String get pluginNotDetected => 'प्लगइन का पता नहीं चला';
 
   @override
   String get pluginDetectedDescription =>
-      'Server plugin detected. Sync is enabled automatically the first time the plugin is found.';
+      'सर्वर प्लगइन का पता चला. पहली बार प्लगइन मिलने पर सिंक स्वचालित रूप से सक्षम हो जाता है।';
 
   @override
   String get pluginNotDetectedDescription =>
-      'Server plugin is not currently detected. Local settings still use their saved values or built-in defaults.';
+      'सर्वर प्लगइन फिलहाल पता नहीं चला है. स्थानीय सेटिंग्स अभी भी अपने सहेजे गए मानों या अंतर्निहित डिफ़ॉल्ट का उपयोग करती हैं।';
 
   @override
   String pluginStatusVersion(String status, String version) {
@@ -2895,73 +2949,73 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get availableServices => 'Available Services';
+  String get availableServices => 'उपलब्ध सेवाएँ';
 
   @override
-  String get serverPluginSync => 'Server Plugin Sync';
+  String get serverPluginSync => 'सर्वर प्लगइन सिंक';
 
   @override
-  String get syncSettingsWithPlugin => 'Sync settings with the server plugin';
+  String get syncSettingsWithPlugin => 'सर्वर प्लगइन के साथ सेटिंग्स सिंक करें';
 
   @override
-  String get whatSyncControls => 'What sync controls';
+  String get whatSyncControls => 'कौन सा सिंक नियंत्रित करता है';
 
   @override
   String get syncControlsDescription =>
-      'Sync only controls whether plugin-backed settings are pushed to and pulled from the server. Profile selection and profile sync actions are in Customization settings when plugin sync is enabled.';
+      'सिंक केवल यह नियंत्रित करता है कि प्लगइन-समर्थित सेटिंग्स को सर्वर पर धकेला और खींचा गया है या नहीं। प्लगइन सिंक सक्षम होने पर प्रोफ़ाइल चयन और प्रोफ़ाइल सिंक क्रियाएं अनुकूलन सेटिंग्स में होती हैं।';
 
   @override
-  String get recentRequests => 'Recent Requests';
+  String get recentRequests => 'हाल के अनुरोध';
 
   @override
-  String get recentlyAdded => 'Recently Added';
+  String get recentlyAdded => 'हाल ही में जोड़ा';
 
   @override
-  String get trending => 'Trending';
+  String get trending => 'रुझान';
 
   @override
-  String get popularMovies => 'Popular Movies';
+  String get popularMovies => 'लोकप्रिय फ़िल्में';
 
   @override
-  String get movieGenres => 'Movie Genres';
+  String get movieGenres => 'मूवी शैलियाँ';
 
   @override
-  String get upcomingMovies => 'Upcoming Movies';
+  String get upcomingMovies => 'आने वाली फिल्में';
 
   @override
-  String get studios => 'Studios';
+  String get studios => 'स्टूडियो';
 
   @override
-  String get popularSeries => 'Popular Series';
+  String get popularSeries => 'लोकप्रिय श्रृंखला';
 
   @override
-  String get seriesGenres => 'Series Genres';
+  String get seriesGenres => 'शृंखला शैलियाँ';
 
   @override
-  String get upcomingSeries => 'Upcoming Series';
+  String get upcomingSeries => 'आगामी शृंखला';
 
   @override
-  String get networks => 'Networks';
+  String get networks => 'नेटवर्क';
 
   @override
-  String get resetRowsToDefaults => 'Reset rows to defaults';
+  String get resetRowsToDefaults => 'पंक्तियों को डिफ़ॉल्ट पर रीसेट करें';
 
   @override
-  String get enableSeerr => 'Enable Seerr';
+  String get enableSeerr => 'सीरर सक्षम करें';
 
   @override
   String get showSeerrInNavigation =>
-      'Show Seerr in navigation (requires server plugin)';
+      'नेविगेशन में सीरर दिखाएं (सर्वर प्लगइन की आवश्यकता है)';
 
   @override
   String get seerrUnavailable =>
-      'Unavailable because server plugin Seerr support is disabled.';
+      'अनुपलब्ध है क्योंकि सर्वर प्लगइन सीरर समर्थन अक्षम है।';
 
   @override
-  String get nsfwFilter => 'NSFW Filter';
+  String get nsfwFilter => 'एनएसएफडब्ल्यू फ़िल्टर';
 
   @override
-  String get hideAdultContent => 'Hide adult content in results';
+  String get hideAdultContent => 'परिणामों में वयस्क सामग्री छिपाएँ';
 
   @override
   String loggedInAs(String username) {
@@ -2969,24 +3023,24 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get discoverRows => 'Discover Rows';
+  String get discoverRows => 'पंक्तियों की खोज करें';
 
   @override
   String get discoverRowsDescriptionPlugin =>
-      'Drag to reorder. Enable or disable rows. Enabled row order syncs with the Moonfin plugin.';
+      'पुन: व्यवस्थित करने के लिए खींचें। पंक्तियों को सक्षम या अक्षम करें. सक्षम पंक्ति क्रम Moonfin प्लगइन के साथ समन्वयित होता है।';
 
   @override
   String get discoverRowsDescription =>
-      'Drag to reorder. Enable or disable rows.';
+      'पुन: व्यवस्थित करने के लिए खींचें। पंक्तियों को सक्षम या अक्षम करें.';
 
   @override
-  String get enabled => 'Enabled';
+  String get enabled => 'सक्रिय';
 
   @override
-  String get hidden => 'Hidden';
+  String get hidden => 'छिपा हुआ';
 
   @override
-  String get aboutTitle => 'About';
+  String get aboutTitle => 'के बारे में';
 
   @override
   String versionValue(String version) {
@@ -2994,49 +3048,49 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get openSourceLicenses => 'Open Source Licenses';
+  String get openSourceLicenses => 'ओपन सोर्स लाइसेंस';
 
   @override
-  String get sourceCode => 'Source Code';
+  String get sourceCode => 'सोर्स कोड';
 
   @override
   String get sourceCodeUrl =>
       'https://github.com/Moonfin-Client/Mobile-Desktop';
 
   @override
-  String get checkForUpdatesNow => 'Check for Updates Now';
+  String get checkForUpdatesNow => 'अभी अपडेट की जाँच करें';
 
   @override
   String get checksLatestDesktopRelease =>
-      'Checks latest desktop release for this platform';
+      'इस प्लेटफ़ॉर्म के लिए नवीनतम डेस्कटॉप रिलीज़ की जाँच करता है';
 
   @override
-  String get youAreUpToDate => 'You are up to date.';
+  String get youAreUpToDate => 'आप अद्यतन हैं।';
 
   @override
-  String get couldNotCheckForUpdates =>
-      'Could not check for updates right now.';
+  String get couldNotCheckForUpdates => 'अभी अपडेट की जांच नहीं की जा सकी.';
 
   @override
   String get noCompatibleUpdate =>
-      'No compatible update package found for this platform.';
+      'इस प्लेटफ़ॉर्म के लिए कोई संगत अद्यतन पैकेज़ नहीं मिला।';
 
   @override
   String get updateChecksNotSupported =>
-      'Update checks are not supported on this platform.';
+      'इस प्लेटफ़ॉर्म पर अद्यतन जाँच समर्थित नहीं हैं।';
 
   @override
-  String get updateNotificationsDisabled =>
-      'Update notifications are disabled.';
+  String get updateNotificationsDisabled => 'अद्यतन सूचनाएं अक्षम हैं.';
 
   @override
-  String get pleaseWaitBeforeChecking => 'Please wait before checking again.';
+  String get pleaseWaitBeforeChecking =>
+      'कृपया दोबारा जाँच करने से पहले प्रतीक्षा करें।';
 
   @override
-  String get latestUpdateAlreadyShown => 'Latest update was already shown.';
+  String get latestUpdateAlreadyShown =>
+      'नवीनतम अपडेट पहले ही दिखाया जा चुका था.';
 
   @override
-  String get updateAvailable => 'Update available.';
+  String get updateAvailable => 'उपलब्ध अद्यतन।';
 
   @override
   String updateAvailableVersion(String version) {
@@ -3044,10 +3098,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get updateNotifications => 'Update Notifications';
+  String get updateNotifications => 'अद्यतन सूचनाएं';
 
   @override
-  String get showWhenUpdatesAvailable => 'Show when updates are available';
+  String get showWhenUpdatesAvailable => 'अपडेट उपलब्ध होने पर दिखाएं';
 
   @override
   String updateAvailableTitle(String version) {
@@ -3055,44 +3109,47 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get readReleaseNotes => 'Read Release Notes';
+  String get readReleaseNotes => 'रिलीज़ नोट्स पढ़ें';
 
   @override
-  String get downloadingUpdate => 'Downloading update...';
+  String get downloadingUpdate => 'अद्यतन स्थिति डाउनलोड हो रही है...';
 
   @override
   String get updateDownloadFailed =>
-      'Update download failed. Please try again.';
+      'अद्यतन डाउनलोड विफल रहा. कृपया पुन: प्रयास करें।';
 
   @override
-  String get openReleasesPage => 'Open Releases Page';
+  String get openReleasesPage => 'रिलीज़ पेज खोलें';
 
   @override
-  String get navigation => 'Navigation';
+  String get navigation => 'मार्गदर्शन';
 
   @override
-  String get watchedIndicatorsBackdrops => 'Watched indicators, backdrops';
+  String get watchedIndicatorsBackdrops => 'संकेतक, पृष्ठभूमियाँ देखीं';
 
   @override
   String get focusColorWatchedIndicatorsBackdrops =>
-      'Focus color, watched indicators, backdrops';
+      'फोकस रंग, देखे गए संकेतक, पृष्ठभूमि';
 
   @override
   String get navbarStyleToolbarAppearance =>
-      'Navbar style, toolbar buttons, appearance';
+      'नेवबार शैली, टूलबार बटन, उपस्थिति';
 
   @override
-  String get reorderToggleHomeRows => 'Reorder and toggle home rows';
+  String get reorderToggleHomeRows =>
+      'घरेलू पंक्तियों को पुन: व्यवस्थित करें और टॉगल करें';
 
   @override
-  String get featuredContentAppearance => 'Featured content, appearance';
+  String get featuredContentAppearance =>
+      'विशेष रुप से प्रदर्शित सामग्री, उपस्थिति';
 
   @override
   String get posterSizeImageTypeFolderView =>
-      'Poster size, image type, folder view';
+      'पोस्टर का आकार, छवि प्रकार, फ़ोल्डर दृश्य';
 
   @override
-  String get mdbListTmdbRatingSources => 'MDBList, TMDB, and rating sources';
+  String get mdbListTmdbRatingSources =>
+      'एमडीबीलिस्ट, टीएमडीबी, और रेटिंग स्रोत';
 
   @override
   String gbValue(String value) {
@@ -3100,19 +3157,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'स्पष्ट';
 
   @override
-  String get browse => 'Browse';
+  String get browse => 'ब्राउज़';
 
   @override
-  String get noResults => 'No results';
+  String get noResults => 'कोई परिणाम नहीं';
 
   @override
-  String get seerrAvailableStatus => 'Available';
+  String get seerrAvailableStatus => 'उपलब्ध';
 
   @override
-  String get seerrRequestedStatus => 'Requested';
+  String get seerrRequestedStatus => 'अनुरोध किया';
 
   @override
   String itemsCount(int count) {
@@ -3120,19 +3177,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get seerrSettings => 'Seerr Settings';
+  String get seerrSettings => 'द्रष्टा सेटिंग्स';
 
   @override
-  String get requestMore => 'Request More';
+  String get requestMore => 'अधिक अनुरोध करें';
 
   @override
-  String get request => 'Request';
+  String get request => 'अनुरोध';
 
   @override
-  String get cancelRequest => 'Cancel Request';
+  String get cancelRequest => 'अनुरोध को रद्द करें';
 
   @override
-  String get playInMoonfin => 'Play in Moonfin';
+  String get playInMoonfin => 'Moonfin में खेलें';
 
   @override
   String requestedByName(String name) {
@@ -3140,16 +3197,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get approve => 'Approve';
+  String get approve => 'मंज़ूरी देना';
 
   @override
-  String get declineAction => 'Decline';
+  String get declineAction => 'गिरावट';
 
   @override
-  String get similar => 'Similar';
+  String get similar => 'समान';
 
   @override
-  String get recommendations => 'Recommendations';
+  String get recommendations => 'सिफारिशों';
 
   @override
   String cancelRequestForTitle(String title) {
@@ -3162,13 +3219,14 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get keep => 'Keep';
+  String get keep => 'रखना';
 
   @override
-  String get itemNotFoundInLibrary => 'Item not found in your Moonfin library';
+  String get itemNotFoundInLibrary =>
+      'आपकी Moonfin लाइब्रेरी में आइटम नहीं मिला';
 
   @override
-  String get errorSearchingLibrary => 'Error searching library';
+  String get errorSearchingLibrary => 'लाइब्रेरी खोजने में त्रुटि';
 
   @override
   String budgetAmount(String amount) {
@@ -3191,34 +3249,35 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get submitRequest => 'Submit Request';
+  String get submitRequest => 'अनुरोध सबमिट करें';
 
   @override
-  String get allSeasons => 'All Seasons';
+  String get allSeasons => 'सभी मौसम';
 
   @override
-  String get advancedOptions => 'Advanced Options';
+  String get advancedOptions => 'उन्नत विकल्प';
 
   @override
-  String get noServiceServersConfigured => 'No service servers configured';
+  String get noServiceServersConfigured =>
+      'कोई सेवा सर्वर कॉन्फ़िगर नहीं किया गया';
 
   @override
-  String get server => 'Server';
+  String get server => 'सर्वर';
 
   @override
-  String get qualityProfile => 'Quality Profile';
+  String get qualityProfile => 'गुणवत्ता प्रोफ़ाइल';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => 'रूट फ़ोल्डर';
 
   @override
-  String get showMore => 'Show More';
+  String get showMore => 'और दिखाएँ';
 
   @override
-  String get appearances => 'Appearances';
+  String get appearances => 'दिखावे';
 
   @override
-  String get crewSection => 'Crew';
+  String get crewSection => 'कर्मी दल';
 
   @override
   String ageValue(int age) {
@@ -3226,290 +3285,290 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get noRequests => 'No requests';
+  String get noRequests => 'कोई अनुरोध नहीं';
 
   @override
-  String get pendingStatus => 'Pending';
+  String get pendingStatus => 'लंबित';
 
   @override
-  String get declinedStatus => 'Declined';
+  String get declinedStatus => 'अस्वीकृत';
 
   @override
-  String get partiallyAvailable => 'Partially Available';
+  String get partiallyAvailable => 'आंशिक रूप से उपलब्ध';
 
   @override
-  String get downloadingStatus => 'Downloading';
+  String get downloadingStatus => 'डाउनलोड';
 
   @override
-  String get approvedStatus => 'Approved';
+  String get approvedStatus => 'अनुमत';
 
   @override
-  String get notRequestedStatus => 'Not Requested';
+  String get notRequestedStatus => 'अनुरोधित नहीं';
 
   @override
-  String get blocklistedStatus => 'Blocklisted';
+  String get blocklistedStatus => 'ब्लॉकलिस्टेड';
 
   @override
-  String get deletedStatus => 'Deleted';
+  String get deletedStatus => 'हटाए गए';
 
   @override
-  String get tmdbScore => 'TMDB Score';
+  String get tmdbScore => 'टीएमडीबी स्कोर';
 
   @override
-  String get releaseDateLabel => 'Release Date';
+  String get releaseDateLabel => 'रिलीज़ की तारीख';
 
   @override
-  String get firstAirDateLabel => 'First Air Date';
+  String get firstAirDateLabel => 'पहली हवाई तारीख';
 
   @override
-  String get revenueLabel => 'Revenue';
+  String get revenueLabel => 'आय';
 
   @override
-  String get runtimeLabel => 'Runtime';
+  String get runtimeLabel => 'क्रम';
 
   @override
-  String get budgetLabel => 'Budget';
+  String get budgetLabel => 'बजट';
 
   @override
-  String get originalLanguageLabel => 'Original Language';
+  String get originalLanguageLabel => 'मूल भाषा';
 
   @override
-  String get seasonsLabel => 'Seasons';
+  String get seasonsLabel => 'मौसम के';
 
   @override
-  String get episodesLabel => 'Episodes';
+  String get episodesLabel => 'एपिसोड';
 
   @override
-  String get access => 'Access';
+  String get access => 'पहुँच';
 
   @override
-  String get add => 'Add';
+  String get add => 'जोड़ना';
 
   @override
-  String get address => 'Address';
+  String get address => 'पता';
 
   @override
-  String get analytics => 'Analytics';
+  String get analytics => 'एनालिटिक्स';
 
   @override
-  String get catalog => 'Catalog';
+  String get catalog => 'सूची';
 
   @override
-  String get content => 'Content';
+  String get content => 'सामग्री';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'प्रतिलिपि';
 
   @override
-  String get create => 'Create';
+  String get create => 'बनाएं';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'अक्षम करना';
 
   @override
-  String get done => 'Done';
+  String get done => 'हो गया';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'संपादन करना';
 
   @override
-  String get encoding => 'Encoding';
+  String get encoding => 'एन्कोडिंग';
 
   @override
-  String get error => 'Error';
+  String get error => 'गलती';
 
   @override
-  String get forward => 'Forward';
+  String get forward => 'आगे';
 
   @override
-  String get general => 'General';
+  String get general => 'सामान्य';
 
   @override
-  String get go => 'Go';
+  String get go => 'जाना';
 
   @override
-  String get install => 'Install';
+  String get install => 'स्थापित करना';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'स्थापित';
 
   @override
-  String get interval => 'Interval';
+  String get interval => 'अंतराल';
 
   @override
-  String get name => 'Name';
+  String get name => 'नाम';
 
   @override
-  String get networking => 'Networking';
+  String get networking => 'नेटवर्किंग';
 
   @override
-  String get next => 'Next';
+  String get next => 'अगला';
 
   @override
-  String get path => 'Path';
+  String get path => 'पथ';
 
   @override
-  String get paused => 'Paused';
+  String get paused => 'रुका हुआ';
 
   @override
-  String get permissions => 'Permissions';
+  String get permissions => 'अनुमतियां';
 
   @override
-  String get processing => 'Processing';
+  String get processing => 'प्रसंस्करण';
 
   @override
-  String get profile => 'Profile';
+  String get profile => 'प्रोफ़ाइल';
 
   @override
-  String get provider => 'Provider';
+  String get provider => 'प्रदाता';
 
   @override
-  String get refresh => 'Refresh';
+  String get refresh => 'ताज़ा करना';
 
   @override
-  String get remote => 'Remote';
+  String get remote => 'दूर';
 
   @override
-  String get rename => 'Rename';
+  String get rename => 'नाम बदलें';
 
   @override
-  String get revoke => 'Revoke';
+  String get revoke => 'रद्द करना';
 
   @override
-  String get role => 'Role';
+  String get role => 'भूमिका';
 
   @override
-  String get root => 'Root';
+  String get root => 'जड़';
 
   @override
-  String get run => 'Run';
+  String get run => 'दौड़ना';
 
   @override
-  String get search => 'Search';
+  String get search => 'खोज';
 
   @override
-  String get select => 'Select';
+  String get select => 'चुनना';
 
   @override
-  String get send => 'Send';
+  String get send => 'भेजना';
 
   @override
-  String get sessions => 'Sessions';
+  String get sessions => 'सत्र';
 
   @override
-  String get set => 'Set';
+  String get set => 'तय करना';
 
   @override
-  String get status => 'Status';
+  String get status => 'स्थिति';
 
   @override
-  String get stop => 'Stop';
+  String get stop => 'रुकना';
 
   @override
-  String get streaming => 'Streaming';
+  String get streaming => 'स्ट्रीमिंग';
 
   @override
-  String get time => 'Time';
+  String get time => 'समय';
 
   @override
-  String get trickplay => 'Trickplay';
+  String get trickplay => 'चालाकी';
 
   @override
-  String get uninstall => 'Uninstall';
+  String get uninstall => 'अनइंस्टॉल करें';
 
   @override
-  String get up => 'Up';
+  String get up => 'ऊपर';
 
   @override
-  String get update => 'Update';
+  String get update => 'अद्यतन';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'अपलोड करें';
 
   @override
-  String get unmute => 'Unmute';
+  String get unmute => 'अनम्यूट';
 
   @override
-  String get mute => 'Mute';
+  String get mute => 'आवाज़ बंद करना';
 
   @override
-  String get branding => 'Branding';
+  String get branding => 'ब्रांडिंग';
 
   @override
-  String get adminDrawerDashboard => 'Dashboard';
+  String get adminDrawerDashboard => 'डैशबोर्ड';
 
   @override
-  String get adminDrawerAnalytics => 'Analytics';
+  String get adminDrawerAnalytics => 'एनालिटिक्स';
 
   @override
-  String get adminDrawerSettings => 'Settings';
+  String get adminDrawerSettings => 'सेटिंग्स';
 
   @override
-  String get adminDrawerBranding => 'Branding';
+  String get adminDrawerBranding => 'ब्रांडिंग';
 
   @override
-  String get adminDrawerUsers => 'Users';
+  String get adminDrawerUsers => 'उपयोगकर्ताओं';
 
   @override
-  String get adminDrawerLibraries => 'Libraries';
+  String get adminDrawerLibraries => 'पुस्तकालय';
 
   @override
-  String get adminDrawerTranscoding => 'Transcoding';
+  String get adminDrawerTranscoding => 'ट्रांसकोडिंग';
 
   @override
-  String get adminDrawerResume => 'Resume';
+  String get adminDrawerResume => 'फिर शुरू करना';
 
   @override
-  String get adminDrawerStreaming => 'Streaming';
+  String get adminDrawerStreaming => 'स्ट्रीमिंग';
 
   @override
-  String get adminDrawerTrickplay => 'Trickplay';
+  String get adminDrawerTrickplay => 'चालाकी';
 
   @override
-  String get adminDrawerDevices => 'Devices';
+  String get adminDrawerDevices => 'उपकरण';
 
   @override
-  String get adminDrawerActivity => 'Activity';
+  String get adminDrawerActivity => 'गतिविधि';
 
   @override
-  String get adminDrawerNetworking => 'Networking';
+  String get adminDrawerNetworking => 'नेटवर्किंग';
 
   @override
-  String get adminDrawerApiKeys => 'API Keys';
+  String get adminDrawerApiKeys => 'एपीआई कुंजी';
 
   @override
-  String get adminDrawerBackups => 'Backups';
+  String get adminDrawerBackups => 'बैकअप';
 
   @override
-  String get adminDrawerLogs => 'Logs';
+  String get adminDrawerLogs => 'लॉग्स';
 
   @override
-  String get adminDrawerScheduledTasks => 'Scheduled Tasks';
+  String get adminDrawerScheduledTasks => 'नियत कार्य';
 
   @override
-  String get adminDrawerPlugins => 'Plugins';
+  String get adminDrawerPlugins => 'प्लग-इन';
 
   @override
-  String get adminDrawerRepositories => 'Repositories';
+  String get adminDrawerRepositories => 'डेटा संग्रह स्थान';
 
   @override
-  String get adminDrawerLiveTv => 'Live TV';
+  String get adminDrawerLiveTv => 'लाइव टीवी';
 
   @override
-  String get adminExitTooltip => 'Exit Admin';
+  String get adminExitTooltip => 'व्यवस्थापक से बाहर निकलें';
 
   @override
-  String get adminDashboardLoadFailed => 'Failed to load dashboard';
+  String get adminDashboardLoadFailed => 'डैशबोर्ड लोड करने में विफल';
 
   @override
-  String get adminMediaOverview => 'Media Overview';
+  String get adminMediaOverview => 'मीडिया अवलोकन';
 
   @override
-  String get adminMediaTotalsError => 'Could not load server media totals.';
+  String get adminMediaTotalsError => 'सर्वर मीडिया योग लोड नहीं किया जा सका.';
 
   @override
   String get adminMediaOverviewSubtitle =>
-      'A quick read on how much content is on this server.';
+      'इस सर्वर पर कितनी सामग्री है, इस पर एक त्वरित नज़र डालें।';
 
   @override
   String adminPluginUpdatesAvailable(int count) {
@@ -3532,58 +3591,58 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get analyticsMediaDistribution => 'Media Distribution';
+  String get analyticsMediaDistribution => 'मीडिया वितरण';
 
   @override
-  String get analyticsVideoCodecs => 'Video Codecs';
+  String get analyticsVideoCodecs => 'वीडियो कोडेक्स';
 
   @override
-  String get analyticsAudioCodecs => 'Audio Codecs';
+  String get analyticsAudioCodecs => 'ऑडियो कोडेक्स';
 
   @override
-  String get analyticsContainers => 'Containers';
+  String get analyticsContainers => 'कंटेनरों';
 
   @override
-  String get analyticsTopGenres => 'Top Genres';
+  String get analyticsTopGenres => 'शीर्ष शैलियाँ';
 
   @override
-  String get analyticsReleaseYears => 'Release Years';
+  String get analyticsReleaseYears => 'रिलीज़ वर्ष';
 
   @override
-  String get analyticsContentRatings => 'Content Ratings';
+  String get analyticsContentRatings => 'सामग्री रेटिंग';
 
   @override
-  String get analyticsRuntimeBuckets => 'Runtime Buckets';
+  String get analyticsRuntimeBuckets => 'रनटाइम बकेट';
 
   @override
-  String get analyticsFileFormats => 'File Formats';
+  String get analyticsFileFormats => 'फ़ाइल प्रारूप';
 
   @override
-  String get analyticsNoData => 'No Data Available.';
+  String get analyticsNoData => 'कोई डेटा मौजूद नहीं।';
 
   @override
-  String get adminServerInfo => 'Server Info';
+  String get adminServerInfo => 'सर्वर जानकारी';
 
   @override
-  String get adminRestartPending => 'Restart Pending';
+  String get adminRestartPending => 'पुनः आरंभ लंबित';
 
   @override
-  String get adminServerPaths => 'Server Paths';
+  String get adminServerPaths => 'सर्वर पथ';
 
   @override
-  String get adminServerActions => 'Server Actions';
+  String get adminServerActions => 'सर्वर क्रियाएँ';
 
   @override
-  String get adminRestartServer => 'Restart Server';
+  String get adminRestartServer => 'सर्वर पुनः प्रारंभ करें';
 
   @override
-  String get adminShutdownServer => 'Shutdown Server';
+  String get adminShutdownServer => 'सर्वर बंद करें';
 
   @override
-  String get adminScanLibraries => 'Scan Libraries';
+  String get adminScanLibraries => 'पुस्तकालयों को स्कैन करें';
 
   @override
-  String get adminLibraryScanStarted => 'Library scan started';
+  String get adminLibraryScanStarted => 'लाइब्रेरी स्कैन प्रारंभ हुआ';
 
   @override
   String errorGeneric(String error) {
@@ -3591,26 +3650,26 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminServerRebootInProgress => 'Server reboot in progress';
+  String get adminServerRebootInProgress => 'सर्वर रीबूट प्रगति पर है';
 
   @override
   String get adminServerRebootMessage =>
-      'Server reboot in progress, please restart Moonfin';
+      'सर्वर रीबूट प्रगति पर है, कृपया पुनः आरंभ करें Moonfin';
 
   @override
-  String get adminActiveSessions => 'Active Sessions';
+  String get adminActiveSessions => 'सक्रिय सत्र';
 
   @override
-  String get adminSessionsLoadFailed => 'Failed to load sessions';
+  String get adminSessionsLoadFailed => 'सत्र लोड करने में विफल';
 
   @override
-  String get adminNoActiveSessions => 'No active sessions';
+  String get adminNoActiveSessions => 'कोई सक्रिय सत्र नहीं';
 
   @override
-  String get adminRecentActivity => 'Recent Activity';
+  String get adminRecentActivity => 'हाल की गतिविधि';
 
   @override
-  String get adminNoRecentActivity => 'No recent activity';
+  String get adminNoRecentActivity => 'कोई हालिया गतिविधि नहीं';
 
   @override
   String adminCommandFailed(String error) {
@@ -3618,64 +3677,64 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminSendMessage => 'Send Message';
+  String get adminSendMessage => 'मेसेज भेजें';
 
   @override
-  String get adminMessageTextHint => 'Message text';
+  String get adminMessageTextHint => 'संदेश पाठ';
 
   @override
-  String get adminSetVolume => 'Set Volume';
+  String get adminSetVolume => 'वॉल्यूम सेट करें';
 
   @override
-  String get sessionPrev => 'Prev';
+  String get sessionPrev => 'पिछला';
 
   @override
-  String get sessionRewind => 'Rewind';
+  String get sessionRewind => 'रिवाइंड';
 
   @override
-  String get sessionForward => 'Forward';
+  String get sessionForward => 'आगे';
 
   @override
-  String get sessionNext => 'Next';
+  String get sessionNext => 'अगला';
 
   @override
-  String get sessionVolumeDown => 'Vol –';
+  String get sessionVolumeDown => 'वॉल्यूम -';
 
   @override
-  String get sessionVolumeUp => 'Vol +';
+  String get sessionVolumeUp => 'वॉल्यूम +';
 
   @override
   String get uhd4k => '4K';
 
   @override
-  String get nowPlaying => 'Now Playing';
+  String get nowPlaying => 'अब खेल रहे हैं';
 
   @override
-  String get volume => 'Volume';
+  String get volume => 'आयतन';
 
   @override
-  String get actions => 'Actions';
+  String get actions => 'कार्रवाई';
 
   @override
-  String get videoCodec => 'Video Codec';
+  String get videoCodec => 'वीडियो कोडेक';
 
   @override
-  String get audioCodec => 'Audio Codec';
+  String get audioCodec => 'ऑडियो कोडेक';
 
   @override
-  String get hwAccel => 'HW Accel';
+  String get hwAccel => 'एचडब्ल्यू एक्सेल';
 
   @override
-  String get completion => 'Completion';
+  String get completion => 'समापन';
 
   @override
-  String get direct => 'Direct';
+  String get direct => 'प्रत्यक्ष';
 
   @override
-  String get adminDisconnect => 'Disconnect';
+  String get adminDisconnect => 'डिस्कनेक्ट';
 
   @override
-  String get adminClearDates => 'Clear dates';
+  String get adminClearDates => 'स्पष्ट तिथियाँ';
 
   @override
   String adminActivityLoadFailed(String error) {
@@ -3683,16 +3742,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminNoActivityEntries => 'No activity entries';
+  String get adminNoActivityEntries => 'कोई गतिविधि प्रविष्टियाँ नहीं';
 
   @override
-  String get adminEditDeviceName => 'Edit Device Name';
+  String get adminEditDeviceName => 'डिवाइस का नाम संपादित करें';
 
   @override
-  String get adminCustomName => 'Custom Name';
+  String get adminCustomName => 'प्रचलित नाम';
 
   @override
-  String get adminDeviceNameUpdated => 'Device name updated';
+  String get adminDeviceNameUpdated => 'डिवाइस का नाम अपडेट किया गया';
 
   @override
   String adminDeviceUpdateFailed(String error) {
@@ -3700,10 +3759,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteDevice => 'Delete Device';
+  String get adminDeleteDevice => 'डिवाइस हटाएँ';
 
   @override
-  String get adminDeviceDeleted => 'Device deleted';
+  String get adminDeviceDeleted => 'डिवाइस हटा दिया गया';
 
   @override
   String adminDeviceDeleteFailed(String error) {
@@ -3711,28 +3770,28 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminDevicesLoadFailed => 'Failed to load devices';
+  String get adminDevicesLoadFailed => 'डिवाइस लोड करने में विफल';
 
   @override
-  String get adminSearchDevices => 'Search devices';
+  String get adminSearchDevices => 'उपकरण खोजें';
 
   @override
-  String get adminThisDevice => 'This Device';
+  String get adminThisDevice => 'यह डिवाइस';
 
   @override
-  String get adminEditName => 'Edit Name';
+  String get adminEditName => 'नाम संपादित करें';
 
   @override
-  String get adminLibrariesLoadFailed => 'Failed to load libraries';
+  String get adminLibrariesLoadFailed => 'लाइब्रेरीज़ लोड करने में विफल';
 
   @override
-  String get adminNoLibraries => 'No libraries configured';
+  String get adminNoLibraries => 'कोई लाइब्रेरी कॉन्फ़िगर नहीं की गई';
 
   @override
-  String get adminScanAllLibraries => 'Scan All Libraries';
+  String get adminScanAllLibraries => 'सभी पुस्तकालयों को स्कैन करें';
 
   @override
-  String get adminAddLibrary => 'Add Library';
+  String get adminAddLibrary => 'लाइब्रेरी जोड़ें';
 
   @override
   String adminScanFailed(String error) {
@@ -3740,10 +3799,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminRenameLibrary => 'Rename Library';
+  String get adminRenameLibrary => 'लाइब्रेरी का नाम बदलें';
 
   @override
-  String get adminNewName => 'New name';
+  String get adminNewName => 'नया नाम';
 
   @override
   String adminLibraryRenamed(String name) {
@@ -3756,7 +3815,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteLibrary => 'Delete Library';
+  String get adminDeleteLibrary => 'लाइब्रेरी हटाएँ';
 
   @override
   String adminLibraryDeleted(String name) {
@@ -3774,7 +3833,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminRemovePath => 'Remove Path';
+  String get adminRemovePath => 'पथ हटाएँ';
 
   @override
   String adminRemovePathConfirm(String path) {
@@ -3787,7 +3846,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryOptionsSaved => 'Library options saved';
+  String get adminLibraryOptionsSaved => 'लाइब्रेरी विकल्प सहेजे गए';
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
@@ -3795,34 +3854,34 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryLoadFailed => 'Failed to load library';
+  String get adminLibraryLoadFailed => 'लाइब्रेरी लोड करने में विफल';
 
   @override
-  String get adminNoMediaPaths => 'No media paths configured';
+  String get adminNoMediaPaths => 'कोई मीडिया पथ कॉन्फ़िगर नहीं किया गया';
 
   @override
-  String get adminAddPath => 'Add Path';
+  String get adminAddPath => 'पथ जोड़ें';
 
   @override
-  String get adminBrowseFilesystem => 'Browse server filesystem:';
+  String get adminBrowseFilesystem => 'सर्वर फ़ाइल सिस्टम ब्राउज़ करें:';
 
   @override
-  String get adminSaveOptions => 'Save Options';
+  String get adminSaveOptions => 'विकल्प सहेजें';
 
   @override
-  String get adminPreferredMetadataLanguage => 'Preferred metadata language';
+  String get adminPreferredMetadataLanguage => 'पसंदीदा मेटाडेटा भाषा';
 
   @override
-  String get adminMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminMetadataLanguageHint => 'जैसे एन, डे, फ्र';
 
   @override
-  String get adminMetadataCountryCode => 'Metadata country code';
+  String get adminMetadataCountryCode => 'मेटाडेटा देश कोड';
 
   @override
-  String get adminMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminMetadataCountryHint => 'जैसे यूएस, डीई, एफआर';
 
   @override
-  String get adminLibraryNameRequired => 'Library name is required';
+  String get adminLibraryNameRequired => 'लाइब्रेरी का नाम आवश्यक है';
 
   @override
   String adminLibraryCreateFailed(String error) {
@@ -3830,25 +3889,26 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryName => 'Library Name';
+  String get adminLibraryName => 'पुस्तकालय का नाम';
 
   @override
-  String get adminSelectedPaths => 'Selected Paths:';
+  String get adminSelectedPaths => 'चयनित पथ:';
 
   @override
-  String get adminNoPathsAdded => 'No paths added (can be added later)';
+  String get adminNoPathsAdded =>
+      'कोई पथ नहीं जोड़ा गया (बाद में जोड़ा जा सकता है)';
 
   @override
-  String get adminCreateLibrary => 'Create Library';
+  String get adminCreateLibrary => 'लाइब्रेरी बनाएं';
 
   @override
-  String get paths => 'Paths:';
+  String get paths => 'पथ:';
 
   @override
-  String get adminDisableUser => 'Disable User';
+  String get adminDisableUser => 'उपयोगकर्ता को अक्षम करें';
 
   @override
-  String get adminEnableUser => 'Enable User';
+  String get adminEnableUser => 'उपयोगकर्ता सक्षम करें';
 
   @override
   String adminDisableUserConfirm(String name) {
@@ -3876,16 +3936,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminUsersLoadFailed => 'Failed to load users';
+  String get adminUsersLoadFailed => 'उपयोगकर्ताओं को लोड करने में विफल';
 
   @override
-  String get adminSearchUsers => 'Search users';
+  String get adminSearchUsers => 'उपयोगकर्ता खोजें';
 
   @override
-  String get adminEditUser => 'Edit User';
+  String get adminEditUser => 'यूजर को संपादित करो';
 
   @override
-  String get adminAddUser => 'Add User';
+  String get adminAddUser => 'उपयोगकर्ता जोड़ें';
 
   @override
   String adminUserCreateFailed(String error) {
@@ -3893,19 +3953,20 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminCreateUser => 'Create User';
+  String get adminCreateUser => 'उपयोगकर्ता बनाएं';
 
   @override
-  String get adminPasswordOptional => 'Password (optional)';
+  String get adminPasswordOptional => 'पासवर्ड (वैकल्पिक)';
 
   @override
-  String get adminUsernameRequired => 'Username cannot be empty';
+  String get adminUsernameRequired => 'उपयोक्तानाम खाली नहीं हो सकता';
 
   @override
-  String get adminNoProfileChanges => 'No profile changes to save';
+  String get adminNoProfileChanges =>
+      'सहेजने के लिए कोई प्रोफ़ाइल परिवर्तन नहीं';
 
   @override
-  String get adminProfileSaved => 'Profile saved';
+  String get adminProfileSaved => 'प्रोफ़ाइल सहेजी गई';
 
   @override
   String adminSaveFailed(String error) {
@@ -3913,10 +3974,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminPermissionsSaved => 'Permissions saved';
+  String get adminPermissionsSaved => 'अनुमतियाँ सहेजी गईं';
 
   @override
-  String get adminPasswordsMismatch => 'Passwords do not match';
+  String get adminPasswordsMismatch => 'सांकेतिक शब्द मेल नहीं खाते';
 
   @override
   String adminFailed(String error) {
@@ -3924,135 +3985,140 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminUserLoadFailed => 'Failed to load user';
+  String get adminUserLoadFailed => 'उपयोगकर्ता लोड करने में विफल';
 
   @override
-  String get adminBackToUsers => 'Back to Users';
+  String get adminBackToUsers => 'उपयोगकर्ताओं के पास वापस जाएँ';
 
   @override
-  String get adminSaveProfile => 'Save Profile';
+  String get adminSaveProfile => 'प्रोफ़ाइल बचा';
 
   @override
-  String get adminDeleteUser => 'Delete User';
+  String get adminDeleteUser => 'उपयोगकर्ता हटाएँ';
 
   @override
-  String get admin => 'Admin';
+  String get admin => 'व्यवस्थापक';
 
   @override
   String get adminFullAccessWarning =>
-      'Administrators have complete access to the server. Grant with caution.';
+      'प्रशासकों के पास सर्वर तक पूरी पहुंच होती है. सावधानी से अनुदान दें.';
 
   @override
-  String get administrator => 'Administrator';
+  String get administrator => 'प्रशासक';
 
   @override
-  String get adminHiddenUser => 'Hidden user';
+  String get adminHiddenUser => 'छिपा हुआ उपयोगकर्ता';
 
   @override
-  String get adminAllowMediaPlayback => 'Allow media playback';
+  String get adminAllowMediaPlayback => 'मीडिया प्लेबैक की अनुमति दें';
 
   @override
-  String get adminAllowAudioTranscoding => 'Allow audio transcoding';
+  String get adminAllowAudioTranscoding => 'ऑडियो ट्रांसकोडिंग की अनुमति दें';
 
   @override
-  String get adminAllowVideoTranscoding => 'Allow video transcoding';
+  String get adminAllowVideoTranscoding => 'वीडियो ट्रांसकोडिंग की अनुमति दें';
 
   @override
-  String get adminAllowRemuxing => 'Allow remuxing';
+  String get adminAllowRemuxing => 'रीमक्सिंग की अनुमति दें';
 
   @override
-  String get adminForceRemoteTranscoding => 'Force remote source transcoding';
+  String get adminForceRemoteTranscoding =>
+      'दूरस्थ स्रोत ट्रांसकोडिंग को बाध्य करें';
 
   @override
-  String get adminAllowContentDeletion => 'Allow content deletion';
+  String get adminAllowContentDeletion => 'सामग्री हटाने की अनुमति दें';
 
   @override
-  String get adminAllowContentDownloading => 'Allow content downloading';
+  String get adminAllowContentDownloading =>
+      'सामग्री डाउनलोड करने की अनुमति दें';
 
   @override
-  String get adminAllowPublicSharing => 'Allow public sharing';
+  String get adminAllowPublicSharing => 'सार्वजनिक साझाकरण की अनुमति दें';
 
   @override
-  String get adminAllowRemoteControl => 'Allow remote control of other users';
+  String get adminAllowRemoteControl =>
+      'अन्य उपयोगकर्ताओं को रिमोट कंट्रोल की अनुमति दें';
 
   @override
-  String get adminAllowSharedDeviceControl => 'Allow shared device control';
+  String get adminAllowSharedDeviceControl =>
+      'साझा डिवाइस नियंत्रण की अनुमति दें';
 
   @override
-  String get adminAllowRemoteAccess => 'Allow remote access';
+  String get adminAllowRemoteAccess => 'रिमोट एक्सेस की अनुमति दें';
 
   @override
-  String get adminRemoteBitrateLimit => 'Remote client bitrate limit (bps)';
+  String get adminRemoteBitrateLimit => 'दूरस्थ क्लाइंट बिटरेट सीमा (बीपीएस)';
 
   @override
-  String get adminLeaveEmptyNoLimit => 'Leave empty for no limit';
+  String get adminLeaveEmptyNoLimit => 'बिना किसी सीमा के खाली छोड़ दें';
 
   @override
-  String get adminMaxActiveSessions => 'Max active sessions';
+  String get adminMaxActiveSessions => 'अधिकतम सक्रिय सत्र';
 
   @override
-  String get adminAllowLiveTvAccess => 'Allow Live TV access';
+  String get adminAllowLiveTvAccess => 'लाइव टीवी एक्सेस की अनुमति दें';
 
   @override
-  String get adminAllowLiveTvManagement => 'Allow Live TV management';
+  String get adminAllowLiveTvManagement => 'लाइव टीवी प्रबंधन की अनुमति दें';
 
   @override
-  String get adminAllowCollectionManagement => 'Allow collection management';
+  String get adminAllowCollectionManagement => 'संग्रह प्रबंधन की अनुमति दें';
 
   @override
-  String get adminAllowSubtitleManagement => 'Allow subtitle management';
+  String get adminAllowSubtitleManagement => 'उपशीर्षक प्रबंधन की अनुमति दें';
 
   @override
-  String get adminAllowLyricManagement => 'Allow lyric management';
+  String get adminAllowLyricManagement => 'गीत प्रबंधन की अनुमति दें';
 
   @override
-  String get adminSavePermissions => 'Save Permissions';
+  String get adminSavePermissions => 'अनुमतियाँ सहेजें';
 
   @override
-  String get adminEnableAllLibraryAccess => 'Enable access to all libraries';
+  String get adminEnableAllLibraryAccess =>
+      'सभी पुस्तकालयों तक पहुंच सक्षम करें';
 
   @override
-  String get adminSaveAccess => 'Save Access';
+  String get adminSaveAccess => 'पहुंच सहेजें';
 
   @override
-  String get adminChangePassword => 'Change Password';
+  String get adminChangePassword => 'पासवर्ड बदलें';
 
   @override
-  String get adminNewPassword => 'New Password';
+  String get adminNewPassword => 'नया पासवर्ड';
 
   @override
-  String get adminConfirmPassword => 'Confirm Password';
+  String get adminConfirmPassword => 'पासवर्ड की पुष्टि कीजिये';
 
   @override
-  String get adminSetPassword => 'Set Password';
+  String get adminSetPassword => 'सांकेतिक शब्द लगना';
 
   @override
-  String get adminResetPassword => 'Reset Password';
+  String get adminResetPassword => 'पासवर्ड रीसेट';
 
   @override
-  String get adminPasswordReset => 'Password reset';
+  String get adminPasswordReset => 'पासवर्ड रीसेट';
 
   @override
-  String get adminPasswordUpdated => 'Password updated';
+  String get adminPasswordUpdated => 'पासवर्ड अपडेट किया गया';
 
   @override
-  String get adminUserSettings => 'User Settings';
+  String get adminUserSettings => 'उपयोगकर्ता सेटिंग्स';
 
   @override
-  String get adminLibraryAccess => 'Library Access';
+  String get adminLibraryAccess => 'पुस्तकालय प्रवेश';
 
   @override
-  String get adminDeviceAndChannelAccess => 'Device & Channel Access';
+  String get adminDeviceAndChannelAccess => 'डिवाइस और चैनल एक्सेस';
 
   @override
-  String get adminEnableAllDevices => 'Enable access to all devices';
+  String get adminEnableAllDevices => 'सभी डिवाइस तक पहुंच सक्षम करें';
 
   @override
-  String get adminEnableAllChannels => 'Enable access to all channels';
+  String get adminEnableAllChannels => 'सभी चैनलों तक पहुंच सक्षम करें';
 
   @override
   String get adminResetPasswordWarning =>
-      'This will remove the password. The user will be able to log in without a password.';
+      'इससे पासवर्ड हट जाएगा. यूजर बिना पासवर्ड के लॉग इन कर सकेगा।';
 
   @override
   String adminServerReturnedHttp(int status) {
@@ -4075,20 +4141,20 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminCreateApiKey => 'Create API Key';
+  String get adminCreateApiKey => 'एपीआई कुंजी बनाएं';
 
   @override
-  String get adminAppName => 'App name';
+  String get adminAppName => 'ऐप का नाम';
 
   @override
-  String get adminApiKeyCreated => 'API Key Created';
+  String get adminApiKeyCreated => 'एपीआई कुंजी बनाई गई';
 
   @override
   String get adminApiKeyCreatedNoToken =>
-      'Key created successfully. The server did not return the token. Check server API keys.';
+      'कुंजी सफलतापूर्वक बनाई गई. सर्वर ने टोकन वापस नहीं किया. सर्वर एपीआई कुंजियाँ जाँचें।';
 
   @override
-  String get adminKeyCopied => 'Key copied to clipboard';
+  String get adminKeyCopied => 'कुंजी को क्लिपबोर्ड पर कॉपी किया गया';
 
   @override
   String adminApiKeyCreateFailed(String error) {
@@ -4096,10 +4162,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminKeyTokenMissing => 'Key token missing from server response';
+  String get adminKeyTokenMissing => 'सर्वर प्रतिक्रिया से कुंजी टोकन गायब है';
 
   @override
-  String get adminRevokeApiKey => 'Revoke API Key';
+  String get adminRevokeApiKey => 'एपीआई कुंजी निरस्त करें';
 
   @override
   String adminRevokeKeyConfirm(String name) {
@@ -4107,7 +4173,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeyRevoked => 'API key revoked';
+  String get adminApiKeyRevoked => 'एपीआई कुंजी निरस्त कर दी गई';
 
   @override
   String adminApiKeyRevokeFailed(String error) {
@@ -4115,19 +4181,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeysLoadFailed => 'Failed to load API keys';
+  String get adminApiKeysLoadFailed => 'एपीआई कुंजियाँ लोड करने में विफल';
 
   @override
-  String get adminApiKeysTitle => 'API Keys';
+  String get adminApiKeysTitle => 'एपीआई कुंजी';
 
   @override
-  String get adminCreateKey => 'Create Key';
+  String get adminCreateKey => 'कुंजी बनाएँ';
 
   @override
-  String get adminNoApiKeys => 'No API keys found';
+  String get adminNoApiKeys => 'कोई एपीआई कुंजी नहीं मिली';
 
   @override
-  String get adminUnknownApp => 'Unknown App';
+  String get adminUnknownApp => 'अज्ञात ऐप';
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
@@ -4135,10 +4201,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminCreatingBackup => 'Creating backup...';
+  String get adminCreatingBackup => 'बैकअप बनाया जा रहा है...';
 
   @override
-  String get adminBackupCreated => 'Backup created successfully';
+  String get adminBackupCreated => 'बैकअप सफलतापूर्वक बनाया गया';
 
   @override
   String adminBackupCreateFailed(String error) {
@@ -4146,7 +4212,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminBackupPathMissing => 'Backup path missing in server response';
+  String get adminBackupPathMissing => 'सर्वर प्रतिक्रिया में बैकअप पथ गायब है';
 
   @override
   String adminBackupManifest(String name) {
@@ -4159,10 +4225,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminConfirmRestore => 'Confirm Restore';
+  String get adminConfirmRestore => 'पुनर्स्थापना की पुष्टि करें';
 
   @override
-  String get adminRestoringBackup => 'Restoring backup...';
+  String get adminRestoringBackup => 'बैकअप बहाल किया जा रहा है...';
 
   @override
   String adminRestoreFailed(String error) {
@@ -4170,31 +4236,31 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminBackupsLoadFailed => 'Failed to load backups';
+  String get adminBackupsLoadFailed => 'बैकअप लोड करने में विफल';
 
   @override
-  String get adminCreateBackup => 'Create Backup';
+  String get adminCreateBackup => 'बैकअप बनाएं';
 
   @override
-  String get adminNoBackups => 'No backups found';
+  String get adminNoBackups => 'कोई बैकअप नहीं मिला';
 
   @override
-  String get adminViewDetails => 'View Details';
+  String get adminViewDetails => 'विवरण देखें';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'पुनर्स्थापित करना';
 
   @override
-  String get adminLogsLoadFailed => 'Failed to load server logs';
+  String get adminLogsLoadFailed => 'सर्वर लॉग लोड करने में विफल';
 
   @override
-  String get adminNoLogFiles => 'No log files found';
+  String get adminNoLogFiles => 'कोई लॉग फ़ाइल नहीं मिली';
 
   @override
-  String get adminLogCopied => 'Log copied to clipboard';
+  String get adminLogCopied => 'लॉग क्लिपबोर्ड पर कॉपी किया गया';
 
   @override
-  String get adminSaveLogFile => 'Save log file';
+  String get adminSaveLogFile => 'लॉग फ़ाइल सहेजें';
 
   @override
   String adminSavedTo(String path) {
@@ -4212,10 +4278,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminSearchInLog => 'Search in log';
+  String get adminSearchInLog => 'लॉग में खोजें';
 
   @override
-  String get adminNoMatchingLines => 'No matching lines';
+  String get adminNoMatchingLines => 'कोई मेल खाती पंक्तियाँ नहीं';
 
   @override
   String adminTasksLoadFailed(String error) {
@@ -4223,10 +4289,11 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminNoScheduledTasks => 'No scheduled tasks found';
+  String get adminNoScheduledTasks => 'कोई निर्धारित कार्य नहीं मिला';
 
   @override
-  String get adminNoTasksMatchFilter => 'No tasks match the current filter';
+  String get adminNoTasksMatchFilter =>
+      'कोई भी कार्य वर्तमान फ़िल्टर से मेल नहीं खाता';
 
   @override
   String adminTaskStartFailed(String error) {
@@ -4244,7 +4311,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminRunNow => 'Run Now';
+  String get adminRunNow => 'अब दौड़े';
 
   @override
   String adminTriggerRemoveFailed(String error) {
@@ -4257,25 +4324,25 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminLastExecution => 'Last Execution';
+  String get adminLastExecution => 'अंतिम निष्पादन';
 
   @override
-  String get adminTriggers => 'Triggers';
+  String get adminTriggers => 'चलाता है';
 
   @override
-  String get adminAddTrigger => 'Add Trigger';
+  String get adminAddTrigger => 'ट्रिगर जोड़ें';
 
   @override
-  String get adminNoTriggers => 'No triggers configured';
+  String get adminNoTriggers => 'कोई ट्रिगर कॉन्फ़िगर नहीं किया गया';
 
   @override
-  String get adminTriggerType => 'Trigger Type';
+  String get adminTriggerType => 'ट्रिगर प्रकार';
 
   @override
-  String get adminTimeLimit => 'Time limit (optional)';
+  String get adminTimeLimit => 'समय सीमा (वैकल्पिक)';
 
   @override
-  String get adminNoLimit => 'No limit';
+  String get adminNoLimit => 'कोई सीमा नहीं';
 
   @override
   String adminHours(String hours) {
@@ -4283,10 +4350,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminDayOfWeek => 'Day of week';
+  String get adminDayOfWeek => 'सप्ताह का दिन';
 
   @override
-  String get adminSearchPlugins => 'Search plugins...';
+  String get adminSearchPlugins => 'प्लगइन्स खोजें...';
 
   @override
   String adminPluginToggleFailed(String error) {
@@ -4294,7 +4361,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminUninstallPlugin => 'Uninstall Plugin';
+  String get adminUninstallPlugin => 'प्लगइन अनइंस्टॉल करें';
 
   @override
   String adminUninstallPluginConfirm(String name) {
@@ -4322,10 +4389,11 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminNoPluginsMatchSearch => 'No plugins match your search';
+  String get adminNoPluginsMatchSearch =>
+      'कोई भी प्लगइन आपकी खोज से मेल नहीं खाता';
 
   @override
-  String get adminNoPluginsInstalled => 'No plugins installed';
+  String get adminNoPluginsInstalled => 'कोई प्लगइन्स स्थापित नहीं है';
 
   @override
   String adminInstallUpdate(String version) {
@@ -4338,20 +4406,21 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminNoPackagesMatchSearch => 'No packages match your search';
+  String get adminNoPackagesMatchSearch =>
+      'कोई भी पैकेज आपकी खोज से मेल नहीं खाता';
 
   @override
-  String get adminNoPackagesAvailable => 'No packages available';
+  String get adminNoPackagesAvailable => 'कोई पैकेज उपलब्ध नहीं है';
 
   @override
-  String get adminExperimentalIntegration => 'Experimental Integration';
+  String get adminExperimentalIntegration => 'प्रायोगिक एकीकरण';
 
   @override
   String get adminExperimentalWarning =>
-      'Plugin settings integration is still experimental. Some settings pages may not render correctly.';
+      'प्लगइन सेटिंग्स एकीकरण अभी भी प्रयोगात्मक है। हो सकता है कि कुछ सेटिंग पृष्ठ ठीक से प्रस्तुत न हों.';
 
   @override
-  String get continueAction => 'Continue';
+  String get continueAction => 'जारी रखना';
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
@@ -4370,7 +4439,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adminMissingAuthToken =>
-      'Unable to open settings: missing auth token.';
+      'सेटिंग्स खोलने में असमर्थ: प्रमाणीकरण टोकन गायब है।';
 
   @override
   String adminPluginLoadFailed(String error) {
@@ -4378,7 +4447,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginNotFound => 'Plugin not found';
+  String get adminPluginNotFound => 'प्लगइन नहीं मिला';
 
   @override
   String adminPluginVersion(String version) {
@@ -4386,19 +4455,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminEnablePlugin => 'Enable Plugin';
+  String get adminEnablePlugin => 'प्लगइन सक्षम करें';
 
   @override
-  String get adminPluginSettingsPage => 'Plugin settings page';
+  String get adminPluginSettingsPage => 'प्लगइन सेटिंग पृष्ठ';
 
   @override
-  String get adminRevisionHistory => 'Revision History';
+  String get adminRevisionHistory => 'संशोधन इतिहास';
 
   @override
-  String get adminNoChangelog => 'No changelog available.';
+  String get adminNoChangelog => 'कोई चेंजलॉग उपलब्ध नहीं है.';
 
   @override
-  String get adminRemoveRepository => 'Remove Repository';
+  String get adminRemoveRepository => 'रिपोजिटरी हटाएँ';
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
@@ -4416,16 +4485,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminRepositoryNameHint => 'e.g. Jellyfin Stable';
+  String get adminRepositoryNameHint => 'जैसे Jellyfin स्थिर';
 
   @override
-  String get adminRepositoryUrl => 'Repository URL';
+  String get adminRepositoryUrl => 'रिपोजिटरी यूआरएल';
 
   @override
-  String get adminAddEntry => 'Add entry';
+  String get adminAddEntry => 'प्रविष्टि जोड़ें';
 
   @override
-  String get adminInvalidUrl => 'Invalid URL';
+  String get adminInvalidUrl => 'असामान्य यूआरएल';
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
@@ -4438,269 +4507,270 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminOpenInBrowser => 'Open in Browser';
+  String get adminOpenInBrowser => 'ब्राउज़र में खोलें';
 
   @override
-  String get adminOpenExternally => 'Open externally';
+  String get adminOpenExternally => 'बाह्य रूप से खोलें';
 
   @override
-  String get adminGeneralSettings => 'General Settings';
+  String get adminGeneralSettings => 'सामान्य सेटिंग्स';
 
   @override
-  String get adminServerName => 'Server name';
+  String get adminServerName => 'सर्वर का नाम';
 
   @override
-  String get adminPreferredMetadataCountry => 'Preferred metadata country';
+  String get adminPreferredMetadataCountry => 'पसंदीदा मेटाडेटा देश';
 
   @override
-  String get adminCachePath => 'Cache path';
+  String get adminCachePath => 'कैश पथ';
 
   @override
-  String get adminMetadataPath => 'Metadata path';
+  String get adminMetadataPath => 'मेटाडेटा पथ';
 
   @override
-  String get adminLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminLibraryScanConcurrency => 'लाइब्रेरी स्कैन समवर्ती';
 
   @override
-  String get adminParallelImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminParallelImageEncodingLimit => 'समानांतर छवि एन्कोडिंग सीमा';
 
   @override
-  String get adminSlowResponseThreshold => 'Slow response threshold (ms)';
+  String get adminSlowResponseThreshold => 'धीमी प्रतिक्रिया सीमा (एमएस)';
 
   @override
-  String get adminBrandingSaved => 'Branding settings saved';
+  String get adminBrandingSaved => 'ब्रांडिंग सेटिंग सहेजी गईं';
 
   @override
-  String get adminBrandingLoadFailed => 'Failed to load branding settings';
+  String get adminBrandingLoadFailed => 'ब्रांडिंग सेटिंग लोड करने में विफल';
 
   @override
-  String get adminLoginDisclaimer => 'Login disclaimer';
+  String get adminLoginDisclaimer => 'लॉगिन अस्वीकरण';
 
   @override
-  String get adminLoginDisclaimerHint => 'HTML displayed below the login form';
+  String get adminLoginDisclaimerHint =>
+      'HTML लॉगिन फॉर्म के नीचे प्रदर्शित होता है';
 
   @override
-  String get adminCustomCss => 'Custom CSS';
+  String get adminCustomCss => 'कस्टम सीएसएस';
 
   @override
-  String get adminCustomCssHint => 'Custom CSS applied to the web interface';
+  String get adminCustomCssHint => 'कस्टम सीएसएस वेब इंटरफ़ेस पर लागू किया गया';
 
   @override
-  String get adminEnableSplashScreen => 'Enable splash screen';
+  String get adminEnableSplashScreen => 'स्प्लैश स्क्रीन सक्षम करें';
 
   @override
-  String get adminStreamingSaved => 'Streaming settings saved';
+  String get adminStreamingSaved => 'स्ट्रीमिंग सेटिंग्स सहेजी गईं';
 
   @override
-  String get adminStreamingLoadFailed => 'Failed to load streaming settings';
+  String get adminStreamingLoadFailed => 'स्ट्रीमिंग सेटिंग लोड करने में विफल';
 
   @override
   String get adminStreamingDescription =>
-      'Set global streaming bitrate limits for remote connections.';
+      'दूरस्थ कनेक्शन के लिए वैश्विक स्ट्रीमिंग बिटरेट सीमाएँ निर्धारित करें।';
 
   @override
   String get adminRemoteBitrateLimitMbps =>
-      'Remote client bitrate limit (Mbps)';
+      'दूरस्थ क्लाइंट बिटरेट सीमा (एमबीपीएस)';
 
   @override
-  String get adminLeaveEmptyForUnlimited => 'Leave empty or 0 for unlimited';
+  String get adminLeaveEmptyForUnlimited => 'असीमित के लिए खाली या 0 छोड़ें';
 
   @override
-  String get adminPlaybackSaved => 'Playback settings saved';
+  String get adminPlaybackSaved => 'प्लेबैक सेटिंग सहेजी गईं';
 
   @override
-  String get adminPlaybackLoadFailed => 'Failed to load playback settings';
+  String get adminPlaybackLoadFailed => 'प्लेबैक सेटिंग लोड करने में विफल';
 
   @override
-  String get adminPlaybackTranscoding => 'Playback / Transcoding';
+  String get adminPlaybackTranscoding => 'प्लेबैक/ट्रांसकोडिंग';
 
   @override
-  String get adminHardwareAcceleration => 'Hardware acceleration';
+  String get adminHardwareAcceleration => 'हार्डवेयर एक्सिलरेशन';
 
   @override
-  String get adminVaapiDevice => 'VA-API device';
+  String get adminVaapiDevice => 'वीए-एपीआई डिवाइस';
 
   @override
-  String get adminEnableHardwareEncoding => 'Enable hardware encoding';
+  String get adminEnableHardwareEncoding => 'हार्डवेयर एन्कोडिंग सक्षम करें';
 
   @override
-  String get adminEnableHardwareDecoding => 'Enable hardware decoding for:';
+  String get adminEnableHardwareDecoding =>
+      'इसके लिए हार्डवेयर डिकोडिंग सक्षम करें:';
 
   @override
-  String get adminEncodingThreads => 'Encoding threads';
+  String get adminEncodingThreads => 'एन्कोडिंग धागे';
 
   @override
-  String get adminAutomatic => '0 = automatic';
+  String get adminAutomatic => '0 = स्वचालित';
 
   @override
-  String get adminTranscodingTempPath => 'Transcoding temp path';
+  String get adminTranscodingTempPath => 'ट्रांसकोडिंग अस्थायी पथ';
 
   @override
-  String get adminEnableFallbackFont => 'Enable fallback font';
+  String get adminEnableFallbackFont => 'फ़ॉलबैक फ़ॉन्ट सक्षम करें';
 
   @override
-  String get adminFallbackFontPath => 'Fallback font path';
+  String get adminFallbackFontPath => 'फ़ॉलबैक फ़ॉन्ट पथ';
 
   @override
-  String get adminAllowSegmentDeletion => 'Allow segment deletion';
+  String get adminAllowSegmentDeletion => 'खंड हटाने की अनुमति दें';
 
   @override
-  String get adminSegmentKeepSeconds => 'Segment keep (seconds)';
+  String get adminSegmentKeepSeconds => 'खंड रखें (सेकंड)';
 
   @override
-  String get adminThrottleBuffering => 'Throttle buffering';
+  String get adminThrottleBuffering => 'थ्रॉटल बफ़रिंग';
 
   @override
-  String get adminTrickplaySaved => 'Trickplay settings saved';
+  String get adminTrickplaySaved => 'ट्रिकप्ले सेटिंग्स सहेजी गईं';
 
   @override
-  String get adminTrickplayLoadFailed => 'Failed to load trickplay settings';
+  String get adminTrickplayLoadFailed => 'ट्रिकप्ले सेटिंग लोड करने में विफल';
 
   @override
-  String get adminEnableHardwareAcceleration => 'Enable hardware acceleration';
+  String get adminEnableHardwareAcceleration => 'हार्डवेयर त्वरण सक्षम करें';
 
   @override
   String get adminEnableKeyFrameExtraction =>
-      'Enable key frame only extraction';
+      'केवल कुंजी फ़्रेम निष्कर्षण सक्षम करें';
 
   @override
-  String get adminKeyFrameSubtitle => 'Faster but lower accuracy';
+  String get adminKeyFrameSubtitle => 'तेज़ लेकिन कम सटीकता';
 
   @override
-  String get adminScanBehavior => 'Scan behavior';
+  String get adminScanBehavior => 'व्यवहार को स्कैन करें';
 
   @override
-  String get adminProcessPriority => 'Process priority';
+  String get adminProcessPriority => 'प्रक्रिया प्राथमिकता';
 
   @override
-  String get adminImageSettings => 'Image Settings';
+  String get adminImageSettings => 'छवि सेटिंग्स';
 
   @override
-  String get adminIntervalMs => 'Interval (ms)';
+  String get adminIntervalMs => 'अंतराल (एमएस)';
 
   @override
-  String get adminCaptureFrameSubtitle => 'How often to capture frames';
+  String get adminCaptureFrameSubtitle => 'फ़्रेम को कितनी बार कैप्चर करना है';
 
   @override
-  String get adminWidthResolutions => 'Width resolutions';
+  String get adminWidthResolutions => 'चौड़ाई संकल्प';
 
   @override
-  String get adminTileWidth => 'Tile width';
+  String get adminTileWidth => 'टाइल की चौड़ाई';
 
   @override
-  String get adminTileHeight => 'Tile height';
+  String get adminTileHeight => 'टाइल की ऊंचाई';
 
   @override
-  String get adminQualitySubtitle =>
-      'Lower values = better quality, larger files';
+  String get adminQualitySubtitle => 'कम मान = बेहतर गुणवत्ता, बड़ी फ़ाइलें';
 
   @override
-  String get adminProcessThreads => 'Process threads';
+  String get adminProcessThreads => 'प्रक्रिया धागे';
 
   @override
-  String get adminResumeSaved => 'Resume settings saved';
+  String get adminResumeSaved => 'बायोडाटा सेटिंग्स सहेजी गईं';
 
   @override
-  String get adminResumeLoadFailed => 'Failed to load resume settings';
+  String get adminResumeLoadFailed => 'बायोडाटा सेटिंग लोड करने में विफल';
 
   @override
   String get adminResumeDescription =>
-      'Configure when content should be marked as partially played or fully played.';
+      'कॉन्फ़िगर करें जब सामग्री को आंशिक रूप से चलाया गया या पूरी तरह से चलाया गया के रूप में चिह्नित किया जाना चाहिए।';
 
   @override
-  String get adminMinResumePercentage => 'Minimum resume percentage';
+  String get adminMinResumePercentage => 'न्यूनतम बायोडाटा प्रतिशत';
 
   @override
   String get adminMinResumeSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'प्रगति को बचाने के लिए सामग्री को इस प्रतिशत से पहले चलाया जाना चाहिए';
 
   @override
-  String get adminMaxResumePercentage => 'Maximum resume percentage';
+  String get adminMaxResumePercentage => 'अधिकतम बायोडाटा प्रतिशत';
 
   @override
   String get adminMaxResumeSubtitle =>
-      'Content is considered fully played after this percentage';
+      'इस प्रतिशत के बाद सामग्री को पूरी तरह से चलाया हुआ माना जाता है';
 
   @override
-  String get adminMinResumeDuration => 'Minimum resume duration (seconds)';
+  String get adminMinResumeDuration => 'न्यूनतम बायोडाटा अवधि (सेकंड)';
 
   @override
   String get adminMinResumeDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'इससे छोटे आइटम दोबारा शुरू नहीं किए जा सकते';
 
   @override
-  String get adminMinAudiobookResume => 'Minimum audiobook resume percentage';
+  String get adminMinAudiobookResume => 'न्यूनतम ऑडियोबुक बायोडाटा प्रतिशत';
 
   @override
-  String get adminMaxAudiobookResume => 'Maximum audiobook resume percentage';
+  String get adminMaxAudiobookResume => 'अधिकतम ऑडियोबुक बायोडाटा प्रतिशत';
 
   @override
   String get adminNetworkingSaved =>
-      'Networking settings saved. A server restart may be required.';
+      'नेटवर्किंग सेटिंग्स सहेजी गईं. सर्वर पुनरारंभ की आवश्यकता हो सकती है.';
 
   @override
-  String get adminNetworkingLoadFailed => 'Failed to load networking settings';
+  String get adminNetworkingLoadFailed => 'नेटवर्किंग सेटिंग लोड करने में विफल';
 
   @override
   String get adminNetworkingWarning =>
-      'Changes to networking settings may require a server restart.';
+      'नेटवर्किंग सेटिंग्स में बदलाव के लिए सर्वर को पुनरारंभ करने की आवश्यकता हो सकती है।';
 
   @override
-  String get adminEnableRemoteAccess => 'Enable remote access';
+  String get adminEnableRemoteAccess => 'रिमोट एक्सेस सक्षम करें';
 
   @override
-  String get ports => 'Ports';
+  String get ports => 'बंदरगाहों';
 
   @override
-  String get adminHttpPort => 'HTTP port';
+  String get adminHttpPort => 'HTTP पोर्ट';
 
   @override
-  String get adminHttpsPort => 'HTTPS port';
+  String get adminHttpsPort => 'HTTPS पोर्ट';
 
   @override
-  String get adminPublicHttpsPort => 'Public HTTPS port';
+  String get adminPublicHttpsPort => 'सार्वजनिक HTTPS पोर्ट';
 
   @override
-  String get adminBaseUrl => 'Base URL';
+  String get adminBaseUrl => 'आधार यूआरएल';
 
   @override
-  String get adminBaseUrlHint => 'e.g. /jellyfin';
+  String get adminBaseUrlHint => 'जैसे /जेलीफ़िन';
 
   @override
-  String get https => 'HTTPS';
+  String get https => 'HTTPS के';
 
   @override
-  String get adminEnableHttps => 'Enable HTTPS';
+  String get adminEnableHttps => 'HTTPS सक्षम करें';
 
   @override
-  String get adminLocalNetwork => 'Local Network';
+  String get adminLocalNetwork => 'स्थानीय नेटवर्क';
 
   @override
-  String get adminLocalNetworkAddresses => 'Local network addresses';
+  String get adminLocalNetworkAddresses => 'स्थानीय नेटवर्क पते';
 
   @override
-  String get adminKnownProxies => 'Known proxies';
+  String get adminKnownProxies => 'ज्ञात प्रॉक्सी';
 
   @override
-  String get adminRemoteIpFilter => 'Remote IP Filter';
+  String get adminRemoteIpFilter => 'रिमोट आईपी फ़िल्टर';
 
   @override
-  String get adminRemoteIpFilterEntries => 'Remote IP filter';
+  String get adminRemoteIpFilterEntries => 'रिमोट आईपी फ़िल्टर';
 
   @override
-  String get adminCertificatePath => 'Certificate path';
+  String get adminCertificatePath => 'प्रमाणपत्र पथ';
 
   @override
-  String get whitelist => 'Whitelist';
+  String get whitelist => 'श्वेतसूची';
 
   @override
-  String get blacklist => 'Blacklist';
+  String get blacklist => 'काला सूची में डालना';
 
   @override
-  String get notSet => 'Not set';
+  String get notSet => 'सेट नहीं';
 
   @override
-  String get adminMetadataSaved => 'Metadata saved';
+  String get adminMetadataSaved => 'मेटाडेटा सहेजा गया';
 
   @override
   String adminMetadataLoadFailed(String error) {
@@ -4713,19 +4783,20 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminRefreshMetadata => 'Refresh Metadata';
+  String get adminRefreshMetadata => 'मेटाडेटा ताज़ा करें';
 
   @override
-  String get recursive => 'Recursive';
+  String get recursive => 'पुनरावर्ती';
 
   @override
-  String get adminReplaceAllMetadata => 'Replace all metadata';
+  String get adminReplaceAllMetadata => 'सभी मेटाडेटा बदलें';
 
   @override
-  String get adminReplaceAllImages => 'Replace all images';
+  String get adminReplaceAllImages => 'सभी छवियाँ बदलें';
 
   @override
-  String get adminMetadataRefreshRequested => 'Metadata refresh requested';
+  String get adminMetadataRefreshRequested =>
+      'मेटाडेटा ताज़ा करने का अनुरोध किया गया';
 
   @override
   String adminMetadataRefreshFailed(String error) {
@@ -4733,16 +4804,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminSearchRemotePerson => 'Search Remote Person';
+  String get adminSearchRemotePerson => 'दूरस्थ व्यक्ति खोजें';
 
   @override
-  String get adminNoRemoteMatches => 'No remote matches found';
+  String get adminNoRemoteMatches => 'कोई दूरस्थ मिलान नहीं मिला';
 
   @override
-  String get adminRemoteResults => 'Remote Results';
+  String get adminRemoteResults => 'दूरस्थ परिणाम';
 
   @override
-  String get adminRemoteMetadataApplied => 'Remote metadata applied';
+  String get adminRemoteMetadataApplied => 'दूरस्थ मेटाडेटा लागू किया गया';
 
   @override
   String adminRemoteSearchFailed(String error) {
@@ -4750,13 +4821,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminUpdateContentType => 'Update Content Type';
+  String get adminUpdateContentType => 'सामग्री प्रकार अद्यतन करें';
 
   @override
-  String get adminContentType => 'Content type';
+  String get adminContentType => 'सामग्री प्रकार';
 
   @override
-  String get adminContentTypeUpdated => 'Content type updated';
+  String get adminContentTypeUpdated => 'सामग्री प्रकार अद्यतन किया गया';
 
   @override
   String adminContentTypeUpdateFailed(String error) {
@@ -4764,13 +4835,14 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataEditorLoadFailed => 'Failed to load metadata editor';
+  String get adminMetadataEditorLoadFailed =>
+      'मेटाडेटा संपादक लोड करने में विफल';
 
   @override
-  String get adminNoPeopleEntries => 'No people entries';
+  String get adminNoPeopleEntries => 'कोई भी व्यक्ति प्रवेश नहीं करता';
 
   @override
-  String get adminNoExternalIds => 'No external IDs available';
+  String get adminNoExternalIds => 'कोई बाहरी आईडी उपलब्ध नहीं है';
 
   @override
   String adminImageUpdated(String imageType) {
@@ -4783,10 +4855,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminUnsupportedImageFormat => 'Unsupported image format';
+  String get adminUnsupportedImageFormat => 'असमर्थित छवि प्रारूप';
 
   @override
-  String get adminImageReadFailed => 'Failed to read selected image';
+  String get adminImageReadFailed => 'चयनित छवि पढ़ने में विफल';
 
   @override
   String adminImageUploaded(String imageType) {
@@ -4814,10 +4886,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminAllProviders => 'All providers';
+  String get adminAllProviders => 'सभी प्रदाता';
 
   @override
-  String get adminNoRemoteImages => 'No remote images found';
+  String get adminNoRemoteImages => 'कोई दूरस्थ चित्र नहीं मिला';
 
   @override
   String adminTunerDiscoveryFailed(String error) {
@@ -4825,22 +4897,22 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminAddTuner => 'Add Tuner';
+  String get adminAddTuner => 'ट्यूनर जोड़ें';
 
   @override
-  String get adminTunerType => 'Tuner Type';
+  String get adminTunerType => 'ट्यूनर प्रकार';
 
   @override
-  String get adminTunerTypeHint => 'HDHomeRun, M3U, Other';
+  String get adminTunerTypeHint => 'HDHomeRun, M3U, अन्य';
 
   @override
-  String get adminUrlPath => 'URL / Path';
+  String get adminUrlPath => 'यूआरएल/पथ';
 
   @override
-  String get adminNameOptional => 'Name (optional)';
+  String get adminNameOptional => 'नाम: (वैकल्पिक)';
 
   @override
-  String get adminTunerAdded => 'Tuner added';
+  String get adminTunerAdded => 'ट्यूनर जोड़ा गया';
 
   @override
   String adminTunerAddFailed(String error) {
@@ -4848,22 +4920,22 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminAddGuideProvider => 'Add Guide Provider';
+  String get adminAddGuideProvider => 'गाइड प्रदाता जोड़ें';
 
   @override
-  String get adminProviderType => 'Provider Type';
+  String get adminProviderType => 'प्रदाता प्रकार';
 
   @override
-  String get adminProviderTypeHint => 'SchedulesDirect or XMLTV';
+  String get adminProviderTypeHint => 'शेड्यूलडायरेक्ट या एक्सएमएलटीवी';
 
   @override
-  String get adminUsernameOptional => 'Username (optional)';
+  String get adminUsernameOptional => 'उपयोगकर्ता नाम (वैकल्पिक)';
 
   @override
-  String get adminRefreshInterval => 'Refresh interval (hours)';
+  String get adminRefreshInterval => 'ताज़ा अंतराल (घंटे)';
 
   @override
-  String get adminProviderAdded => 'Provider added';
+  String get adminProviderAdded => 'प्रदाता जोड़ा गया';
 
   @override
   String adminProviderAddFailed(String error) {
@@ -4876,7 +4948,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminTunerResetRequested => 'Tuner reset requested';
+  String get adminTunerResetRequested => 'ट्यूनर रीसेट का अनुरोध किया गया';
 
   @override
   String adminTunerResetFailed(String error) {
@@ -4889,22 +4961,22 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminRecordingSettings => 'Recording Settings';
+  String get adminRecordingSettings => 'रिकॉर्डिंग सेटिंग्स';
 
   @override
-  String get adminPrePadding => 'Pre-padding (minutes)';
+  String get adminPrePadding => 'प्री-पैडिंग (मिनट)';
 
   @override
-  String get adminPostPadding => 'Post-padding (minutes)';
+  String get adminPostPadding => 'पोस्ट-पैडिंग (मिनट)';
 
   @override
-  String get adminRecordingPath => 'Recording path';
+  String get adminRecordingPath => 'रिकॉर्डिंग पथ';
 
   @override
-  String get adminSeriesRecordingPath => 'Series recording path';
+  String get adminSeriesRecordingPath => 'श्रृंखला रिकॉर्डिंग पथ';
 
   @override
-  String get adminRecordingSettingsSaved => 'Recording settings saved';
+  String get adminRecordingSettingsSaved => 'रिकॉर्डिंग सेटिंग सहेजी गईं';
 
   @override
   String adminSettingsSaveFailed(String error) {
@@ -4912,16 +4984,16 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminSetChannelMappings => 'Set Channel Mappings';
+  String get adminSetChannelMappings => 'चैनल मैपिंग सेट करें';
 
   @override
-  String get adminMappingJson => 'Mapping JSON';
+  String get adminMappingJson => 'JSON मैपिंग';
 
   @override
-  String get adminMappingJsonHint => 'Example: mappings JSON payload';
+  String get adminMappingJsonHint => 'उदाहरण: मैपिंग JSON पेलोड';
 
   @override
-  String get adminChannelMappingsUpdated => 'Channel mappings updated';
+  String get adminChannelMappingsUpdated => 'चैनल मैपिंग अपडेट की गई';
 
   @override
   String adminMappingsUpdateFailed(String error) {
@@ -4929,22 +5001,23 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminLiveTvLoadFailed => 'Failed to load Live TV administration';
+  String get adminLiveTvLoadFailed => 'लाइव टीवी प्रशासन लोड करने में विफल';
 
   @override
-  String get adminTunerDevices => 'Tuner Devices';
+  String get adminTunerDevices => 'ट्यूनर उपकरण';
 
   @override
-  String get adminNoTunerHosts => 'No tuner hosts configured';
+  String get adminNoTunerHosts => 'कोई ट्यूनर होस्ट कॉन्फ़िगर नहीं किया गया';
 
   @override
-  String get adminGuideProviders => 'Guide Providers';
+  String get adminGuideProviders => 'मार्गदर्शक प्रदाता';
 
   @override
-  String get adminAddProvider => 'Add Provider';
+  String get adminAddProvider => 'प्रदाता जोड़ें';
 
   @override
-  String get adminNoListingProviders => 'No listing providers configured';
+  String get adminNoListingProviders =>
+      'कोई लिस्टिंग प्रदाता कॉन्फ़िगर नहीं किया गया';
 
   @override
   String adminRecordingPathDisplay(String path) {
@@ -4967,32 +5040,32 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminTunerDiscovery => 'Tuner Discovery';
+  String get adminTunerDiscovery => 'ट्यूनर डिस्कवरी';
 
   @override
-  String get adminChannelMappings => 'Channel Mappings';
+  String get adminChannelMappings => 'चैनल मैपिंग';
 
   @override
-  String get adminNoDiscoveredTuners => 'No discovered tuners yet';
+  String get adminNoDiscoveredTuners => 'अभी तक कोई ट्यूनर खोजा नहीं गया';
 
   @override
-  String get adminSettingsSaved => 'Settings saved';
+  String get adminSettingsSaved => 'सेटिंग्स को सहेजा गया';
 
   @override
   String get adminBackupsNotAvailable =>
-      'Backups are not available on this server build.';
+      'इस सर्वर बिल्ड पर बैकअप उपलब्ध नहीं हैं।';
 
   @override
   String get adminRestoreWarning1 =>
-      'Restoring will replace ALL current server data with the backup data.';
+      'पुनर्स्थापित करने से सभी मौजूदा सर्वर डेटा को बैकअप डेटा से बदल दिया जाएगा।';
 
   @override
   String get adminRestoreWarning2 =>
-      'Current server settings, users, and library data will be overwritten.';
+      'वर्तमान सर्वर सेटिंग्स, उपयोगकर्ता और लाइब्रेरी डेटा को अधिलेखित कर दिया जाएगा।';
 
   @override
   String get adminRestoreWarning3 =>
-      'The server will restart after restoration.';
+      'पुनर्स्थापना के बाद सर्वर पुनः आरंभ होगा।';
 
   @override
   String adminRestoreConfirmMessage(String name) {
@@ -5001,44 +5074,44 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adminRestoreRequested =>
-      'Restore requested. Server restart may disconnect this session.';
+      'पुनर्स्थापित करने का अनुरोध किया गया. सर्वर पुनरारंभ इस सत्र को डिस्कनेक्ट कर सकता है।';
 
   @override
-  String get adminBackupsTitle => 'Backups';
+  String get adminBackupsTitle => 'बैकअप';
 
   @override
-  String get adminUnknownDate => 'Unknown date';
+  String get adminUnknownDate => 'अज्ञात तिथि';
 
   @override
-  String get adminUnnamedBackup => 'Unnamed Backup';
+  String get adminUnnamedBackup => 'अनाम बैकअप';
 
   @override
   String get adminLiveTvNotAvailable =>
-      'Live TV administration is not available on this server build.';
+      'इस सर्वर बिल्ड पर लाइव टीवी प्रशासन उपलब्ध नहीं है।';
 
   @override
-  String get adminLiveTvTitle => 'Live TV Administration';
+  String get adminLiveTvTitle => 'लाइव टीवी प्रशासन';
 
   @override
-  String get adminApply => 'Apply';
+  String get adminApply => 'आवेदन करना';
 
   @override
-  String get adminNotSet => 'Not set';
+  String get adminNotSet => 'सेट नहीं';
 
   @override
-  String get adminReset => 'Reset';
+  String get adminReset => 'रीसेट करें';
 
   @override
-  String get adminLogsTitle => 'Server Logs';
+  String get adminLogsTitle => 'सर्वर लॉग';
 
   @override
-  String get adminLogsNewestFirst => 'Newest First';
+  String get adminLogsNewestFirst => 'नवीनतम प्रथम';
 
   @override
-  String get adminLogsOldestFirst => 'Oldest First';
+  String get adminLogsOldestFirst => 'सबसे पुराना पहले';
 
   @override
-  String get adminLogsJustNow => 'Just now';
+  String get adminLogsJustNow => 'बस अब';
 
   @override
   String adminLogsMinutesAgo(int minutes) {
@@ -5066,109 +5139,109 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminLogViewerNoMatches => 'No matching lines';
+  String get adminLogViewerNoMatches => 'कोई मेल खाती पंक्तियाँ नहीं';
 
   @override
-  String get adminMetadataEditorTitle => 'Metadata Editor';
+  String get adminMetadataEditorTitle => 'मेटाडेटा संपादक';
 
   @override
-  String get adminMetadataRemote => 'Remote';
+  String get adminMetadataRemote => 'दूर';
 
   @override
-  String get adminMetadataType => 'Type';
+  String get adminMetadataType => 'प्रकार';
 
   @override
-  String get adminMetadataDetails => 'Details';
+  String get adminMetadataDetails => 'विवरण';
 
   @override
-  String get adminMetadataExternalIds => 'External IDs';
+  String get adminMetadataExternalIds => 'बाहरी आईडी';
 
   @override
-  String get adminMetadataImages => 'Images';
+  String get adminMetadataImages => 'इमेजिस';
 
   @override
-  String get adminMetadataFieldTitle => 'Title';
+  String get adminMetadataFieldTitle => 'शीर्षक';
 
   @override
-  String get adminMetadataFieldSortTitle => 'Sort title';
+  String get adminMetadataFieldSortTitle => 'शीर्षक क्रमबद्ध करें';
 
   @override
-  String get adminMetadataFieldOriginalTitle => 'Original title';
+  String get adminMetadataFieldOriginalTitle => 'मूल शीर्षक';
 
   @override
-  String get adminMetadataFieldPremiereDate => 'Premiere date (YYYY-MM-DD)';
+  String get adminMetadataFieldPremiereDate => 'प्रीमियर तिथि (YYYY-MM-DD)';
 
   @override
-  String get adminMetadataFieldEndDate => 'End date (YYYY-MM-DD)';
+  String get adminMetadataFieldEndDate => 'समाप्ति तिथि (YYYY-MM-DD)';
 
   @override
-  String get adminMetadataFieldProductionYear => 'Production year';
+  String get adminMetadataFieldProductionYear => 'उत्पादन वर्ष';
 
   @override
-  String get adminMetadataFieldOfficialRating => 'Official rating';
+  String get adminMetadataFieldOfficialRating => 'आधिकारिक रेटिंग';
 
   @override
-  String get adminMetadataFieldCommunityRating => 'Community rating';
+  String get adminMetadataFieldCommunityRating => 'सामुदायिक रेटिंग';
 
   @override
-  String get adminMetadataFieldCriticRating => 'Critic rating';
+  String get adminMetadataFieldCriticRating => 'आलोचक रेटिंग';
 
   @override
-  String get adminMetadataFieldTagline => 'Tagline';
+  String get adminMetadataFieldTagline => 'TAGLINE';
 
   @override
-  String get adminMetadataFieldOverview => 'Overview';
+  String get adminMetadataFieldOverview => 'सिंहावलोकन';
 
   @override
-  String get adminMetadataGenres => 'Genres';
+  String get adminMetadataGenres => 'शैलियां';
 
   @override
-  String get adminMetadataTags => 'Tags';
+  String get adminMetadataTags => 'टैग';
 
   @override
-  String get adminMetadataStudios => 'Studios';
+  String get adminMetadataStudios => 'स्टूडियो';
 
   @override
-  String get adminMetadataPeople => 'People';
+  String get adminMetadataPeople => 'लोग';
 
   @override
-  String get adminMetadataAddGenre => 'Add genre';
+  String get adminMetadataAddGenre => 'शैली जोड़ें';
 
   @override
-  String get adminMetadataAddTag => 'Add tag';
+  String get adminMetadataAddTag => 'टैग जोड़ें';
 
   @override
-  String get adminMetadataAddStudio => 'Add studio';
+  String get adminMetadataAddStudio => 'स्टूडियो जोड़ें';
 
   @override
-  String get adminMetadataAddPerson => 'Add Person';
+  String get adminMetadataAddPerson => 'व्यक्ति जोड़ें';
 
   @override
-  String get adminMetadataEditPerson => 'Edit Person';
+  String get adminMetadataEditPerson => 'व्यक्ति संपादित करें';
 
   @override
-  String get adminMetadataRole => 'Role';
+  String get adminMetadataRole => 'भूमिका';
 
   @override
-  String get adminMetadataImagePrimary => 'Primary';
+  String get adminMetadataImagePrimary => 'प्राथमिक';
 
   @override
-  String get adminMetadataImageBackdrop => 'Backdrop';
+  String get adminMetadataImageBackdrop => 'पृष्ठभूमि';
 
   @override
-  String get adminMetadataImageLogo => 'Logo';
+  String get adminMetadataImageLogo => 'प्रतीक चिन्ह';
 
   @override
-  String get adminMetadataImageBanner => 'Banner';
+  String get adminMetadataImageBanner => 'बैनर';
 
   @override
-  String get adminMetadataImageThumb => 'Thumb';
+  String get adminMetadataImageThumb => 'अँगूठा';
 
   @override
-  String get adminMetadataRecursive => 'Recursive';
+  String get adminMetadataRecursive => 'पुनरावर्ती';
 
   @override
-  String get adminMetadataProvider => 'Provider';
+  String get adminMetadataProvider => 'प्रदाता';
 
   @override
   String adminMetadataImageUpdated(String imageType) {
@@ -5191,7 +5264,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataImageReadFailed => 'Failed to read selected image';
+  String get adminMetadataImageReadFailed => 'चयनित छवि पढ़ने में विफल';
 
   @override
   String adminMetadataImageUploadFailed(String error) {
@@ -5205,7 +5278,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adminMetadataDeleteImageContent =>
-      'This removes the current image from the item.';
+      'यह आइटम से वर्तमान छवि को हटा देता है।';
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
@@ -5218,31 +5291,32 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataUpload => 'Upload';
+  String get adminMetadataUpload => 'अपलोड करें';
 
   @override
-  String get adminMetadataUpdate => 'Update';
+  String get adminMetadataUpdate => 'अद्यतन';
 
   @override
-  String get adminMetadataRemoteImage => 'Remote image';
+  String get adminMetadataRemoteImage => 'दूरस्थ छवि';
 
   @override
-  String get adminPluginsInstalled => 'Installed';
+  String get adminPluginsInstalled => 'स्थापित';
 
   @override
-  String get adminPluginsCatalog => 'Catalog';
+  String get adminPluginsCatalog => 'सूची';
 
   @override
-  String get adminPluginsActive => 'Active';
+  String get adminPluginsActive => 'सक्रिय';
 
   @override
-  String get adminPluginsRestart => 'Restart';
+  String get adminPluginsRestart => 'पुनः आरंभ करें';
 
   @override
-  String get adminPluginsNoSearchResults => 'No plugins match your search';
+  String get adminPluginsNoSearchResults =>
+      'कोई भी प्लगइन आपकी खोज से मेल नहीं खाता';
 
   @override
-  String get adminPluginsNoneInstalled => 'No plugins installed';
+  String get adminPluginsNoneInstalled => 'कोई प्लगइन्स स्थापित नहीं है';
 
   @override
   String adminPluginsUpdateAvailable(String version) {
@@ -5250,22 +5324,23 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginsUpdateAvailableGeneric => 'Update available';
+  String get adminPluginsUpdateAvailableGeneric => 'उपलब्ध अद्यतन';
 
   @override
-  String get adminPluginsPendingRemoval => 'Pending removal after restart';
+  String get adminPluginsPendingRemoval => 'पुनरारंभ के बाद निष्कासन लंबित है';
 
   @override
-  String get adminPluginsChangesPending => 'Changes pending restart';
+  String get adminPluginsChangesPending =>
+      'परिवर्तन पुनः आरंभ होने तक लंबित हैं';
 
   @override
-  String get adminPluginsEnable => 'Enable';
+  String get adminPluginsEnable => 'सक्षम';
 
   @override
-  String get adminPluginsDisable => 'Disable';
+  String get adminPluginsDisable => 'अक्षम करना';
 
   @override
-  String get adminPluginsInstallUpdate => 'Install update';
+  String get adminPluginsInstallUpdate => 'अद्यतन स्थापित करें';
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
@@ -5274,10 +5349,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adminPluginsCatalogNoSearchResults =>
-      'No packages match your search';
+      'कोई भी पैकेज आपकी खोज से मेल नहीं खाता';
 
   @override
-  String get adminPluginsCatalogEmpty => 'No packages available';
+  String get adminPluginsCatalogEmpty => 'कोई पैकेज उपलब्ध नहीं है';
 
   @override
   String adminPluginsInstalling(String name) {
@@ -5285,19 +5360,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailExperimental => 'Experimental Integration';
+  String get adminPluginDetailExperimental => 'प्रायोगिक एकीकरण';
 
   @override
   String get adminPluginDetailExperimentalContent =>
-      'Plugin settings integration is still experimental. Some fields or layouts may not render correctly yet.';
+      'प्लगइन सेटिंग्स एकीकरण अभी भी प्रयोगात्मक है। हो सकता है कि कुछ फ़ील्ड या लेआउट अभी तक सही ढंग से प्रस्तुत न हों।';
 
   @override
   String get adminPluginDetailToggle404 =>
-      'Failed to toggle plugin. The server could not find this plugin version. Try refreshing plugins, then retry.';
+      'प्लगइन टॉगल करने में विफल. सर्वर को यह प्लगइन संस्करण नहीं मिल सका। प्लगइन्स को ताज़ा करने का प्रयास करें, फिर पुनः प्रयास करें।';
 
   @override
   String get adminPluginDetailToggleDioError =>
-      'Failed to toggle plugin. Please check server logs for details.';
+      'प्लगइन टॉगल करने में विफल. विवरण के लिए कृपया सर्वर लॉग जांचें।';
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
@@ -5305,39 +5380,39 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailDetails => 'Details';
+  String get adminPluginDetailDetails => 'विवरण';
 
   @override
-  String get adminPluginDetailDeveloper => 'Developer';
+  String get adminPluginDetailDeveloper => 'डेवलपर';
 
   @override
-  String get adminPluginDetailRepository => 'Repository';
+  String get adminPluginDetailRepository => 'कोष';
 
   @override
-  String get adminPluginDetailBundled => 'Bundled';
+  String get adminPluginDetailBundled => 'बंडल';
 
   @override
-  String get adminPluginDetailEnablePlugin => 'Enable Plugin';
+  String get adminPluginDetailEnablePlugin => 'प्लगइन सक्षम करें';
 
   @override
   String get adminPluginDetailRestartRequired =>
-      'A server restart is required for changes to take effect.';
+      'परिवर्तनों को प्रभावी करने के लिए सर्वर पुनरारंभ की आवश्यकता होती है।';
 
   @override
   String get adminPluginDetailRemovalPending =>
-      'This plugin will be removed after server restart.';
+      'सर्वर पुनरारंभ होने के बाद यह प्लगइन हटा दिया जाएगा.';
 
   @override
   String get adminPluginDetailMalfunctioned =>
-      'This plugin has malfunctioned and may not work correctly.';
+      'यह प्लगइन ख़राब हो गया है और हो सकता है कि ठीक से काम न करे।';
 
   @override
   String get adminPluginDetailNotSupported =>
-      'This plugin is not supported by the current server version.';
+      'यह प्लगइन वर्तमान सर्वर संस्करण द्वारा समर्थित नहीं है।';
 
   @override
   String get adminPluginDetailSuperseded =>
-      'This plugin has been superseded by a newer version.';
+      'इस प्लगइन को एक नए संस्करण द्वारा प्रतिस्थापित कर दिया गया है।';
 
   @override
   String adminReposLoadFailed(String error) {
@@ -5345,7 +5420,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemoveTitle => 'Remove Repository';
+  String get adminReposRemoveTitle => 'रिपोजिटरी हटाएँ';
 
   @override
   String adminReposRemoveConfirm(String name) {
@@ -5353,7 +5428,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemove => 'Remove';
+  String get adminReposRemove => 'निकालना';
 
   @override
   String adminReposSaveFailed(String error) {
@@ -5361,270 +5436,273 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminReposEmpty => 'No repositories configured';
+  String get adminReposEmpty => 'कोई रिपॉजिटरी कॉन्फ़िगर नहीं की गई';
 
   @override
   String get adminReposEmptySubtitle =>
-      'Add a repository to browse available plugins';
+      'उपलब्ध प्लगइन्स ब्राउज़ करने के लिए एक रिपॉजिटरी जोड़ें';
 
   @override
-  String get adminReposUnnamed => '(unnamed)';
+  String get adminReposUnnamed => '(अनाम)';
 
   @override
-  String get adminReposEditTitle => 'Edit Repository';
+  String get adminReposEditTitle => 'रिपोजिटरी संपादित करें';
 
   @override
-  String get adminReposAddTitle => 'Add Repository';
+  String get adminReposAddTitle => 'रिपोजिटरी जोड़ें';
 
   @override
-  String get adminReposUrl => 'Repository URL';
+  String get adminReposUrl => 'रिपोजिटरी यूआरएल';
 
   @override
-  String get adminReposNameHint => 'e.g. Jellyfin Stable';
+  String get adminReposNameHint => 'जैसे Jellyfin स्थिर';
 
   @override
-  String get adminPluginSettingsInvalidUrl => 'Invalid URL';
+  String get adminPluginSettingsInvalidUrl => 'असामान्य यूआरएल';
 
   @override
-  String get adminGeneralSettingsTitle => 'General Settings';
+  String get adminGeneralSettingsTitle => 'सामान्य सेटिंग्स';
 
   @override
-  String get adminGeneralMetadataLanguage => 'Preferred metadata language';
+  String get adminGeneralMetadataLanguage => 'पसंदीदा मेटाडेटा भाषा';
 
   @override
-  String get adminGeneralMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminGeneralMetadataLanguageHint => 'जैसे एन, डे, फ्र';
 
   @override
-  String get adminGeneralMetadataCountry => 'Preferred metadata country';
+  String get adminGeneralMetadataCountry => 'पसंदीदा मेटाडेटा देश';
 
   @override
-  String get adminGeneralMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminGeneralMetadataCountryHint => 'जैसे यूएस, डीई, एफआर';
 
   @override
-  String get adminGeneralLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminGeneralLibraryScanConcurrency => 'लाइब्रेरी स्कैन समवर्ती';
 
   @override
-  String get adminGeneralImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminGeneralImageEncodingLimit => 'समानांतर छवि एन्कोडिंग सीमा';
 
   @override
-  String get adminUnknownError => 'Unknown error';
+  String get adminUnknownError => 'अज्ञात त्रुटि';
 
   @override
-  String get adminBrowse => 'Browse';
+  String get adminBrowse => 'ब्राउज़';
 
   @override
-  String get adminCloseBrowser => 'Close browser';
+  String get adminCloseBrowser => 'ब्राउज़र बंद करें';
 
   @override
-  String get adminNetworkingTitle => 'Networking';
+  String get adminNetworkingTitle => 'नेटवर्किंग';
 
   @override
   String get adminNetworkingRestartWarning =>
-      'Changes to networking settings may require a server restart.';
+      'नेटवर्किंग सेटिंग्स में बदलाव के लिए सर्वर को पुनरारंभ करने की आवश्यकता हो सकती है।';
 
   @override
-  String get adminNetworkingRemoteAccess => 'Enable remote access';
+  String get adminNetworkingRemoteAccess => 'रिमोट एक्सेस सक्षम करें';
 
   @override
-  String get adminNetworkingPorts => 'Ports';
+  String get adminNetworkingPorts => 'बंदरगाहों';
 
   @override
-  String get adminNetworkingHttpPort => 'HTTP port';
+  String get adminNetworkingHttpPort => 'HTTP पोर्ट';
 
   @override
-  String get adminNetworkingHttpsPort => 'HTTPS port';
+  String get adminNetworkingHttpsPort => 'HTTPS पोर्ट';
 
   @override
-  String get adminNetworkingEnableHttps => 'Enable HTTPS';
+  String get adminNetworkingEnableHttps => 'HTTPS सक्षम करें';
 
   @override
-  String get adminNetworkingLocalNetwork => 'Local Network';
+  String get adminNetworkingLocalNetwork => 'स्थानीय नेटवर्क';
 
   @override
-  String get adminNetworkingLocalAddresses => 'Local network addresses';
+  String get adminNetworkingLocalAddresses => 'स्थानीय नेटवर्क पते';
 
   @override
-  String get adminNetworkingAddressHint => 'e.g. 192.168.1.0/24';
+  String get adminNetworkingAddressHint => 'जैसे 192.168.1.0/24';
 
   @override
-  String get adminNetworkingKnownProxies => 'Known proxies';
+  String get adminNetworkingKnownProxies => 'ज्ञात प्रॉक्सी';
 
   @override
-  String get adminNetworkingProxyHint => 'e.g. 10.0.0.1';
+  String get adminNetworkingProxyHint => 'जैसे 10.0.0.1';
 
   @override
-  String get adminNetworkingWhitelist => 'Whitelist';
+  String get adminNetworkingWhitelist => 'श्वेतसूची';
 
   @override
-  String get adminNetworkingBlacklist => 'Blacklist';
+  String get adminNetworkingBlacklist => 'काला सूची में डालना';
 
   @override
-  String get adminNetworkingAddEntry => 'Add entry';
+  String get adminNetworkingAddEntry => 'प्रविष्टि जोड़ें';
 
   @override
-  String get adminBrandingTitle => 'Branding';
+  String get adminBrandingTitle => 'ब्रांडिंग';
 
   @override
-  String get adminBrandingLoginDisclaimer => 'Login disclaimer';
+  String get adminBrandingLoginDisclaimer => 'लॉगिन अस्वीकरण';
 
   @override
   String get adminBrandingLoginDisclaimerHint =>
-      'HTML displayed below the login form';
+      'HTML लॉगिन फॉर्म के नीचे प्रदर्शित होता है';
 
   @override
-  String get adminBrandingCustomCss => 'Custom CSS';
+  String get adminBrandingCustomCss => 'कस्टम सीएसएस';
 
   @override
   String get adminBrandingCustomCssHint =>
-      'Custom CSS applied to the web interface';
+      'कस्टम सीएसएस वेब इंटरफ़ेस पर लागू किया गया';
 
   @override
-  String get adminBrandingEnableSplash => 'Enable splash screen';
+  String get adminBrandingEnableSplash => 'स्प्लैश स्क्रीन सक्षम करें';
 
   @override
-  String get adminPlaybackHwAccel => 'Hardware Acceleration';
+  String get adminPlaybackHwAccel => 'हार्डवेयर एक्सिलरेशन';
 
   @override
-  String get adminPlaybackHwAccelLabel => 'Hardware acceleration';
+  String get adminPlaybackHwAccelLabel => 'हार्डवेयर एक्सिलरेशन';
 
   @override
-  String get adminPlaybackEnableHwEncoding => 'Enable hardware encoding';
+  String get adminPlaybackEnableHwEncoding => 'हार्डवेयर एन्कोडिंग सक्षम करें';
 
   @override
-  String get adminPlaybackEnableHwDecoding => 'Enable hardware decoding for:';
+  String get adminPlaybackEnableHwDecoding =>
+      'इसके लिए हार्डवेयर डिकोडिंग सक्षम करें:';
 
   @override
-  String get adminPlaybackEncoding => 'Encoding';
+  String get adminPlaybackEncoding => 'एन्कोडिंग';
 
   @override
-  String get adminPlaybackEncodingThreads => 'Encoding threads';
+  String get adminPlaybackEncodingThreads => 'एन्कोडिंग धागे';
 
   @override
-  String get adminPlaybackFallbackFont => 'Enable fallback font';
+  String get adminPlaybackFallbackFont => 'फ़ॉलबैक फ़ॉन्ट सक्षम करें';
 
   @override
-  String get adminPlaybackFallbackFontPath => 'Fallback font path';
+  String get adminPlaybackFallbackFontPath => 'फ़ॉलबैक फ़ॉन्ट पथ';
 
   @override
-  String get adminPlaybackStreaming => 'Streaming';
+  String get adminPlaybackStreaming => 'स्ट्रीमिंग';
 
   @override
-  String get adminResumeVideo => 'Video';
+  String get adminResumeVideo => 'वीडियो';
 
   @override
-  String get adminResumeAudiobooks => 'Audiobooks';
+  String get adminResumeAudiobooks => 'ऑडियो पुस्तकें';
 
   @override
-  String get adminResumeMinAudiobookPct =>
-      'Minimum audiobook resume percentage';
+  String get adminResumeMinAudiobookPct => 'न्यूनतम ऑडियोबुक बायोडाटा प्रतिशत';
 
   @override
-  String get adminResumeMaxAudiobookPct =>
-      'Maximum audiobook resume percentage';
+  String get adminResumeMaxAudiobookPct => 'अधिकतम ऑडियोबुक बायोडाटा प्रतिशत';
 
   @override
-  String get adminStreamingBitrateLimit => 'Remote client bitrate limit (Mbps)';
+  String get adminStreamingBitrateLimit =>
+      'दूरस्थ क्लाइंट बिटरेट सीमा (एमबीपीएस)';
 
   @override
-  String get adminStreamingBitrateLimitHint => 'Leave empty or 0 for unlimited';
+  String get adminStreamingBitrateLimitHint => 'असीमित के लिए खाली या 0 छोड़ें';
 
   @override
-  String get adminTrickplayHwAccel => 'Enable hardware acceleration';
+  String get adminTrickplayHwAccel => 'हार्डवेयर त्वरण सक्षम करें';
 
   @override
-  String get adminTrickplayHwEncoding => 'Enable hardware encoding';
+  String get adminTrickplayHwEncoding => 'हार्डवेयर एन्कोडिंग सक्षम करें';
 
   @override
-  String get adminTrickplayKeyFrameOnly => 'Enable key frame only extraction';
+  String get adminTrickplayKeyFrameOnly =>
+      'केवल कुंजी फ़्रेम निष्कर्षण सक्षम करें';
 
   @override
-  String get adminTrickplayKeyFrameOnlySubtitle => 'Faster but lower accuracy';
+  String get adminTrickplayKeyFrameOnlySubtitle => 'तेज़ लेकिन कम सटीकता';
 
   @override
-  String get adminTrickplayNonBlocking => 'Non-Blocking';
+  String get adminTrickplayNonBlocking => 'गैर अवरुद्ध';
 
   @override
-  String get adminTrickplayBlocking => 'Blocking';
+  String get adminTrickplayBlocking => 'ब्लॉक कर रहा है';
 
   @override
-  String get adminTrickplayPriorityHigh => 'High';
+  String get adminTrickplayPriorityHigh => 'उच्च';
 
   @override
-  String get adminTrickplayPriorityAboveNormal => 'Above Normal';
+  String get adminTrickplayPriorityAboveNormal => 'सामान्य से उपर';
 
   @override
-  String get adminTrickplayPriorityNormal => 'Normal';
+  String get adminTrickplayPriorityNormal => 'सामान्य';
 
   @override
-  String get adminTrickplayPriorityBelowNormal => 'Below Normal';
+  String get adminTrickplayPriorityBelowNormal => 'सामान्य से नीचे';
 
   @override
-  String get adminTrickplayPriorityIdle => 'Idle';
+  String get adminTrickplayPriorityIdle => 'निठल्ला';
 
   @override
-  String get adminTrickplayImageSettings => 'Image Settings';
+  String get adminTrickplayImageSettings => 'छवि सेटिंग्स';
 
   @override
-  String get adminTrickplayInterval => 'Interval (ms)';
+  String get adminTrickplayInterval => 'अंतराल (एमएस)';
 
   @override
-  String get adminTrickplayIntervalSubtitle => 'How often to capture frames';
+  String get adminTrickplayIntervalSubtitle =>
+      'फ़्रेम को कितनी बार कैप्चर करना है';
 
   @override
   String get adminTrickplayWidthResolutionsHint =>
-      'Comma-separated pixel widths (e.g. 320)';
+      'अल्पविराम से अलग की गई पिक्सेल चौड़ाई (उदा. 320)';
 
   @override
-  String get adminTrickplayQuality => 'Quality';
+  String get adminTrickplayQuality => 'गुणवत्ता';
 
   @override
-  String get adminTrickplayQScale => 'Quality scale';
+  String get adminTrickplayQScale => 'गुणवत्ता पैमाना';
 
   @override
   String get adminTrickplayQScaleSubtitle =>
-      'Lower values = better quality, larger files';
+      'कम मान = बेहतर गुणवत्ता, बड़ी फ़ाइलें';
 
   @override
-  String get adminTrickplayJpegQuality => 'JPEG quality';
+  String get adminTrickplayJpegQuality => 'जेपीईजी गुणवत्ता';
 
   @override
-  String get adminTrickplayProcessing => 'Processing';
+  String get adminTrickplayProcessing => 'प्रसंस्करण';
 
   @override
-  String get adminTasksEmpty => 'No scheduled tasks found';
+  String get adminTasksEmpty => 'कोई निर्धारित कार्य नहीं मिला';
 
   @override
-  String get adminTasksNoFilterMatch => 'No tasks match the current filter';
+  String get adminTasksNoFilterMatch =>
+      'कोई भी कार्य वर्तमान फ़िल्टर से मेल नहीं खाता';
 
   @override
-  String get adminTaskCancelling => 'Cancelling...';
+  String get adminTaskCancelling => 'रद्द किया जा रहा है...';
 
   @override
-  String get adminTaskRunning => 'Running...';
+  String get adminTaskRunning => 'दौड़ना...';
 
   @override
-  String get adminTaskNeverRun => 'Never run';
+  String get adminTaskNeverRun => 'कभी नहीं चला';
 
   @override
-  String get adminTaskStop => 'Stop';
+  String get adminTaskStop => 'रुकना';
 
   @override
-  String get adminTaskRun => 'Run';
+  String get adminTaskRun => 'दौड़ना';
 
   @override
-  String get adminTaskDetailLastExecution => 'Last Execution';
+  String get adminTaskDetailLastExecution => 'अंतिम निष्पादन';
 
   @override
-  String get adminTaskDetailStarted => 'Started';
+  String get adminTaskDetailStarted => 'शुरू कर दिया';
 
   @override
-  String get adminTaskDetailEnded => 'Ended';
+  String get adminTaskDetailEnded => 'समाप्त';
 
   @override
-  String get adminTaskDetailDuration => 'Duration';
+  String get adminTaskDetailDuration => 'अवधि';
 
   @override
-  String get adminTaskDetailErrorLabel => 'Error:';
+  String get adminTaskDetailErrorLabel => 'गलती:';
 
   @override
   String adminTaskTriggerDaily(String time) {
@@ -5642,34 +5720,34 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerStartup => 'On application startup';
+  String get adminTaskTriggerStartup => 'एप्लिकेशन स्टार्टअप पर';
 
   @override
-  String get adminTaskTriggerTypeDaily => 'Daily';
+  String get adminTaskTriggerTypeDaily => 'दैनिक';
 
   @override
-  String get adminTaskTriggerTypeWeekly => 'Weekly';
+  String get adminTaskTriggerTypeWeekly => 'साप्ताहिक';
 
   @override
-  String get adminTaskTriggerTypeInterval => 'On an interval';
+  String get adminTaskTriggerTypeInterval => 'एक अंतराल पर';
 
   @override
-  String get adminTaskTriggerIntervalLabel => 'Interval';
+  String get adminTaskTriggerIntervalLabel => 'अंतराल';
 
   @override
-  String get adminTaskTriggerEveryHour => 'Every hour';
+  String get adminTaskTriggerEveryHour => 'हर घंटे';
 
   @override
-  String get adminTaskTriggerEvery6Hours => 'Every 6 hours';
+  String get adminTaskTriggerEvery6Hours => 'हर 6 घंटे में';
 
   @override
-  String get adminTaskTriggerEvery12Hours => 'Every 12 hours';
+  String get adminTaskTriggerEvery12Hours => 'हर 12 घंटे में';
 
   @override
-  String get adminTaskTriggerEvery24Hours => 'Every 24 hours';
+  String get adminTaskTriggerEvery24Hours => 'हर 24 घंटे';
 
   @override
-  String get adminTaskTriggerEvery2Days => 'Every 2 days';
+  String get adminTaskTriggerEvery2Days => 'हर 2 दिन में';
 
   @override
   String adminTaskTriggerHours(int count) {
@@ -5683,25 +5761,25 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerTime => 'Time';
+  String get adminTaskTriggerTime => 'समय';
 
   @override
-  String get adminTaskTriggerNoLimit => 'No limit';
+  String get adminTaskTriggerNoLimit => 'कोई सीमा नहीं';
 
   @override
-  String get adminActivityJustNow => 'Just now';
+  String get adminActivityJustNow => 'बस अब';
 
   @override
-  String get adminActivityLastHour => 'Last hour';
+  String get adminActivityLastHour => 'आखिरी घंटा';
 
   @override
-  String get adminActivityToday => 'Today';
+  String get adminActivityToday => 'आज';
 
   @override
-  String get adminActivityYesterday => 'Yesterday';
+  String get adminActivityYesterday => 'कल';
 
   @override
-  String get adminActivityOlder => 'Older';
+  String get adminActivityOlder => 'पुराने';
 
   @override
   String adminActivityDaysAgo(int days) {
@@ -5719,7 +5797,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get adminActivityNow => 'now';
+  String get adminActivityNow => 'अब';
 
   @override
   String adminActivityMinutesShort(int minutes) {
@@ -5743,91 +5821,92 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adminTrickplayDescription =>
-      'Configure trickplay image generation for seek preview thumbnails.';
+      'पूर्वावलोकन थंबनेल खोजने के लिए ट्रिकप्ले छवि निर्माण कॉन्फ़िगर करें।';
 
   @override
-  String get adminNetworkingPublicHttpsPort => 'Public HTTPS port';
+  String get adminNetworkingPublicHttpsPort => 'सार्वजनिक HTTPS पोर्ट';
 
   @override
-  String get adminNetworkingBaseUrl => 'Base URL';
+  String get adminNetworkingBaseUrl => 'आधार यूआरएल';
 
   @override
-  String get adminNetworkingBaseUrlHint => 'e.g. /jellyfin';
+  String get adminNetworkingBaseUrlHint => 'जैसे /जेलीफ़िन';
 
   @override
-  String get adminNetworkingHttps => 'HTTPS';
+  String get adminNetworkingHttps => 'HTTPS के';
 
   @override
-  String get adminNetworkingCertPath => 'Certificate path';
+  String get adminNetworkingCertPath => 'प्रमाणपत्र पथ';
 
   @override
-  String get adminNetworkingRemoteIpFilter => 'Remote IP Filter';
+  String get adminNetworkingRemoteIpFilter => 'रिमोट आईपी फ़िल्टर';
 
   @override
-  String get adminNetworkingRemoteIpFilterLabel => 'Remote IP filter';
+  String get adminNetworkingRemoteIpFilterLabel => 'रिमोट आईपी फ़िल्टर';
 
   @override
-  String get adminPlaybackVaapiDevice => 'VA-API device';
+  String get adminPlaybackVaapiDevice => 'वीए-एपीआई डिवाइस';
 
   @override
-  String get adminPlaybackAutomatic => '0 = automatic';
+  String get adminPlaybackAutomatic => '0 = स्वचालित';
 
   @override
-  String get adminPlaybackTranscodeTempPath => 'Transcoding temp path';
+  String get adminPlaybackTranscodeTempPath => 'ट्रांसकोडिंग अस्थायी पथ';
 
   @override
-  String get adminPlaybackSegmentDeletion => 'Allow segment deletion';
+  String get adminPlaybackSegmentDeletion => 'खंड हटाने की अनुमति दें';
 
   @override
-  String get adminPlaybackSegmentKeep => 'Segment keep (seconds)';
+  String get adminPlaybackSegmentKeep => 'खंड रखें (सेकंड)';
 
   @override
-  String get adminPlaybackThrottleBuffering => 'Throttle buffering';
+  String get adminPlaybackThrottleBuffering => 'थ्रॉटल बफ़रिंग';
 
   @override
-  String get adminResumeMinPct => 'Minimum resume percentage';
+  String get adminResumeMinPct => 'न्यूनतम बायोडाटा प्रतिशत';
 
   @override
   String get adminResumeMinPctSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'प्रगति को बचाने के लिए सामग्री को इस प्रतिशत से पहले चलाया जाना चाहिए';
 
   @override
-  String get adminResumeMaxPct => 'Maximum resume percentage';
+  String get adminResumeMaxPct => 'अधिकतम बायोडाटा प्रतिशत';
 
   @override
   String get adminResumeMaxPctSubtitle =>
-      'Content is considered fully played after this percentage';
+      'इस प्रतिशत के बाद सामग्री को पूरी तरह से चलाया हुआ माना जाता है';
 
   @override
-  String get adminResumeMinDuration => 'Minimum resume duration (seconds)';
+  String get adminResumeMinDuration => 'न्यूनतम बायोडाटा अवधि (सेकंड)';
 
   @override
   String get adminResumeMinDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'इससे छोटे आइटम दोबारा शुरू नहीं किए जा सकते';
 
   @override
-  String get adminTrickplayScanBehavior => 'Scan behavior';
+  String get adminTrickplayScanBehavior => 'व्यवहार को स्कैन करें';
 
   @override
-  String get adminTrickplayProcessPriority => 'Process priority';
+  String get adminTrickplayProcessPriority => 'प्रक्रिया प्राथमिकता';
 
   @override
-  String get adminTrickplayTileWidth => 'Tile width';
+  String get adminTrickplayTileWidth => 'टाइल की चौड़ाई';
 
   @override
-  String get adminTrickplayTileHeight => 'Tile height';
+  String get adminTrickplayTileHeight => 'टाइल की ऊंचाई';
 
   @override
-  String get adminTrickplayProcessThreads => 'Process threads';
+  String get adminTrickplayProcessThreads => 'प्रक्रिया धागे';
 
   @override
-  String get adminTrickplayWidthResolutions => 'Width resolutions';
+  String get adminTrickplayWidthResolutions => 'चौड़ाई संकल्प';
 
   @override
-  String get adminMetadataDefault => 'Default';
+  String get adminMetadataDefault => 'गलती करना';
 
   @override
-  String get adminMetadataContentTypeUpdated => 'Content type updated';
+  String get adminMetadataContentTypeUpdated =>
+      'सामग्री प्रकार अद्यतन किया गया';
 
   @override
   String adminMetadataContentTypeFailed(String error) {
@@ -5836,22 +5915,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adminGeneralSlowResponseThreshold =>
-      'Slow response threshold (ms)';
+      'धीमी प्रतिक्रिया सीमा (एमएस)';
 
   @override
-  String get adminGeneralCachePath => 'Cache path';
+  String get adminGeneralCachePath => 'कैश पथ';
 
   @override
-  String get adminGeneralMetadataPath => 'Metadata path';
+  String get adminGeneralMetadataPath => 'मेटाडेटा पथ';
 
   @override
-  String get adminGeneralServerName => 'Server name';
+  String get adminGeneralServerName => 'सर्वर का नाम';
 
   @override
-  String get adminSettingsLoadFailed => 'Failed to load settings';
+  String get adminSettingsLoadFailed => 'सेटिंग्स लोड करने में विफल';
 
   @override
-  String get adminDiscover => 'Discover';
+  String get adminDiscover => 'खोज करना';
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
@@ -5864,33 +5943,33 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get folders => 'Folders';
+  String get folders => 'फ़ोल्डर';
 
   @override
-  String get libraries => 'Libraries';
+  String get libraries => 'पुस्तकालय';
 
   @override
   String get syncPlay => 'SyncPlay';
 
   @override
-  String get syncPlayDisabledTitle => 'SyncPlay disabled';
+  String get syncPlayDisabledTitle => 'SyncPlay अक्षम';
 
   @override
   String get syncPlayDisabledMessage =>
-      'Enable SyncPlay in Settings to use synchronized playback.';
+      'सिंक्रनाइज़ प्लेबैक का उपयोग करने के लिए सेटिंग्स में SyncPlay सक्षम करें।';
 
   @override
-  String get syncPlayServerUnsupportedTitle => 'Server unsupported';
+  String get syncPlayServerUnsupportedTitle => 'सर्वर असमर्थित';
 
   @override
   String get syncPlayServerUnsupportedMessage =>
-      'SyncPlay requires a Jellyfin server. The current server does not support it.';
+      'SyncPlay को Jellyfin सर्वर की आवश्यकता है। वर्तमान सर्वर इसका समर्थन नहीं करता.';
 
   @override
-  String get syncPlayGroupFallbackName => 'SyncPlay Group';
+  String get syncPlayGroupFallbackName => 'SyncPlay समूह';
 
   @override
-  String get syncPlayGroupTooltip => 'SyncPlay group';
+  String get syncPlayGroupTooltip => 'SyncPlay समूह';
 
   @override
   String syncPlayParticipantCount(int count) {
@@ -5904,40 +5983,40 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get syncPlayIgnoreWait => 'Ignore wait';
+  String get syncPlayIgnoreWait => 'प्रतीक्षा पर ध्यान न दें';
 
   @override
   String get syncPlayIgnoreWaitSubtitle =>
-      'Don\'t hold the group up while this device buffers';
+      'इस डिवाइस के बफ़र होने पर समूह को पकड़कर न रखें';
 
   @override
   String get syncPlayContinueLocallyNoWait =>
-      'Continue locally without waiting for slow members';
+      'धीमे सदस्यों की प्रतीक्षा किए बिना स्थानीय रूप से जारी रखें';
 
   @override
-  String get syncPlayRepeat => 'Repeat';
+  String get syncPlayRepeat => 'दोहराना';
 
   @override
-  String get syncPlayRepeatOne => 'One';
+  String get syncPlayRepeatOne => 'एक';
 
   @override
-  String get syncPlayShuffleModeShuffled => 'Shuffled';
+  String get syncPlayShuffleModeShuffled => 'फेरबदल';
 
   @override
-  String get syncPlayShuffleModeSorted => 'Sorted';
+  String get syncPlayShuffleModeSorted => 'क्रमबद्ध';
 
   @override
-  String get syncPlaySyncCurrentQueue => 'Sync current playback queue';
+  String get syncPlaySyncCurrentQueue => 'वर्तमान प्लेबैक कतार को सिंक करें';
 
   @override
   String get syncPlaySyncCurrentQueueSubtitle =>
-      'Replace the group queue with what is playing locally';
+      'समूह कतार को स्थानीय स्तर पर जो चल रहा है उससे बदलें';
 
   @override
-  String get syncPlayLeaveGroup => 'Leave group';
+  String get syncPlayLeaveGroup => 'समूह छोड़ दें';
 
   @override
-  String get syncPlayGroupQueue => 'Group queue';
+  String get syncPlayGroupQueue => 'समूह कतार';
 
   @override
   String syncPlayQueueItemFallback(int index) {
@@ -5945,47 +6024,47 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get syncPlayPlayNow => 'Play now';
+  String get syncPlayPlayNow => 'अब खेलते हैं';
 
   @override
-  String get syncPlayCreateNewGroup => 'Create a new group';
+  String get syncPlayCreateNewGroup => 'एक नया समूह बनाएं';
 
   @override
-  String get syncPlayGroupName => 'Group name';
+  String get syncPlayGroupName => 'समूह नाम';
 
   @override
-  String get syncPlayDefaultGroupName => 'My SyncPlay Group';
+  String get syncPlayDefaultGroupName => 'मेरा SyncPlay समूह';
 
   @override
-  String get syncPlayCreateGroup => 'Create group';
+  String get syncPlayCreateGroup => 'समूह बनाना';
 
   @override
-  String get syncPlayAvailableGroups => 'Available groups';
+  String get syncPlayAvailableGroups => 'उपलब्ध समूह';
 
   @override
-  String get syncPlayNoGroupsAvailable => 'No groups available';
+  String get syncPlayNoGroupsAvailable => 'कोई समूह उपलब्ध नहीं';
 
   @override
-  String get syncPlayJoinGroupQuestion => 'Join SyncPlay group?';
+  String get syncPlayJoinGroupQuestion => 'SyncPlay समूह में शामिल हों?';
 
   @override
   String get syncPlayJoinGroupWarning =>
-      'Joining a SyncPlay group may replace your current playback queue. Continue?';
+      'SyncPlay समूह में शामिल होने से आपकी वर्तमान प्लेबैक कतार प्रतिस्थापित हो सकती है। जारी रखना?';
 
   @override
-  String get syncPlayJoin => 'Join';
+  String get syncPlayJoin => 'जोड़ना';
 
   @override
-  String get syncPlayStateIdle => 'Idle';
+  String get syncPlayStateIdle => 'निठल्ला';
 
   @override
-  String get syncPlayStateWaiting => 'Waiting';
+  String get syncPlayStateWaiting => 'इंतज़ार में';
 
   @override
-  String get syncPlayStatePaused => 'Paused';
+  String get syncPlayStatePaused => 'रुका हुआ';
 
   @override
-  String get syncPlayStatePlaying => 'Playing';
+  String get syncPlayStatePlaying => 'खेलना';
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
@@ -5998,11 +6077,11 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get syncPlayAccessDeniedTitle => 'SyncPlay access denied';
+  String get syncPlayAccessDeniedTitle => 'SyncPlay पहुंच अस्वीकृत';
 
   @override
   String get syncPlayAccessDeniedMessage =>
-      'You do not have access to one or more items in this SyncPlay group. Ask the group owner to verify library permissions or choose a different queue.';
+      'आपके पास इस SyncPlay समूह में एक या अधिक आइटम तक पहुंच नहीं है। समूह स्वामी से लाइब्रेरी अनुमतियों को सत्यापित करने या एक अलग कतार चुनने के लिए कहें।';
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
@@ -6010,63 +6089,63 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get voiceSearchUnavailable => 'Voice search is unavailable.';
+  String get voiceSearchUnavailable => 'ध्वनि खोज अनुपलब्ध है.';
 
   @override
   String get dolbyVisionDirectPlayFailedTitle =>
-      'Dolby Vision Direct Play Failed';
+      'Dolby Vision डायरेक्ट प्ले विफल';
 
   @override
   String get dolbyVisionDirectPlayFailedMessage =>
-      'Direct play failed to start for this Dolby Vision stream. Retry using server transcode?';
+      'इस Dolby Vision स्ट्रीम के लिए सीधा प्ले शुरू होने में विफल रहा। सर्वर ट्रांसकोड का उपयोग करके पुनः प्रयास करें?';
 
   @override
-  String get retryWithTranscode => 'Retry with transcode';
+  String get retryWithTranscode => 'ट्रांसकोड के साथ पुनः प्रयास करें';
 
   @override
-  String get dolbyVisionNotSupportedTitle => 'Dolby Vision Not Supported';
+  String get dolbyVisionNotSupportedTitle => 'Dolby Vision समर्थित नहीं';
 
   @override
   String get dolbyVisionNotSupportedMessage =>
-      'This device cannot decode Dolby Vision content directly. Use HDR10 fallback or request server transcoding.';
+      'यह डिवाइस Dolby Vision सामग्री को सीधे डीकोड नहीं कर सकता। HDR10 फ़ॉलबैक का उपयोग करें या सर्वर ट्रांसकोडिंग का अनुरोध करें।';
 
   @override
-  String get rememberMyChoice => 'Remember my choice';
+  String get rememberMyChoice => 'मेरी पसंद याद रखें';
 
   @override
-  String get playHdr10Fallback => 'Play HDR10 fallback';
+  String get playHdr10Fallback => 'HDR10 फ़ॉलबैक चलाएं';
 
   @override
-  String get requestTranscode => 'Request transcode';
+  String get requestTranscode => 'ट्रांसकोड का अनुरोध करें';
 
   @override
   String get homeScreenSectionsIntegrationDescription =>
-      'Detect rows exposed by IAmParadox27\'s \"Home Screen Sections\" plugin. Rows can be enabled and reordered below.';
+      'IAmParadox27 के \"होम स्क्रीन सेक्शन\" प्लगइन द्वारा उजागर पंक्तियों का पता लगाएं। पंक्तियों को नीचे सक्षम और पुन: व्यवस्थित किया जा सकता है।';
 
   @override
   String get homeScreenSectionsIntegrationNoServers =>
-      'No Jellyfin servers reporting the plugin yet.';
+      'अभी तक कोई Jellyfin सर्वर प्लगइन की रिपोर्ट नहीं कर रहा है।';
 
   @override
   String get kefinTweaksIntegrationDescription =>
-      'Detect rows configured via ranaldsgift\'s \"KefinTweaks\" plugin. Custom sections, recently released, watch again, seasonal, and recently added in library are mirrored from the KefinTweaks configuration on each Jellyfin server.';
+      'ranaldsgift के \"KefinTweaks\" प्लगइन के माध्यम से कॉन्फ़िगर की गई पंक्तियों का पता लगाएं। कस्टम अनुभाग, हाल ही में जारी, फिर से देखें, मौसमी, और हाल ही में लाइब्रेरी में जोड़े गए प्रत्येक Jellyfin सर्वर पर KefinTweaks कॉन्फ़िगरेशन से प्रतिबिंबित होते हैं।';
 
   @override
   String get kefinTweaksIntegrationNoServers =>
-      'No Jellyfin servers reporting KefinTweaks yet.';
+      'अभी तक कोई Jellyfin सर्वर KefinTweaks की रिपोर्ट नहीं कर रहा है।';
 
   @override
-  String get integrationOpenHomeSections => 'Open Home Sections';
+  String get integrationOpenHomeSections => 'होम अनुभाग खोलें';
 
   @override
   String get integrationOpenHomeSectionsSubtitle =>
-      'Enable, disable, and reorder rows';
+      'पंक्तियों को सक्षम, अक्षम और पुन: व्यवस्थित करें';
 
   @override
-  String get integrationInstalledButDisabled => 'Installed but disabled';
+  String get integrationInstalledButDisabled => 'स्थापित लेकिन अक्षम';
 
   @override
-  String get integrationNotInstalled => 'Not installed';
+  String get integrationNotInstalled => 'स्थापित नहीं हे';
 
   @override
   String integrationSectionsCount(int count) {
@@ -6094,39 +6173,39 @@ class AppLocalizationsHi extends AppLocalizations {
   String get jellyseerr => 'Jellyseerr';
 
   @override
-  String get seeAll => 'See All';
+  String get seeAll => 'सभी देखें';
 
   @override
-  String get noItems => 'No items';
+  String get noItems => 'कोई आइटम नहीं';
 
   @override
-  String get switchUser => 'Switch User';
+  String get switchUser => 'उपयोगकर्ता बदलें';
 
   @override
-  String get remoteControl => 'Remote Control';
+  String get remoteControl => 'रिमोट कंट्रोल';
 
   @override
-  String get mediaBarLoading => 'Loading media bar...';
+  String get mediaBarLoading => 'मीडिया बार लोड हो रहा है...';
 
   @override
-  String get mediaBarError => 'Media bar failed to load';
+  String get mediaBarError => 'मीडिया बार लोड होने में विफल रहा';
 
   @override
   String get offlineServerUnavailable =>
-      'Connected to the internet, but the current server is unavailable.';
+      'इंटरनेट से कनेक्ट है, लेकिन वर्तमान सर्वर अनुपलब्ध है।';
 
   @override
   String get offlineNoInternet =>
-      'You are offline. Only downloaded content is available.';
+      'आप संपर्क में नहीं हैं। केवल डाउनलोड की गई सामग्री ही उपलब्ध है।';
 
   @override
-  String get offlineFileNotAvailable => 'File not available';
+  String get offlineFileNotAvailable => 'फ़ाइल उपलब्ध नहीं है';
 
   @override
-  String get offlineSwitchServer => 'Switch Server';
+  String get offlineSwitchServer => 'सर्वर स्विच करें';
 
   @override
-  String get offlineSavedMedia => 'Saved Media';
+  String get offlineSavedMedia => 'सहेजा गया मीडिया';
 
   @override
   String get castGoogleCast => 'Google Cast';
@@ -6138,7 +6217,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get castDlna => 'DLNA';
 
   @override
-  String get castRemotePlayback => 'Remote Playback';
+  String get castRemotePlayback => 'रिमोट प्लेबैक';
 
   @override
   String castControlFailed(String error) {
@@ -6151,10 +6230,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get castDeviceVolume => 'Device Volume';
+  String get castDeviceVolume => 'डिवाइस वॉल्यूम';
 
   @override
-  String get castVolumeUnavailable => 'Unavailable';
+  String get castVolumeUnavailable => 'अनुपलब्ध';
 
   @override
   String castStopKind(String kind) {
@@ -6162,22 +6241,23 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get audioLabel => 'Audio';
+  String get audioLabel => 'ऑडियो';
 
   @override
-  String get subtitlesLabel => 'Subtitles';
+  String get subtitlesLabel => 'उपशीर्षक';
 
   @override
-  String get pinConfirmTitle => 'Confirm PIN';
+  String get pinConfirmTitle => 'पिन की पुष्टि करें';
 
   @override
-  String get pinSetTitle => 'Set PIN';
+  String get pinSetTitle => 'पिन सेट करें';
 
   @override
-  String get pinEnterTitle => 'Enter PIN';
+  String get pinEnterTitle => 'पिन दर्ज करें';
 
   @override
-  String get pinReenterToConfirm => 'Re-enter your PIN to confirm';
+  String get pinReenterToConfirm =>
+      'पुष्टि करने के लिए अपना पिन पुनः दर्ज करें';
 
   @override
   String pinEnterNDigit(int length) {
@@ -6190,46 +6270,45 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get pinIncorrect => 'Incorrect PIN';
+  String get pinIncorrect => 'ग़लत पिन';
 
   @override
-  String get pinMismatch => 'PINs do not match';
+  String get pinMismatch => 'पिन मेल नहीं खाते';
 
   @override
-  String get pinForgot => 'Forgot PIN?';
+  String get pinForgot => 'पिन भूल गए?';
 
   @override
-  String get pinClear => 'Clear';
+  String get pinClear => 'स्पष्ट';
 
   @override
-  String get pinBackspace => 'Backspace';
+  String get pinBackspace => 'बैकस्पेस';
 
   @override
-  String get quickConnectAuthorized => 'Quick Connect request authorized.';
+  String get quickConnectAuthorized => 'त्वरित कनेक्ट अनुरोध अधिकृत।';
 
   @override
   String get quickConnectInvalidOrExpired =>
-      'Quick Connect code is invalid or expired.';
+      'क्विक कनेक्ट कोड अमान्य है या समाप्त हो गया है।';
 
   @override
   String get quickConnectNotSupported =>
-      'Quick Connect is not supported on this server.';
+      'इस सर्वर पर क्विक कनेक्ट समर्थित नहीं है.';
 
   @override
   String get quickConnectAuthorizeFailed =>
-      'Failed to authorize Quick Connect code.';
+      'त्वरित कनेक्ट कोड को अधिकृत करने में विफल।';
 
   @override
-  String get quickConnectDisabled =>
-      'Quick Connect is disabled on this server.';
+  String get quickConnectDisabled => 'इस सर्वर पर त्वरित कनेक्ट अक्षम है.';
 
   @override
   String get quickConnectForbidden =>
-      'Your account cannot authorize this Quick Connect request.';
+      'आपका खाता इस त्वरित कनेक्ट अनुरोध को अधिकृत नहीं कर सकता.';
 
   @override
   String get quickConnectNotFound =>
-      'Quick Connect code was not found. Try a new code.';
+      'त्वरित कनेक्ट कोड नहीं मिला. नया कोड आज़माएँ.';
 
   @override
   String quickConnectFailedWithMessage(String message) {
@@ -6237,10 +6316,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get quickConnectEnterCode => 'Enter code';
+  String get quickConnectEnterCode => 'कोड दर्ज करें';
 
   @override
-  String get quickConnectAuthorize => 'Authorize';
+  String get quickConnectAuthorize => 'अधिकृत';
 
   @override
   String remoteCommandFailed(String error) {
@@ -6248,28 +6327,28 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get remoteControlTitle => 'Remote Control';
+  String get remoteControlTitle => 'रिमोट कंट्रोल';
 
   @override
-  String get remoteFailedToLoadSessions => 'Failed to load sessions';
+  String get remoteFailedToLoadSessions => 'सत्र लोड करने में विफल';
 
   @override
-  String get remoteNoSessions => 'No controllable sessions';
+  String get remoteNoSessions => 'कोई नियंत्रणीय सत्र नहीं';
 
   @override
-  String get remoteStartPlayback => 'Start playback on another device';
+  String get remoteStartPlayback => 'किसी अन्य डिवाइस पर प्लेबैक प्रारंभ करें';
 
   @override
-  String get unknownUser => 'Unknown';
+  String get unknownUser => 'अज्ञात';
 
   @override
-  String get unknownItem => 'Unknown';
+  String get unknownItem => 'अज्ञात';
 
   @override
-  String get remoteNothingPlaying => 'Nothing playing on this session';
+  String get remoteNothingPlaying => 'इस सत्र में कुछ भी नहीं चल रहा है';
 
   @override
-  String get castingStarted => 'Casting started on selected device';
+  String get castingStarted => 'चयनित डिवाइस पर कास्टिंग प्रारंभ हो गई';
 
   @override
   String castingFailed(String error) {
@@ -6277,44 +6356,44 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get noRemoteDevices => 'No remote playback devices available.';
+  String get noRemoteDevices => 'कोई रिमोट प्लेबैक डिवाइस उपलब्ध नहीं है.';
 
   @override
   String get noRemoteDevicesIos =>
-      'No remote playback devices available.\n\nOn iOS, AirPlay targets may be unavailable in the simulator.';
+      'कोई रिमोट प्लेबैक डिवाइस उपलब्ध नहीं है.\n\niOS पर, सिम्युलेटर में AirPlay लक्ष्य अनुपलब्ध हो सकते हैं।';
 
   @override
-  String get trackActionPlayNext => 'Play Next';
+  String get trackActionPlayNext => 'अगला खेलें';
 
   @override
-  String get trackActionAddToQueue => 'Add to Queue';
+  String get trackActionAddToQueue => 'क़तार में जोड़ें';
 
   @override
-  String get trackActionAddToPlaylist => 'Add to Playlist';
+  String get trackActionAddToPlaylist => 'प्लेलिस्ट में जोड़ें';
 
   @override
-  String get trackActionCancelDownload => 'Cancel Download';
+  String get trackActionCancelDownload => 'डाउनलोड रद्द करें';
 
   @override
-  String get trackActionDeleteFromPlaylist => 'Delete from Playlist';
+  String get trackActionDeleteFromPlaylist => 'प्लेलिस्ट से हटाएँ';
 
   @override
-  String get trackActionMoveUp => 'Move Up';
+  String get trackActionMoveUp => 'बढ़ाना';
 
   @override
-  String get trackActionMoveDown => 'Move Down';
+  String get trackActionMoveDown => 'नीचे की ओर';
 
   @override
-  String get trackActionRemoveFromFavorites => 'Remove from Favorites';
+  String get trackActionRemoveFromFavorites => 'पसंदीदा से हटाएँ';
 
   @override
-  String get trackActionAddToFavorites => 'Add to Favorites';
+  String get trackActionAddToFavorites => 'पसंदीदा में जोड़े';
 
   @override
-  String get trackActionGoToAlbum => 'Go to Album';
+  String get trackActionGoToAlbum => 'एल्बम पर जाएँ';
 
   @override
-  String get trackActionGoToArtist => 'Go to Artist';
+  String get trackActionGoToArtist => 'कलाकार के पास जाएँ';
 
   @override
   String trackActionDownloading(String name) {
@@ -6322,86 +6401,87 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get trackActionDeletedFile => 'Deleted downloaded file';
+  String get trackActionDeletedFile => 'डाउनलोड की गई फ़ाइल हटा दी गई';
 
   @override
-  String get trackActionDeleteFileFailed => 'Could not delete downloaded file';
+  String get trackActionDeleteFileFailed =>
+      'डाउनलोड की गई फ़ाइल को हटाया नहीं जा सका';
 
   @override
-  String get shuffleBy => 'Shuffle By';
+  String get shuffleBy => 'द्वारा शफ़ल करें';
 
   @override
-  String get shuffleSelectLibrary => 'Select Library';
+  String get shuffleSelectLibrary => 'लाइब्रेरी का चयन करें';
 
   @override
-  String get shuffleSelectGenre => 'Select Genre';
+  String get shuffleSelectGenre => 'शैली चुनें';
 
   @override
-  String get shuffleLibrary => 'Library';
+  String get shuffleLibrary => 'पुस्तकालय';
 
   @override
-  String get shuffleGenre => 'Genre';
+  String get shuffleGenre => 'शैली';
 
   @override
-  String get shuffleNoLibraries => 'No compatible libraries available.';
+  String get shuffleNoLibraries => 'कोई संगत लाइब्रेरी उपलब्ध नहीं है.';
 
   @override
-  String get shuffleNoGenres => 'No genres found for this shuffle mode.';
+  String get shuffleNoGenres => 'इस शफ़ल मोड के लिए कोई शैली नहीं मिली.';
 
   @override
-  String get posterDisplayTitle => 'Display';
+  String get posterDisplayTitle => 'प्रदर्शन';
 
   @override
-  String get posterImageType => 'Image Type';
+  String get posterImageType => 'छवि प्रकार';
 
   @override
-  String get imageTypePoster => 'Poster';
+  String get imageTypePoster => 'पोस्टर';
 
   @override
-  String get imageTypeThumbnail => 'Thumbnail';
+  String get imageTypeThumbnail => 'थंबनेल';
 
   @override
-  String get imageTypeBanner => 'Banner';
+  String get imageTypeBanner => 'बैनर';
 
   @override
-  String get playlistAddFailed => 'Failed to add to playlist';
+  String get playlistAddFailed => 'प्लेलिस्ट में जोड़ने में विफल';
 
   @override
-  String get playlistCreateFailed => 'Failed to create playlist';
+  String get playlistCreateFailed => 'प्लेलिस्ट बनाने में विफल';
 
   @override
-  String get playlistNew => 'New Playlist';
+  String get playlistNew => 'नई प्लेलिस्ट';
 
   @override
-  String get playlistCreate => 'Create';
+  String get playlistCreate => 'बनाएं';
 
   @override
-  String get playlistCreateNew => 'Create New Playlist';
+  String get playlistCreateNew => 'नई प्लेलिस्ट बनाएं';
 
   @override
-  String get playlistNoneFound => 'No playlists found';
+  String get playlistNoneFound => 'कोई प्लेलिस्ट नहीं मिली';
 
   @override
-  String get addToPlaylist => 'Add to Playlist';
+  String get addToPlaylist => 'प्लेलिस्ट में जोड़ें';
 
   @override
-  String get lyricsNotAvailable => 'No lyrics available';
+  String get lyricsNotAvailable => 'कोई गीत उपलब्ध नहीं';
 
   @override
-  String get upNext => 'Up Next';
+  String get upNext => 'अगला';
 
   @override
-  String get playNext => 'Play Next';
+  String get playNext => 'अगला खेलें';
 
   @override
   String get stillWatchingContent =>
-      'Playback has been paused. Are you still watching?';
+      'प्लेबैक रोक दिया गया है. क्या आप अभी भी देख रहे हैं?';
 
   @override
-  String get stillWatchingStop => 'Stop';
+  String get stillWatchingStop => 'रुकना';
 
   @override
-  String get stillWatchingContinue => 'Continue';
+  String get stillWatchingContinue => 'जारी रखना';
 
   @override
   String skipSegment(String segment) {
@@ -6409,10 +6489,10 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get liveTv => 'Live TV';
+  String get liveTv => 'लाइव टीवी';
 
   @override
-  String get continueWatchingAndNextUp => 'Continue Watching & Next Up';
+  String get continueWatchingAndNextUp => 'देखना जारी रखें और आगे बढ़ें';
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
@@ -6425,246 +6505,251 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get nextEpisode => 'Next Episode';
+  String get nextEpisode => 'अगला एपिसोड';
 
   @override
-  String get moreFromThisSeason => 'More From This Season';
+  String get moreFromThisSeason => 'इस सीज़न से अधिक';
 
   @override
-  String get playerTooltipPlaybackSpeed => 'Playback speed';
+  String get playerTooltipPlaybackSpeed => 'प्लेबैक गति';
 
   @override
-  String get playerTooltipCastControls => 'Cast controls';
+  String get playerTooltipCastControls => 'कास्ट नियंत्रण';
 
   @override
-  String get playerTooltipPlaybackQuality => 'Bitrate';
+  String get playerTooltipPlaybackQuality => 'बिटरेट';
 
   @override
-  String get playerTooltipEnterFullscreen => 'Enter fullscreen';
+  String get playerTooltipEnterFullscreen => 'फ़ुलस्क्रीन दर्ज करें';
 
   @override
-  String get playerTooltipExitFullscreen => 'Exit fullscreen';
+  String get playerTooltipExitFullscreen => 'फ़ुलस्क्रीन से बाहर निकलें';
 
   @override
-  String get playerTooltipLockLandscape => 'Lock landscape';
+  String get playerTooltipFloatOnTop => 'शीर्ष पर तैरें';
 
   @override
-  String get playerTooltipUnlockOrientation => 'Allow rotation';
+  String get playerTooltipExitFloatOnTop => 'शीर्ष पर फ़्लोट अक्षम करें';
 
   @override
-  String get playerTooltipPrevious => 'Previous';
+  String get playerTooltipLockLandscape => 'परिदृश्य लॉक करें';
 
   @override
-  String get playerTooltipSeekBack => 'Seek back';
+  String get playerTooltipUnlockOrientation => 'घूमने की अनुमति दें';
 
   @override
-  String get playerTooltipSeekForward => 'Seek forward';
+  String get playerTooltipPrevious => 'पहले का';
 
   @override
-  String get contextMenuMarkWatched => 'Mark as Watched';
+  String get playerTooltipSeekBack => 'वापस खोजो';
 
   @override
-  String get contextMenuMarkUnwatched => 'Mark as Unwatched';
+  String get playerTooltipSeekForward => 'आगे की तलाश करो';
 
   @override
-  String get contextMenuAddToFavorites => 'Add to Favorites';
+  String get contextMenuMarkWatched => 'देखे गए के रूप में चिह्नित करें';
 
   @override
-  String get contextMenuRemoveFromFavorites => 'Remove from Favorites';
+  String get contextMenuMarkUnwatched => 'न देखे गए के रूप में चिह्नित करें';
 
   @override
-  String get contextMenuGoToSeries => 'Go to Series';
+  String get contextMenuAddToFavorites => 'पसंदीदा में जोड़े';
 
   @override
-  String get settingsAdministrationSubtitle =>
-      'Access the server administration panel';
+  String get contextMenuRemoveFromFavorites => 'पसंदीदा से हटाएँ';
 
   @override
-  String get settingsAccountSecurity => 'Account & Security';
+  String get contextMenuGoToSeries => 'श्रृंखला पर जाएँ';
+
+  @override
+  String get settingsAdministrationSubtitle => 'सर्वर प्रशासन पैनल तक पहुंचें';
+
+  @override
+  String get settingsAccountSecurity => 'खाता एवं सुरक्षा';
 
   @override
   String get settingsAccountSecuritySubtitle =>
-      'Authentication, PIN code, and parental controls';
+      'प्रमाणीकरण, पिन कोड और माता-पिता का नियंत्रण';
 
   @override
-  String get settingsPersonalization => 'Personalization';
+  String get settingsPersonalization => 'वैयक्तिकरण';
 
   @override
   String get settingsPersonalizationSubtitle =>
-      'Theme, navigation, home rows, and library visibility';
+      'थीम, नेविगेशन, होम पंक्तियाँ और लाइब्रेरी दृश्यता';
 
   @override
-  String get settingsDynamicContent => 'Dynamic Content';
+  String get settingsDynamicContent => 'गतिशील सामग्री';
 
   @override
-  String get settingsDynamicContentSubtitle => 'Media Bar and visual overlays';
+  String get settingsDynamicContentSubtitle => 'मीडिया बार और विज़ुअल ओवरले';
 
   @override
-  String get settingsPlaybackSyncplay => 'Playback & SyncPlay';
+  String get settingsPlaybackSyncplay => 'प्लेबैक और SyncPlay';
 
   @override
   String get settingsPlaybackSyncplaySubtitle =>
-      'Audio/video settings, subtitles, downloads, and SyncPlay controls';
+      'ऑडियो/वीडियो सेटिंग्स, उपशीर्षक, डाउनलोड और SyncPlay नियंत्रण';
 
   @override
   String get settingsIntegrationsSubtitle =>
-      'Plugin sync, Seerr, ratings, and more';
+      'प्लगइन सिंक, सीयर, रेटिंग और बहुत कुछ';
 
   @override
-  String get settingsAboutSubtitle =>
-      'App version, legal information, and credits';
+  String get settingsAboutSubtitle => 'ऐप संस्करण, कानूनी जानकारी और क्रेडिट';
 
   @override
-  String get settingsAuthenticationSection => 'AUTHENTICATION';
+  String get settingsAuthenticationSection => 'प्रमाणीकरण';
 
   @override
-  String get settingsSortServersBy => 'Sort Servers By';
+  String get settingsSortServersBy => 'सर्वर को इसके अनुसार क्रमित करें';
 
   @override
-  String get settingsLastUsed => 'Last Used';
+  String get settingsLastUsed => 'अंतिम समय प्रयोग हुआ';
 
   @override
-  String get settingsAlphabetical => 'Alphabetical';
+  String get settingsAlphabetical => 'वर्णमाला';
 
   @override
-  String get settingsPrivacyAndSafetySection => 'PRIVACY & SAFETY';
+  String get settingsPrivacyAndSafetySection => 'गोपनीयता एवं सुरक्षा';
 
   @override
-  String get settingsBlockedRatings => 'Blocked Ratings';
+  String get settingsBlockedRatings => 'अवरुद्ध रेटिंग';
 
   @override
-  String get settingsGeneralStyle => 'General Style';
+  String get settingsGeneralStyle => 'सामान्य शैली';
 
   @override
   String get settingsGeneralStyleSubtitle =>
-      'Theme accents, backdrops, watched indicators, and theme music';
+      'थीम उच्चारण, पृष्ठभूमि, देखे गए संकेतक और थीम संगीत';
 
   @override
-  String get settingsHomePage => 'Home Page';
+  String get settingsHomePage => 'होम पेज';
 
   @override
   String get settingsHomePageSubtitle =>
-      'Sections, image types, overlays, and media previews';
+      'अनुभाग, छवि प्रकार, ओवरले और मीडिया पूर्वावलोकन';
 
   @override
   String get settingsLibrariesSubtitle =>
-      'Library visibility, folder view, and multi-server behavior';
+      'लाइब्रेरी दृश्यता, फ़ोल्डर दृश्य और बहु-सर्वर व्यवहार';
 
   @override
-  String get settingsTwentyFourHourClock => '24-Hour Clock';
+  String get settingsTwentyFourHourClock => '24 घंटे की घड़ी';
 
   @override
   String get settingsTwentyFourHourClockSubtitle =>
-      'Use 24-hour time formatting wherever the clock is shown';
+      'जहां भी घड़ी दिखाई दे, वहां 24-घंटे के समय स्वरूपण का उपयोग करें';
 
   @override
   String get settingsShowShuffleButtonInNavigation =>
-      'Show the shuffle button in the navigation bar';
+      'नेविगेशन बार में शफ़ल बटन दिखाएँ';
 
   @override
   String get settingsShowGenresButtonInNavigation =>
-      'Show the genres button in the navigation bar';
+      'नेविगेशन बार में शैलियाँ बटन दिखाएँ';
 
   @override
   String get settingsShowFavoritesButtonInNavigation =>
-      'Show the favorites button in the navigation bar';
+      'नेविगेशन बार में पसंदीदा बटन दिखाएँ';
 
   @override
   String get settingsShowLibrariesButtonInNavigation =>
-      'Show the libraries button in the navigation bar';
+      'नेविगेशन बार में लाइब्रेरीज़ बटन दिखाएँ';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'प्रति लाइब्रेरी होम पेज दृश्यता टॉगल करें। परिवर्तनों को प्रभावी करने के लिए Moonfin को पुनः आरंभ करें।';
 
   @override
-  String get settingsMediaBarAndLocalPreviews => 'Media Bar & Local Previews';
+  String get settingsMediaBarAndLocalPreviews =>
+      'मीडिया बार एवं स्थानीय पूर्वावलोकन';
 
   @override
-  String get settingsVisualOverlays => 'Visual Overlays';
+  String get settingsVisualOverlays => 'दृश्य ओवरले';
 
   @override
-  String get settingsSeasonalSurprise => 'Seasonal Surprise';
+  String get settingsSeasonalSurprise => 'मौसमी आश्चर्य';
 
   @override
-  String get settingsMetadataAndRatings => 'Metadata & Ratings';
+  String get settingsMetadataAndRatings => 'मेटाडेटा और रेटिंग';
 
   @override
   String get settingsPluginScreenDescription =>
-      'Moonbase powers server-side integrations including additional rating sources, Seerr requests, and synced preferences.';
+      'Moonbase अतिरिक्त रेटिंग स्रोतों, सीयर अनुरोधों और सिंक की गई प्राथमिकताओं सहित सर्वर-साइड एकीकरण को शक्ति प्रदान करता है।';
 
   @override
-  String get settingsOfflineDownloads => 'Offline Downloads';
+  String get settingsOfflineDownloads => 'ऑफ़लाइन डाउनलोड';
 
   @override
-  String get settingsHigh => 'High';
+  String get settingsHigh => 'उच्च';
 
   @override
-  String get settingsLow => 'Low';
+  String get settingsLow => 'कम';
 
   @override
-  String get settingsCustomPath => 'Custom Path';
+  String get settingsCustomPath => 'कस्टम पथ';
 
   @override
-  String get settingsEnterDownloadFolderPath => 'Enter download folder path';
+  String get settingsEnterDownloadFolderPath => 'डाउनलोड फ़ोल्डर पथ दर्ज करें';
 
   @override
-  String get settingsConcurrentDownloads => 'Concurrent Downloads';
+  String get settingsConcurrentDownloads => 'समवर्ती डाउनलोड';
 
   @override
   String get settingsConcurrentDownloadsDescription =>
-      'Maximum number of items to download at once.';
+      'एक बार में डाउनलोड करने के लिए आइटम की अधिकतम संख्या.';
 
   @override
-  String get settingsAppInfo => 'APP INFO';
+  String get settingsAppInfo => 'अनुप्रयोग की जानकारी';
 
   @override
-  String get settingsReportAnIssue => 'Report an Issue';
+  String get settingsReportAnIssue => 'किसी समस्या की रिपोर्ट करें';
 
   @override
-  String get settingsReportAnIssueSubtitle =>
-      'Open the issue tracker on GitHub';
+  String get settingsReportAnIssueSubtitle => 'GitHub पर इश्यू ट्रैकर खोलें';
 
   @override
-  String get settingsJoinDiscord => 'Join Discord';
+  String get settingsJoinDiscord => 'Discord से जुड़ें';
 
   @override
-  String get settingsJoinDiscordSubtitle => 'Chat with the community';
+  String get settingsJoinDiscordSubtitle => 'समुदाय के साथ चैट करें';
 
   @override
-  String get settingsJoinTheDiscord => 'Join the Discord';
+  String get settingsJoinTheDiscord => 'Discord (विरासत)';
 
   @override
-  String get settingsSupportMoonfin => 'Support Moonfin';
+  String get settingsSupportMoonfin => 'समर्थन Moonfin';
 
   @override
   String get settingsSupportMoonfinSubtitle =>
-      'Star the project on GitHub or contribute';
+      'प्रोजेक्ट को GitHub पर तारांकित करें या योगदान दें';
 
   @override
-  String get settingsLegal => 'LEGAL';
+  String get settingsLegal => 'कानूनी';
 
   @override
-  String get settingsLicenses => 'Licenses';
+  String get settingsLicenses => 'लाइसेंस';
 
   @override
-  String get settingsOpenSourceLicenseNotices => 'Open-source license notices';
+  String get settingsOpenSourceLicenseNotices => 'ओपन-सोर्स लाइसेंस नोटिस';
 
   @override
-  String get settingsPrivacyPolicy => 'Privacy Policy';
+  String get settingsPrivacyPolicy => 'गोपनीयता नीति';
 
   @override
-  String get settingsPrivacyPolicySubtitle => 'How Moonfin handles your data';
+  String get settingsPrivacyPolicySubtitle =>
+      'Moonfin आपके डेटा को कैसे संभालता है';
 
   @override
-  String get settingsCheckForUpdates => 'Check for Updates';
+  String get settingsCheckForUpdates => 'अद्यतन के लिए जाँच';
 
   @override
   String get settingsCheckForUpdatesSubtitle =>
-      'Check for the latest Moonfin release';
+      'नवीनतम Moonfin रिलीज़ की जाँच करें';
 
   @override
-  String get settingsPoweredByFlutter => 'Powered by Flutter';
+  String get settingsPoweredByFlutter => 'स्पंदन द्वारा संचालित';
 
   @override
   String settingsLicenseNoticesCount(int count) {
@@ -6678,168 +6763,170 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get settingsBoth => 'Both';
+  String get settingsBoth => 'दोनों';
 
   @override
-  String get settingsShuffleContentTypeFilter => 'Shuffle Content Type Filter';
+  String get settingsShuffleContentTypeFilter =>
+      'सामग्री प्रकार फ़िल्टर को शफ़ल करें';
 
   @override
-  String get settingsVideoPlaybackPreferences => 'Video Playback Preferences';
+  String get settingsVideoPlaybackPreferences => 'वीडियो प्लेबैक प्राथमिकताएँ';
 
   @override
   String get settingsVideoPlaybackPreferencesSubtitle =>
-      'Core video engine and streaming quality settings';
+      'कोर वीडियो इंजन और स्ट्रीमिंग गुणवत्ता सेटिंग्स';
 
   @override
-  String get settingsAudioPreferences => 'Audio Preferences';
+  String get settingsAudioPreferences => 'ऑडियो प्राथमिकताएँ';
 
   @override
   String get settingsAudioPreferencesSubtitle =>
-      'Audio tracks, processing, and passthrough options';
+      'ऑडियो ट्रैक, प्रोसेसिंग और पासथ्रू विकल्प';
 
   @override
-  String get settingsAutomationAndQueue => 'Automation & Queue';
+  String get settingsAutomationAndQueue => 'स्वचालन एवं कतार';
 
   @override
   String get settingsAutomationAndQueueSubtitle =>
-      'Automated playback and sequencing';
+      'स्वचालित प्लेबैक और अनुक्रमण';
 
   @override
   String get settingsOfflineDownloadsSubtitle =>
-      'Download quality, storage limits, and queue size';
+      'डाउनलोड गुणवत्ता, भंडारण सीमा और कतार का आकार';
 
   @override
-  String get settingsSyncplaySubtitle =>
-      'Synchronization logic for group sessions';
+  String get settingsSyncplaySubtitle => 'समूह सत्रों के लिए तुल्यकालन तर्क';
 
   @override
   String get settingsAdvancedOptionsSubtitle =>
-      'Specialized player features. Use with caution, as some options may cause playback issues';
+      'विशिष्ट खिलाड़ी सुविधाएँ. सावधानी से प्रयोग करें, क्योंकि कुछ विकल्प प्लेबैक समस्याएँ पैदा कर सकते हैं';
 
   @override
-  String get settingsSkipIntrosAndOutros => 'Skip Intros and Outros?';
+  String get settingsSkipIntrosAndOutros => 'परिचय और बाह्य को छोड़ें?';
 
   @override
-  String get settingsPromptUser => 'Prompt User';
+  String get settingsPromptUser => 'शीघ्र उपयोगकर्ता';
 
   @override
-  String get settingsSkip => 'Skip';
+  String get settingsSkip => 'छोडना';
 
   @override
-  String get settingsDoNothing => 'Do Nothing';
+  String get settingsDoNothing => 'कुछ भी नहीं है';
 
   @override
   String get settingsMaxBitrateDescription =>
-      'Cap the streaming bitrate. Content above this threshold will be transcoded to fit.';
+      'स्ट्रीमिंग बिटरेट को कैप करें. इस सीमा से ऊपर की सामग्री को फिट करने के लिए ट्रांसकोड किया जाएगा।';
 
   @override
   String get settingsMaxResolutionDescription =>
-      'Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.';
+      'खिलाड़ी द्वारा अनुरोधित अधिकतम रिज़ॉल्यूशन को सीमित करें। उच्च-रिज़ॉल्यूशन सामग्री को नीचे ट्रांसकोड किया जाएगा।';
 
   @override
   String get settingsPlayerZoomDescription =>
-      'How video should be scaled to fit the screen.';
+      'स्क्रीन पर फ़िट होने के लिए वीडियो को कैसे स्केल किया जाना चाहिए.';
 
   @override
-  String get settingsPlaybackEngineAndroidTv => 'Playback Engine (Android TV)';
+  String get settingsPlaybackEngineAndroidTv => 'प्लेबैक इंजन (एंड्रॉइड टीवी)';
 
   @override
   String get settingsPlaybackEngineAndroidTvDescription =>
-      'Choose the default playback engine on Android TV devices. Changes apply to the next playback session.';
+      'एंड्रॉइड टीवी उपकरणों पर डिफ़ॉल्ट प्लेबैक इंजन चुनें। परिवर्तन अगले प्लेबैक सत्र पर लागू होते हैं।';
 
   @override
-  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (recommended)';
+  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (अनुशंसित)';
 
   @override
-  String get settingsPlaybackEngineMpvLegacy => 'mpv (legacy)';
+  String get settingsPlaybackEngineMpvLegacy => 'mpv (विरासत)';
 
   @override
-  String get settingsDolbyVisionFallback => 'Dolby Vision Fallback';
+  String get settingsDolbyVisionFallback => 'Dolby Vision फ़ॉलबैक';
 
   @override
   String get settingsDolbyVisionFallbackDescription =>
-      'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.';
+      'Dolby Vision डिकोडिंग के बिना उपकरणों पर Dolby Vision शीर्षकों के लिए व्यवहार।';
 
   @override
-  String get settingsAskEachTime => 'Ask each time';
+  String get settingsAskEachTime => 'हर बार पूछें';
 
   @override
-  String get settingsPreferHdr10Fallback => 'Prefer HDR10 fallback';
+  String get settingsPreferHdr10Fallback => 'HDR10 फ़ॉलबैक को प्राथमिकता दें';
 
   @override
-  String get settingsPreferServerTranscode => 'Prefer server transcode';
+  String get settingsPreferServerTranscode =>
+      'सर्वर ट्रांसकोड को प्राथमिकता दें';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlay =>
-      'Dolby Vision Profile 7 Direct Play';
+      'Dolby Vision प्रोफ़ाइल 7 डायरेक्ट प्ले';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlayDescription =>
-      'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.';
+      'नियंत्रित करता है कि क्या Dolby Vision प्रोफ़ाइल 7 एन्हांसमेंट-लेयर स्ट्रीम को निर्देशित करना चाहिए।';
 
   @override
-  String get settingsAutoAftkrtEnabled => 'Auto (AFTKRT enabled)';
+  String get settingsAutoAftkrtEnabled => 'स्वतः (AFTKRT सक्षम)';
 
   @override
-  String get settingsEnabledOnThisDevice => 'Enabled on this device';
+  String get settingsEnabledOnThisDevice => 'इस डिवाइस पर सक्षम है';
 
   @override
-  String get settingsDisabledPreferTranscode => 'Disabled (prefer transcode)';
+  String get settingsDisabledPreferTranscode =>
+      'अक्षम (ट्रांसकोड को प्राथमिकता दें)';
 
   @override
   String get settingsResumeRewindDescription =>
-      'When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?';
+      'प्लेबैक फिर से शुरू करते समय (कंटिन्यू वॉचिंग या मीडिया आइटम पेज से), कितने सेकंड रीवाइंड किया जाना चाहिए?';
 
   @override
   String get settingsUnpauseRewindDescription =>
-      'When resuming playback after pressing the pause button, how many seconds should be rewound?';
+      'पॉज़ बटन दबाने के बाद प्लेबैक फिर से शुरू करते समय, कितने सेकंड तक रिवाइंड किया जाना चाहिए?';
 
   @override
   String get settingsSkipBackLengthDescription =>
-      'How many seconds to jump back after pressing the rewind button.';
+      'रिवाइंड बटन दबाने के बाद कितने सेकंड पीछे कूदना है।';
 
   @override
-  String get settingsOneSecond => '1 second';
+  String get settingsOneSecond => '1 सेकंड';
 
   @override
-  String get settingsThreeSeconds => '3 seconds';
+  String get settingsThreeSeconds => '3 सेकंड';
 
   @override
-  String get settingsFortyFiveSeconds => '45 seconds';
+  String get settingsFortyFiveSeconds => '45 सेकंड';
 
   @override
-  String get settingsSixtySeconds => '60 seconds';
+  String get settingsSixtySeconds => '60 सेकंड';
 
   @override
   String get settingsSkipForwardLengthDescription =>
-      'How many seconds to jump forward after pressing the fast forward button.';
+      'फ़ास्ट फ़ॉरवर्ड बटन दबाने के बाद कितने सेकंड आगे कूदना है।';
 
   @override
   String get settingsBitstreamAc3ToExternalDecoder =>
-      'Bitstream AC3 to external decoder';
+      'बाहरी डिकोडर के लिए बिटस्ट्रीम AC3';
 
   @override
-  String get settingsCinemaMode => 'Cinema Mode';
+  String get settingsCinemaMode => 'सिनेमा मोड';
 
   @override
   String get settingsCinemaModeSubtitle =>
-      'Play trailers/prerolls before a main feature';
+      'मुख्य फीचर से पहले ट्रेलर/प्रीरोल चलाएं';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
-      'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.';
+  String get settingsNextUpDisplayDescription =>
+      'विस्तारित एपिसोड कलाकृति और विवरण के साथ एक पूरा कार्ड दिखाता है। मिनिमल एक कॉम्पैक्ट काउंटडाउन ओवरले दिखाता है। अक्षम प्रॉम्प्ट को पूरी तरह छुपा देता है.';
 
   @override
-  String get settingsShort => 'Short';
+  String get settingsShort => 'छोटा';
 
   @override
-  String get settingsLong => 'Long';
+  String get settingsLong => 'लंबा';
 
   @override
-  String get settingsVeryLong => 'Very Long';
+  String get settingsVeryLong => 'बहुत लंबा';
 
   @override
-  String get settingsVideoStartDelay => 'Video Start Delay';
+  String get settingsVideoStartDelay => 'वीडियो प्रारंभ विलंब';
 
   @override
   String settingsMillisecondsValue(int value) {
@@ -6847,82 +6934,84 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get settingsLiveTvDirect => 'Live TV Direct';
+  String get settingsLiveTvDirect => 'लाइव टीवी डायरेक्ट';
 
   @override
-  String get settingsLiveTvDirectSubtitle => 'Enable direct play for Live TV';
+  String get settingsLiveTvDirectSubtitle =>
+      'लाइव टीवी के लिए सीधा प्ले सक्षम करें';
 
   @override
-  String get settingsOpenGroups => 'Open Groups';
+  String get settingsOpenGroups => 'समूह खोलें';
 
   @override
   String get settingsOpenGroupsSubtitle =>
-      'Create, join, or manage SyncPlay groups';
+      'SyncPlay समूह बनाएं, शामिल हों या प्रबंधित करें';
 
   @override
-  String get settingsSyncplayEnabled => 'SyncPlay Enabled';
+  String get settingsSyncplayEnabled => 'SyncPlay सक्षम';
 
   @override
   String get settingsSyncplayEnabledSubtitle =>
-      'Enable group watching features';
+      'समूह देखने की सुविधाएँ सक्षम करें';
 
   @override
-  String get settingsSyncplayButton => 'SyncPlay Button';
+  String get settingsSyncplayButton => 'SyncPlay बटन';
 
   @override
   String get settingsSyncplayButtonSubtitle =>
-      'Show the SyncPlay button on the navigation bar';
+      'नेविगेशन बार पर SyncPlay बटन दिखाएँ';
 
   @override
-  String get settingsSyncplayAdvancedCorrection => 'Advanced Correction';
+  String get settingsSyncplayAdvancedCorrection => 'उन्नत सुधार';
 
   @override
   String get settingsSyncplayAdvancedCorrectionSubtitle =>
-      'Enable fine-grained sync logic';
+      'सुक्ष्म सिंक तर्क सक्षम करें';
 
   @override
-  String get settingsSyncplaySyncCorrection => 'Sync Correction';
+  String get settingsSyncplaySyncCorrection => 'समन्वयन सुधार';
 
   @override
   String get settingsSyncplaySyncCorrectionSubtitle =>
-      'Automatically adjust playback to stay in sync';
+      'सिंक में बने रहने के लिए प्लेबैक को स्वचालित रूप से समायोजित करें';
 
   @override
-  String get settingsSyncplaySpeedToSync => 'Speed to Sync';
+  String get settingsSyncplaySpeedToSync => 'सिंक करने की गति';
 
   @override
   String get settingsSyncplaySpeedToSyncSubtitle =>
-      'Use playback speed adjustment to sync';
+      'सिंक करने के लिए प्लेबैक गति समायोजन का उपयोग करें';
 
   @override
-  String get settingsSyncplaySkipToSync => 'Skip to Sync';
+  String get settingsSyncplaySkipToSync => 'सिंक करने के लिए आगे बढ़ें';
 
   @override
-  String get settingsSyncplaySkipToSyncSubtitle => 'Use seeking to sync';
+  String get settingsSyncplaySkipToSyncSubtitle =>
+      'सिंक करने के लिए खोज का उपयोग करें';
 
   @override
-  String get settingsSyncplayMinimumSpeedDelay => 'Minimum Speed Delay';
+  String get settingsSyncplayMinimumSpeedDelay => 'न्यूनतम गति विलंब';
 
   @override
-  String get settingsSyncplayMaximumSpeedDelay => 'Maximum Speed Delay';
+  String get settingsSyncplayMaximumSpeedDelay => 'अधिकतम गति विलंब';
 
   @override
-  String get settingsSyncplaySpeedDuration => 'Speed Duration';
+  String get settingsSyncplaySpeedDuration => 'गति अवधि';
 
   @override
-  String get settingsSyncplayMinimumSkipDelay => 'Minimum Skip Delay';
+  String get settingsSyncplayMinimumSkipDelay => 'न्यूनतम स्किप विलंब';
 
   @override
-  String get settingsSyncplayExtraOffset => 'SyncPlay Extra Offset';
+  String get settingsSyncplayExtraOffset => 'SyncPlay अतिरिक्त ऑफसेट';
 
   @override
-  String get onNow => 'On Now';
+  String get onNow => 'अब चालू';
 
   @override
-  String get collections => 'Collections';
+  String get collections => 'संग्रह';
 
   @override
-  String get lastPlayed => 'Last Played';
+  String get lastPlayed => 'अंतिम बार खेला गया';
 
   @override
   String libraryNameWithServer(String libraryName, String serverName) {

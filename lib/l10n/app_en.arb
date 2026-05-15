@@ -2808,6 +2808,10 @@
   "@seasonalEffects": {
     "description": "Setting for seasonal visual effects"
   },
+  "seasonalEffectsDescription": "Visual effects and seasonal decorations",
+  "@seasonalEffectsDescription": {
+    "description": "Description for seasonal effects settings"
+  },
   "snow": "Snow",
   "@snow": {
     "description": "Seasonal effect: snow"
@@ -3635,6 +3639,26 @@
   "@mediaBar": {
     "description": "Media bar section title"
   },
+  "mediaSources": "Media Sources",
+  "@mediaSources": {
+    "description": "Section heading for media source options"
+  },
+  "behavior": "Behavior",
+  "@behavior": {
+    "description": "Section heading for behavior options"
+  },
+  "seconds": "seconds",
+  "@seconds": {
+    "description": "Time unit label in seconds"
+  },
+  "localPreviews": "Local Previews",
+  "@localPreviews": {
+    "description": "Local previews settings screen title"
+  },
+  "localPreviewsDescription": "Configure trailer, media, and audio previews.",
+  "@localPreviewsDescription": {
+    "description": "Description for local previews settings"
+  },
   "mediaBarMode": "Media Bar Style",
   "@mediaBarMode": {
     "description": "Setting for choosing media bar style"
@@ -3719,9 +3743,17 @@
   "@episodePreview": {
     "description": "Setting for episode preview"
   },
+  "mediaPreview": "Media Preview",
+  "@mediaPreview": {
+    "description": "Setting for media preview"
+  },
   "episodePreviewDescription": "Play a 30-second inline preview on focused, hovered, or long-pressed cards",
   "@episodePreviewDescription": {
     "description": "Description for episode preview"
+  },
+  "mediaPreviewDescription": "Play a 30-second inline preview on focused, hovered, or long-pressed cards",
+  "@mediaPreviewDescription": {
+    "description": "Description for media preview"
   },
   "previewAudio": "Preview Audio",
   "@previewAudio": {

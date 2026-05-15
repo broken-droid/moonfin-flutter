@@ -1969,6 +1969,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seasonalEffects => 'Seasonal Effects';
 
   @override
+  String get seasonalEffectsDescription =>
+      'Visual effects and seasonal decorations';
+
+  @override
   String get snow => 'Snow';
 
   @override
@@ -2580,6 +2584,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mediaBar => 'Media Bar';
 
   @override
+  String get mediaSources => 'Media Sources';
+
+  @override
+  String get behavior => 'Behavior';
+
+  @override
+  String get seconds => 'seconds';
+
+  @override
+  String get localPreviews => 'Local Previews';
+
+  @override
+  String get localPreviewsDescription =>
+      'Configure trailer, media, and audio previews.';
+
+  @override
   String get mediaBarMode => 'Media Bar Style';
 
   @override
@@ -2643,7 +2663,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get episodePreview => 'Episode Preview';
 
   @override
+  String get mediaPreview => 'Media Preview';
+
+  @override
   String get episodePreviewDescription =>
+      'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
+
+  @override
+  String get mediaPreviewDescription =>
       'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
 
   @override
@@ -6986,6 +7013,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get username => 'Username';
 
   @override
+  String get email => 'Email';
+
+  @override
   String get quickConnectInstruction =>
       'Enter this code on your server\'s web dashboard:';
 
@@ -7704,6 +7734,11 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get tracklist => 'Tracklist';
+
+  @override
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
 
   @override
   String get biography => 'Biography';
@@ -8595,6 +8630,15 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get seerr => 'Seerr';
 
   @override
+  String get seerrAccountType => 'Seerr Account Type';
+
+  @override
+  String get jellyfinAccount => 'Jellyfin';
+
+  @override
+  String get localAccount => 'Local';
+
+  @override
   String get savedMedia => 'Saved Media';
 
   @override
@@ -8871,6 +8915,9 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get focusExpansionAnimation => 'Focus Expansion Animation';
 
   @override
+  String get desktopUiScale => 'Desktop UI Scale';
+
+  @override
   String get scaleFocusedCards => 'Scale focused or hovered cards and tiles';
 
   @override
@@ -8904,6 +8951,10 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get seasonalEffects => 'Seasonal Effects';
+
+  @override
+  String get seasonalEffectsDescription =>
+      'Visual effects and seasonal decorations';
 
   @override
   String get snow => 'Snow';
@@ -9116,7 +9167,7 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get nextUpAndQueuing => 'Next Up & Queuing';
 
   @override
-  String get nextUpBehavior => 'Next Up Behavior';
+  String get nextUpDisplay => 'Next Up Display';
 
   @override
   String get extended => 'Extended';
@@ -9517,6 +9568,22 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get mediaBar => 'Media Bar';
 
   @override
+  String get mediaSources => 'Media Sources';
+
+  @override
+  String get behavior => 'Behavior';
+
+  @override
+  String get seconds => 'seconds';
+
+  @override
+  String get localPreviews => 'Local Previews';
+
+  @override
+  String get localPreviewsDescription =>
+      'Configure trailer, media, and audio previews.';
+
+  @override
   String get mediaBarMode => 'Media Bar Style';
 
   @override
@@ -9580,7 +9647,14 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get episodePreview => 'Episode Preview';
 
   @override
+  String get mediaPreview => 'Media Preview';
+
+  @override
   String get episodePreviewDescription =>
+      'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
+
+  @override
+  String get mediaPreviewDescription =>
       'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
 
   @override
@@ -13403,6 +13477,12 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
   String get playerTooltipExitFullscreen => 'Exit fullscreen';
 
   @override
+  String get playerTooltipFloatOnTop => 'Float on top';
+
+  @override
+  String get playerTooltipExitFloatOnTop => 'Disable float on top';
+
+  @override
   String get playerTooltipLockLandscape => 'Lock landscape';
 
   @override
@@ -13783,7 +13863,7 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
       'Play trailers/prerolls before a main feature';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.';
 
   @override

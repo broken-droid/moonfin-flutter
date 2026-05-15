@@ -9,10 +9,10 @@ class AppLocalizationsKk extends AppLocalizations {
   AppLocalizationsKk([String locale = 'kk']) : super(locale);
 
   @override
-  String get appTitle => 'Moonfin';
+  String get appTitle => 'Ай жүзі';
 
   @override
-  String get signIn => 'Sign In';
+  String get signIn => 'Кіру';
 
   @override
   String connectingToServer(String serverName) {
@@ -20,29 +20,32 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get quickConnect => 'Quick Connect';
+  String get quickConnect => 'Жылдам қосылу';
 
   @override
-  String get password => 'Password';
+  String get password => 'Құпия сөз';
 
   @override
-  String get username => 'Username';
+  String get username => 'Пайдаланушы аты';
+
+  @override
+  String get email => 'Электрондық пошта';
 
   @override
   String get quickConnectInstruction =>
-      'Enter this code on your server\'s web dashboard:';
+      'Бұл кодты серверіңіздің веб-бақылау тақтасына енгізіңіз:';
 
   @override
-  String get waitingForAuthorization => 'Waiting for authorization...';
+  String get waitingForAuthorization => 'Авторизация күтілуде...';
 
   @override
-  String get back => 'Back';
+  String get back => 'Артқа';
 
   @override
-  String get serverUnavailable => 'Server is unavailable';
+  String get serverUnavailable => 'Сервер қолжетімсіз';
 
   @override
-  String get loginFailed => 'Login failed';
+  String get loginFailed => 'Логин кірмеді';
 
   @override
   String quickConnectUnavailable(String detail) {
@@ -55,13 +58,13 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get whosWatching => 'Who\'s watching?';
+  String get whosWatching => 'Кім қарап отыр?';
 
   @override
-  String get addUser => 'Add User';
+  String get addUser => 'Пайдаланушы қосу';
 
   @override
-  String get selectServer => 'Select Server';
+  String get selectServer => 'Серверді таңдаңыз';
 
   @override
   String appVersionFooter(String version) {
@@ -69,25 +72,25 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get savedServers => 'Saved Servers';
+  String get savedServers => 'Сақталған серверлер';
 
   @override
-  String get discoveredServers => 'Discovered Servers';
+  String get discoveredServers => 'Табылған серверлер';
 
   @override
-  String get noneFound => 'None found';
+  String get noneFound => 'Ешқайсысы табылмады';
 
   @override
-  String get unableToConnectToServer => 'Unable to connect to server';
+  String get unableToConnectToServer => 'Серверге қосылу мүмкін емес';
 
   @override
-  String get addServer => 'Add Server';
+  String get addServer => 'Сервер қосу';
 
   @override
-  String get embyConnect => 'Emby Connect';
+  String get embyConnect => 'Emby Қосылу';
 
   @override
-  String get removeServer => 'Remove Server';
+  String get removeServer => 'Серверді жою';
 
   @override
   String removeServerConfirmation(String serverName) {
@@ -95,99 +98,98 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Болдырмау';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'Жою';
 
   @override
-  String get connectToServer => 'Connect to Server';
+  String get connectToServer => 'Серверге қосылу';
 
   @override
-  String get serverAddress => 'Server Address';
+  String get serverAddress => 'Сервер мекенжайы';
 
   @override
   String get serverAddressHint => 'https://your-server.example.com';
 
   @override
-  String get connect => 'Connect';
+  String get connect => 'Қосылу';
 
   @override
-  String get secureStorageUnavailable => 'Secure Storage Unavailable';
+  String get secureStorageUnavailable => 'Қауіпсіз жад қолжетімсіз';
 
   @override
   String get secureStorageUnavailableMessage =>
-      'Moonfin could not access your system keyring. Login can continue, but secure token storage may be unavailable until the keyring is unlocked.';
+      'Moonfin жүйе кілттеріне қол жеткізе алмады. Жүйеге кіруді жалғастыруға болады, бірақ кілт сақинасының құлпы ашылғанша қауіпсіз таңбалауыш қоймасы қолжетімсіз болуы мүмкін.';
 
   @override
-  String get ok => 'OK';
+  String get ok => 'Жарайды';
 
   @override
-  String get settingsAppearanceTheme => 'App Theme';
+  String get settingsAppearanceTheme => 'Қолданба тақырыбы';
 
   @override
   String get settingsAppearanceThemeSubtitle =>
-      'Switch between Moonfin and Neon Pulse without restarting the app';
+      'Қолданбаны қайта іске қоспай, Moonfin және Neon Pulse арасында ауысыңыз';
 
   @override
-  String get themeMoonfin => 'Moonfin';
+  String get themeMoonfin => 'Ай жүзі';
 
   @override
-  String get themeMoonfinSubtitle =>
-      'Current Moonfin look you\'ve all come to love';
+  String get themeMoonfinSubtitle => 'Ағымдағы Moonfin келбеті бәріңізге ұнады';
 
   @override
-  String get themeNeonPulse => 'Neon Pulse';
+  String get themeNeonPulse => 'Неон импульсі';
 
   @override
   String get themeNeonPulseSubtitle =>
-      'Synthwave styling with magenta glow, cyan text, and stronger chrome contrast';
+      'Күлгін түсті жарқыл, көгілдір мәтін және күшті хром контрастымен Synthwave стилі';
 
   @override
   String get embyConnectSignInSubtitle =>
-      'Sign in with your Emby Connect account';
+      'Emby Connect есептік жазбасымен кіріңіз';
 
   @override
-  String get emailOrUsername => 'Email or Username';
+  String get emailOrUsername => 'Электрондық пошта немесе пайдаланушы аты';
 
   @override
-  String get selectAServer => 'Select a Server';
+  String get selectAServer => 'Серверді таңдаңыз';
 
   @override
-  String get tryAgain => 'Try Again';
+  String get tryAgain => 'Қайтадан байқап көріңіз';
 
   @override
   String get noLinkedServers =>
-      'No servers linked to this Emby Connect account';
+      'Осы Emby Connect тіркелгісімен байланыстырылған серверлер жоқ';
 
   @override
   String get invalidEmbyConnectCredentials =>
-      'Invalid Emby Connect credentials';
+      'Жарамсыз Emby Connect тіркелгі деректері';
 
   @override
   String get invalidEmbyConnectLogin =>
-      'Invalid Emby Connect username or password';
+      'Жарамсыз Emby Connect пайдаланушы аты немесе құпия сөз';
 
   @override
   String get embyConnectExchangeNotSupported =>
-      'Server does not support Emby Connect exchange';
+      'Сервер Emby Connect алмасуын қолдамайды';
 
   @override
   String get embyConnectNetworkError =>
-      'Network error while contacting Emby Connect or the selected server';
+      'Emby Connect немесе таңдалған сервермен байланысу кезінде желі қатесі';
 
   @override
-  String get loadingLinkedServers => 'Loading linked servers...';
+  String get loadingLinkedServers => 'Байланыстырылған серверлер жүктелуде...';
 
   @override
-  String get connectingToServerEllipsis => 'Connecting to server...';
+  String get connectingToServerEllipsis => 'Серверге қосылуда...';
 
   @override
-  String get noReachableAddress => 'No reachable address provided';
+  String get noReachableAddress => 'Қолжетімді мекенжай көрсетілмеген';
 
   @override
   String get invalidServerExchangeResponse =>
-      'Invalid response from server exchange endpoint';
+      'Сервер алмасудың соңғы нүктесінен жарамсыз жауап';
 
   @override
   String unableToConnectTo(String target) {
@@ -195,81 +197,83 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get exitApp => 'Exit Moonfin?';
+  String get exitApp => 'Moonfin шығу керек пе?';
 
   @override
-  String get exitAppConfirmation => 'Are you sure you want to exit?';
+  String get exitAppConfirmation => 'Шығыңыз келетініне сенімдісіз бе?';
 
   @override
-  String get exit => 'Exit';
+  String get exit => 'Шығу';
 
   @override
-  String get noHomeRowsLoaded => 'No home rows could be loaded';
+  String get noHomeRowsLoaded => 'Ешбір негізгі жолдарды жүктеу мүмкін болмады';
 
   @override
   String get noHomeRowsHint =>
-      'Try refreshing or reducing active home sections.';
+      'Белсенді үй бөлімдерін жаңартып немесе азайтып көріңіз.';
 
   @override
-  String get retryHomeRows => 'Retry Home Rows';
+  String get retryHomeRows => 'Басты жолдарды қайталап көріңіз';
 
   @override
-  String get guide => 'Guide';
+  String get guide => 'Гид';
 
   @override
-  String get recordings => 'Recordings';
+  String get recordings => 'Жазбалар';
 
   @override
-  String get schedule => 'Schedule';
+  String get schedule => 'Кесте';
 
   @override
-  String get series => 'Series';
+  String get series => 'Сериялар';
 
   @override
-  String get noItemsFound => 'No items found';
+  String get noItemsFound => 'Ешбір элемент табылмады';
 
   @override
-  String get home => 'Home';
+  String get home => 'Үй';
 
   @override
-  String get browseAll => 'Browse All';
+  String get browseAll => 'Барлығын шолу';
 
   @override
-  String get genres => 'Genres';
+  String get genres => 'Жанрлар';
 
   @override
-  String get collectionPlaceholder => 'Collection items will appear here';
+  String get collectionPlaceholder =>
+      'Жинақ элементтері осы жерде пайда болады';
 
   @override
-  String get browseByLetter => 'Browse by Letter';
+  String get browseByLetter => 'Хат бойынша шолу';
 
   @override
   String get alphabeticalBrowsePlaceholder =>
-      'Alphabetical browse will appear here';
+      'Мұнда алфавиттік шолу пайда болады';
 
   @override
-  String get suggestions => 'Suggestions';
+  String get suggestions => 'Ұсыныстар';
 
   @override
-  String get suggestionsPlaceholder => 'Suggested items will appear here';
+  String get suggestionsPlaceholder =>
+      'Ұсынылған элементтер осы жерде пайда болады';
 
   @override
-  String get failedToLoadLibraries => 'Failed to load libraries';
+  String get failedToLoadLibraries => 'Кітапханалар жүктелмеді';
 
   @override
-  String get noLibrariesFound => 'No libraries found';
+  String get noLibrariesFound => 'Ешқандай кітапхана табылмады';
 
   @override
-  String get library => 'Library';
+  String get library => 'Кітапхана';
 
   @override
-  String get displaySettings => 'Display Settings';
+  String get displaySettings => 'Дисплей параметрлері';
 
   @override
-  String get allGenres => 'All Genres';
+  String get allGenres => 'Барлық жанрлар';
 
   @override
-  String get noGenresFound => 'No genres found';
+  String get noGenresFound => 'Жанрлар табылмады';
 
   @override
   String failedToLoadFolderError(String error) {
@@ -277,7 +281,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get thisFolderIsEmpty => 'This folder is empty';
+  String get thisFolderIsEmpty => 'Бұл қалта бос';
 
   @override
   String itemCountLabel(int count) {
@@ -285,16 +289,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadFavorites => 'Failed to load favorites';
+  String get failedToLoadFavorites => 'Таңдаулылар жүктелмеді';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Қайталап көріңіз';
 
   @override
-  String get noFavoritesYet => 'No favorites yet';
+  String get noFavoritesYet => 'Таңдаулылар әлі жоқ';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Таңдаулылар';
 
   @override
   String totalCountItems(int count) {
@@ -302,40 +306,40 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get continuing => 'Continuing';
+  String get continuing => 'Жалғастыруда';
 
   @override
-  String get ended => 'Ended';
+  String get ended => 'Аяқталды';
 
   @override
-  String get sortAndFilter => 'Sort & Filter';
+  String get sortAndFilter => 'Сұрыптау және сүзу';
 
   @override
-  String get type => 'Type';
+  String get type => 'Түр';
 
   @override
-  String get sortBy => 'Sort By';
+  String get sortBy => 'Бойынша сұрыптау';
 
   @override
-  String get display => 'Display';
+  String get display => 'Дисплей';
 
   @override
-  String get imageType => 'Image Type';
+  String get imageType => 'Кескін түрі';
 
   @override
-  String get posterSize => 'Poster Size';
+  String get posterSize => 'Постер өлшемі';
 
   @override
-  String get small => 'Small';
+  String get small => 'Кішкентай';
 
   @override
-  String get medium => 'Medium';
+  String get medium => 'Орташа';
 
   @override
-  String get large => 'Large';
+  String get large => 'Үлкен';
 
   @override
-  String get extraLarge => 'Extra Large';
+  String get extraLarge => 'Өте үлкен';
 
   @override
   String libraryGenresTitle(String name) {
@@ -343,37 +347,38 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get views => 'Views';
+  String get views => 'Көрулер';
 
   @override
-  String get albums => 'Albums';
+  String get albums => 'Альбомдар';
 
   @override
-  String get albumArtists => 'Album Artists';
+  String get albumArtists => 'Альбом әртістері';
 
   @override
-  String get artists => 'Artists';
+  String get artists => 'Суретшілер';
 
   @override
-  String get bookmarks => 'Bookmarks';
+  String get bookmarks => 'Бетбелгілер';
 
   @override
-  String get noSavedBookmarks => 'No saved bookmarks for this title yet.';
+  String get noSavedBookmarks =>
+      'Бұл тақырып үшін әлі сақталған бетбелгілер жоқ.';
 
   @override
-  String get openBook => 'Open Book';
+  String get openBook => 'Ашық кітап';
 
   @override
-  String get chapter => 'Chapter';
+  String get chapter => 'тарау';
 
   @override
-  String get page => 'Page';
+  String get page => 'Бет';
 
   @override
-  String get bookmark => 'Bookmark';
+  String get bookmark => 'Бетбелгі';
 
   @override
-  String get justNow => 'Just now';
+  String get justNow => 'Жаңа ғана';
 
   @override
   String minutesAgo(int count) {
@@ -391,34 +396,34 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get discoverySubjects => 'Discovery Subjects';
+  String get discoverySubjects => 'Ашу тақырыптары';
 
   @override
   String get pickDiscoverySubjects =>
-      'Pick which subject feeds to show in Discover.';
+      'Discover қолданбасында көрсетілетін тақырып арналарын таңдаңыз.';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'Қолдану';
 
   @override
-  String get openLink => 'Open Link';
+  String get openLink => 'Сілтемені ашу';
 
   @override
-  String get scanWithYourPhone => 'Scan with your phone';
+  String get scanWithYourPhone => 'Телефонмен сканерлеңіз';
 
   @override
-  String get audiobookGenres => 'Audiobook Genres';
+  String get audiobookGenres => 'Аудиокітап жанрлары';
 
   @override
   String get pickAudiobookGenres =>
-      'Pick which genres to show in Audiobook Discover.';
+      'Аудиокітапты табуда көрсетілетін жанрларды таңдаңыз.';
 
   @override
-  String get discoverAudiobooks => 'Discover Audiobooks';
+  String get discoverAudiobooks => 'Аудиокітаптарды ашыңыз';
 
   @override
   String get librivoxDescription =>
-      'Popular public domain titles from LibriVox.';
+      'LibriVox ұсынған танымал қоғамдық домен атаулары.';
 
   @override
   String titlesCount(int count) {
@@ -426,84 +431,85 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get scrollLeft => 'Scroll left';
+  String get scrollLeft => 'Солға айналдырыңыз';
 
   @override
-  String get scrollRight => 'Scroll right';
+  String get scrollRight => 'Оңға айналдырыңыз';
 
   @override
-  String get couldNotLoadGenre => 'Could not load this genre right now.';
+  String get couldNotLoadGenre => 'Дәл қазір бұл жанрды жүктеу мүмкін емес.';
 
   @override
-  String get continueReading => 'Continue Reading';
+  String get continueReading => 'Оқуды жалғастыру';
 
   @override
-  String get savedHighlights => 'Saved Highlights';
+  String get savedHighlights => 'Сақталған ерекшеліктер';
 
   @override
-  String get continueListening => 'Continue Listening';
+  String get continueListening => 'Тыңдауды жалғастыру';
 
   @override
-  String get listen => 'Listen';
+  String get listen => 'Тыңда';
 
   @override
-  String get resume => 'Resume';
+  String get resume => 'Резюме';
 
   @override
-  String get failedToLoadLibrary => 'Failed to load library';
+  String get failedToLoadLibrary => 'Кітапхана жүктелмеді';
 
   @override
-  String get popularNow => 'Popular Now';
+  String get popularNow => 'Қазір танымал';
 
   @override
-  String get savedForLater => 'Saved For Later';
+  String get savedForLater => 'Кейінірек үшін сақталды';
 
   @override
-  String get topListens => 'Top Listens';
+  String get topListens => 'Үздік тыңдаушылар';
 
   @override
-  String get unreadDiscoveries => 'Unread Discoveries';
+  String get unreadDiscoveries => 'Оқылмаған жаңалықтар';
 
   @override
-  String get pickUpAgain => 'Pick Up Again';
+  String get pickUpAgain => 'Қайтадан алыңыз';
 
   @override
   String get bookHighlightsDescription =>
-      'Your books with highlights, favorites, or reading progress.';
+      'Маңызды жерлері, таңдаулылары немесе оқылу барысы бар кітаптарыңыз.';
 
   @override
-  String get handPickedFromLibrary => 'Hand-picked from your library.';
+  String get handPickedFromLibrary => 'Кітапханаңыздан таңдалған.';
 
   @override
   String get handPickedFromListeningQueue =>
-      'Hand-picked from your listening queue.';
+      'Тыңдау кезегінен қолмен таңдалды.';
 
   @override
   String get booksWithHighlights =>
-      'Books with highlights, favorites, or reading progress.';
+      'Маңызды жерлері, таңдаулылары немесе оқылу барысы бар кітаптар.';
 
   @override
-  String get jumpBackNarration =>
-      'Jump back into narration without hunting for your place.';
+  String get jumpBackNarration => 'Орныңызды іздемей, әңгімеге қайта оралыңыз.';
 
   @override
-  String get unreadBooksReady => 'Unread books ready for the next quiet hour.';
+  String get unreadBooksReady =>
+      'Оқылмаған кітаптар келесі тыныш сағатқа дайын.';
 
   @override
   String get quickAccessFavorites =>
-      'Quick access to the books you keep coming back to.';
+      'Қайта оралатын кітаптарға жылдам қол жеткізу.';
 
   @override
-  String get searchAudiobooks => 'Search audiobooks';
+  String get searchAudiobooks => 'Аудиокітаптарды іздеу';
 
   @override
-  String get searchYourLibrary => 'Search your library';
+  String get searchYourLibrary => 'Кітапханаңызды іздеңіз';
 
   @override
-  String get pickUpStory => 'Pick up the story where you left off';
+  String get pickUpStory => 'Әңгімені тоқтаған жерден жалғастырыңыз';
 
   @override
-  String get savedPlacesChapters => 'Your saved places and unfinished chapters';
+  String get savedPlacesChapters =>
+      'Сақталған орындарыңыз бен аяқталмаған тарауларыңыз';
 
   @override
   String authorsCount(int count) {
@@ -521,16 +527,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get readyWhenYouAre => 'Ready when you are';
+  String get readyWhenYouAre => 'Бар кезде дайын';
 
   @override
-  String get details => 'Details';
+  String get details => 'Мәліметтер';
 
   @override
-  String get listeningRoom => 'Listening Room';
+  String get listeningRoom => 'Тыңдау бөлмесі';
 
   @override
-  String get bookmarksAndProgress => 'Bookmarks & Progress';
+  String get bookmarksAndProgress => 'Бетбелгілер және орындалу барысы';
 
   @override
   String titlesArrangedForBrowsing(int count) {
@@ -538,36 +544,36 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get titles => 'Titles';
+  String get titles => 'Атаулар';
 
   @override
-  String get allTitles => 'All Titles';
+  String get allTitles => 'Барлық тақырыптар';
 
   @override
-  String get authors => 'Authors';
+  String get authors => 'Авторлар';
 
   @override
-  String get browseByAuthor => 'Browse By Author';
+  String get browseByAuthor => 'Авторы бойынша шолу';
 
   @override
-  String get browseByGenre => 'Browse By Genre';
+  String get browseByGenre => 'Жанр бойынша шолу';
 
   @override
-  String get discover => 'Discover';
+  String get discover => 'Ашу';
 
   @override
   String get trendingTitlesOpenLibrary =>
-      'Trending titles by subject from Open Library.';
+      'Open Library тақырыбы бойынша танымал тақырыптар.';
 
   @override
-  String get noBookmarkedItems => 'No bookmarked items yet';
+  String get noBookmarkedItems => 'Әлі бетбелгі қойылған элементтер жоқ';
 
   @override
   String get nothingMatchesSection =>
-      'Nothing matches this section yet. Try another tab or come back after the library sync finishes.';
+      'Бұл бөлімге әлі ештеңе сәйкес келмейді. Басқа қойындыны қолданып көріңіз немесе кітапхана синхрондауы аяқталғаннан кейін қайта оралыңыз.';
 
   @override
-  String get audiobooks => 'Audiobooks';
+  String get audiobooks => 'Аудиокітаптар';
 
   @override
   String noLabelFound(String label) {
@@ -575,71 +581,71 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get folder => 'Folder';
+  String get folder => 'Қалта';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'Сүзгілер';
 
   @override
-  String get readingStatus => 'Reading Status';
+  String get readingStatus => 'Оқу күйі';
 
   @override
-  String get playedStatus => 'Played Status';
+  String get playedStatus => 'Ойналған күй';
 
   @override
-  String get readStatus => 'Read';
+  String get readStatus => 'Оқы';
 
   @override
-  String get watched => 'Watched';
+  String get watched => 'Қаралған';
 
   @override
-  String get unread => 'Unread';
+  String get unread => 'Оқылмаған';
 
   @override
-  String get unwatched => 'Unwatched';
+  String get unwatched => 'Қаралмаған';
 
   @override
-  String get seriesStatus => 'Series Status';
+  String get seriesStatus => 'Серия күйі';
 
   @override
-  String get allLibraries => 'All Libraries';
+  String get allLibraries => 'Барлық кітапханалар';
 
   @override
-  String get books => 'Books';
+  String get books => 'Кітаптар';
 
   @override
-  String get author => 'Author';
+  String get author => 'Автор';
 
   @override
-  String get unknownAuthor => 'Unknown Author';
+  String get unknownAuthor => 'Белгісіз автор';
 
   @override
-  String get uncategorized => 'Uncategorized';
+  String get uncategorized => 'Санатсыз';
 
   @override
-  String get overview => 'Overview';
+  String get overview => 'Шолу';
 
   @override
   String get noLibrivoxDescription =>
-      'No description provided by LibriVox for this title yet.';
+      'Бұл тақырып үшін LibriVox әлі сипаттама бермеген.';
 
   @override
-  String get readers => 'Readers';
+  String get readers => 'Оқырмандар';
 
   @override
-  String get openLinks => 'Open Links';
+  String get openLinks => 'Сілтемелерді ашу';
 
   @override
-  String get librivoxPage => 'LibriVox Page';
+  String get librivoxPage => 'LibriVox беті';
 
   @override
-  String get internetArchive => 'Internet Archive';
+  String get internetArchive => 'Интернет мұрағаты';
 
   @override
-  String get rssFeed => 'RSS Feed';
+  String get rssFeed => 'RSS арнасы';
 
   @override
-  String get downloadZip => 'Download Zip';
+  String get downloadZip => 'Zip жүктеп алыңыз';
 
   @override
   String sectionCountLabel(int count) {
@@ -653,13 +659,13 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get noOpenLibraryOverview =>
-      'No overview available from Open Library for this title yet.';
+      'Бұл тақырып үшін Open Library шолу әлі жоқ.';
 
   @override
-  String get subjects => 'Subjects';
+  String get subjects => 'Тақырыптар';
 
   @override
-  String get all => 'All';
+  String get all => 'Барлығы';
 
   @override
   String booksCount(int count) {
@@ -667,10 +673,11 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get couldNotLoadSubject => 'Could not load this subject right now.';
+  String get couldNotLoadSubject =>
+      'Бұл тақырыпты дәл қазір жүктеу мүмкін емес.';
 
   @override
-  String get audiobookDetails => 'Audiobook Details';
+  String get audiobookDetails => 'Аудиокітап туралы мәліметтер';
 
   @override
   String authorsCountTitle(int count) {
@@ -689,83 +696,89 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get trackList => 'Track List';
+  String get trackList => 'Трек тізімі';
 
   @override
-  String get itemListPlaceholder => 'Item list will appear here';
+  String get itemListPlaceholder => 'Элемент тізімі осы жерде пайда болады';
 
   @override
-  String get favoriteTracksPlaceholder => 'Favorite tracks will appear here';
+  String get favoriteTracksPlaceholder =>
+      'Таңдаулы тректер осы жерде пайда болады';
 
   @override
-  String get failedToLoad => 'Failed to load';
+  String get failedToLoad => 'Жүктелмеді';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Жою';
 
   @override
-  String get save => 'Save';
+  String get save => 'Сақтау';
 
   @override
-  String get moreLikeThis => 'More Like This';
+  String get moreLikeThis => 'Осыған ұқсас';
 
   @override
-  String get castAndCrew => 'Cast & Crew';
+  String get castAndCrew => 'Рөлдер және түсірілім тобы';
 
   @override
-  String get collection => 'Collection';
+  String get collection => 'Жинақ';
 
   @override
-  String get episodes => 'Episodes';
+  String get episodes => 'Эпизодтар';
 
   @override
-  String get nextUp => 'Next Up';
+  String get nextUp => 'Келесі';
 
   @override
-  String get seasons => 'Seasons';
+  String get seasons => 'Жыл мезгілдері';
 
   @override
-  String get chapters => 'Chapters';
+  String get chapters => 'тараулар';
 
   @override
-  String get features => 'Features';
+  String get features => 'Ерекше өзгешеліктері';
 
   @override
-  String get movies => 'Movies';
+  String get movies => 'Фильмдер';
 
   @override
-  String get other => 'Other';
+  String get other => 'Басқа';
 
   @override
-  String get discography => 'Discography';
+  String get discography => 'Дискография';
 
   @override
-  String get similarArtists => 'Similar Artists';
+  String get similarArtists => 'Ұқсас суретшілер';
 
   @override
-  String get tableOfContents => 'Table of Contents';
+  String get tableOfContents => 'Мазмұны';
 
   @override
-  String get tracklist => 'Tracklist';
+  String get tracklist => 'Трек тізімі';
 
   @override
-  String get biography => 'Biography';
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
 
   @override
-  String get authorDetails => 'Author Details';
+  String get biography => 'Өмірбаяны';
 
   @override
-  String get noOverviewAvailable => 'No overview available for this title yet.';
+  String get authorDetails => 'Автор туралы мәліметтер';
 
   @override
-  String get noBiographyAvailable => 'No biography available for this author.';
+  String get noOverviewAvailable => 'Бұл тақырыпқа шолу әлі жоқ.';
 
   @override
-  String get noBooksFound => 'No books found for this author.';
+  String get noBiographyAvailable => 'Бұл автордың өмірбаяны жоқ.';
+
+  @override
+  String get noBooksFound => 'Бұл авторға арналған кітаптар табылмады.';
 
   @override
   String get unableToLoadAuthorDetails =>
-      'Unable to load author details right now.';
+      'Дәл қазір автор туралы мәліметтерді жүктеу мүмкін емес.';
 
   @override
   String published(int year) {
@@ -773,7 +786,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get publicationDateUnknown => 'Publication date unknown';
+  String get publicationDateUnknown => 'Жарияланатын күні белгісіз';
 
   @override
   String seasonCount(int count) {
@@ -792,13 +805,13 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get view => 'View';
+  String get view => 'Көру';
 
   @override
-  String get resumeReading => 'Resume Reading';
+  String get resumeReading => 'Оқуды жалғастыру';
 
   @override
-  String get read => 'Read';
+  String get read => 'Оқы';
 
   @override
   String resumeFrom(String position) {
@@ -806,97 +819,98 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get play => 'Play';
+  String get play => 'Ойнау';
 
   @override
-  String get startOver => 'Start Over';
+  String get startOver => 'Қайтадан бастау';
 
   @override
-  String get restart => 'Restart';
+  String get restart => 'Қайтадан қосу';
 
   @override
-  String get readOffline => 'Read Offline';
+  String get readOffline => 'Офлайн оқу';
 
   @override
-  String get playOffline => 'Play Offline';
+  String get playOffline => 'Офлайн ойнаңыз';
 
   @override
-  String get audio => 'Audio';
+  String get audio => 'Аудио';
 
   @override
-  String get subtitles => 'Subtitles';
+  String get subtitles => 'Субтитрлер';
 
   @override
-  String get version => 'Version';
+  String get version => 'Нұсқа';
 
   @override
   String get cast => 'Cast';
 
   @override
-  String get trailer => 'Trailer';
+  String get trailer => 'Трейлер';
 
   @override
-  String get finished => 'Finished';
+  String get finished => 'Аяқталды';
 
   @override
-  String get favorited => 'Favorited';
+  String get favorited => 'Таңдаулы';
 
   @override
-  String get favorite => 'Favorite';
+  String get favorite => 'Таңдаулы';
 
   @override
-  String get playlist => 'Playlist';
+  String get playlist => 'Ойнату тізімі';
 
   @override
-  String get downloaded => 'Downloaded';
+  String get downloaded => 'Жүктеп алынды';
 
   @override
-  String get downloadAll => 'Download All';
+  String get downloadAll => 'Барлығын жүктеп алыңыз';
 
   @override
-  String get download => 'Download';
+  String get download => 'Жүктеп алу';
 
   @override
-  String get deleteDownloaded => 'Delete Downloaded';
+  String get deleteDownloaded => 'Жүктеп алынғанды ​​жою';
 
   @override
-  String get goToSeries => 'Go to Series';
+  String get goToSeries => 'Серияға өтіңіз';
 
   @override
-  String get editMetadata => 'Edit Metadata';
+  String get editMetadata => 'Метадеректерді өңдеу';
 
   @override
-  String get less => 'Less';
+  String get less => 'Аздау';
 
   @override
-  String get more => 'More';
+  String get more => 'Көбірек';
 
   @override
-  String get deleteItem => 'Delete Item';
+  String get deleteItem => 'Элементті жою';
 
   @override
-  String get deletePlaylist => 'Delete Playlist';
+  String get deletePlaylist => 'Ойнату тізімін жою';
 
   @override
-  String get deletePlaylistMessage => 'Delete this playlist from the server?';
+  String get deletePlaylistMessage =>
+      'Бұл ойнату тізімін серверден жою керек пе?';
 
   @override
-  String get deleteItemMessage => 'Delete this item from the server?';
+  String get deleteItemMessage => 'Бұл элементті серверден жою керек пе?';
 
   @override
-  String get failedToDeletePlaylist => 'Failed to delete playlist';
+  String get failedToDeletePlaylist => 'Ойнату тізімін жою мүмкін болмады';
 
   @override
-  String get failedToDeleteItem => 'Failed to delete item';
+  String get failedToDeleteItem => 'Элементті жою мүмкін болмады';
 
   @override
-  String get renamePlaylist => 'Rename Playlist';
+  String get renamePlaylist => 'Ойнату тізімінің атын өзгерту';
 
   @override
-  String get playlistName => 'Playlist name';
+  String get playlistName => 'Ойнату тізімінің аты';
 
   @override
-  String get deleteDownloadedAlbum => 'Delete Downloaded Album';
+  String get deleteDownloadedAlbum => 'Жүктеп алынған альбомды жою';
 
   @override
   String deleteDownloadedTracksMessage(String title) {
@@ -904,14 +918,14 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get downloadedTracksDeleted => 'Downloaded tracks deleted';
+  String get downloadedTracksDeleted => 'Жүктеп алынған тректер жойылды';
 
   @override
   String get downloadedTracksDeleteFailed =>
-      'Some downloaded tracks could not be deleted';
+      'Кейбір жүктеп алынған тректерді жою мүмкін болмады';
 
   @override
-  String get noTracksLoaded => 'No tracks loaded';
+  String get noTracksLoaded => 'Жүктелген тректер жоқ';
 
   @override
   String noItemsLoaded(String itemLabel) {
@@ -929,10 +943,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get itemDeleted => 'Item deleted';
+  String get itemDeleted => 'Элемент жойылды';
 
   @override
-  String get noPlayableTrailerFound => 'No playable trailer found.';
+  String get noPlayableTrailerFound => 'Ойналатын трейлер табылмады.';
 
   @override
   String unsupportedBookFormat(String extension) {
@@ -940,26 +954,26 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get audioTrack => 'Audio Track';
+  String get audioTrack => 'Аудио трек';
 
   @override
-  String get subtitleTrack => 'Subtitle Track';
+  String get subtitleTrack => 'Субтитр жолы';
 
   @override
-  String get none => 'None';
+  String get none => 'Жоқ';
 
   @override
-  String get downloadSubtitlesLabel => 'Download subtitles...';
+  String get downloadSubtitlesLabel => 'Субтитрлерді жүктеп алу...';
 
   @override
   String get searchOpenSubtitlesPlugin =>
-      'Search using the OpenSubtitles plugin';
+      'OpenSubtitles плагинін пайдаланып іздеңіз';
 
   @override
-  String get downloadSubtitles => 'Download Subtitles';
+  String get downloadSubtitles => 'Субтитрлерді жүктеп алыңыз';
 
   @override
-  String get selectedSubtitleInvalid => 'The selected subtitle is invalid.';
+  String get selectedSubtitleInvalid => 'Таңдалған субтитр жарамсыз.';
 
   @override
   String subtitleDownloadedSelected(String name) {
@@ -968,7 +982,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get subtitleDownloadedPending =>
-      'Subtitle downloaded. It may take a moment to appear while Jellyfin refreshes the item.';
+      'Субтитр жүктеп алынды. Jellyfin элементті жаңартқанда пайда болуына біраз уақыт кетуі мүмкін.';
 
   @override
   String noRemoteSubtitlesFound(String language) {
@@ -976,7 +990,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get selectVersion => 'Select Version';
+  String get selectVersion => 'Нұсқа таңдаңыз';
 
   @override
   String versionNumber(int number) {
@@ -984,19 +998,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get downloadAllQuality => 'Download All — Quality';
+  String get downloadAllQuality => 'Барлығын жүктеп алу — сапалы';
 
   @override
-  String get downloadQuality => 'Download Quality';
+  String get downloadQuality => 'Жүктеп алу сапасы';
 
   @override
-  String get originalFileNoReencoding => 'Original file, no re-encoding';
+  String get originalFileNoReencoding => 'Түпнұсқа файл, қайта кодтау жоқ';
 
   @override
-  String get originalFilesNoReencoding => 'Original files, no re-encoding';
+  String get originalFilesNoReencoding => 'Түпнұсқа файлдар, қайта кодтау жоқ';
 
   @override
-  String get noEpisodesLoaded => 'No episodes loaded';
+  String get noEpisodesLoaded => 'Жүктелген эпизодтар жоқ';
 
   @override
   String downloadingItem(String name, String quality) {
@@ -1004,7 +1018,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get deleteDownloadedFiles => 'Delete Downloaded Files';
+  String get deleteDownloadedFiles => 'Жүктелген файлдарды жою';
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
@@ -1012,22 +1026,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get downloadedFilesDeleted => 'Downloaded files deleted';
+  String get downloadedFilesDeleted => 'Жүктеп алынған файлдар жойылды';
 
   @override
-  String get failedToDeleteFiles => 'Failed to delete files';
+  String get failedToDeleteFiles => 'Файлдарды жою мүмкін болмады';
 
   @override
-  String get deleteFiles => 'Delete Files';
+  String get deleteFiles => 'Файлдарды жою';
 
   @override
-  String get director => 'DIRECTOR';
+  String get director => 'ДИРЕКТОР';
 
   @override
-  String get writers => 'WRITERS';
+  String get writers => 'ЖАЗУШЫЛАР';
 
   @override
-  String get studio => 'STUDIO';
+  String get studio => 'СТУДИЯ';
 
   @override
   String studioMoreCount(int count) {
@@ -1092,13 +1106,13 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get showLess => 'Show Less';
+  String get showLess => 'Аз көрсету';
 
   @override
-  String get readMore => 'Read More';
+  String get readMore => 'Толығырақ оқу';
 
   @override
-  String get shuffle => 'Shuffle';
+  String get shuffle => 'Араластыру';
 
   @override
   String downloadsCount(int count) {
@@ -1106,7 +1120,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get perfectMatch => 'Perfect match';
+  String get perfectMatch => 'Керемет сәйкестік';
 
   @override
   String channelsCount(int count) {
@@ -1114,10 +1128,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get mono => 'Mono';
+  String get mono => 'Моно';
 
   @override
-  String get stereo => 'Stereo';
+  String get stereo => 'Стерео';
 
   @override
   String remoteSubtitlePermissionError(String action) {
@@ -1150,19 +1164,21 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get deleteSeasonFiles => 'all downloaded episodes in this season';
+  String get deleteSeasonFiles =>
+      'осы маусымдағы барлық жүктеп алынған эпизодтар';
 
   @override
-  String get stillWatching => 'Still Watching?';
+  String get stillWatching => 'Әлі қарайсыз ба?';
 
   @override
-  String get unableToLoadTrailerStream => 'Unable to load trailer stream.';
+  String get unableToLoadTrailerStream => 'Трейлер ағынын жүктеу мүмкін емес.';
 
   @override
-  String get trailerTimedOut => 'Trailer timed out while loading.';
+  String get trailerTimedOut =>
+      'Жүктеу кезінде трейлердің күту уақыты аяқталды.';
 
   @override
-  String get playbackFailedForTrailer => 'Playback failed for this trailer.';
+  String get playbackFailedForTrailer => 'Бұл трейлер ойнатылмады.';
 
   @override
   String photoCountOf(int current, int total) {
@@ -1171,7 +1187,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get castingUnavailableOffline =>
-      'Casting is unavailable during offline playback.';
+      'Офлайн ойнату кезінде трансляциялау мүмкін емес.';
 
   @override
   String castActionFailed(String label, String error) {
@@ -1189,16 +1205,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get deviceVolume => 'Device Volume';
+  String get deviceVolume => 'Құрылғының дыбыс деңгейі';
 
   @override
-  String get unavailable => 'Unavailable';
+  String get unavailable => 'Қолжетімсіз';
 
   @override
-  String get pause => 'Pause';
+  String get pause => 'Кідірту';
 
   @override
-  String get syncPosition => 'Sync Position';
+  String get syncPosition => 'Синхрондау орны';
 
   @override
   String stopCast(String label) {
@@ -1206,7 +1222,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get queueIsEmpty => 'Queue is empty';
+  String get queueIsEmpty => 'Кезек бос';
 
   @override
   String trackNumber(int number) {
@@ -1214,16 +1230,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get remotePlayback => 'Remote Playback';
+  String get remotePlayback => 'Қашықтан ойнату';
 
   @override
-  String get castingToGoogleCast => 'Casting to Google Cast';
+  String get castingToGoogleCast => 'Google Cast қызметіне трансляциялау';
 
   @override
-  String get castingViaAirPlay => 'Casting via AirPlay';
+  String get castingViaAirPlay => 'AirPlay арқылы трансляциялау';
 
   @override
-  String get castingViaDlna => 'Casting via DLNA';
+  String get castingViaDlna => 'DLNA арқылы трансляция';
 
   @override
   String secondsCount(int seconds) {
@@ -1231,10 +1247,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get longPressToUnlock => 'Long press to unlock';
+  String get longPressToUnlock => 'Құлыпты ашу үшін ұзақ басыңыз';
 
   @override
-  String get off => 'Off';
+  String get off => 'Өшірулі';
 
   @override
   String streamTypeFallback(String streamType, int number) {
@@ -1242,7 +1258,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get auto => 'Auto';
+  String get auto => 'Авто';
 
   @override
   String bitrateValueMbps(int mbps) {
@@ -1250,10 +1266,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get bitrateOverride => 'Bitrate Override';
+  String get bitrateOverride => 'Бит жылдамдығын қайта анықтау';
 
   @override
-  String get audioDelay => 'Audio Delay';
+  String get audioDelay => 'Дыбыс кідірісі';
 
   @override
   String delayMinusMs(int value) {
@@ -1266,49 +1282,49 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get subtitleDelay => 'Subtitle Delay';
+  String get subtitleDelay => 'Субтитрді кешіктіру';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'Қалпына келтіру';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Белгісіз';
 
   @override
-  String get playbackInformation => 'Playback Information';
+  String get playbackInformation => 'Ойнату туралы ақпарат';
 
   @override
-  String get playback => 'Playback';
+  String get playback => 'Ойнату';
 
   @override
-  String get playMethod => 'Play Method';
+  String get playMethod => 'Ойын әдісі';
 
   @override
-  String get directPlay => 'Direct Play';
+  String get directPlay => 'Тікелей ойнату';
 
   @override
-  String get directStream => 'Direct Stream';
+  String get directStream => 'Тікелей ағын';
 
   @override
-  String get transcoding => 'Transcoding';
+  String get transcoding => 'Транскодтау';
 
   @override
-  String get transcodeReasons => 'Transcode Reasons';
+  String get transcodeReasons => 'Транскодтың себептері';
 
   @override
-  String get player => 'Player';
+  String get player => 'Ойыншы';
 
   @override
-  String get container => 'Container';
+  String get container => 'Контейнер';
 
   @override
-  String get bitrate => 'Bitrate';
+  String get bitrate => 'Бит жылдамдығы';
 
   @override
-  String get video => 'Video';
+  String get video => 'Бейне';
 
   @override
-  String get resolution => 'Resolution';
+  String get resolution => 'Ажыратымдылық';
 
   @override
   String get hdr => 'HDR';
@@ -1317,28 +1333,28 @@ class AppLocalizationsKk extends AppLocalizations {
   String get codec => 'Codec';
 
   @override
-  String get videoBitrate => 'Video Bitrate';
+  String get videoBitrate => 'Бейне бит жылдамдығы';
 
   @override
-  String get track => 'Track';
+  String get track => 'Трек';
 
   @override
-  String get channels => 'Channels';
+  String get channels => 'Арналар';
 
   @override
-  String get audioBitrate => 'Audio Bitrate';
+  String get audioBitrate => 'Аудио бит жылдамдығы';
 
   @override
-  String get sampleRate => 'Sample Rate';
+  String get sampleRate => 'Үлгі жылдамдығы';
 
   @override
-  String get format => 'Format';
+  String get format => 'Формат';
 
   @override
-  String get external => 'External';
+  String get external => 'Сыртқы';
 
   @override
-  String get embedded => 'Embedded';
+  String get embedded => 'Ендірілген';
 
   @override
   String castSessionError(String protocol) {
@@ -1352,7 +1368,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get epubUnavailableOnPlatform =>
-      'EPUB rendering in-app is not available on this platform yet.';
+      'Қолданбада EPUB көрсету бұл платформада әлі қолжетімді емес.';
 
   @override
   String formatCannotRenderInApp(String extension) {
@@ -1361,10 +1377,11 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get embeddedRenderingUnavailable =>
-      'Embedded document rendering is unavailable on this platform.';
+      'Бұл платформада ендірілген құжатты көрсету мүмкін емес.';
 
   @override
-  String get couldNotOpenExternalViewer => 'Could not open external viewer.';
+  String get couldNotOpenExternalViewer =>
+      'Сыртқы қарау құралын ашу мүмкін болмады.';
 
   @override
   String failedToOpenInAppReader(String error) {
@@ -1383,10 +1400,10 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get noBookmarksYet =>
-      'No bookmarks yet.\nTap the bookmark icon while reading to save your position.';
+      'Әлі бетбелгілер жоқ.\nОрныңызды сақтау үшін оқу кезінде бетбелгі белгішесін түртіңіз.';
 
   @override
-  String get noTableOfContentsAvailable => 'No table of contents available';
+  String get noTableOfContentsAvailable => 'Мазмұны жоқ';
 
   @override
   String pageLabel(int number) {
@@ -1394,10 +1411,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get position => 'Position';
+  String get position => 'Позиция';
 
   @override
-  String get bookReader => 'Book Reader';
+  String get bookReader => 'Кітап оқу құралы';
 
   @override
   String formatExtension(String extension) {
@@ -1410,22 +1427,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get updating => 'Updating...';
+  String get updating => 'Жаңарту...';
 
   @override
-  String get markUnread => 'Mark Unread';
+  String get markUnread => 'Оқылмаған деп белгілеу';
 
   @override
-  String get markAsRead => 'Mark as Read';
+  String get markAsRead => 'Оқылған деп белгілеңіз';
 
   @override
-  String get reloadReader => 'Reload Reader';
+  String get reloadReader => 'Оқу құралын қайта жүктеңіз';
 
   @override
-  String get noPagesFound => 'No pages found.';
+  String get noPagesFound => 'Ешбір бет табылмады.';
 
   @override
-  String get failedToDecodePageImage => 'Failed to decode page image.';
+  String get failedToDecodePageImage => 'Бет кескінін декодтау мүмкін болмады.';
 
   @override
   String resetZoom(String zoom) {
@@ -1433,22 +1450,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get singlePage => 'Single Page';
+  String get singlePage => 'Бір бет';
 
   @override
-  String get twoPageSpread => 'Two-Page Spread';
+  String get twoPageSpread => 'Екі беттік тарату';
 
   @override
-  String get addBookmark => 'Add Bookmark';
+  String get addBookmark => 'Бетбелгі қосу';
 
   @override
-  String get bookmarksEllipsis => 'Bookmarks...';
+  String get bookmarksEllipsis => 'Бетбелгілер...';
 
   @override
-  String get markedAsRead => 'Marked as read';
+  String get markedAsRead => 'Оқылған деп белгіленген';
 
   @override
-  String get markedAsUnread => 'Marked as unread';
+  String get markedAsUnread => 'Оқылмаған деп белгіленді';
 
   @override
   String failedToUpdateReadState(String error) {
@@ -1456,31 +1473,33 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get themeSystem => 'Theme: System';
+  String get themeSystem => 'Тақырыбы: Жүйе';
 
   @override
-  String get themeLight => 'Theme: Light';
+  String get themeLight => 'Тақырыбы: Жарық';
 
   @override
-  String get themeDark => 'Theme: Dark';
+  String get themeDark => 'Тақырыбы: Қараңғы';
 
   @override
-  String get themeSepia => 'Theme: Sepia';
+  String get themeSepia => 'Тақырыбы: Сепия';
 
   @override
-  String get invertColorsFixedLayout => 'Invert Colors (fixed layout)';
+  String get invertColorsFixedLayout =>
+      'Түстерді инверттеу (бекітілген орналасу)';
 
   @override
-  String get invertColorsPdf => 'Invert Colors (PDF)';
+  String get invertColorsPdf => 'Түстерді өзгерту (PDF)';
 
   @override
-  String get preparingInAppReader => 'Preparing in-app reader...';
+  String get preparingInAppReader => 'Қолданбадағы оқу құралы дайындалуда...';
 
   @override
-  String get pdfDataNotAvailable => 'PDF data not available.';
+  String get pdfDataNotAvailable => 'PDF деректері қолжетімді емес.';
 
   @override
-  String get readerFallbackModeActive => 'Reader fallback mode active';
+  String get readerFallbackModeActive =>
+      'Оқырманның қалпына келтіру режимі белсенді';
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
@@ -1489,37 +1508,37 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get reloadReaderPlatformHint =>
-      'Use Reload Reader after switching to a supported platform target (Android, iOS, macOS).';
+      'Қолдау көрсетілетін платформа мақсатына (Android, iOS, macOS) ауысқаннан кейін Reload Reader бағдарламасын пайдаланыңыз.';
 
   @override
-  String get openExternally => 'Open Externally';
+  String get openExternally => 'Сырттай ашу';
 
   @override
-  String get noEpubChaptersFound => 'No EPUB chapters found.';
+  String get noEpubChaptersFound => 'EPUB тараулары табылмады.';
 
   @override
-  String get readerNotReady => 'Reader not ready.';
+  String get readerNotReady => 'Оқырман дайын емес.';
 
   @override
-  String get seriesRecordings => 'Series Recordings';
+  String get seriesRecordings => 'Сериялық жазбалар';
 
   @override
-  String get now => 'Now';
+  String get now => 'Қазір';
 
   @override
-  String get sports => 'Sports';
+  String get sports => 'Спорт';
 
   @override
-  String get news => 'News';
+  String get news => 'Жаңалықтар';
 
   @override
-  String get kids => 'Kids';
+  String get kids => 'Балалар';
 
   @override
-  String get premiere => 'Premiere';
+  String get premiere => 'Премьера';
 
   @override
-  String get guideTimeline => 'Guide Timeline';
+  String get guideTimeline => 'Нұсқаулық хронологиясы';
 
   @override
   String failedToLoadGuide(String error) {
@@ -1527,35 +1546,35 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get noChannelsFound => 'No channels found';
+  String get noChannelsFound => 'Ешбір арна табылмады';
 
   @override
-  String get liveBadge => 'LIVE';
+  String get liveBadge => 'ТІКЕЛЕЙ ЭФИР';
 
   @override
-  String get movie => 'Movie';
+  String get movie => 'Фильм';
 
   @override
-  String get removedFromFavoriteChannels => 'Removed from favorite channels';
+  String get removedFromFavoriteChannels => 'Таңдаулы арналардан жойылды';
 
   @override
-  String get addedToFavoriteChannels => 'Added to favorite channels';
+  String get addedToFavoriteChannels => 'Таңдаулы арналарға қосылды';
 
   @override
   String get failedToUpdateFavoriteChannel =>
-      'Failed to update favorite channel';
+      'Таңдаулы арнаны жаңарту мүмкін болмады';
 
   @override
-  String get unfavoriteChannel => 'Unfavorite Channel';
+  String get unfavoriteChannel => 'Таңдаулы емес арна';
 
   @override
-  String get favoriteChannel => 'Favorite Channel';
+  String get favoriteChannel => 'Сүйікті арна';
 
   @override
-  String get watch => 'Watch';
+  String get watch => 'Қарау';
 
   @override
-  String get close => 'Close';
+  String get close => 'Жабу';
 
   @override
   String failedToPlayChannel(String name) {
@@ -1563,25 +1582,25 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadRecordings => 'Failed to load recordings';
+  String get failedToLoadRecordings => 'Жазбалар жүктелмеді';
 
   @override
-  String get scheduledInNext24Hours => 'Scheduled in Next 24 Hours';
+  String get scheduledInNext24Hours => 'Келесі 24 сағатта жоспарланған';
 
   @override
-  String get recentRecordings => 'Recent Recordings';
+  String get recentRecordings => 'Соңғы жазбалар';
 
   @override
-  String get tvSeries => 'TV Series';
+  String get tvSeries => 'Телехикая';
 
   @override
-  String get failedToLoadSchedule => 'Failed to load schedule';
+  String get failedToLoadSchedule => 'Кесте жүктелмеді';
 
   @override
-  String get noScheduledRecordings => 'No scheduled recordings';
+  String get noScheduledRecordings => 'Жоспарланған жазбалар жоқ';
 
   @override
-  String get cancelRecording => 'Cancel Recording?';
+  String get cancelRecording => 'Жазуды тоқтату керек пе?';
 
   @override
   String cancelScheduledRecordingOf(String name) {
@@ -1589,25 +1608,26 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get no => 'No';
+  String get no => 'Жоқ';
 
   @override
-  String get yesCancel => 'Yes, Cancel';
+  String get yesCancel => 'Иә, Бас тарту';
 
   @override
-  String get failedToCancelRecording => 'Failed to cancel recording';
+  String get failedToCancelRecording => 'Жазудан бас тарту мүмкін болмады';
 
   @override
-  String get failedToLoadSeriesRecordings => 'Failed to load series recordings';
+  String get failedToLoadSeriesRecordings => 'Сериялық жазбалар жүктелмеді';
 
   @override
-  String get noSeriesRecordings => 'No series recordings';
+  String get noSeriesRecordings => 'Сериялық жазбалар жоқ';
 
   @override
-  String get cancelSeriesRecording => 'Cancel Series Recording';
+  String get cancelSeriesRecording => 'Сериялық жазудан бас тарту';
 
   @override
-  String get cancelSeriesRecordingQuestion => 'Cancel Series Recording?';
+  String get cancelSeriesRecordingQuestion =>
+      'Сериялық жазудан бас тарту керек пе?';
 
   @override
   String stopRecordingName(String name) {
@@ -1616,13 +1636,13 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get failedToCancelSeriesRecording =>
-      'Failed to cancel series recording';
+      'Сериялық жазудан бас тарту мүмкін болмады';
 
   @override
-  String get searchThisLibrary => 'Search this library...';
+  String get searchThisLibrary => 'Осы кітапхананы іздеу...';
 
   @override
-  String get searchEllipsis => 'Search...';
+  String get searchEllipsis => 'Іздеу...';
 
   @override
   String noResultsForQuery(String query) {
@@ -1635,31 +1655,40 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get seerr => 'Seerr';
+  String get seerr => 'Көріпкел';
 
   @override
-  String get savedMedia => 'Saved Media';
+  String get seerrAccountType => 'Seerr тіркелгі түрі';
 
   @override
-  String get tvShows => 'TV Shows';
+  String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get music => 'Music';
+  String get localAccount => 'Жергілікті';
 
   @override
-  String get musicAlbums => 'Music Albums';
+  String get savedMedia => 'Сақталған медиа';
 
   @override
-  String get noMediaInFilter => 'No media in this filter';
+  String get tvShows => 'Телешоулар';
 
   @override
-  String get noDownloadedMediaYet => 'No downloaded media yet';
+  String get music => 'Музыка';
 
   @override
-  String get browseLibrary => 'Browse Library';
+  String get musicAlbums => 'Музыкалық альбомдар';
 
   @override
-  String get deleteDownload => 'Delete Download';
+  String get noMediaInFilter => 'Бұл сүзгіде медиа жоқ';
+
+  @override
+  String get noDownloadedMediaYet => 'Жүктеп алынған медиа әлі жоқ';
+
+  @override
+  String get browseLibrary => 'Кітапхананы шолу';
+
+  @override
+  String get deleteDownload => 'Жүктеп алуды жою';
 
   @override
   String removeItemAndFiles(String name) {
@@ -1672,10 +1701,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get album => 'Album';
+  String get album => 'Альбом';
 
   @override
-  String get playAlbum => 'Play Album';
+  String get playAlbum => 'Альбомды ойнату';
 
   @override
   String failedToLoadAlbum(String error) {
@@ -1688,16 +1717,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get season => 'Season';
+  String get season => 'Маусым';
 
   @override
-  String get errorLoadingEpisodes => 'Error loading episodes';
+  String get errorLoadingEpisodes => 'Эпизодтарды жүктеу қатесі';
 
   @override
-  String get noDownloadedEpisodes => 'No downloaded episodes';
+  String get noDownloadedEpisodes => 'Жүктеп алынған эпизодтар жоқ';
 
   @override
-  String get deleteEpisode => 'Delete Episode';
+  String get deleteEpisode => 'Эпизодты жою';
 
   @override
   String removeName(String name) {
@@ -1720,13 +1749,13 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get seriesNotFound => 'Series not found';
+  String get seriesNotFound => 'Серия табылмады';
 
   @override
-  String get errorLoadingSeries => 'Error loading series';
+  String get errorLoadingSeries => 'Серияларды жүктеу қатесі';
 
   @override
-  String get downloadedEpisodes => 'Downloaded Episodes';
+  String get downloadedEpisodes => 'Жүктеп алынған эпизодтар';
 
   @override
   String seasonNumber(int number) {
@@ -1739,10 +1768,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get specials => 'Specials';
+  String get specials => 'Ерекшеліктер';
 
   @override
-  String get deleteSeason => 'Delete Season';
+  String get deleteSeason => 'Маусымды жою';
 
   @override
   String deleteAllEpisodesInSeason(String season) {
@@ -1761,32 +1790,32 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get storageManagement => 'Storage Management';
+  String get storageManagement => 'Сақтауды басқару';
 
   @override
-  String get storageBreakdown => 'Storage Breakdown';
+  String get storageBreakdown => 'Жадтың бұзылуы';
 
   @override
-  String get downloadedItems => 'Downloaded Items';
+  String get downloadedItems => 'Жүктеп алынған элементтер';
 
   @override
-  String get storageLimit => 'Storage Limit';
+  String get storageLimit => 'Сақтау шегі';
 
   @override
-  String get noLimit => 'No limit';
+  String get noLimit => 'Шектеу жоқ';
 
   @override
-  String get deleteAllDownloads => 'Delete All Downloads';
+  String get deleteAllDownloads => 'Барлық жүктеулерді жою';
 
   @override
   String get deleteAllDownloadsWarning =>
-      'This will remove all downloaded media files and cannot be undone.';
+      'Бұл барлық жүктелген медиа файлдарды жояды және оны қайтару мүмкін емес.';
 
   @override
-  String get deleteAll => 'Delete All';
+  String get deleteAll => 'Барлығын жою';
 
   @override
-  String get deleteSelected => 'Delete Selected';
+  String get deleteSelected => 'Таңдалғанды ​​жою';
 
   @override
   String deleteSelectedCount(int count) {
@@ -1794,13 +1823,13 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get musicAndAudiobooks => 'Music & Audiobooks';
+  String get musicAndAudiobooks => 'Музыка және аудиокітаптар';
 
   @override
-  String get images => 'Images';
+  String get images => 'Суреттер';
 
   @override
-  String get database => 'Database';
+  String get database => 'Мәліметтер қоры';
 
   @override
   String ofStorageLimit(String limit) {
@@ -1808,81 +1837,84 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'Параметрлер';
 
   @override
-  String get authentication => 'Authentication';
+  String get authentication => 'Аутентификация';
 
   @override
-  String get autoLoginServerManagement => 'Auto login, server management';
+  String get autoLoginServerManagement =>
+      'Автоматты түрде кіру, серверді басқару';
 
   @override
-  String get pinCode => 'PIN Code';
+  String get pinCode => 'PIN коды';
 
   @override
-  String get setUpPinCodeProtection => 'Set up PIN code protection';
+  String get setUpPinCodeProtection => 'PIN кодты қорғауды орнатыңыз';
 
   @override
-  String get parentalControls => 'Parental Controls';
+  String get parentalControls => 'Ата-ана бақылауы';
 
   @override
-  String get contentRatingRestrictions => 'Content rating restrictions';
+  String get contentRatingRestrictions => 'Мазмұнды бағалауға шектеулер';
 
   @override
-  String get bitRateResolutionBehavior => 'Bitrate, resolution, behavior';
+  String get bitRateResolutionBehavior =>
+      'Бит жылдамдығы, ажыратымдылық, мінез-құлық';
 
   @override
-  String get languageSizeAppearance => 'Language, size, appearance';
+  String get languageSizeAppearance => 'Тілі, көлемі, сыртқы түрі';
 
   @override
-  String get qualityStorage => 'Quality, storage';
+  String get qualityStorage => 'Сапа, сақтау';
 
   @override
-  String get serverSyncAndPluginStatus => 'Server sync and plugin status';
+  String get serverSyncAndPluginStatus =>
+      'Серверді синхрондау және плагин күйі';
 
   @override
-  String get mediaRequestIntegration => 'Media request integration';
+  String get mediaRequestIntegration => 'Медиа сұранысты біріктіру';
 
   @override
-  String get switchServer => 'Switch Server';
+  String get switchServer => 'Серверді ауыстыру';
 
   @override
-  String get signOut => 'Sign Out';
+  String get signOut => 'Шығу';
 
   @override
-  String get versionLicenses => 'Version, licenses';
+  String get versionLicenses => 'Нұсқа, лицензиялар';
 
   @override
-  String get account => 'Account';
+  String get account => 'Есептік жазба';
 
   @override
-  String get signInAndSecurity => 'Sign-in and security';
+  String get signInAndSecurity => 'Жүйеге кіру және қауіпсіздік';
 
   @override
-  String get administration => 'Administration';
+  String get administration => 'Әкімшілік';
 
   @override
   String get serverSettingsUsersLibraries =>
-      'Server settings, users, libraries';
+      'Сервер параметрлері, пайдаланушылар, кітапханалар';
 
   @override
-  String get customization => 'Customization';
+  String get customization => 'Баптау';
 
   @override
-  String get themeAndLayout => 'Theme and layout';
+  String get themeAndLayout => 'Тақырып және орналасу';
 
   @override
-  String get videoAndSubtitles => 'Video and subtitles';
+  String get videoAndSubtitles => 'Бейне және субтитрлер';
 
   @override
-  String get integrations => 'Integrations';
+  String get integrations => 'Интеграциялар';
 
   @override
-  String get pluginAndRequests => 'Plugin and requests';
+  String get pluginAndRequests => 'Плагин және сұраулар';
 
   @override
   String get customizeAccountPlaybackInterface =>
-      'Customize account, playback, and interface behavior';
+      'Тіркелгіні, ойнатуды және интерфейс әрекетін теңшеңіз';
 
   @override
   String optionsCount(int count) {
@@ -1890,84 +1922,94 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get themeAndAppearance => 'Theme & Appearance';
+  String get themeAndAppearance => 'Тақырып және сыртқы түрі';
 
   @override
-  String get focusBorderColor => 'Focus Border Color';
+  String get focusBorderColor => 'Жиек түсі';
 
   @override
-  String get watchedIndicators => 'Watched Indicators';
+  String get watchedIndicators => 'Қаралған көрсеткіштер';
 
   @override
-  String get always => 'Always';
+  String get always => 'Әрқашан';
 
   @override
-  String get hideUnwatched => 'Hide Unwatched';
+  String get hideUnwatched => 'Қаралмағандарды жасыру';
 
   @override
-  String get episodesOnly => 'Episodes Only';
+  String get episodesOnly => 'Тек эпизодтар';
 
   @override
-  String get never => 'Never';
+  String get never => 'Ешқашан';
 
   @override
-  String get focusExpansionAnimation => 'Focus Expansion Animation';
+  String get focusExpansionAnimation => 'Фокусты кеңейту анимациясы';
 
   @override
-  String get scaleFocusedCards => 'Scale focused or hovered cards and tiles';
+  String get desktopUiScale =>
+      'Жұмыс үстелінің пайдаланушы интерфейсі масштабы';
 
   @override
-  String get backgroundBackdrops => 'Background Backdrops';
+  String get scaleFocusedCards =>
+      'Фокусталған немесе жылжытылған карталар мен тақтайшаларды масштабтаңыз';
 
   @override
-  String get showBackdropImages => 'Show backdrop images behind content';
+  String get backgroundBackdrops => 'Фондық фон';
 
   @override
-  String get seriesThumbnails => 'Series Thumbnails';
+  String get showBackdropImages => 'Мазмұнның артындағы фон суреттерін көрсету';
+
+  @override
+  String get seriesThumbnails => 'Нобайлар сериясы';
 
   @override
   String get seriesThumbnailsDescription =>
-      'Episodes only: use series artwork that matches each row image type';
+      'Тек эпизодтар: әр жол кескін түріне сәйкес келетін сериялық өнер туындысын пайдаланыңыз';
 
   @override
-  String get homeRowInfoOverlay => 'Home Row Info Overlay';
+  String get homeRowInfoOverlay => 'Басты жол ақпаратының қабаттасуы';
 
   @override
   String get showTitleMetadataOnHomeRows =>
-      'Show title and metadata when browsing home rows';
+      'Негізгі жолдарды шолу кезінде тақырып пен метадеректерді көрсету';
 
   @override
-  String get clockDisplay => 'Clock Display';
+  String get clockDisplay => 'Сағат дисплейі';
 
   @override
-  String get inMenus => 'In Menus';
+  String get inMenus => 'Мәзірлерде';
 
   @override
-  String get inVideo => 'In Video';
+  String get inVideo => 'Бейнеде';
 
   @override
-  String get seasonalEffects => 'Seasonal Effects';
+  String get seasonalEffects => 'Маусымдық әсерлер';
 
   @override
-  String get snow => 'Snow';
+  String get seasonalEffectsDescription =>
+      'Көрнекі әсерлер және маусымдық декорациялар';
 
   @override
-  String get fireworks => 'Fireworks';
+  String get snow => 'Қар';
 
   @override
-  String get confetti => 'Confetti';
+  String get fireworks => 'Отшашу';
 
   @override
-  String get fallingLeaves => 'Falling Leaves';
+  String get confetti => 'Конфетти';
 
   @override
-  String get themeMusic => 'Theme Music';
+  String get fallingLeaves => 'Жапырақтардың түсуі';
 
   @override
-  String get playThemeMusicOnDetailPages => 'Play theme music on detail pages';
+  String get themeMusic => 'Тақырыптық музыка';
 
   @override
-  String get themeMusicVolume => 'Theme Music Volume';
+  String get playThemeMusicOnDetailPages =>
+      'Тақырыптық музыканы егжей-тегжейлі беттерде ойнатыңыз';
+
+  @override
+  String get themeMusicVolume => 'Тақырыптық музыка көлемі';
 
   @override
   String percentValue(int value) {
@@ -1975,13 +2017,14 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get themeMusicOnHomeRows => 'Theme Music on Home Rows';
+  String get themeMusicOnHomeRows => 'Негізгі қатарлардағы тақырыптық музыка';
 
   @override
-  String get playWhenBrowsingHomeScreen => 'Play when browsing home screen';
+  String get playWhenBrowsingHomeScreen =>
+      'Негізгі экранды шолу кезінде ойнату';
 
   @override
-  String get detailsBackgroundBlur => 'Details Background Blur';
+  String get detailsBackgroundBlur => 'Мәліметтер Фонды бұлыңғырлау';
 
   @override
   String pixelValue(int value) {
@@ -1989,186 +2032,186 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get browsingBackgroundBlur => 'Browsing Background Blur';
+  String get browsingBackgroundBlur => 'Шолуда фондық бұлыңғыр';
 
   @override
-  String get maxStreamingBitrate => 'Max Streaming Bitrate';
+  String get maxStreamingBitrate => 'Ағынның максималды бит жылдамдығы';
 
   @override
-  String get maxResolution => 'Max Resolution';
+  String get maxResolution => 'Максималды ажыратымдылық';
 
   @override
-  String get playerZoomMode => 'Player Zoom Mode';
+  String get playerZoomMode => 'Ойыншының масштабтау режимі';
 
   @override
-  String get fit => 'Fit';
+  String get fit => 'Сәйкес';
 
   @override
-  String get autoCrop => 'Auto Crop';
+  String get autoCrop => 'Автоматты қию';
 
   @override
-  String get stretch => 'Stretch';
+  String get stretch => 'Созылу';
 
   @override
-  String get refreshRateSwitching => 'Refresh Rate Switching';
+  String get refreshRateSwitching => 'Жаңарту жылдамдығын ауыстыру';
 
   @override
-  String get disabled => 'Disabled';
+  String get disabled => 'Өшірілген';
 
   @override
-  String get scaleOnTv => 'Scale on TV';
+  String get scaleOnTv => 'Теледидарда масштабтау';
 
   @override
-  String get scaleOnDevice => 'Scale on Device';
+  String get scaleOnDevice => 'Құрылғыдағы масштабтау';
 
   @override
-  String get trickPlay => 'Trick Play';
+  String get trickPlay => 'Трик ойнау';
 
   @override
   String get showPreviewThumbnailsWhenSeeking =>
-      'Show preview thumbnails when seeking';
+      'Іздеу кезінде алдын ала қарау нобайларын көрсетіңіз';
 
   @override
-  String get showDescriptionOnPause => 'Show Description on Pause';
+  String get showDescriptionOnPause => 'Сипаттаманы кідіртуде көрсету';
 
   @override
   String get dimVideoShowOverview =>
-      'Dim video and show overview text while paused';
+      'Бейнені күңгірттеңіз және кідірту кезінде шолу мәтінін көрсетіңіз';
 
   @override
-  String get osdLockButton => 'OSD Lock Button';
+  String get osdLockButton => 'OSD құлыптау түймесі';
 
   @override
   String get osdLockButtonDescription =>
-      'Show a lock button that blocks touch input until long-pressed';
+      'Ұзақ басылғанша сенсорлық енгізуді блоктайтын құлыптау түймесін көрсетіңіз';
 
   @override
-  String get audioBehavior => 'Audio Behavior';
+  String get audioBehavior => 'Аудио мінез-құлық';
 
   @override
-  String get downmixToStereo => 'Downmix to Stereo';
+  String get downmixToStereo => 'Стереоға дейін араластырыңыз';
 
   @override
-  String get defaultAudioLanguage => 'Default Audio Language';
+  String get defaultAudioLanguage => 'Әдепкі аудио тілі';
 
   @override
-  String get autoServerDefault => 'Auto (Server Default)';
+  String get autoServerDefault => 'Авто (Сервердің әдепкі)';
 
   @override
-  String get english => 'English';
+  String get english => 'Ағылшын';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'испан';
 
   @override
-  String get french => 'French';
+  String get french => 'француз';
 
   @override
-  String get german => 'German';
+  String get german => 'неміс';
 
   @override
-  String get italian => 'Italian';
+  String get italian => 'итальян';
 
   @override
-  String get portuguese => 'Portuguese';
+  String get portuguese => 'португал';
 
   @override
-  String get japanese => 'Japanese';
+  String get japanese => 'жапон';
 
   @override
-  String get korean => 'Korean';
+  String get korean => 'корей';
 
   @override
-  String get chinese => 'Chinese';
+  String get chinese => 'қытай';
 
   @override
-  String get russian => 'Russian';
+  String get russian => 'орыс';
 
   @override
-  String get arabic => 'Arabic';
+  String get arabic => 'араб';
 
   @override
-  String get hindi => 'Hindi';
+  String get hindi => 'хинди';
 
   @override
-  String get dutch => 'Dutch';
+  String get dutch => 'голланд';
 
   @override
-  String get swedish => 'Swedish';
+  String get swedish => 'швед';
 
   @override
-  String get norwegian => 'Norwegian';
+  String get norwegian => 'норвег';
 
   @override
-  String get danish => 'Danish';
+  String get danish => 'дат';
 
   @override
-  String get finnish => 'Finnish';
+  String get finnish => 'фин';
 
   @override
-  String get polish => 'Polish';
+  String get polish => 'поляк';
 
   @override
-  String get ac3Passthrough => 'AC3 Passthrough';
+  String get ac3Passthrough => 'AC3 өту жолы';
 
   @override
-  String get dtsPassthrough => 'DTS Passthrough';
+  String get dtsPassthrough => 'DTS өту жолы';
 
   @override
-  String get trueHdSupport => 'TrueHD Support';
+  String get trueHdSupport => 'TrueHD қолдауы';
 
   @override
   String get enableDtsPassthrough =>
-      'Bitstream DTS audio to AVR only; requires receiver support and DTS source track';
+      'DTS дыбысының биттік ағыны тек AVR үшін; ресивер қолдауын және DTS бастапқы жолын қажет етеді';
 
   @override
   String get enableTrueHdAudio =>
-      'Enable TrueHD audio (may not work on all platforms)';
+      'TrueHD дыбысын қосу (барлық платформаларда жұмыс істемеуі мүмкін)';
 
   @override
-  String get nightMode => 'Night Mode';
+  String get nightMode => 'Түнгі режим';
 
   @override
-  String get compressDynamicRange => 'Compress dynamic range';
+  String get compressDynamicRange => 'Динамикалық диапазонды қысу';
 
   @override
-  String get advancedMpv => 'Advanced mpv';
+  String get advancedMpv => 'Жетілдірілген mpv';
 
   @override
-  String get enableCustomMpvConf => 'Enable Custom mpv.conf';
+  String get enableCustomMpvConf => 'Custom mpv.conf мүмкіндігін қосыңыз';
 
   @override
   String get applyMpvConfBeforePlayback =>
-      'Apply a user-specified mpv.conf before playback starts';
+      'Ойнату басталғанға дейін пайдаланушы көрсеткен mpv.conf файлын қолданыңыз';
 
   @override
-  String get unsafeAdvancedMpvOptions => 'Unsafe Advanced mpv Options';
+  String get unsafeAdvancedMpvOptions => 'Қауіпті кеңейтілген mpv опциялары';
 
   @override
   String get unsafeMpvOptionsDescription =>
-      'Allow a wider set of mpv options. May break playback behavior.';
+      'mpv опцияларының кеңірек жинағына рұқсат етіңіз. Ойнату әрекетін бұзуы мүмкін.';
 
   @override
-  String get hardwareDecoding => 'Hardware decoding';
+  String get hardwareDecoding => 'Аппараттық құралдарды декодтау';
 
   @override
   String get hardwareDecodingSubtitle =>
-      'May improve performance but can cause playback issues on some devices.';
+      'Өнімділікті жақсартуы мүмкін, бірақ кейбір құрылғыларда ойнату мәселелерін тудыруы мүмкін.';
 
   @override
-  String get nextUpAndQueuing => 'Next Up & Queuing';
+  String get nextUpAndQueuing => 'Келесі және кезек';
 
   @override
-  String get nextUpBehavior => 'Next Up Behavior';
+  String get nextUpDisplay => 'Келесі дисплей';
 
   @override
-  String get extended => 'Extended';
+  String get extended => 'Ұзартылған';
 
   @override
-  String get minimal => 'Minimal';
+  String get minimal => 'Минималды';
 
   @override
-  String get nextUpTimeout => 'Next Up Timeout';
+  String get nextUpTimeout => 'Келесі күту уақыты';
 
   @override
   String secondsValue(int value) {
@@ -2176,13 +2219,14 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get mediaQueuing => 'Media Queuing';
+  String get mediaQueuing => 'БАҚ кезегі';
 
   @override
-  String get autoQueueNextEpisodes => 'Auto-queue next episodes';
+  String get autoQueueNextEpisodes =>
+      'Келесі эпизодтарды автоматты түрде кезекке қою';
 
   @override
-  String get stillWatchingPrompt => 'Still Watching Prompt';
+  String get stillWatchingPrompt => 'Сұрау әлі де қаралуда';
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
@@ -2190,131 +2234,131 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get resumeAndSkip => 'Resume & Skip';
+  String get resumeAndSkip => 'Жалғастыру және өткізіп жіберу';
 
   @override
-  String get resumeRewind => 'Resume Rewind';
+  String get resumeRewind => 'Артқа айналдыруды жалғастыру';
 
   @override
-  String get unpauseRewind => 'Unpause Rewind';
+  String get unpauseRewind => 'Артқа айналдыруды тоқтату';
 
   @override
-  String get fiveSeconds => '5 seconds';
+  String get fiveSeconds => '5 секунд';
 
   @override
-  String get tenSeconds => '10 seconds';
+  String get tenSeconds => '10 секунд';
 
   @override
-  String get fifteenSeconds => '15 seconds';
+  String get fifteenSeconds => '15 секунд';
 
   @override
-  String get thirtySeconds => '30 seconds';
+  String get thirtySeconds => '30 секунд';
 
   @override
-  String get skipBackLength => 'Skip Back Length';
+  String get skipBackLength => 'Артқа ұзындықты өткізіп жіберу';
 
   @override
-  String get skipForwardLength => 'Skip Forward Length';
+  String get skipForwardLength => 'Алға ұзындықты өткізіп жіберу';
 
   @override
-  String get customMpvConfPath => 'Custom mpv.conf Path';
+  String get customMpvConfPath => 'Теңшелетін mpv.conf жолы';
 
   @override
   String get notSetMpvConf =>
-      'Not set. Moonfin will try a default mpv.conf in app/data folders.';
+      'Орнатылмаған. Moonfin қолданба/деректер қалталарында әдепкі mpv.conf файлын қолданып көреді.';
 
   @override
-  String get selectMpvConf => 'Select mpv.conf';
+  String get selectMpvConf => 'mpv.conf таңдаңыз';
 
   @override
   String get pathToMpvConf => '/path/to/mpv.conf';
 
   @override
   String get subtitleStyleDescription =>
-      'Style settings (size, color, offset) apply to text-based subtitles (SRT, VTT, TTML). ASS/SSA subtitles use their own embedded styling unless \"ASS/SSA Direct Play\" is turned off. Bitmap subtitles (PGS, DVB, VobSub) cannot be restyled.';
+      'Мәнер параметрлері (өлшем, түс, офсет) мәтінге негізделген субтитрлерге (SRT, VTT, TTML) қолданылады. ASS/SSA субтитрлері \"ASS/SSA Direct Play\" өшірілмейінше, өздерінің кірістірілген стилін пайдаланады. Растрлық субтитрлерді (PGS, DVB, VobSub) қайта стильдеу мүмкін емес.';
 
   @override
-  String get defaultSubtitleLanguage => 'Default Subtitle Language';
+  String get defaultSubtitleLanguage => 'Әдепкі субтитр тілі';
 
   @override
-  String get defaultToNoSubtitles => 'Default to No Subtitles';
+  String get defaultToNoSubtitles => 'Әдепкі бойынша Субтитрлер жоқ';
 
   @override
-  String get turnOffSubtitlesByDefault => 'Turn off subtitles by default';
+  String get turnOffSubtitlesByDefault =>
+      'Әдепкі бойынша субтитрлерді өшіріңіз';
 
   @override
-  String get subtitleSize => 'Subtitle Size';
+  String get subtitleSize => 'Субтитр өлшемі';
 
   @override
-  String get textFillColor => 'Text Fill Color';
+  String get textFillColor => 'Мәтінді толтыру түсі';
 
   @override
-  String get backgroundColor => 'Background Color';
+  String get backgroundColor => 'Фон түсі';
 
   @override
-  String get textStrokeColor => 'Text Stroke Color';
+  String get textStrokeColor => 'Мәтін штрих түсі';
 
   @override
-  String get subtitleCustomization => 'Subtitle Customization';
+  String get subtitleCustomization => 'Субтитрді теңшеу';
 
   @override
-  String get subtitleCustomizationDescription =>
-      'Customize subtitle appearance';
+  String get subtitleCustomizationDescription => 'Субтитр көрінісін реттеңіз';
 
   @override
   String get subtitlePreviewText =>
-      'The quick brown fox jumps over the lazy dog';
+      'Жылдам қоңыр түлкі жалқау иттің үстінен секіреді';
 
   @override
-  String get verticalOffset => 'Vertical Offset';
+  String get verticalOffset => 'Тік ығысу';
 
   @override
-  String get pgsDirectPlay => 'PGS Direct Play';
+  String get pgsDirectPlay => 'PGS тікелей ойнату';
 
   @override
-  String get directPlayPgsSubtitles => 'Direct play PGS subtitles';
+  String get directPlayPgsSubtitles => 'PGS субтитрлерін тікелей ойнату';
 
   @override
-  String get assSsaDirectPlay => 'ASS/SSA Direct Play';
+  String get assSsaDirectPlay => 'ASS/SSA тікелей ойнату';
 
   @override
-  String get directPlayAssSsaSubtitles => 'Direct play ASS/SSA subtitles';
+  String get directPlayAssSsaSubtitles => 'ASS/SSA субтитрлерін тікелей ойнату';
 
   @override
-  String get white => 'White';
+  String get white => 'Ақ';
 
   @override
-  String get black => 'Black';
+  String get black => 'Қара';
 
   @override
-  String get yellow => 'Yellow';
+  String get yellow => 'Сары';
 
   @override
-  String get green => 'Green';
+  String get green => 'Жасыл';
 
   @override
-  String get cyan => 'Cyan';
+  String get cyan => 'Көгілдір';
 
   @override
-  String get red => 'Red';
+  String get red => 'Қызыл';
 
   @override
-  String get transparent => 'Transparent';
+  String get transparent => 'Мөлдір';
 
   @override
-  String get semiTransparentBlack => 'Semi-transparent Black';
+  String get semiTransparentBlack => 'Жартылай мөлдір қара';
 
   @override
-  String get global => 'Global';
+  String get global => 'Ғаламдық';
 
   @override
-  String get desktop => 'Desktop';
+  String get desktop => 'Жұмыс үстелі';
 
   @override
-  String get mobile => 'Mobile';
+  String get mobile => 'Ұялы';
 
   @override
-  String get tv => 'TV';
+  String get tv => 'теледидар';
 
   @override
   String loadedProfileSettings(String profile) {
@@ -2332,224 +2376,228 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get customizationProfile => 'Customization Profile';
+  String get customizationProfile => 'Теңшеу профилі';
 
   @override
   String get customizationProfileDescription =>
-      'Choose the profile to load, edit, and sync. Global applies everywhere unless a device profile overrides it. The green dot marks your current device profile.';
+      'Жүктеу, өңдеу және синхрондау үшін профильді таңдаңыз. Құрылғы профилі оны қайта анықтамайынша, ғаламдық барлық жерде қолданылады. Жасыл нүкте ағымдағы құрылғы профилін белгілейді.';
 
   @override
-  String get loadProfile => 'Load Profile';
+  String get loadProfile => 'Профильді жүктеңіз';
 
   @override
-  String get syncing => 'Syncing...';
+  String get syncing => 'Синхрондалуда...';
 
   @override
-  String get syncToProfile => 'Sync To Profile';
+  String get syncToProfile => 'Профильге синхрондау';
 
   @override
-  String get profileSyncHidden => 'Profile Sync Hidden';
+  String get profileSyncHidden => 'Профильді синхрондау жасырын';
 
   @override
   String get enablePluginSyncDescription =>
-      'Enable Server Plugin Sync in Plugin settings to show profile controls here.';
+      'Профильді басқару элементтерін осы жерде көрсету үшін Плагин параметрлерінде Сервер плагинін синхрондауды қосыңыз.';
 
   @override
-  String get quality => 'Quality';
+  String get quality => 'Сапасы';
 
   @override
-  String get defaultDownloadQuality => 'Default Download Quality';
+  String get defaultDownloadQuality => 'Әдепкі жүктеп алу сапасы';
 
   @override
-  String get network => 'Network';
+  String get network => 'Желі';
 
   @override
-  String get wifiOnlyDownloads => 'WiFi-Only Downloads';
+  String get wifiOnlyDownloads => 'Тек WiFi жүктеп алулар';
 
   @override
-  String get onlyDownloadOnWifi => 'Only download when connected to WiFi';
+  String get onlyDownloadOnWifi =>
+      'WiFi желісіне қосылған кезде ғана жүктеп алыңыз';
 
   @override
-  String get storage => 'Storage';
+  String get storage => 'Сақтау';
 
   @override
-  String get storageUsed => 'Storage Used';
+  String get storageUsed => 'Қолданылатын сақтау орны';
 
   @override
-  String get manage => 'Manage';
+  String get manage => 'Басқару';
 
   @override
-  String get calculating => 'Calculating...';
+  String get calculating => 'Есептелуде...';
 
   @override
-  String get downloadLocation => 'Download Location';
+  String get downloadLocation => 'Орын жүктеп алыңыз';
 
   @override
-  String get defaultLabel => 'Default';
+  String get defaultLabel => 'Әдепкі';
 
   @override
-  String get saveToDownloadsFolder => 'Save to Downloads folder';
+  String get saveToDownloadsFolder => 'Жүктеулер қалтасына сақтаңыз';
 
   @override
   String get downloadsVisibleToOtherApps =>
-      'Downloads/Moonfin — visible to other apps';
+      'Жүктеулер/Moonfin — басқа қолданбаларға көрінеді';
 
   @override
-  String get dangerZone => 'Danger Zone';
+  String get dangerZone => 'Қауіпті аймақ';
 
   @override
-  String get clearAllDownloads => 'Clear All Downloads';
+  String get clearAllDownloads => 'Барлық жүктеп алынғандарды өшіріңіз';
 
   @override
-  String get original => 'Original';
+  String get original => 'Түпнұсқа';
 
   @override
-  String get changeDownloadLocation => 'Change Download Location';
+  String get changeDownloadLocation => 'Жүктеп алу орнын өзгерту';
 
   @override
   String get changeDownloadLocationDescription =>
-      'New downloads will be saved to the selected folder. Existing downloads will remain in their current location and can be managed from Storage settings.';
+      'Жаңа жүктеп алынғандар таңдалған қалтаға сақталады. Бар жүктеп алынған файлдар ағымдағы орнында қалады және оларды Жад параметрлерінен басқаруға болады.';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Растау';
 
   @override
   String get cannotWriteToFolder =>
-      'Cannot write to selected folder. Please choose a different location or grant storage permissions.';
+      'Таңдалған қалтаға жазу мүмкін емес. Басқа орынды таңдаңыз немесе сақтау рұқсаттарын беріңіз.';
 
   @override
-  String get saveToDownloadsFolderQuestion => 'Save to Downloads folder?';
+  String get saveToDownloadsFolderQuestion =>
+      'Жүктеулер қалтасына сақтау керек пе?';
 
   @override
   String get saveToDownloadsFolderDescription =>
-      'Downloaded media will be saved to Downloads/Moonfin on your device. These files will be visible to other apps such as your gallery or music player.\n\nExisting downloads will remain in their current location.';
+      'Жүктеп алынған медиа құрылғыңыздағы Жүктеулер/Moonfin ішіне сақталады. Бұл файлдар галерея немесе музыка ойнатқышы сияқты басқа қолданбаларға көрінеді.\n\nБар жүктеп алынған файлдар ағымдағы орнында қалады.';
 
   @override
-  String get enable => 'Enable';
+  String get enable => 'Қосу';
 
   @override
   String get clearAllDownloadsWarning =>
-      'This will delete all downloaded media and cannot be undone.';
+      'Бұл барлық жүктеп алынған медианы жояды және оны кері қайтару мүмкін емес.';
 
   @override
-  String get clearAll => 'Clear All';
+  String get clearAll => 'Барлығын өшіру';
 
   @override
-  String get navigationStyle => 'Navigation Style';
+  String get navigationStyle => 'Навигация стилі';
 
   @override
-  String get topBar => 'Top Bar';
+  String get topBar => 'Жоғарғы жолақ';
 
   @override
-  String get leftSidebar => 'Left Sidebar';
+  String get leftSidebar => 'Сол жақ бүйірлік тақта';
 
   @override
-  String get showShuffleButton => 'Show Shuffle Button';
+  String get showShuffleButton => 'Араластыру түймешігін көрсету';
 
   @override
-  String get showGenresButton => 'Show Genres Button';
+  String get showGenresButton => 'Жанрларды көрсету түймесі';
 
   @override
-  String get showFavoritesButton => 'Show Favorites Button';
+  String get showFavoritesButton => 'Таңдаулыларды көрсету түймесі';
 
   @override
-  String get showLibrariesInToolbar => 'Show Libraries in Toolbar';
+  String get showLibrariesInToolbar =>
+      'Құралдар тақтасында кітапханаларды көрсету';
 
   @override
-  String get navbarOpacity => 'Navbar Opacity';
+  String get navbarOpacity => 'Шарлау тақтасының мөлдірлігі';
 
   @override
-  String get navbarColor => 'Navbar Color';
+  String get navbarColor => 'Шарлау тақтасының түсі';
 
   @override
-  String get gray => 'Gray';
+  String get gray => 'Сұр';
 
   @override
-  String get darkBlue => 'Dark Blue';
+  String get darkBlue => 'Қою көк';
 
   @override
-  String get purple => 'Purple';
+  String get purple => 'Күлгін';
 
   @override
-  String get teal => 'Teal';
+  String get teal => 'Қызғылт';
 
   @override
-  String get navy => 'Navy';
+  String get navy => 'Әскери-теңіз күштері';
 
   @override
-  String get charcoal => 'Charcoal';
+  String get charcoal => 'Көмір';
 
   @override
-  String get brown => 'Brown';
+  String get brown => 'Қоңыр';
 
   @override
-  String get darkRed => 'Dark Red';
+  String get darkRed => 'Қою қызыл';
 
   @override
-  String get darkGreen => 'Dark Green';
+  String get darkGreen => 'Қою жасыл';
 
   @override
-  String get slate => 'Slate';
+  String get slate => 'Шифер';
 
   @override
-  String get indigo => 'Indigo';
+  String get indigo => 'Индиго';
 
   @override
-  String get libraryDisplay => 'Library Display';
+  String get libraryDisplay => 'Кітапхана дисплейі';
 
   @override
-  String get posterLabel => 'Poster';
+  String get posterLabel => 'Постер';
 
   @override
-  String get thumbnailLabel => 'Thumbnail';
+  String get thumbnailLabel => 'Нобай';
 
   @override
-  String get bannerLabel => 'Banner';
+  String get bannerLabel => 'Баннер';
 
   @override
-  String get overridePerLibrarySettings => 'Override Per-Library Settings';
+  String get overridePerLibrarySettings =>
+      'Әр кітапхана параметрлерін қайта анықтау';
 
   @override
   String get applyImageTypeToAllLibraries =>
-      'Apply image type to all libraries';
+      'Кескін түрін барлық кітапханаларға қолданыңыз';
 
   @override
-  String get multiServerLibraries => 'Multi-Server Libraries';
+  String get multiServerLibraries => 'Көп серверлік кітапханалар';
 
   @override
   String get showLibrariesFromAllServers =>
-      'Show libraries from all connected servers';
+      'Барлық қосылған серверлерден кітапханаларды көрсету';
 
   @override
-  String get enableFolderView => 'Enable Folder View';
+  String get enableFolderView => 'Қалта көрінісін қосыңыз';
 
   @override
-  String get showFolderBrowsingOption => 'Show folder browsing option';
+  String get showFolderBrowsingOption => 'Қалтаны шолу опциясын көрсету';
 
   @override
-  String get libraryVisibility => 'Library Visibility';
+  String get libraryVisibility => 'Кітапхананың көрінуі';
 
   @override
   String get libraryVisibilityDescription =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'Әрбір кітапхананың басты бетінің көріну мүмкіндігін ауыстырып-қосқыш. Өзгерістердің күшіне енуі үшін Moonfin қолданбасын қайта іске қосыңыз.';
 
   @override
-  String get showInNavigation => 'Show in navigation';
+  String get showInNavigation => 'Навигацияда көрсету';
 
   @override
-  String get showInLatestMedia => 'Show in latest media';
+  String get showInLatestMedia => 'Соңғы медиада көрсету';
 
   @override
-  String get sourceLibraries => 'Source Libraries';
+  String get sourceLibraries => 'Бастапқы кітапханалар';
 
   @override
-  String get sourceCollections => 'Source Collections';
+  String get sourceCollections => 'Бастапқы жинақтар';
 
   @override
-  String get excludedGenres => 'Excluded Genres';
+  String get excludedGenres => 'Шығарылған жанрлар';
 
   @override
-  String get selectAll => 'Select All';
+  String get selectAll => 'Барлығын таңдаңыз';
 
   @override
   String itemsSelected(int count) {
@@ -2557,221 +2605,246 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get mediaBar => 'Media Bar';
+  String get mediaBar => 'Медиа жолағы';
 
   @override
-  String get mediaBarMode => 'Media Bar Style';
+  String get mediaSources => 'БАҚ көздері';
+
+  @override
+  String get behavior => 'Мінез-құлық';
+
+  @override
+  String get seconds => 'секунд';
+
+  @override
+  String get localPreviews => 'Жергілікті алдын ала қараулар';
+
+  @override
+  String get localPreviewsDescription =>
+      'Трейлер, медиа және аудио алдын ала қарауды конфигурациялаңыз.';
+
+  @override
+  String get mediaBarMode => 'Медиа жолақ стилі';
 
   @override
   String get mediaBarModeDescription =>
-      'Choose between Moonfin, MakD, or turn the media bar off';
+      'Moonfin, MakD арасында таңдаңыз немесе медиа жолағын өшіріңіз';
 
   @override
-  String get mediaBarModeMoonfin => 'Moonfin';
+  String get mediaBarModeMoonfin => 'Ай жүзі';
 
   @override
-  String get mediaBarModeMakd => 'MakD';
+  String get mediaBarModeMakd => 'МакД';
 
   @override
-  String get mediaBarModeOff => 'Off';
+  String get mediaBarModeOff => 'Өшірулі';
 
   @override
-  String get enableMediaBar => 'Enable Media Bar';
+  String get enableMediaBar => 'Медиа жолағын қосыңыз';
 
   @override
   String get showFeaturedContentSlideshow =>
-      'Show featured content slideshow on home';
+      'Үйде таңдаулы мазмұн слайдшоуын көрсету';
 
   @override
-  String get contentType => 'Content Type';
+  String get contentType => 'Мазмұн түрі';
 
   @override
-  String get moviesAndTvShows => 'Movies & TV Shows';
+  String get moviesAndTvShows => 'Фильмдер мен телешоулар';
 
   @override
-  String get moviesOnly => 'Movies Only';
+  String get moviesOnly => 'Тек фильмдер';
 
   @override
-  String get tvShowsOnly => 'TV Shows Only';
+  String get tvShowsOnly => 'Тек телешоулар';
 
   @override
-  String get itemCount => 'Item Count';
+  String get itemCount => 'Элемент саны';
 
   @override
-  String get noneSelected => 'None selected';
+  String get noneSelected => 'Ешқайсысы таңдалмаған';
 
   @override
-  String get noneExcluded => 'None excluded';
+  String get noneExcluded => 'Ешқайсысы алынып тасталмаған';
 
   @override
-  String get autoAdvance => 'Auto Advance';
+  String get autoAdvance => 'Автоматты алға жылжыту';
 
   @override
-  String get autoAdvanceSlides => 'Automatically advance to next slide';
+  String get autoAdvanceSlides => 'Келесі слайдқа автоматты түрде жылжытыңыз';
 
   @override
-  String get autoAdvanceInterval => 'Auto Advance Interval';
+  String get autoAdvanceInterval => 'Автоматты ілгерілету аралығы';
 
   @override
-  String get trailerPreview => 'Trailer Preview';
+  String get trailerPreview => 'Трейлерді алдын ала қарау';
 
   @override
   String get autoPlayTrailers =>
-      'Auto-play trailers in the media bar after 3 seconds';
+      '3 секундтан кейін медиа жолағында трейлерлерді автоматты түрде ойнату';
 
   @override
-  String get episodePreview => 'Episode Preview';
+  String get episodePreview => 'Эпизодты алдын ала қарау';
+
+  @override
+  String get mediaPreview => 'Медиа алдын ала қарау';
 
   @override
   String get episodePreviewDescription =>
-      'Play a 30-second inline preview on focused, hovered, or long-pressed cards';
+      'Фокусталған, меңзердегі немесе ұзақ басылған карталарда 30 секундтық кірістірілген алдын ала қарауды ойнатыңыз';
 
   @override
-  String get previewAudio => 'Preview Audio';
+  String get mediaPreviewDescription =>
+      'Фокусталған, жылжытылған немесе ұзақ басылған карталарда 30 секундтық кірістірілген алдын ала қарауды ойнатыңыз';
+
+  @override
+  String get previewAudio => 'Аудионы алдын ала қарау';
 
   @override
   String get enablePreviewAudio =>
-      'Enable audio for trailer and episode previews';
+      'Трейлер мен эпизодты алдын ала қарау үшін дыбысты қосыңыз';
 
   @override
-  String get latestMedia => 'Latest Media';
+  String get latestMedia => 'Соңғы БАҚ';
 
   @override
-  String get recentlyReleased => 'Recently Released';
+  String get recentlyReleased => 'Жақында шығарылған';
 
   @override
-  String get myMedia => 'My Media';
+  String get myMedia => 'Менің медиам';
 
   @override
-  String get myMediaSmall => 'My Media (Small)';
+  String get myMediaSmall => 'Менің медиам (шағын)';
 
   @override
-  String get continueWatching => 'Continue Watching';
+  String get continueWatching => 'Көруді жалғастыру';
 
   @override
-  String get resumeAudio => 'Resume Audio';
+  String get resumeAudio => 'Аудионы жалғастыру';
 
   @override
-  String get resumeBooks => 'Resume Books';
+  String get resumeBooks => 'Түйіндеме кітаптары';
 
   @override
-  String get activeRecordings => 'Active Recordings';
+  String get activeRecordings => 'Белсенді жазбалар';
 
   @override
-  String get playlists => 'Playlists';
+  String get playlists => 'Ойнату тізімдері';
 
   @override
-  String get liveTV => 'Live TV';
+  String get liveTV => 'Тікелей теледидар';
 
   @override
-  String get homeSections => 'Home Sections';
+  String get homeSections => 'Үй бөлімдері';
 
   @override
-  String get resetToDefaults => 'Reset to defaults';
+  String get resetToDefaults => 'Әдепкі мәндерге қайта орнату';
 
   @override
-  String get homeRowPosterSize => 'Home Row Poster Size';
+  String get homeRowPosterSize => 'Негізгі қатардағы постер өлшемі';
 
   @override
-  String get perRowImageTypeSelection => 'Per Row Image Type Selection';
+  String get perRowImageTypeSelection => 'Әр жолдағы кескін түрін таңдау';
 
   @override
   String get configureImageTypeForEachRow =>
-      'Configure image type for each enabled home row';
+      'Әрбір қосылған басты жол үшін кескін түрін конфигурациялаңыз';
 
   @override
   String get mergeContinueWatchingAndNextUp =>
-      'Merge Continue Watching and Next Up';
+      'Біріктіру «Көруді жалғастыру» және «Келесі';
 
   @override
-  String get combineBothRows => 'Combine both rows into a single home section';
+  String get combineBothRows => 'Екі жолды бір үй бөліміне біріктіріңіз';
 
   @override
-  String get perRowImageType => 'Per Row Image Type';
+  String get perRowImageType => 'Әр жолдағы кескін түрі';
 
   @override
-  String get perRowSettings => 'Per-Row Settings';
+  String get perRowSettings => 'Әр жол параметрлері';
 
   @override
-  String get autoLogin => 'Auto Login';
+  String get autoLogin => 'Автоматты түрде кіру';
 
   @override
-  String get lastUser => 'Last User';
+  String get lastUser => 'Соңғы пайдаланушы';
 
   @override
-  String get specificUser => 'Specific User';
+  String get specificUser => 'Арнайы пайдаланушы';
 
   @override
-  String get alwaysAuthenticate => 'Always Authenticate';
+  String get alwaysAuthenticate => 'Әрқашан аутентификация';
 
   @override
   String get requirePasswordWithToken =>
-      'Require password even with stored token';
+      'Сақталған таңбалауыш болса да құпия сөзді талап етіңіз';
 
   @override
-  String get confirmExit => 'Confirm Exit';
+  String get confirmExit => 'Шығуды растау';
 
   @override
   String get showConfirmationBeforeExiting =>
-      'Show confirmation before exiting';
+      'Шығу алдында растауды көрсетіңіз';
 
   @override
   String get blockContentWithRatings =>
-      'Block content with the following ratings:';
+      'Келесі рейтингтері бар мазмұнды блоктау:';
 
   @override
   String get noContentRatingsFound =>
-      'No content ratings were found on this server yet.';
+      'Бұл серверде әлі мазмұн рейтингтері табылмады.';
 
   @override
   String get couldNotLoadServerRatings =>
-      'Could not load server ratings. Showing saved ratings only.';
+      'Сервер рейтингтерін жүктеу мүмкін болмады. Тек сақталған рейтингтерді көрсету.';
 
   @override
   String get couldNotRefreshRatings =>
-      'Could not refresh ratings from server. Showing saved ratings.';
+      'Серверден бағалауларды жаңарту мүмкін болмады. Сақталған рейтингтер көрсетілуде.';
 
   @override
-  String get enablePinCode => 'Enable PIN Code';
+  String get enablePinCode => 'PIN кодын қосыңыз';
 
   @override
-  String get requirePinToAccess => 'Require a PIN to access your account';
+  String get requirePinToAccess =>
+      'Тіркелгіңізге кіру үшін PIN кодын талап етіңіз';
 
   @override
-  String get changePin => 'Change PIN';
+  String get changePin => 'PIN кодын өзгерту';
 
   @override
-  String get setNewPinCode => 'Set a new PIN code';
+  String get setNewPinCode => 'Жаңа PIN кодын орнатыңыз';
 
   @override
-  String get removePin => 'Remove PIN';
+  String get removePin => 'PIN кодын жою';
 
   @override
-  String get removePinProtection => 'Remove PIN code protection';
+  String get removePinProtection => 'PIN кодты қорғауды алып тастаңыз';
 
   @override
-  String get screensaver => 'Screensaver';
+  String get screensaver => 'Скринсейвер';
 
   @override
   String get inAppScreensaver => 'In-App Screensaver';
 
   @override
-  String get enableBuiltInScreensaver => 'Enable the built-in screensaver';
+  String get enableBuiltInScreensaver =>
+      'Кірістірілген экран сақтағышын қосыңыз';
 
   @override
-  String get mode => 'Mode';
+  String get mode => 'Режим';
 
   @override
-  String get libraryArt => 'Library Art';
+  String get libraryArt => 'Кітапхана өнері';
 
   @override
-  String get logo => 'Logo';
+  String get logo => 'Логотип';
 
   @override
-  String get clock => 'Clock';
+  String get clock => 'Сағат';
 
   @override
-  String get timeout => 'Timeout';
+  String get timeout => 'Үзіліс';
 
   @override
   String minutesShort(int minutes) {
@@ -2779,13 +2852,13 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get dimmingLevel => 'Dimming Level';
+  String get dimmingLevel => 'Күңгірттеу деңгейі';
 
   @override
-  String get maxAgeRating => 'Max Age Rating';
+  String get maxAgeRating => 'Максималды жас рейтингі';
 
   @override
-  String get any => 'Any';
+  String get any => 'Кез келген';
 
   @override
   String agePlusValue(int age) {
@@ -2793,23 +2866,23 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get requireAgeRating => 'Require Age Rating';
+  String get requireAgeRating => 'Жас рейтингін талап етеді';
 
   @override
-  String get onlyShowRatedContent => 'Only show rated content';
+  String get onlyShowRatedContent => 'Тек бағаланған мазмұнды көрсетіңіз';
 
   @override
-  String get showClock => 'Show Clock';
+  String get showClock => 'Сағатты көрсету';
 
   @override
   String get displayClockDuringScreensaver =>
-      'Display clock during screensaver';
+      'Скринсейвер кезінде сағатты көрсету';
 
   @override
-  String get rottenTomatoesCritics => 'Rotten Tomatoes (Critics)';
+  String get rottenTomatoesCritics => 'Rotten Tomatoes (сыншылар)';
 
   @override
-  String get rottenTomatoesAudience => 'Rotten Tomatoes (Audience)';
+  String get rottenTomatoesAudience => 'Rotten Tomatoes (аудитория)';
 
   @override
   String get imdb => 'IMDb';
@@ -2818,13 +2891,13 @@ class AppLocalizationsKk extends AppLocalizations {
   String get tmdb => 'TMDB';
 
   @override
-  String get metacritic => 'Metacritic';
+  String get metacritic => 'Метакритикалық';
 
   @override
-  String get metacriticUser => 'Metacritic (User)';
+  String get metacriticUser => 'Metacritic (пайдаланушы)';
 
   @override
-  String get trakt => 'Trakt';
+  String get trakt => 'Тракт';
 
   @override
   String get letterboxd => 'Letterboxd';
@@ -2836,58 +2909,62 @@ class AppLocalizationsKk extends AppLocalizations {
   String get aniList => 'AniList';
 
   @override
-  String get communityRating => 'Community Rating';
+  String get communityRating => 'Қауымдастық рейтингі';
 
   @override
-  String get ratings => 'Ratings';
+  String get ratings => 'Рейтингтер';
 
   @override
-  String get additionalRatings => 'Additional Ratings';
+  String get additionalRatings => 'Қосымша рейтингтер';
 
   @override
-  String get showMdbListAndTmdbRatings => 'Show MDBList and TMDB ratings';
+  String get showMdbListAndTmdbRatings =>
+      'MDBList және TMDB рейтингтерін көрсету';
 
   @override
-  String get ratingLabels => 'Rating Labels';
+  String get ratingLabels => 'Бағалау белгілері';
 
   @override
-  String get showLabelsNextToIcons => 'Show labels next to rating icons';
+  String get showLabelsNextToIcons =>
+      'Бағалау белгішелерінің жанында белгілерді көрсетіңіз';
 
   @override
-  String get ratingBadges => 'Rating Badges';
+  String get ratingBadges => 'Баға белгілері';
 
   @override
-  String get showDecorativeBadges => 'Show decorative badges behind ratings';
+  String get showDecorativeBadges =>
+      'Бағалардың артында сәндік белгілерді көрсетіңіз';
 
   @override
-  String get episodeRatings => 'Episode Ratings';
+  String get episodeRatings => 'Эпизод рейтингтері';
 
   @override
-  String get showRatingsOnEpisodes => 'Show ratings on individual episodes';
+  String get showRatingsOnEpisodes =>
+      'Жеке эпизодтар бойынша рейтингтерді көрсету';
 
   @override
-  String get ratingSources => 'Rating Sources';
+  String get ratingSources => 'Бағалау көздері';
 
   @override
   String get ratingSourcesDescription =>
-      'Enable and reorder the rating sources shown throughout the app';
+      'Қолданбада көрсетілген бағалау көздерін қосыңыз және қайта реттеңіз';
 
   @override
-  String get pluginLabel => 'Plugin';
+  String get pluginLabel => 'Плагин';
 
   @override
-  String get pluginDetected => 'Plugin Detected';
+  String get pluginDetected => 'Плагин анықталды';
 
   @override
-  String get pluginNotDetected => 'Plugin Not Detected';
+  String get pluginNotDetected => 'Плагин анықталмады';
 
   @override
   String get pluginDetectedDescription =>
-      'Server plugin detected. Sync is enabled automatically the first time the plugin is found.';
+      'Сервер плагині анықталды. Синхрондау плагин бірінші рет табылған кезде автоматты түрде қосылады.';
 
   @override
   String get pluginNotDetectedDescription =>
-      'Server plugin is not currently detected. Local settings still use their saved values or built-in defaults.';
+      'Сервер плагині қазір анықталмаған. Жергілікті параметрлер әлі де өздерінің сақталған мәндерін немесе кірістірілген әдепкі параметрлерді пайдаланады.';
 
   @override
   String pluginStatusVersion(String status, String version) {
@@ -2895,73 +2972,75 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get availableServices => 'Available Services';
+  String get availableServices => 'Қолжетімді қызметтер';
 
   @override
-  String get serverPluginSync => 'Server Plugin Sync';
+  String get serverPluginSync => 'Сервер плагиндерін синхрондау';
 
   @override
-  String get syncSettingsWithPlugin => 'Sync settings with the server plugin';
+  String get syncSettingsWithPlugin =>
+      'Параметрлерді сервер плагинімен синхрондаңыз';
 
   @override
-  String get whatSyncControls => 'What sync controls';
+  String get whatSyncControls => 'Қандай синхрондауды басқарады';
 
   @override
   String get syncControlsDescription =>
-      'Sync only controls whether plugin-backed settings are pushed to and pulled from the server. Profile selection and profile sync actions are in Customization settings when plugin sync is enabled.';
+      'Синхрондау тек плагин қолдайтын параметрлердің серверге итерілуін және серверден алынуын басқарады. Профильді таңдау және профильді синхрондау әрекеттері плагинді синхрондау қосылған кезде Теңшеу параметрлерінде болады.';
 
   @override
-  String get recentRequests => 'Recent Requests';
+  String get recentRequests => 'Соңғы сұраулар';
 
   @override
-  String get recentlyAdded => 'Recently Added';
+  String get recentlyAdded => 'Жақында қосылған';
 
   @override
-  String get trending => 'Trending';
+  String get trending => 'Тренд';
 
   @override
-  String get popularMovies => 'Popular Movies';
+  String get popularMovies => 'Танымал фильмдер';
 
   @override
-  String get movieGenres => 'Movie Genres';
+  String get movieGenres => 'Фильм жанрлары';
 
   @override
-  String get upcomingMovies => 'Upcoming Movies';
+  String get upcomingMovies => 'Алдағы фильмдер';
 
   @override
-  String get studios => 'Studios';
+  String get studios => 'Студиялар';
 
   @override
-  String get popularSeries => 'Popular Series';
+  String get popularSeries => 'Танымал сериялар';
 
   @override
-  String get seriesGenres => 'Series Genres';
+  String get seriesGenres => 'Серия жанрлары';
 
   @override
-  String get upcomingSeries => 'Upcoming Series';
+  String get upcomingSeries => 'Алдағы серия';
 
   @override
-  String get networks => 'Networks';
+  String get networks => 'Желілер';
 
   @override
-  String get resetRowsToDefaults => 'Reset rows to defaults';
+  String get resetRowsToDefaults => 'Жолдарды әдепкі мәндерге қайтарыңыз';
 
   @override
-  String get enableSeerr => 'Enable Seerr';
+  String get enableSeerr => 'Seerr қосыңыз';
 
   @override
   String get showSeerrInNavigation =>
-      'Show Seerr in navigation (requires server plugin)';
+      'Навигацияда Seerr көрсету (сервер плагинін қажет етеді)';
 
   @override
   String get seerrUnavailable =>
-      'Unavailable because server plugin Seerr support is disabled.';
+      'Қолжетімсіз, себебі сервер плагині Seerr қолдауы өшірілген.';
 
   @override
-  String get nsfwFilter => 'NSFW Filter';
+  String get nsfwFilter => 'NSFW сүзгісі';
 
   @override
-  String get hideAdultContent => 'Hide adult content in results';
+  String get hideAdultContent =>
+      'Нәтижелерде ересектерге арналған мазмұнды жасыру';
 
   @override
   String loggedInAs(String username) {
@@ -2969,24 +3048,24 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get discoverRows => 'Discover Rows';
+  String get discoverRows => 'Жолдарды табу';
 
   @override
   String get discoverRowsDescriptionPlugin =>
-      'Drag to reorder. Enable or disable rows. Enabled row order syncs with the Moonfin plugin.';
+      'Қайта реттеу үшін сүйреңіз. Жолдарды қосу немесе өшіру. Қосылған жол тәртібі Moonfin плагинімен синхрондалады.';
 
   @override
   String get discoverRowsDescription =>
-      'Drag to reorder. Enable or disable rows.';
+      'Қайта реттеу үшін сүйреңіз. Жолдарды қосу немесе өшіру.';
 
   @override
-  String get enabled => 'Enabled';
+  String get enabled => 'Қосылған';
 
   @override
-  String get hidden => 'Hidden';
+  String get hidden => 'Жасырын';
 
   @override
-  String get aboutTitle => 'About';
+  String get aboutTitle => 'туралы';
 
   @override
   String versionValue(String version) {
@@ -2994,49 +3073,49 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get openSourceLicenses => 'Open Source Licenses';
+  String get openSourceLicenses => 'Ашық бастапқы лицензиялар';
 
   @override
-  String get sourceCode => 'Source Code';
+  String get sourceCode => 'Бастапқы код';
 
   @override
   String get sourceCodeUrl =>
       'https://github.com/Moonfin-Client/Mobile-Desktop';
 
   @override
-  String get checkForUpdatesNow => 'Check for Updates Now';
+  String get checkForUpdatesNow => 'Қазір жаңартуларды тексеріңіз';
 
   @override
   String get checksLatestDesktopRelease =>
-      'Checks latest desktop release for this platform';
+      'Осы платформа үшін соңғы жұмыс үстелі шығарылымын тексереді';
 
   @override
-  String get youAreUpToDate => 'You are up to date.';
+  String get youAreUpToDate => 'Сіз жаңасыз.';
 
   @override
   String get couldNotCheckForUpdates =>
-      'Could not check for updates right now.';
+      'Дәл қазір жаңартуларды тексеру мүмкін емес.';
 
   @override
   String get noCompatibleUpdate =>
-      'No compatible update package found for this platform.';
+      'Бұл платформа үшін үйлесімді жаңарту бумасы табылмады.';
 
   @override
   String get updateChecksNotSupported =>
-      'Update checks are not supported on this platform.';
+      'Бұл платформада жаңартуды тексеруге қолдау көрсетілмейді.';
 
   @override
   String get updateNotificationsDisabled =>
-      'Update notifications are disabled.';
+      'Жаңарту хабарландырулары өшірілген.';
 
   @override
-  String get pleaseWaitBeforeChecking => 'Please wait before checking again.';
+  String get pleaseWaitBeforeChecking => 'Қайта тексермес бұрын күте тұрыңыз.';
 
   @override
-  String get latestUpdateAlreadyShown => 'Latest update was already shown.';
+  String get latestUpdateAlreadyShown => 'Соңғы жаңарту әлдеқашан көрсетілді.';
 
   @override
-  String get updateAvailable => 'Update available.';
+  String get updateAvailable => 'Жаңарту қолжетімді.';
 
   @override
   String updateAvailableVersion(String version) {
@@ -3044,10 +3123,11 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get updateNotifications => 'Update Notifications';
+  String get updateNotifications => 'Хабарландыруларды жаңарту';
 
   @override
-  String get showWhenUpdatesAvailable => 'Show when updates are available';
+  String get showWhenUpdatesAvailable =>
+      'Жаңартулар қолжетімді болған кезде көрсету';
 
   @override
   String updateAvailableTitle(String version) {
@@ -3055,44 +3135,44 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get readReleaseNotes => 'Read Release Notes';
+  String get readReleaseNotes => 'Шығарылым жазбаларын оқыңыз';
 
   @override
-  String get downloadingUpdate => 'Downloading update...';
+  String get downloadingUpdate => 'Жаңарту жүктеп алынуда...';
 
   @override
-  String get updateDownloadFailed =>
-      'Update download failed. Please try again.';
+  String get updateDownloadFailed => 'Жаңарту жүктелмеді. Қайталап көріңіз.';
 
   @override
-  String get openReleasesPage => 'Open Releases Page';
+  String get openReleasesPage => 'Шығармалар бетін ашыңыз';
 
   @override
-  String get navigation => 'Navigation';
+  String get navigation => 'Навигация';
 
   @override
-  String get watchedIndicatorsBackdrops => 'Watched indicators, backdrops';
+  String get watchedIndicatorsBackdrops => 'Қаралған көрсеткіштер, фон';
 
   @override
   String get focusColorWatchedIndicatorsBackdrops =>
-      'Focus color, watched indicators, backdrops';
+      'Фокус түсі, қаралған индикаторлар, фон';
 
   @override
   String get navbarStyleToolbarAppearance =>
-      'Navbar style, toolbar buttons, appearance';
+      'Navbar стилі, құралдар тақтасының түймелері, сыртқы түрі';
 
   @override
-  String get reorderToggleHomeRows => 'Reorder and toggle home rows';
+  String get reorderToggleHomeRows =>
+      'Бастапқы жолдардың ретін өзгертіңіз және ауыстырыңыз';
 
   @override
-  String get featuredContentAppearance => 'Featured content, appearance';
+  String get featuredContentAppearance => 'Таңдаулы мазмұн, сыртқы түрі';
 
   @override
   String get posterSizeImageTypeFolderView =>
-      'Poster size, image type, folder view';
+      'Постер өлшемі, сурет түрі, қалта көрінісі';
 
   @override
-  String get mdbListTmdbRatingSources => 'MDBList, TMDB, and rating sources';
+  String get mdbListTmdbRatingSources => 'MDBList, TMDB және бағалау көздері';
 
   @override
   String gbValue(String value) {
@@ -3100,19 +3180,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Таза';
 
   @override
-  String get browse => 'Browse';
+  String get browse => 'Шолу';
 
   @override
-  String get noResults => 'No results';
+  String get noResults => 'Нәтиже жоқ';
 
   @override
-  String get seerrAvailableStatus => 'Available';
+  String get seerrAvailableStatus => 'Қол жетімді';
 
   @override
-  String get seerrRequestedStatus => 'Requested';
+  String get seerrRequestedStatus => 'Сұралған';
 
   @override
   String itemsCount(int count) {
@@ -3120,19 +3200,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get seerrSettings => 'Seerr Settings';
+  String get seerrSettings => 'Seerr параметрлері';
 
   @override
-  String get requestMore => 'Request More';
+  String get requestMore => 'Қосымша сұрау';
 
   @override
-  String get request => 'Request';
+  String get request => 'Сұраныс';
 
   @override
-  String get cancelRequest => 'Cancel Request';
+  String get cancelRequest => 'Сұраныстан бас тарту';
 
   @override
-  String get playInMoonfin => 'Play in Moonfin';
+  String get playInMoonfin => 'Moonfin ойынында ойнаңыз';
 
   @override
   String requestedByName(String name) {
@@ -3140,16 +3220,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get approve => 'Approve';
+  String get approve => 'Мақұлдау';
 
   @override
-  String get declineAction => 'Decline';
+  String get declineAction => 'Бас тарту';
 
   @override
-  String get similar => 'Similar';
+  String get similar => 'Ұқсас';
 
   @override
-  String get recommendations => 'Recommendations';
+  String get recommendations => 'Ұсыныстар';
 
   @override
   String cancelRequestForTitle(String title) {
@@ -3162,13 +3242,14 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get keep => 'Keep';
+  String get keep => 'Сақтау';
 
   @override
-  String get itemNotFoundInLibrary => 'Item not found in your Moonfin library';
+  String get itemNotFoundInLibrary =>
+      'Элемент Moonfin кітапханасынан табылмады';
 
   @override
-  String get errorSearchingLibrary => 'Error searching library';
+  String get errorSearchingLibrary => 'Кітапхананы іздеу қатесі';
 
   @override
   String budgetAmount(String amount) {
@@ -3191,34 +3272,35 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get submitRequest => 'Submit Request';
+  String get submitRequest => 'Сұраныс жіберу';
 
   @override
-  String get allSeasons => 'All Seasons';
+  String get allSeasons => 'Барлық маусымдар';
 
   @override
-  String get advancedOptions => 'Advanced Options';
+  String get advancedOptions => 'Қосымша опциялар';
 
   @override
-  String get noServiceServersConfigured => 'No service servers configured';
+  String get noServiceServersConfigured =>
+      'Ешбір қызмет серверлері конфигурацияланбаған';
 
   @override
-  String get server => 'Server';
+  String get server => 'Сервер';
 
   @override
-  String get qualityProfile => 'Quality Profile';
+  String get qualityProfile => 'Сапа профилі';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => 'Түбірлік қалта';
 
   @override
-  String get showMore => 'Show More';
+  String get showMore => 'Көбірек көрсету';
 
   @override
-  String get appearances => 'Appearances';
+  String get appearances => 'Сыртқы көріністер';
 
   @override
-  String get crewSection => 'Crew';
+  String get crewSection => 'Экипаж';
 
   @override
   String ageValue(int age) {
@@ -3226,290 +3308,291 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get noRequests => 'No requests';
+  String get noRequests => 'Сұраныс жоқ';
 
   @override
-  String get pendingStatus => 'Pending';
+  String get pendingStatus => 'Күтуде';
 
   @override
-  String get declinedStatus => 'Declined';
+  String get declinedStatus => 'Қабылданбады';
 
   @override
-  String get partiallyAvailable => 'Partially Available';
+  String get partiallyAvailable => 'Ішінара қол жетімді';
 
   @override
-  String get downloadingStatus => 'Downloading';
+  String get downloadingStatus => 'Жүктеп алынуда';
 
   @override
-  String get approvedStatus => 'Approved';
+  String get approvedStatus => 'Бекітілді';
 
   @override
-  String get notRequestedStatus => 'Not Requested';
+  String get notRequestedStatus => 'Сұралған жоқ';
 
   @override
-  String get blocklistedStatus => 'Blocklisted';
+  String get blocklistedStatus => 'Тізімге тыйым салынған';
 
   @override
-  String get deletedStatus => 'Deleted';
+  String get deletedStatus => 'Жойылды';
 
   @override
-  String get tmdbScore => 'TMDB Score';
+  String get tmdbScore => 'TMDB ұпайы';
 
   @override
-  String get releaseDateLabel => 'Release Date';
+  String get releaseDateLabel => 'Шығарылған күні';
 
   @override
-  String get firstAirDateLabel => 'First Air Date';
+  String get firstAirDateLabel => 'Алғашқы эфир күні';
 
   @override
-  String get revenueLabel => 'Revenue';
+  String get revenueLabel => 'Кіріс';
 
   @override
-  String get runtimeLabel => 'Runtime';
+  String get runtimeLabel => 'Орындалу уақыты';
 
   @override
-  String get budgetLabel => 'Budget';
+  String get budgetLabel => 'Бюджет';
 
   @override
-  String get originalLanguageLabel => 'Original Language';
+  String get originalLanguageLabel => 'Түпнұсқа тілі';
 
   @override
-  String get seasonsLabel => 'Seasons';
+  String get seasonsLabel => 'Жыл мезгілдері';
 
   @override
-  String get episodesLabel => 'Episodes';
+  String get episodesLabel => 'Эпизодтар';
 
   @override
-  String get access => 'Access';
+  String get access => 'Қол жеткізу';
 
   @override
-  String get add => 'Add';
+  String get add => 'қосу';
 
   @override
-  String get address => 'Address';
+  String get address => 'Мекенжай';
 
   @override
-  String get analytics => 'Analytics';
+  String get analytics => 'Аналитика';
 
   @override
-  String get catalog => 'Catalog';
+  String get catalog => 'Каталог';
 
   @override
-  String get content => 'Content';
+  String get content => 'Мазмұны';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Көшіру';
 
   @override
-  String get create => 'Create';
+  String get create => 'Жасау';
 
   @override
-  String get disable => 'Disable';
+  String get disable => 'Өшіру';
 
   @override
-  String get done => 'Done';
+  String get done => 'Дайын';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Өңдеу';
 
   @override
-  String get encoding => 'Encoding';
+  String get encoding => 'Кодтау';
 
   @override
-  String get error => 'Error';
+  String get error => 'Қате';
 
   @override
-  String get forward => 'Forward';
+  String get forward => 'Алға';
 
   @override
-  String get general => 'General';
+  String get general => 'Жалпы';
 
   @override
-  String get go => 'Go';
+  String get go => 'Бар';
 
   @override
-  String get install => 'Install';
+  String get install => 'Орнату';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'Орнатылған';
 
   @override
-  String get interval => 'Interval';
+  String get interval => 'Интервал';
 
   @override
-  String get name => 'Name';
+  String get name => 'Аты';
 
   @override
-  String get networking => 'Networking';
+  String get networking => 'Желі құру';
 
   @override
-  String get next => 'Next';
+  String get next => 'Келесі';
 
   @override
-  String get path => 'Path';
+  String get path => 'Жол';
 
   @override
-  String get paused => 'Paused';
+  String get paused => 'Кідіртілді';
 
   @override
-  String get permissions => 'Permissions';
+  String get permissions => 'Рұқсаттар';
 
   @override
-  String get processing => 'Processing';
+  String get processing => 'Өңдеу';
 
   @override
-  String get profile => 'Profile';
+  String get profile => 'Профиль';
 
   @override
-  String get provider => 'Provider';
+  String get provider => 'Провайдер';
 
   @override
-  String get refresh => 'Refresh';
+  String get refresh => 'Жаңарту';
 
   @override
-  String get remote => 'Remote';
+  String get remote => 'Қашықтан';
 
   @override
-  String get rename => 'Rename';
+  String get rename => 'Атын өзгерту';
 
   @override
-  String get revoke => 'Revoke';
+  String get revoke => 'Күшін жою';
 
   @override
-  String get role => 'Role';
+  String get role => 'Рөл';
 
   @override
-  String get root => 'Root';
+  String get root => 'Түбір';
 
   @override
-  String get run => 'Run';
+  String get run => 'Жүгіру';
 
   @override
-  String get search => 'Search';
+  String get search => 'Іздеу';
 
   @override
-  String get select => 'Select';
+  String get select => 'таңдаңыз';
 
   @override
-  String get send => 'Send';
+  String get send => 'Жіберу';
 
   @override
-  String get sessions => 'Sessions';
+  String get sessions => 'Сеанстар';
 
   @override
-  String get set => 'Set';
+  String get set => 'Орнату';
 
   @override
-  String get status => 'Status';
+  String get status => 'Күй';
 
   @override
-  String get stop => 'Stop';
+  String get stop => 'Тоқта';
 
   @override
-  String get streaming => 'Streaming';
+  String get streaming => 'Ағын';
 
   @override
-  String get time => 'Time';
+  String get time => 'Уақыт';
 
   @override
-  String get trickplay => 'Trickplay';
+  String get trickplay => 'Трикплей';
 
   @override
-  String get uninstall => 'Uninstall';
+  String get uninstall => 'Жою';
 
   @override
-  String get up => 'Up';
+  String get up => 'Жоғары';
 
   @override
-  String get update => 'Update';
+  String get update => 'Жаңарту';
 
   @override
-  String get upload => 'Upload';
+  String get upload => 'Жүктеп салу';
 
   @override
-  String get unmute => 'Unmute';
+  String get unmute => 'Дыбысты қосу';
 
   @override
-  String get mute => 'Mute';
+  String get mute => 'Дыбысты өшіру';
 
   @override
-  String get branding => 'Branding';
+  String get branding => 'Брендинг';
 
   @override
-  String get adminDrawerDashboard => 'Dashboard';
+  String get adminDrawerDashboard => 'Бақылау тақтасы';
 
   @override
-  String get adminDrawerAnalytics => 'Analytics';
+  String get adminDrawerAnalytics => 'Аналитика';
 
   @override
-  String get adminDrawerSettings => 'Settings';
+  String get adminDrawerSettings => 'Параметрлер';
 
   @override
-  String get adminDrawerBranding => 'Branding';
+  String get adminDrawerBranding => 'Брендинг';
 
   @override
-  String get adminDrawerUsers => 'Users';
+  String get adminDrawerUsers => 'Пайдаланушылар';
 
   @override
-  String get adminDrawerLibraries => 'Libraries';
+  String get adminDrawerLibraries => 'Кітапханалар';
 
   @override
-  String get adminDrawerTranscoding => 'Transcoding';
+  String get adminDrawerTranscoding => 'Транскодтау';
 
   @override
-  String get adminDrawerResume => 'Resume';
+  String get adminDrawerResume => 'Резюме';
 
   @override
-  String get adminDrawerStreaming => 'Streaming';
+  String get adminDrawerStreaming => 'Ағын';
 
   @override
-  String get adminDrawerTrickplay => 'Trickplay';
+  String get adminDrawerTrickplay => 'Трикплей';
 
   @override
-  String get adminDrawerDevices => 'Devices';
+  String get adminDrawerDevices => 'Құрылғылар';
 
   @override
-  String get adminDrawerActivity => 'Activity';
+  String get adminDrawerActivity => 'Белсенділік';
 
   @override
-  String get adminDrawerNetworking => 'Networking';
+  String get adminDrawerNetworking => 'Желі құру';
 
   @override
-  String get adminDrawerApiKeys => 'API Keys';
+  String get adminDrawerApiKeys => 'API кілттері';
 
   @override
-  String get adminDrawerBackups => 'Backups';
+  String get adminDrawerBackups => 'Сақтық көшірмелер';
 
   @override
-  String get adminDrawerLogs => 'Logs';
+  String get adminDrawerLogs => 'Журналдар';
 
   @override
-  String get adminDrawerScheduledTasks => 'Scheduled Tasks';
+  String get adminDrawerScheduledTasks => 'Жоспарланған тапсырмалар';
 
   @override
-  String get adminDrawerPlugins => 'Plugins';
+  String get adminDrawerPlugins => 'Плагиндер';
 
   @override
-  String get adminDrawerRepositories => 'Repositories';
+  String get adminDrawerRepositories => 'Репозиторийлер';
 
   @override
-  String get adminDrawerLiveTv => 'Live TV';
+  String get adminDrawerLiveTv => 'Тікелей теледидар';
 
   @override
-  String get adminExitTooltip => 'Exit Admin';
+  String get adminExitTooltip => 'Әкімшіден шығыңыз';
 
   @override
-  String get adminDashboardLoadFailed => 'Failed to load dashboard';
+  String get adminDashboardLoadFailed => 'Бақылау тақтасы жүктелмеді';
 
   @override
-  String get adminMediaOverview => 'Media Overview';
+  String get adminMediaOverview => 'Бұқаралық ақпарат құралдарына шолу';
 
   @override
-  String get adminMediaTotalsError => 'Could not load server media totals.';
+  String get adminMediaTotalsError =>
+      'Сервер медиасының жиынтықтары жүктелмеді.';
 
   @override
   String get adminMediaOverviewSubtitle =>
-      'A quick read on how much content is on this server.';
+      'Бұл серверде қанша мазмұн бар екенін жылдам оқу.';
 
   @override
   String adminPluginUpdatesAvailable(int count) {
@@ -3532,58 +3615,58 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get analyticsMediaDistribution => 'Media Distribution';
+  String get analyticsMediaDistribution => 'БАҚ тарату';
 
   @override
-  String get analyticsVideoCodecs => 'Video Codecs';
+  String get analyticsVideoCodecs => 'Бейне кодектер';
 
   @override
-  String get analyticsAudioCodecs => 'Audio Codecs';
+  String get analyticsAudioCodecs => 'Аудио кодектер';
 
   @override
-  String get analyticsContainers => 'Containers';
+  String get analyticsContainers => 'Контейнерлер';
 
   @override
-  String get analyticsTopGenres => 'Top Genres';
+  String get analyticsTopGenres => 'Үздік жанрлар';
 
   @override
-  String get analyticsReleaseYears => 'Release Years';
+  String get analyticsReleaseYears => 'Шығарылған жылдар';
 
   @override
-  String get analyticsContentRatings => 'Content Ratings';
+  String get analyticsContentRatings => 'Мазмұн рейтингтері';
 
   @override
-  String get analyticsRuntimeBuckets => 'Runtime Buckets';
+  String get analyticsRuntimeBuckets => 'Орындау уақыты шелектері';
 
   @override
-  String get analyticsFileFormats => 'File Formats';
+  String get analyticsFileFormats => 'Файл пішімдері';
 
   @override
-  String get analyticsNoData => 'No Data Available.';
+  String get analyticsNoData => 'Деректер жоқ.';
 
   @override
-  String get adminServerInfo => 'Server Info';
+  String get adminServerInfo => 'Сервер ақпараты';
 
   @override
-  String get adminRestartPending => 'Restart Pending';
+  String get adminRestartPending => 'Қайта бастау Күтуде';
 
   @override
-  String get adminServerPaths => 'Server Paths';
+  String get adminServerPaths => 'Сервер жолдары';
 
   @override
-  String get adminServerActions => 'Server Actions';
+  String get adminServerActions => 'Сервер әрекеттері';
 
   @override
-  String get adminRestartServer => 'Restart Server';
+  String get adminRestartServer => 'Серверді қайта іске қосыңыз';
 
   @override
-  String get adminShutdownServer => 'Shutdown Server';
+  String get adminShutdownServer => 'Серверді өшіру';
 
   @override
-  String get adminScanLibraries => 'Scan Libraries';
+  String get adminScanLibraries => 'Кітапханаларды сканерлеу';
 
   @override
-  String get adminLibraryScanStarted => 'Library scan started';
+  String get adminLibraryScanStarted => 'Кітапхананы сканерлеу басталды';
 
   @override
   String errorGeneric(String error) {
@@ -3591,26 +3674,26 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminServerRebootInProgress => 'Server reboot in progress';
+  String get adminServerRebootInProgress => 'Серверді қайта жүктеу орындалуда';
 
   @override
   String get adminServerRebootMessage =>
-      'Server reboot in progress, please restart Moonfin';
+      'Сервер қайта жүктелуде, Moonfin қайта іске қосыңыз';
 
   @override
-  String get adminActiveSessions => 'Active Sessions';
+  String get adminActiveSessions => 'Белсенді сессиялар';
 
   @override
-  String get adminSessionsLoadFailed => 'Failed to load sessions';
+  String get adminSessionsLoadFailed => 'Сеанстарды жүктеу сәтсіз аяқталды';
 
   @override
-  String get adminNoActiveSessions => 'No active sessions';
+  String get adminNoActiveSessions => 'Белсенді сеанстар жоқ';
 
   @override
-  String get adminRecentActivity => 'Recent Activity';
+  String get adminRecentActivity => 'Соңғы әрекет';
 
   @override
-  String get adminNoRecentActivity => 'No recent activity';
+  String get adminNoRecentActivity => 'Соңғы әрекет жоқ';
 
   @override
   String adminCommandFailed(String error) {
@@ -3618,64 +3701,64 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminSendMessage => 'Send Message';
+  String get adminSendMessage => 'Хабар жіберу';
 
   @override
-  String get adminMessageTextHint => 'Message text';
+  String get adminMessageTextHint => 'Хабарлама мәтіні';
 
   @override
-  String get adminSetVolume => 'Set Volume';
+  String get adminSetVolume => 'Дыбыс деңгейін орнату';
 
   @override
-  String get sessionPrev => 'Prev';
+  String get sessionPrev => 'Алдыңғы';
 
   @override
-  String get sessionRewind => 'Rewind';
+  String get sessionRewind => 'Артқа айналдыру';
 
   @override
-  String get sessionForward => 'Forward';
+  String get sessionForward => 'Алға';
 
   @override
-  String get sessionNext => 'Next';
+  String get sessionNext => 'Келесі';
 
   @override
-  String get sessionVolumeDown => 'Vol –';
+  String get sessionVolumeDown => 'Том –';
 
   @override
-  String get sessionVolumeUp => 'Vol +';
+  String get sessionVolumeUp => '+ том';
 
   @override
   String get uhd4k => '4K';
 
   @override
-  String get nowPlaying => 'Now Playing';
+  String get nowPlaying => 'Қазір ойнатылады';
 
   @override
-  String get volume => 'Volume';
+  String get volume => 'Көлемі';
 
   @override
-  String get actions => 'Actions';
+  String get actions => 'Әрекеттер';
 
   @override
-  String get videoCodec => 'Video Codec';
+  String get videoCodec => 'Бейне кодек';
 
   @override
-  String get audioCodec => 'Audio Codec';
+  String get audioCodec => 'Аудио кодек';
 
   @override
   String get hwAccel => 'HW Accel';
 
   @override
-  String get completion => 'Completion';
+  String get completion => 'Аяқтау';
 
   @override
-  String get direct => 'Direct';
+  String get direct => 'Тікелей';
 
   @override
-  String get adminDisconnect => 'Disconnect';
+  String get adminDisconnect => 'Ажырату';
 
   @override
-  String get adminClearDates => 'Clear dates';
+  String get adminClearDates => 'Күндерді тазалау';
 
   @override
   String adminActivityLoadFailed(String error) {
@@ -3683,16 +3766,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminNoActivityEntries => 'No activity entries';
+  String get adminNoActivityEntries => 'Әрекет жазбалары жоқ';
 
   @override
-  String get adminEditDeviceName => 'Edit Device Name';
+  String get adminEditDeviceName => 'Құрылғы атауын өңдеу';
 
   @override
-  String get adminCustomName => 'Custom Name';
+  String get adminCustomName => 'Пайдаланушы аты';
 
   @override
-  String get adminDeviceNameUpdated => 'Device name updated';
+  String get adminDeviceNameUpdated => 'Құрылғы атауы жаңартылды';
 
   @override
   String adminDeviceUpdateFailed(String error) {
@@ -3700,10 +3783,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteDevice => 'Delete Device';
+  String get adminDeleteDevice => 'Құрылғыны жою';
 
   @override
-  String get adminDeviceDeleted => 'Device deleted';
+  String get adminDeviceDeleted => 'Құрылғы жойылды';
 
   @override
   String adminDeviceDeleteFailed(String error) {
@@ -3711,28 +3794,28 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminDevicesLoadFailed => 'Failed to load devices';
+  String get adminDevicesLoadFailed => 'Құрылғылар жүктелмеді';
 
   @override
-  String get adminSearchDevices => 'Search devices';
+  String get adminSearchDevices => 'Құрылғыларды іздеу';
 
   @override
-  String get adminThisDevice => 'This Device';
+  String get adminThisDevice => 'Бұл құрылғы';
 
   @override
-  String get adminEditName => 'Edit Name';
+  String get adminEditName => 'Атауды өңдеу';
 
   @override
-  String get adminLibrariesLoadFailed => 'Failed to load libraries';
+  String get adminLibrariesLoadFailed => 'Кітапханалар жүктелмеді';
 
   @override
-  String get adminNoLibraries => 'No libraries configured';
+  String get adminNoLibraries => 'Бірде-бір кітапхана конфигурацияланбаған';
 
   @override
-  String get adminScanAllLibraries => 'Scan All Libraries';
+  String get adminScanAllLibraries => 'Барлық кітапханаларды сканерлеу';
 
   @override
-  String get adminAddLibrary => 'Add Library';
+  String get adminAddLibrary => 'Кітапхана қосу';
 
   @override
   String adminScanFailed(String error) {
@@ -3740,10 +3823,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminRenameLibrary => 'Rename Library';
+  String get adminRenameLibrary => 'Кітапхананың атын өзгерту';
 
   @override
-  String get adminNewName => 'New name';
+  String get adminNewName => 'Жаңа атау';
 
   @override
   String adminLibraryRenamed(String name) {
@@ -3756,7 +3839,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminDeleteLibrary => 'Delete Library';
+  String get adminDeleteLibrary => 'Кітапхананы жою';
 
   @override
   String adminLibraryDeleted(String name) {
@@ -3774,7 +3857,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminRemovePath => 'Remove Path';
+  String get adminRemovePath => 'Жолды жою';
 
   @override
   String adminRemovePathConfirm(String path) {
@@ -3787,7 +3870,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryOptionsSaved => 'Library options saved';
+  String get adminLibraryOptionsSaved => 'Кітапхана опциялары сақталды';
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
@@ -3795,34 +3878,34 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryLoadFailed => 'Failed to load library';
+  String get adminLibraryLoadFailed => 'Кітапхана жүктелмеді';
 
   @override
-  String get adminNoMediaPaths => 'No media paths configured';
+  String get adminNoMediaPaths => 'Ешбір медиа жолы конфигурацияланбаған';
 
   @override
-  String get adminAddPath => 'Add Path';
+  String get adminAddPath => 'Жол қосу';
 
   @override
-  String get adminBrowseFilesystem => 'Browse server filesystem:';
+  String get adminBrowseFilesystem => 'Сервер файлдық жүйесін шолу:';
 
   @override
-  String get adminSaveOptions => 'Save Options';
+  String get adminSaveOptions => 'Параметрлерді сақтау';
 
   @override
-  String get adminPreferredMetadataLanguage => 'Preferred metadata language';
+  String get adminPreferredMetadataLanguage => 'Таңдаулы метадеректер тілі';
 
   @override
-  String get adminMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminMetadataLanguageHint => 'мысалы en, de, fr';
 
   @override
-  String get adminMetadataCountryCode => 'Metadata country code';
+  String get adminMetadataCountryCode => 'Метадеректер ел коды';
 
   @override
-  String get adminMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminMetadataCountryHint => 'мысалы АҚШ, DE, FR';
 
   @override
-  String get adminLibraryNameRequired => 'Library name is required';
+  String get adminLibraryNameRequired => 'Кітапхана атауы қажет';
 
   @override
   String adminLibraryCreateFailed(String error) {
@@ -3830,25 +3913,25 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminLibraryName => 'Library Name';
+  String get adminLibraryName => 'Кітапхана аты';
 
   @override
-  String get adminSelectedPaths => 'Selected Paths:';
+  String get adminSelectedPaths => 'Таңдалған жолдар:';
 
   @override
-  String get adminNoPathsAdded => 'No paths added (can be added later)';
+  String get adminNoPathsAdded => 'Жолдар қосылмаған (кейінірек қосуға болады)';
 
   @override
-  String get adminCreateLibrary => 'Create Library';
+  String get adminCreateLibrary => 'Кітапхана жасау';
 
   @override
-  String get paths => 'Paths:';
+  String get paths => 'Жолдар:';
 
   @override
-  String get adminDisableUser => 'Disable User';
+  String get adminDisableUser => 'Пайдаланушыны өшіру';
 
   @override
-  String get adminEnableUser => 'Enable User';
+  String get adminEnableUser => 'Пайдаланушыны қосыңыз';
 
   @override
   String adminDisableUserConfirm(String name) {
@@ -3876,16 +3959,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminUsersLoadFailed => 'Failed to load users';
+  String get adminUsersLoadFailed => 'Пайдаланушыларды жүктеу мүмкін болмады';
 
   @override
-  String get adminSearchUsers => 'Search users';
+  String get adminSearchUsers => 'Пайдаланушыларды іздеу';
 
   @override
-  String get adminEditUser => 'Edit User';
+  String get adminEditUser => 'Пайдаланушыны өңдеу';
 
   @override
-  String get adminAddUser => 'Add User';
+  String get adminAddUser => 'Пайдаланушы қосу';
 
   @override
   String adminUserCreateFailed(String error) {
@@ -3893,19 +3976,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminCreateUser => 'Create User';
+  String get adminCreateUser => 'Пайдаланушы жасау';
 
   @override
-  String get adminPasswordOptional => 'Password (optional)';
+  String get adminPasswordOptional => 'Құпия сөз (міндетті емес)';
 
   @override
-  String get adminUsernameRequired => 'Username cannot be empty';
+  String get adminUsernameRequired => 'Пайдаланушы аты бос болмауы керек';
 
   @override
-  String get adminNoProfileChanges => 'No profile changes to save';
+  String get adminNoProfileChanges => 'Сақталатын профиль өзгерістері жоқ';
 
   @override
-  String get adminProfileSaved => 'Profile saved';
+  String get adminProfileSaved => 'Профиль сақталды';
 
   @override
   String adminSaveFailed(String error) {
@@ -3913,10 +3996,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminPermissionsSaved => 'Permissions saved';
+  String get adminPermissionsSaved => 'Рұқсаттар сақталды';
 
   @override
-  String get adminPasswordsMismatch => 'Passwords do not match';
+  String get adminPasswordsMismatch => 'Құпия сөздер сәйкес келмейді';
 
   @override
   String adminFailed(String error) {
@@ -3924,135 +4007,147 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminUserLoadFailed => 'Failed to load user';
+  String get adminUserLoadFailed => 'Пайдаланушы жүктелмеді';
 
   @override
-  String get adminBackToUsers => 'Back to Users';
+  String get adminBackToUsers => 'Пайдаланушылар дегенге қайта келу';
 
   @override
-  String get adminSaveProfile => 'Save Profile';
+  String get adminSaveProfile => 'Профильді сақтау';
 
   @override
-  String get adminDeleteUser => 'Delete User';
+  String get adminDeleteUser => 'Пайдаланушыны жою';
 
   @override
-  String get admin => 'Admin';
+  String get admin => 'Админ';
 
   @override
   String get adminFullAccessWarning =>
-      'Administrators have complete access to the server. Grant with caution.';
+      'Әкімшілер серверге толық қол жеткізе алады. Сақтықпен беріңіз.';
 
   @override
-  String get administrator => 'Administrator';
+  String get administrator => 'Әкімші';
 
   @override
-  String get adminHiddenUser => 'Hidden user';
+  String get adminHiddenUser => 'Жасырын пайдаланушы';
 
   @override
-  String get adminAllowMediaPlayback => 'Allow media playback';
+  String get adminAllowMediaPlayback => 'Медиа ойнатуға рұқсат беріңіз';
 
   @override
-  String get adminAllowAudioTranscoding => 'Allow audio transcoding';
+  String get adminAllowAudioTranscoding =>
+      'Дыбысты қайта кодтауға рұқсат етіңіз';
 
   @override
-  String get adminAllowVideoTranscoding => 'Allow video transcoding';
+  String get adminAllowVideoTranscoding =>
+      'Бейнені қайта кодтауға рұқсат беріңіз';
 
   @override
-  String get adminAllowRemuxing => 'Allow remuxing';
+  String get adminAllowRemuxing => 'Ремукс жасауға рұқсат етіңіз';
 
   @override
-  String get adminForceRemoteTranscoding => 'Force remote source transcoding';
+  String get adminForceRemoteTranscoding =>
+      'Қашықтағы дереккөзді қайта кодтауды мәжбүрлеу';
 
   @override
-  String get adminAllowContentDeletion => 'Allow content deletion';
+  String get adminAllowContentDeletion => 'Мазмұнды жоюға рұқсат беріңіз';
 
   @override
-  String get adminAllowContentDownloading => 'Allow content downloading';
+  String get adminAllowContentDownloading =>
+      'Мазмұнды жүктеп алуға рұқсат беріңіз';
 
   @override
-  String get adminAllowPublicSharing => 'Allow public sharing';
+  String get adminAllowPublicSharing => 'Жалпыға ортақ бөлісуге рұқсат беріңіз';
 
   @override
-  String get adminAllowRemoteControl => 'Allow remote control of other users';
+  String get adminAllowRemoteControl =>
+      'Басқа пайдаланушыларды қашықтан басқаруға рұқсат ету';
 
   @override
-  String get adminAllowSharedDeviceControl => 'Allow shared device control';
+  String get adminAllowSharedDeviceControl =>
+      'Ортақ құрылғыны басқаруға рұқсат етіңіз';
 
   @override
-  String get adminAllowRemoteAccess => 'Allow remote access';
+  String get adminAllowRemoteAccess => 'Қашықтан кіруге рұқсат беріңіз';
 
   @override
-  String get adminRemoteBitrateLimit => 'Remote client bitrate limit (bps)';
+  String get adminRemoteBitrateLimit =>
+      'Қашықтағы клиенттің бит жылдамдығының шегі (бит/с)';
 
   @override
-  String get adminLeaveEmptyNoLimit => 'Leave empty for no limit';
+  String get adminLeaveEmptyNoLimit => 'Шектеусіз бос қалдырыңыз';
 
   @override
-  String get adminMaxActiveSessions => 'Max active sessions';
+  String get adminMaxActiveSessions => 'Максималды белсенді сеанстар';
 
   @override
-  String get adminAllowLiveTvAccess => 'Allow Live TV access';
+  String get adminAllowLiveTvAccess =>
+      'Тікелей теледидарға кіруге рұқсат беріңіз';
 
   @override
-  String get adminAllowLiveTvManagement => 'Allow Live TV management';
+  String get adminAllowLiveTvManagement => 'Live TV басқаруына рұқсат беріңіз';
 
   @override
-  String get adminAllowCollectionManagement => 'Allow collection management';
+  String get adminAllowCollectionManagement =>
+      'Коллекцияны басқаруға рұқсат етіңіз';
 
   @override
-  String get adminAllowSubtitleManagement => 'Allow subtitle management';
+  String get adminAllowSubtitleManagement =>
+      'Субтитрлерді басқаруға рұқсат беріңіз';
 
   @override
-  String get adminAllowLyricManagement => 'Allow lyric management';
+  String get adminAllowLyricManagement => 'Лириканы басқаруға рұқсат етіңіз';
 
   @override
-  String get adminSavePermissions => 'Save Permissions';
+  String get adminSavePermissions => 'Рұқсаттарды сақтау';
 
   @override
-  String get adminEnableAllLibraryAccess => 'Enable access to all libraries';
+  String get adminEnableAllLibraryAccess =>
+      'Барлық кітапханаларға кіру мүмкіндігін қосыңыз';
 
   @override
-  String get adminSaveAccess => 'Save Access';
+  String get adminSaveAccess => 'Access сақтау';
 
   @override
-  String get adminChangePassword => 'Change Password';
+  String get adminChangePassword => 'Құпия сөзді өзгерту';
 
   @override
-  String get adminNewPassword => 'New Password';
+  String get adminNewPassword => 'Жаңа құпия сөз';
 
   @override
-  String get adminConfirmPassword => 'Confirm Password';
+  String get adminConfirmPassword => 'Құпия сөзді Растау';
 
   @override
-  String get adminSetPassword => 'Set Password';
+  String get adminSetPassword => 'Құпия сөзді орнату';
 
   @override
-  String get adminResetPassword => 'Reset Password';
+  String get adminResetPassword => 'Құпия сөзді қалпына келтіру';
 
   @override
-  String get adminPasswordReset => 'Password reset';
+  String get adminPasswordReset => 'Құпия сөзді қалпына келтіру';
 
   @override
-  String get adminPasswordUpdated => 'Password updated';
+  String get adminPasswordUpdated => 'Құпия сөз жаңартылды';
 
   @override
-  String get adminUserSettings => 'User Settings';
+  String get adminUserSettings => 'Пайдаланушы параметрлері';
 
   @override
-  String get adminLibraryAccess => 'Library Access';
+  String get adminLibraryAccess => 'Кітапханаға кіру';
 
   @override
-  String get adminDeviceAndChannelAccess => 'Device & Channel Access';
+  String get adminDeviceAndChannelAccess => 'Құрылғы мен арнаға кіру';
 
   @override
-  String get adminEnableAllDevices => 'Enable access to all devices';
+  String get adminEnableAllDevices =>
+      'Барлық құрылғыларға кіру мүмкіндігін қосыңыз';
 
   @override
-  String get adminEnableAllChannels => 'Enable access to all channels';
+  String get adminEnableAllChannels => 'Барлық арналарға кіруді қосыңыз';
 
   @override
   String get adminResetPasswordWarning =>
-      'This will remove the password. The user will be able to log in without a password.';
+      'Бұл құпия сөзді жояды. Пайдаланушы парольсіз жүйеге кіре алады.';
 
   @override
   String adminServerReturnedHttp(int status) {
@@ -4075,20 +4170,20 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminCreateApiKey => 'Create API Key';
+  String get adminCreateApiKey => 'API кілтін жасау';
 
   @override
-  String get adminAppName => 'App name';
+  String get adminAppName => 'Қолданба атауы';
 
   @override
-  String get adminApiKeyCreated => 'API Key Created';
+  String get adminApiKeyCreated => 'API кілті жасалды';
 
   @override
   String get adminApiKeyCreatedNoToken =>
-      'Key created successfully. The server did not return the token. Check server API keys.';
+      'Кілт сәтті жасалды. Сервер таңбалауышты қайтармады. Сервер API кілттерін тексеріңіз.';
 
   @override
-  String get adminKeyCopied => 'Key copied to clipboard';
+  String get adminKeyCopied => 'Перне алмасу буферіне көшірілді';
 
   @override
   String adminApiKeyCreateFailed(String error) {
@@ -4096,10 +4191,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminKeyTokenMissing => 'Key token missing from server response';
+  String get adminKeyTokenMissing => 'Сервер жауабында кілт таңбалауышы жоқ';
 
   @override
-  String get adminRevokeApiKey => 'Revoke API Key';
+  String get adminRevokeApiKey => 'API кілтін қайтарып алу';
 
   @override
   String adminRevokeKeyConfirm(String name) {
@@ -4107,7 +4202,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeyRevoked => 'API key revoked';
+  String get adminApiKeyRevoked => 'API кілті кері қайтарылды';
 
   @override
   String adminApiKeyRevokeFailed(String error) {
@@ -4115,19 +4210,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminApiKeysLoadFailed => 'Failed to load API keys';
+  String get adminApiKeysLoadFailed => 'API кілттері жүктелмеді';
 
   @override
-  String get adminApiKeysTitle => 'API Keys';
+  String get adminApiKeysTitle => 'API кілттері';
 
   @override
-  String get adminCreateKey => 'Create Key';
+  String get adminCreateKey => 'Кілт жасау';
 
   @override
-  String get adminNoApiKeys => 'No API keys found';
+  String get adminNoApiKeys => 'API кілттері табылмады';
 
   @override
-  String get adminUnknownApp => 'Unknown App';
+  String get adminUnknownApp => 'Белгісіз қолданба';
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
@@ -4135,10 +4230,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminCreatingBackup => 'Creating backup...';
+  String get adminCreatingBackup => 'Сақтық көшірме жасалуда...';
 
   @override
-  String get adminBackupCreated => 'Backup created successfully';
+  String get adminBackupCreated => 'Сақтық көшірме сәтті жасалды';
 
   @override
   String adminBackupCreateFailed(String error) {
@@ -4146,7 +4241,8 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminBackupPathMissing => 'Backup path missing in server response';
+  String get adminBackupPathMissing =>
+      'Сервер жауабында сақтық көшірме жолы жоқ';
 
   @override
   String adminBackupManifest(String name) {
@@ -4159,10 +4255,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminConfirmRestore => 'Confirm Restore';
+  String get adminConfirmRestore => 'Қалпына келтіруді растаңыз';
 
   @override
-  String get adminRestoringBackup => 'Restoring backup...';
+  String get adminRestoringBackup => 'Сақтық көшірме қалпына келтірілуде...';
 
   @override
   String adminRestoreFailed(String error) {
@@ -4170,31 +4266,31 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminBackupsLoadFailed => 'Failed to load backups';
+  String get adminBackupsLoadFailed => 'Сақтық көшірмелер жүктелмеді';
 
   @override
-  String get adminCreateBackup => 'Create Backup';
+  String get adminCreateBackup => 'Сақтық көшірме жасау';
 
   @override
-  String get adminNoBackups => 'No backups found';
+  String get adminNoBackups => 'Сақтық көшірмелер табылмады';
 
   @override
-  String get adminViewDetails => 'View Details';
+  String get adminViewDetails => 'Мәліметтерді көру';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Қалпына келтіру';
 
   @override
-  String get adminLogsLoadFailed => 'Failed to load server logs';
+  String get adminLogsLoadFailed => 'Сервер журналдарын жүктеу сәтсіз аяқталды';
 
   @override
-  String get adminNoLogFiles => 'No log files found';
+  String get adminNoLogFiles => 'Ешбір журнал файлдары табылмады';
 
   @override
-  String get adminLogCopied => 'Log copied to clipboard';
+  String get adminLogCopied => 'Журнал алмасу буферіне көшірілді';
 
   @override
-  String get adminSaveLogFile => 'Save log file';
+  String get adminSaveLogFile => 'Журнал файлын сақтаңыз';
 
   @override
   String adminSavedTo(String path) {
@@ -4212,10 +4308,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminSearchInLog => 'Search in log';
+  String get adminSearchInLog => 'Журналда іздеу';
 
   @override
-  String get adminNoMatchingLines => 'No matching lines';
+  String get adminNoMatchingLines => 'Сәйкес сызықтар жоқ';
 
   @override
   String adminTasksLoadFailed(String error) {
@@ -4223,10 +4319,11 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminNoScheduledTasks => 'No scheduled tasks found';
+  String get adminNoScheduledTasks => 'Жоспарланған тапсырмалар табылмады';
 
   @override
-  String get adminNoTasksMatchFilter => 'No tasks match the current filter';
+  String get adminNoTasksMatchFilter =>
+      'Ағымдағы сүзгіге сәйкес тапсырмалар жоқ';
 
   @override
   String adminTaskStartFailed(String error) {
@@ -4244,7 +4341,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminRunNow => 'Run Now';
+  String get adminRunNow => 'Қазір іске қосыңыз';
 
   @override
   String adminTriggerRemoveFailed(String error) {
@@ -4257,25 +4354,25 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminLastExecution => 'Last Execution';
+  String get adminLastExecution => 'Соңғы орындалу';
 
   @override
-  String get adminTriggers => 'Triggers';
+  String get adminTriggers => 'Триггерлер';
 
   @override
-  String get adminAddTrigger => 'Add Trigger';
+  String get adminAddTrigger => 'Триггерді қосыңыз';
 
   @override
-  String get adminNoTriggers => 'No triggers configured';
+  String get adminNoTriggers => 'Триггерлер конфигурацияланбаған';
 
   @override
-  String get adminTriggerType => 'Trigger Type';
+  String get adminTriggerType => 'Триггер түрі';
 
   @override
-  String get adminTimeLimit => 'Time limit (optional)';
+  String get adminTimeLimit => 'Уақыт шегі (міндетті емес)';
 
   @override
-  String get adminNoLimit => 'No limit';
+  String get adminNoLimit => 'Шектеу жоқ';
 
   @override
   String adminHours(String hours) {
@@ -4283,10 +4380,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminDayOfWeek => 'Day of week';
+  String get adminDayOfWeek => 'Аптаның күні';
 
   @override
-  String get adminSearchPlugins => 'Search plugins...';
+  String get adminSearchPlugins => 'Плагиндерді іздеу...';
 
   @override
   String adminPluginToggleFailed(String error) {
@@ -4294,7 +4391,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminUninstallPlugin => 'Uninstall Plugin';
+  String get adminUninstallPlugin => 'Плагинді жою';
 
   @override
   String adminUninstallPluginConfirm(String name) {
@@ -4322,10 +4419,11 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminNoPluginsMatchSearch => 'No plugins match your search';
+  String get adminNoPluginsMatchSearch =>
+      'Іздеуіңізге сәйкес келетін плагиндер жоқ';
 
   @override
-  String get adminNoPluginsInstalled => 'No plugins installed';
+  String get adminNoPluginsInstalled => 'Ешқандай плагин орнатылмаған';
 
   @override
   String adminInstallUpdate(String version) {
@@ -4338,20 +4436,20 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminNoPackagesMatchSearch => 'No packages match your search';
+  String get adminNoPackagesMatchSearch => 'Іздеуіңізге сәйкес пакеттер жоқ';
 
   @override
-  String get adminNoPackagesAvailable => 'No packages available';
+  String get adminNoPackagesAvailable => 'Қолжетімді пакеттер жоқ';
 
   @override
-  String get adminExperimentalIntegration => 'Experimental Integration';
+  String get adminExperimentalIntegration => 'Эксперименттік интеграция';
 
   @override
   String get adminExperimentalWarning =>
-      'Plugin settings integration is still experimental. Some settings pages may not render correctly.';
+      'Плагин параметрлерін біріктіру әлі эксперименталды. Кейбір параметрлер беттері дұрыс көрсетілмеуі мүмкін.';
 
   @override
-  String get continueAction => 'Continue';
+  String get continueAction => 'Жалғастыру';
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
@@ -4370,7 +4468,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get adminMissingAuthToken =>
-      'Unable to open settings: missing auth token.';
+      'Параметрлерді ашу мүмкін емес: аутентификация белгісі жоқ.';
 
   @override
   String adminPluginLoadFailed(String error) {
@@ -4378,7 +4476,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminPluginNotFound => 'Plugin not found';
+  String get adminPluginNotFound => 'Плагин табылмады';
 
   @override
   String adminPluginVersion(String version) {
@@ -4386,19 +4484,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminEnablePlugin => 'Enable Plugin';
+  String get adminEnablePlugin => 'Плагинді қосыңыз';
 
   @override
-  String get adminPluginSettingsPage => 'Plugin settings page';
+  String get adminPluginSettingsPage => 'Плагин параметрлері беті';
 
   @override
-  String get adminRevisionHistory => 'Revision History';
+  String get adminRevisionHistory => 'Қайта қарау тарихы';
 
   @override
-  String get adminNoChangelog => 'No changelog available.';
+  String get adminNoChangelog => 'Өзгеріс журналы жоқ.';
 
   @override
-  String get adminRemoveRepository => 'Remove Repository';
+  String get adminRemoveRepository => 'Репозиторийді жою';
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
@@ -4416,16 +4514,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminRepositoryNameHint => 'e.g. Jellyfin Stable';
+  String get adminRepositoryNameHint => 'мысалы Jellyfin Тұрақты';
 
   @override
-  String get adminRepositoryUrl => 'Repository URL';
+  String get adminRepositoryUrl => 'Репозиторий URL';
 
   @override
-  String get adminAddEntry => 'Add entry';
+  String get adminAddEntry => 'Жазба қосу';
 
   @override
-  String get adminInvalidUrl => 'Invalid URL';
+  String get adminInvalidUrl => 'Жарамсыз URL';
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
@@ -4438,269 +4536,281 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminOpenInBrowser => 'Open in Browser';
+  String get adminOpenInBrowser => 'Браузерде ашыңыз';
 
   @override
-  String get adminOpenExternally => 'Open externally';
+  String get adminOpenExternally => 'Сырттай ашыңыз';
 
   @override
-  String get adminGeneralSettings => 'General Settings';
+  String get adminGeneralSettings => 'Жалпы параметрлер';
 
   @override
-  String get adminServerName => 'Server name';
+  String get adminServerName => 'Сервер атауы';
 
   @override
-  String get adminPreferredMetadataCountry => 'Preferred metadata country';
+  String get adminPreferredMetadataCountry => 'Таңдаулы метадеректер елі';
 
   @override
-  String get adminCachePath => 'Cache path';
+  String get adminCachePath => 'Кэш жолы';
 
   @override
-  String get adminMetadataPath => 'Metadata path';
+  String get adminMetadataPath => 'Метадеректер жолы';
 
   @override
-  String get adminLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminLibraryScanConcurrency =>
+      'Кітапхананы сканерлеудің параллельдігі';
 
   @override
-  String get adminParallelImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminParallelImageEncodingLimit =>
+      'Параллель кескінді кодтау шегі';
 
   @override
-  String get adminSlowResponseThreshold => 'Slow response threshold (ms)';
+  String get adminSlowResponseThreshold => 'Баяу жауап шегі (мс)';
 
   @override
-  String get adminBrandingSaved => 'Branding settings saved';
+  String get adminBrandingSaved => 'Брендинг параметрлері сақталды';
 
   @override
-  String get adminBrandingLoadFailed => 'Failed to load branding settings';
+  String get adminBrandingLoadFailed => 'Бренд параметрлері жүктелмеді';
 
   @override
-  String get adminLoginDisclaimer => 'Login disclaimer';
+  String get adminLoginDisclaimer => 'Жүйеге кіруден бас тарту';
 
   @override
-  String get adminLoginDisclaimerHint => 'HTML displayed below the login form';
+  String get adminLoginDisclaimerHint =>
+      'Жүйеге кіру пішінінің астында HTML көрсетіледі';
 
   @override
-  String get adminCustomCss => 'Custom CSS';
+  String get adminCustomCss => 'Арнаулы CSS';
 
   @override
-  String get adminCustomCssHint => 'Custom CSS applied to the web interface';
+  String get adminCustomCssHint =>
+      'Веб-интерфейске қолданылған пайдаланушы CSS';
 
   @override
-  String get adminEnableSplashScreen => 'Enable splash screen';
+  String get adminEnableSplashScreen => 'Экранды қосу';
 
   @override
-  String get adminStreamingSaved => 'Streaming settings saved';
+  String get adminStreamingSaved => 'Трансляция параметрлері сақталды';
 
   @override
-  String get adminStreamingLoadFailed => 'Failed to load streaming settings';
+  String get adminStreamingLoadFailed =>
+      'Ағындық параметрлерді жүктеу мүмкін болмады';
 
   @override
   String get adminStreamingDescription =>
-      'Set global streaming bitrate limits for remote connections.';
+      'Қашықтағы қосылымдар үшін жаһандық ағындық бит жылдамдығы шектеулерін орнатыңыз.';
 
   @override
   String get adminRemoteBitrateLimitMbps =>
-      'Remote client bitrate limit (Mbps)';
+      'Қашықтағы клиенттің бит жылдамдығының шегі (Мбит/с)';
 
   @override
-  String get adminLeaveEmptyForUnlimited => 'Leave empty or 0 for unlimited';
+  String get adminLeaveEmptyForUnlimited =>
+      'Бос қалдырыңыз немесе шектеусіз үшін 0 қалдырыңыз';
 
   @override
-  String get adminPlaybackSaved => 'Playback settings saved';
+  String get adminPlaybackSaved => 'Ойнату параметрлері сақталды';
 
   @override
-  String get adminPlaybackLoadFailed => 'Failed to load playback settings';
+  String get adminPlaybackLoadFailed => 'Ойнату параметрлері жүктелмеді';
 
   @override
-  String get adminPlaybackTranscoding => 'Playback / Transcoding';
+  String get adminPlaybackTranscoding => 'Ойнату / қайта кодтау';
 
   @override
-  String get adminHardwareAcceleration => 'Hardware acceleration';
+  String get adminHardwareAcceleration => 'Аппараттық жеделдету';
 
   @override
-  String get adminVaapiDevice => 'VA-API device';
+  String get adminVaapiDevice => 'VA-API құрылғысы';
 
   @override
-  String get adminEnableHardwareEncoding => 'Enable hardware encoding';
+  String get adminEnableHardwareEncoding => 'Аппараттық кодтауды қосыңыз';
 
   @override
-  String get adminEnableHardwareDecoding => 'Enable hardware decoding for:';
+  String get adminEnableHardwareDecoding =>
+      'Аппараттық құралдардың декодтауын қосыңыз:';
 
   @override
-  String get adminEncodingThreads => 'Encoding threads';
+  String get adminEncodingThreads => 'Жіптерді кодтау';
 
   @override
-  String get adminAutomatic => '0 = automatic';
+  String get adminAutomatic => '0 = автоматты';
 
   @override
-  String get adminTranscodingTempPath => 'Transcoding temp path';
+  String get adminTranscodingTempPath => 'Транскодтау уақытша жол';
 
   @override
-  String get adminEnableFallbackFont => 'Enable fallback font';
+  String get adminEnableFallbackFont => 'Қосымша қаріпті қосыңыз';
 
   @override
-  String get adminFallbackFontPath => 'Fallback font path';
+  String get adminFallbackFontPath => 'Қайта қаріп жолы';
 
   @override
-  String get adminAllowSegmentDeletion => 'Allow segment deletion';
+  String get adminAllowSegmentDeletion => 'Сегментті жоюға рұқсат ету';
 
   @override
-  String get adminSegmentKeepSeconds => 'Segment keep (seconds)';
+  String get adminSegmentKeepSeconds => 'Сегменттерді сақтау (секундтар)';
 
   @override
-  String get adminThrottleBuffering => 'Throttle buffering';
+  String get adminThrottleBuffering => 'Дроссельді буферлеу';
 
   @override
-  String get adminTrickplaySaved => 'Trickplay settings saved';
+  String get adminTrickplaySaved => 'Trickplay параметрлері сақталды';
 
   @override
-  String get adminTrickplayLoadFailed => 'Failed to load trickplay settings';
+  String get adminTrickplayLoadFailed =>
+      'Трик-плей параметрлерін жүктеу мүмкін болмады';
 
   @override
-  String get adminEnableHardwareAcceleration => 'Enable hardware acceleration';
+  String get adminEnableHardwareAcceleration =>
+      'Аппараттық жеделдетуді қосыңыз';
 
   @override
   String get adminEnableKeyFrameExtraction =>
-      'Enable key frame only extraction';
+      'Тек негізгі кадрды шығаруды қосыңыз';
 
   @override
-  String get adminKeyFrameSubtitle => 'Faster but lower accuracy';
+  String get adminKeyFrameSubtitle => 'Жылдамырақ, бірақ дәлдігі төмен';
 
   @override
-  String get adminScanBehavior => 'Scan behavior';
+  String get adminScanBehavior => 'Тәртіпті сканерлеу';
 
   @override
-  String get adminProcessPriority => 'Process priority';
+  String get adminProcessPriority => 'Процесс басымдығы';
 
   @override
-  String get adminImageSettings => 'Image Settings';
+  String get adminImageSettings => 'Кескін параметрлері';
 
   @override
-  String get adminIntervalMs => 'Interval (ms)';
+  String get adminIntervalMs => 'Аралық (мс)';
 
   @override
-  String get adminCaptureFrameSubtitle => 'How often to capture frames';
+  String get adminCaptureFrameSubtitle =>
+      'Жақтауларды қаншалықты жиі түсіру керек';
 
   @override
-  String get adminWidthResolutions => 'Width resolutions';
+  String get adminWidthResolutions => 'Ені ажыратымдылықтары';
 
   @override
-  String get adminTileWidth => 'Tile width';
+  String get adminTileWidth => 'Плитка ені';
 
   @override
-  String get adminTileHeight => 'Tile height';
+  String get adminTileHeight => 'Плитка биіктігі';
 
   @override
   String get adminQualitySubtitle =>
-      'Lower values = better quality, larger files';
+      'Төменгі мәндер = жақсы сапа, үлкенірек файлдар';
 
   @override
-  String get adminProcessThreads => 'Process threads';
+  String get adminProcessThreads => 'Жіптерді өңдеу';
 
   @override
-  String get adminResumeSaved => 'Resume settings saved';
+  String get adminResumeSaved => 'Параметрлерді жалғастыру сақталды';
 
   @override
-  String get adminResumeLoadFailed => 'Failed to load resume settings';
+  String get adminResumeLoadFailed => 'Жалғастыру параметрлері жүктелмеді';
 
   @override
   String get adminResumeDescription =>
-      'Configure when content should be marked as partially played or fully played.';
+      'Мазмұнның қашан жартылай ойнатылатын немесе толық ойнатылатыны белгіленетінін конфигурациялаңыз.';
 
   @override
-  String get adminMinResumePercentage => 'Minimum resume percentage';
+  String get adminMinResumePercentage => 'Резюменің минималды пайызы';
 
   @override
   String get adminMinResumeSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'Прогрессті сақтау үшін мазмұн осы пайыздан жоғары ойнатылуы керек';
 
   @override
-  String get adminMaxResumePercentage => 'Maximum resume percentage';
+  String get adminMaxResumePercentage => 'Резюменің максималды пайызы';
 
   @override
   String get adminMaxResumeSubtitle =>
-      'Content is considered fully played after this percentage';
+      'Осы пайыздан кейін мазмұн толығымен ойнатылды деп саналады';
 
   @override
-  String get adminMinResumeDuration => 'Minimum resume duration (seconds)';
+  String get adminMinResumeDuration => 'Ең аз түйіндеме ұзақтығы (секунд)';
 
   @override
   String get adminMinResumeDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Бұдан қысқа элементтерді қалпына келтіру мүмкін емес';
 
   @override
-  String get adminMinAudiobookResume => 'Minimum audiobook resume percentage';
+  String get adminMinAudiobookResume =>
+      'Аудиокітап түйіндемесінің ең аз пайызы';
 
   @override
-  String get adminMaxAudiobookResume => 'Maximum audiobook resume percentage';
+  String get adminMaxAudiobookResume =>
+      'Аудиокітап түйіндемесінің максималды пайызы';
 
   @override
   String get adminNetworkingSaved =>
-      'Networking settings saved. A server restart may be required.';
+      'Желі параметрлері сақталды. Серверді қайта іске қосу қажет болуы мүмкін.';
 
   @override
-  String get adminNetworkingLoadFailed => 'Failed to load networking settings';
+  String get adminNetworkingLoadFailed => 'Желі параметрлері жүктелмеді';
 
   @override
   String get adminNetworkingWarning =>
-      'Changes to networking settings may require a server restart.';
+      'Желі параметрлерін өзгерту серверді қайта іске қосуды қажет етуі мүмкін.';
 
   @override
-  String get adminEnableRemoteAccess => 'Enable remote access';
+  String get adminEnableRemoteAccess => 'Қашықтан қол жеткізуді қосыңыз';
 
   @override
-  String get ports => 'Ports';
+  String get ports => 'Порттар';
 
   @override
-  String get adminHttpPort => 'HTTP port';
+  String get adminHttpPort => 'HTTP порты';
 
   @override
-  String get adminHttpsPort => 'HTTPS port';
+  String get adminHttpsPort => 'HTTPS порты';
 
   @override
-  String get adminPublicHttpsPort => 'Public HTTPS port';
+  String get adminPublicHttpsPort => 'Қоғамдық HTTPS порты';
 
   @override
-  String get adminBaseUrl => 'Base URL';
+  String get adminBaseUrl => 'Негізгі URL';
 
   @override
-  String get adminBaseUrlHint => 'e.g. /jellyfin';
+  String get adminBaseUrlHint => 'мысалы /желлифин';
 
   @override
   String get https => 'HTTPS';
 
   @override
-  String get adminEnableHttps => 'Enable HTTPS';
+  String get adminEnableHttps => 'HTTPS қосыңыз';
 
   @override
-  String get adminLocalNetwork => 'Local Network';
+  String get adminLocalNetwork => 'Жергілікті желі';
 
   @override
-  String get adminLocalNetworkAddresses => 'Local network addresses';
+  String get adminLocalNetworkAddresses => 'Жергілікті желі мекенжайлары';
 
   @override
-  String get adminKnownProxies => 'Known proxies';
+  String get adminKnownProxies => 'Белгілі проксилер';
 
   @override
-  String get adminRemoteIpFilter => 'Remote IP Filter';
+  String get adminRemoteIpFilter => 'Қашықтағы IP сүзгісі';
 
   @override
-  String get adminRemoteIpFilterEntries => 'Remote IP filter';
+  String get adminRemoteIpFilterEntries => 'Қашықтағы IP сүзгісі';
 
   @override
-  String get adminCertificatePath => 'Certificate path';
+  String get adminCertificatePath => 'Сертификат жолы';
 
   @override
-  String get whitelist => 'Whitelist';
+  String get whitelist => 'Ақ тізім';
 
   @override
-  String get blacklist => 'Blacklist';
+  String get blacklist => 'Қара тізім';
 
   @override
-  String get notSet => 'Not set';
+  String get notSet => 'Орнатылмаған';
 
   @override
-  String get adminMetadataSaved => 'Metadata saved';
+  String get adminMetadataSaved => 'Метадеректер сақталды';
 
   @override
   String adminMetadataLoadFailed(String error) {
@@ -4713,19 +4823,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminRefreshMetadata => 'Refresh Metadata';
+  String get adminRefreshMetadata => 'Метадеректерді жаңарту';
 
   @override
-  String get recursive => 'Recursive';
+  String get recursive => 'Рекурсивті';
 
   @override
-  String get adminReplaceAllMetadata => 'Replace all metadata';
+  String get adminReplaceAllMetadata => 'Барлық метадеректерді ауыстырыңыз';
 
   @override
-  String get adminReplaceAllImages => 'Replace all images';
+  String get adminReplaceAllImages => 'Барлық кескіндерді ауыстырыңыз';
 
   @override
-  String get adminMetadataRefreshRequested => 'Metadata refresh requested';
+  String get adminMetadataRefreshRequested => 'Метадеректерді жаңарту сұралды';
 
   @override
   String adminMetadataRefreshFailed(String error) {
@@ -4733,16 +4843,16 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminSearchRemotePerson => 'Search Remote Person';
+  String get adminSearchRemotePerson => 'Қашықтағы адамды іздеу';
 
   @override
-  String get adminNoRemoteMatches => 'No remote matches found';
+  String get adminNoRemoteMatches => 'Қашықтағы сәйкестіктер табылмады';
 
   @override
-  String get adminRemoteResults => 'Remote Results';
+  String get adminRemoteResults => 'Қашықтағы нәтижелер';
 
   @override
-  String get adminRemoteMetadataApplied => 'Remote metadata applied';
+  String get adminRemoteMetadataApplied => 'Қашықтағы метадеректер қолданылды';
 
   @override
   String adminRemoteSearchFailed(String error) {
@@ -4750,13 +4860,13 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminUpdateContentType => 'Update Content Type';
+  String get adminUpdateContentType => 'Мазмұн түрін жаңарту';
 
   @override
-  String get adminContentType => 'Content type';
+  String get adminContentType => 'Мазмұн түрі';
 
   @override
-  String get adminContentTypeUpdated => 'Content type updated';
+  String get adminContentTypeUpdated => 'Мазмұн түрі жаңартылды';
 
   @override
   String adminContentTypeUpdateFailed(String error) {
@@ -4764,13 +4874,14 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataEditorLoadFailed => 'Failed to load metadata editor';
+  String get adminMetadataEditorLoadFailed =>
+      'Метадеректер өңдегішін жүктеу сәтсіз аяқталды';
 
   @override
-  String get adminNoPeopleEntries => 'No people entries';
+  String get adminNoPeopleEntries => 'Ешқандай адам жоқ';
 
   @override
-  String get adminNoExternalIds => 'No external IDs available';
+  String get adminNoExternalIds => 'Сыртқы идентификаторлар жоқ';
 
   @override
   String adminImageUpdated(String imageType) {
@@ -4783,10 +4894,11 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminUnsupportedImageFormat => 'Unsupported image format';
+  String get adminUnsupportedImageFormat =>
+      'Қолдау көрсетілмейтін кескін пішімі';
 
   @override
-  String get adminImageReadFailed => 'Failed to read selected image';
+  String get adminImageReadFailed => 'Таңдалған кескінді оқу мүмкін болмады';
 
   @override
   String adminImageUploaded(String imageType) {
@@ -4814,10 +4926,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminAllProviders => 'All providers';
+  String get adminAllProviders => 'Барлық провайдерлер';
 
   @override
-  String get adminNoRemoteImages => 'No remote images found';
+  String get adminNoRemoteImages => 'Ешқандай қашықтағы кескіндер табылмады';
 
   @override
   String adminTunerDiscoveryFailed(String error) {
@@ -4825,22 +4937,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminAddTuner => 'Add Tuner';
+  String get adminAddTuner => 'Тюнер қосыңыз';
 
   @override
-  String get adminTunerType => 'Tuner Type';
+  String get adminTunerType => 'Тюнер түрі';
 
   @override
-  String get adminTunerTypeHint => 'HDHomeRun, M3U, Other';
+  String get adminTunerTypeHint => 'HDHomeRun, M3U, Басқа';
 
   @override
-  String get adminUrlPath => 'URL / Path';
+  String get adminUrlPath => 'URL/жол';
 
   @override
-  String get adminNameOptional => 'Name (optional)';
+  String get adminNameOptional => 'Аты (міндетті емес)';
 
   @override
-  String get adminTunerAdded => 'Tuner added';
+  String get adminTunerAdded => 'Тюнер қосылды';
 
   @override
   String adminTunerAddFailed(String error) {
@@ -4848,22 +4960,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminAddGuideProvider => 'Add Guide Provider';
+  String get adminAddGuideProvider => 'Гид провайдерін қосыңыз';
 
   @override
-  String get adminProviderType => 'Provider Type';
+  String get adminProviderType => 'Провайдер түрі';
 
   @override
-  String get adminProviderTypeHint => 'SchedulesDirect or XMLTV';
+  String get adminProviderTypeHint => 'SchedulesDirect немесе XMLTV';
 
   @override
-  String get adminUsernameOptional => 'Username (optional)';
+  String get adminUsernameOptional => 'Пайдаланушы аты (міндетті емес)';
 
   @override
-  String get adminRefreshInterval => 'Refresh interval (hours)';
+  String get adminRefreshInterval => 'Жаңарту аралығы (сағат)';
 
   @override
-  String get adminProviderAdded => 'Provider added';
+  String get adminProviderAdded => 'Провайдер қосылды';
 
   @override
   String adminProviderAddFailed(String error) {
@@ -4876,7 +4988,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminTunerResetRequested => 'Tuner reset requested';
+  String get adminTunerResetRequested => 'Тюнерді қалпына келтіру сұралды';
 
   @override
   String adminTunerResetFailed(String error) {
@@ -4889,22 +5001,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminRecordingSettings => 'Recording Settings';
+  String get adminRecordingSettings => 'Жазу параметрлері';
 
   @override
-  String get adminPrePadding => 'Pre-padding (minutes)';
+  String get adminPrePadding => 'Алдын ала толтыру (минут)';
 
   @override
-  String get adminPostPadding => 'Post-padding (minutes)';
+  String get adminPostPadding => 'Толтырудан кейінгі (минут)';
 
   @override
-  String get adminRecordingPath => 'Recording path';
+  String get adminRecordingPath => 'Жазу жолы';
 
   @override
-  String get adminSeriesRecordingPath => 'Series recording path';
+  String get adminSeriesRecordingPath => 'Сериялық жазу жолы';
 
   @override
-  String get adminRecordingSettingsSaved => 'Recording settings saved';
+  String get adminRecordingSettingsSaved => 'Жазу параметрлері сақталды';
 
   @override
   String adminSettingsSaveFailed(String error) {
@@ -4912,16 +5024,17 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminSetChannelMappings => 'Set Channel Mappings';
+  String get adminSetChannelMappings => 'Арна салыстыруларын орнату';
 
   @override
-  String get adminMappingJson => 'Mapping JSON';
+  String get adminMappingJson => 'JSON салыстыру';
 
   @override
-  String get adminMappingJsonHint => 'Example: mappings JSON payload';
+  String get adminMappingJsonHint =>
+      'Мысал: JSON пайдалы жүктемесін салыстырады';
 
   @override
-  String get adminChannelMappingsUpdated => 'Channel mappings updated';
+  String get adminChannelMappingsUpdated => 'Арналарды салыстыру жаңартылды';
 
   @override
   String adminMappingsUpdateFailed(String error) {
@@ -4929,22 +5042,23 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminLiveTvLoadFailed => 'Failed to load Live TV administration';
+  String get adminLiveTvLoadFailed => 'Live TV әкімшілігі жүктелмеді';
 
   @override
-  String get adminTunerDevices => 'Tuner Devices';
+  String get adminTunerDevices => 'Тюнер құрылғылары';
 
   @override
-  String get adminNoTunerHosts => 'No tuner hosts configured';
+  String get adminNoTunerHosts => 'Тюнер хосттары конфигурацияланбаған';
 
   @override
-  String get adminGuideProviders => 'Guide Providers';
+  String get adminGuideProviders => 'Гид провайдерлері';
 
   @override
-  String get adminAddProvider => 'Add Provider';
+  String get adminAddProvider => 'Провайдерді қосу';
 
   @override
-  String get adminNoListingProviders => 'No listing providers configured';
+  String get adminNoListingProviders =>
+      'Листинг провайдерлері конфигурацияланбаған';
 
   @override
   String adminRecordingPathDisplay(String path) {
@@ -4967,32 +5081,32 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminTunerDiscovery => 'Tuner Discovery';
+  String get adminTunerDiscovery => 'Тюнерді табу';
 
   @override
-  String get adminChannelMappings => 'Channel Mappings';
+  String get adminChannelMappings => 'Арналарды салыстыру';
 
   @override
-  String get adminNoDiscoveredTuners => 'No discovered tuners yet';
+  String get adminNoDiscoveredTuners => 'Әлі табылған тюнер жоқ';
 
   @override
-  String get adminSettingsSaved => 'Settings saved';
+  String get adminSettingsSaved => 'Параметрлер сақталды';
 
   @override
   String get adminBackupsNotAvailable =>
-      'Backups are not available on this server build.';
+      'Бұл сервер құрылымында сақтық көшірмелер қол жетімді емес.';
 
   @override
   String get adminRestoreWarning1 =>
-      'Restoring will replace ALL current server data with the backup data.';
+      'Қалпына келтіру БАРЛЫҚ ағымдағы сервер деректерін сақтық көшірме деректерімен ауыстырады.';
 
   @override
   String get adminRestoreWarning2 =>
-      'Current server settings, users, and library data will be overwritten.';
+      'Ағымдағы сервер параметрлері, пайдаланушылар және кітапхана деректері қайта жазылады.';
 
   @override
   String get adminRestoreWarning3 =>
-      'The server will restart after restoration.';
+      'Қалпына келтіруден кейін сервер қайта іске қосылады.';
 
   @override
   String adminRestoreConfirmMessage(String name) {
@@ -5001,44 +5115,44 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get adminRestoreRequested =>
-      'Restore requested. Server restart may disconnect this session.';
+      'Қалпына келтіру сұралды. Серверді қайта іске қосу бұл сеансты ажыратуы мүмкін.';
 
   @override
-  String get adminBackupsTitle => 'Backups';
+  String get adminBackupsTitle => 'Сақтық көшірмелер';
 
   @override
-  String get adminUnknownDate => 'Unknown date';
+  String get adminUnknownDate => 'Белгісіз күн';
 
   @override
-  String get adminUnnamedBackup => 'Unnamed Backup';
+  String get adminUnnamedBackup => 'Аты жоқ сақтық көшірме';
 
   @override
   String get adminLiveTvNotAvailable =>
-      'Live TV administration is not available on this server build.';
+      'Тікелей теледидар әкімшілігі бұл сервер құрастыруында қолжетімді емес.';
 
   @override
-  String get adminLiveTvTitle => 'Live TV Administration';
+  String get adminLiveTvTitle => 'Тікелей теледидар әкімшілігі';
 
   @override
-  String get adminApply => 'Apply';
+  String get adminApply => 'Қолдану';
 
   @override
-  String get adminNotSet => 'Not set';
+  String get adminNotSet => 'Орнатылмаған';
 
   @override
-  String get adminReset => 'Reset';
+  String get adminReset => 'Қалпына келтіру';
 
   @override
-  String get adminLogsTitle => 'Server Logs';
+  String get adminLogsTitle => 'Сервер журналдары';
 
   @override
-  String get adminLogsNewestFirst => 'Newest First';
+  String get adminLogsNewestFirst => 'Ең жаңасы Бірінші';
 
   @override
-  String get adminLogsOldestFirst => 'Oldest First';
+  String get adminLogsOldestFirst => 'Ең ескі Бірінші';
 
   @override
-  String get adminLogsJustNow => 'Just now';
+  String get adminLogsJustNow => 'Жаңа ғана';
 
   @override
   String adminLogsMinutesAgo(int minutes) {
@@ -5066,109 +5180,109 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminLogViewerNoMatches => 'No matching lines';
+  String get adminLogViewerNoMatches => 'Сәйкес сызықтар жоқ';
 
   @override
-  String get adminMetadataEditorTitle => 'Metadata Editor';
+  String get adminMetadataEditorTitle => 'Метадеректер редакторы';
 
   @override
-  String get adminMetadataRemote => 'Remote';
+  String get adminMetadataRemote => 'Қашықтан';
 
   @override
-  String get adminMetadataType => 'Type';
+  String get adminMetadataType => 'Түр';
 
   @override
-  String get adminMetadataDetails => 'Details';
+  String get adminMetadataDetails => 'Мәліметтер';
 
   @override
-  String get adminMetadataExternalIds => 'External IDs';
+  String get adminMetadataExternalIds => 'Сыртқы идентификаторлар';
 
   @override
-  String get adminMetadataImages => 'Images';
+  String get adminMetadataImages => 'Суреттер';
 
   @override
-  String get adminMetadataFieldTitle => 'Title';
+  String get adminMetadataFieldTitle => 'Тақырып';
 
   @override
-  String get adminMetadataFieldSortTitle => 'Sort title';
+  String get adminMetadataFieldSortTitle => 'Тақырыпты сұрыптау';
 
   @override
-  String get adminMetadataFieldOriginalTitle => 'Original title';
+  String get adminMetadataFieldOriginalTitle => 'Түпнұсқа атауы';
 
   @override
-  String get adminMetadataFieldPremiereDate => 'Premiere date (YYYY-MM-DD)';
+  String get adminMetadataFieldPremiereDate => 'Премьера күні (ЖЖЖЖ-АА-КК)';
 
   @override
-  String get adminMetadataFieldEndDate => 'End date (YYYY-MM-DD)';
+  String get adminMetadataFieldEndDate => 'Аяқталу күні (ЖЖЖЖ-АА-КК)';
 
   @override
-  String get adminMetadataFieldProductionYear => 'Production year';
+  String get adminMetadataFieldProductionYear => 'Өндіріс жылы';
 
   @override
-  String get adminMetadataFieldOfficialRating => 'Official rating';
+  String get adminMetadataFieldOfficialRating => 'Ресми рейтинг';
 
   @override
-  String get adminMetadataFieldCommunityRating => 'Community rating';
+  String get adminMetadataFieldCommunityRating => 'Қауымдастық рейтингі';
 
   @override
-  String get adminMetadataFieldCriticRating => 'Critic rating';
+  String get adminMetadataFieldCriticRating => 'Сыни бағалау';
 
   @override
-  String get adminMetadataFieldTagline => 'Tagline';
+  String get adminMetadataFieldTagline => 'Таглайн';
 
   @override
-  String get adminMetadataFieldOverview => 'Overview';
+  String get adminMetadataFieldOverview => 'Шолу';
 
   @override
-  String get adminMetadataGenres => 'Genres';
+  String get adminMetadataGenres => 'Жанрлар';
 
   @override
-  String get adminMetadataTags => 'Tags';
+  String get adminMetadataTags => 'Тегтер';
 
   @override
-  String get adminMetadataStudios => 'Studios';
+  String get adminMetadataStudios => 'Студиялар';
 
   @override
-  String get adminMetadataPeople => 'People';
+  String get adminMetadataPeople => 'Адамдар';
 
   @override
-  String get adminMetadataAddGenre => 'Add genre';
+  String get adminMetadataAddGenre => 'Жанр қосыңыз';
 
   @override
-  String get adminMetadataAddTag => 'Add tag';
+  String get adminMetadataAddTag => 'Тег қосыңыз';
 
   @override
-  String get adminMetadataAddStudio => 'Add studio';
+  String get adminMetadataAddStudio => 'Студия қосыңыз';
 
   @override
-  String get adminMetadataAddPerson => 'Add Person';
+  String get adminMetadataAddPerson => 'Адам қосу';
 
   @override
-  String get adminMetadataEditPerson => 'Edit Person';
+  String get adminMetadataEditPerson => 'Адамды өңдеу';
 
   @override
-  String get adminMetadataRole => 'Role';
+  String get adminMetadataRole => 'Рөл';
 
   @override
-  String get adminMetadataImagePrimary => 'Primary';
+  String get adminMetadataImagePrimary => 'Негізгі';
 
   @override
-  String get adminMetadataImageBackdrop => 'Backdrop';
+  String get adminMetadataImageBackdrop => 'Фон';
 
   @override
-  String get adminMetadataImageLogo => 'Logo';
+  String get adminMetadataImageLogo => 'Логотип';
 
   @override
-  String get adminMetadataImageBanner => 'Banner';
+  String get adminMetadataImageBanner => 'Баннер';
 
   @override
-  String get adminMetadataImageThumb => 'Thumb';
+  String get adminMetadataImageThumb => 'Бас бармақ';
 
   @override
-  String get adminMetadataRecursive => 'Recursive';
+  String get adminMetadataRecursive => 'Рекурсивті';
 
   @override
-  String get adminMetadataProvider => 'Provider';
+  String get adminMetadataProvider => 'Провайдер';
 
   @override
   String adminMetadataImageUpdated(String imageType) {
@@ -5191,7 +5305,8 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataImageReadFailed => 'Failed to read selected image';
+  String get adminMetadataImageReadFailed =>
+      'Таңдалған кескінді оқу мүмкін болмады';
 
   @override
   String adminMetadataImageUploadFailed(String error) {
@@ -5205,7 +5320,7 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get adminMetadataDeleteImageContent =>
-      'This removes the current image from the item.';
+      'Бұл элементтен ағымдағы кескінді жояды.';
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
@@ -5218,31 +5333,32 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminMetadataUpload => 'Upload';
+  String get adminMetadataUpload => 'Жүктеп салу';
 
   @override
-  String get adminMetadataUpdate => 'Update';
+  String get adminMetadataUpdate => 'Жаңарту';
 
   @override
-  String get adminMetadataRemoteImage => 'Remote image';
+  String get adminMetadataRemoteImage => 'Қашықтағы кескін';
 
   @override
-  String get adminPluginsInstalled => 'Installed';
+  String get adminPluginsInstalled => 'Орнатылған';
 
   @override
-  String get adminPluginsCatalog => 'Catalog';
+  String get adminPluginsCatalog => 'Каталог';
 
   @override
-  String get adminPluginsActive => 'Active';
+  String get adminPluginsActive => 'Белсенді';
 
   @override
-  String get adminPluginsRestart => 'Restart';
+  String get adminPluginsRestart => 'Қайтадан қосу';
 
   @override
-  String get adminPluginsNoSearchResults => 'No plugins match your search';
+  String get adminPluginsNoSearchResults =>
+      'Іздеуіңізге сәйкес келетін плагиндер жоқ';
 
   @override
-  String get adminPluginsNoneInstalled => 'No plugins installed';
+  String get adminPluginsNoneInstalled => 'Ешқандай плагин орнатылмаған';
 
   @override
   String adminPluginsUpdateAvailable(String version) {
@@ -5250,22 +5366,24 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminPluginsUpdateAvailableGeneric => 'Update available';
+  String get adminPluginsUpdateAvailableGeneric => 'Жаңарту қолжетімді';
 
   @override
-  String get adminPluginsPendingRemoval => 'Pending removal after restart';
+  String get adminPluginsPendingRemoval =>
+      'Қайта іске қосқаннан кейін жою күтілуде';
 
   @override
-  String get adminPluginsChangesPending => 'Changes pending restart';
+  String get adminPluginsChangesPending =>
+      'Қайта іске қосуды күткен өзгерістер';
 
   @override
-  String get adminPluginsEnable => 'Enable';
+  String get adminPluginsEnable => 'Қосу';
 
   @override
-  String get adminPluginsDisable => 'Disable';
+  String get adminPluginsDisable => 'Өшіру';
 
   @override
-  String get adminPluginsInstallUpdate => 'Install update';
+  String get adminPluginsInstallUpdate => 'Жаңартуды орнату';
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
@@ -5274,10 +5392,10 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get adminPluginsCatalogNoSearchResults =>
-      'No packages match your search';
+      'Іздеуіңізге сәйкес пакеттер жоқ';
 
   @override
-  String get adminPluginsCatalogEmpty => 'No packages available';
+  String get adminPluginsCatalogEmpty => 'Қолжетімді пакеттер жоқ';
 
   @override
   String adminPluginsInstalling(String name) {
@@ -5285,19 +5403,19 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailExperimental => 'Experimental Integration';
+  String get adminPluginDetailExperimental => 'Эксперименттік интеграция';
 
   @override
   String get adminPluginDetailExperimentalContent =>
-      'Plugin settings integration is still experimental. Some fields or layouts may not render correctly yet.';
+      'Плагин параметрлерін біріктіру әлі эксперименталды. Кейбір өрістер немесе орналасулар әлі дұрыс көрсетілмеуі мүмкін.';
 
   @override
   String get adminPluginDetailToggle404 =>
-      'Failed to toggle plugin. The server could not find this plugin version. Try refreshing plugins, then retry.';
+      'Плагинді ауыстырып қосу мүмкін болмады. Сервер бұл плагин нұсқасын таба алмады. Плагиндерді жаңартып көріңіз, содан кейін әрекетті қайталаңыз.';
 
   @override
   String get adminPluginDetailToggleDioError =>
-      'Failed to toggle plugin. Please check server logs for details.';
+      'Плагинді ауыстырып қосу мүмкін болмады. Мәліметтер алу үшін сервер журналдарын тексеріңіз.';
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
@@ -5305,39 +5423,39 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminPluginDetailDetails => 'Details';
+  String get adminPluginDetailDetails => 'Мәліметтер';
 
   @override
-  String get adminPluginDetailDeveloper => 'Developer';
+  String get adminPluginDetailDeveloper => 'Әзірлеуші';
 
   @override
-  String get adminPluginDetailRepository => 'Repository';
+  String get adminPluginDetailRepository => 'Репозиторий';
 
   @override
-  String get adminPluginDetailBundled => 'Bundled';
+  String get adminPluginDetailBundled => 'Жинақталған';
 
   @override
-  String get adminPluginDetailEnablePlugin => 'Enable Plugin';
+  String get adminPluginDetailEnablePlugin => 'Плагинді қосыңыз';
 
   @override
   String get adminPluginDetailRestartRequired =>
-      'A server restart is required for changes to take effect.';
+      'Өзгерістердің күшіне енуі үшін серверді қайта іске қосу қажет.';
 
   @override
   String get adminPluginDetailRemovalPending =>
-      'This plugin will be removed after server restart.';
+      'Бұл плагин серверді қайта іске қосқаннан кейін жойылады.';
 
   @override
   String get adminPluginDetailMalfunctioned =>
-      'This plugin has malfunctioned and may not work correctly.';
+      'Бұл плагин дұрыс жұмыс істемеді және дұрыс жұмыс істемеуі мүмкін.';
 
   @override
   String get adminPluginDetailNotSupported =>
-      'This plugin is not supported by the current server version.';
+      'Бұл плагинге ағымдағы сервер нұсқасы қолдау көрсетпейді.';
 
   @override
   String get adminPluginDetailSuperseded =>
-      'This plugin has been superseded by a newer version.';
+      'Бұл плагин жаңарақ нұсқасымен ауыстырылды.';
 
   @override
   String adminReposLoadFailed(String error) {
@@ -5345,7 +5463,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemoveTitle => 'Remove Repository';
+  String get adminReposRemoveTitle => 'Репозиторийді жою';
 
   @override
   String adminReposRemoveConfirm(String name) {
@@ -5353,7 +5471,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminReposRemove => 'Remove';
+  String get adminReposRemove => 'Жою';
 
   @override
   String adminReposSaveFailed(String error) {
@@ -5361,270 +5479,278 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminReposEmpty => 'No repositories configured';
+  String get adminReposEmpty => 'Репозиторийлер конфигурацияланбаған';
 
   @override
   String get adminReposEmptySubtitle =>
-      'Add a repository to browse available plugins';
+      'Қол жетімді плагиндерді шолу үшін репозиторий қосыңыз';
 
   @override
-  String get adminReposUnnamed => '(unnamed)';
+  String get adminReposUnnamed => '(аты жоқ)';
 
   @override
-  String get adminReposEditTitle => 'Edit Repository';
+  String get adminReposEditTitle => 'Репозиторийді өңдеу';
 
   @override
-  String get adminReposAddTitle => 'Add Repository';
+  String get adminReposAddTitle => 'Репозиторий қосу';
 
   @override
-  String get adminReposUrl => 'Repository URL';
+  String get adminReposUrl => 'Репозиторий URL';
 
   @override
-  String get adminReposNameHint => 'e.g. Jellyfin Stable';
+  String get adminReposNameHint => 'мысалы Jellyfin Тұрақты';
 
   @override
-  String get adminPluginSettingsInvalidUrl => 'Invalid URL';
+  String get adminPluginSettingsInvalidUrl => 'Жарамсыз URL';
 
   @override
-  String get adminGeneralSettingsTitle => 'General Settings';
+  String get adminGeneralSettingsTitle => 'Жалпы параметрлер';
 
   @override
-  String get adminGeneralMetadataLanguage => 'Preferred metadata language';
+  String get adminGeneralMetadataLanguage => 'Таңдаулы метадеректер тілі';
 
   @override
-  String get adminGeneralMetadataLanguageHint => 'e.g. en, de, fr';
+  String get adminGeneralMetadataLanguageHint => 'мысалы en, de, fr';
 
   @override
-  String get adminGeneralMetadataCountry => 'Preferred metadata country';
+  String get adminGeneralMetadataCountry => 'Таңдаулы метадеректер елі';
 
   @override
-  String get adminGeneralMetadataCountryHint => 'e.g. US, DE, FR';
+  String get adminGeneralMetadataCountryHint => 'мысалы АҚШ, DE, FR';
 
   @override
-  String get adminGeneralLibraryScanConcurrency => 'Library scan concurrency';
+  String get adminGeneralLibraryScanConcurrency =>
+      'Кітапхананы сканерлеудің параллельдігі';
 
   @override
-  String get adminGeneralImageEncodingLimit => 'Parallel image encoding limit';
+  String get adminGeneralImageEncodingLimit => 'Параллель кескінді кодтау шегі';
 
   @override
-  String get adminUnknownError => 'Unknown error';
+  String get adminUnknownError => 'Белгісіз қате';
 
   @override
-  String get adminBrowse => 'Browse';
+  String get adminBrowse => 'Шолу';
 
   @override
-  String get adminCloseBrowser => 'Close browser';
+  String get adminCloseBrowser => 'Браузерді жабыңыз';
 
   @override
-  String get adminNetworkingTitle => 'Networking';
+  String get adminNetworkingTitle => 'Желі құру';
 
   @override
   String get adminNetworkingRestartWarning =>
-      'Changes to networking settings may require a server restart.';
+      'Желі параметрлерін өзгерту серверді қайта іске қосуды қажет етуі мүмкін.';
 
   @override
-  String get adminNetworkingRemoteAccess => 'Enable remote access';
+  String get adminNetworkingRemoteAccess => 'Қашықтан қол жеткізуді қосыңыз';
 
   @override
-  String get adminNetworkingPorts => 'Ports';
+  String get adminNetworkingPorts => 'Порттар';
 
   @override
-  String get adminNetworkingHttpPort => 'HTTP port';
+  String get adminNetworkingHttpPort => 'HTTP порты';
 
   @override
-  String get adminNetworkingHttpsPort => 'HTTPS port';
+  String get adminNetworkingHttpsPort => 'HTTPS порты';
 
   @override
-  String get adminNetworkingEnableHttps => 'Enable HTTPS';
+  String get adminNetworkingEnableHttps => 'HTTPS қосыңыз';
 
   @override
-  String get adminNetworkingLocalNetwork => 'Local Network';
+  String get adminNetworkingLocalNetwork => 'Жергілікті желі';
 
   @override
-  String get adminNetworkingLocalAddresses => 'Local network addresses';
+  String get adminNetworkingLocalAddresses => 'Жергілікті желі мекенжайлары';
 
   @override
-  String get adminNetworkingAddressHint => 'e.g. 192.168.1.0/24';
+  String get adminNetworkingAddressHint => 'мысалы 192.168.1.0/24';
 
   @override
-  String get adminNetworkingKnownProxies => 'Known proxies';
+  String get adminNetworkingKnownProxies => 'Белгілі проксилер';
 
   @override
-  String get adminNetworkingProxyHint => 'e.g. 10.0.0.1';
+  String get adminNetworkingProxyHint => 'мысалы 10.0.0.1';
 
   @override
-  String get adminNetworkingWhitelist => 'Whitelist';
+  String get adminNetworkingWhitelist => 'Ақ тізім';
 
   @override
-  String get adminNetworkingBlacklist => 'Blacklist';
+  String get adminNetworkingBlacklist => 'Қара тізім';
 
   @override
-  String get adminNetworkingAddEntry => 'Add entry';
+  String get adminNetworkingAddEntry => 'Жазба қосу';
 
   @override
-  String get adminBrandingTitle => 'Branding';
+  String get adminBrandingTitle => 'Брендинг';
 
   @override
-  String get adminBrandingLoginDisclaimer => 'Login disclaimer';
+  String get adminBrandingLoginDisclaimer => 'Жүйеге кіруден бас тарту';
 
   @override
   String get adminBrandingLoginDisclaimerHint =>
-      'HTML displayed below the login form';
+      'Жүйеге кіру пішінінің астында HTML көрсетіледі';
 
   @override
-  String get adminBrandingCustomCss => 'Custom CSS';
+  String get adminBrandingCustomCss => 'Арнаулы CSS';
 
   @override
   String get adminBrandingCustomCssHint =>
-      'Custom CSS applied to the web interface';
+      'Веб-интерфейске қолданылған пайдаланушы CSS';
 
   @override
-  String get adminBrandingEnableSplash => 'Enable splash screen';
+  String get adminBrandingEnableSplash => 'Экранды қосу';
 
   @override
-  String get adminPlaybackHwAccel => 'Hardware Acceleration';
+  String get adminPlaybackHwAccel => 'Аппараттық жеделдету';
 
   @override
-  String get adminPlaybackHwAccelLabel => 'Hardware acceleration';
+  String get adminPlaybackHwAccelLabel => 'Аппараттық жеделдету';
 
   @override
-  String get adminPlaybackEnableHwEncoding => 'Enable hardware encoding';
+  String get adminPlaybackEnableHwEncoding => 'Аппараттық кодтауды қосыңыз';
 
   @override
-  String get adminPlaybackEnableHwDecoding => 'Enable hardware decoding for:';
+  String get adminPlaybackEnableHwDecoding =>
+      'Аппараттық құралдардың декодтауын қосыңыз:';
 
   @override
-  String get adminPlaybackEncoding => 'Encoding';
+  String get adminPlaybackEncoding => 'Кодтау';
 
   @override
-  String get adminPlaybackEncodingThreads => 'Encoding threads';
+  String get adminPlaybackEncodingThreads => 'Жіптерді кодтау';
 
   @override
-  String get adminPlaybackFallbackFont => 'Enable fallback font';
+  String get adminPlaybackFallbackFont => 'Қосымша қаріпті қосыңыз';
 
   @override
-  String get adminPlaybackFallbackFontPath => 'Fallback font path';
+  String get adminPlaybackFallbackFontPath => 'Қайта қаріп жолы';
 
   @override
-  String get adminPlaybackStreaming => 'Streaming';
+  String get adminPlaybackStreaming => 'Ағын';
 
   @override
-  String get adminResumeVideo => 'Video';
+  String get adminResumeVideo => 'Бейне';
 
   @override
-  String get adminResumeAudiobooks => 'Audiobooks';
+  String get adminResumeAudiobooks => 'Аудиокітаптар';
 
   @override
   String get adminResumeMinAudiobookPct =>
-      'Minimum audiobook resume percentage';
+      'Аудиокітап түйіндемесінің ең аз пайызы';
 
   @override
   String get adminResumeMaxAudiobookPct =>
-      'Maximum audiobook resume percentage';
+      'Аудиокітап түйіндемесінің максималды пайызы';
 
   @override
-  String get adminStreamingBitrateLimit => 'Remote client bitrate limit (Mbps)';
+  String get adminStreamingBitrateLimit =>
+      'Қашықтағы клиенттің бит жылдамдығының шегі (Мбит/с)';
 
   @override
-  String get adminStreamingBitrateLimitHint => 'Leave empty or 0 for unlimited';
+  String get adminStreamingBitrateLimitHint =>
+      'Бос қалдырыңыз немесе шектеусіз үшін 0 қалдырыңыз';
 
   @override
-  String get adminTrickplayHwAccel => 'Enable hardware acceleration';
+  String get adminTrickplayHwAccel => 'Аппараттық жеделдетуді қосыңыз';
 
   @override
-  String get adminTrickplayHwEncoding => 'Enable hardware encoding';
+  String get adminTrickplayHwEncoding => 'Аппараттық кодтауды қосыңыз';
 
   @override
-  String get adminTrickplayKeyFrameOnly => 'Enable key frame only extraction';
+  String get adminTrickplayKeyFrameOnly =>
+      'Тек негізгі кадрды шығаруды қосыңыз';
 
   @override
-  String get adminTrickplayKeyFrameOnlySubtitle => 'Faster but lower accuracy';
+  String get adminTrickplayKeyFrameOnlySubtitle =>
+      'Жылдамырақ, бірақ дәлдігі төмен';
 
   @override
-  String get adminTrickplayNonBlocking => 'Non-Blocking';
+  String get adminTrickplayNonBlocking => 'Блокталмайтын';
 
   @override
-  String get adminTrickplayBlocking => 'Blocking';
+  String get adminTrickplayBlocking => 'Блоктау';
 
   @override
-  String get adminTrickplayPriorityHigh => 'High';
+  String get adminTrickplayPriorityHigh => 'Жоғары';
 
   @override
-  String get adminTrickplayPriorityAboveNormal => 'Above Normal';
+  String get adminTrickplayPriorityAboveNormal => 'Қалыптыдан жоғары';
 
   @override
-  String get adminTrickplayPriorityNormal => 'Normal';
+  String get adminTrickplayPriorityNormal => 'Қалыпты';
 
   @override
-  String get adminTrickplayPriorityBelowNormal => 'Below Normal';
+  String get adminTrickplayPriorityBelowNormal => 'Қалыптыдан төмен';
 
   @override
-  String get adminTrickplayPriorityIdle => 'Idle';
+  String get adminTrickplayPriorityIdle => 'Бос';
 
   @override
-  String get adminTrickplayImageSettings => 'Image Settings';
+  String get adminTrickplayImageSettings => 'Кескін параметрлері';
 
   @override
-  String get adminTrickplayInterval => 'Interval (ms)';
+  String get adminTrickplayInterval => 'Аралық (мс)';
 
   @override
-  String get adminTrickplayIntervalSubtitle => 'How often to capture frames';
+  String get adminTrickplayIntervalSubtitle =>
+      'Жақтауларды қаншалықты жиі түсіру керек';
 
   @override
   String get adminTrickplayWidthResolutionsHint =>
-      'Comma-separated pixel widths (e.g. 320)';
+      'Үтірмен бөлінген пиксель ені (мысалы, 320)';
 
   @override
-  String get adminTrickplayQuality => 'Quality';
+  String get adminTrickplayQuality => 'Сапасы';
 
   @override
-  String get adminTrickplayQScale => 'Quality scale';
+  String get adminTrickplayQScale => 'Сапа шкаласы';
 
   @override
   String get adminTrickplayQScaleSubtitle =>
-      'Lower values = better quality, larger files';
+      'Төменгі мәндер = жақсы сапа, үлкенірек файлдар';
 
   @override
-  String get adminTrickplayJpegQuality => 'JPEG quality';
+  String get adminTrickplayJpegQuality => 'JPEG сапасы';
 
   @override
-  String get adminTrickplayProcessing => 'Processing';
+  String get adminTrickplayProcessing => 'Өңдеу';
 
   @override
-  String get adminTasksEmpty => 'No scheduled tasks found';
+  String get adminTasksEmpty => 'Жоспарланған тапсырмалар табылмады';
 
   @override
-  String get adminTasksNoFilterMatch => 'No tasks match the current filter';
+  String get adminTasksNoFilterMatch =>
+      'Ағымдағы сүзгіге сәйкес тапсырмалар жоқ';
 
   @override
-  String get adminTaskCancelling => 'Cancelling...';
+  String get adminTaskCancelling => 'Бас тартуда...';
 
   @override
-  String get adminTaskRunning => 'Running...';
+  String get adminTaskRunning => 'Жүгіру...';
 
   @override
-  String get adminTaskNeverRun => 'Never run';
+  String get adminTaskNeverRun => 'Ешқашан жүгірме';
 
   @override
-  String get adminTaskStop => 'Stop';
+  String get adminTaskStop => 'Тоқта';
 
   @override
-  String get adminTaskRun => 'Run';
+  String get adminTaskRun => 'Жүгіру';
 
   @override
-  String get adminTaskDetailLastExecution => 'Last Execution';
+  String get adminTaskDetailLastExecution => 'Соңғы орындалу';
 
   @override
-  String get adminTaskDetailStarted => 'Started';
+  String get adminTaskDetailStarted => 'Басталды';
 
   @override
-  String get adminTaskDetailEnded => 'Ended';
+  String get adminTaskDetailEnded => 'Аяқталды';
 
   @override
-  String get adminTaskDetailDuration => 'Duration';
+  String get adminTaskDetailDuration => 'Ұзақтығы';
 
   @override
-  String get adminTaskDetailErrorLabel => 'Error:';
+  String get adminTaskDetailErrorLabel => 'Қате:';
 
   @override
   String adminTaskTriggerDaily(String time) {
@@ -5642,34 +5768,34 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerStartup => 'On application startup';
+  String get adminTaskTriggerStartup => 'Қолданбаны іске қосу кезінде';
 
   @override
-  String get adminTaskTriggerTypeDaily => 'Daily';
+  String get adminTaskTriggerTypeDaily => 'Күнделікті';
 
   @override
-  String get adminTaskTriggerTypeWeekly => 'Weekly';
+  String get adminTaskTriggerTypeWeekly => 'Апта сайын';
 
   @override
-  String get adminTaskTriggerTypeInterval => 'On an interval';
+  String get adminTaskTriggerTypeInterval => 'Аралықта';
 
   @override
-  String get adminTaskTriggerIntervalLabel => 'Interval';
+  String get adminTaskTriggerIntervalLabel => 'Интервал';
 
   @override
-  String get adminTaskTriggerEveryHour => 'Every hour';
+  String get adminTaskTriggerEveryHour => 'Әр сағат сайын';
 
   @override
-  String get adminTaskTriggerEvery6Hours => 'Every 6 hours';
+  String get adminTaskTriggerEvery6Hours => 'Әр 6 сағат сайын';
 
   @override
-  String get adminTaskTriggerEvery12Hours => 'Every 12 hours';
+  String get adminTaskTriggerEvery12Hours => 'Әр 12 сағат сайын';
 
   @override
-  String get adminTaskTriggerEvery24Hours => 'Every 24 hours';
+  String get adminTaskTriggerEvery24Hours => 'Әр 24 сағат сайын';
 
   @override
-  String get adminTaskTriggerEvery2Days => 'Every 2 days';
+  String get adminTaskTriggerEvery2Days => 'Әр 2 күн сайын';
 
   @override
   String adminTaskTriggerHours(int count) {
@@ -5683,25 +5809,25 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminTaskTriggerTime => 'Time';
+  String get adminTaskTriggerTime => 'Уақыт';
 
   @override
-  String get adminTaskTriggerNoLimit => 'No limit';
+  String get adminTaskTriggerNoLimit => 'Шектеу жоқ';
 
   @override
-  String get adminActivityJustNow => 'Just now';
+  String get adminActivityJustNow => 'Жаңа ғана';
 
   @override
-  String get adminActivityLastHour => 'Last hour';
+  String get adminActivityLastHour => 'Соңғы сағат';
 
   @override
-  String get adminActivityToday => 'Today';
+  String get adminActivityToday => 'Бүгін';
 
   @override
-  String get adminActivityYesterday => 'Yesterday';
+  String get adminActivityYesterday => 'Кеше';
 
   @override
-  String get adminActivityOlder => 'Older';
+  String get adminActivityOlder => 'Үлкенірек';
 
   @override
   String adminActivityDaysAgo(int days) {
@@ -5719,7 +5845,7 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminActivityNow => 'now';
+  String get adminActivityNow => 'қазір';
 
   @override
   String adminActivityMinutesShort(int minutes) {
@@ -5743,91 +5869,91 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get adminTrickplayDescription =>
-      'Configure trickplay image generation for seek preview thumbnails.';
+      'Алдын ала қарау нобайларын іздеу үшін трик-плей кескінін жасауды конфигурациялаңыз.';
 
   @override
-  String get adminNetworkingPublicHttpsPort => 'Public HTTPS port';
+  String get adminNetworkingPublicHttpsPort => 'Қоғамдық HTTPS порты';
 
   @override
-  String get adminNetworkingBaseUrl => 'Base URL';
+  String get adminNetworkingBaseUrl => 'Негізгі URL';
 
   @override
-  String get adminNetworkingBaseUrlHint => 'e.g. /jellyfin';
+  String get adminNetworkingBaseUrlHint => 'мысалы /желлифин';
 
   @override
   String get adminNetworkingHttps => 'HTTPS';
 
   @override
-  String get adminNetworkingCertPath => 'Certificate path';
+  String get adminNetworkingCertPath => 'Сертификат жолы';
 
   @override
-  String get adminNetworkingRemoteIpFilter => 'Remote IP Filter';
+  String get adminNetworkingRemoteIpFilter => 'Қашықтағы IP сүзгісі';
 
   @override
-  String get adminNetworkingRemoteIpFilterLabel => 'Remote IP filter';
+  String get adminNetworkingRemoteIpFilterLabel => 'Қашықтағы IP сүзгісі';
 
   @override
-  String get adminPlaybackVaapiDevice => 'VA-API device';
+  String get adminPlaybackVaapiDevice => 'VA-API құрылғысы';
 
   @override
-  String get adminPlaybackAutomatic => '0 = automatic';
+  String get adminPlaybackAutomatic => '0 = автоматты';
 
   @override
-  String get adminPlaybackTranscodeTempPath => 'Transcoding temp path';
+  String get adminPlaybackTranscodeTempPath => 'Транскодтау уақытша жол';
 
   @override
-  String get adminPlaybackSegmentDeletion => 'Allow segment deletion';
+  String get adminPlaybackSegmentDeletion => 'Сегментті жоюға рұқсат ету';
 
   @override
-  String get adminPlaybackSegmentKeep => 'Segment keep (seconds)';
+  String get adminPlaybackSegmentKeep => 'Сегменттерді сақтау (секундтар)';
 
   @override
-  String get adminPlaybackThrottleBuffering => 'Throttle buffering';
+  String get adminPlaybackThrottleBuffering => 'Дроссельді буферлеу';
 
   @override
-  String get adminResumeMinPct => 'Minimum resume percentage';
+  String get adminResumeMinPct => 'Резюменің минималды пайызы';
 
   @override
   String get adminResumeMinPctSubtitle =>
-      'Content must be played past this percentage to save progress';
+      'Прогрессті сақтау үшін мазмұн осы пайыздан жоғары ойнатылуы керек';
 
   @override
-  String get adminResumeMaxPct => 'Maximum resume percentage';
+  String get adminResumeMaxPct => 'Резюменің максималды пайызы';
 
   @override
   String get adminResumeMaxPctSubtitle =>
-      'Content is considered fully played after this percentage';
+      'Осы пайыздан кейін мазмұн толығымен ойнатылды деп саналады';
 
   @override
-  String get adminResumeMinDuration => 'Minimum resume duration (seconds)';
+  String get adminResumeMinDuration => 'Ең аз түйіндеме ұзақтығы (секунд)';
 
   @override
   String get adminResumeMinDurationSubtitle =>
-      'Items shorter than this are not resumable';
+      'Бұдан қысқа элементтерді қалпына келтіру мүмкін емес';
 
   @override
-  String get adminTrickplayScanBehavior => 'Scan behavior';
+  String get adminTrickplayScanBehavior => 'Тәртіпті сканерлеу';
 
   @override
-  String get adminTrickplayProcessPriority => 'Process priority';
+  String get adminTrickplayProcessPriority => 'Процесс басымдығы';
 
   @override
-  String get adminTrickplayTileWidth => 'Tile width';
+  String get adminTrickplayTileWidth => 'Плитка ені';
 
   @override
-  String get adminTrickplayTileHeight => 'Tile height';
+  String get adminTrickplayTileHeight => 'Плитка биіктігі';
 
   @override
-  String get adminTrickplayProcessThreads => 'Process threads';
+  String get adminTrickplayProcessThreads => 'Жіптерді өңдеу';
 
   @override
-  String get adminTrickplayWidthResolutions => 'Width resolutions';
+  String get adminTrickplayWidthResolutions => 'Ені ажыратымдылықтары';
 
   @override
-  String get adminMetadataDefault => 'Default';
+  String get adminMetadataDefault => 'Әдепкі';
 
   @override
-  String get adminMetadataContentTypeUpdated => 'Content type updated';
+  String get adminMetadataContentTypeUpdated => 'Мазмұн түрі жаңартылды';
 
   @override
   String adminMetadataContentTypeFailed(String error) {
@@ -5835,23 +5961,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get adminGeneralSlowResponseThreshold =>
-      'Slow response threshold (ms)';
+  String get adminGeneralSlowResponseThreshold => 'Баяу жауап шегі (мс)';
 
   @override
-  String get adminGeneralCachePath => 'Cache path';
+  String get adminGeneralCachePath => 'Кэш жолы';
 
   @override
-  String get adminGeneralMetadataPath => 'Metadata path';
+  String get adminGeneralMetadataPath => 'Метадеректер жолы';
 
   @override
-  String get adminGeneralServerName => 'Server name';
+  String get adminGeneralServerName => 'Сервер атауы';
 
   @override
-  String get adminSettingsLoadFailed => 'Failed to load settings';
+  String get adminSettingsLoadFailed => 'Параметрлерді жүктеу сәтсіз аяқталды';
 
   @override
-  String get adminDiscover => 'Discover';
+  String get adminDiscover => 'Ашу';
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
@@ -5864,33 +5989,33 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get folders => 'Folders';
+  String get folders => 'Қалталар';
 
   @override
-  String get libraries => 'Libraries';
+  String get libraries => 'Кітапханалар';
 
   @override
   String get syncPlay => 'SyncPlay';
 
   @override
-  String get syncPlayDisabledTitle => 'SyncPlay disabled';
+  String get syncPlayDisabledTitle => 'SyncPlay өшірілген';
 
   @override
   String get syncPlayDisabledMessage =>
-      'Enable SyncPlay in Settings to use synchronized playback.';
+      'Синхрондалған ойнатуды пайдалану үшін SyncPlay параметрін Параметрлерде қосыңыз.';
 
   @override
-  String get syncPlayServerUnsupportedTitle => 'Server unsupported';
+  String get syncPlayServerUnsupportedTitle => 'Серверге қолдау көрсетілмейді';
 
   @override
   String get syncPlayServerUnsupportedMessage =>
-      'SyncPlay requires a Jellyfin server. The current server does not support it.';
+      'SyncPlay үшін Jellyfin сервері қажет. Ағымдағы сервер оны қолдамайды.';
 
   @override
-  String get syncPlayGroupFallbackName => 'SyncPlay Group';
+  String get syncPlayGroupFallbackName => 'SyncPlay тобы';
 
   @override
-  String get syncPlayGroupTooltip => 'SyncPlay group';
+  String get syncPlayGroupTooltip => 'SyncPlay тобы';
 
   @override
   String syncPlayParticipantCount(int count) {
@@ -5904,40 +6029,40 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get syncPlayIgnoreWait => 'Ignore wait';
+  String get syncPlayIgnoreWait => 'Күтуді елемеу';
 
   @override
   String get syncPlayIgnoreWaitSubtitle =>
-      'Don\'t hold the group up while this device buffers';
+      'Бұл құрылғы буферленген кезде топты жоғары ұстамаңыз';
 
   @override
   String get syncPlayContinueLocallyNoWait =>
-      'Continue locally without waiting for slow members';
+      'Баяу мүшелерді күтпестен жергілікті жерде жалғастырыңыз';
 
   @override
-  String get syncPlayRepeat => 'Repeat';
+  String get syncPlayRepeat => 'Қайталау';
 
   @override
-  String get syncPlayRepeatOne => 'One';
+  String get syncPlayRepeatOne => 'Бір';
 
   @override
-  String get syncPlayShuffleModeShuffled => 'Shuffled';
+  String get syncPlayShuffleModeShuffled => 'Аралас';
 
   @override
-  String get syncPlayShuffleModeSorted => 'Sorted';
+  String get syncPlayShuffleModeSorted => 'Сұрыпталған';
 
   @override
-  String get syncPlaySyncCurrentQueue => 'Sync current playback queue';
+  String get syncPlaySyncCurrentQueue => 'Ағымдағы ойнату кезегін синхрондау';
 
   @override
   String get syncPlaySyncCurrentQueueSubtitle =>
-      'Replace the group queue with what is playing locally';
+      'Топтық кезекті жергілікті жерде ойнайтын нәрсемен ауыстырыңыз';
 
   @override
-  String get syncPlayLeaveGroup => 'Leave group';
+  String get syncPlayLeaveGroup => 'Топтан шығу';
 
   @override
-  String get syncPlayGroupQueue => 'Group queue';
+  String get syncPlayGroupQueue => 'Топтық кезек';
 
   @override
   String syncPlayQueueItemFallback(int index) {
@@ -5945,47 +6070,47 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get syncPlayPlayNow => 'Play now';
+  String get syncPlayPlayNow => 'Қазір ойнаңыз';
 
   @override
-  String get syncPlayCreateNewGroup => 'Create a new group';
+  String get syncPlayCreateNewGroup => 'Жаңа топ құру';
 
   @override
-  String get syncPlayGroupName => 'Group name';
+  String get syncPlayGroupName => 'Топ аты';
 
   @override
-  String get syncPlayDefaultGroupName => 'My SyncPlay Group';
+  String get syncPlayDefaultGroupName => 'Менің SyncPlay тобым';
 
   @override
-  String get syncPlayCreateGroup => 'Create group';
+  String get syncPlayCreateGroup => 'Топ құру';
 
   @override
-  String get syncPlayAvailableGroups => 'Available groups';
+  String get syncPlayAvailableGroups => 'Қолжетімді топтар';
 
   @override
-  String get syncPlayNoGroupsAvailable => 'No groups available';
+  String get syncPlayNoGroupsAvailable => 'Топтар жоқ';
 
   @override
-  String get syncPlayJoinGroupQuestion => 'Join SyncPlay group?';
+  String get syncPlayJoinGroupQuestion => 'SyncPlay тобына қосылу керек пе?';
 
   @override
   String get syncPlayJoinGroupWarning =>
-      'Joining a SyncPlay group may replace your current playback queue. Continue?';
+      'SyncPlay тобына қосылу ағымдағы ойнату кезегін ауыстыруы мүмкін. Жалғастыру керек пе?';
 
   @override
-  String get syncPlayJoin => 'Join';
+  String get syncPlayJoin => 'Қосылыңыз';
 
   @override
-  String get syncPlayStateIdle => 'Idle';
+  String get syncPlayStateIdle => 'Бос';
 
   @override
-  String get syncPlayStateWaiting => 'Waiting';
+  String get syncPlayStateWaiting => 'Күтуде';
 
   @override
-  String get syncPlayStatePaused => 'Paused';
+  String get syncPlayStatePaused => 'Кідіртілді';
 
   @override
-  String get syncPlayStatePlaying => 'Playing';
+  String get syncPlayStatePlaying => 'Ойнап жатыр';
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
@@ -5998,11 +6123,11 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get syncPlayAccessDeniedTitle => 'SyncPlay access denied';
+  String get syncPlayAccessDeniedTitle => 'SyncPlay кіруге тыйым салынды';
 
   @override
   String get syncPlayAccessDeniedMessage =>
-      'You do not have access to one or more items in this SyncPlay group. Ask the group owner to verify library permissions or choose a different queue.';
+      'Осы SyncPlay тобындағы бір немесе бірнеше элементтерге кіру рұқсатыңыз жоқ. Топ иесінен кітапхана рұқсаттарын тексеруді немесе басқа кезекті таңдауды сұраңыз.';
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
@@ -6010,63 +6135,64 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get voiceSearchUnavailable => 'Voice search is unavailable.';
+  String get voiceSearchUnavailable => 'Дауыспен іздеу қолжетімсіз.';
 
   @override
   String get dolbyVisionDirectPlayFailedTitle =>
-      'Dolby Vision Direct Play Failed';
+      'Dolby Vision тікелей ойнату сәтсіз аяқталды';
 
   @override
   String get dolbyVisionDirectPlayFailedMessage =>
-      'Direct play failed to start for this Dolby Vision stream. Retry using server transcode?';
+      'Осы Dolby Vision ағыны үшін тікелей ойнатуды бастау мүмкін болмады. Серверді қайта кодтау арқылы қайталап көріңіз бе?';
 
   @override
-  String get retryWithTranscode => 'Retry with transcode';
+  String get retryWithTranscode => 'Транскод арқылы қайталап көріңіз';
 
   @override
-  String get dolbyVisionNotSupportedTitle => 'Dolby Vision Not Supported';
+  String get dolbyVisionNotSupportedTitle =>
+      'Dolby Vision қолданбасына қолдау көрсетілмейді';
 
   @override
   String get dolbyVisionNotSupportedMessage =>
-      'This device cannot decode Dolby Vision content directly. Use HDR10 fallback or request server transcoding.';
+      'Бұл құрылғы Dolby Vision мазмұнын тікелей шеше алмайды. HDR10 қалпына келтіру нұсқасын пайдаланыңыз немесе серверді қайта кодтауды сұраңыз.';
 
   @override
-  String get rememberMyChoice => 'Remember my choice';
+  String get rememberMyChoice => 'Менің таңдауымды есте сақтаңыз';
 
   @override
-  String get playHdr10Fallback => 'Play HDR10 fallback';
+  String get playHdr10Fallback => 'HDR10 нұсқасын ойнату';
 
   @override
-  String get requestTranscode => 'Request transcode';
+  String get requestTranscode => 'Транскодты сұрау';
 
   @override
   String get homeScreenSectionsIntegrationDescription =>
-      'Detect rows exposed by IAmParadox27\'s \"Home Screen Sections\" plugin. Rows can be enabled and reordered below.';
+      'IAmParadox27 \"Негізгі экран бөлімдері\" плагині арқылы ашылған жолдарды анықтау. Төменде жолдарды қосуға және ретін өзгертуге болады.';
 
   @override
   String get homeScreenSectionsIntegrationNoServers =>
-      'No Jellyfin servers reporting the plugin yet.';
+      'Плагин туралы әлі ешқандай Jellyfin серверлері есеп бермейді.';
 
   @override
   String get kefinTweaksIntegrationDescription =>
-      'Detect rows configured via ranaldsgift\'s \"KefinTweaks\" plugin. Custom sections, recently released, watch again, seasonal, and recently added in library are mirrored from the KefinTweaks configuration on each Jellyfin server.';
+      'Ranaldsgift \"KefinTweaks\" плагині арқылы конфигурацияланған жолдарды анықтау. Жақында шығарылған, қайта қарау, маусымдық және кітапханаға жақында қосылған теңшелетін бөлімдер әрбір Jellyfin серверіндегі KefinTweaks конфигурациясынан бейнеленген.';
 
   @override
   String get kefinTweaksIntegrationNoServers =>
-      'No Jellyfin servers reporting KefinTweaks yet.';
+      'KefinTweaks туралы хабарлайтын Jellyfin серверлері әлі жоқ.';
 
   @override
-  String get integrationOpenHomeSections => 'Open Home Sections';
+  String get integrationOpenHomeSections => 'Негізгі бөлімдерді ашыңыз';
 
   @override
   String get integrationOpenHomeSectionsSubtitle =>
-      'Enable, disable, and reorder rows';
+      'Жолдарды қосу, өшіру және ретін өзгерту';
 
   @override
-  String get integrationInstalledButDisabled => 'Installed but disabled';
+  String get integrationInstalledButDisabled => 'Орнатылған, бірақ өшірілген';
 
   @override
-  String get integrationNotInstalled => 'Not installed';
+  String get integrationNotInstalled => 'Орнатылмаған';
 
   @override
   String integrationSectionsCount(int count) {
@@ -6094,39 +6220,39 @@ class AppLocalizationsKk extends AppLocalizations {
   String get jellyseerr => 'Jellyseerr';
 
   @override
-  String get seeAll => 'See All';
+  String get seeAll => 'Барлығын көру';
 
   @override
-  String get noItems => 'No items';
+  String get noItems => 'Элементтер жоқ';
 
   @override
-  String get switchUser => 'Switch User';
+  String get switchUser => 'Пайдаланушыны ауыстыру';
 
   @override
-  String get remoteControl => 'Remote Control';
+  String get remoteControl => 'Қашықтан басқару құралы';
 
   @override
-  String get mediaBarLoading => 'Loading media bar...';
+  String get mediaBarLoading => 'Медиа жолағы жүктелуде...';
 
   @override
-  String get mediaBarError => 'Media bar failed to load';
+  String get mediaBarError => 'Медиа жолақ жүктелмеді';
 
   @override
   String get offlineServerUnavailable =>
-      'Connected to the internet, but the current server is unavailable.';
+      'Интернетке қосылған, бірақ ағымдағы сервер қолжетімсіз.';
 
   @override
   String get offlineNoInternet =>
-      'You are offline. Only downloaded content is available.';
+      'Сіз желіден тыссыз. Тек жүктеп алынған мазмұн қолжетімді.';
 
   @override
-  String get offlineFileNotAvailable => 'File not available';
+  String get offlineFileNotAvailable => 'Файл қолжетімді емес';
 
   @override
-  String get offlineSwitchServer => 'Switch Server';
+  String get offlineSwitchServer => 'Серверді ауыстыру';
 
   @override
-  String get offlineSavedMedia => 'Saved Media';
+  String get offlineSavedMedia => 'Сақталған медиа';
 
   @override
   String get castGoogleCast => 'Google Cast';
@@ -6138,7 +6264,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get castDlna => 'DLNA';
 
   @override
-  String get castRemotePlayback => 'Remote Playback';
+  String get castRemotePlayback => 'Қашықтан ойнату';
 
   @override
   String castControlFailed(String error) {
@@ -6151,10 +6277,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get castDeviceVolume => 'Device Volume';
+  String get castDeviceVolume => 'Құрылғының дыбыс деңгейі';
 
   @override
-  String get castVolumeUnavailable => 'Unavailable';
+  String get castVolumeUnavailable => 'Қолжетімсіз';
 
   @override
   String castStopKind(String kind) {
@@ -6162,22 +6288,22 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get audioLabel => 'Audio';
+  String get audioLabel => 'Аудио';
 
   @override
-  String get subtitlesLabel => 'Subtitles';
+  String get subtitlesLabel => 'Субтитрлер';
 
   @override
-  String get pinConfirmTitle => 'Confirm PIN';
+  String get pinConfirmTitle => 'PIN кодын растаңыз';
 
   @override
-  String get pinSetTitle => 'Set PIN';
+  String get pinSetTitle => 'PIN кодын орнату';
 
   @override
-  String get pinEnterTitle => 'Enter PIN';
+  String get pinEnterTitle => 'PIN кодын енгізіңіз';
 
   @override
-  String get pinReenterToConfirm => 'Re-enter your PIN to confirm';
+  String get pinReenterToConfirm => 'Растау үшін PIN кодын қайта енгізіңіз';
 
   @override
   String pinEnterNDigit(int length) {
@@ -6190,46 +6316,45 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get pinIncorrect => 'Incorrect PIN';
+  String get pinIncorrect => 'Қате PIN';
 
   @override
-  String get pinMismatch => 'PINs do not match';
+  String get pinMismatch => 'PIN кодтары сәйкес келмейді';
 
   @override
-  String get pinForgot => 'Forgot PIN?';
+  String get pinForgot => 'PIN кодын ұмыттыңыз ба?';
 
   @override
-  String get pinClear => 'Clear';
+  String get pinClear => 'Таза';
 
   @override
   String get pinBackspace => 'Backspace';
 
   @override
-  String get quickConnectAuthorized => 'Quick Connect request authorized.';
+  String get quickConnectAuthorized => 'Жылдам қосылу сұрауы рұқсат етілген.';
 
   @override
   String get quickConnectInvalidOrExpired =>
-      'Quick Connect code is invalid or expired.';
+      'Жылдам қосылу коды жарамсыз немесе мерзімі өтіп кеткен.';
 
   @override
   String get quickConnectNotSupported =>
-      'Quick Connect is not supported on this server.';
+      'Бұл серверде Quick Connect функциясына қолдау көрсетілмейді.';
 
   @override
   String get quickConnectAuthorizeFailed =>
-      'Failed to authorize Quick Connect code.';
+      'Жылдам қосылу кодын авторизациялау мүмкін болмады.';
 
   @override
-  String get quickConnectDisabled =>
-      'Quick Connect is disabled on this server.';
+  String get quickConnectDisabled => 'Бұл серверде Quick Connect өшірілген.';
 
   @override
   String get quickConnectForbidden =>
-      'Your account cannot authorize this Quick Connect request.';
+      'Тіркелгіңіз осы Quick Connect сұрауына рұқсат бере алмайды.';
 
   @override
   String get quickConnectNotFound =>
-      'Quick Connect code was not found. Try a new code.';
+      'Жылдам қосылу коды табылмады. Жаңа кодты қолданып көріңіз.';
 
   @override
   String quickConnectFailedWithMessage(String message) {
@@ -6237,10 +6362,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get quickConnectEnterCode => 'Enter code';
+  String get quickConnectEnterCode => 'Кодты енгізіңіз';
 
   @override
-  String get quickConnectAuthorize => 'Authorize';
+  String get quickConnectAuthorize => 'Рұқсат ету';
 
   @override
   String remoteCommandFailed(String error) {
@@ -6248,28 +6373,28 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get remoteControlTitle => 'Remote Control';
+  String get remoteControlTitle => 'Қашықтан басқару құралы';
 
   @override
-  String get remoteFailedToLoadSessions => 'Failed to load sessions';
+  String get remoteFailedToLoadSessions => 'Сеанстарды жүктеу сәтсіз аяқталды';
 
   @override
-  String get remoteNoSessions => 'No controllable sessions';
+  String get remoteNoSessions => 'Басқарылатын сеанстар жоқ';
 
   @override
-  String get remoteStartPlayback => 'Start playback on another device';
+  String get remoteStartPlayback => 'Басқа құрылғыда ойнатуды бастаңыз';
 
   @override
-  String get unknownUser => 'Unknown';
+  String get unknownUser => 'Белгісіз';
 
   @override
-  String get unknownItem => 'Unknown';
+  String get unknownItem => 'Белгісіз';
 
   @override
-  String get remoteNothingPlaying => 'Nothing playing on this session';
+  String get remoteNothingPlaying => 'Бұл сеанста ештеңе ойнамайды';
 
   @override
-  String get castingStarted => 'Casting started on selected device';
+  String get castingStarted => 'Таңдалған құрылғыда трансляция басталды';
 
   @override
   String castingFailed(String error) {
@@ -6277,44 +6402,44 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get noRemoteDevices => 'No remote playback devices available.';
+  String get noRemoteDevices => 'Қашықтан ойнату құрылғылары қолжетімді емес.';
 
   @override
   String get noRemoteDevicesIos =>
-      'No remote playback devices available.\n\nOn iOS, AirPlay targets may be unavailable in the simulator.';
+      'Қашықтан ойнату құрылғылары қолжетімді емес.\n\niOS жүйесінде AirPlay мақсаттары симуляторда қолжетімсіз болуы мүмкін.';
 
   @override
-  String get trackActionPlayNext => 'Play Next';
+  String get trackActionPlayNext => 'Келесі ойнату';
 
   @override
-  String get trackActionAddToQueue => 'Add to Queue';
+  String get trackActionAddToQueue => 'Кезекке қосу';
 
   @override
-  String get trackActionAddToPlaylist => 'Add to Playlist';
+  String get trackActionAddToPlaylist => 'Ойнату тізіміне қосу';
 
   @override
-  String get trackActionCancelDownload => 'Cancel Download';
+  String get trackActionCancelDownload => 'Жүктеп алудан бас тарту';
 
   @override
-  String get trackActionDeleteFromPlaylist => 'Delete from Playlist';
+  String get trackActionDeleteFromPlaylist => 'Ойнату тізімінен жою';
 
   @override
-  String get trackActionMoveUp => 'Move Up';
+  String get trackActionMoveUp => 'Жоғары жылжыту';
 
   @override
-  String get trackActionMoveDown => 'Move Down';
+  String get trackActionMoveDown => 'Төменге жылжытыңыз';
 
   @override
-  String get trackActionRemoveFromFavorites => 'Remove from Favorites';
+  String get trackActionRemoveFromFavorites => 'Таңдаулылардан өшіру';
 
   @override
-  String get trackActionAddToFavorites => 'Add to Favorites';
+  String get trackActionAddToFavorites => 'Таңдаулыларға қосу';
 
   @override
-  String get trackActionGoToAlbum => 'Go to Album';
+  String get trackActionGoToAlbum => 'Альбомға өтіңіз';
 
   @override
-  String get trackActionGoToArtist => 'Go to Artist';
+  String get trackActionGoToArtist => 'Суретшіге өтіңіз';
 
   @override
   String trackActionDownloading(String name) {
@@ -6322,86 +6447,87 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get trackActionDeletedFile => 'Deleted downloaded file';
+  String get trackActionDeletedFile => 'Жүктеп алынған файл жойылды';
 
   @override
-  String get trackActionDeleteFileFailed => 'Could not delete downloaded file';
+  String get trackActionDeleteFileFailed =>
+      'Жүктеп алынған файлды жою мүмкін болмады';
 
   @override
-  String get shuffleBy => 'Shuffle By';
+  String get shuffleBy => 'Араластыру';
 
   @override
-  String get shuffleSelectLibrary => 'Select Library';
+  String get shuffleSelectLibrary => 'Кітапхана таңдаңыз';
 
   @override
-  String get shuffleSelectGenre => 'Select Genre';
+  String get shuffleSelectGenre => 'Жанр таңдаңыз';
 
   @override
-  String get shuffleLibrary => 'Library';
+  String get shuffleLibrary => 'Кітапхана';
 
   @override
-  String get shuffleGenre => 'Genre';
+  String get shuffleGenre => 'Жанр';
 
   @override
-  String get shuffleNoLibraries => 'No compatible libraries available.';
+  String get shuffleNoLibraries => 'Үйлесімді кітапханалар жоқ.';
 
   @override
-  String get shuffleNoGenres => 'No genres found for this shuffle mode.';
+  String get shuffleNoGenres => 'Бұл араластыру режимі үшін жанрлар табылмады.';
 
   @override
-  String get posterDisplayTitle => 'Display';
+  String get posterDisplayTitle => 'Дисплей';
 
   @override
-  String get posterImageType => 'Image Type';
+  String get posterImageType => 'Кескін түрі';
 
   @override
-  String get imageTypePoster => 'Poster';
+  String get imageTypePoster => 'Постер';
 
   @override
-  String get imageTypeThumbnail => 'Thumbnail';
+  String get imageTypeThumbnail => 'Нобай';
 
   @override
-  String get imageTypeBanner => 'Banner';
+  String get imageTypeBanner => 'Баннер';
 
   @override
-  String get playlistAddFailed => 'Failed to add to playlist';
+  String get playlistAddFailed => 'Ойнату тізіміне қосу мүмкін болмады';
 
   @override
-  String get playlistCreateFailed => 'Failed to create playlist';
+  String get playlistCreateFailed => 'Ойнату тізімі жасалмады';
 
   @override
-  String get playlistNew => 'New Playlist';
+  String get playlistNew => 'Жаңа ойнату тізімі';
 
   @override
-  String get playlistCreate => 'Create';
+  String get playlistCreate => 'Жасау';
 
   @override
-  String get playlistCreateNew => 'Create New Playlist';
+  String get playlistCreateNew => 'Жаңа ойнату тізімін жасау';
 
   @override
-  String get playlistNoneFound => 'No playlists found';
+  String get playlistNoneFound => 'Ойнату тізімдері табылмады';
 
   @override
-  String get addToPlaylist => 'Add to Playlist';
+  String get addToPlaylist => 'Ойнату тізіміне қосу';
 
   @override
-  String get lyricsNotAvailable => 'No lyrics available';
+  String get lyricsNotAvailable => 'Ән мәтіндері жоқ';
 
   @override
-  String get upNext => 'Up Next';
+  String get upNext => 'Келесі';
 
   @override
-  String get playNext => 'Play Next';
+  String get playNext => 'Келесі ойнату';
 
   @override
   String get stillWatchingContent =>
-      'Playback has been paused. Are you still watching?';
+      'Ойнату кідіртілді. Сіз әлі қарап отырсыз ба?';
 
   @override
-  String get stillWatchingStop => 'Stop';
+  String get stillWatchingStop => 'Тоқта';
 
   @override
-  String get stillWatchingContinue => 'Continue';
+  String get stillWatchingContinue => 'Жалғастыру';
 
   @override
   String skipSegment(String segment) {
@@ -6409,10 +6535,10 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get liveTv => 'Live TV';
+  String get liveTv => 'Тікелей теледидар';
 
   @override
-  String get continueWatchingAndNextUp => 'Continue Watching & Next Up';
+  String get continueWatchingAndNextUp => 'Көруді және келесіні жалғастыру';
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
@@ -6425,246 +6551,257 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get nextEpisode => 'Next Episode';
+  String get nextEpisode => 'Келесі эпизод';
 
   @override
-  String get moreFromThisSeason => 'More From This Season';
+  String get moreFromThisSeason => 'Осы маусымнан көбірек';
 
   @override
-  String get playerTooltipPlaybackSpeed => 'Playback speed';
+  String get playerTooltipPlaybackSpeed => 'Ойнату жылдамдығы';
 
   @override
-  String get playerTooltipCastControls => 'Cast controls';
+  String get playerTooltipCastControls => 'Трансляцияны басқару элементтері';
 
   @override
-  String get playerTooltipPlaybackQuality => 'Bitrate';
+  String get playerTooltipPlaybackQuality => 'Бит жылдамдығы';
 
   @override
-  String get playerTooltipEnterFullscreen => 'Enter fullscreen';
+  String get playerTooltipEnterFullscreen => 'Толық экранға өтіңіз';
 
   @override
-  String get playerTooltipExitFullscreen => 'Exit fullscreen';
+  String get playerTooltipExitFullscreen => 'Толық экраннан шығу';
 
   @override
-  String get playerTooltipLockLandscape => 'Lock landscape';
+  String get playerTooltipFloatOnTop => 'Үстінде қалқыңыз';
 
   @override
-  String get playerTooltipUnlockOrientation => 'Allow rotation';
+  String get playerTooltipExitFloatOnTop => 'Үстіңгі жағындағы қалқыманы өшіру';
 
   @override
-  String get playerTooltipPrevious => 'Previous';
+  String get playerTooltipLockLandscape => 'Пейзажды құлыптау';
 
   @override
-  String get playerTooltipSeekBack => 'Seek back';
+  String get playerTooltipUnlockOrientation => 'Айналдыруға рұқсат етіңіз';
 
   @override
-  String get playerTooltipSeekForward => 'Seek forward';
+  String get playerTooltipPrevious => 'Алдыңғы';
 
   @override
-  String get contextMenuMarkWatched => 'Mark as Watched';
+  String get playerTooltipSeekBack => 'Артқа іздеу';
 
   @override
-  String get contextMenuMarkUnwatched => 'Mark as Unwatched';
+  String get playerTooltipSeekForward => 'Алға ұмтыл';
 
   @override
-  String get contextMenuAddToFavorites => 'Add to Favorites';
+  String get contextMenuMarkWatched => 'Қаралған деп белгілеу';
 
   @override
-  String get contextMenuRemoveFromFavorites => 'Remove from Favorites';
+  String get contextMenuMarkUnwatched => 'Қаралмаған деп белгілеңіз';
 
   @override
-  String get contextMenuGoToSeries => 'Go to Series';
+  String get contextMenuAddToFavorites => 'Таңдаулыларға қосу';
+
+  @override
+  String get contextMenuRemoveFromFavorites => 'Таңдаулылардан өшіру';
+
+  @override
+  String get contextMenuGoToSeries => 'Серияға өтіңіз';
 
   @override
   String get settingsAdministrationSubtitle =>
-      'Access the server administration panel';
+      'Серверді басқару тақтасына қол жеткізіңіз';
 
   @override
-  String get settingsAccountSecurity => 'Account & Security';
+  String get settingsAccountSecurity => 'Есептік жазба және қауіпсіздік';
 
   @override
   String get settingsAccountSecuritySubtitle =>
-      'Authentication, PIN code, and parental controls';
+      'Аутентификация, PIN коды және ата-ана бақылауы';
 
   @override
-  String get settingsPersonalization => 'Personalization';
+  String get settingsPersonalization => 'Жекелендіру';
 
   @override
   String get settingsPersonalizationSubtitle =>
-      'Theme, navigation, home rows, and library visibility';
+      'Тақырып, шарлау, негізгі жолдар және кітапхананың көрінуі';
 
   @override
-  String get settingsDynamicContent => 'Dynamic Content';
+  String get settingsDynamicContent => 'Динамикалық мазмұн';
 
   @override
-  String get settingsDynamicContentSubtitle => 'Media Bar and visual overlays';
+  String get settingsDynamicContentSubtitle =>
+      'Медиа жолағы және көрнекі қабаттасмалар';
 
   @override
-  String get settingsPlaybackSyncplay => 'Playback & SyncPlay';
+  String get settingsPlaybackSyncplay => 'Ойнату және SyncPlay';
 
   @override
   String get settingsPlaybackSyncplaySubtitle =>
-      'Audio/video settings, subtitles, downloads, and SyncPlay controls';
+      'Аудио/бейне параметрлері, субтитрлер, жүктеулер және SyncPlay басқару элементтері';
 
   @override
   String get settingsIntegrationsSubtitle =>
-      'Plugin sync, Seerr, ratings, and more';
+      'Плагинді синхрондау, Seerr, рейтингтер және т.б';
 
   @override
   String get settingsAboutSubtitle =>
-      'App version, legal information, and credits';
+      'Қолданба нұсқасы, заңды ақпарат және несиелер';
 
   @override
-  String get settingsAuthenticationSection => 'AUTHENTICATION';
+  String get settingsAuthenticationSection => 'АВТЕНТТЕУ';
 
   @override
-  String get settingsSortServersBy => 'Sort Servers By';
+  String get settingsSortServersBy => 'Серверлерді сұрыптау';
 
   @override
-  String get settingsLastUsed => 'Last Used';
+  String get settingsLastUsed => 'Соңғы пайдаланылған';
 
   @override
-  String get settingsAlphabetical => 'Alphabetical';
+  String get settingsAlphabetical => 'Алфавиттік';
 
   @override
-  String get settingsPrivacyAndSafetySection => 'PRIVACY & SAFETY';
+  String get settingsPrivacyAndSafetySection => 'ҚҰПИЯЛЫҚ ЖӘНЕ ҚАУІПСІЗДІК';
 
   @override
-  String get settingsBlockedRatings => 'Blocked Ratings';
+  String get settingsBlockedRatings => 'Блокталған рейтингтер';
 
   @override
-  String get settingsGeneralStyle => 'General Style';
+  String get settingsGeneralStyle => 'Жалпы стиль';
 
   @override
   String get settingsGeneralStyleSubtitle =>
-      'Theme accents, backdrops, watched indicators, and theme music';
+      'Тақырып екпіні, фон, қаралған индикаторлар және тақырыптық музыка';
 
   @override
-  String get settingsHomePage => 'Home Page';
+  String get settingsHomePage => 'Негізгі бет';
 
   @override
   String get settingsHomePageSubtitle =>
-      'Sections, image types, overlays, and media previews';
+      'Бөлімдер, кескін түрлері, қабаттасулар және мультимедианы алдын ала қарау';
 
   @override
   String get settingsLibrariesSubtitle =>
-      'Library visibility, folder view, and multi-server behavior';
+      'Кітапхананың көрінуі, қалта көрінісі және көп сервер әрекеті';
 
   @override
-  String get settingsTwentyFourHourClock => '24-Hour Clock';
+  String get settingsTwentyFourHourClock => '24 сағаттық сағат';
 
   @override
   String get settingsTwentyFourHourClockSubtitle =>
-      'Use 24-hour time formatting wherever the clock is shown';
+      'Сағат көрсетілген жерде 24 сағаттық уақыт пішімдеуін пайдаланыңыз';
 
   @override
   String get settingsShowShuffleButtonInNavigation =>
-      'Show the shuffle button in the navigation bar';
+      'Шарлау жолағында араластыру түймесін көрсетіңіз';
 
   @override
   String get settingsShowGenresButtonInNavigation =>
-      'Show the genres button in the navigation bar';
+      'Шарлау жолағында жанрлар түймесін көрсетіңіз';
 
   @override
   String get settingsShowFavoritesButtonInNavigation =>
-      'Show the favorites button in the navigation bar';
+      'Навигация жолағында таңдаулылар түймесін көрсетіңіз';
 
   @override
   String get settingsShowLibrariesButtonInNavigation =>
-      'Show the libraries button in the navigation bar';
+      'Шарлау жолағында кітапханалар түймесін көрсетіңіз';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>
-      'Toggle home page visibility per library. Restart Moonfin for changes to take effect.';
+      'Әрбір кітапхананың басты бетінің көріну мүмкіндігін ауыстырып-қосқыш. Өзгерістердің күшіне енуі үшін Moonfin қолданбасын қайта іске қосыңыз.';
 
   @override
-  String get settingsMediaBarAndLocalPreviews => 'Media Bar & Local Previews';
+  String get settingsMediaBarAndLocalPreviews =>
+      'Медиа жолағы және жергілікті алдын ала қараулар';
 
   @override
-  String get settingsVisualOverlays => 'Visual Overlays';
+  String get settingsVisualOverlays => 'Көрнекі қабаттасулар';
 
   @override
-  String get settingsSeasonalSurprise => 'Seasonal Surprise';
+  String get settingsSeasonalSurprise => 'Маусымдық тосынсый';
 
   @override
-  String get settingsMetadataAndRatings => 'Metadata & Ratings';
+  String get settingsMetadataAndRatings => 'Метадеректер және рейтингтер';
 
   @override
   String get settingsPluginScreenDescription =>
-      'Moonbase powers server-side integrations including additional rating sources, Seerr requests, and synced preferences.';
+      'Moonbase қосымша бағалау көздерін, Seerr сұрауларын және синхрондалған теңшелімдерді қоса, серверлік интеграцияларға қуат береді.';
 
   @override
-  String get settingsOfflineDownloads => 'Offline Downloads';
+  String get settingsOfflineDownloads => 'Офлайн жүктеп алулар';
 
   @override
-  String get settingsHigh => 'High';
+  String get settingsHigh => 'Жоғары';
 
   @override
-  String get settingsLow => 'Low';
+  String get settingsLow => 'Төмен';
 
   @override
-  String get settingsCustomPath => 'Custom Path';
+  String get settingsCustomPath => 'Теңшелетін жол';
 
   @override
-  String get settingsEnterDownloadFolderPath => 'Enter download folder path';
+  String get settingsEnterDownloadFolderPath =>
+      'Жүктеп алу қалтасының жолын енгізіңіз';
 
   @override
-  String get settingsConcurrentDownloads => 'Concurrent Downloads';
+  String get settingsConcurrentDownloads => 'Бір мезгілде жүктеулер';
 
   @override
   String get settingsConcurrentDownloadsDescription =>
-      'Maximum number of items to download at once.';
+      'Бірден жүктеп алуға болатын элементтердің максималды саны.';
 
   @override
-  String get settingsAppInfo => 'APP INFO';
+  String get settingsAppInfo => 'ҚОЛДАНБА АҚПАРАТЫ';
 
   @override
-  String get settingsReportAnIssue => 'Report an Issue';
+  String get settingsReportAnIssue => 'Мәселе туралы хабарлау';
 
   @override
   String get settingsReportAnIssueSubtitle =>
-      'Open the issue tracker on GitHub';
+      'GitHub жүйесінде мәселені бақылау құралын ашыңыз';
 
   @override
-  String get settingsJoinDiscord => 'Join Discord';
+  String get settingsJoinDiscord => 'Discord-қа қосылыңыз';
 
   @override
-  String get settingsJoinDiscordSubtitle => 'Chat with the community';
+  String get settingsJoinDiscordSubtitle => 'Қауымдастықпен сөйлесу';
 
   @override
-  String get settingsJoinTheDiscord => 'Join the Discord';
+  String get settingsJoinTheDiscord => 'Discord қосылыңыз';
 
   @override
-  String get settingsSupportMoonfin => 'Support Moonfin';
+  String get settingsSupportMoonfin => 'Қолдау Moonfin';
 
   @override
   String get settingsSupportMoonfinSubtitle =>
-      'Star the project on GitHub or contribute';
+      'GitHub сайтында жобаны жұлдызшалаңыз немесе үлес қосыңыз';
 
   @override
-  String get settingsLegal => 'LEGAL';
+  String get settingsLegal => 'ЗАҢДЫ';
 
   @override
-  String get settingsLicenses => 'Licenses';
+  String get settingsLicenses => 'Лицензиялар';
 
   @override
-  String get settingsOpenSourceLicenseNotices => 'Open-source license notices';
+  String get settingsOpenSourceLicenseNotices =>
+      'Ашық бастапқы лицензия туралы ескертулер';
 
   @override
-  String get settingsPrivacyPolicy => 'Privacy Policy';
+  String get settingsPrivacyPolicy => 'Құпиялылық саясаты';
 
   @override
-  String get settingsPrivacyPolicySubtitle => 'How Moonfin handles your data';
+  String get settingsPrivacyPolicySubtitle =>
+      'Moonfin деректеріңізді қалай өңдейді';
 
   @override
-  String get settingsCheckForUpdates => 'Check for Updates';
+  String get settingsCheckForUpdates => 'Жаңартуларды тексеріңіз';
 
   @override
   String get settingsCheckForUpdatesSubtitle =>
-      'Check for the latest Moonfin release';
+      'Соңғы Moonfin шығарылымын тексеріңіз';
 
   @override
-  String get settingsPoweredByFlutter => 'Powered by Flutter';
+  String get settingsPoweredByFlutter => 'Flutter арқылы қуатталған';
 
   @override
   String settingsLicenseNoticesCount(int count) {
@@ -6678,168 +6815,172 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get settingsBoth => 'Both';
+  String get settingsBoth => 'Екеуі де';
 
   @override
-  String get settingsShuffleContentTypeFilter => 'Shuffle Content Type Filter';
+  String get settingsShuffleContentTypeFilter =>
+      'Мазмұн түрі сүзгісін араластыру';
 
   @override
-  String get settingsVideoPlaybackPreferences => 'Video Playback Preferences';
+  String get settingsVideoPlaybackPreferences => 'Бейнені ойнату теңшелімдері';
 
   @override
   String get settingsVideoPlaybackPreferencesSubtitle =>
-      'Core video engine and streaming quality settings';
+      'Негізгі бейне қозғалтқышы және ағын сапасының параметрлері';
 
   @override
-  String get settingsAudioPreferences => 'Audio Preferences';
+  String get settingsAudioPreferences => 'Аудио теңшелімдері';
 
   @override
   String get settingsAudioPreferencesSubtitle =>
-      'Audio tracks, processing, and passthrough options';
+      'Аудио тректер, өңдеу және өту опциялары';
 
   @override
-  String get settingsAutomationAndQueue => 'Automation & Queue';
+  String get settingsAutomationAndQueue => 'Автоматтандыру және кезек';
 
   @override
   String get settingsAutomationAndQueueSubtitle =>
-      'Automated playback and sequencing';
+      'Автоматтандырылған ойнату және реттілік';
 
   @override
   String get settingsOfflineDownloadsSubtitle =>
-      'Download quality, storage limits, and queue size';
+      'Жүктеп алу сапасы, жад шектеулері және кезек өлшемі';
 
   @override
   String get settingsSyncplaySubtitle =>
-      'Synchronization logic for group sessions';
+      'Топтық сеанстар үшін синхрондау логикасы';
 
   @override
   String get settingsAdvancedOptionsSubtitle =>
-      'Specialized player features. Use with caution, as some options may cause playback issues';
+      'Арнайы ойыншы мүмкіндіктері. Сақтықпен пайдаланыңыз, себебі кейбір опциялар ойнату мәселелерін тудыруы мүмкін';
 
   @override
-  String get settingsSkipIntrosAndOutros => 'Skip Intros and Outros?';
+  String get settingsSkipIntrosAndOutros =>
+      'Кіріспелер мен шығыстарды өткізіп жіберу керек пе?';
 
   @override
-  String get settingsPromptUser => 'Prompt User';
+  String get settingsPromptUser => 'Шұғыл пайдаланушы';
 
   @override
-  String get settingsSkip => 'Skip';
+  String get settingsSkip => 'Өткізіп жіберу';
 
   @override
-  String get settingsDoNothing => 'Do Nothing';
+  String get settingsDoNothing => 'Ештеңе жасама';
 
   @override
   String get settingsMaxBitrateDescription =>
-      'Cap the streaming bitrate. Content above this threshold will be transcoded to fit.';
+      'Ағынның бит жылдамдығын шектеңіз. Осы шекті мәннен жоғары мазмұн сәйкестендіру үшін қайта кодталады.';
 
   @override
   String get settingsMaxResolutionDescription =>
-      'Limit the maximum resolution the player will request. Higher-resolution content will be transcoded down.';
+      'Ойыншы сұрайтын максималды ажыратымдылықты шектеңіз. Ажыратымдылығы жоғары мазмұн қайта кодталады.';
 
   @override
   String get settingsPlayerZoomDescription =>
-      'How video should be scaled to fit the screen.';
+      'Бейнені экранға сыйғызу үшін қалай масштабтау керек.';
 
   @override
-  String get settingsPlaybackEngineAndroidTv => 'Playback Engine (Android TV)';
+  String get settingsPlaybackEngineAndroidTv =>
+      'Ойнату механизмі (Android теледидары)';
 
   @override
   String get settingsPlaybackEngineAndroidTvDescription =>
-      'Choose the default playback engine on Android TV devices. Changes apply to the next playback session.';
+      'Android TV құрылғыларында әдепкі ойнату механизмін таңдаңыз. Өзгерістер келесі ойнату сеансына қолданылады.';
 
   @override
-  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (recommended)';
+  String get settingsPlaybackEngineMedia3Recommended => 'Media3 (ұсынылады)';
 
   @override
-  String get settingsPlaybackEngineMpvLegacy => 'mpv (legacy)';
+  String get settingsPlaybackEngineMpvLegacy => 'mpv (мұра)';
 
   @override
-  String get settingsDolbyVisionFallback => 'Dolby Vision Fallback';
+  String get settingsDolbyVisionFallback => 'Dolby Vision Қайта';
 
   @override
   String get settingsDolbyVisionFallbackDescription =>
-      'Behavior for Dolby Vision titles on devices without Dolby Vision decoding.';
+      'Dolby Vision декодтауы жоқ құрылғылардағы Dolby Vision тақырыптарының әрекеті.';
 
   @override
-  String get settingsAskEachTime => 'Ask each time';
+  String get settingsAskEachTime => 'Әр жолы сұраңыз';
 
   @override
-  String get settingsPreferHdr10Fallback => 'Prefer HDR10 fallback';
+  String get settingsPreferHdr10Fallback =>
+      'HDR10 қалпына келтіруге артықшылық беріңіз';
 
   @override
-  String get settingsPreferServerTranscode => 'Prefer server transcode';
+  String get settingsPreferServerTranscode => 'Серверді транскодтауды ұнатыңыз';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlay =>
-      'Dolby Vision Profile 7 Direct Play';
+      'Dolby Vision профилі 7 тікелей ойнату';
 
   @override
   String get settingsDolbyVisionProfile7DirectPlayDescription =>
-      'Controls whether Dolby Vision profile 7 enhancement-layer streams should direct play.';
+      'Dolby Vision профилінің 7 жақсарту қабатының ағындарының тікелей ойнату қажеттігін басқарады.';
 
   @override
-  String get settingsAutoAftkrtEnabled => 'Auto (AFTKRT enabled)';
+  String get settingsAutoAftkrtEnabled => 'Авто (AFTKRT қосылған)';
 
   @override
-  String get settingsEnabledOnThisDevice => 'Enabled on this device';
+  String get settingsEnabledOnThisDevice => 'Бұл құрылғыда қосылған';
 
   @override
-  String get settingsDisabledPreferTranscode => 'Disabled (prefer transcode)';
+  String get settingsDisabledPreferTranscode => 'Өшірілген (транскодты таңдау)';
 
   @override
   String get settingsResumeRewindDescription =>
-      'When resuming playback (from Continue Watching or a media item page), how many seconds should be rewound?';
+      'Ойнатуды жалғастырған кезде (Көруді жалғастыру немесе мультимедиа элементі бетінен) қанша секундты кері айналдыру керек?';
 
   @override
   String get settingsUnpauseRewindDescription =>
-      'When resuming playback after pressing the pause button, how many seconds should be rewound?';
+      'Кідірту түймесін басқаннан кейін ойнатуды жалғастырған кезде, неше секунд қайта оралу керек?';
 
   @override
   String get settingsSkipBackLengthDescription =>
-      'How many seconds to jump back after pressing the rewind button.';
+      'Артқа айналдыру түймесін басқаннан кейін неше секунд артқа секіру керек.';
 
   @override
-  String get settingsOneSecond => '1 second';
+  String get settingsOneSecond => '1 секунд';
 
   @override
-  String get settingsThreeSeconds => '3 seconds';
+  String get settingsThreeSeconds => '3 секунд';
 
   @override
-  String get settingsFortyFiveSeconds => '45 seconds';
+  String get settingsFortyFiveSeconds => '45 секунд';
 
   @override
-  String get settingsSixtySeconds => '60 seconds';
+  String get settingsSixtySeconds => '60 секунд';
 
   @override
   String get settingsSkipForwardLengthDescription =>
-      'How many seconds to jump forward after pressing the fast forward button.';
+      'Жылдам алға түймесін басқаннан кейін қанша секунд алға секіру керек.';
 
   @override
   String get settingsBitstreamAc3ToExternalDecoder =>
-      'Bitstream AC3 to external decoder';
+      'AC3 биттік ағыны сыртқы декодерге';
 
   @override
-  String get settingsCinemaMode => 'Cinema Mode';
+  String get settingsCinemaMode => 'Кинотеатр режимі';
 
   @override
   String get settingsCinemaModeSubtitle =>
-      'Play trailers/prerolls before a main feature';
+      'Негізгі мүмкіндіктен бұрын трейлерлерді/алдын ала роликтерді ойнату';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
-      'Extended shows a full card with episode artwork and description. Minimal shows a compact countdown overlay. Disabled hides the prompt entirely.';
+  String get settingsNextUpDisplayDescription =>
+      'Кеңейтілген эпизод суреті мен сипаттамасы бар толық картаны көрсетеді. Минималды ықшам кері санақ қабатын көрсетеді. Өшірулі болса шақыруды толығымен жасырады.';
 
   @override
-  String get settingsShort => 'Short';
+  String get settingsShort => 'Қысқа';
 
   @override
-  String get settingsLong => 'Long';
+  String get settingsLong => 'Ұзақ';
 
   @override
-  String get settingsVeryLong => 'Very Long';
+  String get settingsVeryLong => 'Өте ұзақ';
 
   @override
-  String get settingsVideoStartDelay => 'Video Start Delay';
+  String get settingsVideoStartDelay => 'Бейнені бастаудың кешігуі';
 
   @override
   String settingsMillisecondsValue(int value) {
@@ -6847,82 +6988,85 @@ class AppLocalizationsKk extends AppLocalizations {
   }
 
   @override
-  String get settingsLiveTvDirect => 'Live TV Direct';
+  String get settingsLiveTvDirect => 'Тікелей тікелей эфир';
 
   @override
-  String get settingsLiveTvDirectSubtitle => 'Enable direct play for Live TV';
+  String get settingsLiveTvDirectSubtitle =>
+      'Live TV үшін тікелей ойнатуды қосыңыз';
 
   @override
-  String get settingsOpenGroups => 'Open Groups';
+  String get settingsOpenGroups => 'Топтарды ашыңыз';
 
   @override
   String get settingsOpenGroupsSubtitle =>
-      'Create, join, or manage SyncPlay groups';
+      'SyncPlay топтарын жасаңыз, қосылыңыз немесе басқарыңыз';
 
   @override
-  String get settingsSyncplayEnabled => 'SyncPlay Enabled';
+  String get settingsSyncplayEnabled => 'SyncPlay қосулы';
 
   @override
   String get settingsSyncplayEnabledSubtitle =>
-      'Enable group watching features';
+      'Топтық көру мүмкіндіктерін қосыңыз';
 
   @override
-  String get settingsSyncplayButton => 'SyncPlay Button';
+  String get settingsSyncplayButton => 'SyncPlay түймесі';
 
   @override
   String get settingsSyncplayButtonSubtitle =>
-      'Show the SyncPlay button on the navigation bar';
+      'Шарлау жолағында SyncPlay түймесін көрсетіңіз';
 
   @override
-  String get settingsSyncplayAdvancedCorrection => 'Advanced Correction';
+  String get settingsSyncplayAdvancedCorrection => 'Жетілдірілген түзету';
 
   @override
   String get settingsSyncplayAdvancedCorrectionSubtitle =>
-      'Enable fine-grained sync logic';
+      'Ұқсас синхрондау логикасын қосыңыз';
 
   @override
-  String get settingsSyncplaySyncCorrection => 'Sync Correction';
+  String get settingsSyncplaySyncCorrection => 'Синхронды түзету';
 
   @override
   String get settingsSyncplaySyncCorrectionSubtitle =>
-      'Automatically adjust playback to stay in sync';
+      'Синхронда болу үшін ойнатуды автоматты түрде реттеңіз';
 
   @override
-  String get settingsSyncplaySpeedToSync => 'Speed to Sync';
+  String get settingsSyncplaySpeedToSync => 'Синхрондау жылдамдығы';
 
   @override
   String get settingsSyncplaySpeedToSyncSubtitle =>
-      'Use playback speed adjustment to sync';
+      'Синхрондау үшін ойнату жылдамдығын реттеуді пайдаланыңыз';
 
   @override
-  String get settingsSyncplaySkipToSync => 'Skip to Sync';
+  String get settingsSyncplaySkipToSync => 'Синхрондауға өтіңіз';
 
   @override
-  String get settingsSyncplaySkipToSyncSubtitle => 'Use seeking to sync';
+  String get settingsSyncplaySkipToSyncSubtitle =>
+      'Синхрондау үшін іздеуді пайдаланыңыз';
 
   @override
-  String get settingsSyncplayMinimumSpeedDelay => 'Minimum Speed Delay';
+  String get settingsSyncplayMinimumSpeedDelay => 'Ең аз жылдамдықты кешіктіру';
 
   @override
-  String get settingsSyncplayMaximumSpeedDelay => 'Maximum Speed Delay';
+  String get settingsSyncplayMaximumSpeedDelay =>
+      'Максималды жылдамдықты кешіктіру';
 
   @override
-  String get settingsSyncplaySpeedDuration => 'Speed Duration';
+  String get settingsSyncplaySpeedDuration => 'Жылдамдық ұзақтығы';
 
   @override
-  String get settingsSyncplayMinimumSkipDelay => 'Minimum Skip Delay';
+  String get settingsSyncplayMinimumSkipDelay => 'Ең аз өткізіп жіберу кешігуі';
 
   @override
-  String get settingsSyncplayExtraOffset => 'SyncPlay Extra Offset';
+  String get settingsSyncplayExtraOffset => 'SyncPlay қосымша офсет';
 
   @override
-  String get onNow => 'On Now';
+  String get onNow => 'Қазір қосулы';
 
   @override
-  String get collections => 'Collections';
+  String get collections => 'Жинақтар';
 
   @override
-  String get lastPlayed => 'Last Played';
+  String get lastPlayed => 'Соңғы ойналған';
 
   @override
   String libraryNameWithServer(String libraryName, String serverName) {

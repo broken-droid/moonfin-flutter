@@ -16,7 +16,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String connectingToServer(String serverName) {
-    return '$serverName sunucusuna baglaniyor';
+    return 'Connecting to $serverName';
   }
 
   @override
@@ -29,7 +29,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get username => 'Kullanici adi';
 
   @override
-  String get email => 'Email';
+  String get email => 'E-posta';
 
   @override
   String get quickConnectInstruction =>
@@ -49,12 +49,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'QuickConnect kullanılamıyor: $detail';
+    return 'QuickConnect unavailable: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'QuickConnect kullanılamıyor ($status): $detail';
+    return 'QuickConnect unavailable ($status): $detail';
   }
 
   @override
@@ -68,7 +68,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String appVersionFooter(String version) {
-    return 'Moonfin sürüm $version';
+    return 'Moonfin version $version';
   }
 
   @override
@@ -94,7 +94,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String removeServerConfirmation(String serverName) {
-    return '\"$serverName\" sunucularınızdan kaldırılsın mı?';
+    return 'Remove \"$serverName\" from your servers?';
   }
 
   @override
@@ -193,7 +193,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String unableToConnectTo(String target) {
-    return '$target\'ye bağlanılamıyor';
+    return 'Unable to connect to $target';
   }
 
   @override
@@ -275,7 +275,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String failedToLoadFolderError(String error) {
-    return 'Klasör yüklenemedi: $error';
+    return 'Failed to load folder: $error';
   }
 
   @override
@@ -283,7 +283,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String itemCountLabel(int count) {
-    return '$count öğe';
+    return '$count items';
   }
 
   @override
@@ -300,7 +300,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String totalCountItems(int count) {
-    return '$count Öğeler';
+    return '$count Items';
   }
 
   @override
@@ -341,7 +341,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String libraryGenresTitle(String name) {
-    return '$name — Türler';
+    return '$name — Genres';
   }
 
   @override
@@ -380,17 +380,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String minutesAgo(int count) {
-    return '$count dk önce';
+    return '${count}m ago';
   }
 
   @override
   String hoursAgo(int count) {
-    return '${count}s önce';
+    return '${count}h ago';
   }
 
   @override
   String daysAgo(int count) {
-    return '$count gün önce';
+    return '${count}d ago';
   }
 
   @override
@@ -425,7 +425,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String titlesCount(int count) {
-    return '$count başlık';
+    return '$count titles';
   }
 
   @override
@@ -511,17 +511,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String authorsCount(int count) {
-    return '$count yazarlar';
+    return '$count authors';
   }
 
   @override
   String genresCount(int count) {
-    return '$count tür';
+    return '$count genres';
   }
 
   @override
   String percentCompleted(int percent) {
-    return '%$percent tamamlandı';
+    return '$percent% completed';
   }
 
   @override
@@ -538,7 +538,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String titlesArrangedForBrowsing(int count) {
-    return '$count başlıklar öncelikli okuma göz atma için düzenlendi.';
+    return '$count titles arranged for reading-first browsing.';
   }
 
   @override
@@ -575,7 +575,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String noLabelFound(String label) {
-    return '$label bulunamadı';
+    return 'No $label found';
   }
 
   @override
@@ -647,12 +647,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String sectionCountLabel(int count) {
-    return '$count bölümler';
+    return '$count sections';
   }
 
   @override
   String firstPublished(int year) {
-    return 'İlk kez yayınlandı $year';
+    return 'First published $year';
   }
 
   @override
@@ -667,7 +667,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String booksCount(int count) {
-    return '$count kitap';
+    return '$count books';
   }
 
   @override
@@ -678,7 +678,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String authorsCountTitle(int count) {
-    return '$count Yazarlar';
+    return '$count Authors';
   }
 
   @override
@@ -754,7 +754,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String discNumber(int number) {
-    return 'Disk $number';
+    return 'Disc $number';
   }
 
   @override
@@ -779,7 +779,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String published(int year) {
-    return 'Yayınlandı $year';
+    return 'Published $year';
   }
 
   @override
@@ -798,7 +798,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String endsAt(String time) {
-    return '$time tarihinde biter';
+    return 'Ends at $time';
   }
 
   @override
@@ -812,7 +812,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String resumeFrom(String position) {
-    return '$position adresinden devam ettir';
+    return 'Resume from $position';
   }
 
   @override
@@ -911,7 +911,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String deleteDownloadedTracksMessage(String title) {
-    return '\"$title\" için indirilen parçalar silinsin mi?';
+    return 'Delete downloaded tracks for \"$title\"?';
   }
 
   @override
@@ -926,17 +926,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String noItemsLoaded(String itemLabel) {
-    return '$itemLabel yüklü değil';
+    return 'No $itemLabel loaded';
   }
 
   @override
   String downloadingTitle(String title, int count) {
-    return '$title ($count öğe) indiriliyor...';
+    return 'Downloading $title ($count items)...';
   }
 
   @override
   String deleteConfirmMessage(String name) {
-    return '\"$name\" dosyasını sunucudan silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.';
+    return 'Are you sure you want to delete \"$name\" from the server? This action cannot be undone.';
   }
 
   @override
@@ -947,7 +947,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String unsupportedBookFormat(String extension) {
-    return 'Desteklenmeyen kitap formatı: .$extension';
+    return 'Unsupported book format: .$extension';
   }
 
   @override
@@ -974,7 +974,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String subtitleDownloadedSelected(String name) {
-    return 'Altyazı indirildi ve seçildi: $name';
+    return 'Subtitle downloaded and selected: $name';
   }
 
   @override
@@ -983,7 +983,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String noRemoteSubtitlesFound(String language) {
-    return '$language için uzak altyazı bulunamadı.';
+    return 'No remote subtitles found for $language.';
   }
 
   @override
@@ -991,7 +991,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String versionNumber(int number) {
-    return 'Sürüm $number';
+    return 'Version $number';
   }
 
   @override
@@ -1012,7 +1012,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String downloadingItem(String name, String quality) {
-    return '$name ($quality) indiriliyor...';
+    return 'Downloading $name ($quality)...';
   }
 
   @override
@@ -1020,7 +1020,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
-    return '$typeLabel için yerel dosyalar silinsin mi?\n\nBu, depolama alanında yer açacaktır. Daha sonra tekrar indirebilirsiniz.';
+    return 'Delete local files for $typeLabel?\n\nThis will free up storage space. You can re-download later.';
   }
 
   @override
@@ -1043,12 +1043,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String studioMoreCount(int count) {
-    return '+$count daha';
+    return '+$count more';
   }
 
   @override
   String totalEpisodes(int count) {
-    return '$count Bölümler';
+    return '$count Episodes';
   }
 
   @override
@@ -1058,12 +1058,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String episodeLabel(int number) {
-    return 'Bölüm $number';
+    return 'Episode $number';
   }
 
   @override
   String chapterNumber(int number) {
-    return 'Bölüm $number';
+    return 'Chapter $number';
   }
 
   @override
@@ -1090,17 +1090,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String born(String date) {
-    return 'Doğum tarihi: $date';
+    return 'Born $date';
   }
 
   @override
   String died(String date) {
-    return 'Öldü $date';
+    return 'Died $date';
   }
 
   @override
   String age(int age) {
-    return 'Yaş $age';
+    return 'Age $age';
   }
 
   @override
@@ -1114,7 +1114,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String downloadsCount(int count) {
-    return '$count indirme';
+    return '$count downloads';
   }
 
   @override
@@ -1133,32 +1133,32 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String remoteSubtitlePermissionError(String action) {
-    return 'Uzaktan altyazı $action, bu kullanıcı için Jellyfin altyazı yönetimi iznini gerektirir.';
+    return 'Remote subtitle $action requires the Jellyfin subtitle management permission for this user.';
   }
 
   @override
   String remoteSubtitleNotFoundError(String action) {
-    return 'Bu öğe $action uzak altyazı sunucusunda bulunamadı.';
+    return 'This item could not be found on the server for remote subtitle $action.';
   }
 
   @override
   String remoteSubtitleDetailError(String action, String detail) {
-    return 'Uzaktan altyazı $action başarısız oldu: $detail';
+    return 'Remote subtitle $action failed: $detail';
   }
 
   @override
   String remoteSubtitleHttpError(String action, int status) {
-    return 'Uzaktan altyazı $action başarısız oldu (HTTP $status).';
+    return 'Remote subtitle $action failed (HTTP $status).';
   }
 
   @override
   String remoteSubtitleGenericError(String action) {
-    return 'Uzak altyazılar $action başarısız oldu.';
+    return 'Failed to $action remote subtitles.';
   }
 
   @override
   String deleteSeriesFiles(String name) {
-    return '\"$name\" için indirilen tüm bölümler';
+    return 'all downloaded episodes for \"$name\"';
   }
 
   @override
@@ -1188,17 +1188,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String castActionFailed(String label, String error) {
-    return '$label eylemi başarısız oldu: $error';
+    return '$label action failed: $error';
   }
 
   @override
   String failedToSetCastVolume(String error) {
-    return 'Yayın hacmi ayarlanamadı: $error';
+    return 'Failed to set cast volume: $error';
   }
 
   @override
   String castControlsTitle(String label) {
-    return '$label Kontroller';
+    return '$label Controls';
   }
 
   @override
@@ -1215,7 +1215,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String stopCast(String label) {
-    return '$label\'yi durdur';
+    return 'Stop $label';
   }
 
   @override
@@ -1223,7 +1223,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String trackNumber(int number) {
-    return '$number\'yi takip edin';
+    return 'Track $number';
   }
 
   @override
@@ -1240,7 +1240,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String secondsCount(int seconds) {
-    return '$seconds saniye';
+    return '$seconds seconds';
   }
 
   @override
@@ -1259,7 +1259,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String bitrateValueMbps(int mbps) {
-    return '$mbps Mb/sn';
+    return '$mbps Mbps';
   }
 
   @override
@@ -1355,12 +1355,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String castSessionError(String protocol) {
-    return '$protocol oturum hatası';
+    return '$protocol session error';
   }
 
   @override
   String failedToLoadBookDetails(String error) {
-    return 'Kitap ayrıntıları yüklenemedi: $error';
+    return 'Failed to load book details: $error';
   }
 
   @override
@@ -1369,7 +1369,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String formatCannotRenderInApp(String extension) {
-    return 'Bu biçim (.$extension) henüz uygulama içinde oluşturulamıyor.';
+    return 'This format (.$extension) cannot be rendered in-app yet.';
   }
 
   @override
@@ -1381,17 +1381,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String failedToOpenInAppReader(String error) {
-    return 'Uygulama içi okuyucu açılamadı: $error';
+    return 'Failed to open in-app reader: $error';
   }
 
   @override
   String bookmarkAlreadySaved(String label) {
-    return 'Yer işareti zaten $label konumuna kaydedildi.';
+    return 'Bookmark already saved at $label.';
   }
 
   @override
   String bookmarkAdded(String label) {
-    return 'Yer işareti eklendi: $label';
+    return 'Bookmark added: $label';
   }
 
   @override
@@ -1403,7 +1403,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String pageLabel(int number) {
-    return 'Sayfa $number';
+    return 'Page $number';
   }
 
   @override
@@ -1414,12 +1414,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String formatExtension(String extension) {
-    return 'Biçim: .$extension';
+    return 'Format: .$extension';
   }
 
   @override
   String percentRead(String percent) {
-    return '%$percent okuma';
+    return '$percent% read';
   }
 
   @override
@@ -1442,7 +1442,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String resetZoom(String zoom) {
-    return 'Yakınlaştırmayı Sıfırla (${zoom}x)';
+    return 'Reset Zoom (${zoom}x)';
   }
 
   @override
@@ -1465,7 +1465,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String failedToUpdateReadState(String error) {
-    return 'Okuma durumu güncellenemedi: $error';
+    return 'Failed to update read state: $error';
   }
 
   @override
@@ -1497,7 +1497,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
-    return 'Bu platform, $extension dosyaları için yerleşik belge motorunu barındıramaz.';
+    return 'This platform cannot host the embedded document engine for $extension files.';
   }
 
   @override
@@ -1536,7 +1536,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String failedToLoadGuide(String error) {
-    return 'Kılavuz yüklenemedi: $error';
+    return 'Failed to load guide: $error';
   }
 
   @override
@@ -1571,7 +1571,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String failedToPlayChannel(String name) {
-    return '$name oynatılamadı';
+    return 'Failed to play $name';
   }
 
   @override
@@ -1597,7 +1597,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String cancelScheduledRecordingOf(String name) {
-    return '\"$name\" planlanmış kaydı iptal edilsin mi?';
+    return 'Cancel scheduled recording of \"$name\"?';
   }
 
   @override
@@ -1623,7 +1623,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String stopRecordingName(String name) {
-    return '\"$name\" kaydı durdurulsun mu?';
+    return 'Stop recording \"$name\"?';
   }
 
   @override
@@ -1637,25 +1637,25 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String noResultsForQuery(String query) {
-    return '\"$query\" için sonuç yok';
+    return 'No results for \"$query\"';
   }
 
   @override
   String searchFailedError(String error) {
-    return 'Arama başarısız oldu: $error';
+    return 'Search failed: $error';
   }
 
   @override
   String get seerr => 'Seerr';
 
   @override
-  String get seerrAccountType => 'Seerr Account Type';
+  String get seerrAccountType => 'Seerr Hesap Türü';
 
   @override
   String get jellyfinAccount => 'Jellyfin';
 
   @override
-  String get localAccount => 'Local';
+  String get localAccount => 'Yerel';
 
   @override
   String get savedMedia => 'Kayıtlı Medya';
@@ -1683,12 +1683,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String removeItemAndFiles(String name) {
-    return '\"$name\" ve dosyaları kaldırılsın mı?';
+    return 'Remove \"$name\" and its files?';
   }
 
   @override
   String tracksCount(int count) {
-    return '$count parça';
+    return '$count tracks';
   }
 
   @override
@@ -1699,12 +1699,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String failedToLoadAlbum(String error) {
-    return 'Albüm yüklenemedi: $error';
+    return 'Failed to load album: $error';
   }
 
   @override
   String noDownloadedTracksForAlbum(String name) {
-    return '$name için indirilmiş parça bulunamadı.';
+    return 'No downloaded tracks found for $name.';
   }
 
   @override
@@ -1721,12 +1721,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String removeName(String name) {
-    return '\"$name\" kaldırılsın mı?';
+    return 'Remove \"$name\"?';
   }
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes dk.';
+    return '$minutes min';
   }
 
   @override
@@ -1736,7 +1736,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String episodeNumber(int number) {
-    return 'Bölüm $number';
+    return 'Episode $number';
   }
 
   @override
@@ -1750,7 +1750,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String seasonNumber(int number) {
-    return 'Sezon $number';
+    return 'Season $number';
   }
 
   @override
@@ -1766,7 +1766,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String deleteAllEpisodesInSeason(String season) {
-    return '$season içinde indirilen tüm bölümler silinsin mi?';
+    return 'Delete all downloaded episodes in $season?';
   }
 
   @override
@@ -1810,7 +1810,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String deleteSelectedCount(int count) {
-    return 'İndirilen $count öğe silinsin mi?';
+    return 'Delete $count downloaded items?';
   }
 
   @override
@@ -1824,7 +1824,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String ofStorageLimit(String limit) {
-    return '$limit limiti';
+    return 'of $limit limit';
   }
 
   @override
@@ -1907,7 +1907,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String optionsCount(int count) {
-    return '$count seçenekleri';
+    return '$count options';
   }
 
   @override
@@ -1935,7 +1935,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get focusExpansionAnimation => 'Odak Genişletme Animasyonu';
 
   @override
-  String get desktopUiScale => 'Desktop UI Scale';
+  String get desktopUiScale => 'Masaüstü Kullanıcı Arayüzü Ölçeği';
 
   @override
   String get scaleFocusedCards =>
@@ -1973,6 +1973,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get seasonalEffects => 'Mevsim Etkileri';
+
+  @override
+  String get seasonalEffectsDescription =>
+      'Görsel efektler ve mevsimsel dekorasyonlar';
 
   @override
   String get snow => 'Kar';
@@ -2215,7 +2219,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
-    return '$episodes bölümden sonra / ${hours}h';
+    return 'After $episodes episodes / ${hours}h';
   }
 
   @override
@@ -2348,17 +2352,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String loadedProfileSettings(String profile) {
-    return '$profile profil ayarları yüklendi.';
+    return 'Loaded $profile profile settings.';
   }
 
   @override
   String failedToLoadProfileSettings(String profile) {
-    return '$profile profil ayarları yüklenemedi.';
+    return 'Failed to load $profile profile settings.';
   }
 
   @override
   String syncedSettingsToProfile(String profile) {
-    return 'Yerel ayarlar $profile profiliyle senkronize edildi.';
+    return 'Synced local settings to $profile profile.';
   }
 
   @override
@@ -2585,11 +2589,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String itemsSelected(int count) {
-    return '$count seçildi';
+    return '$count selected';
   }
 
   @override
   String get mediaBar => 'Medya Çubuğu';
+
+  @override
+  String get mediaSources => 'Medya Kaynakları';
+
+  @override
+  String get behavior => 'Davranış';
+
+  @override
+  String get seconds => 'saniye';
+
+  @override
+  String get localPreviews => 'Yerel Önizlemeler';
+
+  @override
+  String get localPreviewsDescription =>
+      'Fragmanı, medyayı ve ses önizlemelerini yapılandırın.';
 
   @override
   String get mediaBarMode => 'Medya Cubugu Stili';
@@ -2655,7 +2675,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get episodePreview => 'Bölüm Önizlemesi';
 
   @override
+  String get mediaPreview => 'Medya Önizlemesi';
+
+  @override
   String get episodePreviewDescription =>
+      'Odaklanılan, üzerine gelinen veya uzun süre basılan kartlarda 30 saniyelik satır içi önizleme oynatın';
+
+  @override
+  String get mediaPreviewDescription =>
       'Odaklanılan, üzerine gelinen veya uzun süre basılan kartlarda 30 saniyelik satır içi önizleme oynatın';
 
   @override
@@ -2807,7 +2834,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String minutesShort(int minutes) {
-    return '$minutes dk.';
+    return '$minutes min';
   }
 
   @override
@@ -2928,7 +2955,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String pluginStatusVersion(String status, String version) {
-    return '$status\nSürüm: $version';
+    return '$status\nVersion: $version';
   }
 
   @override
@@ -3004,7 +3031,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String loggedInAs(String username) {
-    return 'Şu şekilde giriş yapıldı: $username';
+    return 'Logged in as: $username';
   }
 
   @override
@@ -3029,7 +3056,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String versionValue(String version) {
-    return 'Sürüm $version';
+    return 'Version $version';
   }
 
   @override
@@ -3080,7 +3107,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String updateAvailableVersion(String version) {
-    return 'Güncelleme mevcut: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -3092,7 +3119,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String updateAvailableTitle(String version) {
-    return 'v$version Mevcut';
+    return 'v$version Available';
   }
 
   @override
@@ -3159,7 +3186,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String itemsCount(int count) {
-    return '$count Öğeler';
+    return '$count Items';
   }
 
   @override
@@ -3179,7 +3206,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String requestedByName(String name) {
-    return '$name tarafından talep edildi';
+    return 'Requested by $name';
   }
 
   @override
@@ -3196,12 +3223,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String cancelRequestForTitle(String title) {
-    return '\"$title\" isteği iptal edilsin mi?';
+    return 'Cancel request for \"$title\"?';
   }
 
   @override
   String cancelCountRequestsForTitle(int count, String title) {
-    return '\"$title\" için $count istekleri iptal edilsin mi?';
+    return 'Cancel $count requests for \"$title\"?';
   }
 
   @override
@@ -3215,12 +3242,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String budgetAmount(String amount) {
-    return 'Bütçe: \$$amount';
+    return 'Budget: \$$amount';
   }
 
   @override
   String revenueAmount(String amount) {
-    return 'Gelir: \$$amount';
+    return 'Revenue: \$$amount';
   }
 
   @override
@@ -3230,7 +3257,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String requestSeriesOrMovie(String type) {
-    return '$type isteği';
+    return 'Request $type';
   }
 
   @override
@@ -3266,7 +3293,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String ageValue(int age) {
-    return 'yaş $age';
+    return 'age $age';
   }
 
   @override
@@ -3557,22 +3584,22 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginUpdatesAvailable(int count) {
-    return 'Eklenti güncellemeleri mevcut: $count';
+    return 'Plugin updates available: $count';
   }
 
   @override
   String adminPluginsRequiringRestart(int count) {
-    return 'Yeniden başlatma gerektiren eklentiler: $count';
+    return 'Plugins requiring restart: $count';
   }
 
   @override
   String adminFailedScheduledTasks(int count) {
-    return 'Başarısız olan zamanlanmış görevler: $count';
+    return 'Failed scheduled tasks: $count';
   }
 
   @override
   String adminRecentAlertEntries(int count) {
-    return 'Son uyarı/hata girişleri: $count';
+    return 'Recent warning/error entries: $count';
   }
 
   @override
@@ -3631,7 +3658,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String errorGeneric(String error) {
-    return 'Hata: $error';
+    return 'Error: $error';
   }
 
   @override
@@ -3659,7 +3686,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminCommandFailed(String error) {
-    return 'Komut başarısız oldu: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -3724,7 +3751,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminActivityLoadFailed(String error) {
-    return 'Etkinlik günlüğü yüklenemedi: $error';
+    return 'Failed to load activity log: $error';
   }
 
   @override
@@ -3741,7 +3768,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminDeviceUpdateFailed(String error) {
-    return 'Cihaz güncellenemedi: $error';
+    return 'Failed to update device: $error';
   }
 
   @override
@@ -3752,7 +3779,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminDeviceDeleteFailed(String error) {
-    return 'Cihaz silinemedi: $error';
+    return 'Failed to delete device: $error';
   }
 
   @override
@@ -3781,7 +3808,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminScanFailed(String error) {
-    return 'Tarama başlatılamadı: $error';
+    return 'Failed to start scan: $error';
   }
 
   @override
@@ -3792,12 +3819,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminLibraryRenamed(String name) {
-    return 'Kitaplığın adı \"$name\" olarak değiştirildi';
+    return 'Library renamed to \"$name\"';
   }
 
   @override
   String adminRenameFailed(String error) {
-    return 'Yeniden adlandırılamadı: $error';
+    return 'Failed to rename: $error';
   }
 
   @override
@@ -3805,17 +3832,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminLibraryDeleted(String name) {
-    return '\"$name\" kitaplığı silindi';
+    return 'Library \"$name\" deleted';
   }
 
   @override
   String adminLibraryDeleteFailed(String error) {
-    return 'Kitaplık silinemedi: $error';
+    return 'Failed to delete library: $error';
   }
 
   @override
   String adminAddPathFailed(String error) {
-    return 'Yol eklenemedi: $error';
+    return 'Failed to add path: $error';
   }
 
   @override
@@ -3823,12 +3850,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminRemovePathConfirm(String path) {
-    return '\"$path\" bu kitaplıktan kaldırılsın mı?';
+    return 'Remove \"$path\" from this library?';
   }
 
   @override
   String adminRemovePathFailed(String error) {
-    return 'Yol kaldırılamadı: $error';
+    return 'Failed to remove path: $error';
   }
 
   @override
@@ -3836,7 +3863,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
-    return 'Seçenekler kaydedilemedi: $error';
+    return 'Failed to save options: $error';
   }
 
   @override
@@ -3871,7 +3898,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminLibraryCreateFailed(String error) {
-    return 'Kitaplık oluşturulamadı: $error';
+    return 'Failed to create library: $error';
   }
 
   @override
@@ -3897,27 +3924,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminDisableUserConfirm(String name) {
-    return '$name devre dışı bırakılsın mı? Oturum açamayacaklar.';
+    return 'Disable $name? They will not be able to sign in.';
   }
 
   @override
   String adminEnableUserConfirm(String name) {
-    return '$name etkinleştirilsin mi? Tekrar oturum açabilecekler.';
+    return 'Enable $name? They will be able to sign in again.';
   }
 
   @override
   String adminUserDisabled(String name) {
-    return '\"$name\" kullanıcısı devre dışı bırakıldı';
+    return 'User \"$name\" disabled';
   }
 
   @override
   String adminUserEnabled(String name) {
-    return '\"$name\" kullanıcısı etkinleştirildi';
+    return 'User \"$name\" enabled';
   }
 
   @override
   String adminUserPolicyUpdateFailed(String error) {
-    return 'Kullanıcı politikası güncellenemedi: $error';
+    return 'Failed to update user policy: $error';
   }
 
   @override
@@ -3934,7 +3961,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminUserCreateFailed(String error) {
-    return 'Kullanıcı oluşturulamadı: $error';
+    return 'Failed to create user: $error';
   }
 
   @override
@@ -3954,7 +3981,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminSaveFailed(String error) {
-    return 'Kaydedilemedi: $error';
+    return 'Failed to save: $error';
   }
 
   @override
@@ -3965,7 +3992,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminFailed(String error) {
-    return 'Başarısız oldu: $error';
+    return 'Failed: $error';
   }
 
   @override
@@ -4105,22 +4132,22 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminServerReturnedHttp(int status) {
-    return 'Sunucu HTTP $status döndürdü';
+    return 'Server returned HTTP $status';
   }
 
   @override
   String adminDeleteUserConfirm(String name) {
-    return '$name silmek istediğinizden emin misiniz?';
+    return 'Are you sure you want to delete $name?';
   }
 
   @override
   String adminUserDeleted(String name) {
-    return '\"$name\" kullanıcısı silindi';
+    return 'User \"$name\" deleted';
   }
 
   @override
   String adminUserDeleteFailed(String error) {
-    return 'Kullanıcı silinemedi: $error';
+    return 'Failed to delete user: $error';
   }
 
   @override
@@ -4141,7 +4168,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminApiKeyCreateFailed(String error) {
-    return 'Anahtar oluşturulamadı: $error';
+    return 'Failed to create key: $error';
   }
 
   @override
@@ -4152,7 +4179,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminRevokeKeyConfirm(String name) {
-    return '$name anahtarı iptal edilsin mi?';
+    return 'Revoke key for $name?';
   }
 
   @override
@@ -4160,7 +4187,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminApiKeyRevokeFailed(String error) {
-    return 'Anahtar iptal edilemedi: $error';
+    return 'Failed to revoke key: $error';
   }
 
   @override
@@ -4180,7 +4207,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
-    return 'Jeton: $token\\nOluşturuldu: $created';
+    return 'Token: $token\\nCreated: $created';
   }
 
   @override
@@ -4191,7 +4218,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminBackupCreateFailed(String error) {
-    return 'Yedekleme oluşturulamadı: $error';
+    return 'Failed to create backup: $error';
   }
 
   @override
@@ -4199,12 +4226,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminBackupManifest(String name) {
-    return 'Bildirim: $name';
+    return 'Manifest: $name';
   }
 
   @override
   String adminManifestLoadFailed(String error) {
-    return 'Bildiri yüklenemedi: $error';
+    return 'Failed to load manifest: $error';
   }
 
   @override
@@ -4215,7 +4242,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminRestoreFailed(String error) {
-    return 'Yedekleme geri yüklenemedi: $error';
+    return 'Failed to restore backup: $error';
   }
 
   @override
@@ -4247,17 +4274,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminSavedTo(String path) {
-    return '$path konumuna kaydedildi';
+    return 'Saved to $path';
   }
 
   @override
   String adminFileSaveFailed(String error) {
-    return 'Dosya kaydedilemedi: $error';
+    return 'Failed to save file: $error';
   }
 
   @override
   String adminLogFileLoadFailed(String fileName) {
-    return '$fileName yüklenemedi';
+    return 'Failed to load $fileName';
   }
 
   @override
@@ -4268,7 +4295,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminTasksLoadFailed(String error) {
-    return 'Görevler yüklenemedi: $error';
+    return 'Failed to load tasks: $error';
   }
 
   @override
@@ -4279,17 +4306,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminTaskStartFailed(String error) {
-    return 'Görev başlatılamadı: $error';
+    return 'Failed to start task: $error';
   }
 
   @override
   String adminTaskStopFailed(String error) {
-    return 'Görev durdurulamadı: $error';
+    return 'Failed to stop task: $error';
   }
 
   @override
   String adminTaskLoadFailed(String error) {
-    return 'Görev yüklenemedi: $error';
+    return 'Failed to load task: $error';
   }
 
   @override
@@ -4297,12 +4324,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminTriggerRemoveFailed(String error) {
-    return 'Tetikleyici kaldırılamadı: $error';
+    return 'Failed to remove trigger: $error';
   }
 
   @override
   String adminTriggerAddFailed(String error) {
-    return 'Tetikleyici eklenemedi: $error';
+    return 'Failed to add trigger: $error';
   }
 
   @override
@@ -4328,7 +4355,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminHours(String hours) {
-    return '$hours saat';
+    return '$hours hour(s)';
   }
 
   @override
@@ -4339,7 +4366,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginToggleFailed(String error) {
-    return 'Eklenti değiştirilemedi: $error';
+    return 'Failed to toggle plugin: $error';
   }
 
   @override
@@ -4347,27 +4374,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminUninstallPluginConfirm(String name) {
-    return '\"$name\" uygulamasını kaldırmak istediğinizden emin misiniz?';
+    return 'Are you sure you want to uninstall \"$name\"?';
   }
 
   @override
   String adminPluginUninstallFailed(String error) {
-    return 'Eklenti kaldırılamadı: $error';
+    return 'Failed to uninstall plugin: $error';
   }
 
   @override
   String adminPackageInstallFailed(String error) {
-    return 'Paket yüklenemedi: $error';
+    return 'Failed to install package: $error';
   }
 
   @override
   String adminPluginUpdateFailed(String error) {
-    return 'Güncelleme yüklenemedi: $error';
+    return 'Failed to install update: $error';
   }
 
   @override
   String adminPluginsLoadFailed(String error) {
-    return 'Eklentiler yüklenemedi: $error';
+    return 'Failed to load plugins: $error';
   }
 
   @override
@@ -4378,12 +4405,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminInstallUpdate(String version) {
-    return 'Güncellemeyi yükle (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
   String adminCatalogLoadFailed(String error) {
-    return 'Katalog yüklenemedi: $error';
+    return 'Failed to load catalog: $error';
   }
 
   @override
@@ -4404,17 +4431,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
-    return '\"$name\" sunucu yeniden başlatıldıktan sonra kaldırılacak';
+    return '\"$name\" will be removed after server restart';
   }
 
   @override
   String adminUninstallFailed(String error) {
-    return 'Kaldırma işlemi başarısız oldu: $error';
+    return 'Failed to uninstall: $error';
   }
 
   @override
   String adminPluginUpdating(String name, String version) {
-    return '\"$name\" v$version olarak güncelleniyor...';
+    return 'Updating \"$name\" to v$version...';
   }
 
   @override
@@ -4423,7 +4450,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginLoadFailed(String error) {
-    return 'Eklenti yüklenemedi: $error';
+    return 'Failed to load plugin: $error';
   }
 
   @override
@@ -4431,7 +4458,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginVersion(String version) {
-    return 'Sürüm $version';
+    return 'Version $version';
   }
 
   @override
@@ -4451,17 +4478,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
-    return '\"$name\" ifadesini kaldırmak istediğinizden emin misiniz?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
   String adminRepositoriesSaveFailed(String error) {
-    return 'Kod depoları kaydedilemedi: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
   String adminRepositoriesLoadFailed(String error) {
-    return 'Depolar yüklenemedi: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -4478,12 +4505,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
-    return 'Eklenti ayarları yüklenemiyor: $error';
+    return 'Unable to load plugin settings: $error';
   }
 
   @override
   String adminCouldNotOpenUrl(String uri) {
-    return '$uri açılamadı';
+    return 'Could not open $uri';
   }
 
   @override
@@ -4760,12 +4787,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminMetadataLoadFailed(String error) {
-    return 'Meta veriler yüklenemedi: $error';
+    return 'Failed to load metadata: $error';
   }
 
   @override
   String adminMetadataSaveFailed(String error) {
-    return 'Meta veriler kaydedilemedi: $error';
+    return 'Failed to save metadata: $error';
   }
 
   @override
@@ -4785,7 +4812,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminMetadataRefreshFailed(String error) {
-    return 'Meta veriler yenilenemedi: $error';
+    return 'Failed to refresh metadata: $error';
   }
 
   @override
@@ -4802,7 +4829,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminRemoteSearchFailed(String error) {
-    return 'Uzaktan arama başarısız oldu: $error';
+    return 'Remote search failed: $error';
   }
 
   @override
@@ -4816,7 +4843,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminContentTypeUpdateFailed(String error) {
-    return 'İçerik türü güncellenemedi: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -4831,12 +4858,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminImageUpdated(String imageType) {
-    return '$imageType resim güncellendi';
+    return '$imageType image updated';
   }
 
   @override
   String adminImageDownloadFailed(String error) {
-    return 'Resim indirilemedi: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -4847,27 +4874,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminImageUploaded(String imageType) {
-    return '$imageType resim yüklendi';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminImageUploadFailed(String error) {
-    return 'Resim yüklenemedi: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminDeleteImage(String imageType) {
-    return '$imageType resmini sil';
+    return 'Delete $imageType image';
   }
 
   @override
   String adminImageDeleted(String imageType) {
-    return '$imageType resim silindi';
+    return '$imageType image deleted';
   }
 
   @override
   String adminImageDeleteFailed(String error) {
-    return 'Resim silinemedi: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
@@ -4878,7 +4905,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminTunerDiscoveryFailed(String error) {
-    return 'Ayarlayıcı keşfi başarısız oldu: $error';
+    return 'Tuner discovery failed: $error';
   }
 
   @override
@@ -4901,7 +4928,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminTunerAddFailed(String error) {
-    return 'Ayarlayıcı eklenemedi: $error';
+    return 'Failed to add tuner: $error';
   }
 
   @override
@@ -4924,12 +4951,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminProviderAddFailed(String error) {
-    return 'Sağlayıcı eklenemedi: $error';
+    return 'Failed to add provider: $error';
   }
 
   @override
   String adminTunerRemoveFailed(String error) {
-    return 'Ayarlayıcı kaldırılamadı: $error';
+    return 'Failed to remove tuner: $error';
   }
 
   @override
@@ -4937,12 +4964,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminTunerResetFailed(String error) {
-    return 'Ayarlayıcı sıfırlanamadı: $error';
+    return 'Failed to reset tuner: $error';
   }
 
   @override
   String adminProviderRemoveFailed(String error) {
-    return 'Sağlayıcı kaldırılamadı: $error';
+    return 'Failed to remove provider: $error';
   }
 
   @override
@@ -4965,7 +4992,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminSettingsSaveFailed(String error) {
-    return 'Ayarlar kaydedilemedi: $error';
+    return 'Failed to save settings: $error';
   }
 
   @override
@@ -4982,7 +5009,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminMappingsUpdateFailed(String error) {
-    return 'Eşlemeler güncellenemedi: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
@@ -5007,22 +5034,22 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminRecordingPathDisplay(String path) {
-    return 'Kayıt yolu: $path';
+    return 'Recording path: $path';
   }
 
   @override
   String adminSeriesPathDisplay(String path) {
-    return 'Seri yolu: $path';
+    return 'Series path: $path';
   }
 
   @override
   String adminPrePaddingDisplay(int minutes) {
-    return 'Ön doldurma: $minutes dk.';
+    return 'Pre-padding: $minutes min';
   }
 
   @override
   String adminPostPaddingDisplay(int minutes) {
-    return 'Sonradan doldurma: $minutes dk.';
+    return 'Post-padding: $minutes min';
   }
 
   @override
@@ -5055,7 +5082,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminRestoreConfirmMessage(String name) {
-    return '$name yedeklemesi şimdi geri yüklensin mi?';
+    return 'Restore backup $name now?';
   }
 
   @override
@@ -5101,27 +5128,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminLogsMinutesAgo(int minutes) {
-    return '$minutes dk önce';
+    return '${minutes}m ago';
   }
 
   @override
   String adminLogsHoursAgo(int hours) {
-    return '${hours}s önce';
+    return '${hours}h ago';
   }
 
   @override
   String adminLogsDaysAgo(int days) {
-    return '$days gün önce';
+    return '${days}d ago';
   }
 
   @override
   String adminLogViewerLoadFailed(String fileName) {
-    return '$fileName yüklenemedi';
+    return 'Failed to load $fileName';
   }
 
   @override
   String adminLogViewerMatches(int count) {
-    return '$count eşleşme';
+    return '$count matches';
   }
 
   @override
@@ -5232,22 +5259,22 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminMetadataImageUpdated(String imageType) {
-    return '$imageType resim güncellendi';
+    return '$imageType image updated';
   }
 
   @override
   String adminMetadataImageUploaded(String imageType) {
-    return '$imageType resim yüklendi';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminMetadataImageDeleted(String imageType) {
-    return '$imageType resim silindi';
+    return '$imageType image deleted';
   }
 
   @override
   String adminMetadataImageDownloadFailed(String error) {
-    return 'Resim indirilemedi: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -5255,12 +5282,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminMetadataImageUploadFailed(String error) {
-    return 'Resim yüklenemedi: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminMetadataDeleteImageTitle(String imageType) {
-    return '$imageType resmini sil';
+    return 'Delete $imageType image';
   }
 
   @override
@@ -5269,12 +5296,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
-    return 'Resim silinemedi: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
   String adminMetadataChooseImage(String imageType) {
-    return '$imageType görselini seçin';
+    return 'Choose $imageType image';
   }
 
   @override
@@ -5306,7 +5333,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginsUpdateAvailable(String version) {
-    return 'Güncelleme mevcut: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -5331,7 +5358,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
-    return 'Güncellemeyi yükle (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
@@ -5343,7 +5370,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginsInstalling(String name) {
-    return '\"$name\" kuruluyor...';
+    return '\"$name\" is being installed...';
   }
 
   @override
@@ -5363,7 +5390,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
-    return '$name Ayarlar';
+    return '$name Settings';
   }
 
   @override
@@ -5403,7 +5430,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminReposLoadFailed(String error) {
-    return 'Depolar yüklenemedi: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -5411,7 +5438,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminReposRemoveConfirm(String name) {
-    return '\"$name\" ifadesini kaldırmak istediğinizden emin misiniz?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
@@ -5419,7 +5446,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminReposSaveFailed(String error) {
-    return 'Kod depoları kaydedilemedi: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
@@ -5696,17 +5723,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminTaskTriggerDaily(String time) {
-    return 'Her gün $time saatinde';
+    return 'Daily at $time';
   }
 
   @override
   String adminTaskTriggerWeekly(String day, String time) {
-    return 'Her $day, $time adresinde';
+    return 'Every $day at $time';
   }
 
   @override
   String adminTaskTriggerInterval(String duration) {
-    return 'Her $duration';
+    return 'Every $duration';
   }
 
   @override
@@ -5773,17 +5800,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminActivityDaysAgo(int days) {
-    return '$days gün önce';
+    return '${days}d ago';
   }
 
   @override
   String adminActivityHoursAgo(int hours) {
-    return '${hours}s önce';
+    return '${hours}h ago';
   }
 
   @override
   String adminActivityMinutesAgo(int minutes) {
-    return '$minutes dk önce';
+    return '${minutes}m ago';
   }
 
   @override
@@ -5899,7 +5926,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminMetadataContentTypeFailed(String error) {
-    return 'İçerik türü güncellenemedi: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -5922,12 +5949,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
-    return 'Eşlemeler güncellenemedi: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
   String adminTimeLimitDuration(String duration) {
-    return 'Zaman sınırı: $duration';
+    return 'Time limit: $duration';
   }
 
   @override
@@ -6009,7 +6036,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String syncPlayQueueItemFallback(int index) {
-    return 'Öğe $index';
+    return 'Item $index';
   }
 
   @override
@@ -6058,12 +6085,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
-    return '$userName, SyncPlay grubuna katıldı';
+    return '$userName joined SyncPlay group';
   }
 
   @override
   String syncPlayUserLeftGroup(String userName) {
-    return '$userName SyncPlay grubundan ayrıldı';
+    return '$userName left SyncPlay group';
   }
 
   @override
@@ -6075,7 +6102,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
-    return 'Oynatma $groupName ile senkronize ediliyor';
+    return 'Syncing playback to $groupName';
   }
 
   @override
@@ -6212,12 +6239,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String castControlFailed(String error) {
-    return 'Yayın kontrolü başarısız oldu: $error';
+    return 'Cast control failed: $error';
   }
 
   @override
   String castKindControls(String kind) {
-    return '$kind Kontroller';
+    return '$kind Controls';
   }
 
   @override
@@ -6228,7 +6255,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String castStopKind(String kind) {
-    return '$kind\'yi durdur';
+    return 'Stop $kind';
   }
 
   @override
@@ -6251,12 +6278,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String pinEnterNDigit(int length) {
-    return '$length haneli bir PIN girin';
+    return 'Enter a $length-digit PIN';
   }
 
   @override
   String pinEnterYourNDigit(int length) {
-    return '$length haneli PIN\'inizi girin';
+    return 'Enter your $length-digit PIN';
   }
 
   @override
@@ -6303,7 +6330,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String quickConnectFailedWithMessage(String message) {
-    return 'Hızlı Bağlantı başarısız oldu: $message';
+    return 'Quick Connect failed: $message';
   }
 
   @override
@@ -6314,7 +6341,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String remoteCommandFailed(String error) {
-    return 'Komut başarısız oldu: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -6343,7 +6370,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String castingFailed(String error) {
-    return 'Yayınlama başlatılamadı: $error';
+    return 'Failed to start casting: $error';
   }
 
   @override
@@ -6388,7 +6415,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String trackActionDownloading(String name) {
-    return '$name indiriliyor...';
+    return 'Downloading $name...';
   }
 
   @override
@@ -6475,7 +6502,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String skipSegment(String segment) {
-    return '$segment atla';
+    return 'Skip $segment';
   }
 
   @override
@@ -6486,12 +6513,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
-    return '$current/$total indiriliyor — $fileName';
+    return 'Downloading $current/$total — $fileName';
   }
 
   @override
   String downloadingFile(String fileName) {
-    return '$fileName indiriliyor';
+    return 'Downloading $fileName';
   }
 
   @override
@@ -6516,10 +6543,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get playerTooltipExitFullscreen => 'Tam ekrandan çık';
 
   @override
-  String get playerTooltipFloatOnTop => 'Float on top';
+  String get playerTooltipFloatOnTop => 'Üstte yüzer';
 
   @override
-  String get playerTooltipExitFloatOnTop => 'Disable float on top';
+  String get playerTooltipExitFloatOnTop =>
+      'Üstte şamandırayı devre dışı bırak';
 
   @override
   String get playerTooltipLockLandscape => 'Manzarayı kilitle';
@@ -7015,6 +7043,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String latestLibraryName(String libraryName) {
-    return 'En son $libraryName';
+    return 'Latest $libraryName';
   }
 }

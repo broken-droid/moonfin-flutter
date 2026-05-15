@@ -8,7 +8,7 @@
   "@signIn": {
     "description": "Sign in heading and button label"
   },
-  "connectingToServer": "{serverName} sunucusuna baglaniyor",
+  "connectingToServer": "Connecting to {serverName}",
   "@connectingToServer": {
     "description": "Subtitle showing which server the user is connecting to",
     "placeholders": {
@@ -49,7 +49,7 @@
   "@loginFailed": {
     "description": "Generic login failure message"
   },
-  "quickConnectUnavailable": "QuickConnect kullanılamıyor: {detail}",
+  "quickConnectUnavailable": "QuickConnect unavailable: {detail}",
   "@quickConnectUnavailable": {
     "description": "Quick Connect generic error message",
     "placeholders": {
@@ -58,7 +58,7 @@
       }
     }
   },
-  "quickConnectUnavailableWithStatus": "QuickConnect kullanılamıyor ({status}): {detail}",
+  "quickConnectUnavailableWithStatus": "QuickConnect unavailable ({status}): {detail}",
   "@quickConnectUnavailableWithStatus": {
     "description": "Quick Connect error message with HTTP status info",
     "placeholders": {
@@ -82,7 +82,7 @@
   "@selectServer": {
     "description": "Button to navigate back to server selection"
   },
-  "appVersionFooter": "Moonfin sürüm {version}",
+  "appVersionFooter": "Moonfin version {version}",
   "@appVersionFooter": {
     "description": "App version shown in footer",
     "placeholders": {
@@ -119,7 +119,7 @@
   "@removeServer": {
     "description": "Dialog title for removing a saved server"
   },
-  "removeServerConfirmation": "\"{serverName}\" sunucularınızdan kaldırılsın mı?",
+  "removeServerConfirmation": "Remove \"{serverName}\" from your servers?",
   "@removeServerConfirmation": {
     "description": "Confirmation message when removing a saved server",
     "placeholders": {
@@ -240,7 +240,7 @@
   "@invalidServerExchangeResponse": {
     "description": "Error when server exchange returns invalid data"
   },
-  "unableToConnectTo": "{target}'ye bağlanılamıyor",
+  "unableToConnectTo": "Unable to connect to {target}",
   "@unableToConnectTo": {
     "description": "Error when connection to a specific server or address fails",
     "placeholders": {
@@ -349,7 +349,7 @@
   "@noGenresFound": {
     "description": "Empty state when no genres are available"
   },
-  "failedToLoadFolderError": "Klasör yüklenemedi: {error}",
+  "failedToLoadFolderError": "Failed to load folder: {error}",
   "@failedToLoadFolderError": {
     "description": "Error when a folder cannot be loaded",
     "placeholders": {
@@ -362,7 +362,7 @@
   "@thisFolderIsEmpty": {
     "description": "Empty state for folder browse screen"
   },
-  "itemCountLabel": "{count} öğe",
+  "itemCountLabel": "{count} items",
   "@itemCountLabel": {
     "description": "Subtitle showing number of items in a folder or collection",
     "placeholders": {
@@ -387,7 +387,7 @@
   "@favorites": {
     "description": "Favorites section heading and filter label"
   },
-  "totalCountItems": "{count} Öğeler",
+  "totalCountItems": "{count} Items",
   "@totalCountItems": {
     "description": "Header showing total item count",
     "placeholders": {
@@ -444,7 +444,7 @@
   "@extraLarge": {
     "description": "Size option: extra large"
   },
-  "libraryGenresTitle": "{name} — Türler",
+  "libraryGenresTitle": "{name} — Genres",
   "@libraryGenresTitle": {
     "description": "Header title showing library name with genres suffix",
     "placeholders": {
@@ -497,7 +497,7 @@
   "@justNow": {
     "description": "Relative time for less than a minute ago"
   },
-  "minutesAgo": "{count} dk önce",
+  "minutesAgo": "{count}m ago",
   "@minutesAgo": {
     "description": "Relative time in minutes",
     "placeholders": {
@@ -506,7 +506,7 @@
       }
     }
   },
-  "hoursAgo": "{count}s önce",
+  "hoursAgo": "{count}h ago",
   "@hoursAgo": {
     "description": "Relative time in hours",
     "placeholders": {
@@ -515,7 +515,7 @@
       }
     }
   },
-  "daysAgo": "{count} gün önce",
+  "daysAgo": "{count}d ago",
   "@daysAgo": {
     "description": "Relative time in days",
     "placeholders": {
@@ -552,7 +552,7 @@
   "@librivoxDescription": {
     "description": "Subtitle for audiobook discovery section"
   },
-  "titlesCount": "{count} başlık",
+  "titlesCount": "{count} titles",
   "@titlesCount": {
     "description": "Label showing number of titles",
     "placeholders": {
@@ -661,7 +661,7 @@
   "@savedPlacesChapters": {
     "description": "Hero card subtitle for bookmarks section"
   },
-  "authorsCount": "{count} yazarlar",
+  "authorsCount": "{count} authors",
   "@authorsCount": {
     "description": "Metric pill showing author count",
     "placeholders": {
@@ -670,7 +670,7 @@
       }
     }
   },
-  "genresCount": "{count} tür",
+  "genresCount": "{count} genres",
   "@genresCount": {
     "description": "Metric pill showing genre count",
     "placeholders": {
@@ -679,7 +679,7 @@
       }
     }
   },
-  "percentCompleted": "%{percent} tamamlandı",
+  "percentCompleted": "{percent}% completed",
   "@percentCompleted": {
     "description": "Reading progress percentage label",
     "placeholders": {
@@ -704,7 +704,7 @@
   "@bookmarksAndProgress": {
     "description": "Panel header for bookmarks section"
   },
-  "titlesArrangedForBrowsing": "{count} başlıklar öncelikli okuma göz atma için düzenlendi.",
+  "titlesArrangedForBrowsing": "{count} titles arranged for reading-first browsing.",
   "@titlesArrangedForBrowsing": {
     "description": "Panel subtitle showing total titles",
     "placeholders": {
@@ -753,7 +753,7 @@
   "@audiobooks": {
     "description": "Audiobooks navigation and tab label"
   },
-  "noLabelFound": "{label} bulunamadı",
+  "noLabelFound": "No {label} found",
   "@noLabelFound": {
     "description": "Empty state with dynamic label like books or audiobooks",
     "placeholders": {
@@ -850,7 +850,7 @@
   "@downloadZip": {
     "description": "Button label for zip download external link"
   },
-  "sectionCountLabel": "{count} bölümler",
+  "sectionCountLabel": "{count} sections",
   "@sectionCountLabel": {
     "description": "Detail chip showing number of sections in audiobook",
     "placeholders": {
@@ -859,7 +859,7 @@
       }
     }
   },
-  "firstPublished": "İlk kez yayınlandı {year}",
+  "firstPublished": "First published {year}",
   "@firstPublished": {
     "description": "Publication year for a book",
     "placeholders": {
@@ -880,7 +880,7 @@
   "@all": {
     "description": "Filter option for showing all items"
   },
-  "booksCount": "{count} kitap",
+  "booksCount": "{count} books",
   "@booksCount": {
     "description": "Label showing number of books in a discover row",
     "placeholders": {
@@ -897,7 +897,7 @@
   "@audiobookDetails": {
     "description": "AppBar title for LibriVox audiobook detail screen"
   },
-  "authorsCountTitle": "{count} Yazarlar",
+  "authorsCountTitle": "{count} Authors",
   "@authorsCountTitle": {
     "description": "AppBar title for LibriVox authors list screen",
     "placeholders": {
@@ -995,7 +995,7 @@
   "@tracklist": {
     "description": "Section header for album track listing"
   },
-  "discNumber": "Disk {number}",
+  "discNumber": "Disc {number}",
   "@discNumber": {
     "description": "Label for an album disc section in a multi-disc track list",
     "placeholders": {
@@ -1028,7 +1028,7 @@
   "@unableToLoadAuthorDetails": {
     "description": "Error message when author details fail to load"
   },
-  "published": "Yayınlandı {year}",
+  "published": "Published {year}",
   "@published": {
     "description": "Publication year for an author book tile",
     "placeholders": {
@@ -1050,7 +1050,7 @@
       }
     }
   },
-  "endsAt": "{time} tarihinde biter",
+  "endsAt": "Ends at {time}",
   "@endsAt": {
     "description": "Label showing when media will end",
     "placeholders": {
@@ -1071,7 +1071,7 @@
   "@read": {
     "description": "Action button label to start reading a book"
   },
-  "resumeFrom": "{position} adresinden devam ettir",
+  "resumeFrom": "Resume from {position}",
   "@resumeFrom": {
     "description": "Action button label showing resume position",
     "placeholders": {
@@ -1204,7 +1204,7 @@
   "@deleteDownloadedAlbum": {
     "description": "Dialog title for deleting downloaded album tracks"
   },
-  "deleteDownloadedTracksMessage": "\"{title}\" için indirilen parçalar silinsin mi?",
+  "deleteDownloadedTracksMessage": "Delete downloaded tracks for \"{title}\"?",
   "@deleteDownloadedTracksMessage": {
     "description": "Confirmation message for deleting downloaded album tracks",
     "placeholders": {
@@ -1225,7 +1225,7 @@
   "@noTracksLoaded": {
     "description": "Message when no tracks are available"
   },
-  "noItemsLoaded": "{itemLabel} yüklü değil",
+  "noItemsLoaded": "No {itemLabel} loaded",
   "@noItemsLoaded": {
     "description": "Message when no items are loaded for download",
     "placeholders": {
@@ -1234,7 +1234,7 @@
       }
     }
   },
-  "downloadingTitle": "{title} ({count} öğe) indiriliyor...",
+  "downloadingTitle": "Downloading {title} ({count} items)...",
   "@downloadingTitle": {
     "description": "Snackbar message when downloading album tracks",
     "placeholders": {
@@ -1246,7 +1246,7 @@
       }
     }
   },
-  "deleteConfirmMessage": "\"{name}\" dosyasını sunucudan silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.",
+  "deleteConfirmMessage": "Are you sure you want to delete \"{name}\" from the server? This action cannot be undone.",
   "@deleteConfirmMessage": {
     "description": "Confirmation message for permanently deleting an item",
     "placeholders": {
@@ -1263,7 +1263,7 @@
   "@noPlayableTrailerFound": {
     "description": "Error message when no trailer can be played"
   },
-  "unsupportedBookFormat": "Desteklenmeyen kitap formatı: .{extension}",
+  "unsupportedBookFormat": "Unsupported book format: .{extension}",
   "@unsupportedBookFormat": {
     "description": "Error message for unsupported book file format",
     "placeholders": {
@@ -1300,7 +1300,7 @@
   "@selectedSubtitleInvalid": {
     "description": "Error message when a selected subtitle is invalid"
   },
-  "subtitleDownloadedSelected": "Altyazı indirildi ve seçildi: {name}",
+  "subtitleDownloadedSelected": "Subtitle downloaded and selected: {name}",
   "@subtitleDownloadedSelected": {
     "description": "Success message after downloading and selecting a subtitle",
     "placeholders": {
@@ -1313,7 +1313,7 @@
   "@subtitleDownloadedPending": {
     "description": "Message when subtitle was downloaded but not yet visible"
   },
-  "noRemoteSubtitlesFound": "{language} için uzak altyazı bulunamadı.",
+  "noRemoteSubtitlesFound": "No remote subtitles found for {language}.",
   "@noRemoteSubtitlesFound": {
     "description": "Message when no remote subtitles were found",
     "placeholders": {
@@ -1326,7 +1326,7 @@
   "@selectVersion": {
     "description": "Dialog title for selecting a media version"
   },
-  "versionNumber": "Sürüm {number}",
+  "versionNumber": "Version {number}",
   "@versionNumber": {
     "description": "Default label for a media version",
     "placeholders": {
@@ -1355,7 +1355,7 @@
   "@noEpisodesLoaded": {
     "description": "Message when no episodes are available for download"
   },
-  "downloadingItem": "{name} ({quality}) indiriliyor...",
+  "downloadingItem": "Downloading {name} ({quality})...",
   "@downloadingItem": {
     "description": "Snackbar message when downloading an item",
     "placeholders": {
@@ -1371,7 +1371,7 @@
   "@deleteDownloadedFiles": {
     "description": "Dialog title for deleting downloaded files"
   },
-  "deleteLocalFilesMessage": "{typeLabel} için yerel dosyalar silinsin mi?\n\nBu, depolama alanında yer açacaktır. Daha sonra tekrar indirebilirsiniz.",
+  "deleteLocalFilesMessage": "Delete local files for {typeLabel}?\n\nThis will free up storage space. You can re-download later.",
   "@deleteLocalFilesMessage": {
     "description": "Confirmation message for deleting local downloaded files",
     "placeholders": {
@@ -1404,7 +1404,7 @@
   "@studio": {
     "description": "Metadata label for studio"
   },
-  "studioMoreCount": "+{count} daha",
+  "studioMoreCount": "+{count} more",
   "@studioMoreCount": {
     "description": "Label showing additional studio count",
     "placeholders": {
@@ -1413,7 +1413,7 @@
       }
     }
   },
-  "totalEpisodes": "{count} Bölümler",
+  "totalEpisodes": "{count} Episodes",
   "@totalEpisodes": {
     "description": "Season progress label showing total episodes",
     "placeholders": {
@@ -1434,7 +1434,7 @@
       }
     }
   },
-  "episodeLabel": "Bölüm {number}",
+  "episodeLabel": "Episode {number}",
   "@episodeLabel": {
     "description": "Label for an episode number",
     "placeholders": {
@@ -1443,7 +1443,7 @@
       }
     }
   },
-  "chapterNumber": "Bölüm {number}",
+  "chapterNumber": "Chapter {number}",
   "@chapterNumber": {
     "description": "Default name for a chapter",
     "placeholders": {
@@ -1470,7 +1470,7 @@
       }
     }
   },
-  "born": "Doğum tarihi: {date}",
+  "born": "Born {date}",
   "@born": {
     "description": "Person birth date label",
     "placeholders": {
@@ -1479,7 +1479,7 @@
       }
     }
   },
-  "died": "Öldü {date}",
+  "died": "Died {date}",
   "@died": {
     "description": "Person death date label",
     "placeholders": {
@@ -1488,7 +1488,7 @@
       }
     }
   },
-  "age": "Yaş {age}",
+  "age": "Age {age}",
   "@age": {
     "description": "Person age label",
     "placeholders": {
@@ -1509,7 +1509,7 @@
   "@shuffle": {
     "description": "Action button label for shuffle playback"
   },
-  "downloadsCount": "{count} indirme",
+  "downloadsCount": "{count} downloads",
   "@downloadsCount": {
     "description": "Subtitle showing number of downloads for a remote subtitle",
     "placeholders": {
@@ -1539,7 +1539,7 @@
   "@stereo": {
     "description": "Audio channel layout label for stereo"
   },
-  "remoteSubtitlePermissionError": "Uzaktan altyazı {action}, bu kullanıcı için Jellyfin altyazı yönetimi iznini gerektirir.",
+  "remoteSubtitlePermissionError": "Remote subtitle {action} requires the Jellyfin subtitle management permission for this user.",
   "@remoteSubtitlePermissionError": {
     "description": "Error message when user lacks subtitle management permission",
     "placeholders": {
@@ -1548,7 +1548,7 @@
       }
     }
   },
-  "remoteSubtitleNotFoundError": "Bu öğe {action} uzak altyazı sunucusunda bulunamadı.",
+  "remoteSubtitleNotFoundError": "This item could not be found on the server for remote subtitle {action}.",
   "@remoteSubtitleNotFoundError": {
     "description": "Error message when item not found for subtitle operation",
     "placeholders": {
@@ -1557,7 +1557,7 @@
       }
     }
   },
-  "remoteSubtitleDetailError": "Uzaktan altyazı {action} başarısız oldu: {detail}",
+  "remoteSubtitleDetailError": "Remote subtitle {action} failed: {detail}",
   "@remoteSubtitleDetailError": {
     "description": "Error message with detail for subtitle operation",
     "placeholders": {
@@ -1569,7 +1569,7 @@
       }
     }
   },
-  "remoteSubtitleHttpError": "Uzaktan altyazı {action} başarısız oldu (HTTP {status}).",
+  "remoteSubtitleHttpError": "Remote subtitle {action} failed (HTTP {status}).",
   "@remoteSubtitleHttpError": {
     "description": "Error message with HTTP status for subtitle operation",
     "placeholders": {
@@ -1581,7 +1581,7 @@
       }
     }
   },
-  "remoteSubtitleGenericError": "Uzak altyazılar {action} başarısız oldu.",
+  "remoteSubtitleGenericError": "Failed to {action} remote subtitles.",
   "@remoteSubtitleGenericError": {
     "description": "Generic error message for subtitle operation",
     "placeholders": {
@@ -1590,7 +1590,7 @@
       }
     }
   },
-  "deleteSeriesFiles": "\"{name}\" için indirilen tüm bölümler",
+  "deleteSeriesFiles": "all downloaded episodes for \"{name}\"",
   "@deleteSeriesFiles": {
     "description": "Type label for series file deletion",
     "placeholders": {
@@ -1635,7 +1635,7 @@
   "@castingUnavailableOffline": {
     "description": "Snackbar message when casting is unavailable offline"
   },
-  "castActionFailed": "{label} eylemi başarısız oldu: {error}",
+  "castActionFailed": "{label} action failed: {error}",
   "@castActionFailed": {
     "description": "Error when a cast action fails",
     "placeholders": {
@@ -1647,7 +1647,7 @@
       }
     }
   },
-  "failedToSetCastVolume": "Yayın hacmi ayarlanamadı: {error}",
+  "failedToSetCastVolume": "Failed to set cast volume: {error}",
   "@failedToSetCastVolume": {
     "description": "Error when setting cast volume fails",
     "placeholders": {
@@ -1656,7 +1656,7 @@
       }
     }
   },
-  "castControlsTitle": "{label} Kontroller",
+  "castControlsTitle": "{label} Controls",
   "@castControlsTitle": {
     "description": "Title for cast controls dialog",
     "placeholders": {
@@ -1681,7 +1681,7 @@
   "@syncPosition": {
     "description": "Cast control action to sync playback position"
   },
-  "stopCast": "{label}'yi durdur",
+  "stopCast": "Stop {label}",
   "@stopCast": {
     "description": "Cast control action to stop casting",
     "placeholders": {
@@ -1694,7 +1694,7 @@
   "@queueIsEmpty": {
     "description": "Empty state text for playback queue"
   },
-  "trackNumber": "{number}'yi takip edin",
+  "trackNumber": "Track {number}",
   "@trackNumber": {
     "description": "Fallback track name in queue",
     "placeholders": {
@@ -1719,7 +1719,7 @@
   "@castingViaDlna": {
     "description": "Cast mini bar label for DLNA"
   },
-  "secondsCount": "{seconds} saniye",
+  "secondsCount": "{seconds} seconds",
   "@secondsCount": {
     "description": "Double-tap skip overlay duration label",
     "placeholders": {
@@ -1752,7 +1752,7 @@
   "@auto": {
     "description": "Label for automatic bitrate selection"
   },
-  "bitrateValueMbps": "{mbps} Mb/sn",
+  "bitrateValueMbps": "{mbps} Mbps",
   "@bitrateValueMbps": {
     "description": "Bitrate option label in Mbps",
     "placeholders": {
@@ -1869,7 +1869,7 @@
   "@embedded": {
     "description": "Subtitle type label for embedded subtitles"
   },
-  "castSessionError": "{protocol} oturum hatası",
+  "castSessionError": "{protocol} session error",
   "@castSessionError": {
     "description": "Fallback error message for cast session errors",
     "placeholders": {
@@ -1878,7 +1878,7 @@
       }
     }
   },
-  "failedToLoadBookDetails": "Kitap ayrıntıları yüklenemedi: {error}",
+  "failedToLoadBookDetails": "Failed to load book details: {error}",
   "@failedToLoadBookDetails": {
     "description": "Error when loading book details fails",
     "placeholders": {
@@ -1891,7 +1891,7 @@
   "@epubUnavailableOnPlatform": {
     "description": "Fallback message when EPUB cannot render on current platform"
   },
-  "formatCannotRenderInApp": "Bu biçim (.{extension}) henüz uygulama içinde oluşturulamıyor.",
+  "formatCannotRenderInApp": "This format (.{extension}) cannot be rendered in-app yet.",
   "@formatCannotRenderInApp": {
     "description": "Fallback message for unsupported document format",
     "placeholders": {
@@ -1908,7 +1908,7 @@
   "@couldNotOpenExternalViewer": {
     "description": "Error when external viewer fails to open"
   },
-  "failedToOpenInAppReader": "Uygulama içi okuyucu açılamadı: {error}",
+  "failedToOpenInAppReader": "Failed to open in-app reader: {error}",
   "@failedToOpenInAppReader": {
     "description": "Error when in-app reader fails to open",
     "placeholders": {
@@ -1917,7 +1917,7 @@
       }
     }
   },
-  "bookmarkAlreadySaved": "Yer işareti zaten {label} konumuna kaydedildi.",
+  "bookmarkAlreadySaved": "Bookmark already saved at {label}.",
   "@bookmarkAlreadySaved": {
     "description": "Snackbar when bookmark already exists",
     "placeholders": {
@@ -1926,7 +1926,7 @@
       }
     }
   },
-  "bookmarkAdded": "Yer işareti eklendi: {label}",
+  "bookmarkAdded": "Bookmark added: {label}",
   "@bookmarkAdded": {
     "description": "Snackbar confirming bookmark was added",
     "placeholders": {
@@ -1943,7 +1943,7 @@
   "@noTableOfContentsAvailable": {
     "description": "Empty state for table of contents panel"
   },
-  "pageLabel": "Sayfa {number}",
+  "pageLabel": "Page {number}",
   "@pageLabel": {
     "description": "Page number label in TOC or position",
     "placeholders": {
@@ -1960,7 +1960,7 @@
   "@bookReader": {
     "description": "Default title for book reader screen"
   },
-  "formatExtension": "Biçim: .{extension}",
+  "formatExtension": "Format: .{extension}",
   "@formatExtension": {
     "description": "Chip label showing file format",
     "placeholders": {
@@ -1969,7 +1969,7 @@
       }
     }
   },
-  "percentRead": "%{percent} okuma",
+  "percentRead": "{percent}% read",
   "@percentRead": {
     "description": "Chip label showing reading progress",
     "placeholders": {
@@ -2002,7 +2002,7 @@
   "@failedToDecodePageImage": {
     "description": "Error when comic page image cannot be decoded"
   },
-  "resetZoom": "Yakınlaştırmayı Sıfırla ({zoom}x)",
+  "resetZoom": "Reset Zoom ({zoom}x)",
   "@resetZoom": {
     "description": "Tooltip for reset zoom button",
     "placeholders": {
@@ -2035,7 +2035,7 @@
   "@markedAsUnread": {
     "description": "Snackbar confirming item marked as unread"
   },
-  "failedToUpdateReadState": "Okuma durumu güncellenemedi: {error}",
+  "failedToUpdateReadState": "Failed to update read state: {error}",
   "@failedToUpdateReadState": {
     "description": "Error when marking read/unread fails",
     "placeholders": {
@@ -2080,7 +2080,7 @@
   "@readerFallbackModeActive": {
     "description": "Title for fallback reader mode"
   },
-  "platformCannotHostDocumentEngine": "Bu platform, {extension} dosyaları için yerleşik belge motorunu barındıramaz.",
+  "platformCannotHostDocumentEngine": "This platform cannot host the embedded document engine for {extension} files.",
   "@platformCannotHostDocumentEngine": {
     "description": "Fallback description when platform lacks document engine",
     "placeholders": {
@@ -2133,7 +2133,7 @@
   "@guideTimeline": {
     "description": "Section title for the TV guide timeline"
   },
-  "failedToLoadGuide": "Kılavuz yüklenemedi: {error}",
+  "failedToLoadGuide": "Failed to load guide: {error}",
   "@failedToLoadGuide": {
     "description": "Error when guide data fails to load",
     "placeholders": {
@@ -2182,7 +2182,7 @@
   "@close": {
     "description": "Button label to close a dialog"
   },
-  "failedToPlayChannel": "{name} oynatılamadı",
+  "failedToPlayChannel": "Failed to play {name}",
   "@failedToPlayChannel": {
     "description": "Error when live TV channel playback fails",
     "placeholders": {
@@ -2219,7 +2219,7 @@
   "@cancelRecording": {
     "description": "Dialog title for cancelling a recording"
   },
-  "cancelScheduledRecordingOf": "\"{name}\" planlanmış kaydı iptal edilsin mi?",
+  "cancelScheduledRecordingOf": "Cancel scheduled recording of \"{name}\"?",
   "@cancelScheduledRecordingOf": {
     "description": "Confirmation message for cancelling a scheduled recording",
     "placeholders": {
@@ -2256,7 +2256,7 @@
   "@cancelSeriesRecordingQuestion": {
     "description": "Dialog title for cancelling a series recording"
   },
-  "stopRecordingName": "\"{name}\" kaydı durdurulsun mu?",
+  "stopRecordingName": "Stop recording \"{name}\"?",
   "@stopRecordingName": {
     "description": "Confirmation message for stopping a series recording",
     "placeholders": {
@@ -2277,7 +2277,7 @@
   "@searchEllipsis": {
     "description": "Search hint placeholder"
   },
-  "noResultsForQuery": "\"{query}\" için sonuç yok",
+  "noResultsForQuery": "No results for \"{query}\"",
   "@noResultsForQuery": {
     "description": "Shown when search returns no results",
     "placeholders": {
@@ -2286,7 +2286,7 @@
       }
     }
   },
-  "searchFailedError": "Arama başarısız oldu: {error}",
+  "searchFailedError": "Search failed: {error}",
   "@searchFailedError": {
     "description": "Shown when search encounters an error",
     "placeholders": {
@@ -2331,7 +2331,7 @@
   "@deleteDownload": {
     "description": "Dialog title for deleting a download"
   },
-  "removeItemAndFiles": "\"{name}\" ve dosyaları kaldırılsın mı?",
+  "removeItemAndFiles": "Remove \"{name}\" and its files?",
   "@removeItemAndFiles": {
     "description": "Confirmation to delete a downloaded item and its files",
     "placeholders": {
@@ -2340,7 +2340,7 @@
       }
     }
   },
-  "tracksCount": "{count} parça",
+  "tracksCount": "{count} tracks",
   "@tracksCount": {
     "description": "Number of tracks in an album",
     "placeholders": {
@@ -2357,7 +2357,7 @@
   "@playAlbum": {
     "description": "Button to play an album"
   },
-  "failedToLoadAlbum": "Albüm yüklenemedi: {error}",
+  "failedToLoadAlbum": "Failed to load album: {error}",
   "@failedToLoadAlbum": {
     "description": "Error when loading an album fails",
     "placeholders": {
@@ -2366,7 +2366,7 @@
       }
     }
   },
-  "noDownloadedTracksForAlbum": "{name} için indirilmiş parça bulunamadı.",
+  "noDownloadedTracksForAlbum": "No downloaded tracks found for {name}.",
   "@noDownloadedTracksForAlbum": {
     "description": "Shown when an album has no downloaded tracks",
     "placeholders": {
@@ -2391,7 +2391,7 @@
   "@deleteEpisode": {
     "description": "Dialog title for deleting an episode"
   },
-  "removeName": "\"{name}\" kaldırılsın mı?",
+  "removeName": "Remove \"{name}\"?",
   "@removeName": {
     "description": "Confirmation to remove an item by name",
     "placeholders": {
@@ -2400,7 +2400,7 @@
       }
     }
   },
-  "durationMinutes": "{minutes} dk.",
+  "durationMinutes": "{minutes} min",
   "@durationMinutes": {
     "description": "Duration in minutes",
     "placeholders": {
@@ -2421,7 +2421,7 @@
       }
     }
   },
-  "episodeNumber": "Bölüm {number}",
+  "episodeNumber": "Episode {number}",
   "@episodeNumber": {
     "description": "Episode label with number",
     "placeholders": {
@@ -2442,7 +2442,7 @@
   "@downloadedEpisodes": {
     "description": "Section title for downloaded episodes"
   },
-  "seasonNumber": "Sezon {number}",
+  "seasonNumber": "Season {number}",
   "@seasonNumber": {
     "description": "Season label with number",
     "placeholders": {
@@ -2459,7 +2459,7 @@
   "@deleteSeason": {
     "description": "Dialog title for deleting a season"
   },
-  "deleteAllEpisodesInSeason": "{season} içinde indirilen tüm bölümler silinsin mi?",
+  "deleteAllEpisodesInSeason": "Delete all downloaded episodes in {season}?",
   "@deleteAllEpisodesInSeason": {
     "description": "Confirmation to delete all episodes in a season",
     "placeholders": {
@@ -2513,7 +2513,7 @@
   "@deleteSelected": {
     "description": "Dialog title for deleting selected items"
   },
-  "deleteSelectedCount": "İndirilen {count} öğe silinsin mi?",
+  "deleteSelectedCount": "Delete {count} downloaded items?",
   "@deleteSelectedCount": {
     "description": "Confirmation to delete selected downloaded items",
     "placeholders": {
@@ -2534,7 +2534,7 @@
   "@database": {
     "description": "Storage breakdown label for database"
   },
-  "ofStorageLimit": "{limit} limiti",
+  "ofStorageLimit": "of {limit} limit",
   "@ofStorageLimit": {
     "description": "Text showing storage used of total limit",
     "placeholders": {
@@ -2643,7 +2643,7 @@
   "@customizeAccountPlaybackInterface": {
     "description": "Settings screen subtitle"
   },
-  "optionsCount": "{count} seçenekleri",
+  "optionsCount": "{count} options",
   "@optionsCount": {
     "description": "Number of options in a settings section",
     "placeholders": {
@@ -3031,7 +3031,7 @@
   "@stillWatchingPrompt": {
     "description": "Setting for still watching prompt"
   },
-  "afterEpisodesAndHours": "{episodes} bölümden sonra / {hours}h",
+  "afterEpisodesAndHours": "After {episodes} episodes / {hours}h",
   "@afterEpisodesAndHours": {
     "description": "Still watching prompt interval",
     "placeholders": {
@@ -3183,7 +3183,7 @@
   "@tv": {
     "description": "Profile: TV"
   },
-  "loadedProfileSettings": "{profile} profil ayarları yüklendi.",
+  "loadedProfileSettings": "Loaded {profile} profile settings.",
   "@loadedProfileSettings": {
     "description": "Message when profile settings are loaded",
     "placeholders": {
@@ -3192,7 +3192,7 @@
       }
     }
   },
-  "failedToLoadProfileSettings": "{profile} profil ayarları yüklenemedi.",
+  "failedToLoadProfileSettings": "Failed to load {profile} profile settings.",
   "@failedToLoadProfileSettings": {
     "description": "Error when profile settings fail to load",
     "placeholders": {
@@ -3201,7 +3201,7 @@
       }
     }
   },
-  "syncedSettingsToProfile": "Yerel ayarlar {profile} profiliyle senkronize edildi.",
+  "syncedSettingsToProfile": "Synced local settings to {profile} profile.",
   "@syncedSettingsToProfile": {
     "description": "Message when settings are synced to a profile",
     "placeholders": {
@@ -3486,7 +3486,7 @@
   "@selectAll": {
     "description": "Button to select all items"
   },
-  "itemsSelected": "{count} seçildi",
+  "itemsSelected": "{count} selected",
   "@itemsSelected": {
     "description": "Number of selected items",
     "placeholders": {
@@ -3767,7 +3767,7 @@
   "@timeout": {
     "description": "Setting for timeout"
   },
-  "minutesShort": "{minutes} dk.",
+  "minutesShort": "{minutes} min",
   "@minutesShort": {
     "description": "Minutes duration short format",
     "placeholders": {
@@ -3921,7 +3921,7 @@
   "@pluginNotDetectedDescription": {
     "description": "Description when plugin is not detected"
   },
-  "pluginStatusVersion": "{status}\nSürüm: {version}",
+  "pluginStatusVersion": "{status}\nVersion: {version}",
   "@pluginStatusVersion": {
     "description": "Plugin status with version",
     "placeholders": {
@@ -4021,7 +4021,7 @@
   "@hideAdultContent": {
     "description": "Description for NSFW filter"
   },
-  "loggedInAs": "Şu şekilde giriş yapıldı: {username}",
+  "loggedInAs": "Logged in as: {username}",
   "@loggedInAs": {
     "description": "Label showing logged in username",
     "placeholders": {
@@ -4054,7 +4054,7 @@
   "@aboutTitle": {
     "description": "About screen title"
   },
-  "versionValue": "Sürüm {version}",
+  "versionValue": "Version {version}",
   "@versionValue": {
     "description": "Version display",
     "placeholders": {
@@ -4111,7 +4111,7 @@
   "@updateAvailable": {
     "description": "Message when an update is available"
   },
-  "updateAvailableVersion": "Güncelleme mevcut: v{version}",
+  "updateAvailableVersion": "Update available: v{version}",
   "@updateAvailableVersion": {
     "description": "Message with specific update version",
     "placeholders": {
@@ -4189,7 +4189,7 @@
   "@seerrRequestedStatus": {
     "description": "Seerr media status when item has been requested"
   },
-  "itemsCount": "{count} Öğeler",
+  "itemsCount": "{count} Items",
   "@itemsCount": {
     "description": "Status bar item count",
     "placeholders": {
@@ -4218,7 +4218,7 @@
   "@playInMoonfin": {
     "description": "Button to play available media in Moonfin"
   },
-  "requestedByName": "{name} tarafından talep edildi",
+  "requestedByName": "Requested by {name}",
   "@requestedByName": {
     "description": "Label showing who requested media",
     "placeholders": {
@@ -4243,7 +4243,7 @@
   "@recommendations": {
     "description": "Section title for recommended media"
   },
-  "cancelRequestForTitle": "\"{title}\" isteği iptal edilsin mi?",
+  "cancelRequestForTitle": "Cancel request for \"{title}\"?",
   "@cancelRequestForTitle": {
     "description": "Confirmation message for single request cancellation",
     "placeholders": {
@@ -4252,7 +4252,7 @@
       }
     }
   },
-  "cancelCountRequestsForTitle": "\"{title}\" için {count} istekleri iptal edilsin mi?",
+  "cancelCountRequestsForTitle": "Cancel {count} requests for \"{title}\"?",
   "@cancelCountRequestsForTitle": {
     "description": "Confirmation message for multiple request cancellation",
     "placeholders": {
@@ -4276,7 +4276,7 @@
   "@errorSearchingLibrary": {
     "description": "Snackbar when library search fails"
   },
-  "budgetAmount": "Bütçe: ${amount}",
+  "budgetAmount": "Budget: ${amount}",
   "@budgetAmount": {
     "description": "Movie budget display",
     "placeholders": {
@@ -4285,7 +4285,7 @@
       }
     }
   },
-  "revenueAmount": "Gelir: ${amount}",
+  "revenueAmount": "Revenue: ${amount}",
   "@revenueAmount": {
     "description": "Movie revenue display",
     "placeholders": {
@@ -4306,7 +4306,7 @@
       }
     }
   },
-  "requestSeriesOrMovie": "{type} isteği",
+  "requestSeriesOrMovie": "Request {type}",
   "@requestSeriesOrMovie": {
     "description": "Bottom sheet title for requesting media",
     "placeholders": {
@@ -4355,7 +4355,7 @@
   "@crewSection": {
     "description": "Section title for crew credits"
   },
-  "ageValue": "yaş {age}",
+  "ageValue": "age {age}",
   "@ageValue": {
     "description": "Person age display",
     "placeholders": {
@@ -4465,7 +4465,7 @@
   "adminMediaOverview": "Medyaya Genel Bakış",
   "adminMediaTotalsError": "Sunucu medya toplamları yüklenemedi.",
   "adminMediaOverviewSubtitle": "Bu sunucuda ne kadar içerik olduğuna dair hızlı bir okuma.",
-  "adminPluginUpdatesAvailable": "Eklenti güncellemeleri mevcut: {count}",
+  "adminPluginUpdatesAvailable": "Plugin updates available: {count}",
   "@adminPluginUpdatesAvailable": {
     "placeholders": {
       "count": {
@@ -4473,7 +4473,7 @@
       }
     }
   },
-  "adminPluginsRequiringRestart": "Yeniden başlatma gerektiren eklentiler: {count}",
+  "adminPluginsRequiringRestart": "Plugins requiring restart: {count}",
   "@adminPluginsRequiringRestart": {
     "placeholders": {
       "count": {
@@ -4481,7 +4481,7 @@
       }
     }
   },
-  "adminFailedScheduledTasks": "Başarısız olan zamanlanmış görevler: {count}",
+  "adminFailedScheduledTasks": "Failed scheduled tasks: {count}",
   "@adminFailedScheduledTasks": {
     "placeholders": {
       "count": {
@@ -4489,7 +4489,7 @@
       }
     }
   },
-  "adminRecentAlertEntries": "Son uyarı/hata girişleri: {count}",
+  "adminRecentAlertEntries": "Recent warning/error entries: {count}",
   "@adminRecentAlertEntries": {
     "placeholders": {
       "count": {
@@ -4515,7 +4515,7 @@
   "adminShutdownServer": "Sunucuyu Kapat",
   "adminScanLibraries": "Kitaplıkları Tara",
   "adminLibraryScanStarted": "Kitaplık taraması başlatıldı",
-  "errorGeneric": "Hata: {error}",
+  "errorGeneric": "Error: {error}",
   "@errorGeneric": {
     "placeholders": {
       "error": {
@@ -4530,7 +4530,7 @@
   "adminNoActiveSessions": "Aktif oturum yok",
   "adminRecentActivity": "Son Etkinlik",
   "adminNoRecentActivity": "Yakın zamanda etkinlik yok",
-  "adminCommandFailed": "Komut başarısız oldu: {error}",
+  "adminCommandFailed": "Command failed: {error}",
   "@adminCommandFailed": {
     "placeholders": {
       "error": {
@@ -4557,7 +4557,7 @@
   "direct": "Doğrudan",
   "adminDisconnect": "Bağlantıyı kes",
   "adminClearDates": "Tarihleri ​​temizle",
-  "adminActivityLoadFailed": "Etkinlik günlüğü yüklenemedi: {error}",
+  "adminActivityLoadFailed": "Failed to load activity log: {error}",
   "@adminActivityLoadFailed": {
     "placeholders": {
       "error": {
@@ -4569,7 +4569,7 @@
   "adminEditDeviceName": "Cihaz Adını Düzenle",
   "adminCustomName": "Özel Ad",
   "adminDeviceNameUpdated": "Cihaz adı güncellendi",
-  "adminDeviceUpdateFailed": "Cihaz güncellenemedi: {error}",
+  "adminDeviceUpdateFailed": "Failed to update device: {error}",
   "@adminDeviceUpdateFailed": {
     "placeholders": {
       "error": {
@@ -4579,7 +4579,7 @@
   },
   "adminDeleteDevice": "Cihazı Sil",
   "adminDeviceDeleted": "Cihaz silindi",
-  "adminDeviceDeleteFailed": "Cihaz silinemedi: {error}",
+  "adminDeviceDeleteFailed": "Failed to delete device: {error}",
   "@adminDeviceDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4595,7 +4595,7 @@
   "adminNoLibraries": "Hiçbir kitaplık yapılandırılmadı",
   "adminScanAllLibraries": "Tüm Kütüphaneleri Tara",
   "adminAddLibrary": "Kitaplık Ekle",
-  "adminScanFailed": "Tarama başlatılamadı: {error}",
+  "adminScanFailed": "Failed to start scan: {error}",
   "@adminScanFailed": {
     "placeholders": {
       "error": {
@@ -4605,7 +4605,7 @@
   },
   "adminRenameLibrary": "Kitaplığı Yeniden Adlandır",
   "adminNewName": "Yeni isim",
-  "adminLibraryRenamed": "Kitaplığın adı \"{name}\" olarak değiştirildi",
+  "adminLibraryRenamed": "Library renamed to \"{name}\"",
   "@adminLibraryRenamed": {
     "placeholders": {
       "name": {
@@ -4613,7 +4613,7 @@
       }
     }
   },
-  "adminRenameFailed": "Yeniden adlandırılamadı: {error}",
+  "adminRenameFailed": "Failed to rename: {error}",
   "@adminRenameFailed": {
     "placeholders": {
       "error": {
@@ -4622,7 +4622,7 @@
     }
   },
   "adminDeleteLibrary": "Kitaplığı Sil",
-  "adminLibraryDeleted": "\"{name}\" kitaplığı silindi",
+  "adminLibraryDeleted": "Library \"{name}\" deleted",
   "@adminLibraryDeleted": {
     "placeholders": {
       "name": {
@@ -4630,7 +4630,7 @@
       }
     }
   },
-  "adminLibraryDeleteFailed": "Kitaplık silinemedi: {error}",
+  "adminLibraryDeleteFailed": "Failed to delete library: {error}",
   "@adminLibraryDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4638,7 +4638,7 @@
       }
     }
   },
-  "adminAddPathFailed": "Yol eklenemedi: {error}",
+  "adminAddPathFailed": "Failed to add path: {error}",
   "@adminAddPathFailed": {
     "placeholders": {
       "error": {
@@ -4647,7 +4647,7 @@
     }
   },
   "adminRemovePath": "Yolu Kaldır",
-  "adminRemovePathConfirm": "\"{path}\" bu kitaplıktan kaldırılsın mı?",
+  "adminRemovePathConfirm": "Remove \"{path}\" from this library?",
   "@adminRemovePathConfirm": {
     "placeholders": {
       "path": {
@@ -4655,7 +4655,7 @@
       }
     }
   },
-  "adminRemovePathFailed": "Yol kaldırılamadı: {error}",
+  "adminRemovePathFailed": "Failed to remove path: {error}",
   "@adminRemovePathFailed": {
     "placeholders": {
       "error": {
@@ -4664,7 +4664,7 @@
     }
   },
   "adminLibraryOptionsSaved": "Kitaplık seçenekleri kaydedildi",
-  "adminLibraryOptionsSaveFailed": "Seçenekler kaydedilemedi: {error}",
+  "adminLibraryOptionsSaveFailed": "Failed to save options: {error}",
   "@adminLibraryOptionsSaveFailed": {
     "placeholders": {
       "error": {
@@ -4682,7 +4682,7 @@
   "adminMetadataCountryCode": "Meta veri ülke kodu",
   "adminMetadataCountryHint": "örneğin ABD, Almanya, Fransa",
   "adminLibraryNameRequired": "Kitaplık adı gerekli",
-  "adminLibraryCreateFailed": "Kitaplık oluşturulamadı: {error}",
+  "adminLibraryCreateFailed": "Failed to create library: {error}",
   "@adminLibraryCreateFailed": {
     "placeholders": {
       "error": {
@@ -4697,7 +4697,7 @@
   "paths": "Yollar:",
   "adminDisableUser": "Kullanıcıyı Devre Dışı Bırak",
   "adminEnableUser": "Kullanıcıyı Etkinleştir",
-  "adminDisableUserConfirm": "{name} devre dışı bırakılsın mı? Oturum açamayacaklar.",
+  "adminDisableUserConfirm": "Disable {name}? They will not be able to sign in.",
   "@adminDisableUserConfirm": {
     "placeholders": {
       "name": {
@@ -4705,7 +4705,7 @@
       }
     }
   },
-  "adminEnableUserConfirm": "{name} etkinleştirilsin mi? Tekrar oturum açabilecekler.",
+  "adminEnableUserConfirm": "Enable {name}? They will be able to sign in again.",
   "@adminEnableUserConfirm": {
     "placeholders": {
       "name": {
@@ -4713,7 +4713,7 @@
       }
     }
   },
-  "adminUserDisabled": "\"{name}\" kullanıcısı devre dışı bırakıldı",
+  "adminUserDisabled": "User \"{name}\" disabled",
   "@adminUserDisabled": {
     "placeholders": {
       "name": {
@@ -4721,7 +4721,7 @@
       }
     }
   },
-  "adminUserEnabled": "\"{name}\" kullanıcısı etkinleştirildi",
+  "adminUserEnabled": "User \"{name}\" enabled",
   "@adminUserEnabled": {
     "placeholders": {
       "name": {
@@ -4729,7 +4729,7 @@
       }
     }
   },
-  "adminUserPolicyUpdateFailed": "Kullanıcı politikası güncellenemedi: {error}",
+  "adminUserPolicyUpdateFailed": "Failed to update user policy: {error}",
   "@adminUserPolicyUpdateFailed": {
     "placeholders": {
       "error": {
@@ -4741,7 +4741,7 @@
   "adminSearchUsers": "Kullanıcıları ara",
   "adminEditUser": "Kullanıcıyı Düzenle",
   "adminAddUser": "Kullanıcı Ekle",
-  "adminUserCreateFailed": "Kullanıcı oluşturulamadı: {error}",
+  "adminUserCreateFailed": "Failed to create user: {error}",
   "@adminUserCreateFailed": {
     "placeholders": {
       "error": {
@@ -4754,7 +4754,7 @@
   "adminUsernameRequired": "Kullanıcı adı boş olamaz",
   "adminNoProfileChanges": "Kaydedilecek profil değişikliği yok",
   "adminProfileSaved": "Profil kaydedildi",
-  "adminSaveFailed": "Kaydedilemedi: {error}",
+  "adminSaveFailed": "Failed to save: {error}",
   "@adminSaveFailed": {
     "placeholders": {
       "error": {
@@ -4764,7 +4764,7 @@
   },
   "adminPermissionsSaved": "İzinler kaydedildi",
   "adminPasswordsMismatch": "Şifreler eşleşmiyor",
-  "adminFailed": "Başarısız oldu: {error}",
+  "adminFailed": "Failed: {error}",
   "@adminFailed": {
     "placeholders": {
       "error": {
@@ -4807,7 +4807,7 @@
   "adminConfirmPassword": "Şifreyi Onayla",
   "adminSetPassword": "Şifreyi Ayarla",
   "adminResetPassword": "Şifreyi Sıfırla",
-  "adminDeleteUserConfirm": "{name} silmek istediğinizden emin misiniz?",
+  "adminDeleteUserConfirm": "Are you sure you want to delete {name}?",
   "@adminDeleteUserConfirm": {
     "placeholders": {
       "name": {
@@ -4815,7 +4815,7 @@
       }
     }
   },
-  "adminUserDeleted": "\"{name}\" kullanıcısı silindi",
+  "adminUserDeleted": "User \"{name}\" deleted",
   "@adminUserDeleted": {
     "placeholders": {
       "name": {
@@ -4823,7 +4823,7 @@
       }
     }
   },
-  "adminUserDeleteFailed": "Kullanıcı silinemedi: {error}",
+  "adminUserDeleteFailed": "Failed to delete user: {error}",
   "@adminUserDeleteFailed": {
     "placeholders": {
       "error": {
@@ -4836,7 +4836,7 @@
   "adminApiKeyCreated": "API Anahtarı Oluşturuldu",
   "adminApiKeyCreatedNoToken": "Anahtar başarıyla oluşturuldu. Sunucu jetonu iade etmedi. Sunucu API anahtarlarını kontrol edin.",
   "adminKeyCopied": "Anahtar panoya kopyalandı",
-  "adminApiKeyCreateFailed": "Anahtar oluşturulamadı: {error}",
+  "adminApiKeyCreateFailed": "Failed to create key: {error}",
   "@adminApiKeyCreateFailed": {
     "placeholders": {
       "error": {
@@ -4846,7 +4846,7 @@
   },
   "adminKeyTokenMissing": "Sunucu yanıtında anahtar belirteci eksik",
   "adminRevokeApiKey": "API Anahtarını İptal Et",
-  "adminRevokeKeyConfirm": "{name} anahtarı iptal edilsin mi?",
+  "adminRevokeKeyConfirm": "Revoke key for {name}?",
   "@adminRevokeKeyConfirm": {
     "placeholders": {
       "name": {
@@ -4855,7 +4855,7 @@
     }
   },
   "adminApiKeyRevoked": "API anahtarı iptal edildi",
-  "adminApiKeyRevokeFailed": "Anahtar iptal edilemedi: {error}",
+  "adminApiKeyRevokeFailed": "Failed to revoke key: {error}",
   "@adminApiKeyRevokeFailed": {
     "placeholders": {
       "error": {
@@ -4868,7 +4868,7 @@
   "adminNoApiKeys": "API anahtarı bulunamadı",
   "adminCreatingBackup": "Yedek oluşturuluyor...",
   "adminBackupCreated": "Yedekleme başarıyla oluşturuldu",
-  "adminBackupCreateFailed": "Yedekleme oluşturulamadı: {error}",
+  "adminBackupCreateFailed": "Failed to create backup: {error}",
   "@adminBackupCreateFailed": {
     "placeholders": {
       "error": {
@@ -4877,7 +4877,7 @@
     }
   },
   "adminBackupPathMissing": "Sunucu yanıtında yedekleme yolu eksik",
-  "adminBackupManifest": "Bildirim: {name}",
+  "adminBackupManifest": "Manifest: {name}",
   "@adminBackupManifest": {
     "placeholders": {
       "name": {
@@ -4885,7 +4885,7 @@
       }
     }
   },
-  "adminManifestLoadFailed": "Bildiri yüklenemedi: {error}",
+  "adminManifestLoadFailed": "Failed to load manifest: {error}",
   "@adminManifestLoadFailed": {
     "placeholders": {
       "error": {
@@ -4895,7 +4895,7 @@
   },
   "adminConfirmRestore": "Geri Yüklemeyi Onayla",
   "adminRestoringBackup": "Yedekleme geri yükleniyor...",
-  "adminRestoreFailed": "Yedekleme geri yüklenemedi: {error}",
+  "adminRestoreFailed": "Failed to restore backup: {error}",
   "@adminRestoreFailed": {
     "placeholders": {
       "error": {
@@ -4912,7 +4912,7 @@
   "adminNoLogFiles": "Günlük dosyası bulunamadı",
   "adminLogCopied": "Günlük panoya kopyalandı",
   "adminSaveLogFile": "Günlük dosyasını kaydet",
-  "adminSavedTo": "{path} konumuna kaydedildi",
+  "adminSavedTo": "Saved to {path}",
   "@adminSavedTo": {
     "placeholders": {
       "path": {
@@ -4920,7 +4920,7 @@
       }
     }
   },
-  "adminFileSaveFailed": "Dosya kaydedilemedi: {error}",
+  "adminFileSaveFailed": "Failed to save file: {error}",
   "@adminFileSaveFailed": {
     "placeholders": {
       "error": {
@@ -4928,7 +4928,7 @@
       }
     }
   },
-  "adminLogFileLoadFailed": "{fileName} yüklenemedi",
+  "adminLogFileLoadFailed": "Failed to load {fileName}",
   "@adminLogFileLoadFailed": {
     "placeholders": {
       "fileName": {
@@ -4938,7 +4938,7 @@
   },
   "adminSearchInLog": "Günlükte ara",
   "adminNoMatchingLines": "Eşleşen çizgi yok",
-  "adminTasksLoadFailed": "Görevler yüklenemedi: {error}",
+  "adminTasksLoadFailed": "Failed to load tasks: {error}",
   "@adminTasksLoadFailed": {
     "placeholders": {
       "error": {
@@ -4948,7 +4948,7 @@
   },
   "adminNoScheduledTasks": "Zamanlanmış görev bulunamadı",
   "adminNoTasksMatchFilter": "Geçerli filtreyle eşleşen görev yok",
-  "adminTaskStartFailed": "Görev başlatılamadı: {error}",
+  "adminTaskStartFailed": "Failed to start task: {error}",
   "@adminTaskStartFailed": {
     "placeholders": {
       "error": {
@@ -4956,7 +4956,7 @@
       }
     }
   },
-  "adminTaskStopFailed": "Görev durdurulamadı: {error}",
+  "adminTaskStopFailed": "Failed to stop task: {error}",
   "@adminTaskStopFailed": {
     "placeholders": {
       "error": {
@@ -4964,7 +4964,7 @@
       }
     }
   },
-  "adminTaskLoadFailed": "Görev yüklenemedi: {error}",
+  "adminTaskLoadFailed": "Failed to load task: {error}",
   "@adminTaskLoadFailed": {
     "placeholders": {
       "error": {
@@ -4973,7 +4973,7 @@
     }
   },
   "adminRunNow": "Şimdi Çalıştır",
-  "adminTriggerRemoveFailed": "Tetikleyici kaldırılamadı: {error}",
+  "adminTriggerRemoveFailed": "Failed to remove trigger: {error}",
   "@adminTriggerRemoveFailed": {
     "placeholders": {
       "error": {
@@ -4981,7 +4981,7 @@
       }
     }
   },
-  "adminTriggerAddFailed": "Tetikleyici eklenemedi: {error}",
+  "adminTriggerAddFailed": "Failed to add trigger: {error}",
   "@adminTriggerAddFailed": {
     "placeholders": {
       "error": {
@@ -4996,7 +4996,7 @@
   "adminTriggerType": "Tetikleyici Türü",
   "adminTimeLimit": "Zaman sınırı (isteğe bağlı)",
   "adminNoLimit": "Sınır yok",
-  "adminHours": "{hours} saat",
+  "adminHours": "{hours} hour(s)",
   "@adminHours": {
     "placeholders": {
       "hours": {
@@ -5006,7 +5006,7 @@
   },
   "adminDayOfWeek": "Haftanın günü",
   "adminSearchPlugins": "Eklentileri ara...",
-  "adminPluginToggleFailed": "Eklenti değiştirilemedi: {error}",
+  "adminPluginToggleFailed": "Failed to toggle plugin: {error}",
   "@adminPluginToggleFailed": {
     "placeholders": {
       "error": {
@@ -5015,7 +5015,7 @@
     }
   },
   "adminUninstallPlugin": "Eklentiyi Kaldır",
-  "adminUninstallPluginConfirm": "\"{name}\" uygulamasını kaldırmak istediğinizden emin misiniz?",
+  "adminUninstallPluginConfirm": "Are you sure you want to uninstall \"{name}\"?",
   "@adminUninstallPluginConfirm": {
     "placeholders": {
       "name": {
@@ -5023,7 +5023,7 @@
       }
     }
   },
-  "adminPluginUninstallFailed": "Eklenti kaldırılamadı: {error}",
+  "adminPluginUninstallFailed": "Failed to uninstall plugin: {error}",
   "@adminPluginUninstallFailed": {
     "placeholders": {
       "error": {
@@ -5031,7 +5031,7 @@
       }
     }
   },
-  "adminPackageInstallFailed": "Paket yüklenemedi: {error}",
+  "adminPackageInstallFailed": "Failed to install package: {error}",
   "@adminPackageInstallFailed": {
     "placeholders": {
       "error": {
@@ -5039,7 +5039,7 @@
       }
     }
   },
-  "adminPluginUpdateFailed": "Güncelleme yüklenemedi: {error}",
+  "adminPluginUpdateFailed": "Failed to install update: {error}",
   "@adminPluginUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5047,7 +5047,7 @@
       }
     }
   },
-  "adminPluginsLoadFailed": "Eklentiler yüklenemedi: {error}",
+  "adminPluginsLoadFailed": "Failed to load plugins: {error}",
   "@adminPluginsLoadFailed": {
     "placeholders": {
       "error": {
@@ -5057,7 +5057,7 @@
   },
   "adminNoPluginsMatchSearch": "Aramanızla eşleşen eklenti yok",
   "adminNoPluginsInstalled": "Hiçbir eklenti yüklü değil",
-  "adminInstallUpdate": "Güncellemeyi yükle (v{version})",
+  "adminInstallUpdate": "Install update (v{version})",
   "@adminInstallUpdate": {
     "placeholders": {
       "version": {
@@ -5065,7 +5065,7 @@
       }
     }
   },
-  "adminCatalogLoadFailed": "Katalog yüklenemedi: {error}",
+  "adminCatalogLoadFailed": "Failed to load catalog: {error}",
   "@adminCatalogLoadFailed": {
     "placeholders": {
       "error": {
@@ -5078,7 +5078,7 @@
   "adminExperimentalIntegration": "Deneysel Entegrasyon",
   "adminExperimentalWarning": "Eklenti ayarları entegrasyonu hala deneyseldir. Bazı ayar sayfaları doğru şekilde oluşturulmayabilir.",
   "continueAction": "Devam etmek",
-  "adminPluginRemoveAfterRestart": "\"{name}\" sunucu yeniden başlatıldıktan sonra kaldırılacak",
+  "adminPluginRemoveAfterRestart": "\"{name}\" will be removed after server restart",
   "@adminPluginRemoveAfterRestart": {
     "placeholders": {
       "name": {
@@ -5086,7 +5086,7 @@
       }
     }
   },
-  "adminUninstallFailed": "Kaldırma işlemi başarısız oldu: {error}",
+  "adminUninstallFailed": "Failed to uninstall: {error}",
   "@adminUninstallFailed": {
     "placeholders": {
       "error": {
@@ -5094,7 +5094,7 @@
       }
     }
   },
-  "adminPluginUpdating": "\"{name}\" v{version} olarak güncelleniyor...",
+  "adminPluginUpdating": "Updating \"{name}\" to v{version}...",
   "@adminPluginUpdating": {
     "placeholders": {
       "name": {
@@ -5106,7 +5106,7 @@
     }
   },
   "adminMissingAuthToken": "Ayarlar açılamıyor: Kimlik doğrulama jetonu eksik.",
-  "adminPluginLoadFailed": "Eklenti yüklenemedi: {error}",
+  "adminPluginLoadFailed": "Failed to load plugin: {error}",
   "@adminPluginLoadFailed": {
     "placeholders": {
       "error": {
@@ -5115,7 +5115,7 @@
     }
   },
   "adminPluginNotFound": "Eklenti bulunamadı",
-  "adminPluginVersion": "Sürüm {version}",
+  "adminPluginVersion": "Version {version}",
   "@adminPluginVersion": {
     "placeholders": {
       "version": {
@@ -5128,7 +5128,7 @@
   "adminRevisionHistory": "Revizyon Geçmişi",
   "adminNoChangelog": "Değişiklik günlüğü mevcut değil.",
   "adminRemoveRepository": "Depoyu Kaldır",
-  "adminRemoveRepositoryConfirm": "\"{name}\" ifadesini kaldırmak istediğinizden emin misiniz?",
+  "adminRemoveRepositoryConfirm": "Are you sure you want to remove \"{name}\"?",
   "@adminRemoveRepositoryConfirm": {
     "placeholders": {
       "name": {
@@ -5136,7 +5136,7 @@
       }
     }
   },
-  "adminRepositoriesSaveFailed": "Kod depoları kaydedilemedi: {error}",
+  "adminRepositoriesSaveFailed": "Failed to save repositories: {error}",
   "@adminRepositoriesSaveFailed": {
     "placeholders": {
       "error": {
@@ -5144,7 +5144,7 @@
       }
     }
   },
-  "adminRepositoriesLoadFailed": "Depolar yüklenemedi: {error}",
+  "adminRepositoriesLoadFailed": "Failed to load repositories: {error}",
   "@adminRepositoriesLoadFailed": {
     "placeholders": {
       "error": {
@@ -5156,7 +5156,7 @@
   "adminRepositoryUrl": "Depo URL'si",
   "adminAddEntry": "Giriş ekle",
   "adminInvalidUrl": "Geçersiz URL",
-  "adminPluginSettingsLoadFailed": "Eklenti ayarları yüklenemiyor: {error}",
+  "adminPluginSettingsLoadFailed": "Unable to load plugin settings: {error}",
   "@adminPluginSettingsLoadFailed": {
     "placeholders": {
       "error": {
@@ -5164,7 +5164,7 @@
       }
     }
   },
-  "adminCouldNotOpenUrl": "{uri} açılamadı",
+  "adminCouldNotOpenUrl": "Could not open {uri}",
   "@adminCouldNotOpenUrl": {
     "placeholders": {
       "uri": {
@@ -5257,7 +5257,7 @@
   "blacklist": "Kara liste",
   "notSet": "Ayarlanmadı",
   "adminMetadataSaved": "Meta veriler kaydedildi",
-  "adminMetadataLoadFailed": "Meta veriler yüklenemedi: {error}",
+  "adminMetadataLoadFailed": "Failed to load metadata: {error}",
   "@adminMetadataLoadFailed": {
     "placeholders": {
       "error": {
@@ -5265,7 +5265,7 @@
       }
     }
   },
-  "adminMetadataSaveFailed": "Meta veriler kaydedilemedi: {error}",
+  "adminMetadataSaveFailed": "Failed to save metadata: {error}",
   "@adminMetadataSaveFailed": {
     "placeholders": {
       "error": {
@@ -5278,7 +5278,7 @@
   "adminReplaceAllMetadata": "Tüm meta verileri değiştir",
   "adminReplaceAllImages": "Tüm resimleri değiştir",
   "adminMetadataRefreshRequested": "Meta veri yenileme istendi",
-  "adminMetadataRefreshFailed": "Meta veriler yenilenemedi: {error}",
+  "adminMetadataRefreshFailed": "Failed to refresh metadata: {error}",
   "@adminMetadataRefreshFailed": {
     "placeholders": {
       "error": {
@@ -5290,7 +5290,7 @@
   "adminNoRemoteMatches": "Uzak eşleşme bulunamadı",
   "adminRemoteResults": "Uzak Sonuçlar",
   "adminRemoteMetadataApplied": "Uzak meta veriler uygulandı",
-  "adminRemoteSearchFailed": "Uzaktan arama başarısız oldu: {error}",
+  "adminRemoteSearchFailed": "Remote search failed: {error}",
   "@adminRemoteSearchFailed": {
     "placeholders": {
       "error": {
@@ -5301,7 +5301,7 @@
   "adminUpdateContentType": "İçerik Türünü Güncelle",
   "adminContentType": "İçerik türü",
   "adminContentTypeUpdated": "İçerik türü güncellendi",
-  "adminContentTypeUpdateFailed": "İçerik türü güncellenemedi: {error}",
+  "adminContentTypeUpdateFailed": "Failed to update content type: {error}",
   "@adminContentTypeUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5312,7 +5312,7 @@
   "adminMetadataEditorLoadFailed": "Meta veri düzenleyici yüklenemedi",
   "adminNoPeopleEntries": "Kişi girişi yok",
   "adminNoExternalIds": "Harici kimlik yok",
-  "adminImageUpdated": "{imageType} resim güncellendi",
+  "adminImageUpdated": "{imageType} image updated",
   "@adminImageUpdated": {
     "placeholders": {
       "imageType": {
@@ -5320,7 +5320,7 @@
       }
     }
   },
-  "adminImageDownloadFailed": "Resim indirilemedi: {error}",
+  "adminImageDownloadFailed": "Failed to download image: {error}",
   "@adminImageDownloadFailed": {
     "placeholders": {
       "error": {
@@ -5330,7 +5330,7 @@
   },
   "adminUnsupportedImageFormat": "Desteklenmeyen resim formatı",
   "adminImageReadFailed": "Seçilen resim okunamadı",
-  "adminImageUploaded": "{imageType} resim yüklendi",
+  "adminImageUploaded": "{imageType} image uploaded",
   "@adminImageUploaded": {
     "placeholders": {
       "imageType": {
@@ -5338,7 +5338,7 @@
       }
     }
   },
-  "adminImageUploadFailed": "Resim yüklenemedi: {error}",
+  "adminImageUploadFailed": "Failed to upload image: {error}",
   "@adminImageUploadFailed": {
     "placeholders": {
       "error": {
@@ -5346,7 +5346,7 @@
       }
     }
   },
-  "adminDeleteImage": "{imageType} resmini sil",
+  "adminDeleteImage": "Delete {imageType} image",
   "@adminDeleteImage": {
     "placeholders": {
       "imageType": {
@@ -5354,7 +5354,7 @@
       }
     }
   },
-  "adminImageDeleted": "{imageType} resim silindi",
+  "adminImageDeleted": "{imageType} image deleted",
   "@adminImageDeleted": {
     "placeholders": {
       "imageType": {
@@ -5362,7 +5362,7 @@
       }
     }
   },
-  "adminImageDeleteFailed": "Resim silinemedi: {error}",
+  "adminImageDeleteFailed": "Failed to delete image: {error}",
   "@adminImageDeleteFailed": {
     "placeholders": {
       "error": {
@@ -5372,7 +5372,7 @@
   },
   "adminAllProviders": "Tüm sağlayıcılar",
   "adminNoRemoteImages": "Uzak resim bulunamadı",
-  "adminTunerDiscoveryFailed": "Ayarlayıcı keşfi başarısız oldu: {error}",
+  "adminTunerDiscoveryFailed": "Tuner discovery failed: {error}",
   "@adminTunerDiscoveryFailed": {
     "placeholders": {
       "error": {
@@ -5386,7 +5386,7 @@
   "adminUrlPath": "URL / Yol",
   "adminNameOptional": "Ad (isteğe bağlı)",
   "adminTunerAdded": "Ayarlayıcı eklendi",
-  "adminTunerAddFailed": "Ayarlayıcı eklenemedi: {error}",
+  "adminTunerAddFailed": "Failed to add tuner: {error}",
   "@adminTunerAddFailed": {
     "placeholders": {
       "error": {
@@ -5400,7 +5400,7 @@
   "adminUsernameOptional": "Kullanıcı adı (isteğe bağlı)",
   "adminRefreshInterval": "Yenileme aralığı (saat)",
   "adminProviderAdded": "Sağlayıcı eklendi",
-  "adminProviderAddFailed": "Sağlayıcı eklenemedi: {error}",
+  "adminProviderAddFailed": "Failed to add provider: {error}",
   "@adminProviderAddFailed": {
     "placeholders": {
       "error": {
@@ -5408,7 +5408,7 @@
       }
     }
   },
-  "adminTunerRemoveFailed": "Ayarlayıcı kaldırılamadı: {error}",
+  "adminTunerRemoveFailed": "Failed to remove tuner: {error}",
   "@adminTunerRemoveFailed": {
     "placeholders": {
       "error": {
@@ -5417,7 +5417,7 @@
     }
   },
   "adminTunerResetRequested": "Ayarlayıcının sıfırlanması istendi",
-  "adminTunerResetFailed": "Ayarlayıcı sıfırlanamadı: {error}",
+  "adminTunerResetFailed": "Failed to reset tuner: {error}",
   "@adminTunerResetFailed": {
     "placeholders": {
       "error": {
@@ -5425,7 +5425,7 @@
       }
     }
   },
-  "adminProviderRemoveFailed": "Sağlayıcı kaldırılamadı: {error}",
+  "adminProviderRemoveFailed": "Failed to remove provider: {error}",
   "@adminProviderRemoveFailed": {
     "placeholders": {
       "error": {
@@ -5439,7 +5439,7 @@
   "adminRecordingPath": "Kayıt yolu",
   "adminSeriesRecordingPath": "Seri kayıt yolu",
   "adminRecordingSettingsSaved": "Kayıt ayarları kaydedildi",
-  "adminSettingsSaveFailed": "Ayarlar kaydedilemedi: {error}",
+  "adminSettingsSaveFailed": "Failed to save settings: {error}",
   "@adminSettingsSaveFailed": {
     "placeholders": {
       "error": {
@@ -5450,7 +5450,7 @@
   "adminSetChannelMappings": "Kanal Eşlemelerini Ayarlama",
   "adminMappingJson": "JSON'u Eşleme",
   "adminChannelMappingsUpdated": "Kanal eşlemeleri güncellendi",
-  "adminMappingsUpdateFailed": "Eşlemeler güncellenemedi: {error}",
+  "adminMappingsUpdateFailed": "Failed to update mappings: {error}",
   "@adminMappingsUpdateFailed": {
     "placeholders": {
       "error": {
@@ -5464,7 +5464,7 @@
   "adminGuideProviders": "Rehber Sağlayıcılar",
   "adminAddProvider": "Sağlayıcı Ekle",
   "adminNoListingProviders": "Hiçbir listeleme sağlayıcısı yapılandırılmadı",
-  "adminRecordingPathDisplay": "Kayıt yolu: {path}",
+  "adminRecordingPathDisplay": "Recording path: {path}",
   "@adminRecordingPathDisplay": {
     "placeholders": {
       "path": {
@@ -5472,7 +5472,7 @@
       }
     }
   },
-  "adminSeriesPathDisplay": "Seri yolu: {path}",
+  "adminSeriesPathDisplay": "Series path: {path}",
   "@adminSeriesPathDisplay": {
     "placeholders": {
       "path": {
@@ -5480,7 +5480,7 @@
       }
     }
   },
-  "adminPrePaddingDisplay": "Ön doldurma: {minutes} dk.",
+  "adminPrePaddingDisplay": "Pre-padding: {minutes} min",
   "@adminPrePaddingDisplay": {
     "placeholders": {
       "minutes": {
@@ -5488,7 +5488,7 @@
       }
     }
   },
-  "adminPostPaddingDisplay": "Sonradan doldurma: {minutes} dk.",
+  "adminPostPaddingDisplay": "Post-padding: {minutes} min",
   "@adminPostPaddingDisplay": {
     "placeholders": {
       "minutes": {
@@ -5504,7 +5504,7 @@
   "adminRestoreWarning1": "Geri yükleme işlemi, TÜM mevcut sunucu verilerini yedek verilerle değiştirecektir.",
   "adminRestoreWarning2": "Mevcut sunucu ayarlarının, kullanıcıların ve kütüphane verilerinin üzerine yazılacaktır.",
   "adminRestoreWarning3": "Sunucu restorasyondan sonra yeniden başlatılacaktır.",
-  "adminRestoreConfirmMessage": "{name} yedeklemesi şimdi geri yüklensin mi?",
+  "adminRestoreConfirmMessage": "Restore backup {name} now?",
   "@adminRestoreConfirmMessage": {
     "placeholders": {
       "name": {
@@ -5525,7 +5525,7 @@
   "adminLogsNewestFirst": "En Yeni İlk",
   "adminLogsOldestFirst": "En Eski İlk",
   "adminLogsJustNow": "Şu anda",
-  "adminLogsMinutesAgo": "{minutes} dk önce",
+  "adminLogsMinutesAgo": "{minutes}m ago",
   "@adminLogsMinutesAgo": {
     "placeholders": {
       "minutes": {
@@ -5533,7 +5533,7 @@
       }
     }
   },
-  "adminLogsHoursAgo": "{hours}s önce",
+  "adminLogsHoursAgo": "{hours}h ago",
   "@adminLogsHoursAgo": {
     "placeholders": {
       "hours": {
@@ -5541,7 +5541,7 @@
       }
     }
   },
-  "adminLogsDaysAgo": "{days} gün önce",
+  "adminLogsDaysAgo": "{days}d ago",
   "@adminLogsDaysAgo": {
     "placeholders": {
       "days": {
@@ -5549,7 +5549,7 @@
       }
     }
   },
-  "adminLogViewerLoadFailed": "{fileName} yüklenemedi",
+  "adminLogViewerLoadFailed": "Failed to load {fileName}",
   "@adminLogViewerLoadFailed": {
     "placeholders": {
       "fileName": {
@@ -5557,7 +5557,7 @@
       }
     }
   },
-  "adminLogViewerMatches": "{count} eşleşme",
+  "adminLogViewerMatches": "{count} matches",
   "@adminLogViewerMatches": {
     "placeholders": {
       "count": {
@@ -5600,7 +5600,7 @@
   "adminMetadataImageThumb": "Baş parmak",
   "adminMetadataRecursive": "Özyinelemeli",
   "adminMetadataProvider": "sağlayıcı",
-  "adminMetadataImageUpdated": "{imageType} resim güncellendi",
+  "adminMetadataImageUpdated": "{imageType} image updated",
   "@adminMetadataImageUpdated": {
     "placeholders": {
       "imageType": {
@@ -5608,7 +5608,7 @@
       }
     }
   },
-  "adminMetadataImageUploaded": "{imageType} resim yüklendi",
+  "adminMetadataImageUploaded": "{imageType} image uploaded",
   "@adminMetadataImageUploaded": {
     "placeholders": {
       "imageType": {
@@ -5616,7 +5616,7 @@
       }
     }
   },
-  "adminMetadataImageDeleted": "{imageType} resim silindi",
+  "adminMetadataImageDeleted": "{imageType} image deleted",
   "@adminMetadataImageDeleted": {
     "placeholders": {
       "imageType": {
@@ -5624,7 +5624,7 @@
       }
     }
   },
-  "adminMetadataImageDownloadFailed": "Resim indirilemedi: {error}",
+  "adminMetadataImageDownloadFailed": "Failed to download image: {error}",
   "@adminMetadataImageDownloadFailed": {
     "placeholders": {
       "error": {
@@ -5633,7 +5633,7 @@
     }
   },
   "adminMetadataImageReadFailed": "Seçilen resim okunamadı",
-  "adminMetadataImageUploadFailed": "Resim yüklenemedi: {error}",
+  "adminMetadataImageUploadFailed": "Failed to upload image: {error}",
   "@adminMetadataImageUploadFailed": {
     "placeholders": {
       "error": {
@@ -5641,7 +5641,7 @@
       }
     }
   },
-  "adminMetadataDeleteImageTitle": "{imageType} resmini sil",
+  "adminMetadataDeleteImageTitle": "Delete {imageType} image",
   "@adminMetadataDeleteImageTitle": {
     "placeholders": {
       "imageType": {
@@ -5650,7 +5650,7 @@
     }
   },
   "adminMetadataDeleteImageContent": "Bu, geçerli resmi öğeden kaldırır.",
-  "adminMetadataImageDeleteFailed": "Resim silinemedi: {error}",
+  "adminMetadataImageDeleteFailed": "Failed to delete image: {error}",
   "@adminMetadataImageDeleteFailed": {
     "placeholders": {
       "error": {
@@ -5658,7 +5658,7 @@
       }
     }
   },
-  "adminMetadataChooseImage": "{imageType} görselini seçin",
+  "adminMetadataChooseImage": "Choose {imageType} image",
   "@adminMetadataChooseImage": {
     "placeholders": {
       "imageType": {
@@ -5675,7 +5675,7 @@
   "adminPluginsRestart": "Tekrar başlat",
   "adminPluginsNoSearchResults": "Aramanızla eşleşen eklenti yok",
   "adminPluginsNoneInstalled": "Hiçbir eklenti yüklü değil",
-  "adminPluginsUpdateAvailable": "Güncelleme mevcut: v{version}",
+  "adminPluginsUpdateAvailable": "Update available: v{version}",
   "@adminPluginsUpdateAvailable": {
     "placeholders": {
       "version": {
@@ -5689,7 +5689,7 @@
   "adminPluginsEnable": "Olanak vermek",
   "adminPluginsDisable": "Devre dışı bırakmak",
   "adminPluginsInstallUpdate": "Güncellemeyi yükle",
-  "adminPluginsInstallUpdateVersioned": "Güncellemeyi yükle (v{version})",
+  "adminPluginsInstallUpdateVersioned": "Install update (v{version})",
   "@adminPluginsInstallUpdateVersioned": {
     "placeholders": {
       "version": {
@@ -5699,7 +5699,7 @@
   },
   "adminPluginsCatalogNoSearchResults": "Aramanızla eşleşen paket yok",
   "adminPluginsCatalogEmpty": "Mevcut paket yok",
-  "adminPluginsInstalling": "\"{name}\" kuruluyor...",
+  "adminPluginsInstalling": "\"{name}\" is being installed...",
   "@adminPluginsInstalling": {
     "placeholders": {
       "name": {
@@ -5711,7 +5711,7 @@
   "adminPluginDetailExperimentalContent": "Eklenti ayarları entegrasyonu hala deneyseldir. Bazı alanlar veya düzenler henüz doğru şekilde oluşturulamayabilir.",
   "adminPluginDetailToggle404": "Eklenti değiştirilemedi. Sunucu bu eklenti sürümünü bulamadı. Eklentileri yenilemeyi deneyin ve ardından yeniden deneyin.",
   "adminPluginDetailToggleDioError": "Eklenti değiştirilemedi. Ayrıntılar için lütfen sunucu günlüklerini kontrol edin.",
-  "adminPluginDetailSettingsTitle": "{name} Ayarlar",
+  "adminPluginDetailSettingsTitle": "{name} Settings",
   "@adminPluginDetailSettingsTitle": {
     "placeholders": {
       "name": {
@@ -5729,7 +5729,7 @@
   "adminPluginDetailMalfunctioned": "Bu eklenti arızalandı ve düzgün çalışmayabilir.",
   "adminPluginDetailNotSupported": "Bu eklenti mevcut sunucu sürümü tarafından desteklenmiyor.",
   "adminPluginDetailSuperseded": "Bu eklentinin yerini daha yeni bir sürüm aldı.",
-  "adminReposLoadFailed": "Depolar yüklenemedi: {error}",
+  "adminReposLoadFailed": "Failed to load repositories: {error}",
   "@adminReposLoadFailed": {
     "placeholders": {
       "error": {
@@ -5738,7 +5738,7 @@
     }
   },
   "adminReposRemoveTitle": "Depoyu Kaldır",
-  "adminReposRemoveConfirm": "\"{name}\" ifadesini kaldırmak istediğinizden emin misiniz?",
+  "adminReposRemoveConfirm": "Are you sure you want to remove \"{name}\"?",
   "@adminReposRemoveConfirm": {
     "placeholders": {
       "name": {
@@ -5747,7 +5747,7 @@
     }
   },
   "adminReposRemove": "Kaldırmak",
-  "adminReposSaveFailed": "Kod depoları kaydedilemedi: {error}",
+  "adminReposSaveFailed": "Failed to save repositories: {error}",
   "@adminReposSaveFailed": {
     "placeholders": {
       "error": {
@@ -5841,7 +5841,7 @@
   "adminTaskDetailEnded": "Sona erdi",
   "adminTaskDetailDuration": "Süre",
   "adminTaskDetailErrorLabel": "Hata:",
-  "adminTaskTriggerDaily": "Her gün {time} saatinde",
+  "adminTaskTriggerDaily": "Daily at {time}",
   "@adminTaskTriggerDaily": {
     "placeholders": {
       "time": {
@@ -5849,7 +5849,7 @@
       }
     }
   },
-  "adminTaskTriggerWeekly": "Her {day}, {time} adresinde",
+  "adminTaskTriggerWeekly": "Every {day} at {time}",
   "@adminTaskTriggerWeekly": {
     "placeholders": {
       "day": {
@@ -5860,7 +5860,7 @@
       }
     }
   },
-  "adminTaskTriggerInterval": "Her {duration}",
+  "adminTaskTriggerInterval": "Every {duration}",
   "@adminTaskTriggerInterval": {
     "placeholders": {
       "duration": {
@@ -5893,7 +5893,7 @@
   "adminActivityToday": "Bugün",
   "adminActivityYesterday": "Dün",
   "adminActivityOlder": "daha yaşlı",
-  "adminActivityDaysAgo": "{days} gün önce",
+  "adminActivityDaysAgo": "{days}d ago",
   "@adminActivityDaysAgo": {
     "placeholders": {
       "days": {
@@ -5901,7 +5901,7 @@
       }
     }
   },
-  "adminActivityHoursAgo": "{hours}s önce",
+  "adminActivityHoursAgo": "{hours}h ago",
   "@adminActivityHoursAgo": {
     "placeholders": {
       "hours": {
@@ -5909,7 +5909,7 @@
       }
     }
   },
-  "adminActivityMinutesAgo": "{minutes} dk önce",
+  "adminActivityMinutesAgo": "{minutes}m ago",
   "@adminActivityMinutesAgo": {
     "placeholders": {
       "minutes": {
@@ -5981,7 +5981,7 @@
   "adminTrickplayWidthResolutions": "Genişlik çözünürlükleri",
   "adminMetadataDefault": "Varsayılan",
   "adminMetadataContentTypeUpdated": "İçerik türü güncellendi",
-  "adminMetadataContentTypeFailed": "İçerik türü güncellenemedi: {error}",
+  "adminMetadataContentTypeFailed": "Failed to update content type: {error}",
   "@adminMetadataContentTypeFailed": {
     "placeholders": {
       "error": {
@@ -5995,7 +5995,7 @@
   "adminGeneralServerName": "Sunucu adı",
   "adminSettingsLoadFailed": "Ayarlar yüklenemedi",
   "adminDiscover": "Keşfetmek",
-  "adminChannelMappingsUpdateFailed": "Eşlemeler güncellenemedi: {error}",
+  "adminChannelMappingsUpdateFailed": "Failed to update mappings: {error}",
   "@adminChannelMappingsUpdateFailed": {
     "placeholders": {
       "error": {
@@ -6003,7 +6003,7 @@
       }
     }
   },
-  "adminTimeLimitDuration": "Zaman sınırı: {duration}",
+  "adminTimeLimitDuration": "Time limit: {duration}",
   "@adminTimeLimitDuration": {
     "placeholders": {
       "duration": {
@@ -6029,7 +6029,7 @@
   "castAirPlay": "AirPlay",
   "castDlna": "DLNA",
   "castRemotePlayback": "Uzaktan Oynatma",
-  "castControlFailed": "Yayın kontrolü başarısız oldu: {error}",
+  "castControlFailed": "Cast control failed: {error}",
   "@castControlFailed": {
     "placeholders": {
       "error": {
@@ -6037,7 +6037,7 @@
       }
     }
   },
-  "castKindControls": "{kind} Kontroller",
+  "castKindControls": "{kind} Controls",
   "@castKindControls": {
     "placeholders": {
       "kind": {
@@ -6047,7 +6047,7 @@
   },
   "castDeviceVolume": "Cihaz Sesi",
   "castVolumeUnavailable": "Kullanılamıyor",
-  "castStopKind": "{kind}'yi durdur",
+  "castStopKind": "Stop {kind}",
   "@castStopKind": {
     "placeholders": {
       "kind": {
@@ -6061,7 +6061,7 @@
   "pinSetTitle": "PIN'i ayarla",
   "pinEnterTitle": "PIN'i girin",
   "pinReenterToConfirm": "Onaylamak için PIN'inizi tekrar girin",
-  "pinEnterNDigit": "{length} haneli bir PIN girin",
+  "pinEnterNDigit": "Enter a {length}-digit PIN",
   "@pinEnterNDigit": {
     "placeholders": {
       "length": {
@@ -6069,7 +6069,7 @@
       }
     }
   },
-  "pinEnterYourNDigit": "{length} haneli PIN'inizi girin",
+  "pinEnterYourNDigit": "Enter your {length}-digit PIN",
   "@pinEnterYourNDigit": {
     "placeholders": {
       "length": {
@@ -6089,7 +6089,7 @@
   "quickConnectDisabled": "Hızlı Bağlantı bu sunucuda devre dışı bırakıldı.",
   "quickConnectForbidden": "Hesabınız bu Hızlı Bağlantı isteğine yetki veremez.",
   "quickConnectNotFound": "Hızlı Bağlantı kodu bulunamadı. Yeni bir kod deneyin.",
-  "quickConnectFailedWithMessage": "Hızlı Bağlantı başarısız oldu: {message}",
+  "quickConnectFailedWithMessage": "Quick Connect failed: {message}",
   "@quickConnectFailedWithMessage": {
     "placeholders": {
       "message": {
@@ -6099,7 +6099,7 @@
   },
   "quickConnectEnterCode": "Kodu girin",
   "quickConnectAuthorize": "Yetkilendir",
-  "remoteCommandFailed": "Komut başarısız oldu: {error}",
+  "remoteCommandFailed": "Command failed: {error}",
   "@remoteCommandFailed": {
     "placeholders": {
       "error": {
@@ -6115,7 +6115,7 @@
   "unknownItem": "Bilinmiyor",
   "remoteNothingPlaying": "Bu oturumda oynatılan hiçbir şey yok",
   "castingStarted": "Seçilen cihazda yayınlama başladı",
-  "castingFailed": "Yayınlama başlatılamadı: {error}",
+  "castingFailed": "Failed to start casting: {error}",
   "@castingFailed": {
     "placeholders": {
       "error": {
@@ -6136,7 +6136,7 @@
   "trackActionAddToFavorites": "Favorilere Ekle",
   "trackActionGoToAlbum": "Albüme Git",
   "trackActionGoToArtist": "Sanatçıya Git",
-  "trackActionDownloading": "{name} indiriliyor...",
+  "trackActionDownloading": "Downloading {name}...",
   "@trackActionDownloading": {
     "placeholders": {
       "name": {
@@ -6171,7 +6171,7 @@
   "stillWatchingContent": "Oynatma duraklatıldı. Hala izliyor musun?",
   "stillWatchingStop": "Durmak",
   "stillWatchingContinue": "Devam etmek",
-  "skipSegment": "{segment} atla",
+  "skipSegment": "Skip {segment}",
   "@skipSegment": {
     "placeholders": {
       "segment": {
@@ -6181,7 +6181,7 @@
   },
   "liveTv": "Canlı TV",
   "continueWatchingAndNextUp": "İzlemeye Devam Et ve Sıradaki",
-  "downloadingBatchProgress": "{current}/{total} indiriliyor — {fileName}",
+  "downloadingBatchProgress": "Downloading {current}/{total} — {fileName}",
   "@downloadingBatchProgress": {
     "placeholders": {
       "current": {
@@ -6195,7 +6195,7 @@
       }
     }
   },
-  "downloadingFile": "{fileName} indiriliyor",
+  "downloadingFile": "Downloading {fileName}",
   "@downloadingFile": {
     "placeholders": {
       "fileName": {
@@ -6257,7 +6257,7 @@
   "subtitlePreviewText": "Hızlı kahverengi tilki tembel köpeğin üzerinden atlıyor",
   "libraryVisibilityDescription": "Kitaplık başına ana sayfa görünürlüğünü değiştirin. Değişikliklerin etkili olması için Moonfin yeniden başlatın.",
   "sourceCodeUrl": "https://github.com/Moonfin-Client/Mobile-Desktop",
-  "updateAvailableTitle": "v{version} Mevcut",
+  "updateAvailableTitle": "v{version} Available",
   "readReleaseNotes": "Sürüm Notlarını Okuyun",
   "downloadingUpdate": "Güncelleme indiriliyor...",
   "updateDownloadFailed": "Güncelleme indirme işlemi başarısız oldu. Lütfen tekrar deneyin.",
@@ -6283,10 +6283,10 @@
   "adminEnableAllDevices": "Tüm cihazlara erişimi etkinleştirin",
   "adminEnableAllChannels": "Tüm kanallara erişimi etkinleştir",
   "adminResetPasswordWarning": "Bu şifreyi kaldıracaktır. Kullanıcı şifreye ihtiyaç duymadan giriş yapabilecektir.",
-  "adminServerReturnedHttp": "Sunucu HTTP {status} döndürdü",
+  "adminServerReturnedHttp": "Server returned HTTP {status}",
   "adminApiKeysTitle": "API Anahtarları",
   "adminUnknownApp": "Bilinmeyen Uygulama",
-  "adminApiKeyTokenCreated": "Jeton: {token}\\nOluşturuldu: {created}",
+  "adminApiKeyTokenCreated": "Token: {token}\\nCreated: {created}",
   "adminMappingJsonHint": "Örnek: JSON yükünü eşleme",
   "syncPlayDisabledTitle": "SyncPlay devre dışı",
   "syncPlayDisabledMessage": "Senkronize oynatmayı kullanmak için Ayarlar'da SyncPlay seçeneğini etkinleştirin.",
@@ -6306,7 +6306,7 @@
   "syncPlaySyncCurrentQueueSubtitle": "Grup kuyruğunu yerel olarak oynatılanlarla değiştirin",
   "syncPlayLeaveGroup": "Gruptan ayrıl",
   "syncPlayGroupQueue": "Grup kuyruğu",
-  "syncPlayQueueItemFallback": "Öğe {index}",
+  "syncPlayQueueItemFallback": "Item {index}",
   "syncPlayPlayNow": "Şimdi oyna",
   "syncPlayCreateNewGroup": "Yeni bir grup oluştur",
   "syncPlayGroupName": "Grup adı",
@@ -6321,11 +6321,11 @@
   "syncPlayStateWaiting": "Beklemek",
   "syncPlayStatePaused": "Duraklatıldı",
   "syncPlayStatePlaying": "Oynanıyor",
-  "syncPlayUserJoinedGroup": "{userName}, SyncPlay grubuna katıldı",
-  "syncPlayUserLeftGroup": "{userName} SyncPlay grubundan ayrıldı",
+  "syncPlayUserJoinedGroup": "{userName} joined SyncPlay group",
+  "syncPlayUserLeftGroup": "{userName} left SyncPlay group",
   "syncPlayAccessDeniedTitle": "SyncPlay erişim reddedildi",
   "syncPlayAccessDeniedMessage": "Bu SyncPlay grubundaki bir veya daha fazla öğeye erişiminiz yok. Grup sahibinden kitaplık izinlerini doğrulamasını veya farklı bir sıra seçmesini isteyin.",
-  "syncPlaySyncingPlaybackToGroup": "Oynatma {groupName} ile senkronize ediliyor",
+  "syncPlaySyncingPlaybackToGroup": "Syncing playback to {groupName}",
   "voiceSearchUnavailable": "Sesli arama kullanılamıyor.",
   "dolbyVisionDirectPlayFailedTitle": "Dolby Vision Doğrudan Oynatma Başarısız",
   "dolbyVisionDirectPlayFailedMessage": "Bu Dolby Vision akışı için doğrudan oynatma başlatılamadı. Sunucu kod dönüştürmesini kullanmayı yeniden denemek ister misiniz?",
@@ -6480,7 +6480,7 @@
   "collections": "Koleksiyonlar",
   "lastPlayed": "Son Oynanan",
   "libraryNameWithServer": "{libraryName} ({serverName})",
-  "latestLibraryName": "En son {libraryName}",
+  "latestLibraryName": "Latest {libraryName}",
   "@openLink": {
     "description": "Action label to open a URL externally"
   },
@@ -6753,5 +6753,13 @@
   },
   "@localAccount": {
     "description": "Auth option label for Seerr sign in using local Seerr credentials"
-  }
+  },
+  "seasonalEffectsDescription": "Görsel efektler ve mevsimsel dekorasyonlar",
+  "mediaSources": "Medya Kaynakları",
+  "behavior": "Davranış",
+  "seconds": "saniye",
+  "localPreviews": "Yerel Önizlemeler",
+  "localPreviewsDescription": "Fragmanı, medyayı ve ses önizlemelerini yapılandırın.",
+  "mediaPreview": "Medya Önizlemesi",
+  "mediaPreviewDescription": "Odaklanılan, üzerine gelinen veya uzun süre basılan kartlarda 30 saniyelik satır içi önizleme oynatın"
 }

@@ -16,7 +16,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String connectingToServer(String serverName) {
-    return '$serverName に接続しています';
+    return 'Connecting to $serverName';
   }
 
   @override
@@ -27,6 +27,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get username => 'ユーザー名';
+
+  @override
+  String get email => '電子メール';
 
   @override
   String get quickConnectInstruction => 'サーバーの Web ダッシュボードに次のコードを入力します。';
@@ -45,12 +48,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'QuickConnect が利用できません: $detail';
+    return 'QuickConnect unavailable: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'QuickConnect が利用できません ($status): $detail';
+    return 'QuickConnect unavailable ($status): $detail';
   }
 
   @override
@@ -64,7 +67,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String appVersionFooter(String version) {
-    return 'Moonfin バージョン $version';
+    return 'Moonfin version $version';
   }
 
   @override
@@ -83,14 +86,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get addServer => 'サーバーの追加';
 
   @override
-  String get embyConnect => 'エンビーコネクト';
+  String get embyConnect => 'Emby 接続';
 
   @override
   String get removeServer => 'サーバーの削除';
 
   @override
   String removeServerConfirmation(String serverName) {
-    return '「$serverName」をサーバーから削除しますか?';
+    return 'Remove \"$serverName\" from your servers?';
   }
 
   @override
@@ -184,7 +187,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String unableToConnectTo(String target) {
-    return '$target に接続できません';
+    return 'Unable to connect to $target';
   }
 
   @override
@@ -264,7 +267,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String failedToLoadFolderError(String error) {
-    return 'フォルダーのロードに失敗しました: $error';
+    return 'Failed to load folder: $error';
   }
 
   @override
@@ -272,7 +275,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String itemCountLabel(int count) {
-    return '$count アイテム';
+    return '$count items';
   }
 
   @override
@@ -289,7 +292,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String totalCountItems(int count) {
-    return '$count アイテム';
+    return '$count Items';
   }
 
   @override
@@ -330,7 +333,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String libraryGenresTitle(String name) {
-    return '$name — ジャンル';
+    return '$name — Genres';
   }
 
   @override
@@ -368,17 +371,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String minutesAgo(int count) {
-    return '$count分前';
+    return '${count}m ago';
   }
 
   @override
   String hoursAgo(int count) {
-    return '$count時間前';
+    return '${count}h ago';
   }
 
   @override
   String daysAgo(int count) {
-    return '$count日前';
+    return '${count}d ago';
   }
 
   @override
@@ -410,7 +413,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String titlesCount(int count) {
-    return '$count タイトル';
+    return '$count titles';
   }
 
   @override
@@ -490,17 +493,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String authorsCount(int count) {
-    return '$count 作成者';
+    return '$count authors';
   }
 
   @override
   String genresCount(int count) {
-    return '$count ジャンル';
+    return '$count genres';
   }
 
   @override
   String percentCompleted(int percent) {
-    return '$percent% 完了しました';
+    return '$percent% completed';
   }
 
   @override
@@ -517,7 +520,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String titlesArrangedForBrowsing(int count) {
-    return '$count タイトルは、最初に読んで閲覧できるように配置されています。';
+    return '$count titles arranged for reading-first browsing.';
   }
 
   @override
@@ -553,7 +556,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String noLabelFound(String label) {
-    return '$label が見つかりませんでした';
+    return 'No $label found';
   }
 
   @override
@@ -624,12 +627,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String sectionCountLabel(int count) {
-    return '$count セクション';
+    return '$count sections';
   }
 
   @override
   String firstPublished(int year) {
-    return '最初に公開された $year';
+    return 'First published $year';
   }
 
   @override
@@ -643,7 +646,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String booksCount(int count) {
-    return '$count 冊';
+    return '$count books';
   }
 
   @override
@@ -654,7 +657,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String authorsCountTitle(int count) {
-    return '$count 作成者';
+    return '$count Authors';
   }
 
   @override
@@ -729,6 +732,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tracklist => 'トラックリスト';
 
   @override
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
+
+  @override
   String get biography => 'バイオグラフィー';
 
   @override
@@ -748,7 +756,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String published(int year) {
-    return '$year を公開しました';
+    return 'Published $year';
   }
 
   @override
@@ -767,7 +775,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String endsAt(String time) {
-    return '$time で終了';
+    return 'Ends at $time';
   }
 
   @override
@@ -781,7 +789,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String resumeFrom(String position) {
-    return '$position から再開';
+    return 'Resume from $position';
   }
 
   @override
@@ -879,7 +887,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String deleteDownloadedTracksMessage(String title) {
-    return 'ダウンロードした「$title」のトラックを削除しますか?';
+    return 'Delete downloaded tracks for \"$title\"?';
   }
 
   @override
@@ -893,17 +901,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String noItemsLoaded(String itemLabel) {
-    return '$itemLabel がロードされていません';
+    return 'No $itemLabel loaded';
   }
 
   @override
   String downloadingTitle(String title, int count) {
-    return '$title ($count アイテム) をダウンロードしています...';
+    return 'Downloading $title ($count items)...';
   }
 
   @override
   String deleteConfirmMessage(String name) {
-    return '「$name」をサーバーから削除してもよろしいですか?この操作は元に戻すことができません。';
+    return 'Are you sure you want to delete \"$name\" from the server? This action cannot be undone.';
   }
 
   @override
@@ -914,7 +922,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String unsupportedBookFormat(String extension) {
-    return 'サポートされていない書籍形式: .$extension';
+    return 'Unsupported book format: .$extension';
   }
 
   @override
@@ -940,7 +948,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String subtitleDownloadedSelected(String name) {
-    return 'ダウンロードして選択した字幕: $name';
+    return 'Subtitle downloaded and selected: $name';
   }
 
   @override
@@ -949,7 +957,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String noRemoteSubtitlesFound(String language) {
-    return '$language のリモート字幕が見つかりません。';
+    return 'No remote subtitles found for $language.';
   }
 
   @override
@@ -957,7 +965,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String versionNumber(int number) {
-    return 'バージョン $number';
+    return 'Version $number';
   }
 
   @override
@@ -977,7 +985,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String downloadingItem(String name, String quality) {
-    return '$name ($quality) をダウンロードしています...';
+    return 'Downloading $name ($quality)...';
   }
 
   @override
@@ -985,7 +993,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
-    return '$typeLabel のローカル ファイルを削除しますか?\n\nこれにより、ストレージスペースが解放されます。後で再ダウンロードできます。';
+    return 'Delete local files for $typeLabel?\n\nThis will free up storage space. You can re-download later.';
   }
 
   @override
@@ -1008,12 +1016,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String studioMoreCount(int count) {
-    return '+$count 詳細';
+    return '+$count more';
   }
 
   @override
   String totalEpisodes(int count) {
-    return '$count エピソード';
+    return '$count Episodes';
   }
 
   @override
@@ -1023,12 +1031,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String episodeLabel(int number) {
-    return 'エピソード $number';
+    return 'Episode $number';
   }
 
   @override
   String chapterNumber(int number) {
-    return '第 $number 章';
+    return 'Chapter $number';
   }
 
   @override
@@ -1055,17 +1063,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String born(String date) {
-    return '$date 生まれ';
+    return 'Born $date';
   }
 
   @override
   String died(String date) {
-    return '死亡 $date';
+    return 'Died $date';
   }
 
   @override
   String age(int age) {
-    return '年齢 $age';
+    return 'Age $age';
   }
 
   @override
@@ -1079,7 +1087,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String downloadsCount(int count) {
-    return '$count ダウンロード数';
+    return '$count downloads';
   }
 
   @override
@@ -1098,32 +1106,32 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String remoteSubtitlePermissionError(String action) {
-    return 'リモート字幕 $action には、このユーザーの Jellyfin 字幕管理権限が必要です。';
+    return 'Remote subtitle $action requires the Jellyfin subtitle management permission for this user.';
   }
 
   @override
   String remoteSubtitleNotFoundError(String action) {
-    return 'このアイテムは、リモート サブタイトル $action のサーバー上で見つかりませんでした。';
+    return 'This item could not be found on the server for remote subtitle $action.';
   }
 
   @override
   String remoteSubtitleDetailError(String action, String detail) {
-    return 'リモート字幕 $action が失敗しました: $detail';
+    return 'Remote subtitle $action failed: $detail';
   }
 
   @override
   String remoteSubtitleHttpError(String action, int status) {
-    return 'リモート字幕 $action が失敗しました (HTTP $status)。';
+    return 'Remote subtitle $action failed (HTTP $status).';
   }
 
   @override
   String remoteSubtitleGenericError(String action) {
-    return '$action リモート字幕に失敗しました。';
+    return 'Failed to $action remote subtitles.';
   }
 
   @override
   String deleteSeriesFiles(String name) {
-    return '「$name」のダウンロードされたすべてのエピソード';
+    return 'all downloaded episodes for \"$name\"';
   }
 
   @override
@@ -1151,17 +1159,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String castActionFailed(String label, String error) {
-    return '$label アクションが失敗しました: $error';
+    return '$label action failed: $error';
   }
 
   @override
   String failedToSetCastVolume(String error) {
-    return 'キャストボリュームの設定に失敗しました: $error';
+    return 'Failed to set cast volume: $error';
   }
 
   @override
   String castControlsTitle(String label) {
-    return '$label コントロール';
+    return '$label Controls';
   }
 
   @override
@@ -1178,7 +1186,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String stopCast(String label) {
-    return '$label を停止します';
+    return 'Stop $label';
   }
 
   @override
@@ -1186,7 +1194,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String trackNumber(int number) {
-    return 'トラック $number';
+    return 'Track $number';
   }
 
   @override
@@ -1203,7 +1211,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String secondsCount(int seconds) {
-    return '$seconds 秒';
+    return '$seconds seconds';
   }
 
   @override
@@ -1318,12 +1326,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String castSessionError(String protocol) {
-    return '$protocol セッション エラー';
+    return '$protocol session error';
   }
 
   @override
   String failedToLoadBookDetails(String error) {
-    return '書籍の詳細をロードできませんでした: $error';
+    return 'Failed to load book details: $error';
   }
 
   @override
@@ -1332,7 +1340,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String formatCannotRenderInApp(String extension) {
-    return 'この形式 (.$extension) はまだアプリ内でレンダリングできません。';
+    return 'This format (.$extension) cannot be rendered in-app yet.';
   }
 
   @override
@@ -1344,17 +1352,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String failedToOpenInAppReader(String error) {
-    return 'アプリ内リーダーを開けませんでした: $error';
+    return 'Failed to open in-app reader: $error';
   }
 
   @override
   String bookmarkAlreadySaved(String label) {
-    return 'ブックマークはすでに $label に保存されています。';
+    return 'Bookmark already saved at $label.';
   }
 
   @override
   String bookmarkAdded(String label) {
-    return '追加されたブックマーク: $label';
+    return 'Bookmark added: $label';
   }
 
   @override
@@ -1366,7 +1374,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String pageLabel(int number) {
-    return 'ページ $number';
+    return 'Page $number';
   }
 
   @override
@@ -1377,12 +1385,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String formatExtension(String extension) {
-    return '形式: .$extension';
+    return 'Format: .$extension';
   }
 
   @override
   String percentRead(String percent) {
-    return '$percent% 読み取り';
+    return '$percent% read';
   }
 
   @override
@@ -1405,7 +1413,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String resetZoom(String zoom) {
-    return 'ズームをリセット (${zoom}x)';
+    return 'Reset Zoom (${zoom}x)';
   }
 
   @override
@@ -1428,7 +1436,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String failedToUpdateReadState(String error) {
-    return '読み取り状態の更新に失敗しました: $error';
+    return 'Failed to update read state: $error';
   }
 
   @override
@@ -1460,7 +1468,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
-    return 'このプラットフォームは、$extension ファイル用の組み込みドキュメント エンジンをホストできません。';
+    return 'This platform cannot host the embedded document engine for $extension files.';
   }
 
   @override
@@ -1499,7 +1507,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String failedToLoadGuide(String error) {
-    return 'ガイドのロードに失敗しました: $error';
+    return 'Failed to load guide: $error';
   }
 
   @override
@@ -1534,7 +1542,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String failedToPlayChannel(String name) {
-    return '$name の再生に失敗しました';
+    return 'Failed to play $name';
   }
 
   @override
@@ -1560,7 +1568,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String cancelScheduledRecordingOf(String name) {
-    return '「$name」の予約録画をキャンセルしますか?';
+    return 'Cancel scheduled recording of \"$name\"?';
   }
 
   @override
@@ -1586,7 +1594,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String stopRecordingName(String name) {
-    return '「$name」の記録を停止しますか?';
+    return 'Stop recording \"$name\"?';
   }
 
   @override
@@ -1600,16 +1608,25 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String noResultsForQuery(String query) {
-    return '\"$query\" の結果はありません';
+    return 'No results for \"$query\"';
   }
 
   @override
   String searchFailedError(String error) {
-    return '検索に失敗しました: $error';
+    return 'Search failed: $error';
   }
 
   @override
   String get seerr => 'シーア';
+
+  @override
+  String get seerrAccountType => 'シーアアカウントの種類';
+
+  @override
+  String get jellyfinAccount => 'Jellyfin';
+
+  @override
+  String get localAccount => '地元';
 
   @override
   String get savedMedia => '保存されたメディア';
@@ -1637,12 +1654,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String removeItemAndFiles(String name) {
-    return '「$name」とそのファイルを削除しますか?';
+    return 'Remove \"$name\" and its files?';
   }
 
   @override
   String tracksCount(int count) {
-    return '$count トラック';
+    return '$count tracks';
   }
 
   @override
@@ -1653,12 +1670,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String failedToLoadAlbum(String error) {
-    return 'アルバムのロードに失敗しました: $error';
+    return 'Failed to load album: $error';
   }
 
   @override
   String noDownloadedTracksForAlbum(String name) {
-    return '$name のダウンロードされたトラックが見つかりません。';
+    return 'No downloaded tracks found for $name.';
   }
 
   @override
@@ -1675,12 +1692,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String removeName(String name) {
-    return '「$name」を削除しますか?';
+    return 'Remove \"$name\"?';
   }
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes 分';
+    return '$minutes min';
   }
 
   @override
@@ -1690,7 +1707,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String episodeNumber(int number) {
-    return 'エピソード $number';
+    return 'Episode $number';
   }
 
   @override
@@ -1704,7 +1721,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String seasonNumber(int number) {
-    return 'シーズン $number';
+    return 'Season $number';
   }
 
   @override
@@ -1720,7 +1737,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String deleteAllEpisodesInSeason(String season) {
-    return '$season にダウンロードされたエピソードをすべて削除しますか?';
+    return 'Delete all downloaded episodes in $season?';
   }
 
   @override
@@ -1764,7 +1781,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String deleteSelectedCount(int count) {
-    return '$count 個のダウンロード済みアイテムを削除しますか?';
+    return 'Delete $count downloaded items?';
   }
 
   @override
@@ -1778,7 +1795,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String ofStorageLimit(String limit) {
-    return '$limit 制限中';
+    return 'of $limit limit';
   }
 
   @override
@@ -1859,7 +1876,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String optionsCount(int count) {
-    return '$count オプション';
+    return '$count options';
   }
 
   @override
@@ -1885,6 +1902,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get focusExpansionAnimation => 'フォーカス拡張アニメーション';
+
+  @override
+  String get desktopUiScale => 'デスクトップ UI スケール';
 
   @override
   String get scaleFocusedCards => 'フォーカスまたはホバーされたカードとタイルを拡大縮小する';
@@ -1919,6 +1939,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get seasonalEffects => '季節の影響';
+
+  @override
+  String get seasonalEffectsDescription => '視覚効果と季節の装飾';
 
   @override
   String get snow => '雪';
@@ -2127,7 +2150,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get nextUpAndQueuing => '次の作業とキューイング';
 
   @override
-  String get nextUpBehavior => '次の行動';
+  String get nextUpDisplay => '次のディスプレイ';
 
   @override
   String get extended => '拡張された';
@@ -2154,7 +2177,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
-    return '$episodes エピソード後 / ${hours}h';
+    return 'After $episodes episodes / ${hours}h';
   }
 
   @override
@@ -2284,17 +2307,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String loadedProfileSettings(String profile) {
-    return '$profile プロファイル設定をロードしました。';
+    return 'Loaded $profile profile settings.';
   }
 
   @override
   String failedToLoadProfileSettings(String profile) {
-    return '$profile プロファイル設定のロードに失敗しました。';
+    return 'Failed to load $profile profile settings.';
   }
 
   @override
   String syncedSettingsToProfile(String profile) {
-    return 'ローカル設定を $profile プロファイルに同期しました。';
+    return 'Synced local settings to $profile profile.';
   }
 
   @override
@@ -2516,11 +2539,26 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String itemsSelected(int count) {
-    return '$count が選択されました';
+    return '$count selected';
   }
 
   @override
   String get mediaBar => 'メディアバー';
+
+  @override
+  String get mediaSources => 'メディアソース';
+
+  @override
+  String get behavior => '行動';
+
+  @override
+  String get seconds => '秒';
+
+  @override
+  String get localPreviews => 'ローカルプレビュー';
+
+  @override
+  String get localPreviewsDescription => 'トレーラー、メディア、オーディオのプレビューを構成します。';
 
   @override
   String get mediaBarMode => 'メディアバーのスタイル';
@@ -2584,7 +2622,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get episodePreview => 'エピソードのプレビュー';
 
   @override
+  String get mediaPreview => 'メディアプレビュー';
+
+  @override
   String get episodePreviewDescription =>
+      'フォーカス、ホバー、または長押しされたカードで 30 秒のインライン プレビューを再生します';
+
+  @override
+  String get mediaPreviewDescription =>
       'フォーカス、ホバー、または長押しされたカードで 30 秒のインライン プレビューを再生します';
 
   @override
@@ -2727,7 +2772,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String minutesShort(int minutes) {
-    return '$minutes 分';
+    return '$minutes min';
   }
 
   @override
@@ -2841,7 +2886,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String pluginStatusVersion(String status, String version) {
-    return '$status\nバージョン: $version';
+    return '$status\nVersion: $version';
   }
 
   @override
@@ -2913,7 +2958,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String loggedInAs(String username) {
-    return 'ログイン名: $username';
+    return 'Logged in as: $username';
   }
 
   @override
@@ -2937,7 +2982,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String versionValue(String version) {
-    return 'バージョン $version';
+    return 'Version $version';
   }
 
   @override
@@ -2982,7 +3027,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String updateAvailableVersion(String version) {
-    return '利用可能なアップデート: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -2993,7 +3038,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String updateAvailableTitle(String version) {
-    return 'v$version 利用可能';
+    return 'v$version Available';
   }
 
   @override
@@ -3054,7 +3099,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String itemsCount(int count) {
-    return '$count アイテム';
+    return '$count Items';
   }
 
   @override
@@ -3074,7 +3119,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String requestedByName(String name) {
-    return '$name によってリクエストされました';
+    return 'Requested by $name';
   }
 
   @override
@@ -3091,12 +3136,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String cancelRequestForTitle(String title) {
-    return '「$title」のリクエストをキャンセルしますか?';
+    return 'Cancel request for \"$title\"?';
   }
 
   @override
   String cancelCountRequestsForTitle(int count, String title) {
-    return '「$title」に対する $count リクエストをキャンセルしますか?';
+    return 'Cancel $count requests for \"$title\"?';
   }
 
   @override
@@ -3110,12 +3155,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String budgetAmount(String amount) {
-    return '予算: \$$amount';
+    return 'Budget: \$$amount';
   }
 
   @override
   String revenueAmount(String amount) {
-    return '収益: \$$amount';
+    return 'Revenue: \$$amount';
   }
 
   @override
@@ -3125,7 +3170,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String requestSeriesOrMovie(String type) {
-    return 'リクエスト $type';
+    return 'Request $type';
   }
 
   @override
@@ -3160,7 +3205,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String ageValue(int age) {
-    return '年齢 $age';
+    return 'age $age';
   }
 
   @override
@@ -3451,22 +3496,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginUpdatesAvailable(int count) {
-    return '利用可能なプラグインのアップデート: $count';
+    return 'Plugin updates available: $count';
   }
 
   @override
   String adminPluginsRequiringRestart(int count) {
-    return '再起動が必要なプラグイン: $count';
+    return 'Plugins requiring restart: $count';
   }
 
   @override
   String adminFailedScheduledTasks(int count) {
-    return '失敗したスケジュールされたタスク: $count';
+    return 'Failed scheduled tasks: $count';
   }
 
   @override
   String adminRecentAlertEntries(int count) {
-    return '最近の警告/エラー エントリ: $count';
+    return 'Recent warning/error entries: $count';
   }
 
   @override
@@ -3525,7 +3570,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String errorGeneric(String error) {
-    return 'エラー: $error';
+    return 'Error: $error';
   }
 
   @override
@@ -3551,7 +3596,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminCommandFailed(String error) {
-    return 'コマンドが失敗しました: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -3616,7 +3661,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminActivityLoadFailed(String error) {
-    return 'アクティビティ ログのロードに失敗しました: $error';
+    return 'Failed to load activity log: $error';
   }
 
   @override
@@ -3633,7 +3678,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminDeviceUpdateFailed(String error) {
-    return 'デバイスの更新に失敗しました: $error';
+    return 'Failed to update device: $error';
   }
 
   @override
@@ -3644,7 +3689,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminDeviceDeleteFailed(String error) {
-    return 'デバイスの削除に失敗しました: $error';
+    return 'Failed to delete device: $error';
   }
 
   @override
@@ -3673,7 +3718,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminScanFailed(String error) {
-    return 'スキャンの開始に失敗しました: $error';
+    return 'Failed to start scan: $error';
   }
 
   @override
@@ -3684,12 +3729,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminLibraryRenamed(String name) {
-    return 'ライブラリの名前が「$name」に変更されました';
+    return 'Library renamed to \"$name\"';
   }
 
   @override
   String adminRenameFailed(String error) {
-    return '名前の変更に失敗しました: $error';
+    return 'Failed to rename: $error';
   }
 
   @override
@@ -3697,17 +3742,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminLibraryDeleted(String name) {
-    return 'ライブラリ「$name」が削除されました';
+    return 'Library \"$name\" deleted';
   }
 
   @override
   String adminLibraryDeleteFailed(String error) {
-    return 'ライブラリの削除に失敗しました: $error';
+    return 'Failed to delete library: $error';
   }
 
   @override
   String adminAddPathFailed(String error) {
-    return 'パスの追加に失敗しました: $error';
+    return 'Failed to add path: $error';
   }
 
   @override
@@ -3715,12 +3760,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminRemovePathConfirm(String path) {
-    return 'このライブラリから「$path」を削除しますか?';
+    return 'Remove \"$path\" from this library?';
   }
 
   @override
   String adminRemovePathFailed(String error) {
-    return 'パスの削除に失敗しました: $error';
+    return 'Failed to remove path: $error';
   }
 
   @override
@@ -3728,7 +3773,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
-    return 'オプションを保存できませんでした: $error';
+    return 'Failed to save options: $error';
   }
 
   @override
@@ -3763,7 +3808,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminLibraryCreateFailed(String error) {
-    return 'ライブラリの作成に失敗しました: $error';
+    return 'Failed to create library: $error';
   }
 
   @override
@@ -3789,27 +3834,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminDisableUserConfirm(String name) {
-    return '$name を無効にしますか?サインインできなくなります。';
+    return 'Disable $name? They will not be able to sign in.';
   }
 
   @override
   String adminEnableUserConfirm(String name) {
-    return '$name を有効にしますか?再度サインインできるようになります。';
+    return 'Enable $name? They will be able to sign in again.';
   }
 
   @override
   String adminUserDisabled(String name) {
-    return 'ユーザー「$name」が無効になりました';
+    return 'User \"$name\" disabled';
   }
 
   @override
   String adminUserEnabled(String name) {
-    return 'ユーザー「$name」が有効になりました';
+    return 'User \"$name\" enabled';
   }
 
   @override
   String adminUserPolicyUpdateFailed(String error) {
-    return 'ユーザー ポリシーを更新できませんでした: $error';
+    return 'Failed to update user policy: $error';
   }
 
   @override
@@ -3826,7 +3871,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminUserCreateFailed(String error) {
-    return 'ユーザーの作成に失敗しました: $error';
+    return 'Failed to create user: $error';
   }
 
   @override
@@ -3846,7 +3891,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminSaveFailed(String error) {
-    return '保存に失敗しました: $error';
+    return 'Failed to save: $error';
   }
 
   @override
@@ -3857,7 +3902,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminFailed(String error) {
-    return '失敗: $error';
+    return 'Failed: $error';
   }
 
   @override
@@ -3992,22 +4037,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminServerReturnedHttp(int status) {
-    return 'サーバーが HTTP $status を返しました';
+    return 'Server returned HTTP $status';
   }
 
   @override
   String adminDeleteUserConfirm(String name) {
-    return '$name を削除してもよろしいですか?';
+    return 'Are you sure you want to delete $name?';
   }
 
   @override
   String adminUserDeleted(String name) {
-    return 'ユーザー「$name」が削除されました';
+    return 'User \"$name\" deleted';
   }
 
   @override
   String adminUserDeleteFailed(String error) {
-    return 'ユーザーの削除に失敗しました: $error';
+    return 'Failed to delete user: $error';
   }
 
   @override
@@ -4028,7 +4073,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminApiKeyCreateFailed(String error) {
-    return 'キーの作成に失敗しました: $error';
+    return 'Failed to create key: $error';
   }
 
   @override
@@ -4039,7 +4084,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminRevokeKeyConfirm(String name) {
-    return '$name のキーを取り消しますか?';
+    return 'Revoke key for $name?';
   }
 
   @override
@@ -4047,7 +4092,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminApiKeyRevokeFailed(String error) {
-    return 'キーを取り消すことができませんでした: $error';
+    return 'Failed to revoke key: $error';
   }
 
   @override
@@ -4067,7 +4112,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
-    return 'トークン: $token\\n作成済み: $created';
+    return 'Token: $token\\nCreated: $created';
   }
 
   @override
@@ -4078,7 +4123,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminBackupCreateFailed(String error) {
-    return 'バックアップの作成に失敗しました: $error';
+    return 'Failed to create backup: $error';
   }
 
   @override
@@ -4086,12 +4131,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminBackupManifest(String name) {
-    return 'マニフェスト: $name';
+    return 'Manifest: $name';
   }
 
   @override
   String adminManifestLoadFailed(String error) {
-    return 'マニフェストのロードに失敗しました: $error';
+    return 'Failed to load manifest: $error';
   }
 
   @override
@@ -4102,7 +4147,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminRestoreFailed(String error) {
-    return 'バックアップの復元に失敗しました: $error';
+    return 'Failed to restore backup: $error';
   }
 
   @override
@@ -4134,17 +4179,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminSavedTo(String path) {
-    return '$path に保存されました';
+    return 'Saved to $path';
   }
 
   @override
   String adminFileSaveFailed(String error) {
-    return 'ファイルの保存に失敗しました: $error';
+    return 'Failed to save file: $error';
   }
 
   @override
   String adminLogFileLoadFailed(String fileName) {
-    return '$fileName のロードに失敗しました';
+    return 'Failed to load $fileName';
   }
 
   @override
@@ -4155,7 +4200,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminTasksLoadFailed(String error) {
-    return 'タスクのロードに失敗しました: $error';
+    return 'Failed to load tasks: $error';
   }
 
   @override
@@ -4166,17 +4211,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminTaskStartFailed(String error) {
-    return 'タスクの開始に失敗しました: $error';
+    return 'Failed to start task: $error';
   }
 
   @override
   String adminTaskStopFailed(String error) {
-    return 'タスクの停止に失敗しました: $error';
+    return 'Failed to stop task: $error';
   }
 
   @override
   String adminTaskLoadFailed(String error) {
-    return 'タスクのロードに失敗しました: $error';
+    return 'Failed to load task: $error';
   }
 
   @override
@@ -4184,12 +4229,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminTriggerRemoveFailed(String error) {
-    return 'トリガーの削除に失敗しました: $error';
+    return 'Failed to remove trigger: $error';
   }
 
   @override
   String adminTriggerAddFailed(String error) {
-    return 'トリガーの追加に失敗しました: $error';
+    return 'Failed to add trigger: $error';
   }
 
   @override
@@ -4215,7 +4260,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminHours(String hours) {
-    return '$hours 時間';
+    return '$hours hour(s)';
   }
 
   @override
@@ -4226,7 +4271,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginToggleFailed(String error) {
-    return 'プラグインの切り替えに失敗しました: $error';
+    return 'Failed to toggle plugin: $error';
   }
 
   @override
@@ -4234,27 +4279,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminUninstallPluginConfirm(String name) {
-    return '「$name」をアンインストールしてもよろしいですか?';
+    return 'Are you sure you want to uninstall \"$name\"?';
   }
 
   @override
   String adminPluginUninstallFailed(String error) {
-    return 'プラグインのアンインストールに失敗しました: $error';
+    return 'Failed to uninstall plugin: $error';
   }
 
   @override
   String adminPackageInstallFailed(String error) {
-    return 'パッケージのインストールに失敗しました: $error';
+    return 'Failed to install package: $error';
   }
 
   @override
   String adminPluginUpdateFailed(String error) {
-    return 'アップデートのインストールに失敗しました: $error';
+    return 'Failed to install update: $error';
   }
 
   @override
   String adminPluginsLoadFailed(String error) {
-    return 'プラグインのロードに失敗しました: $error';
+    return 'Failed to load plugins: $error';
   }
 
   @override
@@ -4265,12 +4310,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminInstallUpdate(String version) {
-    return 'アップデートのインストール (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
   String adminCatalogLoadFailed(String error) {
-    return 'カタログのロードに失敗しました: $error';
+    return 'Failed to load catalog: $error';
   }
 
   @override
@@ -4291,17 +4336,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
-    return '「$name」はサーバーの再起動後に削除されます';
+    return '\"$name\" will be removed after server restart';
   }
 
   @override
   String adminUninstallFailed(String error) {
-    return 'アンインストールに失敗しました: $error';
+    return 'Failed to uninstall: $error';
   }
 
   @override
   String adminPluginUpdating(String name, String version) {
-    return '「$name」を v$version に更新しています...';
+    return 'Updating \"$name\" to v$version...';
   }
 
   @override
@@ -4309,7 +4354,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginLoadFailed(String error) {
-    return 'プラグインのロードに失敗しました: $error';
+    return 'Failed to load plugin: $error';
   }
 
   @override
@@ -4317,7 +4362,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginVersion(String version) {
-    return 'バージョン $version';
+    return 'Version $version';
   }
 
   @override
@@ -4337,17 +4382,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
-    return '「$name」を削除してもよろしいですか?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
   String adminRepositoriesSaveFailed(String error) {
-    return 'リポジトリの保存に失敗しました: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
   String adminRepositoriesLoadFailed(String error) {
-    return 'リポジトリのロードに失敗しました: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -4364,12 +4409,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
-    return 'プラグイン設定をロードできません: $error';
+    return 'Unable to load plugin settings: $error';
   }
 
   @override
   String adminCouldNotOpenUrl(String uri) {
-    return '$uri を開けませんでした';
+    return 'Could not open $uri';
   }
 
   @override
@@ -4630,12 +4675,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminMetadataLoadFailed(String error) {
-    return 'メタデータのロードに失敗しました: $error';
+    return 'Failed to load metadata: $error';
   }
 
   @override
   String adminMetadataSaveFailed(String error) {
-    return 'メタデータの保存に失敗しました: $error';
+    return 'Failed to save metadata: $error';
   }
 
   @override
@@ -4655,7 +4700,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminMetadataRefreshFailed(String error) {
-    return 'メタデータの更新に失敗しました: $error';
+    return 'Failed to refresh metadata: $error';
   }
 
   @override
@@ -4672,7 +4717,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminRemoteSearchFailed(String error) {
-    return 'リモート検索が失敗しました: $error';
+    return 'Remote search failed: $error';
   }
 
   @override
@@ -4686,7 +4731,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminContentTypeUpdateFailed(String error) {
-    return 'コンテンツ タイプを更新できませんでした: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -4700,12 +4745,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminImageUpdated(String imageType) {
-    return '$imageType 画像が更新されました';
+    return '$imageType image updated';
   }
 
   @override
   String adminImageDownloadFailed(String error) {
-    return '画像のダウンロードに失敗しました: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -4716,27 +4761,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminImageUploaded(String imageType) {
-    return '$imageType 画像がアップロードされました';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminImageUploadFailed(String error) {
-    return '画像のアップロードに失敗しました: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminDeleteImage(String imageType) {
-    return '$imageType イメージを削除';
+    return 'Delete $imageType image';
   }
 
   @override
   String adminImageDeleted(String imageType) {
-    return '$imageType 画像が削除されました';
+    return '$imageType image deleted';
   }
 
   @override
   String adminImageDeleteFailed(String error) {
-    return '画像の削除に失敗しました: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
@@ -4747,7 +4792,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminTunerDiscoveryFailed(String error) {
-    return 'チューナーの検出に失敗しました: $error';
+    return 'Tuner discovery failed: $error';
   }
 
   @override
@@ -4770,7 +4815,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminTunerAddFailed(String error) {
-    return 'チューナーの追加に失敗しました: $error';
+    return 'Failed to add tuner: $error';
   }
 
   @override
@@ -4793,12 +4838,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminProviderAddFailed(String error) {
-    return 'プロバイダーの追加に失敗しました: $error';
+    return 'Failed to add provider: $error';
   }
 
   @override
   String adminTunerRemoveFailed(String error) {
-    return 'チューナーの削除に失敗しました: $error';
+    return 'Failed to remove tuner: $error';
   }
 
   @override
@@ -4806,12 +4851,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminTunerResetFailed(String error) {
-    return 'チューナーをリセットできませんでした: $error';
+    return 'Failed to reset tuner: $error';
   }
 
   @override
   String adminProviderRemoveFailed(String error) {
-    return 'プロバイダーの削除に失敗しました: $error';
+    return 'Failed to remove provider: $error';
   }
 
   @override
@@ -4834,7 +4879,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminSettingsSaveFailed(String error) {
-    return '設定を保存できませんでした: $error';
+    return 'Failed to save settings: $error';
   }
 
   @override
@@ -4851,7 +4896,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminMappingsUpdateFailed(String error) {
-    return 'マッピングの更新に失敗しました: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
@@ -4874,22 +4919,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminRecordingPathDisplay(String path) {
-    return '記録パス: $path';
+    return 'Recording path: $path';
   }
 
   @override
   String adminSeriesPathDisplay(String path) {
-    return 'シリーズパス: $path';
+    return 'Series path: $path';
   }
 
   @override
   String adminPrePaddingDisplay(int minutes) {
-    return 'プリパディング: $minutes 分';
+    return 'Pre-padding: $minutes min';
   }
 
   @override
   String adminPostPaddingDisplay(int minutes) {
-    return 'ポストパディング: $minutes 分';
+    return 'Post-padding: $minutes min';
   }
 
   @override
@@ -4919,7 +4964,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminRestoreConfirmMessage(String name) {
-    return '今すぐバックアップ $name を復元しますか?';
+    return 'Restore backup $name now?';
   }
 
   @override
@@ -4964,27 +5009,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminLogsMinutesAgo(int minutes) {
-    return '$minutes分前';
+    return '${minutes}m ago';
   }
 
   @override
   String adminLogsHoursAgo(int hours) {
-    return '$hours時間前';
+    return '${hours}h ago';
   }
 
   @override
   String adminLogsDaysAgo(int days) {
-    return '$days日前';
+    return '${days}d ago';
   }
 
   @override
   String adminLogViewerLoadFailed(String fileName) {
-    return '$fileName のロードに失敗しました';
+    return 'Failed to load $fileName';
   }
 
   @override
   String adminLogViewerMatches(int count) {
-    return '$count が一致';
+    return '$count matches';
   }
 
   @override
@@ -5094,22 +5139,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminMetadataImageUpdated(String imageType) {
-    return '$imageType 画像が更新されました';
+    return '$imageType image updated';
   }
 
   @override
   String adminMetadataImageUploaded(String imageType) {
-    return '$imageType 画像がアップロードされました';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminMetadataImageDeleted(String imageType) {
-    return '$imageType 画像が削除されました';
+    return '$imageType image deleted';
   }
 
   @override
   String adminMetadataImageDownloadFailed(String error) {
-    return '画像のダウンロードに失敗しました: $error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -5117,12 +5162,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminMetadataImageUploadFailed(String error) {
-    return '画像のアップロードに失敗しました: $error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminMetadataDeleteImageTitle(String imageType) {
-    return '$imageType イメージを削除';
+    return 'Delete $imageType image';
   }
 
   @override
@@ -5130,12 +5175,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
-    return '画像の削除に失敗しました: $error';
+    return 'Failed to delete image: $error';
   }
 
   @override
   String adminMetadataChooseImage(String imageType) {
-    return '$imageType 画像を選択してください';
+    return 'Choose $imageType image';
   }
 
   @override
@@ -5167,7 +5212,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginsUpdateAvailable(String version) {
-    return '利用可能なアップデート: v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -5190,7 +5235,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
-    return 'アップデートのインストール (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
@@ -5201,7 +5246,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginsInstalling(String name) {
-    return '「$name」をインストール中です...';
+    return '\"$name\" is being installed...';
   }
 
   @override
@@ -5221,7 +5266,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
-    return '$name 設定';
+    return '$name Settings';
   }
 
   @override
@@ -5259,7 +5304,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminReposLoadFailed(String error) {
-    return 'リポジトリのロードに失敗しました: $error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -5267,7 +5312,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminReposRemoveConfirm(String name) {
-    return '「$name」を削除してもよろしいですか?';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
@@ -5275,7 +5320,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminReposSaveFailed(String error) {
-    return 'リポジトリの保存に失敗しました: $error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
@@ -5539,17 +5584,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminTaskTriggerDaily(String time) {
-    return '毎日 $time で';
+    return 'Daily at $time';
   }
 
   @override
   String adminTaskTriggerWeekly(String day, String time) {
-    return '$time で $day ごと';
+    return 'Every $day at $time';
   }
 
   @override
   String adminTaskTriggerInterval(String duration) {
-    return '$duration ごと';
+    return 'Every $duration';
   }
 
   @override
@@ -5616,17 +5661,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminActivityDaysAgo(int days) {
-    return '$days日前';
+    return '${days}d ago';
   }
 
   @override
   String adminActivityHoursAgo(int hours) {
-    return '$hours時間前';
+    return '${hours}h ago';
   }
 
   @override
   String adminActivityMinutesAgo(int minutes) {
-    return '$minutes分前';
+    return '${minutes}m ago';
   }
 
   @override
@@ -5739,7 +5784,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminMetadataContentTypeFailed(String error) {
-    return 'コンテンツ タイプを更新できませんでした: $error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -5762,12 +5807,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
-    return 'マッピングの更新に失敗しました: $error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
   String adminTimeLimitDuration(String duration) {
-    return '制限時間: $duration';
+    return 'Time limit: $duration';
   }
 
   @override
@@ -5844,7 +5889,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String syncPlayQueueItemFallback(int index) {
-    return 'アイテム $index';
+    return 'Item $index';
   }
 
   @override
@@ -5892,12 +5937,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
-    return '$userName が SyncPlay グループに参加しました';
+    return '$userName joined SyncPlay group';
   }
 
   @override
   String syncPlayUserLeftGroup(String userName) {
-    return '$userName が SyncPlay グループから離脱しました';
+    return '$userName left SyncPlay group';
   }
 
   @override
@@ -5909,7 +5954,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
-    return '$groupName に再生を同期しています';
+    return 'Syncing playback to $groupName';
   }
 
   @override
@@ -6041,12 +6086,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String castControlFailed(String error) {
-    return 'キャスト制御に失敗しました: $error';
+    return 'Cast control failed: $error';
   }
 
   @override
   String castKindControls(String kind) {
-    return '$kind コントロール';
+    return '$kind Controls';
   }
 
   @override
@@ -6057,7 +6102,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String castStopKind(String kind) {
-    return '$kind を停止します';
+    return 'Stop $kind';
   }
 
   @override
@@ -6080,12 +6125,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String pinEnterNDigit(int length) {
-    return '$length 桁の PIN を入力してください';
+    return 'Enter a $length-digit PIN';
   }
 
   @override
   String pinEnterYourNDigit(int length) {
-    return '$length 桁の PIN を入力してください';
+    return 'Enter your $length-digit PIN';
   }
 
   @override
@@ -6126,7 +6171,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String quickConnectFailedWithMessage(String message) {
-    return 'クイック接続が失敗しました: $message';
+    return 'Quick Connect failed: $message';
   }
 
   @override
@@ -6137,7 +6182,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String remoteCommandFailed(String error) {
-    return 'コマンドが失敗しました: $error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -6166,7 +6211,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String castingFailed(String error) {
-    return 'キャストの開始に失敗しました: $error';
+    return 'Failed to start casting: $error';
   }
 
   @override
@@ -6211,7 +6256,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String trackActionDownloading(String name) {
-    return '$name をダウンロードしています...';
+    return 'Downloading $name...';
   }
 
   @override
@@ -6297,7 +6342,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String skipSegment(String segment) {
-    return '$segment をスキップ';
+    return 'Skip $segment';
   }
 
   @override
@@ -6308,12 +6353,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
-    return '$current/$total — $fileName をダウンロード中';
+    return 'Downloading $current/$total — $fileName';
   }
 
   @override
   String downloadingFile(String fileName) {
-    return '$fileName をダウンロードしています';
+    return 'Downloading $fileName';
   }
 
   @override
@@ -6336,6 +6381,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get playerTooltipExitFullscreen => '全画面表示を終了する';
+
+  @override
+  String get playerTooltipFloatOnTop => '上に浮く';
+
+  @override
+  String get playerTooltipExitFloatOnTop => '上部のフロートを無効にする';
 
   @override
   String get playerTooltipLockLandscape => 'ロックの風景';
@@ -6696,7 +6747,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsCinemaModeSubtitle => '本編の前にトレーラー/プレロールを再生する';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       '拡張では、エピソードのアートワークと説明を含む完全なカードが表示されます。 Minimal は、コンパクトなカウントダウン オーバーレイを示します。無効にすると、プロンプトが完全に非表示になります。';
 
   @override
@@ -6713,7 +6764,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String settingsMillisecondsValue(int value) {
-    return '$value ミリ秒';
+    return '$value ms';
   }
 
   @override
@@ -6795,6 +6846,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String latestLibraryName(String libraryName) {
-    return '最新の $libraryName';
+    return 'Latest $libraryName';
   }
 }

@@ -34,6 +34,7 @@ import 'appearance_theme_screen.dart';
 import 'home_sections_screen.dart';
 import 'library_settings_screen.dart';
 import 'media_bar_settings_screen.dart';
+import 'local_previews_settings_screen.dart';
 import 'parental_settings_screen.dart';
 import 'pin_code_settings_screen.dart';
 import 'plugin_settings_screen.dart';
@@ -818,17 +819,24 @@ class _PluginCategoryScreen extends StatelessWidget {
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.featured_play_list),
-            title: Text(l10n.settingsMediaBarAndLocalPreviews),
+            title: Text(l10n.mediaBar),
             subtitle: Text(l10n.featuredContentAppearance),
             onTap: () =>
                 context.pushSettingsScreen(const MediaBarSettingsScreen()),
           ),
           _TvSettingsListTile(
-            leading: const Icon(Icons.auto_awesome),
-            title: Text(l10n.settingsVisualOverlays),
-            subtitle: Text(l10n.seasonalEffects),
+            leading: const Icon(Icons.preview),
+            title: Text(l10n.localPreviews),
+            subtitle: Text(l10n.localPreviewsDescription),
             onTap: () =>
-                context.pushSettingsScreen(const _VisualOverlaysScreen()),
+                context.pushSettingsScreen(const LocalPreviewsSettingsScreen()),
+          ),
+          _TvSettingsListTile(
+            leading: const Icon(Icons.auto_awesome),
+            title: Text(l10n.seasonalEffects),
+            subtitle: Text(l10n.seasonalEffectsDescription),
+            onTap: () =>
+                context.pushSettingsScreen(const _SeasonalEffectsScreen()),
           ),
         ],
       ),
@@ -836,14 +844,15 @@ class _PluginCategoryScreen extends StatelessWidget {
   }
 }
 
-class _VisualOverlaysScreen extends StatelessWidget {
-  const _VisualOverlaysScreen();
+// New: Seasonal Effects screen (moved from Visual Overlays)
+class _SeasonalEffectsScreen extends StatelessWidget {
+  const _SeasonalEffectsScreen();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, Text(l10n.settingsVisualOverlays)),
+      appBar: buildSettingsAppBar(context, Text(l10n.seasonalEffects)),
       body: ListView(
         children: [
           StringPickerPreferenceTile(

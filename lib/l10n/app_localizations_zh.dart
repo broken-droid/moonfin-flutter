@@ -16,7 +16,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String connectingToServer(String serverName) {
-    return '连接到 $serverName';
+    return 'Connecting to $serverName';
   }
 
   @override
@@ -27,6 +27,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get username => '用户名';
+
+  @override
+  String get email => '电子邮件';
 
   @override
   String get quickConnectInstruction => '在服务器的 Web 仪表板上输入以下代码：';
@@ -45,12 +48,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'QuickConnect 不可用：$detail';
+    return 'QuickConnect unavailable: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'QuickConnect 不可用 ($status)：$detail';
+    return 'QuickConnect unavailable ($status): $detail';
   }
 
   @override
@@ -64,7 +67,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String appVersionFooter(String version) {
-    return 'Moonfin 版本 $version';
+    return 'Moonfin version $version';
   }
 
   @override
@@ -83,14 +86,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addServer => '添加服务器';
 
   @override
-  String get embyConnect => '安比连接';
+  String get embyConnect => 'Emby 连接';
 
   @override
   String get removeServer => '删除服务器';
 
   @override
   String removeServerConfirmation(String serverName) {
-    return '从您的服务器中删除“$serverName”？';
+    return 'Remove \"$serverName\" from your servers?';
   }
 
   @override
@@ -181,7 +184,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String unableToConnectTo(String target) {
-    return '无法连接到 $target';
+    return 'Unable to connect to $target';
   }
 
   @override
@@ -261,7 +264,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String failedToLoadFolderError(String error) {
-    return '无法加载文件夹：$error';
+    return 'Failed to load folder: $error';
   }
 
   @override
@@ -269,7 +272,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String itemCountLabel(int count) {
-    return '$count 项';
+    return '$count items';
   }
 
   @override
@@ -286,7 +289,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String totalCountItems(int count) {
-    return '$count 项目';
+    return '$count Items';
   }
 
   @override
@@ -327,7 +330,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String libraryGenresTitle(String name) {
-    return '$name — 流派';
+    return '$name — Genres';
   }
 
   @override
@@ -365,17 +368,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String minutesAgo(int count) {
-    return '$count 分钟前';
+    return '${count}m ago';
   }
 
   @override
   String hoursAgo(int count) {
-    return '$count 小时前';
+    return '${count}h ago';
   }
 
   @override
   String daysAgo(int count) {
-    return '$count 天前';
+    return '${count}d ago';
   }
 
   @override
@@ -407,7 +410,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String titlesCount(int count) {
-    return '$count 标题';
+    return '$count titles';
   }
 
   @override
@@ -487,17 +490,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String authorsCount(int count) {
-    return '$count 作者';
+    return '$count authors';
   }
 
   @override
   String genresCount(int count) {
-    return '$count 流派';
+    return '$count genres';
   }
 
   @override
   String percentCompleted(int percent) {
-    return '$percent% 已完成';
+    return '$percent% completed';
   }
 
   @override
@@ -514,7 +517,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String titlesArrangedForBrowsing(int count) {
-    return '$count 标题安排为先读浏览。';
+    return '$count titles arranged for reading-first browsing.';
   }
 
   @override
@@ -549,7 +552,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String noLabelFound(String label) {
-    return '未找到 $label';
+    return 'No $label found';
   }
 
   @override
@@ -620,12 +623,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String sectionCountLabel(int count) {
-    return '$count 部分';
+    return '$count sections';
   }
 
   @override
   String firstPublished(int year) {
-    return '首次发布 $year';
+    return 'First published $year';
   }
 
   @override
@@ -639,7 +642,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String booksCount(int count) {
-    return '$count 书籍';
+    return '$count books';
   }
 
   @override
@@ -650,7 +653,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String authorsCountTitle(int count) {
-    return '$count 作者';
+    return '$count Authors';
   }
 
   @override
@@ -725,6 +728,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tracklist => '曲目列表';
 
   @override
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
+
+  @override
   String get biography => '传';
 
   @override
@@ -744,7 +752,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String published(int year) {
-    return '已发布 $year';
+    return 'Published $year';
   }
 
   @override
@@ -763,7 +771,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String endsAt(String time) {
-    return '结束于 $time';
+    return 'Ends at $time';
   }
 
   @override
@@ -777,7 +785,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String resumeFrom(String position) {
-    return '从 $position 继续';
+    return 'Resume from $position';
   }
 
   @override
@@ -875,7 +883,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteDownloadedTracksMessage(String title) {
-    return '删除“$title”的下载曲目？';
+    return 'Delete downloaded tracks for \"$title\"?';
   }
 
   @override
@@ -889,17 +897,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String noItemsLoaded(String itemLabel) {
-    return '未加载 $itemLabel';
+    return 'No $itemLabel loaded';
   }
 
   @override
   String downloadingTitle(String title, int count) {
-    return '正在下载 $title（$count 项目）...';
+    return 'Downloading $title ($count items)...';
   }
 
   @override
   String deleteConfirmMessage(String name) {
-    return '您确定要从服务器删除“$name”吗？此操作无法撤消。';
+    return 'Are you sure you want to delete \"$name\" from the server? This action cannot be undone.';
   }
 
   @override
@@ -910,7 +918,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String unsupportedBookFormat(String extension) {
-    return '不支持的书籍格式：.$extension';
+    return 'Unsupported book format: .$extension';
   }
 
   @override
@@ -936,7 +944,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String subtitleDownloadedSelected(String name) {
-    return '下载并选择的字幕：$name';
+    return 'Subtitle downloaded and selected: $name';
   }
 
   @override
@@ -945,7 +953,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String noRemoteSubtitlesFound(String language) {
-    return '未找到 $language 的远程字幕。';
+    return 'No remote subtitles found for $language.';
   }
 
   @override
@@ -953,7 +961,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String versionNumber(int number) {
-    return '版本 $number';
+    return 'Version $number';
   }
 
   @override
@@ -973,7 +981,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String downloadingItem(String name, String quality) {
-    return '正在下载 $name ($quality)...';
+    return 'Downloading $name ($quality)...';
   }
 
   @override
@@ -981,7 +989,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
-    return '删除 $typeLabel 的本地文件？\n\n这将释放存储空间。您可以稍后重新下载。';
+    return 'Delete local files for $typeLabel?\n\nThis will free up storage space. You can re-download later.';
   }
 
   @override
@@ -1004,12 +1012,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String studioMoreCount(int count) {
-    return '+$count 更多';
+    return '+$count more';
   }
 
   @override
   String totalEpisodes(int count) {
-    return '$count 剧集';
+    return '$count Episodes';
   }
 
   @override
@@ -1019,12 +1027,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String episodeLabel(int number) {
-    return '第 $number 集';
+    return 'Episode $number';
   }
 
   @override
   String chapterNumber(int number) {
-    return '第$number章';
+    return 'Chapter $number';
   }
 
   @override
@@ -1051,17 +1059,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String born(String date) {
-    return '出生 $date';
+    return 'Born $date';
   }
 
   @override
   String died(String date) {
-    return '死亡 $date';
+    return 'Died $date';
   }
 
   @override
   String age(int age) {
-    return '年龄 $age';
+    return 'Age $age';
   }
 
   @override
@@ -1075,7 +1083,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String downloadsCount(int count) {
-    return '$count 下载';
+    return '$count downloads';
   }
 
   @override
@@ -1094,32 +1102,32 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String remoteSubtitlePermissionError(String action) {
-    return '远程字幕 $action 需要该用户的 Jellyfin 字幕管理权限。';
+    return 'Remote subtitle $action requires the Jellyfin subtitle management permission for this user.';
   }
 
   @override
   String remoteSubtitleNotFoundError(String action) {
-    return '在远程字幕 $action 的服务器上找不到此项目。';
+    return 'This item could not be found on the server for remote subtitle $action.';
   }
 
   @override
   String remoteSubtitleDetailError(String action, String detail) {
-    return '远程字幕 $action 失败：$detail';
+    return 'Remote subtitle $action failed: $detail';
   }
 
   @override
   String remoteSubtitleHttpError(String action, int status) {
-    return '远程字幕 $action 失败 (HTTP $status)。';
+    return 'Remote subtitle $action failed (HTTP $status).';
   }
 
   @override
   String remoteSubtitleGenericError(String action) {
-    return '$action 远程字幕失败。';
+    return 'Failed to $action remote subtitles.';
   }
 
   @override
   String deleteSeriesFiles(String name) {
-    return '“$name”的所有下载剧集';
+    return 'all downloaded episodes for \"$name\"';
   }
 
   @override
@@ -1147,17 +1155,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String castActionFailed(String label, String error) {
-    return '$label 操作失败：$error';
+    return '$label action failed: $error';
   }
 
   @override
   String failedToSetCastVolume(String error) {
-    return '无法设置投射量：$error';
+    return 'Failed to set cast volume: $error';
   }
 
   @override
   String castControlsTitle(String label) {
-    return '$label 控制';
+    return '$label Controls';
   }
 
   @override
@@ -1174,7 +1182,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String stopCast(String label) {
-    return '停止$label';
+    return 'Stop $label';
   }
 
   @override
@@ -1182,7 +1190,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String trackNumber(int number) {
-    return '追踪 $number';
+    return 'Track $number';
   }
 
   @override
@@ -1199,7 +1207,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String secondsCount(int seconds) {
-    return '$seconds 秒';
+    return '$seconds seconds';
   }
 
   @override
@@ -1314,12 +1322,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String castSessionError(String protocol) {
-    return '$protocol 会话错误';
+    return '$protocol session error';
   }
 
   @override
   String failedToLoadBookDetails(String error) {
-    return '无法加载图书详细信息：$error';
+    return 'Failed to load book details: $error';
   }
 
   @override
@@ -1327,7 +1335,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String formatCannotRenderInApp(String extension) {
-    return '此格式 (.$extension) 尚无法在应用程序内呈现。';
+    return 'This format (.$extension) cannot be rendered in-app yet.';
   }
 
   @override
@@ -1338,17 +1346,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String failedToOpenInAppReader(String error) {
-    return '无法打开应用内阅读器：$error';
+    return 'Failed to open in-app reader: $error';
   }
 
   @override
   String bookmarkAlreadySaved(String label) {
-    return '书签已保存在 $label 处。';
+    return 'Bookmark already saved at $label.';
   }
 
   @override
   String bookmarkAdded(String label) {
-    return '已添加书签：$label';
+    return 'Bookmark added: $label';
   }
 
   @override
@@ -1359,7 +1367,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String pageLabel(int number) {
-    return '页$number';
+    return 'Page $number';
   }
 
   @override
@@ -1370,12 +1378,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String formatExtension(String extension) {
-    return '格式：.$extension';
+    return 'Format: .$extension';
   }
 
   @override
   String percentRead(String percent) {
-    return '$percent% 已读';
+    return '$percent% read';
   }
 
   @override
@@ -1398,7 +1406,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String resetZoom(String zoom) {
-    return '重置缩放 (${zoom}x)';
+    return 'Reset Zoom (${zoom}x)';
   }
 
   @override
@@ -1421,7 +1429,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String failedToUpdateReadState(String error) {
-    return '无法更新读取状态：$error';
+    return 'Failed to update read state: $error';
   }
 
   @override
@@ -1453,7 +1461,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
-    return '此平台无法托管 $extension 文件的嵌入式文档引擎。';
+    return 'This platform cannot host the embedded document engine for $extension files.';
   }
 
   @override
@@ -1492,7 +1500,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String failedToLoadGuide(String error) {
-    return '无法加载指南：$error';
+    return 'Failed to load guide: $error';
   }
 
   @override
@@ -1527,7 +1535,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String failedToPlayChannel(String name) {
-    return '无法播放$name';
+    return 'Failed to play $name';
   }
 
   @override
@@ -1553,7 +1561,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String cancelScheduledRecordingOf(String name) {
-    return '取消预定的“$name”录制吗？';
+    return 'Cancel scheduled recording of \"$name\"?';
   }
 
   @override
@@ -1579,7 +1587,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String stopRecordingName(String name) {
-    return '停止记录“$name”？';
+    return 'Stop recording \"$name\"?';
   }
 
   @override
@@ -1593,16 +1601,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String noResultsForQuery(String query) {
-    return '没有“$query”的结果';
+    return 'No results for \"$query\"';
   }
 
   @override
   String searchFailedError(String error) {
-    return '搜索失败：$error';
+    return 'Search failed: $error';
   }
 
   @override
   String get seerr => '塞尔';
+
+  @override
+  String get seerrAccountType => '西尔账户类型';
+
+  @override
+  String get jellyfinAccount => 'Jellyfin';
+
+  @override
+  String get localAccount => '当地的';
 
   @override
   String get savedMedia => '保存的媒体';
@@ -1630,12 +1647,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String removeItemAndFiles(String name) {
-    return '删除“$name”及其文件？';
+    return 'Remove \"$name\" and its files?';
   }
 
   @override
   String tracksCount(int count) {
-    return '$count 曲目';
+    return '$count tracks';
   }
 
   @override
@@ -1646,12 +1663,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String failedToLoadAlbum(String error) {
-    return '无法加载相册：$error';
+    return 'Failed to load album: $error';
   }
 
   @override
   String noDownloadedTracksForAlbum(String name) {
-    return '找不到 $name 的下载曲目。';
+    return 'No downloaded tracks found for $name.';
   }
 
   @override
@@ -1668,12 +1685,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String removeName(String name) {
-    return '删除“$name”？';
+    return 'Remove \"$name\"?';
   }
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes 分钟';
+    return '$minutes min';
   }
 
   @override
@@ -1683,7 +1700,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String episodeNumber(int number) {
-    return '第 $number 集';
+    return 'Episode $number';
   }
 
   @override
@@ -1697,7 +1714,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String seasonNumber(int number) {
-    return '季节 $number';
+    return 'Season $number';
   }
 
   @override
@@ -1713,7 +1730,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteAllEpisodesInSeason(String season) {
-    return '删除 $season 中所有下载的剧集？';
+    return 'Delete all downloaded episodes in $season?';
   }
 
   @override
@@ -1756,7 +1773,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteSelectedCount(int count) {
-    return '删除 $count 下载的项目？';
+    return 'Delete $count downloaded items?';
   }
 
   @override
@@ -1770,7 +1787,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String ofStorageLimit(String limit) {
-    return '$limit 限制';
+    return 'of $limit limit';
   }
 
   @override
@@ -1850,7 +1867,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String optionsCount(int count) {
-    return '$count 选项';
+    return '$count options';
   }
 
   @override
@@ -1876,6 +1893,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get focusExpansionAnimation => '焦点扩展动画';
+
+  @override
+  String get desktopUiScale => '桌面 UI 比例';
 
   @override
   String get scaleFocusedCards => '缩放聚焦或悬停的卡片和图块';
@@ -1909,6 +1929,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get seasonalEffects => '季节性影响';
+
+  @override
+  String get seasonalEffectsDescription => '视觉效果和季节性装饰';
 
   @override
   String get snow => '雪';
@@ -2113,7 +2136,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nextUpAndQueuing => '下一个和排队';
 
   @override
-  String get nextUpBehavior => '下一步行为';
+  String get nextUpDisplay => '下一个显示';
 
   @override
   String get extended => '扩展';
@@ -2140,7 +2163,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
-    return '$episodes 集 / ${hours}h 后';
+    return 'After $episodes episodes / ${hours}h';
   }
 
   @override
@@ -2269,17 +2292,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String loadedProfileSettings(String profile) {
-    return '已加载 $profile 配置文件设置。';
+    return 'Loaded $profile profile settings.';
   }
 
   @override
   String failedToLoadProfileSettings(String profile) {
-    return '无法加载 $profile 配置文件设置。';
+    return 'Failed to load $profile profile settings.';
   }
 
   @override
   String syncedSettingsToProfile(String profile) {
-    return '将本地设置同步到 $profile 配置文件。';
+    return 'Synced local settings to $profile profile.';
   }
 
   @override
@@ -2497,11 +2520,26 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String itemsSelected(int count) {
-    return '已选择 $count';
+    return '$count selected';
   }
 
   @override
   String get mediaBar => '媒体栏';
+
+  @override
+  String get mediaSources => '媒体来源';
+
+  @override
+  String get behavior => '行为';
+
+  @override
+  String get seconds => '秒';
+
+  @override
+  String get localPreviews => '本地预览';
+
+  @override
+  String get localPreviewsDescription => '配置预告片、媒体和音频预览。';
 
   @override
   String get mediaBarMode => '媒体栏风格';
@@ -2564,7 +2602,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get episodePreview => '剧集预览';
 
   @override
+  String get mediaPreview => '媒体预览';
+
+  @override
   String get episodePreviewDescription => '在聚焦、悬停或长按的卡片上播放 30 秒的内联预览';
+
+  @override
+  String get mediaPreviewDescription => '在聚焦、悬停或长按的卡片上播放 30 秒的内联预览';
 
   @override
   String get previewAudio => '预览音频';
@@ -2706,7 +2750,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String minutesShort(int minutes) {
-    return '$minutes 分钟';
+    return '$minutes min';
   }
 
   @override
@@ -2818,7 +2862,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String pluginStatusVersion(String status, String version) {
-    return '$status\n版本：$version';
+    return '$status\nVersion: $version';
   }
 
   @override
@@ -2890,7 +2934,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String loggedInAs(String username) {
-    return '登录身份：$username';
+    return 'Logged in as: $username';
   }
 
   @override
@@ -2914,7 +2958,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String versionValue(String version) {
-    return '版本 $version';
+    return 'Version $version';
   }
 
   @override
@@ -2959,7 +3003,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String updateAvailableVersion(String version) {
-    return '可用更新：v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -2970,7 +3014,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String updateAvailableTitle(String version) {
-    return 'v$version 可用';
+    return 'v$version Available';
   }
 
   @override
@@ -3031,7 +3075,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String itemsCount(int count) {
-    return '$count 项目';
+    return '$count Items';
   }
 
   @override
@@ -3051,7 +3095,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String requestedByName(String name) {
-    return '由 $name 请求';
+    return 'Requested by $name';
   }
 
   @override
@@ -3068,12 +3112,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String cancelRequestForTitle(String title) {
-    return '取消“$title”请求？';
+    return 'Cancel request for \"$title\"?';
   }
 
   @override
   String cancelCountRequestsForTitle(int count, String title) {
-    return '取消对“$title”的 $count 请求吗？';
+    return 'Cancel $count requests for \"$title\"?';
   }
 
   @override
@@ -3087,12 +3131,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String budgetAmount(String amount) {
-    return '预算：\$$amount';
+    return 'Budget: \$$amount';
   }
 
   @override
   String revenueAmount(String amount) {
-    return '收入：\$$amount';
+    return 'Revenue: \$$amount';
   }
 
   @override
@@ -3102,7 +3146,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String requestSeriesOrMovie(String type) {
-    return '请求 $type';
+    return 'Request $type';
   }
 
   @override
@@ -3137,7 +3181,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String ageValue(int age) {
-    return '年龄 $age';
+    return 'age $age';
   }
 
   @override
@@ -3427,22 +3471,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginUpdatesAvailable(int count) {
-    return '可用插件更新：$count';
+    return 'Plugin updates available: $count';
   }
 
   @override
   String adminPluginsRequiringRestart(int count) {
-    return '需要重新启动的插件：$count';
+    return 'Plugins requiring restart: $count';
   }
 
   @override
   String adminFailedScheduledTasks(int count) {
-    return '失败的计划任务：$count';
+    return 'Failed scheduled tasks: $count';
   }
 
   @override
   String adminRecentAlertEntries(int count) {
-    return '最近的警告/错误条目：$count';
+    return 'Recent warning/error entries: $count';
   }
 
   @override
@@ -3501,7 +3545,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String errorGeneric(String error) {
-    return '错误：$error';
+    return 'Error: $error';
   }
 
   @override
@@ -3527,7 +3571,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminCommandFailed(String error) {
-    return '命令失败：$error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -3592,7 +3636,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminActivityLoadFailed(String error) {
-    return '无法加载活动日志：$error';
+    return 'Failed to load activity log: $error';
   }
 
   @override
@@ -3609,7 +3653,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminDeviceUpdateFailed(String error) {
-    return '无法更新设备：$error';
+    return 'Failed to update device: $error';
   }
 
   @override
@@ -3620,7 +3664,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminDeviceDeleteFailed(String error) {
-    return '无法删除设备：$error';
+    return 'Failed to delete device: $error';
   }
 
   @override
@@ -3649,7 +3693,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminScanFailed(String error) {
-    return '无法开始扫描：$error';
+    return 'Failed to start scan: $error';
   }
 
   @override
@@ -3660,12 +3704,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminLibraryRenamed(String name) {
-    return '库重命名为“$name”';
+    return 'Library renamed to \"$name\"';
   }
 
   @override
   String adminRenameFailed(String error) {
-    return '重命名失败：$error';
+    return 'Failed to rename: $error';
   }
 
   @override
@@ -3673,17 +3717,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminLibraryDeleted(String name) {
-    return '库“$name”已删除';
+    return 'Library \"$name\" deleted';
   }
 
   @override
   String adminLibraryDeleteFailed(String error) {
-    return '无法删除库：$error';
+    return 'Failed to delete library: $error';
   }
 
   @override
   String adminAddPathFailed(String error) {
-    return '无法添加路径：$error';
+    return 'Failed to add path: $error';
   }
 
   @override
@@ -3691,12 +3735,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminRemovePathConfirm(String path) {
-    return '从该库中删除“$path”？';
+    return 'Remove \"$path\" from this library?';
   }
 
   @override
   String adminRemovePathFailed(String error) {
-    return '无法删除路径：$error';
+    return 'Failed to remove path: $error';
   }
 
   @override
@@ -3704,7 +3748,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
-    return '无法保存选项：$error';
+    return 'Failed to save options: $error';
   }
 
   @override
@@ -3739,7 +3783,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminLibraryCreateFailed(String error) {
-    return '无法创建库：$error';
+    return 'Failed to create library: $error';
   }
 
   @override
@@ -3765,27 +3809,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminDisableUserConfirm(String name) {
-    return '禁用 $name？他们将无法登录。';
+    return 'Disable $name? They will not be able to sign in.';
   }
 
   @override
   String adminEnableUserConfirm(String name) {
-    return '启用$name？他们将能够再次登录。';
+    return 'Enable $name? They will be able to sign in again.';
   }
 
   @override
   String adminUserDisabled(String name) {
-    return '用户“$name”已禁用';
+    return 'User \"$name\" disabled';
   }
 
   @override
   String adminUserEnabled(String name) {
-    return '用户“$name”已启用';
+    return 'User \"$name\" enabled';
   }
 
   @override
   String adminUserPolicyUpdateFailed(String error) {
-    return '无法更新用户策略：$error';
+    return 'Failed to update user policy: $error';
   }
 
   @override
@@ -3802,7 +3846,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminUserCreateFailed(String error) {
-    return '无法创建用户：$error';
+    return 'Failed to create user: $error';
   }
 
   @override
@@ -3822,7 +3866,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminSaveFailed(String error) {
-    return '保存失败：$error';
+    return 'Failed to save: $error';
   }
 
   @override
@@ -3833,7 +3877,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminFailed(String error) {
-    return '失败：$error';
+    return 'Failed: $error';
   }
 
   @override
@@ -3968,22 +4012,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminServerReturnedHttp(int status) {
-    return '服务器返回 HTTP $status';
+    return 'Server returned HTTP $status';
   }
 
   @override
   String adminDeleteUserConfirm(String name) {
-    return '您确定要删除 $name 吗？';
+    return 'Are you sure you want to delete $name?';
   }
 
   @override
   String adminUserDeleted(String name) {
-    return '用户“$name”已删除';
+    return 'User \"$name\" deleted';
   }
 
   @override
   String adminUserDeleteFailed(String error) {
-    return '无法删除用户：$error';
+    return 'Failed to delete user: $error';
   }
 
   @override
@@ -4003,7 +4047,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminApiKeyCreateFailed(String error) {
-    return '无法创建密钥：$error';
+    return 'Failed to create key: $error';
   }
 
   @override
@@ -4014,7 +4058,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminRevokeKeyConfirm(String name) {
-    return '撤销 $name 的密钥？';
+    return 'Revoke key for $name?';
   }
 
   @override
@@ -4022,7 +4066,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminApiKeyRevokeFailed(String error) {
-    return '无法撤销密钥：$error';
+    return 'Failed to revoke key: $error';
   }
 
   @override
@@ -4042,7 +4086,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
-    return '令牌：$token\\n创建：$created';
+    return 'Token: $token\\nCreated: $created';
   }
 
   @override
@@ -4053,7 +4097,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminBackupCreateFailed(String error) {
-    return '无法创建备份：$error';
+    return 'Failed to create backup: $error';
   }
 
   @override
@@ -4061,12 +4105,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminBackupManifest(String name) {
-    return '清单：$name';
+    return 'Manifest: $name';
   }
 
   @override
   String adminManifestLoadFailed(String error) {
-    return '无法加载清单：$error';
+    return 'Failed to load manifest: $error';
   }
 
   @override
@@ -4077,7 +4121,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminRestoreFailed(String error) {
-    return '无法恢复备份：$error';
+    return 'Failed to restore backup: $error';
   }
 
   @override
@@ -4109,17 +4153,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminSavedTo(String path) {
-    return '保存到 $path';
+    return 'Saved to $path';
   }
 
   @override
   String adminFileSaveFailed(String error) {
-    return '无法保存文件：$error';
+    return 'Failed to save file: $error';
   }
 
   @override
   String adminLogFileLoadFailed(String fileName) {
-    return '无法加载 $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
@@ -4130,7 +4174,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminTasksLoadFailed(String error) {
-    return '无法加载任务：$error';
+    return 'Failed to load tasks: $error';
   }
 
   @override
@@ -4141,17 +4185,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminTaskStartFailed(String error) {
-    return '无法启动任务：$error';
+    return 'Failed to start task: $error';
   }
 
   @override
   String adminTaskStopFailed(String error) {
-    return '无法停止任务：$error';
+    return 'Failed to stop task: $error';
   }
 
   @override
   String adminTaskLoadFailed(String error) {
-    return '无法加载任务：$error';
+    return 'Failed to load task: $error';
   }
 
   @override
@@ -4159,12 +4203,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminTriggerRemoveFailed(String error) {
-    return '无法删除触发器：$error';
+    return 'Failed to remove trigger: $error';
   }
 
   @override
   String adminTriggerAddFailed(String error) {
-    return '添加触发器失败：$error';
+    return 'Failed to add trigger: $error';
   }
 
   @override
@@ -4190,7 +4234,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminHours(String hours) {
-    return '$hours 小时';
+    return '$hours hour(s)';
   }
 
   @override
@@ -4201,7 +4245,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginToggleFailed(String error) {
-    return '无法切换插件：$error';
+    return 'Failed to toggle plugin: $error';
   }
 
   @override
@@ -4209,27 +4253,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminUninstallPluginConfirm(String name) {
-    return '您确定要卸载“$name”吗？';
+    return 'Are you sure you want to uninstall \"$name\"?';
   }
 
   @override
   String adminPluginUninstallFailed(String error) {
-    return '无法卸载插件：$error';
+    return 'Failed to uninstall plugin: $error';
   }
 
   @override
   String adminPackageInstallFailed(String error) {
-    return '安装包失败：$error';
+    return 'Failed to install package: $error';
   }
 
   @override
   String adminPluginUpdateFailed(String error) {
-    return '无法安装更新：$error';
+    return 'Failed to install update: $error';
   }
 
   @override
   String adminPluginsLoadFailed(String error) {
-    return '无法加载插件：$error';
+    return 'Failed to load plugins: $error';
   }
 
   @override
@@ -4240,12 +4284,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminInstallUpdate(String version) {
-    return '安装更新 (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
   String adminCatalogLoadFailed(String error) {
-    return '无法加载目录：$error';
+    return 'Failed to load catalog: $error';
   }
 
   @override
@@ -4265,17 +4309,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
-    return '服务器重启后“$name”将被删除';
+    return '\"$name\" will be removed after server restart';
   }
 
   @override
   String adminUninstallFailed(String error) {
-    return '卸载失败：$error';
+    return 'Failed to uninstall: $error';
   }
 
   @override
   String adminPluginUpdating(String name, String version) {
-    return '正在将“$name”更新为 v$version...';
+    return 'Updating \"$name\" to v$version...';
   }
 
   @override
@@ -4283,7 +4327,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginLoadFailed(String error) {
-    return '无法加载插件：$error';
+    return 'Failed to load plugin: $error';
   }
 
   @override
@@ -4291,7 +4335,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginVersion(String version) {
-    return '版本 $version';
+    return 'Version $version';
   }
 
   @override
@@ -4311,17 +4355,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
-    return '您确定要删除“$name”吗？';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
   String adminRepositoriesSaveFailed(String error) {
-    return '无法保存存储库：$error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
   String adminRepositoriesLoadFailed(String error) {
-    return '无法加载存储库：$error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -4338,12 +4382,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
-    return '无法加载插件设置：$error';
+    return 'Unable to load plugin settings: $error';
   }
 
   @override
   String adminCouldNotOpenUrl(String uri) {
-    return '无法打开 $uri';
+    return 'Could not open $uri';
   }
 
   @override
@@ -4603,12 +4647,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminMetadataLoadFailed(String error) {
-    return '无法加载元数据：$error';
+    return 'Failed to load metadata: $error';
   }
 
   @override
   String adminMetadataSaveFailed(String error) {
-    return '无法保存元数据：$error';
+    return 'Failed to save metadata: $error';
   }
 
   @override
@@ -4628,7 +4672,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminMetadataRefreshFailed(String error) {
-    return '无法刷新元数据：$error';
+    return 'Failed to refresh metadata: $error';
   }
 
   @override
@@ -4645,7 +4689,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminRemoteSearchFailed(String error) {
-    return '远程搜索失败：$error';
+    return 'Remote search failed: $error';
   }
 
   @override
@@ -4659,7 +4703,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminContentTypeUpdateFailed(String error) {
-    return '无法更新内容类型：$error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -4673,12 +4717,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminImageUpdated(String imageType) {
-    return '$imageType 图像已更新';
+    return '$imageType image updated';
   }
 
   @override
   String adminImageDownloadFailed(String error) {
-    return '无法下载图片：$error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -4689,27 +4733,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminImageUploaded(String imageType) {
-    return '$imageType 图片已上传';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminImageUploadFailed(String error) {
-    return '上传图片失败：$error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminDeleteImage(String imageType) {
-    return '删除 $imageType 图像';
+    return 'Delete $imageType image';
   }
 
   @override
   String adminImageDeleted(String imageType) {
-    return '$imageType 图像已删除';
+    return '$imageType image deleted';
   }
 
   @override
   String adminImageDeleteFailed(String error) {
-    return '删除图像失败：$error';
+    return 'Failed to delete image: $error';
   }
 
   @override
@@ -4720,7 +4764,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminTunerDiscoveryFailed(String error) {
-    return '调谐器发现失败：$error';
+    return 'Tuner discovery failed: $error';
   }
 
   @override
@@ -4743,7 +4787,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminTunerAddFailed(String error) {
-    return '添加调谐器失败：$error';
+    return 'Failed to add tuner: $error';
   }
 
   @override
@@ -4766,12 +4810,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminProviderAddFailed(String error) {
-    return '无法添加提供商：$error';
+    return 'Failed to add provider: $error';
   }
 
   @override
   String adminTunerRemoveFailed(String error) {
-    return '无法删除调谐器：$error';
+    return 'Failed to remove tuner: $error';
   }
 
   @override
@@ -4779,12 +4823,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminTunerResetFailed(String error) {
-    return '无法重置调谐器：$error';
+    return 'Failed to reset tuner: $error';
   }
 
   @override
   String adminProviderRemoveFailed(String error) {
-    return '无法删除提供程序：$error';
+    return 'Failed to remove provider: $error';
   }
 
   @override
@@ -4807,7 +4851,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminSettingsSaveFailed(String error) {
-    return '无法保存设置：$error';
+    return 'Failed to save settings: $error';
   }
 
   @override
@@ -4824,7 +4868,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminMappingsUpdateFailed(String error) {
-    return '无法更新映射：$error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
@@ -4847,22 +4891,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminRecordingPathDisplay(String path) {
-    return '记录路径：$path';
+    return 'Recording path: $path';
   }
 
   @override
   String adminSeriesPathDisplay(String path) {
-    return '系列路径：$path';
+    return 'Series path: $path';
   }
 
   @override
   String adminPrePaddingDisplay(int minutes) {
-    return '预填充：$minutes 分钟';
+    return 'Pre-padding: $minutes min';
   }
 
   @override
   String adminPostPaddingDisplay(int minutes) {
-    return '后填充：$minutes 分钟';
+    return 'Post-padding: $minutes min';
   }
 
   @override
@@ -4891,7 +4935,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminRestoreConfirmMessage(String name) {
-    return '现在恢复备份 $name 吗？';
+    return 'Restore backup $name now?';
   }
 
   @override
@@ -4935,27 +4979,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminLogsMinutesAgo(int minutes) {
-    return '$minutes 分钟前';
+    return '${minutes}m ago';
   }
 
   @override
   String adminLogsHoursAgo(int hours) {
-    return '$hours 小时前';
+    return '${hours}h ago';
   }
 
   @override
   String adminLogsDaysAgo(int days) {
-    return '$days 天前';
+    return '${days}d ago';
   }
 
   @override
   String adminLogViewerLoadFailed(String fileName) {
-    return '无法加载 $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
   String adminLogViewerMatches(int count) {
-    return '$count 匹配';
+    return '$count matches';
   }
 
   @override
@@ -5065,22 +5109,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminMetadataImageUpdated(String imageType) {
-    return '$imageType 图像已更新';
+    return '$imageType image updated';
   }
 
   @override
   String adminMetadataImageUploaded(String imageType) {
-    return '$imageType 图片已上传';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminMetadataImageDeleted(String imageType) {
-    return '$imageType 图像已删除';
+    return '$imageType image deleted';
   }
 
   @override
   String adminMetadataImageDownloadFailed(String error) {
-    return '无法下载图片：$error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -5088,12 +5132,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminMetadataImageUploadFailed(String error) {
-    return '上传图片失败：$error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminMetadataDeleteImageTitle(String imageType) {
-    return '删除 $imageType 图像';
+    return 'Delete $imageType image';
   }
 
   @override
@@ -5101,12 +5145,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
-    return '删除图像失败：$error';
+    return 'Failed to delete image: $error';
   }
 
   @override
   String adminMetadataChooseImage(String imageType) {
-    return '选择$imageType图像';
+    return 'Choose $imageType image';
   }
 
   @override
@@ -5138,7 +5182,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginsUpdateAvailable(String version) {
-    return '可用更新：v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -5161,7 +5205,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
-    return '安装更新 (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
@@ -5172,7 +5216,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginsInstalling(String name) {
-    return '正在安装“$name”...';
+    return '\"$name\" is being installed...';
   }
 
   @override
@@ -5190,7 +5234,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
-    return '$name 设置';
+    return '$name Settings';
   }
 
   @override
@@ -5225,7 +5269,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminReposLoadFailed(String error) {
-    return '无法加载存储库：$error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -5233,7 +5277,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminReposRemoveConfirm(String name) {
-    return '您确定要删除“$name”吗？';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
@@ -5241,7 +5285,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminReposSaveFailed(String error) {
-    return '无法保存存储库：$error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
@@ -5504,17 +5548,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminTaskTriggerDaily(String time) {
-    return '每日在 $time';
+    return 'Daily at $time';
   }
 
   @override
   String adminTaskTriggerWeekly(String day, String time) {
-    return '每 $day 在 $time';
+    return 'Every $day at $time';
   }
 
   @override
   String adminTaskTriggerInterval(String duration) {
-    return '每个 $duration';
+    return 'Every $duration';
   }
 
   @override
@@ -5581,17 +5625,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminActivityDaysAgo(int days) {
-    return '$days 天前';
+    return '${days}d ago';
   }
 
   @override
   String adminActivityHoursAgo(int hours) {
-    return '$hours 小时前';
+    return '${hours}h ago';
   }
 
   @override
   String adminActivityMinutesAgo(int minutes) {
-    return '$minutes 分钟前';
+    return '${minutes}m ago';
   }
 
   @override
@@ -5703,7 +5747,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminMetadataContentTypeFailed(String error) {
-    return '无法更新内容类型：$error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -5726,12 +5770,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
-    return '无法更新映射：$error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
   String adminTimeLimitDuration(String duration) {
-    return '时间限制：$duration';
+    return 'Time limit: $duration';
   }
 
   @override
@@ -5808,7 +5852,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String syncPlayQueueItemFallback(int index) {
-    return '项目 $index';
+    return 'Item $index';
   }
 
   @override
@@ -5855,12 +5899,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
-    return '$userName 加入 SyncPlay 群组';
+    return '$userName joined SyncPlay group';
   }
 
   @override
   String syncPlayUserLeftGroup(String userName) {
-    return '$userName 离开 SyncPlay 组';
+    return '$userName left SyncPlay group';
   }
 
   @override
@@ -5872,7 +5916,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
-    return '将播放同步到 $groupName';
+    return 'Syncing playback to $groupName';
   }
 
   @override
@@ -6003,12 +6047,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String castControlFailed(String error) {
-    return '投射控制失败：$error';
+    return 'Cast control failed: $error';
   }
 
   @override
   String castKindControls(String kind) {
-    return '$kind 控制';
+    return '$kind Controls';
   }
 
   @override
@@ -6019,7 +6063,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String castStopKind(String kind) {
-    return '停止$kind';
+    return 'Stop $kind';
   }
 
   @override
@@ -6042,12 +6086,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String pinEnterNDigit(int length) {
-    return '输入 $length 位 PIN 码';
+    return 'Enter a $length-digit PIN';
   }
 
   @override
   String pinEnterYourNDigit(int length) {
-    return '输入您的 $length 位 PIN 码';
+    return 'Enter your $length-digit PIN';
   }
 
   @override
@@ -6088,7 +6132,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String quickConnectFailedWithMessage(String message) {
-    return '快速连接失败：$message';
+    return 'Quick Connect failed: $message';
   }
 
   @override
@@ -6099,7 +6143,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String remoteCommandFailed(String error) {
-    return '命令失败：$error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -6128,7 +6172,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String castingFailed(String error) {
-    return '无法开始投射：$error';
+    return 'Failed to start casting: $error';
   }
 
   @override
@@ -6173,7 +6217,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String trackActionDownloading(String name) {
-    return '正在下载 $name...';
+    return 'Downloading $name...';
   }
 
   @override
@@ -6259,7 +6303,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String skipSegment(String segment) {
-    return '跳过 $segment';
+    return 'Skip $segment';
   }
 
   @override
@@ -6270,12 +6314,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
-    return '下载 $current/$total — $fileName';
+    return 'Downloading $current/$total — $fileName';
   }
 
   @override
   String downloadingFile(String fileName) {
-    return '正在下载 $fileName';
+    return 'Downloading $fileName';
   }
 
   @override
@@ -6298,6 +6342,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get playerTooltipExitFullscreen => '退出全屏';
+
+  @override
+  String get playerTooltipFloatOnTop => '浮在上面';
+
+  @override
+  String get playerTooltipExitFloatOnTop => '禁用顶部浮动';
 
   @override
   String get playerTooltipLockLandscape => '锁风景';
@@ -6649,7 +6699,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsCinemaModeSubtitle => '在主要功能之前播放预告片/预卷';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       '扩展显示包含剧集插图和​​描述的完整卡片。最小显示紧凑的倒计时叠加。禁用会完全隐藏提示。';
 
   @override
@@ -6666,7 +6716,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String settingsMillisecondsValue(int value) {
-    return '$value 毫秒';
+    return '$value ms';
   }
 
   @override
@@ -6748,7 +6798,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String latestLibraryName(String libraryName) {
-    return '最新$libraryName';
+    return 'Latest $libraryName';
   }
 }
 
@@ -6764,7 +6814,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String connectingToServer(String serverName) {
-    return '连接到 $serverName';
+    return 'Connecting to $serverName';
   }
 
   @override
@@ -6775,6 +6825,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get username => '用户名';
+
+  @override
+  String get email => '电子邮件';
 
   @override
   String get quickConnectInstruction => '在服务器的 Web 仪表板上输入以下代码：';
@@ -6793,12 +6846,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'QuickConnect 不可用：$detail';
+    return 'QuickConnect unavailable: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'QuickConnect 不可用 ($status)：$detail';
+    return 'QuickConnect unavailable ($status): $detail';
   }
 
   @override
@@ -6812,7 +6865,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String appVersionFooter(String version) {
-    return 'Moonfin 版本 $version';
+    return 'Moonfin version $version';
   }
 
   @override
@@ -6831,14 +6884,14 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get addServer => '添加服务器';
 
   @override
-  String get embyConnect => '安比连接';
+  String get embyConnect => 'Emby 连接';
 
   @override
   String get removeServer => '删除服务器';
 
   @override
   String removeServerConfirmation(String serverName) {
-    return '从您的服务器中删除“$serverName”？';
+    return 'Remove \"$serverName\" from your servers?';
   }
 
   @override
@@ -6929,7 +6982,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String unableToConnectTo(String target) {
-    return '无法连接到 $target';
+    return 'Unable to connect to $target';
   }
 
   @override
@@ -7009,7 +7062,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String failedToLoadFolderError(String error) {
-    return '无法加载文件夹：$error';
+    return 'Failed to load folder: $error';
   }
 
   @override
@@ -7017,7 +7070,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String itemCountLabel(int count) {
-    return '$count 项';
+    return '$count items';
   }
 
   @override
@@ -7034,7 +7087,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String totalCountItems(int count) {
-    return '$count 项目';
+    return '$count Items';
   }
 
   @override
@@ -7075,7 +7128,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String libraryGenresTitle(String name) {
-    return '$name — 流派';
+    return '$name — Genres';
   }
 
   @override
@@ -7113,17 +7166,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String minutesAgo(int count) {
-    return '$count 分钟前';
+    return '${count}m ago';
   }
 
   @override
   String hoursAgo(int count) {
-    return '$count 小时前';
+    return '${count}h ago';
   }
 
   @override
   String daysAgo(int count) {
-    return '$count 天前';
+    return '${count}d ago';
   }
 
   @override
@@ -7155,7 +7208,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String titlesCount(int count) {
-    return '$count 标题';
+    return '$count titles';
   }
 
   @override
@@ -7235,17 +7288,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String authorsCount(int count) {
-    return '$count 作者';
+    return '$count authors';
   }
 
   @override
   String genresCount(int count) {
-    return '$count 流派';
+    return '$count genres';
   }
 
   @override
   String percentCompleted(int percent) {
-    return '$percent% 已完成';
+    return '$percent% completed';
   }
 
   @override
@@ -7262,7 +7315,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String titlesArrangedForBrowsing(int count) {
-    return '$count 标题安排为先读浏览。';
+    return '$count titles arranged for reading-first browsing.';
   }
 
   @override
@@ -7297,7 +7350,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String noLabelFound(String label) {
-    return '未找到 $label';
+    return 'No $label found';
   }
 
   @override
@@ -7368,12 +7421,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String sectionCountLabel(int count) {
-    return '$count 部分';
+    return '$count sections';
   }
 
   @override
   String firstPublished(int year) {
-    return '首次发布 $year';
+    return 'First published $year';
   }
 
   @override
@@ -7387,7 +7440,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String booksCount(int count) {
-    return '$count 书籍';
+    return '$count books';
   }
 
   @override
@@ -7398,7 +7451,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String authorsCountTitle(int count) {
-    return '$count 作者';
+    return '$count Authors';
   }
 
   @override
@@ -7473,6 +7526,11 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get tracklist => '曲目列表';
 
   @override
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
+
+  @override
   String get biography => '传';
 
   @override
@@ -7492,7 +7550,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String published(int year) {
-    return '已发布 $year';
+    return 'Published $year';
   }
 
   @override
@@ -7511,7 +7569,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String endsAt(String time) {
-    return '结束于 $time';
+    return 'Ends at $time';
   }
 
   @override
@@ -7525,7 +7583,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String resumeFrom(String position) {
-    return '从 $position 继续';
+    return 'Resume from $position';
   }
 
   @override
@@ -7623,7 +7681,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String deleteDownloadedTracksMessage(String title) {
-    return '删除“$title”的下载曲目？';
+    return 'Delete downloaded tracks for \"$title\"?';
   }
 
   @override
@@ -7637,17 +7695,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String noItemsLoaded(String itemLabel) {
-    return '未加载 $itemLabel';
+    return 'No $itemLabel loaded';
   }
 
   @override
   String downloadingTitle(String title, int count) {
-    return '正在下载 $title（$count 项目）...';
+    return 'Downloading $title ($count items)...';
   }
 
   @override
   String deleteConfirmMessage(String name) {
-    return '您确定要从服务器删除“$name”吗？此操作无法撤消。';
+    return 'Are you sure you want to delete \"$name\" from the server? This action cannot be undone.';
   }
 
   @override
@@ -7658,7 +7716,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String unsupportedBookFormat(String extension) {
-    return '不支持的书籍格式：.$extension';
+    return 'Unsupported book format: .$extension';
   }
 
   @override
@@ -7684,7 +7742,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String subtitleDownloadedSelected(String name) {
-    return '下载并选择的字幕：$name';
+    return 'Subtitle downloaded and selected: $name';
   }
 
   @override
@@ -7693,7 +7751,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String noRemoteSubtitlesFound(String language) {
-    return '未找到 $language 的远程字幕。';
+    return 'No remote subtitles found for $language.';
   }
 
   @override
@@ -7701,7 +7759,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String versionNumber(int number) {
-    return '版本 $number';
+    return 'Version $number';
   }
 
   @override
@@ -7721,7 +7779,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String downloadingItem(String name, String quality) {
-    return '正在下载 $name ($quality)...';
+    return 'Downloading $name ($quality)...';
   }
 
   @override
@@ -7729,7 +7787,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
-    return '删除 $typeLabel 的本地文件？\n\n这将释放存储空间。您可以稍后重新下载。';
+    return 'Delete local files for $typeLabel?\n\nThis will free up storage space. You can re-download later.';
   }
 
   @override
@@ -7752,12 +7810,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String studioMoreCount(int count) {
-    return '+$count 更多';
+    return '+$count more';
   }
 
   @override
   String totalEpisodes(int count) {
-    return '$count 剧集';
+    return '$count Episodes';
   }
 
   @override
@@ -7767,12 +7825,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String episodeLabel(int number) {
-    return '第 $number 集';
+    return 'Episode $number';
   }
 
   @override
   String chapterNumber(int number) {
-    return '第$number章';
+    return 'Chapter $number';
   }
 
   @override
@@ -7799,17 +7857,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String born(String date) {
-    return '出生 $date';
+    return 'Born $date';
   }
 
   @override
   String died(String date) {
-    return '死亡 $date';
+    return 'Died $date';
   }
 
   @override
   String age(int age) {
-    return '年龄 $age';
+    return 'Age $age';
   }
 
   @override
@@ -7823,7 +7881,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String downloadsCount(int count) {
-    return '$count 下载';
+    return '$count downloads';
   }
 
   @override
@@ -7842,32 +7900,32 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String remoteSubtitlePermissionError(String action) {
-    return '远程字幕 $action 需要该用户的 Jellyfin 字幕管理权限。';
+    return 'Remote subtitle $action requires the Jellyfin subtitle management permission for this user.';
   }
 
   @override
   String remoteSubtitleNotFoundError(String action) {
-    return '在远程字幕 $action 的服务器上找不到此项目。';
+    return 'This item could not be found on the server for remote subtitle $action.';
   }
 
   @override
   String remoteSubtitleDetailError(String action, String detail) {
-    return '远程字幕 $action 失败：$detail';
+    return 'Remote subtitle $action failed: $detail';
   }
 
   @override
   String remoteSubtitleHttpError(String action, int status) {
-    return '远程字幕 $action 失败 (HTTP $status)。';
+    return 'Remote subtitle $action failed (HTTP $status).';
   }
 
   @override
   String remoteSubtitleGenericError(String action) {
-    return '$action 远程字幕失败。';
+    return 'Failed to $action remote subtitles.';
   }
 
   @override
   String deleteSeriesFiles(String name) {
-    return '“$name”的所有下载剧集';
+    return 'all downloaded episodes for \"$name\"';
   }
 
   @override
@@ -7895,17 +7953,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String castActionFailed(String label, String error) {
-    return '$label 操作失败：$error';
+    return '$label action failed: $error';
   }
 
   @override
   String failedToSetCastVolume(String error) {
-    return '无法设置投射量：$error';
+    return 'Failed to set cast volume: $error';
   }
 
   @override
   String castControlsTitle(String label) {
-    return '$label 控制';
+    return '$label Controls';
   }
 
   @override
@@ -7922,7 +7980,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String stopCast(String label) {
-    return '停止$label';
+    return 'Stop $label';
   }
 
   @override
@@ -7930,7 +7988,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String trackNumber(int number) {
-    return '追踪 $number';
+    return 'Track $number';
   }
 
   @override
@@ -7947,7 +8005,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String secondsCount(int seconds) {
-    return '$seconds 秒';
+    return '$seconds seconds';
   }
 
   @override
@@ -8062,12 +8120,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String castSessionError(String protocol) {
-    return '$protocol 会话错误';
+    return '$protocol session error';
   }
 
   @override
   String failedToLoadBookDetails(String error) {
-    return '无法加载图书详细信息：$error';
+    return 'Failed to load book details: $error';
   }
 
   @override
@@ -8075,7 +8133,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String formatCannotRenderInApp(String extension) {
-    return '此格式 (.$extension) 尚无法在应用程序内呈现。';
+    return 'This format (.$extension) cannot be rendered in-app yet.';
   }
 
   @override
@@ -8086,17 +8144,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String failedToOpenInAppReader(String error) {
-    return '无法打开应用内阅读器：$error';
+    return 'Failed to open in-app reader: $error';
   }
 
   @override
   String bookmarkAlreadySaved(String label) {
-    return '书签已保存在 $label 处。';
+    return 'Bookmark already saved at $label.';
   }
 
   @override
   String bookmarkAdded(String label) {
-    return '已添加书签：$label';
+    return 'Bookmark added: $label';
   }
 
   @override
@@ -8107,7 +8165,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String pageLabel(int number) {
-    return '页$number';
+    return 'Page $number';
   }
 
   @override
@@ -8118,12 +8176,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String formatExtension(String extension) {
-    return '格式：.$extension';
+    return 'Format: .$extension';
   }
 
   @override
   String percentRead(String percent) {
-    return '$percent% 已读';
+    return '$percent% read';
   }
 
   @override
@@ -8146,7 +8204,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String resetZoom(String zoom) {
-    return '重置缩放 (${zoom}x)';
+    return 'Reset Zoom (${zoom}x)';
   }
 
   @override
@@ -8169,7 +8227,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String failedToUpdateReadState(String error) {
-    return '无法更新读取状态：$error';
+    return 'Failed to update read state: $error';
   }
 
   @override
@@ -8201,7 +8259,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
-    return '此平台无法托管 $extension 文件的嵌入式文档引擎。';
+    return 'This platform cannot host the embedded document engine for $extension files.';
   }
 
   @override
@@ -8240,7 +8298,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String failedToLoadGuide(String error) {
-    return '无法加载指南：$error';
+    return 'Failed to load guide: $error';
   }
 
   @override
@@ -8275,7 +8333,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String failedToPlayChannel(String name) {
-    return '无法播放$name';
+    return 'Failed to play $name';
   }
 
   @override
@@ -8301,7 +8359,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String cancelScheduledRecordingOf(String name) {
-    return '取消预定的“$name”录制吗？';
+    return 'Cancel scheduled recording of \"$name\"?';
   }
 
   @override
@@ -8327,7 +8385,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String stopRecordingName(String name) {
-    return '停止记录“$name”？';
+    return 'Stop recording \"$name\"?';
   }
 
   @override
@@ -8341,16 +8399,25 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String noResultsForQuery(String query) {
-    return '没有“$query”的结果';
+    return 'No results for \"$query\"';
   }
 
   @override
   String searchFailedError(String error) {
-    return '搜索失败：$error';
+    return 'Search failed: $error';
   }
 
   @override
   String get seerr => '塞尔';
+
+  @override
+  String get seerrAccountType => '西尔账户类型';
+
+  @override
+  String get jellyfinAccount => 'Jellyfin';
+
+  @override
+  String get localAccount => '当地的';
 
   @override
   String get savedMedia => '保存的媒体';
@@ -8378,12 +8445,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String removeItemAndFiles(String name) {
-    return '删除“$name”及其文件？';
+    return 'Remove \"$name\" and its files?';
   }
 
   @override
   String tracksCount(int count) {
-    return '$count 曲目';
+    return '$count tracks';
   }
 
   @override
@@ -8394,12 +8461,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String failedToLoadAlbum(String error) {
-    return '无法加载相册：$error';
+    return 'Failed to load album: $error';
   }
 
   @override
   String noDownloadedTracksForAlbum(String name) {
-    return '找不到 $name 的下载曲目。';
+    return 'No downloaded tracks found for $name.';
   }
 
   @override
@@ -8416,12 +8483,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String removeName(String name) {
-    return '删除“$name”？';
+    return 'Remove \"$name\"?';
   }
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes 分钟';
+    return '$minutes min';
   }
 
   @override
@@ -8431,7 +8498,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String episodeNumber(int number) {
-    return '第 $number 集';
+    return 'Episode $number';
   }
 
   @override
@@ -8445,7 +8512,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String seasonNumber(int number) {
-    return '季节 $number';
+    return 'Season $number';
   }
 
   @override
@@ -8461,7 +8528,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String deleteAllEpisodesInSeason(String season) {
-    return '删除 $season 中所有下载的剧集？';
+    return 'Delete all downloaded episodes in $season?';
   }
 
   @override
@@ -8504,7 +8571,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String deleteSelectedCount(int count) {
-    return '删除 $count 下载的项目？';
+    return 'Delete $count downloaded items?';
   }
 
   @override
@@ -8518,7 +8585,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String ofStorageLimit(String limit) {
-    return '$limit 限制';
+    return 'of $limit limit';
   }
 
   @override
@@ -8598,7 +8665,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String optionsCount(int count) {
-    return '$count 选项';
+    return '$count options';
   }
 
   @override
@@ -8624,6 +8691,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get focusExpansionAnimation => '焦点扩展动画';
+
+  @override
+  String get desktopUiScale => '桌面 UI 比例';
 
   @override
   String get scaleFocusedCards => '缩放聚焦或悬停的卡片和图块';
@@ -8657,6 +8727,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get seasonalEffects => '季节性影响';
+
+  @override
+  String get seasonalEffectsDescription => '视觉效果和季节性装饰';
 
   @override
   String get snow => '雪';
@@ -8861,7 +8934,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get nextUpAndQueuing => '下一个和排队';
 
   @override
-  String get nextUpBehavior => '下一步行为';
+  String get nextUpDisplay => '下一个显示';
 
   @override
   String get extended => '扩展';
@@ -8888,7 +8961,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
-    return '$episodes 集 / ${hours}h 后';
+    return 'After $episodes episodes / ${hours}h';
   }
 
   @override
@@ -9017,17 +9090,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String loadedProfileSettings(String profile) {
-    return '已加载 $profile 配置文件设置。';
+    return 'Loaded $profile profile settings.';
   }
 
   @override
   String failedToLoadProfileSettings(String profile) {
-    return '无法加载 $profile 配置文件设置。';
+    return 'Failed to load $profile profile settings.';
   }
 
   @override
   String syncedSettingsToProfile(String profile) {
-    return '将本地设置同步到 $profile 配置文件。';
+    return 'Synced local settings to $profile profile.';
   }
 
   @override
@@ -9245,11 +9318,26 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String itemsSelected(int count) {
-    return '已选择 $count';
+    return '$count selected';
   }
 
   @override
   String get mediaBar => '媒体栏';
+
+  @override
+  String get mediaSources => '媒体来源';
+
+  @override
+  String get behavior => '行为';
+
+  @override
+  String get seconds => '秒';
+
+  @override
+  String get localPreviews => '本地预览';
+
+  @override
+  String get localPreviewsDescription => '配置预告片、媒体和音频预览。';
 
   @override
   String get mediaBarMode => '媒体栏风格';
@@ -9312,7 +9400,13 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get episodePreview => '剧集预览';
 
   @override
+  String get mediaPreview => '媒体预览';
+
+  @override
   String get episodePreviewDescription => '在聚焦、悬停或长按的卡片上播放 30 秒的内联预览';
+
+  @override
+  String get mediaPreviewDescription => '在聚焦、悬停或长按的卡片上播放 30 秒的内联预览';
 
   @override
   String get previewAudio => '预览音频';
@@ -9454,7 +9548,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String minutesShort(int minutes) {
-    return '$minutes 分钟';
+    return '$minutes min';
   }
 
   @override
@@ -9566,7 +9660,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String pluginStatusVersion(String status, String version) {
-    return '$status\n版本：$version';
+    return '$status\nVersion: $version';
   }
 
   @override
@@ -9638,7 +9732,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String loggedInAs(String username) {
-    return '登录身份：$username';
+    return 'Logged in as: $username';
   }
 
   @override
@@ -9662,7 +9756,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String versionValue(String version) {
-    return '版本 $version';
+    return 'Version $version';
   }
 
   @override
@@ -9707,7 +9801,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String updateAvailableVersion(String version) {
-    return '可用更新：v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -9718,7 +9812,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String updateAvailableTitle(String version) {
-    return 'v$version 可用';
+    return 'v$version Available';
   }
 
   @override
@@ -9779,7 +9873,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String itemsCount(int count) {
-    return '$count 项目';
+    return '$count Items';
   }
 
   @override
@@ -9799,7 +9893,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String requestedByName(String name) {
-    return '由 $name 请求';
+    return 'Requested by $name';
   }
 
   @override
@@ -9816,12 +9910,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String cancelRequestForTitle(String title) {
-    return '取消“$title”请求？';
+    return 'Cancel request for \"$title\"?';
   }
 
   @override
   String cancelCountRequestsForTitle(int count, String title) {
-    return '取消对“$title”的 $count 请求吗？';
+    return 'Cancel $count requests for \"$title\"?';
   }
 
   @override
@@ -9835,12 +9929,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String budgetAmount(String amount) {
-    return '预算：\$$amount';
+    return 'Budget: \$$amount';
   }
 
   @override
   String revenueAmount(String amount) {
-    return '收入：\$$amount';
+    return 'Revenue: \$$amount';
   }
 
   @override
@@ -9850,7 +9944,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String requestSeriesOrMovie(String type) {
-    return '请求 $type';
+    return 'Request $type';
   }
 
   @override
@@ -9885,7 +9979,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String ageValue(int age) {
-    return '年龄 $age';
+    return 'age $age';
   }
 
   @override
@@ -10175,22 +10269,22 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginUpdatesAvailable(int count) {
-    return '可用插件更新：$count';
+    return 'Plugin updates available: $count';
   }
 
   @override
   String adminPluginsRequiringRestart(int count) {
-    return '需要重新启动的插件：$count';
+    return 'Plugins requiring restart: $count';
   }
 
   @override
   String adminFailedScheduledTasks(int count) {
-    return '失败的计划任务：$count';
+    return 'Failed scheduled tasks: $count';
   }
 
   @override
   String adminRecentAlertEntries(int count) {
-    return '最近的警告/错误条目：$count';
+    return 'Recent warning/error entries: $count';
   }
 
   @override
@@ -10249,7 +10343,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String errorGeneric(String error) {
-    return '错误：$error';
+    return 'Error: $error';
   }
 
   @override
@@ -10275,7 +10369,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminCommandFailed(String error) {
-    return '命令失败：$error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -10340,7 +10434,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminActivityLoadFailed(String error) {
-    return '无法加载活动日志：$error';
+    return 'Failed to load activity log: $error';
   }
 
   @override
@@ -10357,7 +10451,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminDeviceUpdateFailed(String error) {
-    return '无法更新设备：$error';
+    return 'Failed to update device: $error';
   }
 
   @override
@@ -10368,7 +10462,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminDeviceDeleteFailed(String error) {
-    return '无法删除设备：$error';
+    return 'Failed to delete device: $error';
   }
 
   @override
@@ -10397,7 +10491,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminScanFailed(String error) {
-    return '无法开始扫描：$error';
+    return 'Failed to start scan: $error';
   }
 
   @override
@@ -10408,12 +10502,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminLibraryRenamed(String name) {
-    return '库重命名为“$name”';
+    return 'Library renamed to \"$name\"';
   }
 
   @override
   String adminRenameFailed(String error) {
-    return '重命名失败：$error';
+    return 'Failed to rename: $error';
   }
 
   @override
@@ -10421,17 +10515,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminLibraryDeleted(String name) {
-    return '库“$name”已删除';
+    return 'Library \"$name\" deleted';
   }
 
   @override
   String adminLibraryDeleteFailed(String error) {
-    return '无法删除库：$error';
+    return 'Failed to delete library: $error';
   }
 
   @override
   String adminAddPathFailed(String error) {
-    return '无法添加路径：$error';
+    return 'Failed to add path: $error';
   }
 
   @override
@@ -10439,12 +10533,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminRemovePathConfirm(String path) {
-    return '从该库中删除“$path”？';
+    return 'Remove \"$path\" from this library?';
   }
 
   @override
   String adminRemovePathFailed(String error) {
-    return '无法删除路径：$error';
+    return 'Failed to remove path: $error';
   }
 
   @override
@@ -10452,7 +10546,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
-    return '无法保存选项：$error';
+    return 'Failed to save options: $error';
   }
 
   @override
@@ -10487,7 +10581,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminLibraryCreateFailed(String error) {
-    return '无法创建库：$error';
+    return 'Failed to create library: $error';
   }
 
   @override
@@ -10513,27 +10607,27 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminDisableUserConfirm(String name) {
-    return '禁用 $name？他们将无法登录。';
+    return 'Disable $name? They will not be able to sign in.';
   }
 
   @override
   String adminEnableUserConfirm(String name) {
-    return '启用$name？他们将能够再次登录。';
+    return 'Enable $name? They will be able to sign in again.';
   }
 
   @override
   String adminUserDisabled(String name) {
-    return '用户“$name”已禁用';
+    return 'User \"$name\" disabled';
   }
 
   @override
   String adminUserEnabled(String name) {
-    return '用户“$name”已启用';
+    return 'User \"$name\" enabled';
   }
 
   @override
   String adminUserPolicyUpdateFailed(String error) {
-    return '无法更新用户策略：$error';
+    return 'Failed to update user policy: $error';
   }
 
   @override
@@ -10550,7 +10644,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminUserCreateFailed(String error) {
-    return '无法创建用户：$error';
+    return 'Failed to create user: $error';
   }
 
   @override
@@ -10570,7 +10664,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminSaveFailed(String error) {
-    return '保存失败：$error';
+    return 'Failed to save: $error';
   }
 
   @override
@@ -10581,7 +10675,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminFailed(String error) {
-    return '失败：$error';
+    return 'Failed: $error';
   }
 
   @override
@@ -10716,22 +10810,22 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminServerReturnedHttp(int status) {
-    return '服务器返回 HTTP $status';
+    return 'Server returned HTTP $status';
   }
 
   @override
   String adminDeleteUserConfirm(String name) {
-    return '您确定要删除 $name 吗？';
+    return 'Are you sure you want to delete $name?';
   }
 
   @override
   String adminUserDeleted(String name) {
-    return '用户“$name”已删除';
+    return 'User \"$name\" deleted';
   }
 
   @override
   String adminUserDeleteFailed(String error) {
-    return '无法删除用户：$error';
+    return 'Failed to delete user: $error';
   }
 
   @override
@@ -10751,7 +10845,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminApiKeyCreateFailed(String error) {
-    return '无法创建密钥：$error';
+    return 'Failed to create key: $error';
   }
 
   @override
@@ -10762,7 +10856,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminRevokeKeyConfirm(String name) {
-    return '撤销 $name 的密钥？';
+    return 'Revoke key for $name?';
   }
 
   @override
@@ -10770,7 +10864,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminApiKeyRevokeFailed(String error) {
-    return '无法撤销密钥：$error';
+    return 'Failed to revoke key: $error';
   }
 
   @override
@@ -10790,7 +10884,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
-    return '令牌：$token\\n创建：$created';
+    return 'Token: $token\\nCreated: $created';
   }
 
   @override
@@ -10801,7 +10895,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminBackupCreateFailed(String error) {
-    return '无法创建备份：$error';
+    return 'Failed to create backup: $error';
   }
 
   @override
@@ -10809,12 +10903,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminBackupManifest(String name) {
-    return '清单：$name';
+    return 'Manifest: $name';
   }
 
   @override
   String adminManifestLoadFailed(String error) {
-    return '无法加载清单：$error';
+    return 'Failed to load manifest: $error';
   }
 
   @override
@@ -10825,7 +10919,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminRestoreFailed(String error) {
-    return '无法恢复备份：$error';
+    return 'Failed to restore backup: $error';
   }
 
   @override
@@ -10857,17 +10951,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminSavedTo(String path) {
-    return '保存到 $path';
+    return 'Saved to $path';
   }
 
   @override
   String adminFileSaveFailed(String error) {
-    return '无法保存文件：$error';
+    return 'Failed to save file: $error';
   }
 
   @override
   String adminLogFileLoadFailed(String fileName) {
-    return '无法加载 $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
@@ -10878,7 +10972,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminTasksLoadFailed(String error) {
-    return '无法加载任务：$error';
+    return 'Failed to load tasks: $error';
   }
 
   @override
@@ -10889,17 +10983,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminTaskStartFailed(String error) {
-    return '无法启动任务：$error';
+    return 'Failed to start task: $error';
   }
 
   @override
   String adminTaskStopFailed(String error) {
-    return '无法停止任务：$error';
+    return 'Failed to stop task: $error';
   }
 
   @override
   String adminTaskLoadFailed(String error) {
-    return '无法加载任务：$error';
+    return 'Failed to load task: $error';
   }
 
   @override
@@ -10907,12 +11001,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminTriggerRemoveFailed(String error) {
-    return '无法删除触发器：$error';
+    return 'Failed to remove trigger: $error';
   }
 
   @override
   String adminTriggerAddFailed(String error) {
-    return '添加触发器失败：$error';
+    return 'Failed to add trigger: $error';
   }
 
   @override
@@ -10938,7 +11032,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminHours(String hours) {
-    return '$hours 小时';
+    return '$hours hour(s)';
   }
 
   @override
@@ -10949,7 +11043,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginToggleFailed(String error) {
-    return '无法切换插件：$error';
+    return 'Failed to toggle plugin: $error';
   }
 
   @override
@@ -10957,27 +11051,27 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminUninstallPluginConfirm(String name) {
-    return '您确定要卸载“$name”吗？';
+    return 'Are you sure you want to uninstall \"$name\"?';
   }
 
   @override
   String adminPluginUninstallFailed(String error) {
-    return '无法卸载插件：$error';
+    return 'Failed to uninstall plugin: $error';
   }
 
   @override
   String adminPackageInstallFailed(String error) {
-    return '安装包失败：$error';
+    return 'Failed to install package: $error';
   }
 
   @override
   String adminPluginUpdateFailed(String error) {
-    return '无法安装更新：$error';
+    return 'Failed to install update: $error';
   }
 
   @override
   String adminPluginsLoadFailed(String error) {
-    return '无法加载插件：$error';
+    return 'Failed to load plugins: $error';
   }
 
   @override
@@ -10988,12 +11082,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminInstallUpdate(String version) {
-    return '安装更新 (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
   String adminCatalogLoadFailed(String error) {
-    return '无法加载目录：$error';
+    return 'Failed to load catalog: $error';
   }
 
   @override
@@ -11013,17 +11107,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
-    return '服务器重启后“$name”将被删除';
+    return '\"$name\" will be removed after server restart';
   }
 
   @override
   String adminUninstallFailed(String error) {
-    return '卸载失败：$error';
+    return 'Failed to uninstall: $error';
   }
 
   @override
   String adminPluginUpdating(String name, String version) {
-    return '正在将“$name”更新为 v$version...';
+    return 'Updating \"$name\" to v$version...';
   }
 
   @override
@@ -11031,7 +11125,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginLoadFailed(String error) {
-    return '无法加载插件：$error';
+    return 'Failed to load plugin: $error';
   }
 
   @override
@@ -11039,7 +11133,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginVersion(String version) {
-    return '版本 $version';
+    return 'Version $version';
   }
 
   @override
@@ -11059,17 +11153,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
-    return '您确定要删除“$name”吗？';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
   String adminRepositoriesSaveFailed(String error) {
-    return '无法保存存储库：$error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
   String adminRepositoriesLoadFailed(String error) {
-    return '无法加载存储库：$error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -11086,12 +11180,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
-    return '无法加载插件设置：$error';
+    return 'Unable to load plugin settings: $error';
   }
 
   @override
   String adminCouldNotOpenUrl(String uri) {
-    return '无法打开 $uri';
+    return 'Could not open $uri';
   }
 
   @override
@@ -11351,12 +11445,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminMetadataLoadFailed(String error) {
-    return '无法加载元数据：$error';
+    return 'Failed to load metadata: $error';
   }
 
   @override
   String adminMetadataSaveFailed(String error) {
-    return '无法保存元数据：$error';
+    return 'Failed to save metadata: $error';
   }
 
   @override
@@ -11376,7 +11470,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminMetadataRefreshFailed(String error) {
-    return '无法刷新元数据：$error';
+    return 'Failed to refresh metadata: $error';
   }
 
   @override
@@ -11393,7 +11487,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminRemoteSearchFailed(String error) {
-    return '远程搜索失败：$error';
+    return 'Remote search failed: $error';
   }
 
   @override
@@ -11407,7 +11501,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminContentTypeUpdateFailed(String error) {
-    return '无法更新内容类型：$error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -11421,12 +11515,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminImageUpdated(String imageType) {
-    return '$imageType 图像已更新';
+    return '$imageType image updated';
   }
 
   @override
   String adminImageDownloadFailed(String error) {
-    return '无法下载图片：$error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -11437,27 +11531,27 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminImageUploaded(String imageType) {
-    return '$imageType 图片已上传';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminImageUploadFailed(String error) {
-    return '上传图片失败：$error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminDeleteImage(String imageType) {
-    return '删除 $imageType 图像';
+    return 'Delete $imageType image';
   }
 
   @override
   String adminImageDeleted(String imageType) {
-    return '$imageType 图像已删除';
+    return '$imageType image deleted';
   }
 
   @override
   String adminImageDeleteFailed(String error) {
-    return '删除图像失败：$error';
+    return 'Failed to delete image: $error';
   }
 
   @override
@@ -11468,7 +11562,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminTunerDiscoveryFailed(String error) {
-    return '调谐器发现失败：$error';
+    return 'Tuner discovery failed: $error';
   }
 
   @override
@@ -11491,7 +11585,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminTunerAddFailed(String error) {
-    return '添加调谐器失败：$error';
+    return 'Failed to add tuner: $error';
   }
 
   @override
@@ -11514,12 +11608,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminProviderAddFailed(String error) {
-    return '无法添加提供商：$error';
+    return 'Failed to add provider: $error';
   }
 
   @override
   String adminTunerRemoveFailed(String error) {
-    return '无法删除调谐器：$error';
+    return 'Failed to remove tuner: $error';
   }
 
   @override
@@ -11527,12 +11621,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminTunerResetFailed(String error) {
-    return '无法重置调谐器：$error';
+    return 'Failed to reset tuner: $error';
   }
 
   @override
   String adminProviderRemoveFailed(String error) {
-    return '无法删除提供程序：$error';
+    return 'Failed to remove provider: $error';
   }
 
   @override
@@ -11555,7 +11649,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminSettingsSaveFailed(String error) {
-    return '无法保存设置：$error';
+    return 'Failed to save settings: $error';
   }
 
   @override
@@ -11572,7 +11666,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminMappingsUpdateFailed(String error) {
-    return '无法更新映射：$error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
@@ -11595,22 +11689,22 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminRecordingPathDisplay(String path) {
-    return '记录路径：$path';
+    return 'Recording path: $path';
   }
 
   @override
   String adminSeriesPathDisplay(String path) {
-    return '系列路径：$path';
+    return 'Series path: $path';
   }
 
   @override
   String adminPrePaddingDisplay(int minutes) {
-    return '预填充：$minutes 分钟';
+    return 'Pre-padding: $minutes min';
   }
 
   @override
   String adminPostPaddingDisplay(int minutes) {
-    return '后填充：$minutes 分钟';
+    return 'Post-padding: $minutes min';
   }
 
   @override
@@ -11639,7 +11733,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminRestoreConfirmMessage(String name) {
-    return '现在恢复备份 $name 吗？';
+    return 'Restore backup $name now?';
   }
 
   @override
@@ -11683,27 +11777,27 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminLogsMinutesAgo(int minutes) {
-    return '$minutes 分钟前';
+    return '${minutes}m ago';
   }
 
   @override
   String adminLogsHoursAgo(int hours) {
-    return '$hours 小时前';
+    return '${hours}h ago';
   }
 
   @override
   String adminLogsDaysAgo(int days) {
-    return '$days 天前';
+    return '${days}d ago';
   }
 
   @override
   String adminLogViewerLoadFailed(String fileName) {
-    return '无法加载 $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
   String adminLogViewerMatches(int count) {
-    return '$count 匹配';
+    return '$count matches';
   }
 
   @override
@@ -11813,22 +11907,22 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminMetadataImageUpdated(String imageType) {
-    return '$imageType 图像已更新';
+    return '$imageType image updated';
   }
 
   @override
   String adminMetadataImageUploaded(String imageType) {
-    return '$imageType 图片已上传';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminMetadataImageDeleted(String imageType) {
-    return '$imageType 图像已删除';
+    return '$imageType image deleted';
   }
 
   @override
   String adminMetadataImageDownloadFailed(String error) {
-    return '无法下载图片：$error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -11836,12 +11930,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminMetadataImageUploadFailed(String error) {
-    return '上传图片失败：$error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminMetadataDeleteImageTitle(String imageType) {
-    return '删除 $imageType 图像';
+    return 'Delete $imageType image';
   }
 
   @override
@@ -11849,12 +11943,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
-    return '删除图像失败：$error';
+    return 'Failed to delete image: $error';
   }
 
   @override
   String adminMetadataChooseImage(String imageType) {
-    return '选择$imageType图像';
+    return 'Choose $imageType image';
   }
 
   @override
@@ -11886,7 +11980,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginsUpdateAvailable(String version) {
-    return '可用更新：v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -11909,7 +12003,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
-    return '安装更新 (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
@@ -11920,7 +12014,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginsInstalling(String name) {
-    return '正在安装“$name”...';
+    return '\"$name\" is being installed...';
   }
 
   @override
@@ -11938,7 +12032,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
-    return '$name 设置';
+    return '$name Settings';
   }
 
   @override
@@ -11973,7 +12067,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminReposLoadFailed(String error) {
-    return '无法加载存储库：$error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -11981,7 +12075,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminReposRemoveConfirm(String name) {
-    return '您确定要删除“$name”吗？';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
@@ -11989,7 +12083,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminReposSaveFailed(String error) {
-    return '无法保存存储库：$error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
@@ -12252,17 +12346,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminTaskTriggerDaily(String time) {
-    return '每日在 $time';
+    return 'Daily at $time';
   }
 
   @override
   String adminTaskTriggerWeekly(String day, String time) {
-    return '每 $day 在 $time';
+    return 'Every $day at $time';
   }
 
   @override
   String adminTaskTriggerInterval(String duration) {
-    return '每个 $duration';
+    return 'Every $duration';
   }
 
   @override
@@ -12329,17 +12423,17 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminActivityDaysAgo(int days) {
-    return '$days 天前';
+    return '${days}d ago';
   }
 
   @override
   String adminActivityHoursAgo(int hours) {
-    return '$hours 小时前';
+    return '${hours}h ago';
   }
 
   @override
   String adminActivityMinutesAgo(int minutes) {
-    return '$minutes 分钟前';
+    return '${minutes}m ago';
   }
 
   @override
@@ -12451,7 +12545,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminMetadataContentTypeFailed(String error) {
-    return '无法更新内容类型：$error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -12474,12 +12568,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
-    return '无法更新映射：$error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
   String adminTimeLimitDuration(String duration) {
-    return '时间限制：$duration';
+    return 'Time limit: $duration';
   }
 
   @override
@@ -12556,7 +12650,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String syncPlayQueueItemFallback(int index) {
-    return '项目 $index';
+    return 'Item $index';
   }
 
   @override
@@ -12603,12 +12697,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
-    return '$userName 加入 SyncPlay 群组';
+    return '$userName joined SyncPlay group';
   }
 
   @override
   String syncPlayUserLeftGroup(String userName) {
-    return '$userName 离开 SyncPlay 组';
+    return '$userName left SyncPlay group';
   }
 
   @override
@@ -12620,7 +12714,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
-    return '将播放同步到 $groupName';
+    return 'Syncing playback to $groupName';
   }
 
   @override
@@ -12751,12 +12845,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String castControlFailed(String error) {
-    return '投射控制失败：$error';
+    return 'Cast control failed: $error';
   }
 
   @override
   String castKindControls(String kind) {
-    return '$kind 控制';
+    return '$kind Controls';
   }
 
   @override
@@ -12767,7 +12861,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String castStopKind(String kind) {
-    return '停止$kind';
+    return 'Stop $kind';
   }
 
   @override
@@ -12790,12 +12884,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String pinEnterNDigit(int length) {
-    return '输入 $length 位 PIN 码';
+    return 'Enter a $length-digit PIN';
   }
 
   @override
   String pinEnterYourNDigit(int length) {
-    return '输入您的 $length 位 PIN 码';
+    return 'Enter your $length-digit PIN';
   }
 
   @override
@@ -12836,7 +12930,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String quickConnectFailedWithMessage(String message) {
-    return '快速连接失败：$message';
+    return 'Quick Connect failed: $message';
   }
 
   @override
@@ -12847,7 +12941,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String remoteCommandFailed(String error) {
-    return '命令失败：$error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -12876,7 +12970,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String castingFailed(String error) {
-    return '无法开始投射：$error';
+    return 'Failed to start casting: $error';
   }
 
   @override
@@ -12921,7 +13015,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String trackActionDownloading(String name) {
-    return '正在下载 $name...';
+    return 'Downloading $name...';
   }
 
   @override
@@ -13007,7 +13101,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String skipSegment(String segment) {
-    return '跳过 $segment';
+    return 'Skip $segment';
   }
 
   @override
@@ -13018,12 +13112,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
-    return '下载 $current/$total — $fileName';
+    return 'Downloading $current/$total — $fileName';
   }
 
   @override
   String downloadingFile(String fileName) {
-    return '正在下载 $fileName';
+    return 'Downloading $fileName';
   }
 
   @override
@@ -13046,6 +13140,12 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get playerTooltipExitFullscreen => '退出全屏';
+
+  @override
+  String get playerTooltipFloatOnTop => '浮在上面';
+
+  @override
+  String get playerTooltipExitFloatOnTop => '禁用顶部浮动';
 
   @override
   String get playerTooltipLockLandscape => '锁风景';
@@ -13397,7 +13497,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get settingsCinemaModeSubtitle => '在主要功能之前播放预告片/预卷';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       '扩展显示包含剧集插图和​​描述的完整卡片。最小显示紧凑的倒计时叠加。禁用会完全隐藏提示。';
 
   @override
@@ -13414,7 +13514,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String settingsMillisecondsValue(int value) {
-    return '$value 毫秒';
+    return '$value ms';
   }
 
   @override
@@ -13496,7 +13596,7 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String latestLibraryName(String libraryName) {
-    return '最新$libraryName';
+    return 'Latest $libraryName';
   }
 }
 
@@ -13512,7 +13612,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String connectingToServer(String serverName) {
-    return '連接到 $serverName';
+    return 'Connecting to $serverName';
   }
 
   @override
@@ -13523,6 +13623,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get username => '使用者名稱';
+
+  @override
+  String get email => '電子郵件';
 
   @override
   String get quickConnectInstruction => '在伺服器的 Web 儀表板上輸入以下程式碼：';
@@ -13541,12 +13644,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'QuickConnect 不可用：$detail';
+    return 'QuickConnect unavailable: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'QuickConnect 不可用 ($status)：$detail';
+    return 'QuickConnect unavailable ($status): $detail';
   }
 
   @override
@@ -13560,7 +13663,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String appVersionFooter(String version) {
-    return 'Moonfin 版本 $version';
+    return 'Moonfin version $version';
   }
 
   @override
@@ -13579,14 +13682,14 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get addServer => '新增伺服器';
 
   @override
-  String get embyConnect => '安比連接';
+  String get embyConnect => 'Emby 連接';
 
   @override
   String get removeServer => '刪除伺服器';
 
   @override
   String removeServerConfirmation(String serverName) {
-    return '從您的伺服器中刪除“$serverName”？';
+    return 'Remove \"$serverName\" from your servers?';
   }
 
   @override
@@ -13677,7 +13780,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String unableToConnectTo(String target) {
-    return '無法連接到 $target';
+    return 'Unable to connect to $target';
   }
 
   @override
@@ -13757,7 +13860,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String failedToLoadFolderError(String error) {
-    return '無法載入資料夾：$error';
+    return 'Failed to load folder: $error';
   }
 
   @override
@@ -13765,7 +13868,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String itemCountLabel(int count) {
-    return '$count 項';
+    return '$count items';
   }
 
   @override
@@ -13782,7 +13885,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String totalCountItems(int count) {
-    return '$count 項目';
+    return '$count Items';
   }
 
   @override
@@ -13823,7 +13926,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String libraryGenresTitle(String name) {
-    return '$name — 流派';
+    return '$name — Genres';
   }
 
   @override
@@ -13861,17 +13964,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String minutesAgo(int count) {
-    return '$count 分鐘前';
+    return '${count}m ago';
   }
 
   @override
   String hoursAgo(int count) {
-    return '$count 小時前';
+    return '${count}h ago';
   }
 
   @override
   String daysAgo(int count) {
-    return '$count 天前';
+    return '${count}d ago';
   }
 
   @override
@@ -13903,7 +14006,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String titlesCount(int count) {
-    return '$count 標題';
+    return '$count titles';
   }
 
   @override
@@ -13983,17 +14086,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String authorsCount(int count) {
-    return '$count 作者';
+    return '$count authors';
   }
 
   @override
   String genresCount(int count) {
-    return '$count 流派';
+    return '$count genres';
   }
 
   @override
   String percentCompleted(int percent) {
-    return '$percent% 已完成';
+    return '$percent% completed';
   }
 
   @override
@@ -14010,7 +14113,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String titlesArrangedForBrowsing(int count) {
-    return '$count 標題安排為先讀瀏覽。';
+    return '$count titles arranged for reading-first browsing.';
   }
 
   @override
@@ -14045,7 +14148,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String noLabelFound(String label) {
-    return '找不到 $label';
+    return 'No $label found';
   }
 
   @override
@@ -14116,12 +14219,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String sectionCountLabel(int count) {
-    return '$count 部分';
+    return '$count sections';
   }
 
   @override
   String firstPublished(int year) {
-    return '首次發布 $year';
+    return 'First published $year';
   }
 
   @override
@@ -14135,7 +14238,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String booksCount(int count) {
-    return '$count 書籍';
+    return '$count books';
   }
 
   @override
@@ -14146,7 +14249,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String authorsCountTitle(int count) {
-    return '$count 作者';
+    return '$count Authors';
   }
 
   @override
@@ -14221,6 +14324,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get tracklist => '曲目表';
 
   @override
+  String discNumber(int number) {
+    return 'Disc $number';
+  }
+
+  @override
   String get biography => '傳';
 
   @override
@@ -14240,7 +14348,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String published(int year) {
-    return '已發布 $year';
+    return 'Published $year';
   }
 
   @override
@@ -14259,7 +14367,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String endsAt(String time) {
-    return '結束於 $time';
+    return 'Ends at $time';
   }
 
   @override
@@ -14273,7 +14381,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String resumeFrom(String position) {
-    return '從 $position 繼續';
+    return 'Resume from $position';
   }
 
   @override
@@ -14371,7 +14479,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String deleteDownloadedTracksMessage(String title) {
-    return '刪除「$title」的下載曲目？';
+    return 'Delete downloaded tracks for \"$title\"?';
   }
 
   @override
@@ -14385,17 +14493,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String noItemsLoaded(String itemLabel) {
-    return '未載入 $itemLabel';
+    return 'No $itemLabel loaded';
   }
 
   @override
   String downloadingTitle(String title, int count) {
-    return '正在下載 $title（$count 項目）...';
+    return 'Downloading $title ($count items)...';
   }
 
   @override
   String deleteConfirmMessage(String name) {
-    return '您確定要從伺服器刪除「$name」嗎？此操作無法撤銷。';
+    return 'Are you sure you want to delete \"$name\" from the server? This action cannot be undone.';
   }
 
   @override
@@ -14406,7 +14514,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String unsupportedBookFormat(String extension) {
-    return '不支援的書籍格式：.$extension';
+    return 'Unsupported book format: .$extension';
   }
 
   @override
@@ -14432,7 +14540,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String subtitleDownloadedSelected(String name) {
-    return '下載並選擇的字幕：$name';
+    return 'Subtitle downloaded and selected: $name';
   }
 
   @override
@@ -14441,7 +14549,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String noRemoteSubtitlesFound(String language) {
-    return '找不到 $language 的遠端字幕。';
+    return 'No remote subtitles found for $language.';
   }
 
   @override
@@ -14449,7 +14557,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String versionNumber(int number) {
-    return '版 $number';
+    return 'Version $number';
   }
 
   @override
@@ -14469,7 +14577,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String downloadingItem(String name, String quality) {
-    return '正在下載 $name ($quality)...';
+    return 'Downloading $name ($quality)...';
   }
 
   @override
@@ -14477,7 +14585,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String deleteLocalFilesMessage(String typeLabel) {
-    return '刪除 $typeLabel 的本機檔案？\n\n這將釋放儲存空間。您可以稍後重新下載。';
+    return 'Delete local files for $typeLabel?\n\nThis will free up storage space. You can re-download later.';
   }
 
   @override
@@ -14500,12 +14608,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String studioMoreCount(int count) {
-    return '+$count 更多';
+    return '+$count more';
   }
 
   @override
   String totalEpisodes(int count) {
-    return '$count 劇集';
+    return '$count Episodes';
   }
 
   @override
@@ -14515,12 +14623,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String episodeLabel(int number) {
-    return '第 $number 集';
+    return 'Episode $number';
   }
 
   @override
   String chapterNumber(int number) {
-    return '第$number章';
+    return 'Chapter $number';
   }
 
   @override
@@ -14547,17 +14655,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String born(String date) {
-    return '出生 $date';
+    return 'Born $date';
   }
 
   @override
   String died(String date) {
-    return '死亡 $date';
+    return 'Died $date';
   }
 
   @override
   String age(int age) {
-    return '年齡 $age';
+    return 'Age $age';
   }
 
   @override
@@ -14571,7 +14679,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String downloadsCount(int count) {
-    return '$count 下載';
+    return '$count downloads';
   }
 
   @override
@@ -14590,32 +14698,32 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String remoteSubtitlePermissionError(String action) {
-    return '遠端字幕 $action 需要該使用者的 Jellyfin 字幕管理權限。';
+    return 'Remote subtitle $action requires the Jellyfin subtitle management permission for this user.';
   }
 
   @override
   String remoteSubtitleNotFoundError(String action) {
-    return '在遠端字幕 $action 的伺服器上找不到此項目。';
+    return 'This item could not be found on the server for remote subtitle $action.';
   }
 
   @override
   String remoteSubtitleDetailError(String action, String detail) {
-    return '遠端字幕 $action 失敗：$detail';
+    return 'Remote subtitle $action failed: $detail';
   }
 
   @override
   String remoteSubtitleHttpError(String action, int status) {
-    return '遠端字幕 $action 失敗 (HTTP $status)。';
+    return 'Remote subtitle $action failed (HTTP $status).';
   }
 
   @override
   String remoteSubtitleGenericError(String action) {
-    return '$action 遠端字幕失敗。';
+    return 'Failed to $action remote subtitles.';
   }
 
   @override
   String deleteSeriesFiles(String name) {
-    return '“$name”的所有下載劇集';
+    return 'all downloaded episodes for \"$name\"';
   }
 
   @override
@@ -14643,17 +14751,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String castActionFailed(String label, String error) {
-    return '$label 操作失敗：$error';
+    return '$label action failed: $error';
   }
 
   @override
   String failedToSetCastVolume(String error) {
-    return '無法設定投射量：$error';
+    return 'Failed to set cast volume: $error';
   }
 
   @override
   String castControlsTitle(String label) {
-    return '$label 控制';
+    return '$label Controls';
   }
 
   @override
@@ -14670,7 +14778,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String stopCast(String label) {
-    return '停止$label';
+    return 'Stop $label';
   }
 
   @override
@@ -14678,7 +14786,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String trackNumber(int number) {
-    return '追蹤 $number';
+    return 'Track $number';
   }
 
   @override
@@ -14695,7 +14803,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String secondsCount(int seconds) {
-    return '$seconds 秒';
+    return '$seconds seconds';
   }
 
   @override
@@ -14810,12 +14918,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String castSessionError(String protocol) {
-    return '$protocol 會話錯誤';
+    return '$protocol session error';
   }
 
   @override
   String failedToLoadBookDetails(String error) {
-    return '無法載入圖書詳細資料：$error';
+    return 'Failed to load book details: $error';
   }
 
   @override
@@ -14823,7 +14931,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String formatCannotRenderInApp(String extension) {
-    return '此格式 (.$extension) 尚無法在應用程式內呈現。';
+    return 'This format (.$extension) cannot be rendered in-app yet.';
   }
 
   @override
@@ -14834,17 +14942,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String failedToOpenInAppReader(String error) {
-    return '無法開啟應用程式內閱讀器：$error';
+    return 'Failed to open in-app reader: $error';
   }
 
   @override
   String bookmarkAlreadySaved(String label) {
-    return '書籤已儲存在 $label 處。';
+    return 'Bookmark already saved at $label.';
   }
 
   @override
   String bookmarkAdded(String label) {
-    return '已加入書籤：$label';
+    return 'Bookmark added: $label';
   }
 
   @override
@@ -14855,7 +14963,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String pageLabel(int number) {
-    return '頁$number';
+    return 'Page $number';
   }
 
   @override
@@ -14866,12 +14974,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String formatExtension(String extension) {
-    return '格式：.$extension';
+    return 'Format: .$extension';
   }
 
   @override
   String percentRead(String percent) {
-    return '$percent% 已讀';
+    return '$percent% read';
   }
 
   @override
@@ -14894,7 +15002,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String resetZoom(String zoom) {
-    return '重置縮放 (${zoom}x)';
+    return 'Reset Zoom (${zoom}x)';
   }
 
   @override
@@ -14917,7 +15025,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String failedToUpdateReadState(String error) {
-    return '無法更新讀取狀態：$error';
+    return 'Failed to update read state: $error';
   }
 
   @override
@@ -14949,7 +15057,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String platformCannotHostDocumentEngine(String extension) {
-    return '此平台無法託管 $extension 文件的嵌入式文件引擎。';
+    return 'This platform cannot host the embedded document engine for $extension files.';
   }
 
   @override
@@ -14988,7 +15096,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String failedToLoadGuide(String error) {
-    return '無法載入指南：$error';
+    return 'Failed to load guide: $error';
   }
 
   @override
@@ -15023,7 +15131,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String failedToPlayChannel(String name) {
-    return '無法播放$name';
+    return 'Failed to play $name';
   }
 
   @override
@@ -15049,7 +15157,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String cancelScheduledRecordingOf(String name) {
-    return '取消預定的「$name」錄製嗎？';
+    return 'Cancel scheduled recording of \"$name\"?';
   }
 
   @override
@@ -15075,7 +15183,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String stopRecordingName(String name) {
-    return '停止記錄“$name”？';
+    return 'Stop recording \"$name\"?';
   }
 
   @override
@@ -15089,16 +15197,25 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String noResultsForQuery(String query) {
-    return '沒有「$query」的結果';
+    return 'No results for \"$query\"';
   }
 
   @override
   String searchFailedError(String error) {
-    return '搜尋失敗：$error';
+    return 'Search failed: $error';
   }
 
   @override
   String get seerr => '塞爾';
+
+  @override
+  String get seerrAccountType => '西爾帳戶類型';
+
+  @override
+  String get jellyfinAccount => 'Jellyfin';
+
+  @override
+  String get localAccount => '當地的';
 
   @override
   String get savedMedia => '保存的媒體';
@@ -15126,12 +15243,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String removeItemAndFiles(String name) {
-    return '刪除“$name”及其檔案？';
+    return 'Remove \"$name\" and its files?';
   }
 
   @override
   String tracksCount(int count) {
-    return '$count 曲目';
+    return '$count tracks';
   }
 
   @override
@@ -15142,12 +15259,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String failedToLoadAlbum(String error) {
-    return '無法載入相簿：$error';
+    return 'Failed to load album: $error';
   }
 
   @override
   String noDownloadedTracksForAlbum(String name) {
-    return '找不到 $name 的下載曲目。';
+    return 'No downloaded tracks found for $name.';
   }
 
   @override
@@ -15164,12 +15281,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String removeName(String name) {
-    return '刪除“$name”？';
+    return 'Remove \"$name\"?';
   }
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes 分鐘';
+    return '$minutes min';
   }
 
   @override
@@ -15179,7 +15296,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String episodeNumber(int number) {
-    return '第 $number 集';
+    return 'Episode $number';
   }
 
   @override
@@ -15193,7 +15310,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String seasonNumber(int number) {
-    return '季節 $number';
+    return 'Season $number';
   }
 
   @override
@@ -15209,7 +15326,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String deleteAllEpisodesInSeason(String season) {
-    return '刪除 $season 中所有下載的集數？';
+    return 'Delete all downloaded episodes in $season?';
   }
 
   @override
@@ -15252,7 +15369,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String deleteSelectedCount(int count) {
-    return '刪除 $count 下載的項目？';
+    return 'Delete $count downloaded items?';
   }
 
   @override
@@ -15266,7 +15383,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String ofStorageLimit(String limit) {
-    return '$limit 限制';
+    return 'of $limit limit';
   }
 
   @override
@@ -15346,7 +15463,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String optionsCount(int count) {
-    return '$count 選項';
+    return '$count options';
   }
 
   @override
@@ -15372,6 +15489,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get focusExpansionAnimation => '焦點擴展動畫';
+
+  @override
+  String get desktopUiScale => '桌面 UI 比例';
 
   @override
   String get scaleFocusedCards => '縮放聚焦或懸停的卡片和圖塊';
@@ -15405,6 +15525,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get seasonalEffects => '季節性影響';
+
+  @override
+  String get seasonalEffectsDescription => '視覺效果和季節性裝飾';
 
   @override
   String get snow => '雪';
@@ -15609,7 +15732,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get nextUpAndQueuing => '下次和排隊';
 
   @override
-  String get nextUpBehavior => '下一步行為';
+  String get nextUpDisplay => '下一個顯示';
 
   @override
   String get extended => '擴充';
@@ -15636,7 +15759,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String afterEpisodesAndHours(int episodes, double hours) {
-    return '$episodes 集 / ${hours}h 後';
+    return 'After $episodes episodes / ${hours}h';
   }
 
   @override
@@ -15765,17 +15888,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String loadedProfileSettings(String profile) {
-    return '已載入 $profile 設定檔設定。';
+    return 'Loaded $profile profile settings.';
   }
 
   @override
   String failedToLoadProfileSettings(String profile) {
-    return '無法載入 $profile 設定檔設定。';
+    return 'Failed to load $profile profile settings.';
   }
 
   @override
   String syncedSettingsToProfile(String profile) {
-    return '將本機設定同步到 $profile 設定檔。';
+    return 'Synced local settings to $profile profile.';
   }
 
   @override
@@ -15993,11 +16116,26 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String itemsSelected(int count) {
-    return '已選擇 $count';
+    return '$count selected';
   }
 
   @override
   String get mediaBar => '媒體欄';
+
+  @override
+  String get mediaSources => '媒體來源';
+
+  @override
+  String get behavior => '行為';
+
+  @override
+  String get seconds => '秒';
+
+  @override
+  String get localPreviews => '本地預覽';
+
+  @override
+  String get localPreviewsDescription => '配置預告片、媒體和音訊預覽。';
 
   @override
   String get mediaBarMode => '媒體欄風格';
@@ -16060,7 +16198,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get episodePreview => '劇集預覽';
 
   @override
+  String get mediaPreview => '媒體預覽';
+
+  @override
   String get episodePreviewDescription => '在聚焦、懸停或長按的卡片上播放 30 秒的內嵌預覽';
+
+  @override
+  String get mediaPreviewDescription => '在聚焦、懸停或長按的卡片上播放 30 秒的內嵌預覽';
 
   @override
   String get previewAudio => '預覽音訊';
@@ -16202,7 +16346,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String minutesShort(int minutes) {
-    return '$minutes 分鐘';
+    return '$minutes min';
   }
 
   @override
@@ -16314,7 +16458,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String pluginStatusVersion(String status, String version) {
-    return '$status\n版本：$version';
+    return '$status\nVersion: $version';
   }
 
   @override
@@ -16386,7 +16530,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String loggedInAs(String username) {
-    return '登入身分：$username';
+    return 'Logged in as: $username';
   }
 
   @override
@@ -16410,7 +16554,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String versionValue(String version) {
-    return '版 $version';
+    return 'Version $version';
   }
 
   @override
@@ -16455,7 +16599,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String updateAvailableVersion(String version) {
-    return '可用更新：v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -16466,7 +16610,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String updateAvailableTitle(String version) {
-    return 'v$version 可用';
+    return 'v$version Available';
   }
 
   @override
@@ -16527,7 +16671,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String itemsCount(int count) {
-    return '$count 項目';
+    return '$count Items';
   }
 
   @override
@@ -16547,7 +16691,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String requestedByName(String name) {
-    return '由 $name 請求';
+    return 'Requested by $name';
   }
 
   @override
@@ -16564,12 +16708,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String cancelRequestForTitle(String title) {
-    return '取消“$title”請求？';
+    return 'Cancel request for \"$title\"?';
   }
 
   @override
   String cancelCountRequestsForTitle(int count, String title) {
-    return '取消對「$title」的 $count 請求嗎？';
+    return 'Cancel $count requests for \"$title\"?';
   }
 
   @override
@@ -16583,12 +16727,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String budgetAmount(String amount) {
-    return '預算：\$$amount';
+    return 'Budget: \$$amount';
   }
 
   @override
   String revenueAmount(String amount) {
-    return '收入：\$$amount';
+    return 'Revenue: \$$amount';
   }
 
   @override
@@ -16598,7 +16742,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String requestSeriesOrMovie(String type) {
-    return '請求 $type';
+    return 'Request $type';
   }
 
   @override
@@ -16633,7 +16777,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String ageValue(int age) {
-    return '年齡 $age';
+    return 'age $age';
   }
 
   @override
@@ -16923,22 +17067,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginUpdatesAvailable(int count) {
-    return '可用外掛程式更新：$count';
+    return 'Plugin updates available: $count';
   }
 
   @override
   String adminPluginsRequiringRestart(int count) {
-    return '需要重新啟動的插件：$count';
+    return 'Plugins requiring restart: $count';
   }
 
   @override
   String adminFailedScheduledTasks(int count) {
-    return '失敗的排程任務：$count';
+    return 'Failed scheduled tasks: $count';
   }
 
   @override
   String adminRecentAlertEntries(int count) {
-    return '最近的警告/錯誤條目：$count';
+    return 'Recent warning/error entries: $count';
   }
 
   @override
@@ -16997,7 +17141,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String errorGeneric(String error) {
-    return '錯誤：$error';
+    return 'Error: $error';
   }
 
   @override
@@ -17023,7 +17167,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminCommandFailed(String error) {
-    return '指令失敗：$error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -17088,7 +17232,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminActivityLoadFailed(String error) {
-    return '無法載入活動日誌：$error';
+    return 'Failed to load activity log: $error';
   }
 
   @override
@@ -17105,7 +17249,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminDeviceUpdateFailed(String error) {
-    return '無法更新設備：$error';
+    return 'Failed to update device: $error';
   }
 
   @override
@@ -17116,7 +17260,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminDeviceDeleteFailed(String error) {
-    return '無法刪除設備：$error';
+    return 'Failed to delete device: $error';
   }
 
   @override
@@ -17145,7 +17289,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminScanFailed(String error) {
-    return '無法開始掃描：$error';
+    return 'Failed to start scan: $error';
   }
 
   @override
@@ -17156,12 +17300,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminLibraryRenamed(String name) {
-    return '庫重新命名為“$name”';
+    return 'Library renamed to \"$name\"';
   }
 
   @override
   String adminRenameFailed(String error) {
-    return '重新命名失敗：$error';
+    return 'Failed to rename: $error';
   }
 
   @override
@@ -17169,17 +17313,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminLibraryDeleted(String name) {
-    return '庫“$name”已刪除';
+    return 'Library \"$name\" deleted';
   }
 
   @override
   String adminLibraryDeleteFailed(String error) {
-    return '無法刪除庫：$error';
+    return 'Failed to delete library: $error';
   }
 
   @override
   String adminAddPathFailed(String error) {
-    return '無法新增路徑：$error';
+    return 'Failed to add path: $error';
   }
 
   @override
@@ -17187,12 +17331,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminRemovePathConfirm(String path) {
-    return '從該庫中刪除“$path”？';
+    return 'Remove \"$path\" from this library?';
   }
 
   @override
   String adminRemovePathFailed(String error) {
-    return '無法刪除路徑：$error';
+    return 'Failed to remove path: $error';
   }
 
   @override
@@ -17200,7 +17344,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminLibraryOptionsSaveFailed(String error) {
-    return '無法儲存選項：$error';
+    return 'Failed to save options: $error';
   }
 
   @override
@@ -17235,7 +17379,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminLibraryCreateFailed(String error) {
-    return '無法建立庫：$error';
+    return 'Failed to create library: $error';
   }
 
   @override
@@ -17261,27 +17405,27 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminDisableUserConfirm(String name) {
-    return '停用 $name？他們將無法登入。';
+    return 'Disable $name? They will not be able to sign in.';
   }
 
   @override
   String adminEnableUserConfirm(String name) {
-    return '啟用$name？他們將能夠再次登入。';
+    return 'Enable $name? They will be able to sign in again.';
   }
 
   @override
   String adminUserDisabled(String name) {
-    return '使用者「$name」已停用';
+    return 'User \"$name\" disabled';
   }
 
   @override
   String adminUserEnabled(String name) {
-    return '使用者「$name」已啟用';
+    return 'User \"$name\" enabled';
   }
 
   @override
   String adminUserPolicyUpdateFailed(String error) {
-    return '無法更新使用者策略：$error';
+    return 'Failed to update user policy: $error';
   }
 
   @override
@@ -17298,7 +17442,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminUserCreateFailed(String error) {
-    return '無法建立使用者：$error';
+    return 'Failed to create user: $error';
   }
 
   @override
@@ -17318,7 +17462,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminSaveFailed(String error) {
-    return '儲存失敗：$error';
+    return 'Failed to save: $error';
   }
 
   @override
@@ -17329,7 +17473,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminFailed(String error) {
-    return '失敗：$error';
+    return 'Failed: $error';
   }
 
   @override
@@ -17463,22 +17607,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminServerReturnedHttp(int status) {
-    return '伺服器回傳 HTTP $status';
+    return 'Server returned HTTP $status';
   }
 
   @override
   String adminDeleteUserConfirm(String name) {
-    return '您確定要刪除 $name 嗎？';
+    return 'Are you sure you want to delete $name?';
   }
 
   @override
   String adminUserDeleted(String name) {
-    return '使用者「$name」已刪除';
+    return 'User \"$name\" deleted';
   }
 
   @override
   String adminUserDeleteFailed(String error) {
-    return '無法刪除使用者：$error';
+    return 'Failed to delete user: $error';
   }
 
   @override
@@ -17498,7 +17642,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminApiKeyCreateFailed(String error) {
-    return '無法建立密鑰：$error';
+    return 'Failed to create key: $error';
   }
 
   @override
@@ -17509,7 +17653,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminRevokeKeyConfirm(String name) {
-    return '撤銷 $name 的金鑰？';
+    return 'Revoke key for $name?';
   }
 
   @override
@@ -17517,7 +17661,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminApiKeyRevokeFailed(String error) {
-    return '無法撤銷金鑰：$error';
+    return 'Failed to revoke key: $error';
   }
 
   @override
@@ -17537,7 +17681,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminApiKeyTokenCreated(String token, String created) {
-    return '令牌：$token\\n建立：$created';
+    return 'Token: $token\\nCreated: $created';
   }
 
   @override
@@ -17548,7 +17692,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminBackupCreateFailed(String error) {
-    return '無法建立備份：$error';
+    return 'Failed to create backup: $error';
   }
 
   @override
@@ -17556,12 +17700,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminBackupManifest(String name) {
-    return '清單：$name';
+    return 'Manifest: $name';
   }
 
   @override
   String adminManifestLoadFailed(String error) {
-    return '無法載入清單：$error';
+    return 'Failed to load manifest: $error';
   }
 
   @override
@@ -17572,7 +17716,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminRestoreFailed(String error) {
-    return '無法恢復備份：$error';
+    return 'Failed to restore backup: $error';
   }
 
   @override
@@ -17604,17 +17748,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminSavedTo(String path) {
-    return '儲存到 $path';
+    return 'Saved to $path';
   }
 
   @override
   String adminFileSaveFailed(String error) {
-    return '無法儲存檔案：$error';
+    return 'Failed to save file: $error';
   }
 
   @override
   String adminLogFileLoadFailed(String fileName) {
-    return '無法載入 $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
@@ -17625,7 +17769,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminTasksLoadFailed(String error) {
-    return '無法載入任務：$error';
+    return 'Failed to load tasks: $error';
   }
 
   @override
@@ -17636,17 +17780,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminTaskStartFailed(String error) {
-    return '無法啟動任務：$error';
+    return 'Failed to start task: $error';
   }
 
   @override
   String adminTaskStopFailed(String error) {
-    return '無法停止任務：$error';
+    return 'Failed to stop task: $error';
   }
 
   @override
   String adminTaskLoadFailed(String error) {
-    return '無法載入任務：$error';
+    return 'Failed to load task: $error';
   }
 
   @override
@@ -17654,12 +17798,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminTriggerRemoveFailed(String error) {
-    return '無法刪除觸發器：$error';
+    return 'Failed to remove trigger: $error';
   }
 
   @override
   String adminTriggerAddFailed(String error) {
-    return '新增觸發器失敗：$error';
+    return 'Failed to add trigger: $error';
   }
 
   @override
@@ -17685,7 +17829,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminHours(String hours) {
-    return '$hours 小時';
+    return '$hours hour(s)';
   }
 
   @override
@@ -17696,7 +17840,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginToggleFailed(String error) {
-    return '無法切換插件：$error';
+    return 'Failed to toggle plugin: $error';
   }
 
   @override
@@ -17704,27 +17848,27 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminUninstallPluginConfirm(String name) {
-    return '您確定要卸載“$name”嗎？';
+    return 'Are you sure you want to uninstall \"$name\"?';
   }
 
   @override
   String adminPluginUninstallFailed(String error) {
-    return '無法卸載插件：$error';
+    return 'Failed to uninstall plugin: $error';
   }
 
   @override
   String adminPackageInstallFailed(String error) {
-    return '安裝包失敗：$error';
+    return 'Failed to install package: $error';
   }
 
   @override
   String adminPluginUpdateFailed(String error) {
-    return '無法安裝更新：$error';
+    return 'Failed to install update: $error';
   }
 
   @override
   String adminPluginsLoadFailed(String error) {
-    return '無法載入插件：$error';
+    return 'Failed to load plugins: $error';
   }
 
   @override
@@ -17735,12 +17879,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminInstallUpdate(String version) {
-    return '安裝更新 (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
   String adminCatalogLoadFailed(String error) {
-    return '無法載入目錄：$error';
+    return 'Failed to load catalog: $error';
   }
 
   @override
@@ -17760,17 +17904,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginRemoveAfterRestart(String name) {
-    return '伺服器重新啟動後「$name」將被刪除';
+    return '\"$name\" will be removed after server restart';
   }
 
   @override
   String adminUninstallFailed(String error) {
-    return '卸載失敗：$error';
+    return 'Failed to uninstall: $error';
   }
 
   @override
   String adminPluginUpdating(String name, String version) {
-    return '正在將“$name”更新為 v$version...';
+    return 'Updating \"$name\" to v$version...';
   }
 
   @override
@@ -17778,7 +17922,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginLoadFailed(String error) {
-    return '無法載入插件：$error';
+    return 'Failed to load plugin: $error';
   }
 
   @override
@@ -17786,7 +17930,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginVersion(String version) {
-    return '版 $version';
+    return 'Version $version';
   }
 
   @override
@@ -17806,17 +17950,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminRemoveRepositoryConfirm(String name) {
-    return '您確定要刪除「$name」嗎？';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
   String adminRepositoriesSaveFailed(String error) {
-    return '無法儲存儲存庫：$error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
   String adminRepositoriesLoadFailed(String error) {
-    return '無法載入儲存庫：$error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -17833,12 +17977,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginSettingsLoadFailed(String error) {
-    return '無法載入插件設定：$error';
+    return 'Unable to load plugin settings: $error';
   }
 
   @override
   String adminCouldNotOpenUrl(String uri) {
-    return '無法開啟 $uri';
+    return 'Could not open $uri';
   }
 
   @override
@@ -18098,12 +18242,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminMetadataLoadFailed(String error) {
-    return '無法載入元資料：$error';
+    return 'Failed to load metadata: $error';
   }
 
   @override
   String adminMetadataSaveFailed(String error) {
-    return '無法儲存元資料：$error';
+    return 'Failed to save metadata: $error';
   }
 
   @override
@@ -18123,7 +18267,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminMetadataRefreshFailed(String error) {
-    return '無法刷新元資料：$error';
+    return 'Failed to refresh metadata: $error';
   }
 
   @override
@@ -18140,7 +18284,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminRemoteSearchFailed(String error) {
-    return '遠端搜尋失敗：$error';
+    return 'Remote search failed: $error';
   }
 
   @override
@@ -18154,7 +18298,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminContentTypeUpdateFailed(String error) {
-    return '無法更新內容類型：$error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -18168,12 +18312,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminImageUpdated(String imageType) {
-    return '$imageType 影像已更新';
+    return '$imageType image updated';
   }
 
   @override
   String adminImageDownloadFailed(String error) {
-    return '無法下載圖片：$error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -18184,27 +18328,27 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminImageUploaded(String imageType) {
-    return '$imageType 圖片已上傳';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminImageUploadFailed(String error) {
-    return '上傳圖片失敗：$error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminDeleteImage(String imageType) {
-    return '刪除 $imageType 影像';
+    return 'Delete $imageType image';
   }
 
   @override
   String adminImageDeleted(String imageType) {
-    return '$imageType 影像已刪除';
+    return '$imageType image deleted';
   }
 
   @override
   String adminImageDeleteFailed(String error) {
-    return '刪除影像失敗：$error';
+    return 'Failed to delete image: $error';
   }
 
   @override
@@ -18215,7 +18359,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminTunerDiscoveryFailed(String error) {
-    return '調諧器發現失敗：$error';
+    return 'Tuner discovery failed: $error';
   }
 
   @override
@@ -18238,7 +18382,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminTunerAddFailed(String error) {
-    return '新增調諧器失敗：$error';
+    return 'Failed to add tuner: $error';
   }
 
   @override
@@ -18261,12 +18405,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminProviderAddFailed(String error) {
-    return '無法新增提供者：$error';
+    return 'Failed to add provider: $error';
   }
 
   @override
   String adminTunerRemoveFailed(String error) {
-    return '無法刪除調諧器：$error';
+    return 'Failed to remove tuner: $error';
   }
 
   @override
@@ -18274,12 +18418,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminTunerResetFailed(String error) {
-    return '無法重設調諧器：$error';
+    return 'Failed to reset tuner: $error';
   }
 
   @override
   String adminProviderRemoveFailed(String error) {
-    return '無法刪除提供者：$error';
+    return 'Failed to remove provider: $error';
   }
 
   @override
@@ -18302,7 +18446,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminSettingsSaveFailed(String error) {
-    return '無法儲存設定：$error';
+    return 'Failed to save settings: $error';
   }
 
   @override
@@ -18319,7 +18463,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminMappingsUpdateFailed(String error) {
-    return '無法更新映射：$error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
@@ -18342,22 +18486,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminRecordingPathDisplay(String path) {
-    return '記錄路徑：$path';
+    return 'Recording path: $path';
   }
 
   @override
   String adminSeriesPathDisplay(String path) {
-    return '系列路徑：$path';
+    return 'Series path: $path';
   }
 
   @override
   String adminPrePaddingDisplay(int minutes) {
-    return '預先填入：$minutes 分鐘';
+    return 'Pre-padding: $minutes min';
   }
 
   @override
   String adminPostPaddingDisplay(int minutes) {
-    return '後填：$minutes 分鐘';
+    return 'Post-padding: $minutes min';
   }
 
   @override
@@ -18386,7 +18530,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminRestoreConfirmMessage(String name) {
-    return '現在恢復備份 $name 嗎？';
+    return 'Restore backup $name now?';
   }
 
   @override
@@ -18430,27 +18574,27 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminLogsMinutesAgo(int minutes) {
-    return '$minutes 分鐘前';
+    return '${minutes}m ago';
   }
 
   @override
   String adminLogsHoursAgo(int hours) {
-    return '$hours 小時前';
+    return '${hours}h ago';
   }
 
   @override
   String adminLogsDaysAgo(int days) {
-    return '$days 天前';
+    return '${days}d ago';
   }
 
   @override
   String adminLogViewerLoadFailed(String fileName) {
-    return '無法載入 $fileName';
+    return 'Failed to load $fileName';
   }
 
   @override
   String adminLogViewerMatches(int count) {
-    return '$count 匹配';
+    return '$count matches';
   }
 
   @override
@@ -18560,22 +18704,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminMetadataImageUpdated(String imageType) {
-    return '$imageType 影像已更新';
+    return '$imageType image updated';
   }
 
   @override
   String adminMetadataImageUploaded(String imageType) {
-    return '$imageType 圖片已上傳';
+    return '$imageType image uploaded';
   }
 
   @override
   String adminMetadataImageDeleted(String imageType) {
-    return '$imageType 影像已刪除';
+    return '$imageType image deleted';
   }
 
   @override
   String adminMetadataImageDownloadFailed(String error) {
-    return '無法下載圖片：$error';
+    return 'Failed to download image: $error';
   }
 
   @override
@@ -18583,12 +18727,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminMetadataImageUploadFailed(String error) {
-    return '上傳圖片失敗：$error';
+    return 'Failed to upload image: $error';
   }
 
   @override
   String adminMetadataDeleteImageTitle(String imageType) {
-    return '刪除 $imageType 影像';
+    return 'Delete $imageType image';
   }
 
   @override
@@ -18596,12 +18740,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminMetadataImageDeleteFailed(String error) {
-    return '刪除影像失敗：$error';
+    return 'Failed to delete image: $error';
   }
 
   @override
   String adminMetadataChooseImage(String imageType) {
-    return '選擇$imageType圖像';
+    return 'Choose $imageType image';
   }
 
   @override
@@ -18633,7 +18777,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginsUpdateAvailable(String version) {
-    return '可用更新：v$version';
+    return 'Update available: v$version';
   }
 
   @override
@@ -18656,7 +18800,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginsInstallUpdateVersioned(String version) {
-    return '安裝更新 (v$version)';
+    return 'Install update (v$version)';
   }
 
   @override
@@ -18667,7 +18811,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginsInstalling(String name) {
-    return '正在安裝“$name”...';
+    return '\"$name\" is being installed...';
   }
 
   @override
@@ -18685,7 +18829,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminPluginDetailSettingsTitle(String name) {
-    return '$name 設定';
+    return '$name Settings';
   }
 
   @override
@@ -18720,7 +18864,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminReposLoadFailed(String error) {
-    return '無法載入儲存庫：$error';
+    return 'Failed to load repositories: $error';
   }
 
   @override
@@ -18728,7 +18872,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminReposRemoveConfirm(String name) {
-    return '您確定要刪除「$name」嗎？';
+    return 'Are you sure you want to remove \"$name\"?';
   }
 
   @override
@@ -18736,7 +18880,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminReposSaveFailed(String error) {
-    return '無法儲存儲存庫：$error';
+    return 'Failed to save repositories: $error';
   }
 
   @override
@@ -18999,17 +19143,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminTaskTriggerDaily(String time) {
-    return '每日在 $time';
+    return 'Daily at $time';
   }
 
   @override
   String adminTaskTriggerWeekly(String day, String time) {
-    return '每 $day 在 $time';
+    return 'Every $day at $time';
   }
 
   @override
   String adminTaskTriggerInterval(String duration) {
-    return '每個 $duration';
+    return 'Every $duration';
   }
 
   @override
@@ -19076,17 +19220,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminActivityDaysAgo(int days) {
-    return '$days 天前';
+    return '${days}d ago';
   }
 
   @override
   String adminActivityHoursAgo(int hours) {
-    return '$hours 小時前';
+    return '${hours}h ago';
   }
 
   @override
   String adminActivityMinutesAgo(int minutes) {
-    return '$minutes 分鐘前';
+    return '${minutes}m ago';
   }
 
   @override
@@ -19198,7 +19342,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminMetadataContentTypeFailed(String error) {
-    return '無法更新內容類型：$error';
+    return 'Failed to update content type: $error';
   }
 
   @override
@@ -19221,12 +19365,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String adminChannelMappingsUpdateFailed(String error) {
-    return '無法更新映射：$error';
+    return 'Failed to update mappings: $error';
   }
 
   @override
   String adminTimeLimitDuration(String duration) {
-    return '時間限制：$duration';
+    return 'Time limit: $duration';
   }
 
   @override
@@ -19303,7 +19447,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String syncPlayQueueItemFallback(int index) {
-    return '項目 $index';
+    return 'Item $index';
   }
 
   @override
@@ -19350,12 +19494,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String syncPlayUserJoinedGroup(String userName) {
-    return '$userName 加入 SyncPlay 群組';
+    return '$userName joined SyncPlay group';
   }
 
   @override
   String syncPlayUserLeftGroup(String userName) {
-    return '$userName 離開 SyncPlay 組';
+    return '$userName left SyncPlay group';
   }
 
   @override
@@ -19367,7 +19511,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String syncPlaySyncingPlaybackToGroup(String groupName) {
-    return '將播放同步到 $groupName';
+    return 'Syncing playback to $groupName';
   }
 
   @override
@@ -19499,12 +19643,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String castControlFailed(String error) {
-    return '投射控制失敗：$error';
+    return 'Cast control failed: $error';
   }
 
   @override
   String castKindControls(String kind) {
-    return '$kind 控制';
+    return '$kind Controls';
   }
 
   @override
@@ -19515,7 +19659,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String castStopKind(String kind) {
-    return '停止$kind';
+    return 'Stop $kind';
   }
 
   @override
@@ -19538,12 +19682,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String pinEnterNDigit(int length) {
-    return '輸入 $length 位元 PIN 碼';
+    return 'Enter a $length-digit PIN';
   }
 
   @override
   String pinEnterYourNDigit(int length) {
-    return '輸入您的 $length 位元 PIN 碼';
+    return 'Enter your $length-digit PIN';
   }
 
   @override
@@ -19584,7 +19728,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String quickConnectFailedWithMessage(String message) {
-    return '快速連線失敗：$message';
+    return 'Quick Connect failed: $message';
   }
 
   @override
@@ -19595,7 +19739,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String remoteCommandFailed(String error) {
-    return '指令失敗：$error';
+    return 'Command failed: $error';
   }
 
   @override
@@ -19624,7 +19768,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String castingFailed(String error) {
-    return '無法開始投射：$error';
+    return 'Failed to start casting: $error';
   }
 
   @override
@@ -19669,7 +19813,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String trackActionDownloading(String name) {
-    return '正在下載 $name...';
+    return 'Downloading $name...';
   }
 
   @override
@@ -19755,7 +19899,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String skipSegment(String segment) {
-    return '跳過 $segment';
+    return 'Skip $segment';
   }
 
   @override
@@ -19766,12 +19910,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String downloadingBatchProgress(int current, int total, String fileName) {
-    return '下載 $current/$total — $fileName';
+    return 'Downloading $current/$total — $fileName';
   }
 
   @override
   String downloadingFile(String fileName) {
-    return '正在下載 $fileName';
+    return 'Downloading $fileName';
   }
 
   @override
@@ -19794,6 +19938,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get playerTooltipExitFullscreen => '退出全螢幕';
+
+  @override
+  String get playerTooltipFloatOnTop => '浮在上面';
+
+  @override
+  String get playerTooltipExitFloatOnTop => '禁用頂部浮動';
 
   @override
   String get playerTooltipLockLandscape => '鎖風景';
@@ -20144,7 +20294,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsCinemaModeSubtitle => '在主要功能之前播放預告片/預卷';
 
   @override
-  String get settingsNextUpBehaviorDescription =>
+  String get settingsNextUpDisplayDescription =>
       '擴展顯示包含劇集插圖和描述的完整卡片。最小顯示緊湊的倒數疊加。禁用會完全隱藏提示。';
 
   @override
@@ -20161,7 +20311,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String settingsMillisecondsValue(int value) {
-    return '$value 毫秒';
+    return '$value ms';
   }
 
   @override
@@ -20243,6 +20393,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String latestLibraryName(String libraryName) {
-    return '最新$libraryName';
+    return 'Latest $libraryName';
   }
 }

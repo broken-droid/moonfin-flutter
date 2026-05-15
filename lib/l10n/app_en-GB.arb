@@ -6753,5 +6753,13 @@
   },
   "@localAccount": {
     "description": "Auth option label for Seerr sign in using local Seerr credentials"
-  }
+  },
+  "seasonalEffectsDescription": "Visual effects and seasonal decorations",
+  "mediaSources": "Media Sources",
+  "behavior": "Behavior",
+  "seconds": "seconds",
+  "localPreviews": "Local Previews",
+  "localPreviewsDescription": "Configure trailer, media, and audio previews.",
+  "mediaPreview": "Media Preview",
+  "mediaPreviewDescription": "Play a 30-second inline preview on focused, hovered, or long-pressed cards"
 }
