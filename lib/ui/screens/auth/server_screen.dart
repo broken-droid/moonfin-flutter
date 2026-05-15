@@ -504,6 +504,8 @@ Widget _buildUserCard(_MergedUser user, int index) {
         enableLongPress: true,
         disableScale: false,
         useBackgroundFocus: false,
+        borderRadius: 0,
+        focusColor: Colors.transparent,
         child: ListenableBuilder(
           listenable: focusNode,
           builder: (context, _) {
