@@ -241,100 +241,107 @@ class _ServerScreenState extends State<ServerScreen> {
     }
 
     final l10n = AppLocalizations.of(context);
-    return LoginScaffold(
-      header: Padding(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: Image.asset('assets/images/logo_and_text.png', height: 80),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            server.name,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.5),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            l10n.whosWatching,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          if (server.loginDisclaimer != null &&
-              server.loginDisclaimer!.isNotEmpty) ...[
-            const SizedBox(height: 8),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        context.go(Destinations.serverSelect);
+      },
+      child: LoginScaffold(
+        header: Padding(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: Image.asset('assets/images/logo_and_text.png', height: 80),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Text(
-              server.loginDisclaimer!,
+              server.name,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: Colors.white.withValues(alpha: 0.5),
               ),
-              textAlign: TextAlign.center,
             ),
-          ],
-          const SizedBox(height: 24),
-          _buildUserRow(),
-          if (_errorMessage != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Text(
-              _errorMessage!,
-              style: const TextStyle(color: Color(0xFFef4444)),
-              textAlign: TextAlign.center,
+              l10n.whosWatching,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-          ],
-          const SizedBox(height: 24),
-          if (PlatformDetection.useMobileUi)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: () =>
-                      context.go('${Destinations.login}?serverId=${server.id}'),
-                  icon: const Icon(Icons.person, size: 18),
-                  label: Text(l10n.addUser),
-                  style: _focusableButtonStyle(context),
+            if (server.loginDisclaimer != null &&
+                server.loginDisclaimer!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                server.loginDisclaimer!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.7),
                 ),
-                const SizedBox(height: 10),
-                OutlinedButton.icon(
-                  onPressed: () => context.go(Destinations.serverSelect),
-                  icon: const Icon(Icons.home, size: 18),
-                  label: Text(l10n.selectServer),
-                  style: _focusableButtonStyle(context),
-                ),
-              ],
-            )
-          else
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => context.go(
-                      '${Destinations.login}?serverId=${server.id}',
-                    ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            const SizedBox(height: 24),
+            _buildUserRow(),
+            if (_errorMessage != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: Color(0xFFef4444)),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            const SizedBox(height: 24),
+            if (PlatformDetection.useMobileUi)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () =>
+                        context.go('${Destinations.login}?serverId=${server.id}'),
                     icon: const Icon(Icons.person, size: 18),
-                    label: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(l10n.addUser),
-                    ),
+                    label: Text(l10n.addUser),
                     style: _focusableButtonStyle(context),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
                     onPressed: () => context.go(Destinations.serverSelect),
                     icon: const Icon(Icons.home, size: 18),
-                    label: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(l10n.selectServer),
-                    ),
+                    label: Text(l10n.selectServer),
                     style: _focusableButtonStyle(context),
                   ),
-                ),
-              ],
-            ),
-        ],
+                ],
+              )
+            else
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go(
+                        '${Destinations.login}?serverId=${server.id}',
+                      ),
+                      icon: const Icon(Icons.person, size: 18),
+                      label: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(l10n.addUser),
+                      ),
+                      style: _focusableButtonStyle(context),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go(Destinations.serverSelect),
+                      icon: const Icon(Icons.home, size: 18),
+                      label: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(l10n.selectServer),
+                      ),
+                      style: _focusableButtonStyle(context),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }
