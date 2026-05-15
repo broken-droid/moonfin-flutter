@@ -38,10 +38,7 @@ Widget _withBackClose(BuildContext dialogContext, Widget child) {
           }
           return KeyEventResult.ignored;
         },
-        child: FocusScope(
-          autofocus: true,
-          child: child,
-        ),
+        child: FocusScope(autofocus: true, child: child),
       ),
     ),
   );
@@ -53,6 +50,88 @@ const TextStyle _kSettingsTitleTextStyle = TextStyle(
 );
 const TextStyle _kSettingsSubtitleTextStyle = TextStyle(fontSize: 12);
 const TextStyle _kSettingsDescriptionTextStyle = TextStyle(fontSize: 11);
+const double _kSettingsTileRadius = 16;
+const double _kSettingsIconShellSize = 44;
+const EdgeInsets _kSettingsTileContentPadding = EdgeInsets.symmetric(
+  horizontal: 16,
+  vertical: 8,
+);
+
+Widget buildSettingsLeadingIconShell(
+  BuildContext context, {
+  required Widget icon,
+  required bool focused,
+  required Color iconColor,
+}) {
+  final borderTokens = ThemeRegistry.active.borders;
+  return Container(
+    width: _kSettingsIconShellSize,
+    height: _kSettingsIconShellSize,
+    decoration: BoxDecoration(
+      color: AppColorScheme.accent.withValues(alpha: focused ? 0.22 : 0.14),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.fromBorderSide(
+        borderTokens.chipBorder.copyWith(
+          color: AppColorScheme.accent.withValues(alpha: focused ? 0.64 : 0.42),
+          width: 1,
+        ),
+      ),
+    ),
+    child: Center(
+      child: IconTheme(
+        data: IconThemeData(size: 22, color: iconColor),
+        child: icon,
+      ),
+    ),
+  );
+}
+
+EdgeInsets _settingsTileOuterPadding(BuildContext context) {
+  final inDialog =
+      context.findAncestorWidgetOfExactType<SimpleDialog>() != null;
+  if (inDialog) {
+    return const EdgeInsets.symmetric(vertical: 2);
+  }
+  return const EdgeInsets.fromLTRB(12, 4, 12, 4);
+}
+
+BoxDecoration _settingsTileDecoration(
+  BuildContext context, {
+  required bool focused,
+}) {
+  final colorScheme = Theme.of(context).colorScheme;
+  final borderTokens = ThemeRegistry.active.borders;
+  final baseBorder = borderTokens.cardBorder.color;
+  final unfocusedBorderColor = baseBorder.a == 0
+      ? AppColorScheme.onSurface.withValues(alpha: 0.16)
+      : baseBorder.withValues(alpha: 0.55);
+
+  return BoxDecoration(
+    color: focused
+        ? AppColorScheme.onSurface
+        : colorScheme.surfaceContainerLow.withValues(alpha: 0.82),
+    borderRadius: BorderRadius.circular(_kSettingsTileRadius),
+    border: Border.fromBorderSide(
+      (focused ? borderTokens.focusBorder : borderTokens.cardBorder).copyWith(
+        color: focused
+            ? AppColorScheme.accent.withValues(alpha: 0.72)
+            : unfocusedBorderColor,
+        width: focused ? 1.4 : 1.0,
+      ),
+    ),
+    boxShadow: focused
+        ? (borderTokens.focusGlow.isNotEmpty
+              ? borderTokens.focusGlow
+              : [
+                  BoxShadow(
+                    color: AppColorScheme.accent.withValues(alpha: 0.22),
+                    blurRadius: 14,
+                    spreadRadius: 0.5,
+                  ),
+                ])
+        : null,
+  );
+}
 
 Widget _buildSubtitle(String value, String? description) {
   if (description == null) {
@@ -97,6 +176,9 @@ class SettingsListTypography extends StatelessWidget {
         subtitleTextStyle:
             theme.textTheme.bodySmall?.merge(_kSettingsSubtitleTextStyle) ??
             _kSettingsSubtitleTextStyle,
+        contentPadding: _kSettingsTileContentPadding,
+        minLeadingWidth: _kSettingsIconShellSize,
+        horizontalTitleGap: 14,
       ),
       child: child,
     );
@@ -131,7 +213,10 @@ class _SwitchPreferenceTileState extends State<SwitchPreferenceTile> {
   @override
   void initState() {
     super.initState();
-    _binding = PreferenceBinding(GetIt.instance<PreferenceStore>(), widget.preference);
+    _binding = PreferenceBinding(
+      GetIt.instance<PreferenceStore>(),
+      widget.preference,
+    );
   }
 
   @override
@@ -143,30 +228,42 @@ class _SwitchPreferenceTileState extends State<SwitchPreferenceTile> {
   @override
   Widget build(BuildContext context) {
     return TvFocusHighlight(
-      builder: (context, focused) => ValueListenableBuilder<bool>(
-        valueListenable: _binding,
-        builder: (context, value, _) => SwitchListTile(
-          secondary: widget.iconBuilder != null
-            ? widget.iconBuilder!(
-              24,
-              focused
-                ? AppColors.black.withValues(alpha: 0.54)
-                : (Theme.of(context).iconTheme.color ?? AppColorScheme.onSurface),
-            )
-              : widget.icon != null
-                  ? Icon(widget.icon)
-                  : null,
+      builder: (context, focused) {
+        final iconColor = focused
+            ? AppColors.black.withValues(alpha: 0.54)
+            : (Theme.of(context).iconTheme.color ?? AppColorScheme.onSurface);
+        final secondary = widget.iconBuilder != null
+            ? buildSettingsLeadingIconShell(
+                context,
+                icon: widget.iconBuilder!(24, iconColor),
+                focused: focused,
+                iconColor: iconColor,
+              )
+            : widget.icon != null
+            ? buildSettingsLeadingIconShell(
+                context,
+                icon: Icon(widget.icon),
+                focused: focused,
+                iconColor: iconColor,
+              )
+            : null;
+
+        return ValueListenableBuilder<bool>(
+          valueListenable: _binding,
+          builder: (context, value, _) => SwitchListTile(
+            secondary: secondary,
             title: Text(widget.title, style: _kSettingsTitleTextStyle),
             subtitle: widget.subtitle != null
-              ? Text(widget.subtitle!, style: _kSettingsSubtitleTextStyle)
-              : null,
-          value: value,
-          onChanged: (v) {
-            _binding.value = v;
-            widget.onChanged?.call();
-          },
-        ),
-      ),
+                ? Text(widget.subtitle!, style: _kSettingsSubtitleTextStyle)
+                : null,
+            value: value,
+            onChanged: (v) {
+              _binding.value = v;
+              widget.onChanged?.call();
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -193,14 +290,18 @@ class EnumPreferenceTile<T extends Enum> extends StatefulWidget {
   State<EnumPreferenceTile<T>> createState() => _EnumPreferenceTileState<T>();
 }
 
-class _EnumPreferenceTileState<T extends Enum> extends State<EnumPreferenceTile<T>> {
+class _EnumPreferenceTileState<T extends Enum>
+    extends State<EnumPreferenceTile<T>> {
   late final PreferenceBinding<T> _binding;
   bool _pickerOpen = false;
 
   @override
   void initState() {
     super.initState();
-    _binding = PreferenceBinding(GetIt.instance<PreferenceStore>(), widget.preference);
+    _binding = PreferenceBinding(
+      GetIt.instance<PreferenceStore>(),
+      widget.preference,
+    );
   }
 
   @override
@@ -212,12 +313,21 @@ class _EnumPreferenceTileState<T extends Enum> extends State<EnumPreferenceTile<
   @override
   Widget build(BuildContext context) {
     return TvFocusHighlight(
-      builder: (context, _) => ValueListenableBuilder<T>(
+      builder: (context, focused) => ValueListenableBuilder<T>(
         valueListenable: _binding,
         builder: (context, value, _) => ListTile(
           focusColor: Colors.transparent,
           hoverColor: Colors.transparent,
-          leading: widget.icon != null ? Icon(widget.icon) : null,
+          leading: widget.icon != null
+              ? buildSettingsLeadingIconShell(
+                  context,
+                  icon: Icon(widget.icon),
+                  focused: focused,
+                  iconColor: focused
+                      ? AppColors.black.withValues(alpha: 0.54)
+                      : AppColorScheme.onSurface.withValues(alpha: 0.78),
+                )
+              : null,
           title: Text(widget.title, style: _kSettingsTitleTextStyle),
           subtitle: _buildSubtitle(widget.labelOf(value), widget.description),
           isThreeLine: widget.description != null,
@@ -311,7 +421,10 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
   @override
   void initState() {
     super.initState();
-    _binding = PreferenceBinding(GetIt.instance<PreferenceStore>(), widget.preference);
+    _binding = PreferenceBinding(
+      GetIt.instance<PreferenceStore>(),
+      widget.preference,
+    );
     _outerFocusNode = FocusNode(debugLabel: 'SliderPrefTileOuter');
     _sliderInternalNode = FocusNode(
       debugLabel: 'SliderPrefTileInner',
@@ -341,11 +454,14 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
       node.nextFocus();
       return KeyEventResult.handled;
     }
-    if (key == LogicalKeyboardKey.arrowLeft || key == LogicalKeyboardKey.arrowRight) {
+    if (key == LogicalKeyboardKey.arrowLeft ||
+        key == LogicalKeyboardKey.arrowRight) {
       final delta = key == LogicalKeyboardKey.arrowLeft ? -_step : _step;
       final current = _binding.value;
-      final next = (current + delta)
-          .clamp(widget.min.round(), widget.max.round());
+      final next = (current + delta).clamp(
+        widget.min.round(),
+        widget.max.round(),
+      );
       if (next != current) {
         _binding.value = next;
         widget.onChangeEnd?.call();
@@ -357,7 +473,6 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Focus(
       focusNode: _outerFocusNode,
       onKeyEvent: _onKeyEvent,
@@ -369,28 +484,36 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
           setState(() => _outerFocused = focused);
         }
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 90),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          color: _outerFocused ? AppColorScheme.onSurface : colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListTileTheme.merge(
-          textColor: _outerFocused
-              ? AppColors.black.withValues(alpha: 0.87)
-              : AppColorScheme.onSurface,
-          iconColor: _outerFocused
-              ? AppColors.black.withValues(alpha: 0.54)
-              : AppColorScheme.onSurface.withValues(alpha: 0.7),
-          titleTextStyle: _kSettingsTitleTextStyle,
-          subtitleTextStyle: _kSettingsSubtitleTextStyle,
-          child: ValueListenableBuilder<int>(
-            valueListenable: _binding,
-            builder: (context, value, _) => ListTile(
+      child: Padding(
+        padding: _settingsTileOuterPadding(context),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 90),
+          curve: Curves.easeOut,
+          decoration: _settingsTileDecoration(context, focused: _outerFocused),
+          child: ListTileTheme.merge(
+            textColor: _outerFocused
+                ? AppColors.black.withValues(alpha: 0.87)
+                : AppColorScheme.onSurface,
+            iconColor: _outerFocused
+                ? AppColors.black.withValues(alpha: 0.54)
+                : AppColorScheme.onSurface.withValues(alpha: 0.7),
+            titleTextStyle: _kSettingsTitleTextStyle,
+            subtitleTextStyle: _kSettingsSubtitleTextStyle,
+            child: ValueListenableBuilder<int>(
+              valueListenable: _binding,
+              builder: (context, value, _) => ListTile(
                 focusColor: Colors.transparent,
                 hoverColor: Colors.transparent,
-                leading: widget.icon != null ? Icon(widget.icon) : null,
+                leading: widget.icon != null
+                    ? buildSettingsLeadingIconShell(
+                        context,
+                        icon: Icon(widget.icon),
+                        focused: _outerFocused,
+                        iconColor: _outerFocused
+                            ? AppColors.black.withValues(alpha: 0.54)
+                            : AppColorScheme.onSurface.withValues(alpha: 0.78),
+                      )
+                    : null,
                 title: Text(widget.title, style: _kSettingsTitleTextStyle),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,6 +541,7 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
                   ],
                 ),
               ),
+            ),
           ),
         ),
       ),
@@ -444,17 +568,22 @@ class StringPickerPreferenceTile extends StatefulWidget {
   });
 
   @override
-  State<StringPickerPreferenceTile> createState() => _StringPickerPreferenceTileState();
+  State<StringPickerPreferenceTile> createState() =>
+      _StringPickerPreferenceTileState();
 }
 
-class _StringPickerPreferenceTileState extends State<StringPickerPreferenceTile> {
+class _StringPickerPreferenceTileState
+    extends State<StringPickerPreferenceTile> {
   late final PreferenceBinding<String> _binding;
   bool _pickerOpen = false;
 
   @override
   void initState() {
     super.initState();
-    _binding = PreferenceBinding(GetIt.instance<PreferenceStore>(), widget.preference);
+    _binding = PreferenceBinding(
+      GetIt.instance<PreferenceStore>(),
+      widget.preference,
+    );
   }
 
   @override
@@ -466,12 +595,21 @@ class _StringPickerPreferenceTileState extends State<StringPickerPreferenceTile>
   @override
   Widget build(BuildContext context) {
     return TvFocusHighlight(
-      builder: (context, _) => ValueListenableBuilder<String>(
+      builder: (context, focused) => ValueListenableBuilder<String>(
         valueListenable: _binding,
         builder: (context, value, _) => ListTile(
           focusColor: Colors.transparent,
           hoverColor: Colors.transparent,
-          leading: widget.icon != null ? Icon(widget.icon) : null,
+          leading: widget.icon != null
+              ? buildSettingsLeadingIconShell(
+                  context,
+                  icon: Icon(widget.icon),
+                  focused: focused,
+                  iconColor: focused
+                      ? AppColors.black.withValues(alpha: 0.54)
+                      : AppColorScheme.onSurface.withValues(alpha: 0.78),
+                )
+              : null,
           title: Text(widget.title, style: _kSettingsTitleTextStyle),
           subtitle: _buildSubtitle(
             widget.options[value] ?? value,
@@ -572,12 +710,21 @@ class _IntPickerPreferenceTileState extends State<IntPickerPreferenceTile> {
   @override
   Widget build(BuildContext context) {
     return TvFocusHighlight(
-      builder: (context, _) => ValueListenableBuilder<int>(
+      builder: (context, focused) => ValueListenableBuilder<int>(
         valueListenable: _binding,
         builder: (context, value, _) => ListTile(
           focusColor: Colors.transparent,
           hoverColor: Colors.transparent,
-          leading: widget.icon != null ? Icon(widget.icon) : null,
+          leading: widget.icon != null
+              ? buildSettingsLeadingIconShell(
+                  context,
+                  icon: Icon(widget.icon),
+                  focused: focused,
+                  iconColor: focused
+                      ? AppColors.black.withValues(alpha: 0.54)
+                      : AppColorScheme.onSurface.withValues(alpha: 0.78),
+                )
+              : null,
           title: Text(widget.title, style: _kSettingsTitleTextStyle),
           subtitle: _buildSubtitle(
             widget.options[value] ?? value.toString(),
@@ -667,30 +814,29 @@ class _TvFocusHighlightState extends State<TvFocusHighlight> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Focus(
       focusNode: _focusNode,
       canRequestFocus: true,
       skipTraversal: true,
       descendantsAreFocusable: true,
       onFocusChange: _onFocusChange,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 90),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          color: _focused ? AppColorScheme.onSurface : colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListTileTheme.merge(
-          textColor: _focused
-              ? AppColors.black.withValues(alpha: 0.87)
-              : AppColorScheme.onSurface,
-          iconColor: _focused
-              ? AppColors.black.withValues(alpha: 0.54)
-              : AppColorScheme.onSurface.withValues(alpha: 0.7),
-          titleTextStyle: _kSettingsTitleTextStyle,
-          subtitleTextStyle: _kSettingsSubtitleTextStyle,
-          child: Builder(builder: (ctx) => widget.builder(ctx, _focused)),
+      child: Padding(
+        padding: _settingsTileOuterPadding(context),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 90),
+          curve: Curves.easeOut,
+          decoration: _settingsTileDecoration(context, focused: _focused),
+          child: ListTileTheme.merge(
+            textColor: _focused
+                ? AppColors.black.withValues(alpha: 0.87)
+                : AppColorScheme.onSurface,
+            iconColor: _focused
+                ? AppColors.black.withValues(alpha: 0.54)
+                : AppColorScheme.onSurface.withValues(alpha: 0.7),
+            titleTextStyle: _kSettingsTitleTextStyle,
+            subtitleTextStyle: _kSettingsSubtitleTextStyle,
+            child: Builder(builder: (ctx) => widget.builder(ctx, _focused)),
+          ),
         ),
       ),
     );
