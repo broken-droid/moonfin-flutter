@@ -27,12 +27,14 @@ class LoginScreen extends StatefulWidget {
   final String serverId;
   final String? prefillUsername;
   final bool hasPassword;
+  final bool isInitial;
 
   const LoginScreen({
     super.key,
     required this.serverId,
     this.prefillUsername,
     this.hasPassword = true,
+    this.isInitial = false,
   });
 
   @override
@@ -360,7 +362,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _navigateBack() {
     final server = _server;
-    if (server == null) {
+    if (server == null || widget.isInitial) {
       context.go(Destinations.serverSelect);
       return;
     }
