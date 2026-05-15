@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moonfin/ui/widgets/focus/focusable_wrapper.dart';
 import 'package:moonfin/ui/widgets/overlay_sheet.dart';
 import 'package:moonfin_design/moonfin_design.dart';
 import 'package:jellyfin_preference/jellyfin_preference.dart';
@@ -489,78 +490,72 @@ class _ServerScreenState extends State<ServerScreen> {
     return '${server.address}/Users/${user.id}/Images/Primary?tag=${user.imageTag}';
   }
 
-  Widget _buildUserCard(_MergedUser user, int index) {
-    final hasFocus = ValueNotifier(false);
+Widget _buildUserCard(_MergedUser user, int index) {
     final focusNode = index < _userFocusNodes.length
         ? _userFocusNodes[index]
         : FocusNode();
 
-    return ValueListenableBuilder<bool>(
-      valueListenable: hasFocus,
-      builder: (context, focused, child) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            width: 110,
-            child: AnimatedScale(
-              scale: focused ? 1.08 : 1.0,
-              duration: const Duration(milliseconds: 120),
-              curve: Curves.easeOut,
-              child: InkWell(
-                focusNode: focusNode,
-                onFocusChange: (f) => hasFocus.value = f,
-                onTap: () => _onUserTap(user),
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: focused
-                              ? Border.all(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 3,
-                                )
-                              : null,
-                        ),
-                        child: CircleAvatar(
-                          radius: 36,
-                          backgroundColor: Colors.white.withValues(alpha: 0.1),
-                          backgroundImage: user.imageTag != null
-                              ? NetworkImage(_userImageUrl(user))
-                              : null,
-                          child: user.imageTag == null
-                              ? Icon(
-                                  Icons.person,
-                                  size: 32,
-                                  color: Colors.white.withValues(alpha: 0.6),
-                                )
-                              : null,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        user.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: focused
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
-                        ),
-                      ),
-                    ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: FocusableWrapper(
+        focusNode: focusNode,
+        onSelect: () => _onUserTap(user),
+        onLongPress: () => _removeUser(user),
+        enableLongPress: true,
+        disableScale: false,
+        useBackgroundFocus: false,
+        child: ListenableBuilder(
+          listenable: focusNode,
+          builder: (context, _) {
+            final focused = focusNode.hasFocus;
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: focused
+                          ? Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 3,
+                            )
+                          : null,
+                    ),
+                    child: CircleAvatar(
+                      radius: 36,
+                      backgroundColor: Colors.white.withValues(alpha: 0.1),
+                      backgroundImage: user.imageTag != null
+                          ? NetworkImage(_userImageUrl(user))
+                          : null,
+                      child: user.imageTag == null
+                          ? Icon(
+                              Icons.person,
+                              size: 32,
+                              color: Colors.white.withValues(alpha: 0.6),
+                            )
+                          : null,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    user.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: focused
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 
