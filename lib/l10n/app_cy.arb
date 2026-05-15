@@ -4907,7 +4907,7 @@
   "unableToLoadAuthorDetails": "Methu llwytho manylion yr awdur ar hyn o bryd.",
   "published": "Wedi cyhoeddi {year}",
   "publicationDateUnknown": "Dyddiad cyhoeddi yn anhysbys",
-  "seasonCount": "{count, plural, =1{1 Tymor} arall{{count} Tymhorau}}",
+  "seasonCount": "{count, plural, =1{1 Tymor} other{{count} Tymhorau}}",
   "endsAt": "Ends at {time}",
   "view": "Golwg",
   "resumeReading": "Ail-ddechrau Darllen",

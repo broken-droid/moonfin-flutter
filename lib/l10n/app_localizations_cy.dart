@@ -16,7 +16,7 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String connectingToServer(String serverName) {
-    return 'Connecting to $serverName';
+    return 'Yn cysylltu â $serverName';
   }
 
   @override
@@ -49,12 +49,12 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String quickConnectUnavailable(String detail) {
-    return 'QuickConnect unavailable: $detail';
+    return 'Nid yw QuickConnect ar gael: $detail';
   }
 
   @override
   String quickConnectUnavailableWithStatus(String status, String detail) {
-    return 'QuickConnect unavailable ($status): $detail';
+    return 'Nid yw QuickConnect ar gael ($status): $detail';
   }
 
   @override
@@ -68,7 +68,7 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String appVersionFooter(String version) {
-    return 'Moonfin version $version';
+    return 'fersiwn Moonfin $version';
   }
 
   @override
@@ -94,7 +94,7 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String removeServerConfirmation(String serverName) {
-    return 'Remove \"$serverName\" from your servers?';
+    return 'Tynnu \"$serverName\" o\'ch gweinyddwyr?';
   }
 
   @override
@@ -277,7 +277,7 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String failedToLoadFolderError(String error) {
-    return 'Failed to load folder: $error';
+    return 'Wedi methu llwytho ffolder: $error';
   }
 
   @override
@@ -285,7 +285,7 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String itemCountLabel(int count) {
-    return '$count items';
+    return '$count eitem';
   }
 
   @override
@@ -302,7 +302,7 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String totalCountItems(int count) {
-    return '$count Items';
+    return '$count Eitemau';
   }
 
   @override
@@ -382,17 +382,17 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String minutesAgo(int count) {
-    return '${count}m ago';
+    return '${count}m yn ôl';
   }
 
   @override
   String hoursAgo(int count) {
-    return '${count}h ago';
+    return '${count}awr yn ôl';
   }
 
   @override
   String daysAgo(int count) {
-    return '${count}d ago';
+    return '${count}d yn ôl';
   }
 
   @override
@@ -783,7 +783,7 @@ class AppLocalizationsCy extends AppLocalizations {
 
   @override
   String published(int year) {
-    return 'Published $year';
+    return 'Wedi cyhoeddi $year';
   }
 
   @override
@@ -794,8 +794,8 @@ class AppLocalizationsCy extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Seasons',
-      one: '1 Season',
+      other: '$count Tymhorau',
+      one: '1 Tymor',
     );
     return '$_temp0';
   }
