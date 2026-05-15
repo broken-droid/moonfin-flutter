@@ -51,12 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
+  final _toggleFocus = FocusNode();
   final _usernameTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _passwordTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _signInFocus = FocusNode();
   final _backFocus = FocusNode();
-  final _qcBtnFocus = FocusNode();
-  final _pwBtnFocus = FocusNode();
 
   Server? _server;
   MediaServerClient? _client;
@@ -105,10 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     _usernameFocus.dispose();
     _passwordFocus.dispose();
+    _toggleFocus.dispose();
     _signInFocus.dispose();
     _backFocus.dispose();
-    _qcBtnFocus.dispose();
-    _pwBtnFocus.dispose();
     _quickConnectTimer?.cancel();
     super.dispose();
   }
@@ -120,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       return _verticalNav(
         event,
-        up: _supportsQuickConnect ? _pwBtnFocus : null,
+        up: _supportsQuickConnect ? _toggleFocus : null,
         down: _hasPassword ? _passwordFocus : _signInFocus,
       );
     };
@@ -131,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return _verticalNav(
         event,
         up: _hasUsername
-            ? (_supportsQuickConnect ? _pwBtnFocus : null)
+            ? (_supportsQuickConnect ? _toggleFocus : null)
             : _usernameFocus,
         down: _signInFocus,
       );
@@ -488,82 +486,48 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildToggleRow() {
     final l10n = AppLocalizations.of(context);
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 12,
-      runSpacing: 12,
-      children: [
-        _buildToggleButton(
-          label: l10n.quickConnect,
-          isSelected: _showQuickConnect,
-          focusNode: _qcBtnFocus,
-          onPressed: _selectQuickConnect,
-        ),
-        _buildToggleButton(
-          label: l10n.password,
-          isSelected: !_showQuickConnect,
-          focusNode: _pwBtnFocus,
-          onPressed: _selectPassword,
-        ),
-      ],
+    return _buildToggleButton(
+      label: _showQuickConnect ? l10n.password : l10n.quickConnect,
+      focusNode: _toggleFocus,
+      onPressed: _showQuickConnect ? _selectPassword : _selectQuickConnect,
     );
   }
 
   Widget _buildToggleButton({
     required String label,
-    required bool isSelected,
     required FocusNode focusNode,
     required VoidCallback onPressed,
+    bool isLoading = false,
   }) {
-    if (isSelected) {
-      return FilledButton(
-        focusNode: focusNode,
-        onPressed: onPressed,
-        style: FilledButton.styleFrom(
-          backgroundColor: _kAccent,
-          foregroundColor: _loginForegroundSolid,
-          minimumSize: const Size(120, 44),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-        ).copyWith(
-          side: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.focused)) {
-              return BorderSide(color: _loginForegroundSolid, width: 2);
-            }
-            return null;
-          }),
-        ),
-        child: Text(label),
-      );
-    }
-    return OutlinedButton(
+    return ElevatedButton(
       focusNode: focusNode,
-      onPressed: onPressed,
-      style: _outlinedFocusStyle(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-      ).copyWith(minimumSize: const WidgetStatePropertyAll(Size(120, 44))),
-      child: Text(label),
-    );
-  }
-
-  ButtonStyle _outlinedFocusStyle({required EdgeInsetsGeometry padding}) {
-    return OutlinedButton.styleFrom(
-      foregroundColor: _loginForeground(0.8),
-      padding: padding,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-    ).copyWith(
-      side: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.focused)) {
-          return BorderSide(color: _kAccent, width: 2);
-        }
-        return BorderSide(color: _loginForeground(0.2));
-      }),
-      foregroundColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.focused)) return _kAccent;
-        return _loginForeground(0.8);
-      }),
+      onPressed: isLoading ? null : onPressed,
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.focused)
+            ? _kAccent.withValues(alpha: 0.2)
+            : Colors.transparent),
+        foregroundColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.focused)
+            ? _loginForegroundSolid
+            : _loginForeground(0.8)
+        ),
+        side: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.focused)
+            ? BorderSide(color: _kAccent, width: 2)
+            : BorderSide(color: _loginForeground(0.2), width: 2)
+        ),
+      ),
+      child: isLoading
+          ? SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: _loginForegroundSolid,
+              ),
+            )
+          : Text(label),
     );
   }
 
@@ -618,7 +582,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ],
         const SizedBox(height: 24),
-        _buildActionButton(
+        _buildToggleButton(
           label: l10n.back,
           focusNode: _backFocus,
           onPressed: _navigateBack,
@@ -669,15 +633,15 @@ class _LoginScreenState extends State<LoginScreen> {
           spacing: 12,
           runSpacing: 12,
           children: [
-            _buildActionButton(
+            _buildToggleButton(
               label: l10n.back,
               focusNode: _backFocus,
               onPressed: _navigateBack,
             ),
-            _buildActionButton(
+            _buildToggleButton(
               label: l10n.signIn,
               focusNode: _signInFocus,
-              onPressed: _isLoading ? null : _login,
+              onPressed: _login,
               isLoading: _isLoading,
             ),
           ],
@@ -769,32 +733,6 @@ class _LoginScreenState extends State<LoginScreen> {
           borderSide: BorderSide(color: _kAccent, width: 2),
         ),
       ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required String label,
-    required FocusNode focusNode,
-    required VoidCallback? onPressed,
-    bool isLoading = false,
-  }) {
-    return OutlinedButton(
-      focusNode: focusNode,
-      onPressed: onPressed,
-      style: _outlinedFocusStyle(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-      ),
-      child:
-          isLoading
-              ? SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: _loginForegroundSolid,
-                ),
-              )
-              : Text(label),
     );
   }
 
