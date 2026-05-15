@@ -441,7 +441,7 @@ class UserPreferences extends ChangeNotifier {
 
   static final mediaBarIntervalMs = Preference(
     key: 'mediaBarIntervalMs',
-    defaultValue: 7000,
+    defaultValue: 10000,
   );
 
   static final mediaBarTrailerPreview = Preference(

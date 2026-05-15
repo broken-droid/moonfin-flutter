@@ -24,6 +24,12 @@ class MediaBarSettingsScreen extends StatefulWidget {
 
 class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
   final _store = GetIt.instance<PreferenceStore>();
+  static const _validAutoAdvanceIntervals = <int>{
+    5000,
+    10000,
+    15000,
+    30000,
+  };
   bool _selectorOpen = false;
 
   @override
@@ -33,6 +39,10 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
     final normalized = UserPreferences.normalizeMediaBarMode(current);
     if (current != normalized) {
       _store.set(UserPreferences.mediaBarMode, normalized);
+    }
+    final currentInterval = _store.get(UserPreferences.mediaBarIntervalMs);
+    if (!_validAutoAdvanceIntervals.contains(currentInterval)) {
+      _store.set(UserPreferences.mediaBarIntervalMs, 10000);
     }
   }
 
@@ -354,123 +364,23 @@ class _MediaBarSettingsScreenState extends State<MediaBarSettingsScreen> {
               subtitle: l10n.autoAdvanceSlides,
               icon: Icons.skip_next,
             ),
-            // Replace slider with discrete picker for interval
-            _MediaBarIntervalPickerTile(onChanged: _pushSync),
+            IntPickerPreferenceTile(
+              preference: UserPreferences.mediaBarIntervalMs,
+              title: l10n.autoAdvanceInterval,
+              icon: Icons.timer,
+              options: {
+                5000: l10n.fiveSeconds,
+                10000: l10n.tenSeconds,
+                15000: l10n.fifteenSeconds,
+                30000: l10n.thirtySeconds,
+              },
+              onChanged: _pushSync,
+            ),
           ],
         ),
       );
 }
 
-}
-
-class _MediaBarIntervalPickerTile extends StatefulWidget {
-  final VoidCallback? onChanged;
-
-  const _MediaBarIntervalPickerTile({this.onChanged});
-
-  @override
-  State<_MediaBarIntervalPickerTile> createState() => _MediaBarIntervalPickerTileState();
-}
-
-class _MediaBarIntervalPickerTileState extends State<_MediaBarIntervalPickerTile> {
-  static const _intervalOptions = <int, String>{
-    5000: '5',
-    10000: '10',
-    15000: '15',
-    30000: '30',
-  };
-
-  late final PreferenceBinding<int> _binding;
-  bool _pickerOpen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _binding = PreferenceBinding(
-      GetIt.instance<PreferenceStore>(),
-      UserPreferences.mediaBarIntervalMs,
-    );
-  }
-
-  @override
-  void dispose() {
-    _binding.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return ValueListenableBuilder<int>(
-      valueListenable: _binding,
-      builder: (context, value, _) => TvFocusHighlight(
-        builder: (ctx, _) => ListTile(
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          leading: const Icon(Icons.timer),
-          title: Text(l10n.autoAdvanceInterval),
-          subtitle: Text(
-            '${_intervalOptions[value] ?? (value / 1000).round().toString()} ${l10n.seconds}',
-          ),
-          onTap: () => _showPicker(context, value),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showPicker(BuildContext context, int current) async {
-    if (_pickerOpen) return;
-    _pickerOpen = true;
-    final l10n = AppLocalizations.of(context);
-    final entries = _intervalOptions.entries.toList();
-    final selectedIndex = entries.indexWhere((e) => e.key == current);
-    final autofocusIndex = selectedIndex >= 0 ? selectedIndex : 0;
-    try {
-      final result = await showFocusRestoringDialog<int>(
-        context: context,
-        useRootNavigator: false,
-        builder: (ctx) {
-          final closeOnce = createDialogBackCloseHandler(ctx);
-          return Focus(
-            canRequestFocus: false,
-            skipTraversal: true,
-            onKeyEvent: (_, event) {
-              if (!event.logicalKey.isBackKey) return KeyEventResult.ignored;
-              if (event is KeyDownEvent || event is KeyUpEvent) {
-                closeOnce();
-                return KeyEventResult.handled;
-              }
-              return KeyEventResult.ignored;
-            },
-            child: FocusScope(
-              autofocus: true,
-              child: SimpleDialog(
-                title: Text(l10n.autoAdvanceInterval),
-                children: entries.asMap().entries.map((entry) {
-                  final i = entry.key;
-                  final e = entry.value;
-                  final selected = e.key == current;
-                  return TvFocusHighlight(
-                    builder: (_, _) => ListTile(
-                      autofocus: i == autofocusIndex,
-                      title: Text('${e.value} ${l10n.seconds}'),
-                      trailing: selected ? const Icon(Icons.check) : null,
-                      onTap: () => Navigator.pop(ctx, e.key),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          );
-        },
-      );
-      if (!mounted || result == null || result == _binding.value) return;
-      _binding.value = result;
-      widget.onChanged?.call();
-    } finally {
-      _pickerOpen = false;
-    }
-  }
 }
 
 class _MediaBarContentTypePickerTile extends StatefulWidget {
