@@ -145,7 +145,11 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
     );
     if (confirmed == true) {
       await _serverRepo.deleteServer(server.id);
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {
+        _startDiscovery();
+        });
+      }
     }
   }
 
