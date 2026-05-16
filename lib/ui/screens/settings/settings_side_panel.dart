@@ -81,7 +81,9 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
   @override
   void initState() {
     super.initState();
-    _requestInitialFocus();
+    if (!PlatformDetection.useMobileUi) {
+      _requestInitialFocus();
+    }
   }
 
   @override
@@ -94,13 +96,14 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final showAdmin = !PlatformDetection.isTV && ref.watch(isAdminProvider);
+    final enablePanelAutofocus = !PlatformDetection.useMobileUi;
     final entries = <_PanelEntry>[
       if (showAdmin)
         _PanelEntry(
           icon: Icons.admin_panel_settings,
           title: l10n.administration,
           subtitle: l10n.settingsAdministrationSubtitle,
-          focusNode: _firstFocusNode,
+          focusNode: enablePanelAutofocus ? _firstFocusNode : null,
           onTap: () {
             _closeSettingsPanel();
             context.navigateTopLevel(Destinations.admin);
@@ -110,7 +113,8 @@ class _SettingsSidePanelState extends ConsumerState<SettingsSidePanel> {
         icon: Icons.lock,
         title: l10n.settingsAccountSecurity,
         subtitle: l10n.settingsAccountSecuritySubtitle,
-        focusNode: showAdmin ? null : _firstFocusNode,
+        focusNode:
+            (!showAdmin && enablePanelAutofocus) ? _firstFocusNode : null,
         onTap: () =>
             context.pushSettingsScreen(const _AuthenticationCategoryScreen()),
       ),
