@@ -27,6 +27,7 @@ import '../../widgets/settings/settings_panel.dart';
 import '../../widgets/navigation_layout.dart';
 import '../../widgets/support_dialog.dart';
 import '../../widgets/focus/request_initial_focus.dart';
+import '../home/home_view_model.dart';
 import 'home_rows_image_type_screen.dart';
 import 'home_screen_sections_integration_screen.dart';
 import 'kefin_tweaks_integration_screen.dart';
@@ -464,10 +465,10 @@ class _CustomizationCategoryScreen extends StatelessWidget {
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.home),
-            title: Text(l10n.settingsHomePage),
+            title: const Text('Home Screen'),
             subtitle: Text(l10n.settingsHomePageSubtitle),
             onTap: () =>
-                context.pushSettingsScreen(const _HomePageCategoryScreen()),
+                context.pushSettingsScreen(const _HomeScreenCategoryScreen()),
           ),
           _TvSettingsListTile(
             leading: const Icon(Icons.video_library),
@@ -702,16 +703,71 @@ class _NavigationCategoryScreen extends StatelessWidget {
   }
 }
 
-class _HomePageCategoryScreen extends StatelessWidget {
-  const _HomePageCategoryScreen();
+class _HomeScreenCategoryScreen extends StatefulWidget {
+  const _HomeScreenCategoryScreen();
+
+  @override
+  State<_HomeScreenCategoryScreen> createState() =>
+      _HomeScreenCategoryScreenState();
+}
+
+class _HomeScreenCategoryScreenState extends State<_HomeScreenCategoryScreen> {
+  final _prefs = GetIt.instance<UserPreferences>();
+
+  void _reloadHomeRows() {
+    if (!GetIt.instance.isRegistered<HomeViewModel>()) return;
+    GetIt.instance<HomeViewModel>().load(preserveExisting: true);
+  }
+
+  void _onFavoritesRowsToggleChanged() {
+    _pushPersonalizationSync();
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _onCollectionsRowsToggleChanged() {
+    _pushPersonalizationSync();
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _onGenresRowsToggleChanged() {
+    _pushPersonalizationSync();
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _onFavoritesSortChanged() {
+    _pushPersonalizationSync();
+    _reloadHomeRows();
+  }
+
+  void _onCollectionsSortChanged() {
+    _pushPersonalizationSync();
+    _reloadHomeRows();
+  }
+
+  void _onGenresSortChanged() {
+    _pushPersonalizationSync();
+    _reloadHomeRows();
+  }
+
+  void _onGenresItemFilterChanged() {
+    _pushPersonalizationSync();
+    _reloadHomeRows();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final showFavoritesRows = _prefs.get(UserPreferences.displayFavoritesRows);
+    final showCollectionsRows = _prefs.get(UserPreferences.displayCollectionsRows);
+    final showGenresRows = _prefs.get(UserPreferences.displayGenresRows);
     return Scaffold(
-      appBar: buildSettingsAppBar(context, Text(l10n.settingsHomePage)),
+      appBar: buildSettingsAppBar(context, const Text('Home Screen')),
       body: ListView(
         children: [
+          const _SectionHeader('Home Rows'),
           _TvSettingsListTile(
             autofocus: true,
             leading: const Icon(Icons.list),
@@ -721,13 +777,6 @@ class _HomePageCategoryScreen extends StatelessWidget {
               const HomeSectionsScreen(showGeneralOptions: false),
             ),
           ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.mergeContinueWatchingNextUp,
-            title: l10n.mergeContinueWatchingAndNextUp,
-            subtitle: l10n.combineBothRows,
-            icon: Icons.merge_type,
-            onChanged: _pushPersonalizationSync,
-          ),
           _TvSettingsListTile(
             leading: const Icon(Icons.photo_library),
             title: Text(l10n.perRowImageTypeSelection),
@@ -735,6 +784,72 @@ class _HomePageCategoryScreen extends StatelessWidget {
             onTap: () =>
                 context.pushSettingsScreen(const HomeRowsImageTypeScreen()),
           ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.mergeContinueWatchingNextUp,
+            title: l10n.mergeContinueWatchingAndNextUp,
+            subtitle: l10n.combineBothRows,
+            icon: Icons.merge_type,
+            onChanged: _pushPersonalizationSync,
+          ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.displayFavoritesRows,
+            title: 'Display Favorites Rows',
+            subtitle: 'Show Favorite Movies, Series, and other favorite rows in Home Sections.',
+            icon: Icons.favorite,
+            onChanged: _onFavoritesRowsToggleChanged,
+          ),
+          if (showFavoritesRows)
+            EnumPreferenceTile<LibrarySortBy>(
+              preference: UserPreferences.favoritesRowSortBy,
+              title: 'Favorites Row Sorting',
+              description: 'Sort Favorites rows by date added, release date, alphabetically, and more.',
+              icon: Icons.sort,
+              labelOf: (v) => v.displayName,
+              onChanged: _onFavoritesSortChanged,
+            ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.displayCollectionsRows,
+            title: 'Display Collections Rows',
+            subtitle: 'Show Collections rows in Home Sections.',
+            icon: Icons.collections,
+            onChanged: _onCollectionsRowsToggleChanged,
+          ),
+          if (showCollectionsRows)
+            EnumPreferenceTile<LibrarySortBy>(
+              preference: UserPreferences.collectionsRowSortBy,
+              title: 'Collections Row Sorting',
+              description: 'Sort Collections rows by date added, release date, alphabetically, and more.',
+              icon: Icons.sort,
+              labelOf: (v) => v.displayName,
+              onChanged: _onCollectionsSortChanged,
+            ),
+          SwitchPreferenceTile(
+            preference: UserPreferences.displayGenresRows,
+            title: 'Display Genres Rows',
+            subtitle: 'Show Genres rows in Home Sections.',
+            icon: Icons.theater_comedy,
+            onChanged: _onGenresRowsToggleChanged,
+          ),
+          if (showGenresRows) ...[
+            EnumPreferenceTile<LibrarySortBy>(
+              preference: UserPreferences.genresRowSortBy,
+              title: 'Genres Row Sorting',
+              description: 'Sort Genres rows by date added, release date, alphabetically, and more.',
+              icon: Icons.sort,
+              labelOf: (v) => v.displayName,
+              onChanged: _onGenresSortChanged,
+            ),
+            EnumPreferenceTile<GenresRowItemFilter>(
+              preference: UserPreferences.genresRowItemFilter,
+              title: 'Genres Row Items',
+              description: 'Show Movies, Series, or both in Genres rows.',
+              icon: Icons.filter_list,
+              labelOf: (v) => v.displayName,
+              onChanged: _onGenresItemFilterChanged,
+            ),
+          ],
+
+          const _SectionHeader('Appearance'),
           SwitchPreferenceTile(
             preference: UserPreferences.seriesThumbnailsEnabled,
             title: l10n.seriesThumbnails,
@@ -759,6 +874,8 @@ class _HomePageCategoryScreen extends StatelessWidget {
             subtitle: l10n.showTitleMetadataOnHomeRows,
             icon: Icons.info_outline,
           ),
+
+          const _SectionHeader('Audio'),
           SwitchPreferenceTile(
             preference: UserPreferences.themeMusicOnHomeRows,
             title: l10n.themeMusicOnHomeRows,

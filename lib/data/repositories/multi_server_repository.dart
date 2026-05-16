@@ -45,6 +45,8 @@ class MultiServerRepository {
       'ParentThumbImageTag,SeriesId,SeriesPrimaryImageTag,'
       'ParentLogoItemId,ParentLogoImageTag';
   static const _defaultLimit = 15;
+  static const _defaultSortBy = 'SortName';
+  static const _defaultSortOrder = 'Ascending';
 
   List<ServerUserSession>? _cachedSessions;
   DateTime _cacheExpiry = DateTime(0);
@@ -270,6 +272,128 @@ class MultiServerRepository {
     );
   }
 
+  Future<HomeRow> getAggregatedFavorites({
+    required String rowId,
+    required String title,
+    List<String>? includeItemTypes,
+    int limit = _defaultLimit,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+  }) async {
+    return _getAggregatedSortedItemsRow(
+      id: rowId,
+      title: title,
+      rowType: HomeRowType.favorites,
+      includeItemTypes: includeItemTypes,
+      isFavorite: true,
+      limit: limit,
+      logPrefix: 'favorites',
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
+  }
+
+  Future<HomeRow> getAggregatedCollections({
+    int limit = _defaultLimit,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+  }) async {
+    return _getAggregatedSortedItemsRow(
+      id: 'collections',
+      title: _l10n.collections,
+      rowType: HomeRowType.collections,
+      includeItemTypes: const ['BoxSet'],
+      limit: limit,
+      logPrefix: 'collections',
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
+  }
+
+  Future<HomeRow> getAggregatedGenres({
+    int limit = _defaultLimit,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+    List<String>? includeItemTypes,
+  }) async {
+    final sessions = await getLoggedInServers();
+    final perServer = (limit * 3).clamp(1, 100);
+
+    final results = await Future.wait(
+      sessions.map(
+        (session) => _withTimeout(() async {
+          final response = await session.client.itemsApi.getGenres(
+            sortBy: sortBy,
+            sortOrder: sortOrder,
+            recursive: true,
+            limit: perServer,
+            fields: 'ItemCounts',
+            includeItemTypes: includeItemTypes,
+          );
+          return _parseItems(response, session.server.id);
+        }, label: 'genres from ${session.server.name}'),
+      ),
+    );
+
+    final all = _sortAggregatedItems(
+      results.expand((e) => e).toList(growable: false),
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
+
+    return HomeRow(
+      id: 'genres',
+      title: _l10n.genres,
+      items: all.take(limit).toList(),
+      rowType: HomeRowType.genres,
+    );
+  }
+
+  Future<HomeRow> _getAggregatedSortedItemsRow({
+    required String id,
+    required String title,
+    required HomeRowType rowType,
+    required String logPrefix,
+    List<String>? includeItemTypes,
+    bool? isFavorite,
+    int limit = _defaultLimit,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+  }) async {
+    final sessions = await getLoggedInServers();
+    final perServer = (limit * 3).clamp(1, 100);
+
+    final results = await Future.wait(
+      sessions.map(
+        (session) => _withTimeout(() async {
+          final response = await session.client.itemsApi.getItems(
+            includeItemTypes: includeItemTypes,
+            sortBy: sortBy,
+            sortOrder: sortOrder,
+            recursive: true,
+            limit: perServer,
+            isFavorite: isFavorite,
+            fields: _fields,
+          );
+          return _parseItems(response, session.server.id);
+        }, label: '$logPrefix from ${session.server.name}'),
+      ),
+    );
+
+    final all = _sortAggregatedItems(
+      results.expand((e) => e).toList(growable: false),
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
+
+    return HomeRow(
+      id: id,
+      title: title,
+      items: all.take(limit).toList(),
+      rowType: rowType,
+    );
+  }
+
   Future<HomeRow> getAggregatedLibraryTiles({
     HomeRowType rowType = HomeRowType.libraryTiles,
   }) async {
@@ -406,6 +530,75 @@ class MultiServerRepository {
         rawData: data,
       );
     }).toList();
+  }
+
+  List<AggregatedItem> _sortAggregatedItems(
+    List<AggregatedItem> items, {
+    required String sortBy,
+    required String sortOrder,
+  }) {
+    final sorted = List<AggregatedItem>.of(items);
+    if (sortBy == 'Random') {
+      sorted.shuffle();
+      return sorted;
+    }
+
+    int compare(AggregatedItem a, AggregatedItem b) {
+      switch (sortBy) {
+        case 'DateCreated':
+          return _compareNullableDate(
+            _parseDateCreated(a.rawData['DateCreated']),
+            _parseDateCreated(b.rawData['DateCreated']),
+          );
+        case 'PremiereDate':
+          return _compareNullableDate(a.premiereDate, b.premiereDate);
+        case 'CommunityRating':
+          return _compareNullableNum(a.communityRating, b.communityRating);
+        case 'CriticRating':
+          return _compareNullableNum(
+            a.criticRating?.toDouble(),
+            b.criticRating?.toDouble(),
+          );
+        case 'Runtime':
+        case 'RunTimeTicks':
+          return _compareNullableNum(
+            a.runTimeTicks?.toDouble(),
+            b.runTimeTicks?.toDouble(),
+          );
+        case 'ProductionYear':
+          return _compareNullableNum(
+            a.productionYear?.toDouble(),
+            b.productionYear?.toDouble(),
+          );
+        default:
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
+    }
+
+    sorted.sort(compare);
+    if (sortOrder.toLowerCase() == 'descending') {
+      return sorted.reversed.toList(growable: false);
+    }
+    return sorted;
+  }
+
+  static DateTime? _parseDateCreated(dynamic value) {
+    if (value is String) return DateTime.tryParse(value);
+    return null;
+  }
+
+  static int _compareNullableDate(DateTime? a, DateTime? b) {
+    if (a == null && b == null) return 0;
+    if (a == null) return 1;
+    if (b == null) return -1;
+    return a.compareTo(b);
+  }
+
+  static int _compareNullableNum(double? a, double? b) {
+    if (a == null && b == null) return 0;
+    if (a == null) return 1;
+    if (b == null) return -1;
+    return a.compareTo(b);
   }
 
   static int _compareByLastPlayed(AggregatedItem a, AggregatedItem b) {

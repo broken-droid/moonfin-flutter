@@ -29,7 +29,11 @@ enum HomeSectionPluginSource {
   hss('hss'),
 
   /// ranaldsgift "KefinTweaks" front-end plugin.
-  kefinTweaks('kefinTweaks');
+  kefinTweaks('kefinTweaks'),
+
+  collections('collections'),
+
+  genres('genres');
 
   const HomeSectionPluginSource(this.serializedName);
   final String serializedName;
@@ -178,6 +182,15 @@ class HomeSectionConfig {
         HomeSectionConfig(type: HomeSectionType.resumeBook, enabled: false, order: 8),
         HomeSectionConfig(type: HomeSectionType.activeRecordings, enabled: false, order: 9),
         HomeSectionConfig(type: HomeSectionType.playlists, enabled: false, order: 10),
+        HomeSectionConfig(type: HomeSectionType.favoriteMovies, enabled: false, order: 11),
+        HomeSectionConfig(type: HomeSectionType.favoriteSeries, enabled: false, order: 12),
+        HomeSectionConfig(type: HomeSectionType.favoriteEpisodes, enabled: false, order: 13),
+        HomeSectionConfig(type: HomeSectionType.favoritePeople, enabled: false, order: 14),
+        HomeSectionConfig(type: HomeSectionType.favoriteArtists, enabled: false, order: 15),
+        HomeSectionConfig(type: HomeSectionType.favoriteAlbums, enabled: false, order: 16),
+        HomeSectionConfig(type: HomeSectionType.favoriteSongs, enabled: false, order: 17),
+        HomeSectionConfig(type: HomeSectionType.collections, enabled: false, order: 18),
+        HomeSectionConfig(type: HomeSectionType.genres, enabled: false, order: 19),
       ];
 
   static List<HomeSectionConfig> fromJsonString(String jsonString) {

@@ -9,6 +9,7 @@ import '../../../data/models/home_row.dart';
 import '../../../data/repositories/multi_server_repository.dart';
 import '../../../data/services/row_data_source.dart';
 import '../../../data/viewmodels/media_bar_view_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../l10n/current_app_localizations.dart';
 import '../../../preference/home_section_config.dart';
 import '../../../preference/preference_constants.dart';
@@ -35,6 +36,27 @@ class HomeViewModel extends ChangeNotifier {
 
   bool get _multiServerEnabled =>
       _prefs.get(UserPreferences.enableMultiServerLibraries);
+
+  static bool _isFavoriteSectionType(HomeSectionType type) {
+    return switch (type) {
+      HomeSectionType.favoriteMovies ||
+      HomeSectionType.favoriteSeries ||
+      HomeSectionType.favoriteEpisodes ||
+      HomeSectionType.favoritePeople ||
+      HomeSectionType.favoriteArtists ||
+      HomeSectionType.favoriteAlbums ||
+      HomeSectionType.favoriteSongs => true,
+      _ => false,
+    };
+  }
+
+  static bool _isCollectionsSectionType(HomeSectionType type) {
+    return type == HomeSectionType.collections;
+  }
+
+  static bool _isGenresSectionType(HomeSectionType type) {
+    return type == HomeSectionType.genres;
+  }
 
   ImageApi imageApiForServer(String serverId) {
     if (!_multiServerEnabled) return _dataSource.imageApi;
@@ -72,12 +94,29 @@ class HomeViewModel extends ChangeNotifier {
               HomeSectionConfig(type: HomeSectionType.latestMedia, enabled: true, order: 2),
             ]
           : activeConfigs;
+      final showFavoritesRows =
+          _prefs.get(UserPreferences.displayFavoritesRows);
+      final showCollectionsRows =
+          _prefs.get(UserPreferences.displayCollectionsRows);
+        final showGenresRows =
+          _prefs.get(UserPreferences.displayGenresRows);
 
       // Plugin-dynamic sections only make sense on the active server.
       final visibleConfigsRaw = configs
-          .where((c) =>
-              c.isBuiltin ||
-              (c.serverId != null && c.serverId == _serverId))
+          .where(
+          (c) =>
+            (c.isBuiltin || (c.serverId != null && c.serverId == _serverId)) &&
+            (showFavoritesRows || !_isFavoriteSectionType(c.type)) &&
+            (showCollectionsRows ||
+              !((c.isBuiltin && _isCollectionsSectionType(c.type)) ||
+                (c.isPluginDynamic &&
+                  c.pluginSource ==
+                    HomeSectionPluginSource.collections))) &&
+            (showGenresRows ||
+              !((c.isBuiltin && _isGenresSectionType(c.type)) ||
+                (c.isPluginDynamic &&
+                  c.pluginSource == HomeSectionPluginSource.genres))),
+          )
           .toList(growable: false);
 
       // Filter out plugin-dynamic rows that duplicate already-enabled built-ins
@@ -226,7 +265,7 @@ class HomeViewModel extends ChangeNotifier {
 
   bool _rowBelongsToConfig(HomeRow row, HomeSectionConfig cfg) {
     if (cfg.isPluginDynamic) {
-      return row.rowType == HomeRowType.pluginDynamic && row.id == cfg.stableId;
+      return row.id == cfg.stableId;
     }
 
     switch (cfg.type) {
@@ -238,6 +277,19 @@ class HomeViewModel extends ChangeNotifier {
         return row.rowType == HomeRowType.nextUp;
       case HomeSectionType.latestMedia:
         return row.rowType == HomeRowType.latestMedia;
+      case HomeSectionType.favoriteMovies:
+      case HomeSectionType.favoriteSeries:
+      case HomeSectionType.favoriteEpisodes:
+      case HomeSectionType.favoritePeople:
+      case HomeSectionType.favoriteArtists:
+      case HomeSectionType.favoriteAlbums:
+      case HomeSectionType.favoriteSongs:
+        return row.rowType == HomeRowType.favorites &&
+            row.id == _favoriteRowIdForSection(cfg.type);
+      case HomeSectionType.collections:
+        return row.rowType == HomeRowType.collections;
+      case HomeSectionType.genres:
+        return row.rowType == HomeRowType.genres;
       case HomeSectionType.libraryTilesSmall:
         return row.rowType == HomeRowType.libraryTiles;
       case HomeSectionType.libraryButtons:
@@ -338,6 +390,24 @@ class HomeViewModel extends ChangeNotifier {
         return HomeSectionType.recentlyReleased;
       case 'Playlists':
         return HomeSectionType.playlists;
+      case 'FavoriteMovies':
+        return HomeSectionType.favoriteMovies;
+      case 'FavoriteSeries':
+        return HomeSectionType.favoriteSeries;
+      case 'FavoriteEpisodes':
+        return HomeSectionType.favoriteEpisodes;
+      case 'FavoritePeople':
+        return HomeSectionType.favoritePeople;
+      case 'FavoriteArtists':
+        return HomeSectionType.favoriteArtists;
+      case 'FavoriteAlbums':
+        return HomeSectionType.favoriteAlbums;
+      case 'FavoriteSongs':
+        return HomeSectionType.favoriteSongs;
+      case 'Collections':
+        return HomeSectionType.collections;
+      case 'Genres':
+        return HomeSectionType.genres;
       case 'ActiveRecordings':
         return HomeSectionType.activeRecordings;
       default:
@@ -351,6 +421,9 @@ class HomeViewModel extends ChangeNotifier {
     }
 
     switch (cfg.pluginSource) {
+      case HomeSectionPluginSource.collections:
+      case HomeSectionPluginSource.genres:
+        return const <String>{};
       case HomeSectionPluginSource.hss:
         final builtin = _builtinForPluginSection(cfg.pluginSection);
         return builtin == null ? const <String>{} : _duplicateKeysForBuiltin(builtin);
@@ -384,6 +457,24 @@ class HomeViewModel extends ChangeNotifier {
         return const {'libraryButtons'};
       case HomeSectionType.playlists:
         return const {'playlists'};
+      case HomeSectionType.favoriteMovies:
+        return const {'favoriteMovies'};
+      case HomeSectionType.favoriteSeries:
+        return const {'favoriteSeries'};
+      case HomeSectionType.favoriteEpisodes:
+        return const {'favoriteEpisodes'};
+      case HomeSectionType.favoritePeople:
+        return const {'favoritePeople'};
+      case HomeSectionType.favoriteArtists:
+        return const {'favoriteArtists'};
+      case HomeSectionType.favoriteAlbums:
+        return const {'favoriteAlbums'};
+      case HomeSectionType.favoriteSongs:
+        return const {'favoriteSongs'};
+      case HomeSectionType.collections:
+        return const {'collections'};
+      case HomeSectionType.genres:
+        return const {'genres'};
       case HomeSectionType.activeRecordings:
         return const {'activeRecordings'};
       case HomeSectionType.mediaBar:
@@ -431,6 +522,13 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<List<HomeRow>> _loadSection(HomeSectionType section) async {
     final l10n = currentAppLocalizations();
+    final favoritesSortBy =
+        _prefs.get(UserPreferences.favoritesRowSortBy).apiValue;
+    final collectionsSortBy =
+        _prefs.get(UserPreferences.collectionsRowSortBy).apiValue;
+    final genresSortBy = _prefs.get(UserPreferences.genresRowSortBy).apiValue;
+    final genresItemFilter = _prefs.get(UserPreferences.genresRowItemFilter).includeItemTypes;
+    const sortOrder = 'Ascending';
     switch (section) {
       case HomeSectionType.resume:
         return [_multiServerEnabled
@@ -452,6 +550,58 @@ class HomeViewModel extends ChangeNotifier {
         return [_multiServerEnabled
             ? await _multiServerRepo.getAggregatedPlaylists()
             : await _dataSource.loadPlaylists(_serverId)];
+      case HomeSectionType.favoriteMovies:
+      case HomeSectionType.favoriteSeries:
+      case HomeSectionType.favoriteEpisodes:
+      case HomeSectionType.favoritePeople:
+      case HomeSectionType.favoriteArtists:
+      case HomeSectionType.favoriteAlbums:
+      case HomeSectionType.favoriteSongs:
+        final favoriteFilter = _favoriteFilterForSection(section);
+        final rowId = _favoriteRowIdForSection(section);
+        final title = _favoriteTitleForSection(section, l10n);
+        return [
+          _multiServerEnabled
+              ? await _multiServerRepo.getAggregatedFavorites(
+                  rowId: rowId,
+                  title: title,
+                  includeItemTypes: favoriteFilter.itemTypes,
+                  sortBy: favoritesSortBy,
+                  sortOrder: sortOrder,
+                )
+              : await _dataSource.loadFavorites(
+                  _serverId,
+                  rowId: rowId,
+                  title: title,
+                  includeItemTypes: favoriteFilter.itemTypes,
+                  sortBy: favoritesSortBy,
+                  sortOrder: sortOrder,
+                ),
+        ];
+      case HomeSectionType.collections:
+        return [_multiServerEnabled
+            ? await _multiServerRepo.getAggregatedCollections(
+                sortBy: collectionsSortBy,
+                sortOrder: sortOrder,
+              )
+            : await _dataSource.loadCollections(
+                _serverId,
+                sortBy: collectionsSortBy,
+                sortOrder: sortOrder,
+              )];
+      case HomeSectionType.genres:
+        return [_multiServerEnabled
+            ? await _multiServerRepo.getAggregatedGenres(
+                sortBy: genresSortBy,
+                sortOrder: sortOrder,
+                includeItemTypes: genresItemFilter,
+              )
+            : await _dataSource.loadGenres(
+                _serverId,
+                sortBy: genresSortBy,
+                sortOrder: sortOrder,
+                includeItemTypes: genresItemFilter,
+              )];
       case HomeSectionType.libraryTilesSmall:
         return [_multiServerEnabled
             ? await _multiServerRepo.getAggregatedLibraryTiles(rowType: HomeRowType.libraryTiles)
@@ -568,6 +718,33 @@ class HomeViewModel extends ChangeNotifier {
           id: 'playlists', title: l10n.playlists,
           rowType: HomeRowType.playlists, isLoading: true,
         );
+      case HomeSectionType.favoriteMovies:
+      case HomeSectionType.favoriteSeries:
+      case HomeSectionType.favoriteEpisodes:
+      case HomeSectionType.favoritePeople:
+      case HomeSectionType.favoriteArtists:
+      case HomeSectionType.favoriteAlbums:
+      case HomeSectionType.favoriteSongs:
+        return HomeRow(
+          id: _favoriteRowIdForSection(section),
+          title: _favoriteTitleForSection(section, l10n),
+          rowType: HomeRowType.favorites,
+          isLoading: true,
+        );
+      case HomeSectionType.collections:
+        return HomeRow(
+          id: 'collections',
+          title: l10n.collections,
+          rowType: HomeRowType.collections,
+          isLoading: true,
+        );
+      case HomeSectionType.genres:
+        return HomeRow(
+          id: 'genres',
+          title: l10n.genres,
+          rowType: HomeRowType.genres,
+          isLoading: true,
+        );
       case HomeSectionType.libraryTilesSmall:
         return HomeRow(
           id: 'libraryTiles', title: l10n.myMedia,
@@ -586,6 +763,40 @@ class HomeViewModel extends ChangeNotifier {
       case HomeSectionType.none:
         return null;
     }
+  }
+
+  static FavoriteTypeFilter _favoriteFilterForSection(HomeSectionType type) {
+    return switch (type) {
+      HomeSectionType.favoriteMovies => FavoriteTypeFilter.movie,
+      HomeSectionType.favoriteSeries => FavoriteTypeFilter.series,
+      HomeSectionType.favoriteEpisodes => FavoriteTypeFilter.episode,
+      HomeSectionType.favoritePeople => FavoriteTypeFilter.person,
+      HomeSectionType.favoriteArtists => FavoriteTypeFilter.musicArtist,
+      HomeSectionType.favoriteAlbums => FavoriteTypeFilter.musicAlbum,
+      HomeSectionType.favoriteSongs => FavoriteTypeFilter.audio,
+      _ => FavoriteTypeFilter.all,
+    };
+  }
+
+  static String _favoriteRowIdForSection(HomeSectionType type) {
+    return switch (type) {
+      HomeSectionType.favoriteMovies => 'favorites_movies',
+      HomeSectionType.favoriteSeries => 'favorites_series',
+      HomeSectionType.favoriteEpisodes => 'favorites_episodes',
+      HomeSectionType.favoritePeople => 'favorites_people',
+      HomeSectionType.favoriteArtists => 'favorites_artists',
+      HomeSectionType.favoriteAlbums => 'favorites_albums',
+      HomeSectionType.favoriteSongs => 'favorites_songs',
+      _ => 'favorites',
+    };
+  }
+
+  static String _favoriteTitleForSection(
+    HomeSectionType type,
+    AppLocalizations l10n,
+  ) {
+    final filter = _favoriteFilterForSection(type);
+    return 'Favorite ${filter.displayName}';
   }
 
   void _loadResumeAndNextUpInBackground() {

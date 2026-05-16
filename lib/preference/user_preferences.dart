@@ -74,6 +74,45 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: PlatformDetection.isTV,
   );
 
+  static final displayFavoritesRows = Preference(
+    key: 'pref_display_favorites_rows',
+    defaultValue: true,
+  );
+
+  static final displayCollectionsRows = Preference(
+    key: 'pref_display_collections_rows',
+    defaultValue: true,
+  );
+
+  static final displayGenresRows = Preference(
+    key: 'pref_display_genres_rows',
+    defaultValue: true,
+  );
+
+  static final favoritesRowSortBy = EnumPreference(
+    key: 'pref_favorites_row_sort_by',
+    defaultValue: LibrarySortBy.name,
+    values: LibrarySortBy.values,
+  );
+
+  static final collectionsRowSortBy = EnumPreference(
+    key: 'pref_collections_row_sort_by',
+    defaultValue: LibrarySortBy.name,
+    values: LibrarySortBy.values,
+  );
+
+  static final genresRowSortBy = EnumPreference(
+    key: 'pref_genres_row_sort_by',
+    defaultValue: LibrarySortBy.name,
+    values: LibrarySortBy.values,
+  );
+
+  static final genresRowItemFilter = EnumPreference(
+    key: 'pref_genres_row_item_filter',
+    defaultValue: GenresRowItemFilter.both,
+    values: GenresRowItemFilter.values,
+  );
+
   static final watchedIndicatorBehavior = EnumPreference(
     key: 'pref_watched_indicator_behavior',
     defaultValue: WatchedIndicatorBehavior.always,

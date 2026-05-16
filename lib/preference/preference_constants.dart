@@ -180,6 +180,15 @@ enum HomeSectionType {
   activeRecordings('activerecordings'),
   nextUp('nextup'),
   playlists('playlists'),
+  favoriteMovies('favoritemovies'),
+  favoriteSeries('favoriteseries'),
+  favoriteEpisodes('favoriteepisodes'),
+  favoritePeople('favoritepeople'),
+  favoriteArtists('favoriteartists'),
+  favoriteAlbums('favoritealbums'),
+  favoriteSongs('favoritesongs'),
+  collections('collections'),
+  genres('genres'),
   liveTv('livetv'),
   none('none');
 
@@ -207,6 +216,16 @@ enum LibrarySortBy {
 
   const LibrarySortBy(this.apiValue, this.displayName);
   final String apiValue;
+  final String displayName;
+}
+
+enum GenresRowItemFilter {
+  movies(['Movie'], 'Movies'),
+  series(['Series'], 'Series'),
+  both(['Movie', 'Series'], 'Both');
+
+  const GenresRowItemFilter(this.includeItemTypes, this.displayName);
+  final List<String> includeItemTypes;
   final String displayName;
 }
 

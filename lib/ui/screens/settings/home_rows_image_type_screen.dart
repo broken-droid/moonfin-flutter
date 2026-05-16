@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:moonfin_design/moonfin_design.dart';
 import 'package:server_core/server_core.dart' hide ImageType;
 
 import '../../../data/services/plugin_sync_service.dart';
@@ -62,6 +61,15 @@ class _HomeRowsImageTypeScreenState extends State<HomeRowsImageTypeScreen> {
     HomeSectionType.activeRecordings => l10n.activeRecordings,
     HomeSectionType.nextUp => l10n.nextUp,
     HomeSectionType.playlists => l10n.playlists,
+    HomeSectionType.favoriteMovies => 'Favorite ${FavoriteTypeFilter.movie.displayName}',
+    HomeSectionType.favoriteSeries => 'Favorite ${FavoriteTypeFilter.series.displayName}',
+    HomeSectionType.favoriteEpisodes => 'Favorite ${FavoriteTypeFilter.episode.displayName}',
+    HomeSectionType.favoritePeople => 'Favorite ${FavoriteTypeFilter.person.displayName}',
+    HomeSectionType.favoriteArtists => 'Favorite ${FavoriteTypeFilter.musicArtist.displayName}',
+    HomeSectionType.favoriteAlbums => 'Favorite ${FavoriteTypeFilter.musicAlbum.displayName}',
+    HomeSectionType.favoriteSongs => 'Favorite ${FavoriteTypeFilter.audio.displayName}',
+    HomeSectionType.collections => l10n.collections,
+    HomeSectionType.genres => l10n.genres,
     HomeSectionType.liveTv => l10n.liveTV,
     HomeSectionType.none => l10n.none,
   };

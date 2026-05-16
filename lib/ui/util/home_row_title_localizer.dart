@@ -19,6 +19,10 @@ String localizeHomeRowTitle({
       return l10n.latestMedia;
     case 'playlists':
       return l10n.playlists;
+    case 'collections':
+      return l10n.collections;
+    case 'genres':
+      return l10n.genres;
     case 'libraryTiles':
     case 'libraryTilesSmall':
       return l10n.myMedia;
@@ -32,8 +36,6 @@ String localizeHomeRowTitle({
 
   if (row.id.startsWith('resume_')) return l10n.continueWatching;
   if (row.id.startsWith('nextUp_')) return l10n.nextUp;
-  if (row.id.startsWith('favorites_')) return l10n.favorites;
-  if (row.id.startsWith('collections_')) return l10n.collections;
   if (row.id.startsWith('lastPlayed_')) return l10n.lastPlayed;
   if (row.id.startsWith('albumartist_')) return l10n.albumArtists;
   if (row.id.startsWith('musicartist_')) return l10n.artists;

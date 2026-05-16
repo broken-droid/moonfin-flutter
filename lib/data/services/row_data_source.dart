@@ -19,6 +19,8 @@ class RowDataSource {
 
   static const _defaultLimit = 15;
   static const _maxItems = 100;
+  static const _defaultSortBy = 'SortName';
+  static const _defaultSortOrder = 'Ascending';
 
   static const _fields =
       'Type,UserData,Overview,Genres,CommunityRating,CriticRating,'
@@ -176,6 +178,156 @@ class RowDataSource {
       ),
     );
     return row;
+  }
+
+  Future<HomeRow> loadFavorites(
+    String serverId, {
+    required String rowId,
+    required String title,
+    List<String>? includeItemTypes,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+  }) async {
+    return _loadSortedItemsRow(
+      serverId: serverId,
+      id: rowId,
+      title: title,
+      rowType: HomeRowType.favorites,
+      includeItemTypes: includeItemTypes,
+      isFavorite: true,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
+  }
+
+  Future<HomeRow> loadCollections(
+    String serverId, {
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+  }) async {
+    return _loadSortedItemsRow(
+      serverId: serverId,
+      id: 'collections',
+      title: _l10n.collections,
+      rowType: HomeRowType.collections,
+      includeItemTypes: const ['BoxSet'],
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
+  }
+
+  Future<HomeRow> loadGenres(
+    String serverId, {
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+    List<String>? includeItemTypes,
+  }) async {
+    Map<String, dynamic> response;
+    try {
+      response = await _client.itemsApi.getGenres(
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+        recursive: true,
+        limit: _defaultLimit,
+        fields: 'ItemCounts',
+        includeItemTypes: includeItemTypes,
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode ?? 0;
+      if (statusCode < 500) rethrow;
+      response = await _client.itemsApi.getGenres(
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+        recursive: true,
+        limit: _defaultLimit,
+        includeItemTypes: includeItemTypes,
+      );
+    }
+
+    return _buildRow(
+      id: 'genres',
+      title: _l10n.genres,
+      response: response,
+      serverId: serverId,
+      rowType: HomeRowType.genres,
+    );
+  }
+
+  Future<HomeRow> loadCollectionRow(
+    String serverId, {
+    required String collectionId,
+    required String title,
+    required String rowId,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+  }) async {
+    final response = await _getItemsWithFallback(
+      parentId: collectionId,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+      recursive: true,
+      limit: _defaultLimit,
+    );
+    return _buildRow(
+      id: rowId,
+      title: title,
+      response: response,
+      serverId: serverId,
+      rowType: HomeRowType.collections,
+    );
+  }
+
+  Future<HomeRow> loadGenreRow(
+    String serverId, {
+    required String genreId,
+    required String title,
+    required String rowId,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+    List<String>? includeItemTypes,
+  }) async {
+    final response = await _getItemsWithFallback(
+      genreIds: [genreId],
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+      recursive: true,
+      limit: _defaultLimit,
+      includeItemTypes: includeItemTypes,
+    );
+    return _buildRow(
+      id: rowId,
+      title: title,
+      response: response,
+      serverId: serverId,
+      rowType: HomeRowType.genres,
+    );
+  }
+
+  Future<HomeRow> _loadSortedItemsRow({
+    required String serverId,
+    required String id,
+    required String title,
+    required HomeRowType rowType,
+    List<String>? includeItemTypes,
+    bool? isFavorite,
+    String sortBy = _defaultSortBy,
+    String sortOrder = _defaultSortOrder,
+  }) async {
+    final response = await _getItemsWithFallback(
+      includeItemTypes: includeItemTypes,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+      recursive: true,
+      limit: _defaultLimit,
+      isFavorite: isFavorite,
+    );
+    return _buildRow(
+      id: id,
+      title: title,
+      response: response,
+      serverId: serverId,
+      rowType: rowType,
+    );
   }
 
   Future<HomeRow> loadLibraryTiles(
@@ -351,6 +503,9 @@ class RowDataSource {
       case HomeRowType.resumeAudio:
       case HomeRowType.nextUp:
       case HomeRowType.latestMedia:
+      case HomeRowType.favorites:
+      case HomeRowType.collections:
+      case HomeRowType.genres:
       case HomeRowType.libraryTiles:
       case HomeRowType.libraryTilesSmall:
       case HomeRowType.liveTv:
@@ -379,6 +534,7 @@ class RowDataSource {
   Future<Map<String, dynamic>> _getItemsWithFallback({
     String? parentId,
     List<String>? includeItemTypes,
+    List<String>? genreIds,
     List<String>? filters,
     String? sortBy,
     String? sortOrder,
@@ -391,6 +547,7 @@ class RowDataSource {
       final response = await _client.itemsApi.getItems(
         parentId: parentId,
         includeItemTypes: includeItemTypes,
+        genreIds: genreIds,
         filters: filters,
         sortBy: sortBy,
         sortOrder: sortOrder,
@@ -412,6 +569,7 @@ class RowDataSource {
       final response = await _client.itemsApi.getItems(
         parentId: parentId,
         includeItemTypes: includeItemTypes,
+        genreIds: genreIds,
         filters: filters,
         sortBy: fallbackSort,
         sortOrder: sortOrder,
@@ -608,6 +766,72 @@ class RowDataSource {
     HomeSectionPluginSource pluginSource = HomeSectionPluginSource.hss,
   }) async {
     switch (pluginSource) {
+      case HomeSectionPluginSource.collections:
+        final collectionId = additionalData?.trim();
+        if (collectionId == null || collectionId.isEmpty) {
+          return HomeRow(
+            id: rowId,
+            title: title,
+            rowType: HomeRowType.collections,
+          );
+        }
+        try {
+          var sortBy = _defaultSortBy;
+          if (GetIt.instance.isRegistered<UserPreferences>()) {
+            sortBy = GetIt.instance<UserPreferences>()
+                .get(UserPreferences.collectionsRowSortBy)
+                .apiValue;
+          }
+          final row = await loadCollectionRow(
+            serverId,
+            collectionId: collectionId,
+            title: title,
+            rowId: rowId,
+            sortBy: sortBy,
+            sortOrder: _defaultSortOrder,
+          );
+          return row;
+        } catch (_) {
+          return HomeRow(
+            id: rowId,
+            title: title,
+            rowType: HomeRowType.collections,
+          );
+        }
+      case HomeSectionPluginSource.genres:
+        final genreId = additionalData?.trim();
+        if (genreId == null || genreId.isEmpty) {
+          return HomeRow(
+            id: rowId,
+            title: title,
+            rowType: HomeRowType.genres,
+          );
+        }
+        try {
+          var sortBy = _defaultSortBy;
+          List<String>? includeItemTypes;
+          if (GetIt.instance.isRegistered<UserPreferences>()) {
+            final prefs = GetIt.instance<UserPreferences>();
+            sortBy = prefs.get(UserPreferences.genresRowSortBy).apiValue;
+            includeItemTypes = prefs.get(UserPreferences.genresRowItemFilter).includeItemTypes;
+          }
+          final row = await loadGenreRow(
+            serverId,
+            genreId: genreId,
+            title: title,
+            rowId: rowId,
+            sortBy: sortBy,
+            sortOrder: _defaultSortOrder,
+            includeItemTypes: includeItemTypes,
+          );
+          return row;
+        } catch (_) {
+          return HomeRow(
+            id: rowId,
+            title: title,
+            rowType: HomeRowType.genres,
+          );
+        }
       case HomeSectionPluginSource.kefinTweaks:
         return _loadKefinSection(
           rowId: rowId,
