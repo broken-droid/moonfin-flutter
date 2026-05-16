@@ -2,8 +2,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(moonfin LANGUAGES CXX)
 
-# for CLI - flutter run --dart-define=MOONFIN_WINDOWS_BETA=true
-# for launch configurations - add an env for "MOONFIN_WINDOWS_BETA": "true"
+# for CLI - flutter run --dart-define=MOONFIN_BETA_BUILD=true
+# for launch configurations - add an env for "MOONFIN_BETA_BUILD": "true"
 if(DEFINED ENV{MOONFIN_BETA_BUILD})
   set(BINARY_NAME "Moonfin-Beta")
   add_definitions(-DMOONFIN_BETA_BUILD)
