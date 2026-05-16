@@ -17,6 +17,9 @@ class StoragePathService {
 
   void clearCache() => _cachedRoot = null;
 
+  static String get appFolderName =>
+      const bool.fromEnvironment('MOONFIN_BETA_BUILD') ? 'MoonfinBeta' : 'Moonfin';
+
   Future<Directory> getOfflineRoot() async {
     if (_cachedRoot != null) return _cachedRoot!;
 
@@ -45,10 +48,10 @@ class StoragePathService {
     if (PlatformDetection.isAndroid) {
       final extDir = await getExternalStorageDirectory();
       final base = extDir ?? await getApplicationDocumentsDirectory();
-      dir = Directory('${base.path}/Moonfin');
+      dir = Directory('${base.path}/$appFolderName');
     } else if (PlatformDetection.isIOS) {
       final docs = await getApplicationDocumentsDirectory();
-      dir = Directory('${docs.path}/Moonfin');
+      dir = Directory('${docs.path}/$appFolderName');
     } else {
       final support = await getApplicationSupportDirectory();
       dir = Directory('${support.path}/Downloads');
@@ -82,7 +85,7 @@ class StoragePathService {
 
   Future<File> getDatabaseFile() async {
     final docs = await getApplicationDocumentsDirectory();
-    final dbDir = Directory('${docs.path}/Moonfin/DB');
+    final dbDir = Directory('${docs.path}/$appFolderName/DB');
     if (!await dbDir.exists()) await dbDir.create(recursive: true);
     return File('${dbDir.path}/offline.db');
   }
@@ -90,7 +93,7 @@ class StoragePathService {
   Future<Directory> getImageCacheDir() async {
     if (PlatformDetection.isAndroid && _useMediaStore) {
       final support = await getApplicationSupportDirectory();
-      final dir = Directory('${support.path}/Moonfin/images');
+      final dir = Directory('${support.path}/$appFolderName/images');
       if (!await dir.exists()) await dir.create(recursive: true);
       return dir;
     }
