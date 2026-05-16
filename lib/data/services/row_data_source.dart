@@ -293,6 +293,7 @@ class RowDataSource {
       recursive: true,
       limit: _defaultLimit,
       includeItemTypes: includeItemTypes,
+      excludeItemTypes: const ['Episode'],
     );
     return _buildRow(
       id: rowId,
@@ -534,6 +535,7 @@ class RowDataSource {
   Future<Map<String, dynamic>> _getItemsWithFallback({
     String? parentId,
     List<String>? includeItemTypes,
+    List<String>? excludeItemTypes,
     List<String>? genreIds,
     List<String>? filters,
     String? sortBy,
@@ -547,6 +549,7 @@ class RowDataSource {
       final response = await _client.itemsApi.getItems(
         parentId: parentId,
         includeItemTypes: includeItemTypes,
+        excludeItemTypes: excludeItemTypes,
         genreIds: genreIds,
         filters: filters,
         sortBy: sortBy,
@@ -569,6 +572,7 @@ class RowDataSource {
       final response = await _client.itemsApi.getItems(
         parentId: parentId,
         includeItemTypes: includeItemTypes,
+        excludeItemTypes: excludeItemTypes,
         genreIds: genreIds,
         filters: filters,
         sortBy: fallbackSort,
