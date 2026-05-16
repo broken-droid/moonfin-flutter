@@ -950,10 +950,14 @@ class _KeyboardGrid extends StatelessWidget {
     required this.onAlternateTapped,
   });
 
+  double _getKeyUnitSpan(String key) {
+    if (key == 'SPACE') return 3.0;
+    if (['123', 'ABC', 'DONE', 'IME'].contains(key)) return 1.22;
+    return 1.0;
+  }
+
   double _getKeyWidth(String key, double base) {
-    if (key == 'SPACE') return base * 3.0;
-    if (['123', 'ABC', 'DONE', 'IME'].contains(key)) return base * 1.22;
-    return base;
+    return base * _getKeyUnitSpan(key);
   }
 
   @override
@@ -961,10 +965,20 @@ class _KeyboardGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const double horizontalGapFactor = 0.1;
-        const int maxKeysPerRow = 10;
-        final double baseWidth =
-            constraints.maxWidth /
-            (maxKeysPerRow + (maxKeysPerRow - 1) * horizontalGapFactor);
+        double maxRowSpan = 1.0;
+        for (final row in layout) {
+          final keySpan = row.fold<double>(
+            0,
+            (total, key) => total + _getKeyUnitSpan(key),
+          );
+          final gapSpan = (row.length - 1) * horizontalGapFactor;
+          final rowSpan = keySpan + gapSpan;
+          if (rowSpan > maxRowSpan) {
+            maxRowSpan = rowSpan;
+          }
+        }
+
+        final double baseWidth = constraints.maxWidth / maxRowSpan;
         final double spacing = baseWidth * horizontalGapFactor;
 
         return Column(
