@@ -13,10 +13,56 @@ import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../widgets/overlay_sheet.dart';
 import '../../widgets/poster_size_settings_dialog.dart';
+import '../../widgets/settings/preference_tiles.dart';
 import '../../widgets/settings/settings_panel.dart';
 import '../../../l10n/app_localizations.dart';
 import 'home_rows_image_type_screen.dart';
 import 'settings_app_bar.dart';
+
+const double _kHomeSectionTileRadius = 16;
+const EdgeInsets _kHomeSectionTileContentPadding = EdgeInsets.symmetric(
+  horizontal: 16,
+  vertical: 8,
+);
+const EdgeInsets _kHomeSectionTileOuterPadding = EdgeInsets.fromLTRB(12, 4, 12, 4);
+
+BoxDecoration _homeSectionTileDecoration(
+  BuildContext context, {
+  required bool focused,
+}) {
+  final colorScheme = Theme.of(context).colorScheme;
+  final borderTokens = ThemeRegistry.active.borders;
+  final baseBorder = borderTokens.cardBorder.color;
+  final unfocusedBorderColor = baseBorder.a == 0
+      ? AppColorScheme.onSurface.withValues(alpha: 0.16)
+      : baseBorder.withValues(alpha: 0.55);
+
+  return BoxDecoration(
+    color: focused
+        ? AppColorScheme.onSurface
+        : colorScheme.surfaceContainerLow.withValues(alpha: 0.82),
+    borderRadius: BorderRadius.circular(_kHomeSectionTileRadius),
+    border: Border.fromBorderSide(
+      (focused ? borderTokens.focusBorder : borderTokens.cardBorder).copyWith(
+        color: focused
+            ? AppColorScheme.accent.withValues(alpha: 0.72)
+            : unfocusedBorderColor,
+        width: 1.0,
+      ),
+    ),
+    boxShadow: focused
+        ? (borderTokens.focusGlow.isNotEmpty
+              ? borderTokens.focusGlow
+              : [
+                  BoxShadow(
+                    color: AppColorScheme.accent.withValues(alpha: 0.22),
+                    blurRadius: 14,
+                    spreadRadius: 0.5,
+                  ),
+                ])
+        : null,
+  );
+}
 
 class HomeSectionsScreen extends StatefulWidget {
   final bool showGeneralOptions;
@@ -152,9 +198,13 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
     if (!mounted) return;
     var changed = false;
     setState(() {
-      changed = _mergeDiscoveredPluginSections() ||
-          _mergeCollectionSections(discoveredCollections) ||
-          _mergeGenreSections(discoveredGenres);
+      final mergedPluginSections = _mergeDiscoveredPluginSections();
+      final mergedCollectionSections = _mergeCollectionSections(discoveredCollections);
+      final mergedGenreSections = _mergeGenreSections(discoveredGenres);
+      changed =
+          mergedPluginSections ||
+          mergedCollectionSections ||
+          mergedGenreSections;
       _rebuildFocusNodes();
     });
     if (changed) {
@@ -177,26 +227,45 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
 
     try {
       final client = GetIt.instance<MediaServerClient>();
-      final response = await client.itemsApi.getItems(
-        includeItemTypes: const ['BoxSet'],
-        sortBy: 'SortName',
-        sortOrder: 'Ascending',
-        recursive: true,
-        limit: 250,
-      );
-      final items = (response['Items'] as List?) ?? const [];
-      return items
-          .whereType<Map<String, dynamic>>()
-          .where((item) =>
-              (item['Id']?.toString() ?? '').isNotEmpty &&
-              (item['Name']?.toString() ?? '').isNotEmpty)
-          .map(
-            (item) => _DiscoveredCollectionRow(
-              id: item['Id'].toString(),
-              name: item['Name'].toString(),
-            ),
-          )
-          .toList(growable: false);
+      const pageSize = 250;
+      var startIndex = 0;
+      int? total;
+      final all = <_DiscoveredCollectionRow>[];
+
+      while (true) {
+        final response = await client.itemsApi.getItems(
+          includeItemTypes: const ['BoxSet'],
+          sortBy: 'SortName',
+          sortOrder: 'Ascending',
+          recursive: true,
+          startIndex: startIndex,
+          limit: pageSize,
+        );
+
+        total ??= response['TotalRecordCount'] as int?;
+        final items = (response['Items'] as List?) ?? const [];
+        if (items.isEmpty) break;
+
+        all.addAll(
+          items
+              .whereType<Map<String, dynamic>>()
+              .where((item) =>
+                  (item['Id']?.toString() ?? '').isNotEmpty &&
+                  (item['Name']?.toString() ?? '').isNotEmpty)
+              .map(
+                (item) => _DiscoveredCollectionRow(
+                  id: item['Id'].toString(),
+                  name: item['Name'].toString(),
+                ),
+              ),
+        );
+
+        startIndex += items.length;
+        if (items.length < pageSize) break;
+        if (total != null && startIndex >= total) break;
+      }
+
+      return all;
     } catch (_) {
       return const <_DiscoveredCollectionRow>[];
     }
@@ -532,6 +601,29 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
     _persistSections(pushSync: true);
   }
 
+  void _focusSectionAndEnsureVisible(int index, {int attempt = 0}) {
+    if (!mounted || index < 0 || index >= _focusNodes.length) return;
+    final node = _focusNodes[index];
+    node.requestFocus();
+
+    final targetContext = _focusNodes[index].context;
+    if (targetContext != null) {
+      Scrollable.ensureVisible(
+        targetContext,
+        duration: const Duration(milliseconds: 140),
+        curve: Curves.easeOut,
+        alignment: 0.9,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
+      );
+      return;
+    }
+
+    if (attempt >= 3) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusSectionAndEnsureVisible(index, attempt: attempt + 1);
+    });
+  }
+
   void _moveSectionByActualIndex(int fromIndex, int toIndex) {
     if (fromIndex < 0 || fromIndex >= _sections.length) return;
     if (toIndex < 0 || toIndex >= _sections.length) return;
@@ -545,7 +637,7 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
     _save();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (toIndex < _focusNodes.length) {
-        _focusNodes[toIndex].requestFocus();
+        _focusSectionAndEnsureVisible(toIndex);
       }
     });
   }
@@ -698,30 +790,61 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
       itemBuilder: (context, index) {
         final sectionIndex = visibleIndices[index];
         final section = _sections[sectionIndex];
-        return ListTile(
+        return Padding(
           key: ValueKey(section.stableId),
-          leading: Checkbox(
-            value: section.enabled,
-            onChanged: (enabled) {
-              setState(() {
-                _sections[sectionIndex] = section.copyWith(enabled: enabled ?? false);
-              });
-              _save();
-            },
-          ),
-          title: Text(_labelFor(section, l10n)),
-          subtitle: section.isPluginDynamic
-              ? Text(_pluginSubtitle(section))
-              : null,
-          onTap: () {
-            setState(() {
-              _sections[sectionIndex] = section.copyWith(enabled: !section.enabled);
-            });
-            _save();
-          },
-          trailing: ReorderableDragStartListener(
-            index: index,
-            child: const Icon(Icons.drag_handle),
+          padding: _kHomeSectionTileOuterPadding,
+          child: Container(
+            decoration: _homeSectionTileDecoration(context, focused: false),
+            child: ListTile(
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              contentPadding: _kHomeSectionTileContentPadding,
+              minLeadingWidth: 44,
+              horizontalTitleGap: 14,
+              leading: buildSettingsLeadingIconShell(
+                context,
+                icon: Icon(
+                  section.enabled ? Icons.check_box : Icons.check_box_outline_blank,
+                ),
+                focused: false,
+                iconColor: AppColorScheme.onSurface.withValues(alpha: 0.78),
+              ),
+              title: Text(
+                _labelFor(section, l10n),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: section.isPluginDynamic
+                  ? Text(
+                      _pluginSubtitle(section),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    )
+                  : null,
+              onTap: () {
+                setState(() {
+                  _sections[sectionIndex] =
+                      section.copyWith(enabled: !section.enabled);
+                });
+                _save();
+              },
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ReorderableDragStartListener(
+                    index: index,
+                    child: Icon(
+                      Icons.drag_handle,
+                      color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -744,6 +867,9 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
           focusNode: _focusNodes[sectionIndex],
           autofocus: visibleIndex == 0,
           label: _labelFor(section, l10n),
+          subtitle: section.isPluginDynamic
+              ? _pluginSubtitle(section)
+              : null,
           enabled: section.enabled,
           isFirst: visibleIndex == 0,
           isLast: visibleIndex == visibleIndices.length - 1,
@@ -799,6 +925,7 @@ class _DiscoveredGenreRow {
 class _HomeSectionTile extends StatefulWidget {
   final FocusNode focusNode;
   final String label;
+  final String? subtitle;
   final bool enabled;
   final bool isFirst;
   final bool isLast;
@@ -811,6 +938,7 @@ class _HomeSectionTile extends StatefulWidget {
     super.key,
     required this.focusNode,
     required this.label,
+    this.subtitle,
     required this.enabled,
     required this.isFirst,
     required this.isLast,
@@ -835,13 +963,23 @@ class _HomeSectionTileState extends State<_HomeSectionTile> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Focus(
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
       onFocusChange: (f) {
         if (_focused != f && mounted) setState(() => _focused = f);
+        if (f) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || !_focused) return;
+            Scrollable.ensureVisible(
+              context,
+              duration: const Duration(milliseconds: 120),
+              curve: Curves.easeOut,
+              alignment: 0.9,
+              alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
+            );
+          });
+        }
       },
       onKeyEvent: (node, event) {
         if (event is! KeyDownEvent) return KeyEventResult.ignored;
@@ -860,50 +998,70 @@ class _HomeSectionTileState extends State<_HomeSectionTile> {
         }
         return KeyEventResult.ignored;
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 90),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          color: _focused
-              ? AppColorScheme.onSurface
-              : colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListTile(
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          leading: Icon(
-            widget.enabled ? Icons.check_box : Icons.check_box_outline_blank,
-            color: _focused
-                ? AppColors.black.withValues(alpha: 0.54)
-                : (widget.enabled
-                    ? colorScheme.primary
-                    : AppColorScheme.onSurface.withValues(alpha: 0.7)),
-          ),
-          title: Text(
-            widget.label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: _focused
-                  ? AppColors.black.withValues(alpha: 0.87)
-                  : AppColorScheme.onSurface,
+      child: Padding(
+        padding: _kHomeSectionTileOuterPadding,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 90),
+          curve: Curves.easeOut,
+          decoration: _homeSectionTileDecoration(context, focused: _focused),
+          child: ListTile(
+            focusColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            contentPadding: _kHomeSectionTileContentPadding,
+            minLeadingWidth: 44,
+            horizontalTitleGap: 14,
+            leading: buildSettingsLeadingIconShell(
+              context,
+              icon: Icon(
+                widget.enabled ? Icons.check_box : Icons.check_box_outline_blank,
+              ),
+              focused: _focused,
+              iconColor: _focused
+                  ? AppColors.black.withValues(alpha: 0.54)
+                  : AppColorScheme.onSurface.withValues(alpha: 0.78),
             ),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (!widget.isFirst)
-                Icon(Icons.arrow_left, size: 18,
+            title: Text(
+              widget.label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: _focused
+                    ? AppColors.black.withValues(alpha: 0.87)
+                    : AppColorScheme.onSurface,
+              ),
+            ),
+            subtitle: widget.subtitle != null
+                ? Text(
+                    widget.subtitle!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: _focused
+                          ? AppColors.black.withValues(alpha: 0.54)
+                          : AppColorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                  )
+                : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!widget.isFirst)
+                  Icon(
+                    Icons.arrow_left,
+                    size: 18,
                     color: _focused
                         ? AppColors.black.withValues(alpha: 0.54)
-                        : AppColorScheme.onSurface.withValues(alpha: 0.7)),
-              if (!widget.isLast)
-                Icon(Icons.arrow_right, size: 18,
+                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+                if (!widget.isLast)
+                  Icon(
+                    Icons.arrow_right,
+                    size: 18,
                     color: _focused
                         ? AppColors.black.withValues(alpha: 0.54)
-                        : AppColorScheme.onSurface.withValues(alpha: 0.7)),
-            ],
+                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

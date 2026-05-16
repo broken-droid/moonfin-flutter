@@ -76,17 +76,17 @@ class UserPreferences extends ChangeNotifier {
 
   static final displayFavoritesRows = Preference(
     key: 'pref_display_favorites_rows',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static final displayCollectionsRows = Preference(
     key: 'pref_display_collections_rows',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static final displayGenresRows = Preference(
     key: 'pref_display_genres_rows',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static final favoritesRowSortBy = EnumPreference(
