@@ -133,6 +133,13 @@ class AppLocalizationsSr extends AppLocalizations {
       'Пребацивање између __АРБ_ТЕРМ_1__ и __АРБ_ТЕРМ_0__ без поновног покретања апликације';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Моонфин';
 
   @override

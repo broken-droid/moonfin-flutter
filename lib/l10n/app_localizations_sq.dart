@@ -134,6 +134,13 @@ class AppLocalizationsSq extends AppLocalizations {
       'Kalo midis Moonfin dhe Neon Pulse pa e rifilluar aplikacionin';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Fina e hënës';
 
   @override

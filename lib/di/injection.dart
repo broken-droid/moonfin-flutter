@@ -10,6 +10,7 @@ import '../data/database/database_connection.dart';
 import '../data/database/offline_database.dart';
 import '../data/repositories/offline_repository.dart';
 import '../data/services/connectivity_service.dart';
+import '../data/services/recent_searches_store.dart';
 import '../data/services/storage_path_service.dart';
 import '../preference/user_preferences.dart';
 import '../util/platform_detection.dart';
@@ -62,7 +63,12 @@ String _resolveAndroidDeviceName(AndroidDeviceInfo info) {
   }
 
   // Fallback path for devices that do not expose a useful model string.
-  final combined = _joinNonEmpty([manufacturer, brand, info.device, info.product], ' ');
+  final combined = _joinNonEmpty([
+    manufacturer,
+    brand,
+    info.device,
+    info.product,
+  ], ' ');
   return _fallbackIfEmpty(combined, 'Android Device');
 }
 
@@ -87,17 +93,26 @@ Future<String> _resolveDeviceName() async {
 
     if (PlatformDetection.isMacOS) {
       final info = await deviceInfo.macOsInfo;
-      return _fallbackIfEmpty(_joinNonEmpty([info.computerName, info.model], ' '), 'Mac');
+      return _fallbackIfEmpty(
+        _joinNonEmpty([info.computerName, info.model], ' '),
+        'Mac',
+      );
     }
 
     if (PlatformDetection.isWindows) {
       final info = await deviceInfo.windowsInfo;
-      return _fallbackIfEmpty(_joinNonEmpty([info.computerName, info.productName], ' '), 'Windows PC');
+      return _fallbackIfEmpty(
+        _joinNonEmpty([info.computerName, info.productName], ' '),
+        'Windows PC',
+      );
     }
 
     if (PlatformDetection.isLinux) {
       final info = await deviceInfo.linuxInfo;
-      return _fallbackIfEmpty(_joinNonEmpty([info.name, info.prettyName], ' '), 'Linux Device');
+      return _fallbackIfEmpty(
+        _joinNonEmpty([info.name, info.prettyName], ' '),
+        'Linux Device',
+      );
     }
   } catch (_) {
     // Fall through to app-based fallback below.
@@ -178,20 +193,23 @@ Future<void> configureDependencies() async {
   final clientName = _clientName();
   final deviceName = await _resolveDeviceName();
   final appVersion = await _resolveAppVersion();
-  getIt.registerSingleton<DeviceInfo>(DeviceInfo(
-    id: deviceId,
-    name: deviceName,
-    appName: clientName,
-    appVersion: appVersion,
-  ));
+  getIt.registerSingleton<DeviceInfo>(
+    DeviceInfo(
+      id: deviceId,
+      name: deviceName,
+      appName: clientName,
+      appVersion: appVersion,
+    ),
+  );
 
   registerPreferenceModule(preferenceStore);
+  getIt.registerLazySingleton<RecentSearchesStore>(
+    () => RecentSearchesStore(preferenceStore),
+  );
 
   final storagePath = StoragePathService();
   getIt.registerSingleton<StoragePathService>(storagePath);
-  getIt.registerSingleton<OfflineDatabase>(
-    OfflineDatabase(openConnection()),
-  );
+  getIt.registerSingleton<OfflineDatabase>(OfflineDatabase(openConnection()));
   getIt.registerSingleton<OfflineRepository>(
     OfflineRepository(getIt<OfflineDatabase>()),
   );

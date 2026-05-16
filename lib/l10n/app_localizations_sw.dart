@@ -133,6 +133,13 @@ class AppLocalizationsSw extends AppLocalizations {
       'Badili kati ya Moonfin na Neon Pulse bila kuanzisha upya programu';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Moonfin';
 
   @override

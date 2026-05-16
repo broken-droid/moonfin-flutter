@@ -9,6 +9,7 @@ import 'package:server_core/server_core.dart';
 import '../../../auth/repositories/emby_connect_repository.dart';
 import '../../../data/services/emby_connect_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../preference/user_preferences.dart';
 import '../../../util/platform_detection.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../navigation/destinations.dart';
@@ -38,6 +39,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   final _usernameTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _passwordTvFieldKey = GlobalKey<CustomTVTextFieldState>();
   final _connectRepository = GetIt.instance<EmbyConnectRepository>();
+  final _userPreferences = GetIt.instance<UserPreferences>();
 
   _EmbyConnectPhase _phase = _EmbyConnectPhase.credentials;
   List<EmbyConnectServer> _servers = const [];
@@ -119,7 +121,9 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
       if (result.success!.switched) {
         context.go(Destinations.home);
       } else {
-        context.go('${Destinations.server}?serverId=${result.success!.serverId}');
+        context.go(
+          '${Destinations.server}?serverId=${result.success!.serverId}',
+        );
       }
       return;
     }
@@ -172,10 +176,9 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   void _resetAfterError() {
     setState(() {
       _errorMessage = null;
-      _phase =
-          _servers.isEmpty
-              ? _EmbyConnectPhase.credentials
-              : _EmbyConnectPhase.serverList;
+      _phase = _servers.isEmpty
+          ? _EmbyConnectPhase.credentials
+          : _EmbyConnectPhase.serverList;
     });
   }
 
@@ -228,7 +231,10 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
               const SizedBox(width: 10),
               Text(
                 l10n.embyConnect,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -255,7 +261,9 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
       case _EmbyConnectPhase.serverList:
         return _buildServerListView();
       case _EmbyConnectPhase.connectingToServer:
-        return _buildLoadingView(AppLocalizations.of(context).connectingToServerEllipsis);
+        return _buildLoadingView(
+          AppLocalizations.of(context).connectingToServerEllipsis,
+        );
     }
   }
 
@@ -294,13 +302,11 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed:
-                    isBusy ? null : () => context.go(Destinations.serverSelect),
+                onPressed: isBusy
+                    ? null
+                    : () => context.go(Destinations.serverSelect),
                 icon: const Icon(Icons.arrow_back, size: 18),
-                label: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(l10n.back),
-                ),
+                label: FittedBox(fit: BoxFit.scaleDown, child: Text(l10n.back)),
                 style: _focusableButtonStyle(),
               ),
             ),
@@ -308,14 +314,13 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: isBusy ? null : _signIn,
-                icon:
-                    isBusy
-                        ? const SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                        : const Icon(Icons.login, size: 18),
+                icon: isBusy
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.login, size: 18),
                 label: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(l10n.signIn),
@@ -382,22 +387,27 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
                   key: tvFieldKey,
                   controller: controller,
                   isFocused: focused,
+                  inputPurpose: isPassword
+                      ? InputPurpose.password
+                      : InputPurpose.username,
+                  preferSystemIme: _userPreferences.get(
+                    UserPreferences.preferSystemImeKeyboard,
+                  ),
                   hint: label,
                   filled: true,
                   fillColor: focused
                       ? AppColorScheme.buttonFocused
                       : AppColorScheme.surfaceVariant.withValues(alpha: 0.6),
                   borderRadius: 12,
-                    borderColor: AppColorScheme.onSurface.withValues(alpha: 0.1),
-                    focusedBorderColor: AppColorScheme.buttonFocused,
+                  borderColor: AppColorScheme.onSurface.withValues(alpha: 0.1),
+                  focusedBorderColor: AppColorScheme.buttonFocused,
                   hintStyle: TextStyle(
                     color: focused
-                      ? AppColorScheme.onButtonFocused.withValues(alpha: 0.5)
-                      : AppColorScheme.onSurface.withValues(alpha: 0.5),
+                        ? AppColorScheme.onButtonFocused.withValues(alpha: 0.5)
+                        : AppColorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   textStyle: TextStyle(
-                    color:
-                      focused
+                    color: focused
                         ? AppColorScheme.onButtonFocused
                         : AppColorScheme.onSurface,
                   ),
@@ -407,10 +417,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
                   popParentOnKeyboardClose: false,
                   onFieldSubmitted: isPassword ? (_) => _signIn() : null,
                   onVisibilityChanged: (visible) =>
-                      _handleTvKeyboardVisibility(
-                        visible,
-                        tvFieldKey,
-                      ),
+                      _handleTvKeyboardVisibility(visible, tvFieldKey),
                 );
               },
             )
@@ -419,8 +426,9 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
               focusNode: focusNode,
               enabled: !isBusy,
               obscureText: isPassword,
-              textInputAction:
-                  isPassword ? TextInputAction.done : TextInputAction.next,
+              textInputAction: isPassword
+                  ? TextInputAction.done
+                  : TextInputAction.next,
               onSubmitted: isPassword ? (_) => _signIn() : null,
               style: TextStyle(color: AppColorScheme.onSurface),
               decoration: _inputDecoration(label),
@@ -455,10 +463,7 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => context.go(Destinations.serverSelect),
                 icon: const Icon(Icons.arrow_back, size: 18),
-                label: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(l10n.back),
-                ),
+                label: FittedBox(fit: BoxFit.scaleDown, child: Text(l10n.back)),
                 style: _focusableButtonStyle(),
               ),
             ),
@@ -481,10 +486,9 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   }
 
   Widget _buildServerTile(EmbyConnectServer server) {
-    final subtitle =
-        server.candidateAddresses.isNotEmpty
-            ? server.candidateAddresses.first
-            : AppLocalizations.of(context).noReachableAddress;
+    final subtitle = server.candidateAddresses.isNotEmpty
+        ? server.candidateAddresses.first
+        : AppLocalizations.of(context).noReachableAddress;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
@@ -510,14 +514,18 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
                         server.name,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColorScheme.onSurface.withValues(alpha: 0.9),
+                          color: AppColorScheme.onSurface.withValues(
+                            alpha: 0.9,
+                          ),
                         ),
                       ),
                       Text(
                         subtitle,
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppColorScheme.onSurface.withValues(alpha: 0.5),
+                          color: AppColorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                       ),
                     ],
@@ -546,7 +554,9 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
         const SizedBox(height: 12),
         Text(
           message,
-          style: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.7)),
+          style: TextStyle(
+            color: AppColorScheme.onSurface.withValues(alpha: 0.7),
+          ),
         ),
       ],
     );
@@ -555,16 +565,22 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: AppColorScheme.onSurface.withValues(alpha: 0.5)),
+      labelStyle: TextStyle(
+        color: AppColorScheme.onSurface.withValues(alpha: 0.5),
+      ),
       filled: true,
       fillColor: AppColorScheme.surfaceVariant.withValues(alpha: 0.6),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColorScheme.onSurface.withValues(alpha: 0.1)),
+        borderSide: BorderSide(
+          color: AppColorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColorScheme.onSurface.withValues(alpha: 0.1)),
+        borderSide: BorderSide(
+          color: AppColorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -580,7 +596,9 @@ class _EmbyConnectScreenState extends State<EmbyConnectScreen> {
             states.contains(WidgetState.hovered)) {
           return BorderSide(color: AppColorScheme.accent, width: 2);
         }
-        return BorderSide(color: AppColorScheme.onSurface.withValues(alpha: 0.2));
+        return BorderSide(
+          color: AppColorScheme.onSurface.withValues(alpha: 0.2),
+        );
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.focused) ||

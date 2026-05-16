@@ -18,7 +18,7 @@ import '../../../util/platform_detection.dart';
 import 'settings_app_bar.dart';
 
 typedef _SeerrSignInAction =
-  Future<String?> Function(String username, String password, String authType);
+    Future<String?> Function(String username, String password, String authType);
 typedef _SeerrAction = Future<String?> Function();
 
 class SeerrConfigScreen extends StatefulWidget {
@@ -353,6 +353,7 @@ class _SeerrLoginCard extends StatefulWidget {
 }
 
 class _SeerrLoginCardState extends State<_SeerrLoginCard> {
+  final _userPreferences = GetIt.instance<UserPreferences>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _usernameFocus = FocusNode(debugLabel: 'seerr_username');
@@ -705,6 +706,18 @@ class _SeerrLoginCardState extends State<_SeerrLoginCard> {
               key: tvFieldKey,
               controller: controller,
               isFocused: focused,
+              inputPurpose: switch (tvType) {
+                TextFieldType.url => InputPurpose.url,
+                TextFieldType.email => InputPurpose.email,
+                TextFieldType.number ||
+                TextFieldType.phone => InputPurpose.numeric,
+                TextFieldType.password => InputPurpose.password,
+                TextFieldType.username => InputPurpose.username,
+                _ => InputPurpose.text,
+              },
+              preferSystemIme: _userPreferences.get(
+                UserPreferences.preferSystemImeKeyboard,
+              ),
               hint: label,
               textFieldType: tvType,
               keyboardType: KeyboardType.alphabetic,

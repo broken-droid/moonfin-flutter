@@ -132,6 +132,13 @@ class AppLocalizationsZh extends AppLocalizations {
       '在 Moonfin 和 Neon Pulse 之间切换，无需重新启动应用程序';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Moonfin';
 
   @override

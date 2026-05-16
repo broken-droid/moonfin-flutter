@@ -134,6 +134,13 @@ class AppLocalizationsTl extends AppLocalizations {
       'Lumipat sa pagitan ng Moonfin at Neon Pulse nang hindi nire-restart ang app';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Moonfin';
 
   @override

@@ -132,6 +132,13 @@ class AppLocalizationsJa extends AppLocalizations {
       'アプリを再起動せずに Moonfin と Neon Pulse を切り替える';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Moonfin';
 
   @override

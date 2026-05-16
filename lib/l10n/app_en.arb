@@ -176,6 +176,14 @@
   "@settingsAppearanceThemeSubtitle": {
     "description": "Subtitle for the theme selection screen and theme settings entry"
   },
+  "keyboardPreferSystemIme": "Prefer system keyboard",
+  "@keyboardPreferSystemIme": {
+    "description": "Settings label for preferring the native system keyboard instead of the custom TV keyboard"
+  },
+  "keyboardPreferSystemImeDescription": "Use your device input method by default for text entry",
+  "@keyboardPreferSystemImeDescription": {
+    "description": "Settings subtitle for the system keyboard preference"
+  },
   "themeMoonfin": "Moonfin",
   "@themeMoonfin": {
     "description": "Display name for the Moonfin theme"

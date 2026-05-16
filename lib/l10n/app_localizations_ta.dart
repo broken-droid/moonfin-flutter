@@ -133,6 +133,13 @@ class AppLocalizationsTa extends AppLocalizations {
       'பயன்பாட்டை மறுதொடக்கம் செய்யாமல் Moonfin மற்றும் Neon Pulse இடையே மாறவும்';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'மூன்ஃபின்';
 
   @override

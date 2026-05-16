@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:custom_tv_text_field/custom_tv_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +12,7 @@ import 'package:server_core/server_core.dart';
 import '../../../data/models/aggregated_item.dart';
 import '../../../data/repositories/search_repository.dart';
 import '../../../data/repositories/seerr_repository.dart';
+import '../../../data/services/recent_searches_store.dart';
 import '../../../data/services/voice_search_controller.dart';
 import '../../../data/viewmodels/search_view_model.dart';
 import '../../../preference/preference_constants.dart';
@@ -41,6 +44,10 @@ class _SearchScreenState extends State<SearchScreen> {
   final _resultsScrollController = ScrollController();
   final _voiceController = VoiceSearchController();
   late final SearchViewModel _vm;
+  late final SearchRepository _searchRepository;
+  late final RecentSearchesStore _recentSearchesStore;
+  late final UserPreferences _userPreferences;
+  List<String> _recentSearches = const [];
   static const _tmdbPosterBase = 'https://image.tmdb.org/t/p/w342';
   bool _isFirstRowFocused = false;
 
@@ -48,8 +55,12 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     final getIt = GetIt.instance;
+    _searchRepository = getIt<SearchRepository>();
+    _recentSearchesStore = getIt<RecentSearchesStore>();
+    _userPreferences = getIt<UserPreferences>();
+    _recentSearches = _recentSearchesStore.recent;
     _vm = SearchViewModel(
-      getIt<SearchRepository>(),
+      _searchRepository,
       getIt<MediaServerClient>(),
       scopedParentId: widget.scopedLibraryId,
     );
@@ -94,6 +105,34 @@ class _SearchScreenState extends State<SearchScreen> {
   void _onSearchTextChanged() {
     _vm.searchDebounced(_searchController.text);
     if (mounted) setState(() {});
+  }
+
+  Future<List<String>> _fetchKeyboardSuggestions(String query) {
+    return _searchRepository.suggest(
+      query,
+      parentId: widget.scopedLibraryId,
+      limit: 5,
+    );
+  }
+
+  Future<void> _saveRecentSearch(String query) async {
+    await _recentSearchesStore.add(query);
+    if (!mounted) return;
+    setState(() {
+      _recentSearches = _recentSearchesStore.recent;
+    });
+  }
+
+  void _onSearchSubmitted(String query) {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return;
+
+    _searchController.text = trimmed;
+    _searchController.selection = TextSelection.collapsed(
+      offset: trimmed.length,
+    );
+    _vm.searchImmediate(trimmed);
+    unawaited(_saveRecentSearch(trimmed));
   }
 
   void _onVoiceControllerChanged() {
@@ -153,6 +192,10 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     if (!isFinal) return;
+
+    if (query.isNotEmpty) {
+      unawaited(_saveRecentSearch(query));
+    }
 
     if (mounted) {
       if (PlatformDetection.isTV) {
@@ -473,6 +516,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                 key: _searchTvFieldKey,
                                 controller: _searchController,
                                 isFocused: _searchFocus.hasFocus,
+                                inputPurpose: InputPurpose.search,
+                                suggestionsBuilder: _fetchKeyboardSuggestions,
+                                recentSuggestions: _recentSearches,
+                                preferSystemIme: _userPreferences.get(
+                                  UserPreferences.preferSystemImeKeyboard,
+                                ),
                                 hint:
                                     widget.scopedLibraryId != null &&
                                         widget.scopedLibraryId!.isNotEmpty
@@ -505,12 +554,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                   horizontal: 14,
                                   vertical: 12,
                                 ),
+                                onFieldSubmitted: _onSearchSubmitted,
                               ),
                             )
                           : TextField(
                               controller: _searchController,
                               focusNode: _searchInputFocus,
                               autofocus: true,
+                              onSubmitted: _onSearchSubmitted,
                               style: TextStyle(
                                 color: searchTextColor,
                                 fontSize: 20,

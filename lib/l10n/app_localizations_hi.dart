@@ -133,6 +133,13 @@ class AppLocalizationsHi extends AppLocalizations {
       'ऐप को पुनरारंभ किए बिना Moonfin और Neon Pulse के बीच स्विच करें';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'मूनफ़िन';
 
   @override

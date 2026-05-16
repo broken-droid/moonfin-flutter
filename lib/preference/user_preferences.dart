@@ -130,6 +130,11 @@ class UserPreferences extends ChangeNotifier {
     values: AppTheme.values,
   );
 
+  static final preferSystemImeKeyboard = Preference(
+    key: 'pref_prefer_system_ime_keyboard',
+    defaultValue: PlatformDetection.useMobileUi || PlatformDetection.isDesktop,
+  );
+
   static final visualTheme = EnumPreference(
     key: 'app_theme_id',
     defaultValue: VisualThemeId.moonfin,
@@ -833,25 +838,16 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: '',
   );
 
-  static final windowWidth = Preference(
-    key: 'window_width',
-    defaultValue: 0.0,
-  );
+  static final windowWidth = Preference(key: 'window_width', defaultValue: 0.0);
 
   static final windowHeight = Preference(
     key: 'window_height',
     defaultValue: 0.0,
   );
 
-  static final windowX = Preference(
-    key: 'window_x',
-    defaultValue: 0.0,
-  );
+  static final windowX = Preference(key: 'window_x', defaultValue: 0.0);
 
-  static final windowY = Preference(
-    key: 'window_y',
-    defaultValue: 0.0,
-  );
+  static final windowY = Preference(key: 'window_y', defaultValue: 0.0);
 
   static final syncPlayAdvancedCorrectionEnabled = Preference(
     key: 'syncplay_advanced_correction_enabled',

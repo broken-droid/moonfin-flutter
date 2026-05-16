@@ -134,6 +134,13 @@ class AppLocalizationsCs extends AppLocalizations {
       'Přepínejte mezi Moonfin a Neon Pulse bez restartování aplikace';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Měsíční ploutev';
 
   @override

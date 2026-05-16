@@ -13,6 +13,7 @@ import '../../../auth/models/server_addition_state.dart';
 import '../../../auth/repositories/server_repository.dart';
 import '../../../auth/services/server_discovery_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../preference/user_preferences.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../../../util/platform_detection.dart';
 import '../../navigation/destinations.dart';
@@ -51,7 +52,9 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
   }
 
   Color get _loginErrorColor {
-    return _isMoonfin ? const Color(0xFFef4444) : AppColorScheme.statusRequested;
+    return _isMoonfin
+        ? const Color(0xFFef4444)
+        : AppColorScheme.statusRequested;
   }
 
   @override
@@ -163,27 +166,25 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
         softWrap: false,
         overflow: TextOverflow.fade,
       ),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 12,
-        ),
-      ).copyWith(
-        side: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.focused) ||
-              states.contains(WidgetState.hovered)) {
-            return BorderSide(color: _kAccent, width: 2);
-          }
-          return BorderSide(color: _loginForeground(0.2));
-        }),
-        foregroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.focused) ||
-              states.contains(WidgetState.hovered)) {
-            return _kAccent;
-          }
-          return _loginForeground(0.8);
-        }),
-      ),
+      style:
+          OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          ).copyWith(
+            side: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.focused) ||
+                  states.contains(WidgetState.hovered)) {
+                return BorderSide(color: _kAccent, width: 2);
+              }
+              return BorderSide(color: _loginForeground(0.2));
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.focused) ||
+                  states.contains(WidgetState.hovered)) {
+                return _kAccent;
+              }
+              return _loginForeground(0.8);
+            }),
+          ),
     );
   }
 
@@ -201,9 +202,9 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
         padding: const EdgeInsets.only(top: 16),
         child: Text(
           l10n.appVersionFooter(_deviceInfo.appVersion),
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: _loginForeground(0.4),
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: _loginForeground(0.4)),
           textAlign: TextAlign.center,
         ),
       ),
@@ -249,10 +250,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(
                 l10n.noneFound,
-                style: TextStyle(
-                  color: _loginForeground(0.4),
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: _loginForeground(0.4), fontSize: 14),
               ),
             ),
           if (_isDiscovering && _discoveredServers.isNotEmpty)
@@ -271,10 +269,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 _errorMessage!,
-                style: TextStyle(
-                  color: _loginErrorColor,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: _loginErrorColor, fontSize: 14),
               ),
             ),
           const SizedBox(height: 16),
@@ -495,6 +490,7 @@ class _AddServerDialog extends StatefulWidget {
 }
 
 class _AddServerDialogState extends State<_AddServerDialog> {
+  final _userPreferences = GetIt.instance<UserPreferences>();
   final _addressFocus = FocusNode(debugLabel: 'addServerAddress');
   final _connectFocus = FocusNode(debugLabel: 'addServerConnect');
   final _cancelFocus = FocusNode(debugLabel: 'addServerCancel');
@@ -682,6 +678,10 @@ class _AddServerDialogState extends State<_AddServerDialog> {
                   key: _tvFieldKey,
                   controller: widget.controller,
                   isFocused: focused,
+                  inputPurpose: InputPurpose.url,
+                  preferSystemIme: _userPreferences.get(
+                    UserPreferences.preferSystemImeKeyboard,
+                  ),
                   hint: l10n.serverAddressHint,
                   textFieldType: TextFieldType.url,
                   keyboardType: KeyboardType.alphabetic,

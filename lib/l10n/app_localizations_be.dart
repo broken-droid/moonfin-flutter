@@ -133,6 +133,13 @@ class AppLocalizationsBe extends AppLocalizations {
       'Пераключайцеся паміж Moonfin і Neon Pulse без перазапуску праграмы';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Месяцовы плаўнік';
 
   @override

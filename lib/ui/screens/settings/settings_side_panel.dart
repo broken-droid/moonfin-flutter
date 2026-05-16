@@ -534,6 +534,13 @@ class _GeneralStyleScreenState extends State<_GeneralStyleScreen> {
               icon: Icons.border_color,
               labelOf: (v) => _formatCamelCaseLabel(v.name),
             ),
+            if (PlatformDetection.isTV)
+              SwitchPreferenceTile(
+                preference: UserPreferences.preferSystemImeKeyboard,
+                title: l10n.keyboardPreferSystemIme,
+                subtitle: l10n.keyboardPreferSystemImeDescription,
+                icon: Icons.keyboard_alt_outlined,
+              ),
             EnumPreferenceTile<ClockBehavior>(
               preference: UserPreferences.clockBehavior,
               title: l10n.clockDisplay,

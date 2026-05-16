@@ -133,6 +133,13 @@ class AppLocalizationsCy extends AppLocalizations {
       'Newid rhwng Moonfin a Neon Pulse heb ailgychwyn yr app';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Lleuad';
 
   @override

@@ -132,6 +132,13 @@ class AppLocalizationsYue extends AppLocalizations {
       '在 Moonfin 和 Neon Pulse 之間切換，無需重新啟動應用程式';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Moonfin';
 
   @override

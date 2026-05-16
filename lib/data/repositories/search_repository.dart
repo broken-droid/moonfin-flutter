@@ -12,6 +12,42 @@ class SearchRepository {
 
   SearchRepository(this._client);
 
+  Future<List<String>> suggest(
+    String query, {
+    String? parentId,
+    int limit = 5,
+  }) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return const [];
+    final normalizedQuery = trimmed.toLowerCase();
+
+    final response = await _client.itemsApi.getItems(
+      searchTerm: trimmed,
+      parentId: parentId,
+      includeItemTypes: const ['Movie', 'Series', 'Person'],
+      limit: limit,
+      recursive: true,
+      fields: 'Type',
+    );
+
+    final items = response['Items'] as List? ?? const [];
+    final seen = <String>{};
+    final suggestions = <String>[];
+    for (final item in items) {
+      final data = item as Map<String, dynamic>;
+      final name = (data['Name'] as String?)?.trim();
+      if (name == null || name.isEmpty) continue;
+      final key = name.toLowerCase();
+      if (key == normalizedQuery) continue;
+      if (seen.add(key)) {
+        suggestions.add(name);
+      }
+      if (suggestions.length >= limit) break;
+    }
+
+    return suggestions;
+  }
+
   Future<List<AggregatedItem>> search(
     String query, {
     List<String>? includeItemTypes,

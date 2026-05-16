@@ -133,6 +133,13 @@ class AppLocalizationsKk extends AppLocalizations {
       'Қолданбаны қайта іске қоспай, Moonfin және Neon Pulse арасында ауысыңыз';
 
   @override
+  String get keyboardPreferSystemIme => 'Prefer system keyboard';
+
+  @override
+  String get keyboardPreferSystemImeDescription =>
+      'Use your device input method by default for text entry';
+
+  @override
   String get themeMoonfin => 'Ай жүзі';
 
   @override

@@ -443,6 +443,18 @@ abstract class AppLocalizations {
   /// **'Switch between Moonfin and Neon Pulse without restarting the app'**
   String get settingsAppearanceThemeSubtitle;
 
+  /// Settings label for preferring the native system keyboard instead of the custom TV keyboard
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer system keyboard'**
+  String get keyboardPreferSystemIme;
+
+  /// Settings subtitle for the system keyboard preference
+  ///
+  /// In en, this message translates to:
+  /// **'Use your device input method by default for text entry'**
+  String get keyboardPreferSystemImeDescription;
+
   /// Display name for the Moonfin theme
   ///
   /// In en, this message translates to:
