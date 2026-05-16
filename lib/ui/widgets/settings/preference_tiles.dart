@@ -116,7 +116,7 @@ BoxDecoration _settingsTileDecoration(
         color: focused
             ? AppColorScheme.accent.withValues(alpha: 0.72)
             : unfocusedBorderColor,
-        width: focused ? 1.4 : 1.0,
+        width: 1.0,
       ),
     ),
     boxShadow: focused
