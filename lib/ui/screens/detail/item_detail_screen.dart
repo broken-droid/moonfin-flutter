@@ -5137,6 +5137,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         return TrackOption(
           label: name,
           subtitle: subtitle.isNotEmpty ? subtitle : null,
+          labelMaxLines: null,
         );
       }).toList(),
       selectedIndex: currentIdx >= 0 ? currentIdx : 0,

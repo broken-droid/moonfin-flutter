@@ -97,8 +97,13 @@ Future<T?> showStyledPlayerDialog<T>(
 class TrackOption {
   final String label;
   final String? subtitle;
+  final int? labelMaxLines;
 
-  const TrackOption({required this.label, this.subtitle});
+  const TrackOption({
+    required this.label,
+    this.subtitle,
+    this.labelMaxLines = 1,
+  });
 }
 
 class TrackSelectorDialog {
@@ -171,10 +176,12 @@ class _TrackRowState extends State<_TrackRow> {
   @override
   Widget build(BuildContext context) {
     final focusColor = Color(_prefs.get(UserPreferences.focusColor).colorValue);
-    final baseColor = widget.dimmed
-        ? Colors.white.withValues(alpha: 0.5)
-        : Colors.white.withValues(alpha: 0.8);
-    final color = _isFocused ? focusColor : baseColor;
+    final labelColor = widget.dimmed
+      ? Colors.white.withValues(alpha: 0.5)
+      : Colors.white.withValues(alpha: _isFocused ? 0.95 : 0.8);
+    final subtitleColor = widget.dimmed
+      ? Colors.white.withValues(alpha: 0.35)
+      : Colors.white.withValues(alpha: _isFocused ? 0.72 : 0.6);
 
     return Focus(
       focusNode: _focusNode,
@@ -212,14 +219,17 @@ class _TrackRowState extends State<_TrackRow> {
                   children: [
                     Text(
                       widget.option.label,
-                      style: TextStyle(fontSize: 16, color: color),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 16, color: labelColor),
+                      maxLines: widget.option.labelMaxLines,
+                      overflow:
+                          widget.option.labelMaxLines == 1
+                              ? TextOverflow.ellipsis
+                              : null,
                     ),
                     if (widget.option.subtitle != null)
                       Text(
                         widget.option.subtitle!,
-                        style: TextStyle(fontSize: 12, color: color.withValues(alpha: 0.6)),
+                        style: TextStyle(fontSize: 12, color: subtitleColor),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
