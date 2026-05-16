@@ -196,43 +196,60 @@ class _ServerScreenState extends State<ServerScreen> {
       if (server == null) return;
 
       final l10n = AppLocalizations.of(context);
-      final confirmed = await showFocusRestoringDialog<bool>(
+
+      // get router reference before any async gaps
+      final router = GoRouter.of(context);
+      final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+      showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.remove),
-          content: Text(l10n.removeName(user.name)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l10n.remove),
-            ),
-          ],
-        ),
-      );
-
-      if (confirmed == true) {
-        if (user.id == _sessionRepo.activeUserId) {
-          // if user being removed is active, destroy session first
-          await _sessionRepo.destroyCurrentSession();
+        builder: (ctx) {
+          final dialogNavigator = Navigator.of(ctx);
+          
+          return AlertDialog(
+            title: Text(l10n.remove),
+            content: Text(l10n.removeName(user.name)),
+            actions: [
+              TextButton(
+                onPressed: () => dialogNavigator.pop(false),
+                child: Text(l10n.cancel),
+              ),
+              TextButton(
+                onPressed: () async {
+                  try {
+                    // if user being deleted is active, destroy session first
+                    if (user.id == _sessionRepo.activeUserId) {
+                      await _sessionRepo.destroyCurrentSession();
+                    }
+                    await _userRepo.deleteStoredUser(server.id, user.id);
+                    // close the dialog using the captured reference
+                    dialogNavigator.pop(true);
+                  } catch (e) {
+                    dialogNavigator.pop(false);
+                    scaffoldMessenger.showSnackBar(
+                      SnackBar(content: Text(e.toString())),
+                    );
+                  }
+                },
+                child: Text(l10n.remove),
+              ),
+            ],
+          );
+        },
+      ).then((confirmed) {
+        // handle navigation after dialog is closed and a user was deleted
+        if (confirmed == true) {
+          _userRepo.getPublicServerUsers(server).then((publicUsers) {
+            final stored = _userRepo.getStoredServerUsers(server.id);
+            // if no users remain, navigate to initial login screen, otherwise refresh
+            if (stored.isEmpty && publicUsers.isEmpty) {
+              router.go('${Destinations.login}?serverId=${server.id}&initial=true');
+            } else {
+              if (mounted) _load();
+            }
+          });
         }
-        // delete user
-        await _userRepo.deleteStoredUser(server.id, user.id);
-        await _serverRepo.loadStoredServers();
-        final stored = _userRepo.getStoredServerUsers(server.id);
-        final publicUsers = await _userRepo.getPublicServerUsers(server);
-
-        if (mounted && stored.isEmpty && publicUsers.isEmpty) {
-            // if no other users exist, redirect to initial login screen
-            context.go('${Destinations.login}?serverId=${server.id}&initial=true');
-        } else {
-          // if there are other users, refresh current screen
-          if (mounted) await _load();
-        }
-      }
+      });
     }
 
   Future<bool> _trySwitchSession(String serverId, String userId) async {
