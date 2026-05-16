@@ -17,9 +17,13 @@ class StoragePathService {
 
   void clearCache() => _cachedRoot = null;
 
-  static String get appFolderName =>
-      const bool.fromEnvironment('MOONFIN_BETA_BUILD') ? 'MoonfinBeta' : 'Moonfin';
-
+   static String get appFolderName {
+    // Checks for the env var set either from launch configs or dart-define
+    final isBeta = Platform.environment['MOONFIN_BETA_BUILD'] == 'true' ||
+        const bool.fromEnvironment('MOONFIN_BETA_BUILD');
+    return isBeta ? 'MoonfinBeta' : 'Moonfin';
+  }
+ 
   Future<Directory> getOfflineRoot() async {
     if (_cachedRoot != null) return _cachedRoot!;
 
