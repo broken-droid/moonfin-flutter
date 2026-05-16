@@ -215,8 +215,23 @@ class _ServerScreenState extends State<ServerScreen> {
       );
 
       if (confirmed == true) {
+        if (user.id == _sessionRepo.activeUserId) {
+          // if user being removed is active, destroy session first
+          await _sessionRepo.destroyCurrentSession();
+        }
+        // delete user
         await _userRepo.deleteStoredUser(server.id, user.id);
-        await _load();
+        await _serverRepo.loadStoredServers();
+        final stored = _userRepo.getStoredServerUsers(server.id);
+        final publicUsers = await _userRepo.getPublicServerUsers(server);
+
+        if (mounted && stored.isEmpty && publicUsers.isEmpty) {
+            // if no other users exist, redirect to initial login screen
+            context.go('${Destinations.login}?serverId=${server.id}&initial=true');
+        } else {
+          // if there are other users, refresh current screen
+          if (mounted) await _load();
+        }
       }
     }
 
