@@ -433,7 +433,11 @@ class CustomKeyboardState extends State<CustomKeyboard> {
 
       final chipIndex = _selectedChip.value.clamp(0, chips.length - 1);
       final chip = chips[chipIndex];
-      widget.keyboardController.insertText(chip.value);
+      if (chip.submitOnTap) {
+        widget.keyboardController.setText(chip.value);
+      } else {
+        widget.keyboardController.insertText(chip.value);
+      }
       if (chip.submitOnTap) {
         widget.keyboardController.hide(true);
       }
