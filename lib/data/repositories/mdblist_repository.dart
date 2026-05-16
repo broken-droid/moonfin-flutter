@@ -1,14 +1,18 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:server_core/server_core.dart';
 
 class MdbListRepository {
   static const _maxCacheEntries = 64;
 
   final MediaServerClient _client;
-  final _dio = Dio();
+  final _dio = Dio(
+    BaseOptions(
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+    ),
+  );
 
   final _cache = <String, Map<String, double>>{};
   final _pending = <String, Completer<Map<String, double>?>>{};
@@ -51,9 +55,9 @@ class MdbListRepository {
       final response = await _dio.get(
         '$baseUrl/Moonfin/MdbList/Ratings',
         queryParameters: {'type': type, 'tmdbId': tmdbId},
-        options: Options(headers: {
-          'Authorization': 'MediaBrowser Token="$token"',
-        }),
+        options: Options(
+          headers: {'Authorization': 'MediaBrowser Token="$token"'},
+        ),
       );
 
       final data = response.data;
@@ -78,10 +82,10 @@ class MdbListRepository {
             final value = switch (source) {
               'metacriticuser' =>
                 (r['score'] as num?)?.toDouble() ??
-                (r['value'] as num?)?.toDouble(),
+                    (r['value'] as num?)?.toDouble(),
               _ =>
                 (r['value'] as num?)?.toDouble() ??
-                (r['score'] as num?)?.toDouble(),
+                    (r['score'] as num?)?.toDouble(),
             };
             if (value == null || value <= 0) return null;
             return MapEntry(source, value);
@@ -97,17 +101,11 @@ class MdbListRepository {
       final statusCode = e.response?.statusCode;
       if (statusCode == 404) {
         _endpointUnavailable = true;
-        debugPrint(
-          '[Moonfin] MdbList endpoint unavailable (404). Disabling MDBList requests for this session.',
-        );
-      } else {
-        debugPrint('[Moonfin] MdbList fetch failed: $e');
       }
       completer.complete(null);
       _pending.remove(cacheKey);
       return null;
-    } catch (e) {
-      debugPrint('[Moonfin] MdbList fetch failed: $e');
+    } catch (_) {
       completer.complete(null);
       _pending.remove(cacheKey);
       return null;

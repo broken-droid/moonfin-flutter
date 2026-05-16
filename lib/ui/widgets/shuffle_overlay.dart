@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ import 'rating_display.dart';
 import 'shuffle_options_dialog.dart';
 
 const _kShuffleCardCount = 5;
+const _kShuffleLoadTimeout = Duration(seconds: 25);
 
 Future<void> showShuffleOverlay(BuildContext context) {
   final prefs = GetIt.instance<UserPreferences>();
@@ -78,6 +80,7 @@ class _ShuffleOverlayState extends State<_ShuffleOverlay> {
   String? _activeLibraryId;
   String? _activeGenreName;
   bool _loading = true;
+  bool _hasLoadError = false;
   int _loadRequestId = 0;
   int _ratingsRequestId = 0;
 
@@ -106,33 +109,49 @@ class _ShuffleOverlayState extends State<_ShuffleOverlay> {
     if (mounted) {
       setState(() {
         _loading = true;
+        _hasLoadError = false;
         _selectedRatings = const {};
       });
     }
 
-    final items = await fetchRandomItems(
-      contentType: _contentType,
-      parentId: _activeLibraryId,
-      genreName: _activeGenreName,
-      limit: _kShuffleCardCount,
-    );
+    try {
+      final items = await fetchRandomItems(
+        contentType: _contentType,
+        parentId: _activeLibraryId,
+        genreName: _activeGenreName,
+        limit: _kShuffleCardCount,
+      ).timeout(_kShuffleLoadTimeout);
 
-    if (!mounted || requestId != _loadRequestId) return;
-    setState(() {
-      _items = items;
-      _loading = false;
-      _selectedIndex = 0;
-      _selectedItem = items.isEmpty ? null : items.first;
-    });
+      if (!mounted || requestId != _loadRequestId) return;
+      final selectedItem = items.isEmpty ? null : items.first;
+      setState(() {
+        _items = items;
+        _loading = false;
+        _hasLoadError = false;
+        _selectedIndex = 0;
+        _selectedItem = selectedItem;
+      });
 
-    if (PlatformDetection.useMobileUi) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || !_mobilePageController.hasClients) return;
-        _syncMobilePage(0, jump: true);
+      if (PlatformDetection.useMobileUi) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || !_mobilePageController.hasClients) return;
+          _syncMobilePage(0, jump: true);
+        });
+      }
+
+      _loadRatingsForSelected(selectedItem);
+      _warmRatingsCache(items, selectedItem: selectedItem);
+    } catch (_) {
+      if (!mounted || requestId != _loadRequestId) return;
+      setState(() {
+        _items = const <AggregatedItem>[];
+        _loading = false;
+        _hasLoadError = true;
+        _selectedIndex = 0;
+        _selectedItem = null;
+        _selectedRatings = const {};
       });
     }
-
-    _loadRatingsForSelected(_selectedItem);
 
     if (requestInitialFocus) {
       _requestInitialFocus();
@@ -421,6 +440,74 @@ class _ShuffleOverlayState extends State<_ShuffleOverlay> {
     return '${minutes}m';
   }
 
+  Future<String?> _resolveTmdbId(AggregatedItem item) async {
+    var tmdbId = item.tmdbId;
+    if (tmdbId != null && tmdbId.isNotEmpty) {
+      return tmdbId;
+    }
+
+    final cacheKey = '${item.serverId}:${item.id}';
+    if (_tmdbIdCache.containsKey(cacheKey)) {
+      return _tmdbIdCache[cacheKey];
+    }
+
+    final clientFactory = GetIt.instance<MediaServerClientFactory>();
+    final client =
+        clientFactory.getClientIfExists(item.serverId) ??
+        clientFactory.getActiveClient();
+    try {
+      final details = await client.itemsApi.getItem(item.id);
+      tmdbId = (details['ProviderIds'] as Map?)?['Tmdb'] as String?;
+    } catch (_) {
+      tmdbId = null;
+    }
+
+    _tmdbIdCache[cacheKey] = tmdbId;
+    return tmdbId;
+  }
+
+  void _warmRatingsCache(
+    List<AggregatedItem> items, {
+    AggregatedItem? selectedItem,
+  }) {
+    if (!_prefs.get(UserPreferences.enableAdditionalRatings)) {
+      return;
+    }
+
+    final selectedKey = selectedItem == null
+        ? null
+        : '${selectedItem.serverId}:${selectedItem.id}';
+    for (final item in items) {
+      final cacheKey = '${item.serverId}:${item.id}';
+      if (cacheKey == selectedKey || _ratingsCache.containsKey(cacheKey)) {
+        continue;
+      }
+      unawaited(_fetchAndCacheRatings(item, cacheKey));
+    }
+  }
+
+  Future<void> _fetchAndCacheRatings(
+    AggregatedItem item,
+    String cacheKey,
+  ) async {
+    try {
+      final tmdbId = await _resolveTmdbId(item);
+      if (tmdbId == null || tmdbId.isEmpty) {
+        _ratingsCache[cacheKey] = const <String, double>{};
+        return;
+      }
+
+      final result = await GetIt.instance<MdbListRepository>().getRatings(
+        tmdbId: tmdbId,
+        mediaType: item.type ?? 'Movie',
+      );
+
+      _ratingsCache[cacheKey] = (result != null && result.isNotEmpty)
+          ? result
+          : const <String, double>{};
+    } catch (_) {}
+  }
+
   Future<void> _loadRatingsForSelected(AggregatedItem? item) async {
     final requestId = ++_ratingsRequestId;
 
@@ -451,26 +538,14 @@ class _ShuffleOverlayState extends State<_ShuffleOverlay> {
       setState(() => _selectedRatings = const {});
     }
 
-    String? tmdbId = item.tmdbId;
-    if (tmdbId == null) {
-      if (_tmdbIdCache.containsKey(cacheKey)) {
-        tmdbId = _tmdbIdCache[cacheKey];
-      } else {
-        final clientFactory = GetIt.instance<MediaServerClientFactory>();
-        final client =
-            clientFactory.getClientIfExists(item.serverId) ??
-            clientFactory.getActiveClient();
-        try {
-          final details = await client.itemsApi.getItem(item.id);
-          tmdbId = (details['ProviderIds'] as Map?)?['Tmdb'] as String?;
-        } catch (_) {
-          tmdbId = null;
-        }
-        _tmdbIdCache[cacheKey] = tmdbId;
-      }
+    final tmdbId = await _resolveTmdbId(item);
+
+    if (!mounted || requestId != _ratingsRequestId) {
+      return;
     }
 
-    if (!mounted || requestId != _ratingsRequestId || tmdbId == null) {
+    if (tmdbId == null || tmdbId.isEmpty) {
+      _ratingsCache[cacheKey] = const <String, double>{};
       return;
     }
 
@@ -597,6 +672,10 @@ class _ShuffleOverlayState extends State<_ShuffleOverlay> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    if (_hasLoadError) {
+      return _buildCardsErrorState(l10n);
+    }
+
     if (_items.isEmpty) {
       return Center(
         child: Text(
@@ -626,6 +705,41 @@ class _ShuffleOverlayState extends State<_ShuffleOverlay> {
       focusColor: focusColor,
       cardFocusExpansion: cardFocusExpansion,
       watchedBehavior: watchedBehavior,
+    );
+  }
+
+  Widget _buildCardsErrorState(AppLocalizations l10n) {
+    final isMobile = PlatformDetection.useMobileUi;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.wifi_off_rounded,
+              size: isMobile ? 26 : 30,
+              color: AppColorScheme.onSurface.withValues(alpha: 0.84),
+            ),
+            SizedBox(height: isMobile ? 10 : 12),
+            Text(
+              l10n.unableToConnectToServer,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColorScheme.onSurface.withValues(alpha: 0.82),
+                fontSize: isMobile ? 14 : 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: isMobile ? 12 : 14),
+            OutlinedButton.icon(
+              onPressed: () => _loadItems(requestInitialFocus: true),
+              icon: const Icon(Icons.refresh_rounded),
+              label: Text(l10n.tryAgain),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
