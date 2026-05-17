@@ -724,6 +724,13 @@ class _HomeScreenCategoryScreen extends StatefulWidget {
 
 class _HomeScreenCategoryScreenState extends State<_HomeScreenCategoryScreen> {
   final _prefs = GetIt.instance<UserPreferences>();
+  static const _rowsTypeDescription =
+      'Moonfin V1 keeps per-row image type and info overlay. Moonfin V2 uses portrait-to-backdrop rows.';
+
+  String _rowsStyleLabel(HomeRowsStyle style) => switch (style) {
+    HomeRowsStyle.v1 => 'Moonfin V1',
+    HomeRowsStyle.v2 => 'Moonfin V2',
+  };
 
   void _reloadHomeRows() {
     if (!GetIt.instance.isRegistered<HomeViewModel>()) return;
@@ -774,6 +781,7 @@ class _HomeScreenCategoryScreenState extends State<_HomeScreenCategoryScreen> {
     final showFavoritesRows = _prefs.get(UserPreferences.displayFavoritesRows);
     final showCollectionsRows = _prefs.get(UserPreferences.displayCollectionsRows);
     final showGenresRows = _prefs.get(UserPreferences.displayGenresRows);
+    final rowsStyle = _prefs.get(UserPreferences.homeRowsStyle);
     return Scaffold(
       appBar: buildSettingsAppBar(context, const Text('Home Screen')),
       body: ListView(
@@ -788,13 +796,27 @@ class _HomeScreenCategoryScreenState extends State<_HomeScreenCategoryScreen> {
               const HomeSectionsScreen(showGeneralOptions: false),
             ),
           ),
-          _TvSettingsListTile(
-            leading: const Icon(Icons.photo_library),
-            title: Text(l10n.perRowImageTypeSelection),
-            subtitle: Text(l10n.configureImageTypeForEachRow),
-            onTap: () =>
-                context.pushSettingsScreen(const HomeRowsImageTypeScreen()),
+          EnumPreferenceTile<HomeRowsStyle>(
+            preference: UserPreferences.homeRowsStyle,
+            title: 'Rows Type',
+            description: _rowsTypeDescription,
+            icon: Icons.view_carousel,
+            labelOf: _rowsStyleLabel,
+            onChanged: () {
+              _pushPersonalizationSync();
+              _reloadHomeRows();
+              if (!mounted) return;
+              setState(() {});
+            },
           ),
+          if (rowsStyle == HomeRowsStyle.v1)
+            _TvSettingsListTile(
+              leading: const Icon(Icons.photo_library),
+              title: Text(l10n.perRowImageTypeSelection),
+              subtitle: Text(l10n.configureImageTypeForEachRow),
+              onTap: () =>
+                  context.pushSettingsScreen(const HomeRowsImageTypeScreen()),
+            ),
           SwitchPreferenceTile(
             preference: UserPreferences.mergeContinueWatchingNextUp,
             title: l10n.mergeContinueWatchingAndNextUp,
@@ -879,12 +901,13 @@ class _HomeScreenCategoryScreenState extends State<_HomeScreenCategoryScreen> {
             },
             onChanged: _pushPersonalizationSync,
           ),
-          SwitchPreferenceTile(
-            preference: UserPreferences.homeRowInfoOverlay,
-            title: l10n.homeRowInfoOverlay,
-            subtitle: l10n.showTitleMetadataOnHomeRows,
-            icon: Icons.info_outline,
-          ),
+          if (rowsStyle == HomeRowsStyle.v1)
+            SwitchPreferenceTile(
+              preference: UserPreferences.homeRowInfoOverlay,
+              title: l10n.homeRowInfoOverlay,
+              subtitle: l10n.showTitleMetadataOnHomeRows,
+              icon: Icons.info_outline,
+            ),
 
           const _SectionHeader('Audio'),
           SwitchPreferenceTile(

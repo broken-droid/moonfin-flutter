@@ -62,6 +62,11 @@ enum PosterSize {
   final int landscapeHeight;
 }
 
+enum HomeRowsStyle {
+  v1,
+  v2,
+}
+
 enum DesktopUiScale {
   small(0.9),
   medium(1.0),

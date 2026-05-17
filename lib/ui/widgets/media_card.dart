@@ -13,10 +13,13 @@ import '../mixins/focus_state_mixin.dart';
 class MediaCard extends StatefulWidget {
   final String? title;
   final String? subtitle;
+  final Widget? subtitleWidget;
   final String? imageUrl;
   final double width;
   final double aspectRatio;
   final VoidCallback? onTap;
+  final VoidCallback? onPressStart;
+  final VoidCallback? onPressEnd;
   final VoidCallback? onFocus;
   final VoidCallback? onFocusLost;
   final VoidCallback? onHoverStart;
@@ -45,10 +48,13 @@ class MediaCard extends StatefulWidget {
     super.key,
     this.title,
     this.subtitle,
+    this.subtitleWidget,
     this.imageUrl,
     this.width = 150,
     this.aspectRatio = 2 / 3,
     this.onTap,
+    this.onPressStart,
+    this.onPressEnd,
     this.onFocus,
     this.onFocusLost,
     this.onHoverStart,
@@ -174,8 +180,14 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
     final showMarquee = hovered || effectiveFocused;
     final inner = GestureDetector(
       behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => widget.onPressStart?.call(),
+      onTapUp: (_) => widget.onPressEnd?.call(),
+      onTapCancel: widget.onPressEnd,
       onTap: widget.onTap,
-      onLongPressStart: (_) => widget.onLongPress?.call(),
+      onLongPressStart: (_) {
+        widget.onPressEnd?.call();
+        widget.onLongPress?.call();
+      },
       onSecondaryTap: widget.onLongPress == null
           ? null
           : () => widget.onLongPress!(),
@@ -225,7 +237,10 @@ class _MediaCardState extends State<MediaCard> with FocusStateMixin {
                       ),
               ),
             ],
-            if (widget.subtitle != null)
+            if (widget.subtitleWidget != null) ...[
+              SizedBox(height: widget.title != null ? 2 : 6),
+              widget.subtitleWidget!,
+            ] else if (widget.subtitle != null)
               SizedBox(
                 height: subtitleLineHeight,
                 child: showMarquee

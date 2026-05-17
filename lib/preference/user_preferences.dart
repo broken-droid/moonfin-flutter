@@ -48,6 +48,12 @@ class UserPreferences extends ChangeNotifier {
     values: PosterSize.values,
   );
 
+  static final homeRowsStyle = EnumPreference(
+    key: 'pref_home_rows_style',
+    defaultValue: HomeRowsStyle.v1,
+    values: HomeRowsStyle.values,
+  );
+
   static final desktopUiScale = EnumPreference(
     key: 'pref_desktop_ui_scale',
     defaultValue: DesktopUiScale.medium,

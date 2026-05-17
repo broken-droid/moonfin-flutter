@@ -78,6 +78,8 @@ class HomeSectionsScreen extends StatefulWidget {
 
 class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
   final _prefs = GetIt.instance<UserPreferences>();
+  static const _rowsTypeDescription =
+      'Moonfin V1 keeps per-row image type and info overlay. Moonfin V2 uses portrait-to-backdrop rows.';
   late List<HomeSectionConfig> _sections;
   HomeSectionConfig? _mediaBarConfig;
   final _focusNodes = <FocusNode>[];
@@ -683,6 +685,11 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
     PosterSize.extraLarge => l10n.extraLarge,
   };
 
+  String _rowsStyleLabel(HomeRowsStyle style) => switch (style) {
+    HomeRowsStyle.v1 => 'Moonfin V1',
+    HomeRowsStyle.v2 => 'Moonfin V2',
+  };
+
   Future<void> _showPosterSizeDialog() async {
     await showFocusRestoringDialog<void>(
       context: context,
@@ -725,6 +732,7 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
   }
 
   Widget _buildHeader(AppLocalizations l10n) {
+    final rowsStyle = _prefs.get(UserPreferences.homeRowsStyle);
     return Column(
       children: [
         ListTile(
@@ -735,15 +743,29 @@ class _HomeSectionsScreenState extends State<HomeSectionsScreen> {
           onTap: _showPosterSizeDialog,
         ),
         const Divider(),
-        ListTile(
-          leading: const Icon(Icons.image),
-          title: Text(l10n.perRowImageTypeSelection),
-          subtitle: Text(l10n.configureImageTypeForEachRow),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () =>
-              context.pushSettingsScreen(const HomeRowsImageTypeScreen()),
+        EnumPreferenceTile<HomeRowsStyle>(
+          preference: UserPreferences.homeRowsStyle,
+          title: 'Rows Type',
+          icon: Icons.view_carousel,
+          description: _rowsTypeDescription,
+          labelOf: _rowsStyleLabel,
+          onChanged: () {
+            setState(() {});
+            _pushSyncSettings();
+          },
         ),
         const Divider(),
+        if (rowsStyle == HomeRowsStyle.v1) ...[
+          ListTile(
+            leading: const Icon(Icons.image),
+            title: Text(l10n.perRowImageTypeSelection),
+            subtitle: Text(l10n.configureImageTypeForEachRow),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () =>
+                context.pushSettingsScreen(const HomeRowsImageTypeScreen()),
+          ),
+          const Divider(),
+        ],
         SwitchListTile(
           secondary: const Icon(Icons.merge_type),
           title: Text(l10n.mergeContinueWatchingAndNextUp),
