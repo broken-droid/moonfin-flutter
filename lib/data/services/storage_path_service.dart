@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -17,13 +18,21 @@ class StoragePathService {
 
   void clearCache() => _cachedRoot = null;
 
-   static String get appFolderName {
-    // Checks for the env var set either from launch configs or dart-define
-    final isBeta = Platform.environment['MOONFIN_BETA_BUILD'] == 'true' ||
-        const bool.fromEnvironment('MOONFIN_BETA_BUILD');
+  static String get appFolderName {
+    // get the flavor passed via --flavor
+    // android/androidtv/macos/ios - only android/androidtv are set up currently
+    const flavor = String.fromEnvironment('FLUTTER_APP_FLAVOR');
+    final betaFlavor = flavor.toLowerCase().contains('beta');
+    // check for --dart-define MOONFIN_BETA_BUILD=true from CLI
+    const betaCLI = bool.fromEnvironment('MOONFIN_BETA_BUILD');
+    // check for env var MOONFIN_BETA_BUILD=true
+    final betaEnvVar = Platform.environment['MOONFIN_BETA_BUILD'] == 'true';
+
+    final isBeta = betaFlavor || betaCLI || betaEnvVar;
+    debugPrint('StoragePathService: isBeta=$isBeta (flavor=$flavor, betaCLI=$betaCLI, betaEnvVar=$betaEnvVar)');
     return isBeta ? 'MoonfinBeta' : 'Moonfin';
   }
- 
+
   Future<Directory> getOfflineRoot() async {
     if (_cachedRoot != null) return _cachedRoot!;
 
