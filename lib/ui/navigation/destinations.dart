@@ -69,6 +69,7 @@ class Destinations {
 
   // Playback
   static const videoPlayer = '/player/video';
+  static const externalPlayer = '/player/external';
   static const audioPlayer = '/player/audio';
   static const bookReader = '/player/book/:itemId';
   static const photoPlayer = '/player/photo/:itemId';

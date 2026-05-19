@@ -10,6 +10,7 @@ import '../../data/services/media_server_client_factory.dart';
 import '../../data/services/offline_playback_tracker.dart';
 import '../../playback/hdr_stream_capability.dart';
 import '../../playback/known_defects.dart';
+import '../../playback/external_player_policy.dart';
 import '../../playback/media_kit_player_backend.dart';
 import '../../playback/media3_player_backend.dart';
 import '../../playback/offline_stream_resolver.dart';
@@ -128,6 +129,24 @@ void registerPlaybackModule() {
     final rewind = Duration(seconds: secs);
     if (startPosition <= rewind) return Duration.zero;
     return startPosition - rewind;
+  });
+  manager.setExternalPlaybackDecider((items) {
+    if (!(PlatformDetection.isAndroid && PlatformDetection.isTV)) {
+      return false;
+    }
+
+    if (!prefs.get(UserPreferences.useExternalPlayer)) {
+      return false;
+    }
+
+    if (_getIt.isRegistered<SyncPlayManager>()) {
+      final syncPlayManager = _getIt<SyncPlayManager>();
+      if (syncPlayManager.state.enabled) {
+        return false;
+      }
+    }
+
+    return ExternalPlayerPolicy.isEligibleQueue(items);
   });
   manager.setResolverConfigurator(_ensureResolverForItem);
   _getIt.registerSingleton<PlaybackManager>(manager);

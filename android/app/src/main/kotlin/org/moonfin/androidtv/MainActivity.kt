@@ -1,14 +1,20 @@
 package org.moonfin.androidtv
 
+import android.app.Activity
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
 import android.app.RemoteAction
 import android.app.UiModeManager
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.content.res.Configuration
 import android.graphics.drawable.Icon
 import android.net.Uri
@@ -41,6 +47,7 @@ import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayOutputStream
 
 class MainActivity : AudioServiceActivity() {
 
@@ -52,6 +59,8 @@ class MainActivity : AudioServiceActivity() {
     private var dlnaChannel: MethodChannel? = null
     private var dlnaEventsChannel: EventChannel? = null
     private var dlnaController: DlnaController? = null
+    private var externalPlayerChannel: MethodChannel? = null
+    private var externalPlayerPendingResult: MethodChannel.Result? = null
     private var pipEnabled = false
     private val handler = Handler(Looper.getMainLooper())
     private var dismissRunnable: Runnable? = null
@@ -66,10 +75,30 @@ class MainActivity : AudioServiceActivity() {
         private const val CAST_EVENTS_CHANNEL = "com.moonfin/native_cast_events"
         private const val DLNA_CHANNEL = "com.moonfin/native_dlna"
         private const val DLNA_EVENTS_CHANNEL = "com.moonfin/native_dlna_events"
+        private const val EXTERNAL_PLAYER_CHANNEL = "moonfin/external_player"
         private const val ACTION_PLAY_PAUSE = "org.moonfin.androidtv.ACTION_PIP_PLAY_PAUSE"
         private const val DISMISS_DELAY_MS = 300L
         private const val PLATFORM_CHANNEL = "org.moonfin.androidtv/platform"
         private const val UPDATE_CHANNEL = "org.moonfin.androidtv/update"
+        private const val EXTERNAL_PLAYER_PROXY_REQUEST_CODE = 17115
+        private const val EXTRA_EXTERNAL_PLAYER_LAUNCH_INTENT = "moonfin.external_player.launch_intent"
+        private const val EXTRA_EXTERNAL_PLAYER_ERROR_CODE = "moonfin.external_player.error_code"
+        private const val EXTRA_EXTERNAL_PLAYER_ERROR_MESSAGE = "moonfin.external_player.error_message"
+        private const val EXTERNAL_PLAYER_CHOOSER_TITLE = "Play with"
+        private const val EXTERNAL_PLAYER_SAMPLE_URL = "http://127.0.0.1/sample.mp4"
+
+        private const val API_MX_RESULT_ID = "com.mxtech.intent.result.VIEW"
+        private const val API_MX_RESULT_END_BY = "end_by"
+        private const val API_MX_RESULT_END_BY_PLAYBACK_COMPLETION = "playback_completion"
+        private const val API_MX_RESULT_POSITION = "position"
+
+        private const val API_VLC_RESULT_POSITION = "extra_position"
+
+        private const val API_VIMU_RESULT_ID = "net.gtvbox.videoplayer.result"
+        private const val API_VIMU_RESULT_ERROR = 4
+        private const val API_VIMU_RESULT_PLAYBACK_COMPLETED = 1
+
+        private const val API_MPV_RESULT_ID = "is.xyz.mpv.MPVActivity.result"
     }
 
     private fun getDisplayHdrTypes(): List<String> {
@@ -212,6 +241,25 @@ class MainActivity : AudioServiceActivity() {
                     } catch (e: Exception) {
                         result.error("INSTALL_FAILED", e.message, null)
                     }
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        externalPlayerChannel = MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            EXTERNAL_PLAYER_CHANNEL,
+        )
+        externalPlayerChannel?.setMethodCallHandler { call, result ->
+            when (call.method) {
+                "listPlayers" -> result.success(listExternalPlayerApps())
+                "launch" -> {
+                    val args = call.arguments as? Map<*, *> ?: emptyMap<String, Any>()
+                    launchExternalPlayer(args, result)
+                }
+                "chooseAndLaunch" -> {
+                    val args = call.arguments as? Map<*, *> ?: emptyMap<String, Any>()
+                    chooseAndLaunchExternalPlayer(args, result)
                 }
                 else -> result.notImplemented()
             }
@@ -537,6 +585,13 @@ class MainActivity : AudioServiceActivity() {
         dlnaController?.onDestroy()
         dlnaChannel?.setMethodCallHandler(null)
         dlnaEventsChannel?.setStreamHandler(null)
+        externalPlayerChannel?.setMethodCallHandler(null)
+        externalPlayerPendingResult?.error(
+            "ACTIVITY_DESTROYED",
+            "Main activity was destroyed before external playback returned.",
+            null,
+        )
+        externalPlayerPendingResult = null
         super.onDestroy()
 
         if (shouldTerminateProcess) {
@@ -952,6 +1007,385 @@ class MainActivity : AudioServiceActivity() {
         val positionMs = client.approximateStreamPosition
         val ticks = if (positionMs > 0) positionMs * 10000L else 0L
         emitGoogleCastEvent(state, positionTicks = ticks)
+    }
+
+    private fun listExternalPlayerApps(): List<Map<String, Any>> {
+        val queryIntent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(Uri.parse(EXTERNAL_PLAYER_SAMPLE_URL), "video/*")
+        }
+        val activities = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.queryIntentActivities(
+                queryIntent,
+                android.content.pm.PackageManager.ResolveInfoFlags.of(
+                    android.content.pm.PackageManager.MATCH_DEFAULT_ONLY.toLong(),
+                ),
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.queryIntentActivities(
+                queryIntent,
+                android.content.pm.PackageManager.MATCH_DEFAULT_ONLY,
+            )
+        }
+
+        return activities
+            .mapNotNull { info ->
+                val packageName = info.activityInfo?.packageName ?: return@mapNotNull null
+                if (packageName == this.packageName) {
+                    return@mapNotNull null
+                }
+                if (info.priority < 0) {
+                    return@mapNotNull null
+                }
+                val categoryMatch = info.match and IntentFilter.MATCH_CATEGORY_MASK
+                if (categoryMatch < IntentFilter.MATCH_CATEGORY_TYPE) {
+                    return@mapNotNull null
+                }
+                if (!hasExplicitVideoMimeType(info.filter)) {
+                    return@mapNotNull null
+                }
+                var activityName = info.activityInfo?.name ?: return@mapNotNull null
+                if (activityName.startsWith(".")) {
+                    activityName = "$packageName$activityName"
+                }
+                val component = "$packageName/$activityName"
+                val label = info.loadLabel(packageManager)?.toString()?.takeIf { it.isNotBlank() }
+                    ?: activityName
+                val entry = mutableMapOf<String, Any>(
+                    "component" to component,
+                    "packageName" to packageName,
+                    "activityName" to activityName,
+                    "label" to label,
+                )
+                iconToPngBytes(info.loadIcon(packageManager))?.let { iconBytes ->
+                    entry["iconPngBytes"] = iconBytes
+                }
+                entry
+            }
+            .distinctBy { it["component"] }
+                .sortedBy { (it["label"] as? String)?.lowercase() ?: "" }
+    }
+
+    private fun hasExplicitVideoMimeType(filter: IntentFilter?): Boolean {
+        if (filter == null) {
+            return true
+        }
+
+        val typeCount = filter.countDataTypes()
+        if (typeCount <= 0) {
+            return true
+        }
+
+        var hasVideoType = false
+        for (index in 0 until typeCount) {
+            val mimeType = filter.getDataType(index)?.lowercase() ?: continue
+            if (mimeType == "*/*") {
+                continue
+            }
+            if (mimeType == "video/*" || mimeType.startsWith("video/")) {
+                hasVideoType = true
+                break
+            }
+        }
+
+        return hasVideoType
+    }
+
+    private fun launchExternalPlayer(args: Map<*, *>, result: MethodChannel.Result) {
+        val launchIntent = createExternalPlayerIntent(args, requireComponent = true)
+        if (launchIntent == null) {
+            result.error("BAD_ARGS", "Missing or invalid external player launch arguments.", null)
+            return
+        }
+
+        if (launchIntent.resolveActivity(packageManager) == null) {
+            result.error("PLAYER_NOT_FOUND", "Selected external player is unavailable.", null)
+            return
+        }
+
+        startExternalPlayerProxy(launchIntent, result)
+    }
+
+    private fun chooseAndLaunchExternalPlayer(args: Map<*, *>, result: MethodChannel.Result) {
+        val baseIntent = createExternalPlayerIntent(args, requireComponent = false)
+        if (baseIntent == null) {
+            result.error("BAD_ARGS", "Missing or invalid external player launch arguments.", null)
+            return
+        }
+
+        val hasTarget = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.queryIntentActivities(
+                baseIntent,
+                android.content.pm.PackageManager.ResolveInfoFlags.of(
+                    android.content.pm.PackageManager.MATCH_DEFAULT_ONLY.toLong(),
+                ),
+            ).isNotEmpty()
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.queryIntentActivities(
+                baseIntent,
+                android.content.pm.PackageManager.MATCH_DEFAULT_ONLY,
+            ).isNotEmpty()
+        }
+        if (!hasTarget) {
+            result.error("PLAYER_NOT_FOUND", "No compatible external player was found.", null)
+            return
+        }
+
+        val chooserIntent = Intent.createChooser(baseIntent, EXTERNAL_PLAYER_CHOOSER_TITLE)
+        startExternalPlayerProxy(chooserIntent, result)
+    }
+
+    private fun startExternalPlayerProxy(
+        launchIntent: Intent,
+        result: MethodChannel.Result,
+    ) {
+        if (externalPlayerPendingResult != null) {
+            result.error(
+                "IN_PROGRESS",
+                "An external player launch is already in progress.",
+                null,
+            )
+            return
+        }
+
+        externalPlayerPendingResult = result
+        try {
+            val proxyIntent = Intent(this, ExternalPlayerProxyActivity::class.java).apply {
+                putExtra(EXTRA_EXTERNAL_PLAYER_LAUNCH_INTENT, launchIntent)
+            }
+            startActivityForResult(proxyIntent, EXTERNAL_PLAYER_PROXY_REQUEST_CODE)
+        } catch (error: ActivityNotFoundException) {
+            externalPlayerPendingResult = null
+            result.error("PLAYER_NOT_FOUND", error.message, null)
+        } catch (error: Exception) {
+            externalPlayerPendingResult = null
+            result.error("LAUNCH_FAILED", error.message, null)
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == EXTERNAL_PLAYER_PROXY_REQUEST_CODE) {
+            val pendingResult = externalPlayerPendingResult
+            externalPlayerPendingResult = null
+            pendingResult?.success(buildExternalPlayerResultPayload(data, resultCode))
+            return
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun createExternalPlayerIntent(
+        args: Map<*, *>,
+        requireComponent: Boolean,
+    ): Intent? {
+        val url = (args["url"] as? String)?.trim().orEmpty()
+        if (url.isEmpty()) return null
+
+        val componentRaw = (args["component"] as? String)?.trim().orEmpty()
+        val component = splitComponent(componentRaw)
+        if (requireComponent && component == null) {
+            return null
+        }
+
+        val mimeType = (args["mimeType"] as? String)?.trim().takeUnless { it.isNullOrEmpty() }
+            ?: "video/*"
+        val title = (args["title"] as? String)?.trim().orEmpty()
+        val fileName = (args["filename"] as? String)?.trim().orEmpty()
+        val positionMs = (anyToLong(args["positionMs"]) ?: 0L).coerceAtLeast(0L)
+        val positionInt = positionMs.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(Uri.parse(url), mimeType)
+            if (component != null) {
+                setClassName(component.first, component.second)
+            }
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+            putExtra("position", positionInt)
+            putExtra("return_result", true)
+            putExtra("secure_uri", true)
+            if (title.isNotEmpty()) {
+                putExtra("title", title)
+            }
+            if (fileName.isNotEmpty()) {
+                putExtra("filename", fileName)
+            }
+
+            putExtra("from_start", positionInt <= 0)
+
+            putExtra("forcename", title)
+            putExtra("startfrom", positionInt)
+            putExtra("forceresume", false)
+        }
+
+        val headers = args["headers"] as? Map<*, *>
+        if (headers != null) {
+            val headerBundle = Bundle()
+            for ((key, value) in headers.entries) {
+                val headerKey = key as? String ?: continue
+                val headerValue = value as? String ?: continue
+                if (headerKey.isBlank() || headerValue.isBlank()) continue
+                headerBundle.putString(headerKey, headerValue)
+            }
+            if (headerBundle.size() > 0) {
+                intent.putExtra("headers", headerBundle)
+            }
+        }
+
+        val subtitleEntries = args["subtitles"] as? List<*> ?: emptyList<Any>()
+        if (subtitleEntries.isNotEmpty()) {
+            val subtitleUris = ArrayList<Uri>()
+            val subtitleNames = ArrayList<String>()
+            val subtitleFiles = ArrayList<String>()
+
+            for (entry in subtitleEntries) {
+                val map = entry as? Map<*, *> ?: continue
+                val subtitleUrl = (map["url"] as? String)?.trim().orEmpty()
+                if (subtitleUrl.isEmpty()) continue
+
+                val subtitleUri = runCatching { Uri.parse(subtitleUrl) }.getOrNull() ?: continue
+                subtitleUris.add(subtitleUri)
+                subtitleNames.add((map["name"] as? String)?.trim().orEmpty())
+                subtitleFiles.add((map["language"] as? String)?.trim().orEmpty())
+            }
+
+            if (subtitleUris.isNotEmpty()) {
+                intent.putExtra("subs", subtitleUris.toTypedArray())
+                intent.putExtra("subs.name", subtitleNames.toTypedArray())
+                intent.putExtra("subs.filename", subtitleFiles.toTypedArray())
+                intent.putExtra("subtitles_location", subtitleUris.first().toString())
+            }
+        }
+
+        return intent
+    }
+
+    private fun splitComponent(raw: String): Pair<String, String>? {
+        if (raw.isBlank()) return null
+        val slash = raw.indexOf('/')
+        if (slash <= 0 || slash >= raw.lastIndex) return null
+
+        val packageName = raw.substring(0, slash).trim()
+        var activityName = raw.substring(slash + 1).trim()
+        if (packageName.isEmpty() || activityName.isEmpty()) return null
+        if (activityName.startsWith(".")) {
+            activityName = "$packageName$activityName"
+        }
+        return packageName to activityName
+    }
+
+    private fun iconToPngBytes(drawable: Drawable?): ByteArray? {
+        if (drawable == null) return null
+        val bitmap = if (drawable is BitmapDrawable && drawable.bitmap != null) {
+            drawable.bitmap
+        } else {
+            val width = if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else 96
+            val height = if (drawable.intrinsicHeight > 0) drawable.intrinsicHeight else 96
+            val generated = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(generated)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+            generated
+        }
+
+        val stream = ByteArrayOutputStream()
+        return try {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            stream.toByteArray()
+        } catch (_: Exception) {
+            null
+        } finally {
+            runCatching { stream.close() }
+        }
+    }
+
+    private fun buildExternalPlayerResultPayload(
+        data: Intent?,
+        resultCode: Int,
+    ): Map<String, Any> {
+        val action = data?.action ?: ""
+        val forwardedErrorCode = data?.getStringExtra(EXTRA_EXTERNAL_PLAYER_ERROR_CODE)
+        val forwardedErrorMessage = data?.getStringExtra(EXTRA_EXTERNAL_PLAYER_ERROR_MESSAGE)
+
+        if (!forwardedErrorCode.isNullOrBlank()) {
+            val payload = mutableMapOf<String, Any>(
+                "completed" to false,
+                "hasError" to true,
+                "resultCode" to resultCode,
+                "errorCode" to forwardedErrorCode,
+                "errorMessage" to (forwardedErrorMessage ?: "External player launch failed."),
+            )
+            if (action.isNotEmpty()) {
+                payload["playerAction"] = action
+            }
+            return payload
+        }
+
+        val endPositionMs = extractExternalPlayerPositionMs(data)
+
+        val playbackCompleted = when (action) {
+            API_MX_RESULT_ID ->
+                data?.extras?.getString(API_MX_RESULT_END_BY) == API_MX_RESULT_END_BY_PLAYBACK_COMPLETION
+            API_MPV_RESULT_ID -> endPositionMs == null
+            API_VIMU_RESULT_ID -> resultCode == API_VIMU_RESULT_PLAYBACK_COMPLETED
+            else -> false
+        }
+
+        val hasError = when (action) {
+            API_VIMU_RESULT_ID -> resultCode == API_VIMU_RESULT_ERROR
+            else -> resultCode != Activity.RESULT_OK && !playbackCompleted
+        }
+
+        val payload = mutableMapOf<String, Any>(
+            "completed" to playbackCompleted,
+            "hasError" to hasError,
+            "resultCode" to resultCode,
+        )
+
+        if (action.isNotEmpty()) {
+            payload["playerAction"] = action
+        }
+
+        if (endPositionMs != null) {
+            payload["endPositionMs"] = endPositionMs
+        }
+
+        if (hasError) {
+            payload["errorCode"] = "EXTERNAL_PLAYER_ERROR"
+            payload["errorMessage"] = "External player reported an error or was canceled."
+        }
+
+        return payload
+    }
+
+    private fun extractExternalPlayerPositionMs(data: Intent?): Long? {
+        val extras = data?.extras ?: return null
+        val keys = listOf(
+            API_MX_RESULT_POSITION,
+            API_VLC_RESULT_POSITION,
+        )
+        for (key in keys) {
+            val raw = extras.get(key) ?: continue
+            val value = anyToLong(raw)
+            if (value != null && value >= 0L) {
+                return value
+            }
+        }
+        return null
+    }
+
+    private fun anyToLong(value: Any?): Long? {
+        return when (value) {
+            is Int -> value.toLong()
+            is Long -> value
+            is Short -> value.toLong()
+            is Byte -> value.toLong()
+            is Float -> value.toLong()
+            is Double -> value.toLong()
+            is String -> value.toLongOrNull()
+            else -> null
+        }
     }
 
     private fun getCurrentCastSession(): CastSession? {

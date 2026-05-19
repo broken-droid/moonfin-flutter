@@ -38,6 +38,7 @@ import '../../data/services/sync_service.dart';
 import '../../data/services/theme_music_service.dart';
 import '../../data/viewmodels/media_bar_view_model.dart';
 import '../../data/viewmodels/seerr_discover_view_model.dart';
+import '../../playback/external_player_service.dart';
 import '../../preference/seerr_preferences.dart';
 import '../../preference/user_preferences.dart';
 import '../../ui/screensaver/screensaver_controller.dart';
@@ -134,6 +135,7 @@ void registerAppModule() {
   _getIt.registerLazySingleton<SyncService>(
     () => SyncService(_getIt<OfflineRepository>()),
   );
+  _getIt.registerLazySingleton(() => const ExternalPlayerService());
 
   _registerUserScopedSingletons();
 }

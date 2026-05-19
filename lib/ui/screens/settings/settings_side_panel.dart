@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +19,7 @@ import '../../widgets/app_update_dialog.dart';
 
 import '../../../auth/store/authentication_preferences.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../playback/external_player_service.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
 import '../../navigation/destinations.dart';
@@ -1835,6 +1838,16 @@ class _VideoPlaybackScreen extends StatelessWidget {
               },
             ),
           if (PlatformDetection.isAndroid && PlatformDetection.isTV)
+            SwitchPreferenceTile(
+              preference: UserPreferences.useExternalPlayer,
+              title: 'Use external player',
+              subtitle:
+                  'Open video playback in your selected external app on Android TV.',
+              icon: Icons.open_in_new,
+            ),
+          if (PlatformDetection.isAndroid && PlatformDetection.isTV)
+            const _ExternalPlayerAppPickerTile(),
+          if (PlatformDetection.isAndroid && PlatformDetection.isTV)
             EnumPreferenceTile<DolbyVisionFallbackBehavior>(
               preference: UserPreferences.dolbyVisionFallbackBehavior,
               title: l10n.settingsDolbyVisionFallback,
@@ -1965,6 +1978,191 @@ class _VideoPlaybackScreen extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ExternalPlayerAppPickerTile extends StatefulWidget {
+  const _ExternalPlayerAppPickerTile();
+
+  @override
+  State<_ExternalPlayerAppPickerTile> createState() =>
+      _ExternalPlayerAppPickerTileState();
+}
+
+class _ExternalPlayerAppPickerTileState
+    extends State<_ExternalPlayerAppPickerTile> {
+  final _service = GetIt.instance<ExternalPlayerService>();
+  late final PreferenceBinding<bool> _enabledBinding;
+  late final PreferenceBinding<String> _componentBinding;
+  List<ExternalPlayerApp> _players = const [];
+  bool _loading = false;
+  bool _pickerOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final store = GetIt.instance<PreferenceStore>();
+    _enabledBinding = PreferenceBinding(store, UserPreferences.useExternalPlayer);
+    _componentBinding = PreferenceBinding(
+      store,
+      UserPreferences.externalPlayerComponentName,
+    );
+    unawaited(_loadPlayers());
+  }
+
+  @override
+  void dispose() {
+    _enabledBinding.dispose();
+    _componentBinding.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadPlayers() async {
+    if (_loading) return;
+    setState(() => _loading = true);
+    try {
+      final players = await _service.listPlayers();
+      if (!mounted) return;
+      setState(() {
+        _players = players;
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _loading = false);
+      }
+    }
+  }
+
+  String _selectedLabel(String component) {
+    final normalized = component.trim();
+    if (normalized.isEmpty) {
+      return 'Ask each time';
+    }
+
+    for (final player in _players) {
+      if (player.component == normalized) {
+        return player.label;
+      }
+    }
+
+    return normalized;
+  }
+
+  Future<void> _showPicker(String current) async {
+    if (_pickerOpen) return;
+    _pickerOpen = true;
+    await _loadPlayers();
+    try {
+      if (!mounted) return;
+
+      final normalizedCurrent = current.trim();
+      final selectedIndex = _players.indexWhere(
+        (player) => player.component == normalizedCurrent,
+      );
+      final autofocusIndex = selectedIndex >= 0 ? selectedIndex : -1;
+      var picked = false;
+
+      final result = await showFocusRestoringDialog<String>(
+        context: context,
+        useRootNavigator: false,
+        builder: (dialogContext) => SimpleDialog(
+          title: const Text('External player app'),
+          children: [
+            TvFocusHighlight(
+              builder: (_, _) => ListTile(
+                autofocus: normalizedCurrent.isEmpty,
+                leading: const Icon(Icons.help_outline),
+                title: const Text('Ask each time'),
+                subtitle: const Text('Show app chooser when playback starts.'),
+                trailing:
+                    normalizedCurrent.isEmpty ? const Icon(Icons.check) : null,
+                onTap: () {
+                  if (picked) return;
+                  picked = true;
+                  Navigator.pop(dialogContext, '');
+                },
+              ),
+            ),
+            if (_players.isNotEmpty) const Divider(height: 1),
+            ..._players.asMap().entries.map((entry) {
+              final index = entry.key;
+              final player = entry.value;
+              final selected = player.component == normalizedCurrent;
+              return TvFocusHighlight(
+                builder: (_, _) => ListTile(
+                  autofocus: index == autofocusIndex,
+                  leading: _ExternalPlayerAppIcon(player: player),
+                  title: Text(player.label),
+                  subtitle: Text(player.packageName),
+                  trailing: selected ? const Icon(Icons.check) : null,
+                  onTap: () {
+                    if (picked) return;
+                    picked = true;
+                    Navigator.pop(dialogContext, player.component);
+                  },
+                ),
+              );
+            }),
+          ],
+        ),
+      );
+
+      if (!mounted || result == null || result == _componentBinding.value) {
+        return;
+      }
+
+      _componentBinding.value = result;
+    } finally {
+      _pickerOpen = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _enabledBinding,
+      builder: (context, enabled, _) {
+        return ValueListenableBuilder<String>(
+          valueListenable: _componentBinding,
+          builder: (context, component, _) {
+            final subtitle = _loading
+                ? 'Loading installed players...'
+                : _selectedLabel(component);
+            return _TvSettingsListTile(
+              leading: const Icon(Icons.apps),
+              title: const Text('External player app'),
+              subtitle: Text(subtitle),
+              onTap: enabled ? () => _showPicker(component) : null,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _ExternalPlayerAppIcon extends StatelessWidget {
+  final ExternalPlayerApp player;
+
+  const _ExternalPlayerAppIcon({required this.player});
+
+  @override
+  Widget build(BuildContext context) {
+    final bytes = player.iconPngBytes;
+    if (bytes == null || bytes.isEmpty) {
+      return const Icon(Icons.ondemand_video);
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(6),
+      child: Image.memory(
+        bytes,
+        width: 24,
+        height: 24,
+        fit: BoxFit.contain,
+        errorBuilder: (_, _, _) => const Icon(Icons.ondemand_video),
       ),
     );
   }

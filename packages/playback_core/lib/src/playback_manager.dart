@@ -16,6 +16,7 @@ class PlaybackManager {
   MediaStreamResolver? _resolver;
   PlayerService? _service;
   Future<void> Function(dynamic item)? _resolverConfigurator;
+  bool Function(List<dynamic> items)? _externalPlaybackDecider;
   PlayerBackend Function(
     StreamResolutionResult resolution,
     PlayerBackend currentBackend,
@@ -59,6 +60,9 @@ class PlaybackManager {
   Future<void>? _stopInFlight;
   int _playbackSessionToken = 0;
   Future<void>? _externalSubsLoaded;
+  Duration _deferredStartPosition = Duration.zero;
+  bool _deferPlaybackToExternalPlayer = false;
+  bool _skipExternalRoutingOnce = false;
   final _backendChangedController = StreamController<PlayerBackend>.broadcast();
   final _bringupStateController =
       StreamController<PlaybackBringupState>.broadcast();
@@ -73,8 +77,28 @@ class PlaybackManager {
   StreamResolutionResult? get currentResolution => _currentResolution;
   int? get audioStreamIndex => _audioStreamIndex;
   int? get subtitleStreamIndex => _subtitleStreamIndex;
+  int? get pendingAudioStreamIndex => _audioStreamIndex;
+  int? get pendingSubtitleStreamIndex => _subtitleStreamIndex;
+  String? get pendingMediaSourceId => _mediaSourceId;
+  bool get playbackDeferredToExternalPlayer => _deferPlaybackToExternalPlayer;
+  bool consumeSkipExternalRoutingOnce() {
+    final shouldSkip = _skipExternalRoutingOnce;
+    _skipExternalRoutingOnce = false;
+    return shouldSkip;
+  }
+
+  void skipExternalRoutingOnce() {
+    _skipExternalRoutingOnce = true;
+  }
+
   int? get maxBitrateOverrideMbps => _maxBitrateOverrideMbps;
   bool get isOfflinePlayback => _isOfflinePlayback;
+  Duration consumeDeferredStartPosition() {
+    final value = _deferredStartPosition;
+    _deferredStartPosition = Duration.zero;
+    return value;
+  }
+
   Map<String, dynamic>? get currentOfflineMetadata {
     final url = queueService.currentItem;
     if (url is! String) return null;
@@ -197,6 +221,17 @@ class PlaybackManager {
     Future<void> Function(dynamic item) configurator,
   ) {
     _resolverConfigurator = configurator;
+  }
+
+  void setExternalPlaybackDecider(
+    bool Function(List<dynamic> items)? decider,
+  ) {
+    _externalPlaybackDecider = decider;
+  }
+
+  Future<void> configureResolverForItem(dynamic item) async {
+    if (_resolverConfigurator == null) return;
+    await _resolverConfigurator!(item);
   }
 
   void setBackendSelector(
@@ -418,6 +453,31 @@ class PlaybackManager {
       startPosition = adjusted < Duration.zero ? Duration.zero : adjusted;
     }
     queueService.setQueue(items, startIndex: startIndex);
+
+    final externalDecider = _externalPlaybackDecider;
+    if (externalDecider != null && externalDecider(items)) {
+      _deferredStartPosition = startPosition;
+      _deferPlaybackToExternalPlayer = true;
+      _setBringupState(const PlaybackBringupState.idle());
+      return;
+    }
+
+    _deferredStartPosition = Duration.zero;
+    _deferPlaybackToExternalPlayer = false;
+    await _playCurrentItem(
+      startPosition: startPosition,
+      enableDirectPlay: enableDirectPlay,
+      enableDirectStream: enableDirectStream,
+    );
+  }
+
+  Future<void> startQueuedPlayback({
+    Duration startPosition = Duration.zero,
+    bool enableDirectPlay = true,
+    bool enableDirectStream = true,
+  }) async {
+    _deferredStartPosition = Duration.zero;
+    _deferPlaybackToExternalPlayer = false;
     await _playCurrentItem(
       startPosition: startPosition,
       enableDirectPlay: enableDirectPlay,
@@ -431,6 +491,9 @@ class PlaybackManager {
     bool enableDirectStream = true,
     bool allowStartupRecovery = true,
   }) async {
+    _deferredStartPosition = Duration.zero;
+    _deferPlaybackToExternalPlayer = false;
+
     if (_forceTranscodeForQueue) {
       enableDirectPlay = false;
       enableDirectStream = false;
@@ -1394,6 +1457,8 @@ class PlaybackManager {
     Future<void> Function()? onStop,
     Future<void> Function(String url)? onAutoNext,
   }) async {
+    _deferredStartPosition = Duration.zero;
+    _deferPlaybackToExternalPlayer = false;
     _isAutoNexting = false;
     _isManualNexting = false;
     suppressAutoNext = false;
@@ -1442,6 +1507,8 @@ class PlaybackManager {
     }
 
     final stopFuture = (() async {
+      _deferredStartPosition = Duration.zero;
+      _deferPlaybackToExternalPlayer = false;
       _playbackSessionToken++;
       _stopProgressTimer();
       final backend = _backend;

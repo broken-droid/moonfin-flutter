@@ -1272,13 +1272,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     final l10n = AppLocalizations.of(context);
     final resolution = _manager.currentResolution;
     final playMethod = resolution?.playMethod;
+    final bringupPlayMethod = _manager.bringupState.playMethod;
     final methodLabel = _manager.isOfflinePlayback
         ? l10n.directPlay
         : switch (playMethod) {
             StreamPlayMethod.directPlay => l10n.directPlay,
             StreamPlayMethod.directStream => l10n.directStream,
             StreamPlayMethod.transcode => l10n.transcoding,
-            _ => l10n.unknown,
+            _ => switch (bringupPlayMethod) {
+              'directPlay' => l10n.directPlay,
+              'directStream' => l10n.directStream,
+              'transcode' => l10n.transcoding,
+              _ => l10n.unknown,
+            },
           };
 
     final item = _queue.currentItem;

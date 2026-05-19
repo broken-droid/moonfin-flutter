@@ -133,3 +133,15 @@ dependencies {
     implementation("com.google.android.gms:play-services-cast-framework:22.0.0")
     implementation("eu.simonbinder:sqlite3-native-library:3.52.0")
 }
+
+val flutterApkOutputDir = layout.buildDirectory.dir("app/outputs/flutter-apk")
+
+tasks.register<Copy>("copyAndroidTvDebugApkForFlutter") {
+    from(flutterApkOutputDir.map { it.file("app-androidtv-debug.apk") })
+    into(flutterApkOutputDir)
+    rename { "app-debug.apk" }
+}
+
+tasks.matching { it.name == "assembleDebug" }.configureEach {
+    finalizedBy("copyAndroidTvDebugApkForFlutter")
+}

@@ -1416,9 +1416,12 @@ class _DetailContentState extends State<_DetailContent> {
         enableDirectStream: !forceTranscode,
       ),
     );
-    if (!started) return;
-    if (!context.mounted) return;
-    unawaited(context.push(Destinations.videoPlayer));
+    if (!started || !context.mounted) return;
+
+    final destination = manager.playbackDeferredToExternalPlayer
+        ? Destinations.externalPlayer
+        : Destinations.videoPlayer;
+    unawaited(context.push(destination));
   }
 
   List<Widget> _buildChapterAndFeatureSections(
@@ -4518,13 +4521,16 @@ class _ActionButtonsState extends State<_ActionButtons> {
     bool reloadOnReturn = true,
   }) async {
     if (!context.mounted) return false;
-    final routeFuture = context.push(destination);
+    Future<Object?>? routeFuture;
+    if (destination != Destinations.videoPlayer) {
+      routeFuture = context.push(destination);
+    }
 
     bool started;
     try {
       started = await startupFuture;
     } catch (_) {
-      if (context.mounted) {
+      if (routeFuture != null && context.mounted) {
         final route = ModalRoute.of(context);
         if (route != null && !route.isCurrent) {
           Navigator.of(context).pop();
@@ -4534,7 +4540,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
 
     if (!started) {
-      if (context.mounted) {
+      if (routeFuture != null && context.mounted) {
         final route = ModalRoute.of(context);
         if (route != null && !route.isCurrent) {
           Navigator.of(context).pop();
@@ -4544,6 +4550,15 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
 
     if (!context.mounted) return false;
+    if (routeFuture == null) {
+      var resolvedDestination = destination;
+      final manager = GetIt.instance<PlaybackManager>();
+      if (manager.playbackDeferredToExternalPlayer) {
+        resolvedDestination = Destinations.externalPlayer;
+      }
+      routeFuture = context.push(resolvedDestination);
+    }
+
     await routeFuture;
     if (reloadOnReturn) {
       viewModel.load();

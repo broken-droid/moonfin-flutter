@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:playback_core/playback_core.dart';
 
 import '../../auth/repositories/session_repository.dart';
 import '../../auth/repositories/user_repository.dart';
 import '../../data/services/connectivity_service.dart';
 import '../../di/injection.dart';
+import '../../playback/external_player_policy.dart';
+import '../../preference/user_preferences.dart';
+import '../../syncplay/syncplay_manager.dart';
+import '../../util/platform_detection.dart';
 import '../screens/auth/emby_connect_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/server_screen.dart';
@@ -39,6 +44,7 @@ import '../screens/livetv/live_tv_screen.dart';
 import '../screens/livetv/live_tv_series_recordings_screen.dart';
 import '../screens/playback/audio_player_screen.dart';
 import '../screens/playback/book_reader_screen.dart';
+import '../screens/playback/external_player_host_screen.dart';
 import '../screens/playback/next_up_screen.dart';
 import '../screens/playback/photo_player_screen.dart';
 import '../screens/playback/still_watching_screen.dart';
@@ -94,10 +100,41 @@ const _authRoutes = {
 
 bool _isOfflineAllowed(String path) {
   if (path.startsWith('/settings')) return true;
-  if (path == Destinations.videoPlayer || path == Destinations.audioPlayer) {
+  if (path == Destinations.videoPlayer ||
+      path == Destinations.externalPlayer ||
+      path == Destinations.audioPlayer) {
     return true;
   }
   return false;
+}
+
+bool _shouldRedirectVideoToExternalPlayer(String path) {
+  if (path != Destinations.videoPlayer) {
+    return false;
+  }
+
+  final manager = GetIt.instance<PlaybackManager>();
+  if (manager.consumeSkipExternalRoutingOnce()) {
+    return false;
+  }
+
+  if (!(PlatformDetection.isAndroid && PlatformDetection.isTV)) {
+    return false;
+  }
+
+  final prefs = GetIt.instance<UserPreferences>();
+  if (!prefs.get(UserPreferences.useExternalPlayer)) {
+    return false;
+  }
+
+  if (GetIt.instance.isRegistered<SyncPlayManager>()) {
+    final syncPlay = GetIt.instance<SyncPlayManager>();
+    if (syncPlay.state.enabled) {
+      return false;
+    }
+  }
+
+  return ExternalPlayerPolicy.isEligibleItem(manager.queueService.currentItem);
 }
 
 CustomTransitionPage<T> _opaqueFullScreenPage<T>({
@@ -143,6 +180,10 @@ final appRouter = GoRouter(
     final connectivity = GetIt.instance<ConnectivityService>();
     if (!connectivity.isOnline && !_isOfflineAllowed(path)) {
       return Destinations.downloads;
+    }
+
+    if (_shouldRedirectVideoToExternalPlayer(path)) {
+      return Destinations.externalPlayer;
     }
 
     return null;
@@ -365,6 +406,13 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) => _opaqueFullScreenPage<void>(
         state: state,
         child: const VideoPlayerScreen(),
+      ),
+    ),
+    GoRoute(
+      path: Destinations.externalPlayer,
+      pageBuilder: (context, state) => _opaqueFullScreenPage<void>(
+        state: state,
+        child: const ExternalPlayerHostScreen(),
       ),
     ),
     GoRoute(
