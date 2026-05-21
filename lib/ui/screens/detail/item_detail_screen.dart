@@ -9042,11 +9042,12 @@ class _AlbumActions extends StatelessWidget {
     this.onDeletePlaylist,
   });
 
-  void _playAndOpenAudio(
+  void _playAndOpen(
     BuildContext context,
     PlaybackManager manager,
     List<AggregatedItem> queue,
   ) {
+    final isAudioQueue = queue.every(_isAudioItem);
     unawaited(() async {
       try {
         await manager.playItems(queue);
@@ -9054,8 +9055,17 @@ class _AlbumActions extends StatelessWidget {
         return;
       }
       if (!context.mounted) return;
-      context.push(Destinations.audioPlayer);
+      context.push(
+        isAudioQueue ? Destinations.audioPlayer : Destinations.videoPlayer,
+      );
     }());
+  }
+
+  bool _isAudioItem(AggregatedItem item) {
+    final mediaType = item.rawData['MediaType'] as String?;
+    return item.type == 'Audio' ||
+        item.type == 'AudioBook' ||
+        mediaType == 'Audio';
   }
 
   @override
@@ -9103,7 +9113,7 @@ class _AlbumActions extends StatelessWidget {
             onArrowDown: onPlayDown,
             onPressed: () {
               if (tracks.isEmpty) return;
-              _playAndOpenAudio(context, manager, tracks);
+              _playAndOpen(context, manager, tracks);
             },
           ),
           _DetailActionButton(
@@ -9112,7 +9122,7 @@ class _AlbumActions extends StatelessWidget {
             onPressed: () {
               if (tracks.isEmpty) return;
               final shuffled = List<AggregatedItem>.from(tracks)..shuffle();
-              _playAndOpenAudio(context, manager, shuffled);
+              _playAndOpen(context, manager, shuffled);
             },
           ),
           if (onDownloadAll != null)
