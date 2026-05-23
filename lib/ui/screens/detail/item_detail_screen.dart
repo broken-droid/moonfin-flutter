@@ -433,6 +433,24 @@ class _DetailContentState extends State<_DetailContent> {
         renderObject.hasSize;
   }
 
+  bool _shouldSkipSectionEnsureVisible(FocusNode target) {
+    return target.context
+            ?.findAncestorWidgetOfExactType<_ExpandableBiography>() !=
+        null;
+  }
+
+  bool _tryFocusNavbar() {
+    if (prefs.get(UserPreferences.navbarPosition) != NavbarPosition.top) {
+      return false;
+    }
+    final focusNavbar = NavigationLayout.focusNavbarNotifier.value;
+    if (focusNavbar != null) {
+      focusNavbar();
+      return true;
+    }
+    return false;
+  }
+
   bool _tryFocusSidebar() {
     if (prefs.get(UserPreferences.navbarPosition) != NavbarPosition.left) {
       return false;
@@ -481,7 +499,7 @@ class _DetailContentState extends State<_DetailContent> {
   void _focusSectionTarget(FocusNode target) {
     target.requestFocus();
     final context = target.context;
-    if (context != null) {
+    if (context != null && !_shouldSkipSectionEnsureVisible(target)) {
       unawaited(_ensureSectionVisible(context));
     }
   }
@@ -492,7 +510,7 @@ class _DetailContentState extends State<_DetailContent> {
     }
 
     final sectionContext = _sectionContainerContext(target);
-    if (sectionContext != null) {
+    if (sectionContext != null && !_shouldSkipSectionEnsureVisible(target)) {
       unawaited(_ensureSectionVisible(sectionContext));
     }
 
@@ -507,6 +525,10 @@ class _DetailContentState extends State<_DetailContent> {
 
   KeyEventResult _requestSectionFocus(FocusNode? target) {
     if (target == null) {
+      return KeyEventResult.ignored;
+    }
+
+    if (!target.canRequestFocus) {
       return KeyEventResult.ignored;
     }
 
@@ -1716,6 +1738,7 @@ class _DetailContentState extends State<_DetailContent> {
     final series = viewModel.filmographySeries;
     final musicVideos = viewModel.filmographyMusicVideos;
     final firstFocus = initialFocusNode;
+    final favoriteFocusNode = _sectionFocusNode('detailPersonFavorite');
     final hasBio = item.overview != null && item.overview!.isNotEmpty;
     final moviesFocusNode = movies.isNotEmpty
         ? (hasBio
@@ -1743,11 +1766,23 @@ class _DetailContentState extends State<_DetailContent> {
           onPressed: viewModel.toggleFavorite,
           isActive: item.isFavorite,
           activeColor: const Color(0xFFFF4757),
+          focusNode: favoriteFocusNode,
+          suppressAutoScrollToTop: true,
+          onArrowUp: _tryFocusNavbar,
+          onArrowDown: hasBio
+              ? () => _requestSectionFocus(firstFocus)
+              : () => _requestSectionFocus(
+                  moviesFocusNode ?? seriesFocusNode ?? musicVideosFocusNode,
+                ),
         ),
       ),
       if (hasBio) ...[
         const SizedBox(height: 24),
-        _ExpandableBiography(text: item.overview!, toggleFocusNode: firstFocus),
+        _ExpandableBiography(
+          text: item.overview!,
+          toggleFocusNode: firstFocus,
+          upTarget: favoriteFocusNode,
+        ),
       ],
       if (movies.isNotEmpty) ...[
         const SizedBox(height: 32),
@@ -3959,7 +3994,13 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }
 
   void _focusTarget(FocusNode? target) {
-    if (target == null) return;
+    if (target == null) {
+      if (GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition) ==
+          NavbarPosition.top) {
+        NavigationLayout.focusNavbarNotifier.value?.call();
+      }
+      return;
+    }
 
     final requestFocus = widget.onRequestFocus;
     if (requestFocus != null) {
@@ -3969,8 +4010,20 @@ class _ActionButtonsState extends State<_ActionButtons> {
       }
     }
 
-    if (target.context != null && target.canRequestFocus) {
+    if (target.context == null) {
+      if (GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition) ==
+          NavbarPosition.top) {
+        NavigationLayout.focusNavbarNotifier.value?.call();
+      }
+      return;
+    }
+
+    if (target.canRequestFocus) {
       target.requestFocus();
+      if (target.context?.findAncestorWidgetOfExactType<_ExpandableBiography>() !=
+          null) {
+        return;
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final targetContext = target.context;
@@ -4424,7 +4477,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
           button,
           onArrowUp:
               button.onArrowUp ??
-              (widget.upTarget != null ? _focusUpTarget : null),
+            _focusUpTarget,
           onArrowLeft: index == 0 ? _focusSidebar : null,
           onArrowDown: _expanded
               ? () => _focusFirstExpandedOverflowButton(context)
@@ -4455,7 +4508,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         label: _expanded ? l10n.less : l10n.more,
         icon: _expanded ? Icons.expand_less : Icons.expand_more,
         focusNode: _overflowMoreFocusNode,
-        onArrowUp: widget.upTarget != null ? _focusUpTarget : null,
+        onArrowUp: _focusUpTarget,
         onArrowDown: _expanded
             ? () => _focusFirstExpandedOverflowButton(context)
             : null,
@@ -8635,12 +8688,14 @@ class _PersonDates extends StatelessWidget {
 class _ExpandableBiography extends StatefulWidget {
   final String text;
   final FocusNode? toggleFocusNode;
+  final FocusNode? upTarget;
   final TextStyle? style;
   final TextAlign? textAlign;
 
   const _ExpandableBiography({
     required this.text,
     this.toggleFocusNode,
+    this.upTarget,
     this.style,
     this.textAlign,
   });
@@ -8652,33 +8707,51 @@ class _ExpandableBiography extends StatefulWidget {
 class _ExpandableBiographyState extends State<_ExpandableBiography> {
   bool _expanded = false;
   bool _focused = false;
+  static const double _contentHorizontalPadding = 8;
+
+  bool _handleUpWithoutToggle() {
+    final upTarget = widget.upTarget;
+    if (upTarget != null && upTarget.canRequestFocus) {
+      upTarget.requestFocus();
+      return true;
+    }
+
+    final navbarPosition = GetIt.instance<UserPreferences>().get(
+      UserPreferences.navbarPosition,
+    );
+    if (navbarPosition != NavbarPosition.top) {
+      return true;
+    }
+
+    final focusNavbar = NavigationLayout.focusNavbarNotifier.value;
+    if (focusNavbar != null) {
+      focusNavbar();
+      return true;
+    }
+
+    return false;
+  }
 
   bool _textOverflows(BoxConstraints constraints, TextStyle? style) {
+    final maxWidth = constraints.maxWidth.isFinite
+        ? (constraints.maxWidth - (_contentHorizontalPadding * 2)).clamp(
+            0.0,
+            double.infinity,
+          )
+        : constraints.maxWidth;
+    if (maxWidth <= 0) {
+      return false;
+    }
     final tp = TextPainter(
       text: TextSpan(text: widget.text, style: style),
       maxLines: 4,
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: constraints.maxWidth);
+    )..layout(maxWidth: maxWidth);
     return tp.didExceedMaxLines;
   }
 
   bool _stepScroll(BuildContext context, {required bool down}) {
     return stepScrollWithinContextBounds(context, down: down);
-  }
-
-  void _scrollToTop(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final scrollable = Scrollable.maybeOf(context);
-      if (scrollable == null) return;
-      final position = scrollable.position;
-      if (position.pixels <= position.minScrollExtent) return;
-      position.animateTo(
-        position.minScrollExtent,
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOut,
-      );
-    });
   }
 
   @override
@@ -8698,14 +8771,24 @@ class _ExpandableBiographyState extends State<_ExpandableBiography> {
         final canToggle = overflows;
 
         return Focus(
-          focusNode: widget.toggleFocusNode,
+          focusNode: canToggle ? widget.toggleFocusNode : null,
+          canRequestFocus: canToggle,
+          skipTraversal: !canToggle,
           onFocusChange: (focused) {
-            setState(() => _focused = focused);
-            if (focused) _scrollToTop(context);
+            if (_focused != focused) {
+              setState(() => _focused = focused);
+            }
           },
           onKeyEvent: (_, event) {
             if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
               return KeyEventResult.ignored;
+            }
+
+            if (event.logicalKey == LogicalKeyboardKey.arrowUp &&
+                (!canToggle || !_expanded)) {
+              return _handleUpWithoutToggle()
+                  ? KeyEventResult.handled
+                  : KeyEventResult.ignored;
             }
 
             if (_expanded && event.logicalKey == LogicalKeyboardKey.arrowDown) {
@@ -8718,7 +8801,9 @@ class _ExpandableBiographyState extends State<_ExpandableBiography> {
               if (_stepScroll(context, down: false)) {
                 return KeyEventResult.handled;
               }
-              return KeyEventResult.ignored;
+              return _handleUpWithoutToggle()
+                  ? KeyEventResult.handled
+                  : KeyEventResult.ignored;
             }
             if (canToggle && isActivateKey(event)) {
               setState(() => _expanded = !_expanded);
@@ -8732,7 +8817,10 @@ class _ExpandableBiographyState extends State<_ExpandableBiography> {
                 : null,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 120),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                horizontal: _contentHorizontalPadding,
+                vertical: 6,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: _focused
