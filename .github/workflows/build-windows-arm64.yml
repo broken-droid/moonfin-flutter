@@ -31,7 +31,7 @@ jobs:
             throw "This job must run on a native ARM64 Windows runner"
           }
 
-      - name: Set up Flutter from stable tag
+      - name: Set up Flutter
         shell: pwsh
         run: |
           git clone https://github.com/flutter/flutter.git --branch $env:FLUTTER_VERSION --depth 1 C:\flutter
@@ -81,11 +81,7 @@ jobs:
           & $vcpkg install libarchive:arm64-windows
           & $vcpkg integrate install
 
-      - name: Resolve dependencies
-        shell: pwsh
-        run: flutter pub get
-
-      - name: Build Windows ARM64 release
+      - name: Build Windows release
         shell: pwsh
         env:
           VCPKG_DEFAULT_TRIPLET: arm64-windows
@@ -112,11 +108,8 @@ jobs:
             Select-Object -First 1
 
           if (-not $releaseExe) {
-            $releaseExe = $allExes | Select-Object -First 1
-            Write-Host "No arm64 folder found; checking executable machine type directly."
+            throw "No moonfin.exe was found under an arm64 build folder."
           }
-
-          Write-Host "Checking executable: $($releaseExe.FullName)"
 
           $headers = dumpbin /headers $releaseExe.FullName
           $headers | Select-String "machine"
@@ -146,18 +139,6 @@ jobs:
 
           Write-Host "Packaged ARM64 release from: $env:RELEASE_DIR"
           Write-Host "Created artifact: $zipPath"
-
-      - name: Verify artifact
-        shell: pwsh
-        run: |
-          $artifact = Get-ChildItem -Path . -Filter "Moonfin_Windows_ARM64_v*.zip" -File -ErrorAction SilentlyContinue
-
-          if (-not $artifact -or $artifact.Count -eq 0) {
-            throw "Windows ARM64 package was not created"
-          }
-
-          Write-Host "Found artifact(s):"
-          $artifact | ForEach-Object { Write-Host "  - $($_.Name)" }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
