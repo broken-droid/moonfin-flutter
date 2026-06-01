@@ -534,7 +534,9 @@ class _ContentRowsState extends State<_ContentRows>
   final _scrollController = ScrollController();
   final _mediaBarFocusNode = FocusNode(debugLabel: 'home_media_bar_focus');
   final _playbackManager = GetIt.instance<PlaybackManager>();
-  final _media3PreviewBackend = GetIt.instance<Media3PlayerBackend>();
+  final Media3PlayerBackend? _media3PreviewBackend = PlatformDetection.isTizen
+      ? null
+      : GetIt.instance<Media3PlayerBackend>();
   final _themeMusicService = GetIt.instance<ThemeMusicService>();
   final Map<int, GlobalKey> _rowKeys = {};
   final Map<int, GlobalKey> _rowContainerKeys = {};
@@ -695,7 +697,7 @@ class _ContentRowsState extends State<_ContentRows>
     final previewVolume = kIsWeb ? 0.0 : (previewAudioEnabled ? 100.0 : 0.0);
 
     if (_previewUsingMedia3) {
-      unawaited(_media3PreviewBackend.setVolume(previewVolume));
+      unawaited(_media3PreviewBackend!.setVolume(previewVolume));
       return;
     }
 
@@ -983,8 +985,8 @@ class _ContentRowsState extends State<_ContentRows>
     }
     if (_previewUsingMedia3) {
       _previewUsingMedia3 = false;
-      unawaited(_media3PreviewBackend.stop());
-      _media3PreviewBackend.resetVolumeState();
+      unawaited(_media3PreviewBackend!.stop());
+      _media3PreviewBackend!.resetVolumeState();
     }
     if (releaseResources || kIsWeb) {
       _previewPlayer?.dispose();
@@ -1028,7 +1030,7 @@ class _ContentRowsState extends State<_ContentRows>
       _previewPlayer?.stop();
     }
     if (_previewUsingMedia3) {
-      await _media3PreviewBackend.stop();
+      await _media3PreviewBackend!.stop();
       _previewUsingMedia3 = false;
     }
     _themeMusicService.setExternalAudioActive(true);
@@ -1063,17 +1065,17 @@ class _ContentRowsState extends State<_ContentRows>
       final useMedia3 = _useMedia3InlinePreview();
       if (useMedia3) {
         _previewUsingMedia3 = true;
-        await _media3PreviewBackend.setVolume(previewVolume);
+        await _media3PreviewBackend!.setVolume(previewVolume);
         if (!_isPreviewRequestActive(requestId, previewKey)) {
           return;
         }
 
-        await _media3PreviewBackend.play(<String, dynamic>{
+        await _media3PreviewBackend!.play(<String, dynamic>{
           'url': previewUrl,
           'mediaType': 'video',
         }).timeout(_previewOpenTimeout);
         if (!_isPreviewRequestActive(requestId, previewKey)) {
-          await _media3PreviewBackend.stop();
+          await _media3PreviewBackend!.stop();
           return;
         }
       } else {

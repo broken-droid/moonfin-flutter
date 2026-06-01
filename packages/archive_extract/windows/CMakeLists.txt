@@ -30,10 +30,16 @@ find_package(LibArchive CONFIG QUIET)
 if (LibArchive_FOUND)
   target_link_libraries(${PLUGIN_NAME} PRIVATE LibArchive::LibArchive)
 else()
-  # Determine the vcpkg triplet from the architecture 
-  if(CMAKE_GENERATOR_PLATFORM MATCHES "[Aa][Rr][Mm]64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[Aa][Rr][Mm]64")
+  # Determine the vcpkg triplet from the architecture Flutter is *building for*.
+  # Flutter passes the target arch to CMake via the Visual Studio generator
+  # platform (-A ARM64 / -A x64 / -A Win32), so CMAKE_GENERATOR_PLATFORM is the
+  # authoritative source of truth. Do NOT consult CMAKE_SYSTEM_PROCESSOR or
+  # CMAKE_SIZEOF_VOID_P: on an arm64 host building an x64 app the host is still
+  # ARM64, which would pick the arm64 libarchive and cause LNK4272/LNK1120
+  # (machine type 'ARM64' conflicts with target machine type 'x64').
+  if(CMAKE_GENERATOR_PLATFORM MATCHES "[Aa][Rr][Mm]64")
     set(_vcpkg_triplet "arm64-windows")
-  elseif(CMAKE_GENERATOR_PLATFORM STREQUAL "Win32" OR CMAKE_SIZEOF_VOID_P EQUAL 4)
+  elseif(CMAKE_GENERATOR_PLATFORM MATCHES "[Ww][Ii][Nn]32|[Xx]86")
     set(_vcpkg_triplet "x86-windows")
   else()
     set(_vcpkg_triplet "x64-windows")

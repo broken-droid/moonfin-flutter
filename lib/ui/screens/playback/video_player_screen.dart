@@ -59,6 +59,8 @@ import '../../widgets/syncplay/syncplay_player_button.dart';
 import '../../../syncplay/syncplay_manager.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../playback/media3_player_backend.dart';
+import '../../../playback/tizen_player_backend.dart';
+import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   const VideoPlayerScreen({super.key});
@@ -78,7 +80,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   static const _scrubSeekDebounceDuration = Duration(milliseconds: 250);
 
   final _manager = GetIt.instance<PlaybackManager>();
-  final _backend = GetIt.instance<MediaKitPlayerBackend>();
+  // No MediaKit backend exists on Tizen; the active backend (TizenPlayerBackend)
+  // is resolved via _activeBackend instead.
+  final MediaKitPlayerBackend? _backend = PlatformDetection.isTizen
+      ? null
+      : GetIt.instance<MediaKitPlayerBackend>();
   final _prefs = GetIt.instance<UserPreferences>();
   final _autoHdrSwitcher = AutoHdrSwitcher();
   final _clientFactory = GetIt.instance<MediaServerClientFactory>();
@@ -3360,6 +3366,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   Widget _buildVideoSurface() {
+    if (PlatformDetection.isTizen) {
+      return _buildTizenVideoSurface();
+    }
+
     final prefersMedia3 =
         _prefs.get(UserPreferences.playbackEnginePreference) ==
         PlaybackEnginePreference.media3;
@@ -3376,6 +3386,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
 
     final mediaKitBackend = _activeMediaKitBackend ?? _backend;
+    if (mediaKitBackend == null) {
+      return const Positioned.fill(child: ColoredBox(color: Colors.black));
+    }
     final selectedVo = _subtitleActive ? 'gpu' : 'mediacodec_embed';
     if (PlatformDetection.useNativeVideoSurface) {
       return Positioned.fill(
@@ -3409,6 +3422,30 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             subtitleViewConfiguration: _buildSubtitleConfig(),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildTizenVideoSurface() {
+    final backend = _activeBackend;
+    if (backend is! TizenPlayerBackend) {
+      return const Positioned.fill(child: ColoredBox(color: Colors.black));
+    }
+    final controller = backend.controller;
+    if (controller == null || !controller.value.isInitialized) {
+      return const Positioned.fill(child: ColoredBox(color: Colors.black));
+    }
+    return Positioned.fill(
+      child: ColoredBox(
+        color: Colors.black,
+        child: FittedBox(
+          fit: _zoomToFit(_zoomMode),
+          child: SizedBox(
+            width: controller.value.size.width,
+            height: controller.value.size.height,
+            child: VideoPlayer(controller),
+          ),
+        ),
       ),
     );
   }

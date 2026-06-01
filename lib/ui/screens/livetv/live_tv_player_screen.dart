@@ -14,6 +14,8 @@ import '../../../data/viewmodels/live_tv_guide_view_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../playback/html_video_backend.dart';
 import '../../../playback/media_kit_player_backend.dart';
+import '../../../playback/tizen_player_backend.dart';
+import 'package:video_player/video_player.dart';
 import '../../../playback/media3_player_backend.dart';
 import '../../../preference/preference_constants.dart';
 import '../../../preference/user_preferences.dart';
@@ -40,7 +42,11 @@ class LiveTvPlayerScreen extends StatefulWidget {
 
 class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   final _manager = GetIt.instance<PlaybackManager>();
-  final _backend = GetIt.instance<MediaKitPlayerBackend>();
+  // No MediaKit backend exists on Tizen; the active backend (TizenPlayerBackend)
+  // is resolved via _manager.backend instead.
+  final MediaKitPlayerBackend? _backend = PlatformDetection.isTizen
+      ? null
+      : GetIt.instance<MediaKitPlayerBackend>();
   final _client = GetIt.instance<MediaServerClient>();
   final _prefs = GetIt.instance<UserPreferences>();
   final _screensaverController = GetIt.instance<ScreensaverController>();
@@ -791,6 +797,10 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
   }
 
   Widget _buildVideoSurface() {
+    if (PlatformDetection.isTizen) {
+      return _buildTizenVideoSurface();
+    }
+
     final prefersMedia3 =
         _prefs.get(UserPreferences.playbackEnginePreference) ==
         PlaybackEnginePreference.media3;
@@ -805,6 +815,9 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
     }
 
     final mediaKitBackend = _activeMediaKitBackend ?? _backend;
+    if (mediaKitBackend == null) {
+      return const Positioned.fill(child: ColoredBox(color: Colors.black));
+    }
     final size = MediaQuery.sizeOf(context);
     if (PlatformDetection.useNativeVideoSurface) {
       return Positioned.fill(
@@ -832,6 +845,30 @@ class _LiveTvPlayerScreenState extends State<LiveTvPlayerScreen> {
         fill: Colors.black,
         pauseUponEnteringBackgroundMode: false,
         subtitleViewConfiguration: _buildSubtitleConfig(),
+      ),
+    );
+  }
+
+  Widget _buildTizenVideoSurface() {
+    final backend = _manager.backend;
+    if (backend is! TizenPlayerBackend) {
+      return const Positioned.fill(child: ColoredBox(color: Colors.black));
+    }
+    final controller = backend.controller;
+    if (controller == null || !controller.value.isInitialized) {
+      return const Positioned.fill(child: ColoredBox(color: Colors.black));
+    }
+    return Positioned.fill(
+      child: ColoredBox(
+        color: Colors.black,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: SizedBox(
+            width: controller.value.size.width,
+            height: controller.value.size.height,
+            child: VideoPlayer(controller),
+          ),
+        ),
       ),
     );
   }
