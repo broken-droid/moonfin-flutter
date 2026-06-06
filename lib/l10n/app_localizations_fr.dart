@@ -2985,7 +2985,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get lastUser => 'Dernier utilisateur';
 
   @override
-  String get specificUser => 'Utilisateur spécifique';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Toujours s’authentifier';

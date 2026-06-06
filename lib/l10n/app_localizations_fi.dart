@@ -2964,7 +2964,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get lastUser => 'Viimeinen käyttäjä';
 
   @override
-  String get specificUser => 'Tietty käyttäjä';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Todenna aina';

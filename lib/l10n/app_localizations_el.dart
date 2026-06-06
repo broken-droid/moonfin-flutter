@@ -2985,7 +2985,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get lastUser => 'Τελευταίος χρήστης';
 
   @override
-  String get specificUser => 'Συγκεκριμένος χρήστης';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Πάντα έλεγχος ταυτότητας';

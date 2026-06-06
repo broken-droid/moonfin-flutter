@@ -2957,7 +2957,7 @@ class AppLocalizationsUg extends AppLocalizations {
   String get lastUser => 'ئاخىرقى ئىشلەتكۈچى';
 
   @override
-  String get specificUser => 'كونكرېت ئىشلەتكۈچى';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'ھەمىشە دەلىللەش';

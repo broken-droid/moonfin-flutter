@@ -2968,7 +2968,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get lastUser => 'Последний пользователь';
 
   @override
-  String get specificUser => 'Конкретный пользователь';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Всегда аутентифицироваться';

@@ -2973,7 +2973,7 @@ class AppLocalizationsSq extends AppLocalizations {
   String get lastUser => 'Përdoruesi i fundit';
 
   @override
-  String get specificUser => 'Përdorues specifik';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Autentifiko gjithmonë';

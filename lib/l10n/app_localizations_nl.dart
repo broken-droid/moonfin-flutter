@@ -2964,7 +2964,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get lastUser => 'Laatste gebruiker';
 
   @override
-  String get specificUser => 'Specifieke gebruiker';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Altijd authenticeren';

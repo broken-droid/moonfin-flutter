@@ -192,7 +192,7 @@ enum ImageType {
 enum UserSelectBehavior {
   disabled,
   lastUser,
-  specificUser,
+  currentUser,
 }
 
 enum HomeSectionType {

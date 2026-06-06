@@ -2971,7 +2971,7 @@ class AppLocalizationsMk extends AppLocalizations {
   String get lastUser => 'Последен корисник';
 
   @override
-  String get specificUser => 'Специфичен корисник';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Секогаш автентицирај';

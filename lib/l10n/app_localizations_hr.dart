@@ -2957,7 +2957,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get lastUser => 'Zadnji korisnik';
 
   @override
-  String get specificUser => 'Određeni korisnik';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Uvijek provjeri autentičnost';

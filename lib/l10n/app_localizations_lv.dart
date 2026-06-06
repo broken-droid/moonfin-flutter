@@ -2965,7 +2965,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get lastUser => 'Pēdējais lietotājs';
 
   @override
-  String get specificUser => 'Konkrēts lietotājs';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Vienmēr autentificēt';

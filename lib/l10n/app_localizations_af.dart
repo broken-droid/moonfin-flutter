@@ -2957,7 +2957,7 @@ class AppLocalizationsAf extends AppLocalizations {
   String get lastUser => 'Laaste gebruiker';
 
   @override
-  String get specificUser => 'Spesifieke gebruiker';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Verifieer altyd';

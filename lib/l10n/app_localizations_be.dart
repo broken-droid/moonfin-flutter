@@ -2957,7 +2957,7 @@ class AppLocalizationsBe extends AppLocalizations {
   String get lastUser => 'Апошні карыстальнік';
 
   @override
-  String get specificUser => 'Канкрэтны карыстальнік';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Заўсёды правяраць сапраўднасць';

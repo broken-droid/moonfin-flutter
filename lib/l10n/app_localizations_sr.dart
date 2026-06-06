@@ -2960,7 +2960,7 @@ class AppLocalizationsSr extends AppLocalizations {
   String get lastUser => 'Последњи корисник';
 
   @override
-  String get specificUser => 'Одређени корисник';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Увек аутентификујте';

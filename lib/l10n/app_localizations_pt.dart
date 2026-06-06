@@ -2967,7 +2967,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get lastUser => 'Último Usuário';
 
   @override
-  String get specificUser => 'Usuário Específico';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Sempre Autenticar';
@@ -10973,9 +10973,6 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get lastUser => 'Último usuário';
 
   @override
-  String get specificUser => 'Usuário específico';
-
-  @override
   String get alwaysAuthenticate => 'Sempre autenticar';
 
   @override
@@ -18951,9 +18948,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get lastUser => 'Último usuário';
-
-  @override
-  String get specificUser => 'Usuário específico';
 
   @override
   String get alwaysAuthenticate => 'Sempre autenticar';

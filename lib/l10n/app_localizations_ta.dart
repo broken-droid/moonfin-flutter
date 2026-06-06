@@ -2972,7 +2972,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get lastUser => 'கடைசி பயனர்';
 
   @override
-  String get specificUser => 'குறிப்பிட்ட பயனர்';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'எப்போதும் அங்கீகரிக்கவும்';

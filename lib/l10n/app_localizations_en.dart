@@ -2940,7 +2940,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lastUser => 'Last User';
 
   @override
-  String get specificUser => 'Specific User';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Always Authenticate';
@@ -10824,9 +10824,6 @@ class AppLocalizationsEnGb extends AppLocalizationsEn {
 
   @override
   String get lastUser => 'Last User';
-
-  @override
-  String get specificUser => 'Specific User';
 
   @override
   String get alwaysAuthenticate => 'Always Authenticate';

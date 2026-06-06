@@ -2933,7 +2933,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get lastUser => 'ผู้ใช้คนสุดท้าย';
 
   @override
-  String get specificUser => 'ผู้ใช้เฉพาะ';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'ตรวจสอบสิทธิ์เสมอ';

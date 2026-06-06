@@ -2959,7 +2959,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get lastUser => 'Viimane kasutaja';
 
   @override
-  String get specificUser => 'Konkreetne kasutaja';
+  String get currentUser => 'Current User';
 
   @override
   String get alwaysAuthenticate => 'Autentige alati';
