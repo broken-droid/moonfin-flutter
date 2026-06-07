@@ -871,19 +871,25 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       onError: (_) {},
     );
 
-    if ((PlatformDetection.isAndroid && !PlatformDetection.isTV) ||
-        PlatformDetection.isIOS) {
-      _pipChangedSub = _pipService.onPiPChanged.listen(_onPiPChanged);
-      _pipActionSub = _pipService.onPiPAction.listen(_onPiPAction);
-      _displayPlaying = _state.isPlaying;
-      _playingSub = _state.playingStream.listen((playing) {
-        _updateDisplayPlaying(playing);
+    final isMobilePlayback =
+        (PlatformDetection.isAndroid && !PlatformDetection.isTV) ||
+        PlatformDetection.isIOS;
+
+    _displayPlaying = _state.isPlaying;
+    _playingSub = _state.playingStream.listen((playing) {
+      _updateDisplayPlaying(playing);
+      if (isMobilePlayback) {
         _pipService.updatePiPActions(isPlaying: playing);
         _syncAirPlayPlaybackState();
         if (PlatformDetection.useNativeVideoSurface && playing) {
           _syncSubtitleActive();
         }
-      });
+      }
+    });
+
+    if (isMobilePlayback) {
+      _pipChangedSub = _pipService.onPiPChanged.listen(_onPiPChanged);
+      _pipActionSub = _pipService.onPiPAction.listen(_onPiPAction);
       if (PlatformDetection.isAndroid) {
         _pipService.enableAutoPiP(true);
         _bufferingSub = _state.bufferingStream.listen((_) {
