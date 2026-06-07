@@ -292,6 +292,11 @@ class UserPreferences extends ChangeNotifier {
     defaultValue: false,
   );
 
+  static final displaySeerrRows = Preference(
+    key: 'pref_display_seerr_rows',
+    defaultValue: false,
+  );
+
   static final favoritesRowSortBy = EnumPreference(
     key: 'pref_favorites_row_sort_by',
     defaultValue: LibrarySortBy.name,
@@ -390,6 +395,11 @@ class UserPreferences extends ChangeNotifier {
 
   static final showLibrariesInToolbar = Preference(
     key: 'pref_show_libraries_in_toolbar',
+    defaultValue: true,
+  );
+
+  static final showSeerrButton = Preference(
+    key: 'pref_show_seerr_button',
     defaultValue: true,
   );
 
