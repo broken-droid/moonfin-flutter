@@ -1436,7 +1436,8 @@ class _ContentRowsState extends State<_ContentRows>
     final mode = UserPreferences.normalizeMediaBarMode(
       widget.prefs.get(UserPreferences.mediaBarMode),
     );
-    return mode == UserPreferences.mediaBarModeBookshelf;
+    return mode == UserPreferences.mediaBarModeBookshelf ||
+        mode == UserPreferences.mediaBarModeGallery;
   }
 
   double _pinnedInfoCollapseOffset() {

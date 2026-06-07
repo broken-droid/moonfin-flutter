@@ -34,6 +34,8 @@ import '../../playback/media3_player_backend.dart';
 import 'bounded_network_image.dart';
 import 'fullscreen_backdrop_switcher.dart';
 import 'mediabar/bookshelf_layout.dart';
+import 'mediabar/gallery_coverflow.dart';
+import 'mediabar/gallery_layout.dart';
 import 'rating_display.dart';
 import 'web_youtube_trailer.dart';
 
@@ -118,6 +120,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
   int _sponsorBlockToken = 0;
   String? _lastSyncedMakdBackdropUrl;
   bool _bookshelfLoadingOverlay = false;
+  bool _galleryLoadingOverlay = false;
   final Set<String> _failedTrailerItemIds = <String>{};
   late bool _lastHardwareDecodingEnabled;
   late bool _lastUseMedia3TrailerEngine;
@@ -256,6 +259,9 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       _readyHooksAppliedForCurrentLoad = true;
       _prefetchAround(state.items, _currentIndex);
       _prefetchAllInBackground(state.items, _currentIndex);
+      if (_isGalleryMode()) {
+        _prefetchGalleryWindow(state.items, _currentIndex);
+      }
     }
     if (state is MediaBarReady && _failedTrailerItemIds.isNotEmpty) {
       final knownItemIds = state.items.map((item) => item.itemId).toSet();
@@ -518,6 +524,9 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _prefetchAround(items, index);
+      if (_isGalleryMode()) {
+        _prefetchGalleryWindow(items, index);
+      }
       if (index < items.length) {
         _scheduleTrailerPreview(items[index]);
       }
@@ -605,6 +614,13 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       widget.prefs.get(UserPreferences.mediaBarMode),
     );
     return mode == UserPreferences.mediaBarModeBookshelf;
+  }
+
+  bool _isGalleryMode() {
+    final mode = UserPreferences.normalizeMediaBarMode(
+      widget.prefs.get(UserPreferences.mediaBarMode),
+    );
+    return mode == UserPreferences.mediaBarModeGallery;
   }
 
   void _scheduleTrailerPreview(MediaBarSlideItem item) {
@@ -1352,6 +1368,7 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     );
     final useMakdStyle = mode == UserPreferences.mediaBarModeMakd;
     final useBookshelfStyle = mode == UserPreferences.mediaBarModeBookshelf;
+    final useGalleryStyle = mode == UserPreferences.mediaBarModeGallery;
 
     return switch (state) {
       MediaBarLoading() => SizedBox(height: widget.height),
@@ -1365,11 +1382,13 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
       MediaBarReady(items: final items) =>
         items.isEmpty
             ? const SizedBox.shrink()
-            : (useBookshelfStyle
-                  ? _buildBookshelfSlideshow(context, items)
-                  : (useMakdStyle
-                        ? _buildMakdSlideshow(context, items)
-                        : _buildSlideshow(context, items))),
+            : (useGalleryStyle
+                  ? _buildGallerySlideshow(context, items)
+                  : (useBookshelfStyle
+                        ? _buildBookshelfSlideshow(context, items)
+                        : (useMakdStyle
+                              ? _buildMakdSlideshow(context, items)
+                              : _buildSlideshow(context, items)))),
     };
   }
 
@@ -2037,6 +2056,145 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
     });
   }
 
+  Widget _buildGallerySlideshow(
+    BuildContext context,
+    List<MediaBarSlideItem> items,
+  ) {
+    final clampedIndex = _currentIndex.clamp(0, items.length - 1);
+    if (clampedIndex != _currentIndex) {
+      _currentIndex = clampedIndex;
+    }
+
+    final activeItem = items[clampedIndex];
+    final useCoverflow =
+        PlatformDetection.useMobileUi &&
+        MediaQuery.of(context).orientation == Orientation.portrait;
+    if (!useCoverflow &&
+        widget.viewModel.galleryDetailFor(activeItem.itemId) == null) {
+      unawaited(widget.viewModel.ensureGalleryDetail(activeItem.itemId));
+    }
+    unawaited(widget.viewModel.ensureRatings(activeItem.itemId));
+
+    final activeRatingsMap = widget.viewModel.ratingsFor(activeItem.itemId);
+    final hasRatings =
+        activeRatingsMap.isNotEmpty ||
+        activeItem.communityRating != null ||
+        activeItem.criticRating != null;
+    final activeRatings = hasRatings
+        ? RatingsRow(
+            ratings: activeRatingsMap,
+            communityRating: activeItem.communityRating,
+            criticRating: activeItem.criticRating,
+            enableAdditionalRatings: widget.prefs.get(
+              UserPreferences.enableAdditionalRatings,
+            ),
+            enabledRatings: widget.prefs.get(UserPreferences.enabledRatings),
+            showLabels: widget.prefs.get(UserPreferences.showRatingLabels),
+            showBadges: false,
+          )
+        : null;
+
+    final trailerOverlays = _buildVideoOverlays();
+    final trailerVisible =
+        (_activeYouTubeVideoId != null ||
+            _trailerUsingMedia3 ||
+            _trailerController != null) &&
+        _trailerVideoOpacity > 0;
+    final activeTrailer = trailerOverlays.isEmpty
+        ? null
+        : Stack(fit: StackFit.expand, children: trailerOverlays);
+
+    final Widget gallery = useCoverflow
+        ? GalleryCoverflow(
+            items: items,
+            activeIndex: clampedIndex,
+            onSelect: _selectGalleryIndex,
+            onInfo: () => _navigateToItem(context, items),
+            onPlay: () => _playFromGallery(context, items),
+            activeRatings: activeRatings,
+            activeTrailer: activeTrailer,
+            trailerActive: trailerVisible,
+          )
+        : GalleryLayout(
+            items: items,
+            activeIndex: clampedIndex,
+            onSelect: _selectGalleryIndex,
+            onInfo: () => _navigateToItem(context, items),
+            detailFor: widget.viewModel.galleryDetailFor,
+            activeRatings: activeRatings,
+            activeTrailer: activeTrailer,
+            trailerActive: trailerVisible,
+          );
+
+    return MouseRegion(
+      onEnter: (_) => _setPaused(true),
+      onExit: (_) => _setPaused(false),
+      child: Focus(
+        focusNode: widget.focusNode,
+        autofocus: widget.focusNode == null && PlatformDetection.useLeanbackUi,
+        skipTraversal: true,
+        onFocusChange: _handleFocusChange,
+        onKeyEvent: (node, event) => _handleKeyEvent(event, items),
+        child: SizedBox(
+          height: widget.height,
+          width: double.infinity,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              gallery,
+              if (_galleryLoadingOverlay)
+                const Positioned.fill(child: _TheaterLoadingOverlay()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _selectGalleryIndex(int index) {
+    final items = widget.viewModel.items;
+    if (index < 0 || index >= items.length) return;
+    if (index == _currentIndex) return;
+    setState(() => _currentIndex = index);
+    _startAutoAdvance();
+    _cancelTrailerPreview();
+    _prefetchGalleryWindow(items, index);
+    _scheduleTrailerPreview(items[index]);
+  }
+
+  void _playFromGallery(
+    BuildContext context,
+    List<MediaBarSlideItem> items,
+  ) {
+    if (mounted) {
+      setState(() => _galleryLoadingOverlay = true);
+    }
+    _navigateToItemAndPlay(context, items);
+    Future<void>.delayed(const Duration(milliseconds: 1400), () {
+      if (mounted && _galleryLoadingOverlay) {
+        setState(() => _galleryLoadingOverlay = false);
+      }
+    });
+  }
+
+  void _prefetchGalleryWindow(List<MediaBarSlideItem> items, int centerIndex) {
+    if (!mounted || items.isEmpty) return;
+    final pageSize = GalleryLayout.pageSize;
+    final start = (centerIndex ~/ pageSize) * pageSize;
+    final end = (start + pageSize * 2).clamp(0, items.length);
+    for (var i = start; i < end; i++) {
+      final url = items[i].backdropUrl;
+      if (url == null) continue;
+      precacheImage(
+        ResizeImage(
+          CachedNetworkImageProvider(url),
+          width: GalleryLayout.kBackdropDecodeWidth,
+        ),
+        context,
+      );
+    }
+  }
+
   KeyEventResult _handleKeyEvent(
     KeyEvent event,
     List<MediaBarSlideItem> items,
@@ -2068,6 +2226,8 @@ class _MediaBarState extends State<MediaBar> with WidgetsBindingObserver {
             now.difference(downTime) >= _keyLongPressThreshold) {
           if (_isBookshelfMode()) {
             _playFromBookshelf(context, items);
+          } else if (_isGalleryMode()) {
+            _playFromGallery(context, items);
           } else {
             _navigateToItemAndPlay(context, items);
           }
