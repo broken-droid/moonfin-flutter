@@ -311,10 +311,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
     }
     return RequestInitialFocus(
       targetNode: node,
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: body,
-      ),
+      child: Scaffold(backgroundColor: Colors.black, body: body),
     );
   }
 
@@ -429,8 +426,9 @@ class _DetailContentState extends State<_DetailContent> {
       final personId = int.tryParse(tmdbId);
       if (personId != null) {
         final credits = await repo.getPersonCombinedCredits(personId);
-        final castWithPosters = credits.cast.where((i) => i.posterPath != null).toList()
-          ..sort((a, b) => a.displayTitle.compareTo(b.displayTitle));
+        final castWithPosters =
+            credits.cast.where((i) => i.posterPath != null).toList()
+              ..sort((a, b) => a.displayTitle.compareTo(b.displayTitle));
         if (mounted) {
           setState(() {
             _seerrAppearances = castWithPosters;
@@ -497,7 +495,8 @@ class _DetailContentState extends State<_DetailContent> {
   }
 
   bool _shouldSkipSectionEnsureVisible(FocusNode target) {
-    final favoriteFocusNode = widget.initialFocusNode ?? _sectionFocusNodes['detailPersonFavorite'];
+    final favoriteFocusNode =
+        widget.initialFocusNode ?? _sectionFocusNodes['detailPersonFavorite'];
     final seerrFocusNode = _sectionFocusNodes['detailPersonSeerrButton'];
     if (target == favoriteFocusNode || target == seerrFocusNode) {
       return true;
@@ -570,17 +569,14 @@ class _DetailContentState extends State<_DetailContent> {
   double _sectionFocusAlignment(FocusNode target) {
     final primaryContext = FocusManager.instance.primaryFocus?.context;
     final fromActionButtons =
-        primaryContext
-            ?.findAncestorWidgetOfExactType<_ActionButtons>() !=
-        null;
+        primaryContext?.findAncestorWidgetOfExactType<_ActionButtons>() != null;
     if (!fromActionButtons) {
       return 0.2;
     }
 
     final targetInHeader =
         target.debugLabel == 'detailHeaderOverview' ||
-        target.context?.findAncestorWidgetOfExactType<_HeaderSection>() !=
-            null;
+        target.context?.findAncestorWidgetOfExactType<_HeaderSection>() != null;
     return targetInHeader ? 0.2 : 0.42;
   }
 
@@ -654,12 +650,16 @@ class _DetailContentState extends State<_DetailContent> {
   }) {
     final hasBoundaryGuards = itemCount != null && itemCount > 0;
     if (!PlatformDetection.isTV ||
-        (upTarget == null && downTarget == null && leftTarget == null && !hasBoundaryGuards)) {
+        (upTarget == null &&
+            downTarget == null &&
+            leftTarget == null &&
+            !hasBoundaryGuards)) {
       return null;
     }
-    
-    final favoriteFocusNode = widget.initialFocusNode ?? _sectionFocusNode('detailPersonFavorite');
-    
+
+    final favoriteFocusNode =
+        widget.initialFocusNode ?? _sectionFocusNode('detailPersonFavorite');
+
     return (index, event) {
       if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
         return KeyEventResult.ignored;
@@ -781,10 +781,13 @@ class _DetailContentState extends State<_DetailContent> {
     super.dispose();
   }
 
-  Widget _buildStaticPersonProfilePanel(BuildContext context, AggregatedItem item) {
+  Widget _buildStaticPersonProfilePanel(
+    BuildContext context,
+    AggregatedItem item,
+  ) {
     final safeTop = MediaQuery.of(context).padding.top;
     final topOffset = safeTop + 80.0;
-    
+
     String? imageUrl;
     if (item.primaryImageTag != null) {
       imageUrl = viewModel.imageApi.getPrimaryImageUrl(
@@ -793,19 +796,16 @@ class _DetailContentState extends State<_DetailContent> {
         tag: item.primaryImageTag,
       );
     }
-    
+
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
     final focusColor = Color(prefs.get(UserPreferences.focusColor).colorValue);
     final profileBorderColor = isNeon ? const Color(0xFFFF2E92) : focusColor;
-    
+
     const avatarRadius = 80.0;
     final avatar = Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: profileBorderColor,
-          width: 3.0,
-        ),
+        border: Border.all(color: profileBorderColor, width: 3.0),
       ),
       child: CircleAvatar(
         radius: avatarRadius,
@@ -828,7 +828,9 @@ class _DetailContentState extends State<_DetailContent> {
         color: AppColorScheme.background.withValues(alpha: 0.85),
         border: Border(
           right: BorderSide(
-            color: isNeon ? AppColorScheme.accent : Colors.white.withValues(alpha: 0.1),
+            color: isNeon
+                ? AppColorScheme.accent
+                : Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -880,7 +882,8 @@ class _DetailContentState extends State<_DetailContent> {
         .get(UserPreferences.detailsBackgroundBlurAmount)
         .toDouble();
     final backdropEnabled = widget.prefs.get(UserPreferences.backdropEnabled);
-    final useSplitLayout = item.type == 'Person' && _useDesktopDetailLayout(context);
+    final useSplitLayout =
+        item.type == 'Person' && _useDesktopDetailLayout(context);
 
     return Focus(
       focusNode: _contentFocusNode,
@@ -1992,30 +1995,45 @@ class _DetailContentState extends State<_DetailContent> {
     final musicVideos = viewModel.filmographyMusicVideos;
     final useSplit = _useDesktopDetailLayout(context);
 
-    final favoriteFocusNode = initialFocusNode ?? _sectionFocusNode('detailPersonFavorite');
+    final favoriteFocusNode =
+        initialFocusNode ?? _sectionFocusNode('detailPersonFavorite');
     final bioFocusNode = _sectionFocusNode('detailPersonBio');
     final firstFocus = bioFocusNode;
     final hasBio = item.overview != null && item.overview!.isNotEmpty;
 
-    final hasSeerrButton = item.tmdbId != null &&
+    final hasSeerrButton =
+        item.tmdbId != null &&
         item.tmdbId!.isNotEmpty &&
         prefs.get(UserPreferences.seerrEnabled);
-    final seerrFocusNode = hasSeerrButton ? _sectionFocusNode('detailPersonSeerrButton') : null;
+    final seerrFocusNode = hasSeerrButton
+        ? _sectionFocusNode('detailPersonSeerrButton')
+        : null;
 
-    final moviesFocusNode = movies.isNotEmpty ? _sectionFocusNode('detailPersonMovies') : null;
-    final seriesFocusNode = series.isNotEmpty ? _sectionFocusNode('detailPersonSeries') : null;
+    final moviesFocusNode = movies.isNotEmpty
+        ? _sectionFocusNode('detailPersonMovies')
+        : null;
+    final seriesFocusNode = series.isNotEmpty
+        ? _sectionFocusNode('detailPersonSeries')
+        : null;
     final guestAppearances = viewModel.filmographyEpisodes.where((episode) {
       final sId = episode.seriesId;
       if (sId == null || sId.isEmpty) return true;
       final isMainCastOfSeries = series.any((s) => s.id == sId);
       return !isMainCastOfSeries;
     }).toList();
-    final guestAppearancesFocusNode = guestAppearances.isNotEmpty ? _sectionFocusNode('detailPersonGuestAppearances') : null;
-    final musicVideosFocusNode = musicVideos.isNotEmpty ? _sectionFocusNode('detailPersonMusicVideos') : null;
+    final guestAppearancesFocusNode = guestAppearances.isNotEmpty
+        ? _sectionFocusNode('detailPersonGuestAppearances')
+        : null;
+    final musicVideosFocusNode = musicVideos.isNotEmpty
+        ? _sectionFocusNode('detailPersonMusicVideos')
+        : null;
 
     final seerrAppearances = _seerrAppearances;
-    final hasSeerrAppearances = seerrAppearances != null && seerrAppearances.isNotEmpty;
-    final seerrAppearancesFocusNode = hasSeerrAppearances ? _sectionFocusNode('detailPersonSeerrAppearances') : null;
+    final hasSeerrAppearances =
+        seerrAppearances != null && seerrAppearances.isNotEmpty;
+    final seerrAppearancesFocusNode = hasSeerrAppearances
+        ? _sectionFocusNode('detailPersonSeerrAppearances')
+        : null;
 
     return [
       if (!useSplit) ...[
@@ -2041,7 +2059,9 @@ class _DetailContentState extends State<_DetailContent> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
-          mainAxisAlignment: useSplit ? MainAxisAlignment.start : MainAxisAlignment.center,
+          mainAxisAlignment: useSplit
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.center,
           children: [
             _DetailActionButton(
               label: item.isFavorite ? l10n.favorited : l10n.favorite,
@@ -2061,14 +2081,16 @@ class _DetailContentState extends State<_DetailContent> {
               onArrowDown: () {
                 _requestSectionFocus(
                   moviesFocusNode ??
-                  seriesFocusNode ??
-                  musicVideosFocusNode ??
-                  seerrAppearancesFocusNode,
+                      seriesFocusNode ??
+                      musicVideosFocusNode ??
+                      seerrAppearancesFocusNode,
                 );
               },
-              onArrowRight: hasSeerrButton ? () {
-                _requestSectionFocus(seerrFocusNode);
-              } : () {},
+              onArrowRight: hasSeerrButton
+                  ? () {
+                      _requestSectionFocus(seerrFocusNode);
+                    }
+                  : () {},
               onArrowLeft: () {
                 _tryFocusSidebar();
               },
@@ -2094,9 +2116,9 @@ class _DetailContentState extends State<_DetailContent> {
                 onArrowDown: () {
                   _requestSectionFocus(
                     moviesFocusNode ??
-                    seriesFocusNode ??
-                    musicVideosFocusNode ??
-                    seerrAppearancesFocusNode,
+                        seriesFocusNode ??
+                        musicVideosFocusNode ??
+                        seerrAppearancesFocusNode,
                   );
                 },
                 onArrowLeft: () {
@@ -2124,7 +2146,11 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               sourceFocusNode: moviesFocusNode,
               upTarget: favoriteFocusNode,
-              downTarget: seriesFocusNode ?? guestAppearancesFocusNode ?? musicVideosFocusNode ?? seerrAppearancesFocusNode,
+              downTarget:
+                  seriesFocusNode ??
+                  guestAppearancesFocusNode ??
+                  musicVideosFocusNode ??
+                  seerrAppearancesFocusNode,
               itemCount: movies.length,
             ),
           ),
@@ -2146,7 +2172,10 @@ class _DetailContentState extends State<_DetailContent> {
             onItemKeyEvent: _buildVerticalRowHandler(
               sourceFocusNode: seriesFocusNode,
               upTarget: moviesFocusNode ?? favoriteFocusNode,
-              downTarget: guestAppearancesFocusNode ?? musicVideosFocusNode ?? seerrAppearancesFocusNode,
+              downTarget:
+                  guestAppearancesFocusNode ??
+                  musicVideosFocusNode ??
+                  seerrAppearancesFocusNode,
               itemCount: series.length,
             ),
           ),
@@ -2189,7 +2218,11 @@ class _DetailContentState extends State<_DetailContent> {
             firstFocusNode: musicVideosFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               sourceFocusNode: musicVideosFocusNode,
-              upTarget: guestAppearancesFocusNode ?? seriesFocusNode ?? moviesFocusNode ?? favoriteFocusNode,
+              upTarget:
+                  guestAppearancesFocusNode ??
+                  seriesFocusNode ??
+                  moviesFocusNode ??
+                  favoriteFocusNode,
               downTarget: seerrAppearancesFocusNode,
               itemCount: musicVideos.length,
               consumeDownWhenNoTarget: !hasSeerrAppearances,
@@ -2211,7 +2244,12 @@ class _DetailContentState extends State<_DetailContent> {
             firstFocusNode: seerrAppearancesFocusNode,
             onItemKeyEvent: _buildVerticalRowHandler(
               sourceFocusNode: seerrAppearancesFocusNode,
-              upTarget: musicVideosFocusNode ?? guestAppearancesFocusNode ?? seriesFocusNode ?? moviesFocusNode ?? favoriteFocusNode,
+              upTarget:
+                  musicVideosFocusNode ??
+                  guestAppearancesFocusNode ??
+                  seriesFocusNode ??
+                  moviesFocusNode ??
+                  favoriteFocusNode,
               itemCount: seerrAppearances.length,
               consumeDownWhenNoTarget: true,
             ),
@@ -3332,9 +3370,15 @@ class _MetadataRow extends StatelessWidget {
       parts.add(_badge(theme, item.officialRating!));
     }
 
-    final sizeBytes = selectedMediaSource?['Size'] as int? ??
-        (item.mediaSources.isNotEmpty ? item.mediaSources.first['Size'] as int? : null);
-    if (sizeBytes != null && sizeBytes > 0 && item.type != 'Series' && item.type != 'Season') {
+    final sizeBytes =
+        selectedMediaSource?['Size'] as int? ??
+        (item.mediaSources.isNotEmpty
+            ? item.mediaSources.first['Size'] as int?
+            : null);
+    if (sizeBytes != null &&
+        sizeBytes > 0 &&
+        item.type != 'Series' &&
+        item.type != 'Season') {
       final double mb = sizeBytes / (1024 * 1024);
       final String formattedSize;
       if (mb > 999) {
@@ -4379,7 +4423,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
 
   void _focusTarget(FocusNode? target, {double alignment = 0.2}) {
     if (target == null) {
-      if (GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition) ==
+      if (GetIt.instance<UserPreferences>().get(
+            UserPreferences.navbarPosition,
+          ) ==
           NavbarPosition.top) {
         NavigationLayout.focusNavbarNotifier.value?.call();
       }
@@ -4395,7 +4441,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     }
 
     if (target.context == null) {
-      if (GetIt.instance<UserPreferences>().get(UserPreferences.navbarPosition) ==
+      if (GetIt.instance<UserPreferences>().get(
+            UserPreferences.navbarPosition,
+          ) ==
           NavbarPosition.top) {
         NavigationLayout.focusNavbarNotifier.value?.call();
       }
@@ -4404,7 +4452,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
 
     if (target.canRequestFocus) {
       target.requestFocus();
-      if (target.context?.findAncestorWidgetOfExactType<_ExpandableBiography>() !=
+      if (target.context
+              ?.findAncestorWidgetOfExactType<_ExpandableBiography>() !=
           null) {
         return;
       }
@@ -4576,8 +4625,12 @@ class _ActionButtonsState extends State<_ActionButtons> {
   // Watch-state helper — avoids repeating the same 6-line block in three places
   // ---------------------------------------------------------------------------
 
-  ({bool isFullyWatched, bool isFullyUnwatched, bool isPartiallyWatched,
-    bool hasProgress})
+  ({
+    bool isFullyWatched,
+    bool isFullyUnwatched,
+    bool isPartiallyWatched,
+    bool hasProgress,
+  })
   _computeWatchState(AggregatedItem item) {
     final isSeries = item.type == 'Series';
     final totalEpisodes = isSeries
@@ -4590,7 +4643,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final hasProgress = isSeries
         ? isPartiallyWatched
         : ((item.playedPercentage ?? 0) > 0 ||
-           (item.playbackPosition?.inMilliseconds ?? 0) > 0);
+              (item.playbackPosition?.inMilliseconds ?? 0) > 0);
     return (
       isFullyWatched: isFullyWatched,
       isFullyUnwatched: isFullyUnwatched,
@@ -4667,11 +4720,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
         .toList();
     final canDownloadRemoteSubtitles = _canDownloadRemoteSubtitles(item);
     final showSubtitleButton =
-      subtitleStreams.isNotEmpty || canDownloadRemoteSubtitles;
+        subtitleStreams.isNotEmpty || canDownloadRemoteSubtitles;
     final subtitleButtonIcon =
-      subtitleStreams.isEmpty && canDownloadRemoteSubtitles
-      ? Icons.download_rounded
-      : Icons.subtitles;
+        subtitleStreams.isEmpty && canDownloadRemoteSubtitles
+        ? Icons.download_rounded
+        : Icons.subtitles;
     final l10n = AppLocalizations.of(context);
     final canShowDownloadActions =
         _isDownloadable(item.type) &&
@@ -4707,7 +4760,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
         }
       }
     } else if (hasProgress) {
-      playButtonLabel = l10n.resumeFrom(_formatResumePosition(item.playbackPosition));
+      playButtonLabel = l10n.resumeFrom(
+        _formatResumePosition(item.playbackPosition),
+      );
     } else {
       playButtonLabel = l10n.play;
     }
@@ -4820,12 +4875,11 @@ class _ActionButtonsState extends State<_ActionButtons> {
         _DetailActionButton(
           label: l10n.playlist,
           icon: Icons.playlist_add,
-          onPressed: () =>
-              AddToPlaylistDialog.show(
-                context,
-                itemIds: [item.id],
-                serverId: item.serverId,
-              ),
+          onPressed: () => AddToPlaylistDialog.show(
+            context,
+            itemIds: [item.id],
+            serverId: item.serverId,
+          ),
         ),
       if (canShowDownloadActions)
         _DownloadButton(item: item, viewModel: viewModel),
@@ -4930,9 +4984,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         if (button is! _DetailActionButton) return button;
         return _copyActionButton(
           button,
-          onArrowUp:
-              button.onArrowUp ??
-            _focusUpTarget,
+          onArrowUp: button.onArrowUp ?? _focusUpTarget,
           onArrowLeft: index == 0 ? _focusSidebar : null,
           onArrowDown: _expanded
               ? () => _focusFirstExpandedOverflowButton(context)
@@ -5188,8 +5240,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     if (stream['IsExternal'] == true) {
       return true;
     }
-    final deliveryMethod =
-        (stream['DeliveryMethod'] as String?)?.trim().toLowerCase();
+    final deliveryMethod = (stream['DeliveryMethod'] as String?)
+        ?.trim()
+        .toLowerCase();
     return deliveryMethod == 'external';
   }
 
@@ -5448,8 +5501,19 @@ class _ActionButtonsState extends State<_ActionButtons> {
     bool reloadOnReturn = true,
   }) async {
     if (!context.mounted) return false;
+    final manager = GetIt.instance<PlaybackManager>();
+    final pushVideoEarly =
+        destination == Destinations.videoPlayer && PlatformDetection.isIOS;
+
+    void popTopPlayerRoute() {
+      final route = ModalRoute.of(context);
+      if (route != null && !route.isCurrent) {
+        Navigator.of(context).pop();
+      }
+    }
+
     Future<Object?>? routeFuture;
-    if (destination != Destinations.videoPlayer) {
+    if (destination != Destinations.videoPlayer || pushVideoEarly) {
       routeFuture = context.push(destination);
     }
 
@@ -5458,31 +5522,33 @@ class _ActionButtonsState extends State<_ActionButtons> {
       started = await startupFuture;
     } catch (_) {
       if (routeFuture != null && context.mounted) {
-        final route = ModalRoute.of(context);
-        if (route != null && !route.isCurrent) {
-          Navigator.of(context).pop();
-        }
+        popTopPlayerRoute();
       }
       rethrow;
     }
 
     if (!started) {
       if (routeFuture != null && context.mounted) {
-        final route = ModalRoute.of(context);
-        if (route != null && !route.isCurrent) {
-          Navigator.of(context).pop();
-        }
+        popTopPlayerRoute();
       }
       return false;
     }
 
     if (!context.mounted) return false;
+
+    if (pushVideoEarly &&
+        routeFuture != null &&
+        manager.playbackDeferredToExternalPlayer) {
+      popTopPlayerRoute();
+      routeFuture = null;
+    }
+
     if (routeFuture == null) {
       var resolvedDestination = destination;
-      final manager = GetIt.instance<PlaybackManager>();
       if (manager.playbackDeferredToExternalPlayer) {
         resolvedDestination = Destinations.externalPlayer;
       }
+      if (!context.mounted) return false;
       routeFuture = context.push(resolvedDestination);
     }
 
@@ -5552,7 +5618,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
           case 'Series':
             const episodeQueueFields =
                 'Overview,MediaStreams,MediaSources,RunTimeTicks,Trickplay,UserData';
-            
+
             final client = _clientForItem(item);
             final data = await client.itemsApi.getEpisodes(
               item.id,
@@ -5617,7 +5683,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
               } catch (_) {}
             }
 
-            final startIndex = queueEpisodes.indexWhere((e) => e.id == targetEpisode.id);
+            final startIndex = queueEpisodes.indexWhere(
+              (e) => e.id == targetEpisode.id,
+            );
             final idx = startIndex >= 0 ? startIndex : 0;
             final selectedEpisode = queueEpisodes[idx];
             final seriesQueue = _truncateQueueIfImmediateNextUnplayable(
@@ -5880,7 +5948,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
     List<AggregatedItem> features,
   ) {
     final candidates = features
-        .where((feature) => _isTrailerFeatureItem(feature) && feature.id.isNotEmpty)
+        .where(
+          (feature) => _isTrailerFeatureItem(feature) && feature.id.isNotEmpty,
+        )
         .toList(growable: false);
     return _preferredLocalTrailer(candidates);
   }
@@ -5890,8 +5960,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
       return null;
     }
 
-    final preferred =
-        GetIt.instance<UserPreferences>().get(UserPreferences.defaultAudioLanguage).trim();
+    final preferred = GetIt.instance<UserPreferences>()
+        .get(UserPreferences.defaultAudioLanguage)
+        .trim();
     if (preferred.isEmpty) {
       return candidates.first;
     }
@@ -6276,7 +6347,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
         final label =
             subtitle['Name'] as String? ??
             subtitle['Author'] as String? ??
-          l10n.subtitles;
+            l10n.subtitles;
         final subtitleText = _remoteSubtitleOptionSubtitle(subtitle);
         return TrackOption(
           label: label,
@@ -6376,10 +6447,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final externalStreams = streams
         .where(_isExternalSubtitleStream)
         .toList(growable: false);
-    final displayStreams = [
-      ...internalStreams,
-      ...externalStreams,
-    ];
+    final displayStreams = [...internalStreams, ...externalStreams];
 
     final effectiveSubtitleIndex = _effectiveSubtitleStreamIndex(streams);
     final currentIdx = effectiveSubtitleIndex != null
@@ -6399,14 +6467,15 @@ class _ActionButtonsState extends State<_ActionButtons> {
         final display =
             s['DisplayTitle'] as String? ??
             s['Language'] as String? ??
-          l10n.unknown;
-        final subtitleType =
-          ((s['Codec'] as String?) ?? l10n.unknown).toUpperCase();
-        final deliveryMethod =
-            (s['DeliveryMethod'] as String?)?.trim().toLowerCase();
+            l10n.unknown;
+        final subtitleType = ((s['Codec'] as String?) ?? l10n.unknown)
+            .toUpperCase();
+        final deliveryMethod = (s['DeliveryMethod'] as String?)
+            ?.trim()
+            .toLowerCase();
         final location = s['IsExternal'] == true
-          ? l10n.external
-          : (deliveryMethod == 'embed' ? l10n.embedded : l10n.internal);
+            ? l10n.external
+            : (deliveryMethod == 'embed' ? l10n.embedded : l10n.internal);
         return TrackOption(
           label: '$trackNumber - $display',
           subtitle: '$subtitleType · $location',
@@ -6440,8 +6509,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
         setState(() => _selectedSubtitleIndex = -1);
       } else if (result - 1 < displayStreams.length) {
         setState(
-          () =>
-              _selectedSubtitleIndex = displayStreams[result - 1]['Index'] as int?,
+          () => _selectedSubtitleIndex =
+              displayStreams[result - 1]['Index'] as int?,
         );
       }
     }
@@ -9336,22 +9405,30 @@ class _PersonDatesVertical extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: lines
-          .map((line) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
-                  line,
-                  style: style,
-                  textAlign: TextAlign.center,
-                ),
-              ))
+          .map(
+            (line) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(line, style: style, textAlign: TextAlign.center),
+            ),
+          )
           .toList(),
     );
   }
 
   String _formatDate(DateTime date) {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
@@ -9612,26 +9689,26 @@ class _FilmographyRow extends StatelessWidget {
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final isMobile = _isCompact(context);
     final desktopScale = _desktopUiScale(prefs: prefs);
-    
+
     // Aligned with the Home Screen's scaling logic:
     final platformScale = PlatformDetection.isTV ? 0.8 : desktopScale;
     final metadataScale = PlatformDetection.useDesktopUi ? desktopScale : 1.0;
-    final isRowsV2 = prefs.get(UserPreferences.homeRowsStyle) == HomeRowsStyle.v2;
+    final isRowsV2 =
+        prefs.get(UserPreferences.homeRowsStyle) == HomeRowsStyle.v2;
     final rowScale = isRowsV2 ? 2.0 : 1.0;
-    
+
     final posterSize = prefs.get(UserPreferences.posterSize);
-    final cardHeight = posterSize.portraitHeight.toDouble() * platformScale * rowScale;
-    
+    final cardHeight =
+        posterSize.portraitHeight.toDouble() * platformScale * rowScale;
+
     // Check if the items are of type 'Episode' (landscape aspect ratio 16/9)
     final isEpisode = items.isNotEmpty && items.first.type == 'Episode';
     final cardAspectRatio = isEpisode ? 16 / 9 : 2 / 3;
-    
+
     final cardWidth = isMobile
         ? (isEpisode ? 160.0 : 120.0)
         : cardHeight * cardAspectRatio;
-    final rowHeight = isMobile
-        ? 240.0
-        : cardHeight + (56 * metadataScale);
+    final rowHeight = isMobile ? 240.0 : cardHeight + (56 * metadataScale);
 
     return SizedBox(
       height: rowHeight,
@@ -9655,7 +9732,9 @@ class _FilmographyRow extends StatelessWidget {
               _ => null,
             };
             title = item.seriesName ?? item.name;
-            subtitle = episodeInfo != null ? '$episodeInfo - ${item.name}' : item.name;
+            subtitle = episodeInfo != null
+                ? '$episodeInfo - ${item.name}'
+                : item.name;
           } else {
             title = item.name;
             subtitle = year?.toString();
@@ -9715,16 +9794,18 @@ class _SeerrAppearancesRow extends StatelessWidget {
     final cardExpansion = prefs.get(UserPreferences.cardFocusExpansion);
     final isMobile = _isCompact(context);
     final desktopScale = _desktopUiScale(prefs: prefs);
-    
+
     // Aligned with the Home Screen's scaling logic:
     final platformScale = PlatformDetection.isTV ? 0.8 : desktopScale;
     final metadataScale = PlatformDetection.useDesktopUi ? desktopScale : 1.0;
-    final isRowsV2 = prefs.get(UserPreferences.homeRowsStyle) == HomeRowsStyle.v2;
+    final isRowsV2 =
+        prefs.get(UserPreferences.homeRowsStyle) == HomeRowsStyle.v2;
     final rowScale = isRowsV2 ? 2.0 : 1.0;
-    
+
     final posterSize = prefs.get(UserPreferences.posterSize);
-    final cardHeight = posterSize.portraitHeight.toDouble() * platformScale * rowScale;
-    
+    final cardHeight =
+        posterSize.portraitHeight.toDouble() * platformScale * rowScale;
+
     final cardWidth = isMobile ? 120.0 : cardHeight * (2 / 3);
     final rowHeight = isMobile ? 240.0 : cardHeight + (56 * metadataScale);
     final focusColor = Color(prefs.get(UserPreferences.focusColor).colorValue);
@@ -10133,12 +10214,11 @@ class _AlbumActions extends StatelessWidget {
             _DetailActionButton(
               label: l10n.playlist,
               icon: Icons.playlist_add,
-              onPressed: () =>
-                  AddToPlaylistDialog.show(
-                    context,
-                    itemIds: [item.id],
-                    serverId: item.serverId,
-                  ),
+              onPressed: () => AddToPlaylistDialog.show(
+                context,
+                itemIds: [item.id],
+                serverId: item.serverId,
+              ),
             ),
         ],
       ),
@@ -10663,12 +10743,11 @@ class _TrackTileState extends State<_TrackTile> with FocusStateMixin {
       onPlay: widget.onTap,
       onPlayNext: () => manager.queueService.insertNext(widget.track),
       onAddToQueue: () => manager.queueService.addToQueue(widget.track),
-      onAddToPlaylist: () =>
-          AddToPlaylistDialog.show(
-            context,
-            itemIds: [widget.track.id],
-            serverId: widget.track.serverId,
-          ),
+      onAddToPlaylist: () => AddToPlaylistDialog.show(
+        context,
+        itemIds: [widget.track.id],
+        serverId: widget.track.serverId,
+      ),
       onRemoveFromPlaylist: widget.onRemoveFromPlaylist != null
           ? () => widget.onRemoveFromPlaylist!(widget.track)
           : null,

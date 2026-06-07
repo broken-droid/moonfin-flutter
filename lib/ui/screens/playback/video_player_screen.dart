@@ -122,6 +122,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
   bool _controlsVisible = true;
   Timer? _hideTimer;
+  bool _displayPlaying = false;
+  Timer? _displayPlayingDebounce;
   bool _isSeeking = false;
   double _seekValue = 0;
   Timer? _scrubSeekDebounceTimer;
@@ -873,7 +875,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         PlatformDetection.isIOS) {
       _pipChangedSub = _pipService.onPiPChanged.listen(_onPiPChanged);
       _pipActionSub = _pipService.onPiPAction.listen(_onPiPAction);
+      _displayPlaying = _state.isPlaying;
       _playingSub = _state.playingStream.listen((playing) {
+        _updateDisplayPlaying(playing);
         _pipService.updatePiPActions(isPlaying: playing);
         _syncAirPlayPlaybackState();
         if (PlatformDetection.useNativeVideoSurface && playing) {
@@ -917,6 +921,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     }
     _cancelTvTemporarySpeedHold();
     _hideTimer?.cancel();
+    _displayPlayingDebounce?.cancel();
     _scrubSeekDebounceTimer?.cancel();
     _scrubSeekDebounceTimer = null;
     _volumeOverlayTimer?.cancel();
@@ -1420,8 +1425,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         : playbackMethodLabel(
             l10n: l10n,
             playMethod: playMethod,
-            transcodingReasons: resolution?.transcodingReasons ??
-                const <String>[],
+            transcodingReasons:
+                resolution?.transcodingReasons ?? const <String>[],
             fallbackPlayMethod: bringupPlayMethod,
           );
 
@@ -2333,7 +2338,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       if (itemId != null && itemId.isNotEmpty) {
         try {
           final mutations = ItemMutationRepository(_clientForQueueItem(item));
-          unawaited(mutations.setPlayed(itemId, isPlayed: true).catchError((_) {}));
+          unawaited(
+            mutations.setPlayed(itemId, isPlayed: true).catchError((_) {}),
+          );
           final raw = _rawDataForQueueItem(item);
           if (raw != null) {
             final existingUserData = raw['UserData'];
@@ -2393,7 +2400,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (_wasAlwaysOnTopOnEntry == false && _isAlwaysOnTop) {
       await _setAlwaysOnTop(false);
     }
-    await _manager.stop(userInitiated: false);
     if (PlatformDetection.useDesktopUi &&
         _wasDesktopFullscreenOnEntry == false) {
       final isFullscreen = await FullscreenHelper.isFullscreen();
@@ -2413,6 +2419,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         }
       });
     }
+    unawaited(_manager.stop(userInitiated: false));
   }
 
   Future<void> _restoreSystemUiForExit() async {
@@ -2422,9 +2429,31 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     await SystemChrome.setPreferredOrientations([]);
   }
 
+  void _updateDisplayPlaying(bool playing) {
+    _displayPlayingDebounce?.cancel();
+    _displayPlayingDebounce = null;
+    if (playing) {
+      if (!_displayPlaying && mounted) {
+        setState(() => _displayPlaying = true);
+      }
+      return;
+    }
+    final delay = _state.isBuffering
+        ? const Duration(milliseconds: 600)
+        : const Duration(milliseconds: 200);
+    _displayPlayingDebounce = Timer(delay, () {
+      if (mounted && !_state.isPlaying) {
+        setState(() => _displayPlaying = false);
+      }
+    });
+  }
+
   void _scheduleHide() {
     _hideTimer?.cancel();
-    _hideTimer = Timer(const Duration(seconds: 5), () {
+    final hideDelay = PlatformDetection.useMobileUi
+        ? const Duration(seconds: 8)
+        : const Duration(seconds: 5);
+    _hideTimer = Timer(hideDelay, () {
       if (mounted && _state.isPlaying) {
         setState(() {
           _controlsVisible = false;
@@ -2797,7 +2826,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     if (backend == null) return;
 
     final textColor = _prefs.get(UserPreferences.subtitlesTextColor);
-    final backgroundColor = _prefs.get(UserPreferences.subtitlesBackgroundColor);
+    final backgroundColor = _prefs.get(
+      UserPreferences.subtitlesBackgroundColor,
+    );
     final strokeColor = _prefs.get(UserPreferences.subtitleTextStrokeColor);
     final fontSize = _prefs.get(UserPreferences.subtitlesTextSize);
     final fontWeight = _prefs.get(UserPreferences.subtitlesTextWeight);
@@ -2814,10 +2845,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           fontSize: fontSize,
           fontWeight: fontWeight,
           verticalOffset: verticalOffset,
-          applyEmbeddedStyles:
-              _prefs.get(UserPreferences.subtitlesUseEmbeddedStyles),
-          applyEmbeddedFontSizes:
-              _prefs.get(UserPreferences.subtitlesUseEmbeddedFontSizes),
+          applyEmbeddedStyles: _prefs.get(
+            UserPreferences.subtitlesUseEmbeddedStyles,
+          ),
+          applyEmbeddedFontSizes: _prefs.get(
+            UserPreferences.subtitlesUseEmbeddedFontSizes,
+          ),
         ),
       );
     } else {
@@ -3276,83 +3309,86 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                   ? _handleScrollSignal
                   : null,
               child: MouseRegion(
-              cursor: PlatformDetection.useDesktopUi && !_controlsVisible
-                  ? SystemMouseCursors.none
-                  : SystemMouseCursors.basic,
-              onHover: (_) {
-                if (PlatformDetection.useDesktopUi) {
-                  if (_controlsVisible) {
-                    _scheduleHide();
-                  } else {
-                    _showControls();
+                cursor: PlatformDetection.useDesktopUi && !_controlsVisible
+                    ? SystemMouseCursors.none
+                    : SystemMouseCursors.basic,
+                onHover: (_) {
+                  if (PlatformDetection.useDesktopUi) {
+                    if (_controlsVisible) {
+                      _scheduleHide();
+                    } else {
+                      _showControls();
+                    }
                   }
-                }
-              },
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _buildVideoSurface(),
-                  _buildBringupOverlay(context),
-                  if (_isRestoringPosition)
-                    const Positioned.fill(
-                      child: ColoredBox(color: Colors.black),
-                    ),
-                  _buildPausedDescriptionOverlay(),
-                  if (_controlsVisible &&
-                      !_isOsdLocked &&
-                      !hideOsdForPreroll) ...[
-                    _buildTopOverlay(context),
-                    _buildBottomOverlay(context),
-                    if (!PlatformDetection.useLeanbackUi)
-                      Positioned.fill(
-                        child: Center(child: _buildCenterTransportControls()),
+                },
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _buildVideoSurface(),
+                    _buildBringupOverlay(context),
+                    if (_isRestoringPosition)
+                      const Positioned.fill(
+                        child: ColoredBox(color: Colors.black),
+                      ),
+                    _buildPausedDescriptionOverlay(),
+                    if (_controlsVisible &&
+                        !_isOsdLocked &&
+                        !hideOsdForPreroll) ...[
+                      _buildTopOverlay(context),
+                      _buildBottomOverlay(context),
+                      if (!PlatformDetection.useLeanbackUi)
+                        Positioned.fill(
+                          child: Center(child: _buildCenterTransportControls()),
+                        ),
+                    ],
+                    _buildCastMiniBar(),
+                    _buildBufferingIndicator(),
+                    _buildVolumeOverlay(),
+                    if (PlatformDetection.useMobileUi)
+                      _buildBrightnessOverlay(),
+                    if (PlatformDetection.useMobileUi)
+                      _buildDoubleTapSkipOverlay(),
+                    if (_isOsdLocked && !hideOsdForPreroll)
+                      _buildLockedOverlay(),
+                    if (_skipSegment != null)
+                      SkipSegmentOverlay(
+                        segment: _skipSegment!,
+                        onSkip: _skipCurrentSegment,
+                        focusNode: PlatformDetection.isTV
+                            ? _tvSkipSegmentFocus
+                            : null,
+                        onDismiss: _clearSkipSegment,
+                        positionStream: _state.positionStream,
+                      ),
+                    if (_showNextUp && _nextUpItem != null)
+                      NextUpOverlay(
+                        nextItem: _nextUpItem!,
+                        imageUrl: _nextUpItem!.primaryImageTag != null
+                            ? _clientForItem(
+                                _nextUpItem!,
+                              ).imageApi.getPrimaryImageUrl(
+                                _nextUpItem!.id,
+                                maxWidth: 400,
+                                tag: _nextUpItem!.primaryImageTag,
+                              )
+                            : null,
+                        timeoutMs: _prefs.get(UserPreferences.nextUpTimeout),
+                        onPlayNext: _handleNextUpPlay,
+                        onDismiss: _handleNextUpCancel,
+                        onTimeout:
+                            _prefs.get(UserPreferences.autoplayNextEpisode)
+                            ? _handleNextUpPlay
+                            : _handleNextUpCancel,
+                        focusNode: PlatformDetection.isTV
+                            ? _tvNextUpPlayFocus
+                            : null,
+                        dismissFocusNode: PlatformDetection.isTV
+                            ? _tvNextUpDismissFocus
+                            : null,
                       ),
                   ],
-                  _buildCastMiniBar(),
-                  _buildBufferingIndicator(),
-                  _buildVolumeOverlay(),
-                  if (PlatformDetection.useMobileUi) _buildBrightnessOverlay(),
-                  if (PlatformDetection.useMobileUi)
-                    _buildDoubleTapSkipOverlay(),
-                  if (_isOsdLocked && !hideOsdForPreroll) _buildLockedOverlay(),
-                  if (_skipSegment != null)
-                    SkipSegmentOverlay(
-                      segment: _skipSegment!,
-                      onSkip: _skipCurrentSegment,
-                      focusNode: PlatformDetection.isTV
-                          ? _tvSkipSegmentFocus
-                          : null,
-                      onDismiss: _clearSkipSegment,
-                      positionStream: _state.positionStream,
-                    ),
-                  if (_showNextUp && _nextUpItem != null)
-                    NextUpOverlay(
-                      nextItem: _nextUpItem!,
-                      imageUrl: _nextUpItem!.primaryImageTag != null
-                          ? _clientForItem(
-                              _nextUpItem!,
-                            ).imageApi.getPrimaryImageUrl(
-                              _nextUpItem!.id,
-                              maxWidth: 400,
-                              tag: _nextUpItem!.primaryImageTag,
-                            )
-                          : null,
-                      timeoutMs: _prefs.get(UserPreferences.nextUpTimeout),
-                      onPlayNext: _handleNextUpPlay,
-                      onDismiss: _handleNextUpCancel,
-                      onTimeout: _prefs.get(UserPreferences.autoplayNextEpisode)
-                          ? _handleNextUpPlay
-                          : _handleNextUpCancel,
-                      focusNode: PlatformDetection.isTV
-                          ? _tvNextUpPlayFocus
-                          : null,
-                      dismissFocusNode: PlatformDetection.isTV
-                          ? _tvNextUpDismissFocus
-                          : null,
-                    ),
-                ],
+                ),
               ),
-            ),
             ),
           ),
         ),
@@ -3571,7 +3607,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       stream: _state.playingStream,
       initialData: _state.isPlaying,
       builder: (context, snap) {
-        final isPlaying = snap.data ?? false;
+        final isPlaying = _displayPlaying;
         return Positioned.fill(
           child: IgnorePointer(
             child: AnimatedOpacity(
@@ -4477,7 +4513,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
               stream: _state.playingStream,
               initialData: _state.isPlaying,
               builder: (context, snap) {
-                final isPlaying = snap.data ?? false;
+                final isPlaying = _displayPlaying;
                 return _controlButton(
                   isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                   onPressed: () => isPlaying
@@ -5477,7 +5513,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       initialData: _state.isPlaying,
       builder: (context, snap) {
         final l10n = AppLocalizations.of(context);
-        final isPlaying = snap.data ?? false;
+        final isPlaying = _displayPlaying;
 
         return Row(
           mainAxisSize: MainAxisSize.min,
