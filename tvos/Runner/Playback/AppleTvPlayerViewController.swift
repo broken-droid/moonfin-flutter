@@ -721,6 +721,10 @@ final class AppleTvPlayerViewController: UIViewController {
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        if presentedViewController != nil {
+            super.pressesBegan(presses, with: event)
+            return
+        }
         for press in presses {
             switch press.type {
             case .menu:
@@ -881,12 +885,16 @@ final class AppleTvPlayerViewController: UIViewController {
         let padV: CGFloat = 8
         let width = tooltipLabel.bounds.width + padH * 2
         let height = tooltipLabel.bounds.height + padV * 2
-        let frame = control.convert(control.bounds, to: osdContainer)
+        let controlFrame = control.convert(control.bounds, to: osdContainer)
+        let scrubFrame = scrubber.convert(scrubber.bounds, to: osdContainer)
         tooltipLabel.frame = CGRect(
             x: padH, y: padV, width: tooltipLabel.bounds.width,
             height: tooltipLabel.bounds.height)
+        let minX: CGFloat = 90
+        let maxX = osdContainer.bounds.width - 90 - width
+        let x = min(max(minX, controlFrame.midX - width / 2), max(minX, maxX))
         tooltipView.frame = CGRect(
-            x: frame.midX - width / 2, y: frame.minY - height - 12,
+            x: x, y: scrubFrame.minY - height - 16,
             width: width, height: height)
         tooltipView.isHidden = false
     }
@@ -1100,27 +1108,60 @@ final class AppleTvPlayerViewController: UIViewController {
     }
 
     private func presentInfoPanel() {
-        var text = ""
+        var sections: [(title: String, rows: [(label: String, value: String)])] = []
         for section in streamInfoSections {
-            if !text.isEmpty { text += "\n\n" }
-            text += ((section["title"] as? String) ?? "").uppercased() + "\n"
+            let title = (section["title"] as? String) ?? ""
+            var rows: [(label: String, value: String)] = []
             for row in (section["rows"] as? [[String: Any]]) ?? [] {
-                let label = (row["label"] as? String) ?? ""
-                let value = (row["value"] as? String) ?? ""
-                text += "\(label):  \(value)\n"
+                rows.append(
+                    (
+                        label: (row["label"] as? String) ?? "",
+                        value: (row["value"] as? String) ?? ""
+                    ))
             }
+            if !rows.isEmpty { sections.append((title: title, rows: rows)) }
         }
-        let colorSection = colorTelemetrySection()
-        if !colorSection.isEmpty {
-            if !text.isEmpty { text += "\n\n" }
-            text += "COLOR & HDR\n" + colorSection
+
+        let colorRows = colorTelemetryRows()
+        if let idx = sections.firstIndex(where: { $0.title == "Video" }) {
+            sections[idx].rows += colorRows
+        } else if !colorRows.isEmpty {
+            sections.append((title: "Color & HDR", rows: colorRows))
         }
-        let panel = InfoPanelViewController(text: text)
+
+        let deviceRows = deviceDiagnosticRows()
+        if let idx = sections.firstIndex(where: { $0.title == "Diagnostics" }) {
+            sections[idx].rows = deviceRows + sections[idx].rows
+        } else if !deviceRows.isEmpty {
+            sections.append((title: "Diagnostics", rows: deviceRows))
+        }
+
+        let panel = InfoPanelViewController(sections: sections)
         panel.modalPresentationStyle = .overFullScreen
         present(panel, animated: true)
     }
 
-    private func colorTelemetrySection() -> String {
+    private func deviceDiagnosticRows() -> [(label: String, value: String)] {
+        var rows: [(label: String, value: String)] = [
+            ("OS", UIDevice.current.systemVersion),
+            ("Model", VideoCapabilityDetector.deviceModelIdentifier()),
+            ("Generation", VideoCapabilityDetector.currentGeneration().rawValue),
+        ]
+        if let screen = view.window?.screen {
+            if let mode = screen.currentMode {
+                rows.append(
+                    ("Sink Mode", "\(Int(mode.size.width))x\(Int(mode.size.height))"))
+            }
+            rows.append(("Sink Max FPS", "\(screen.maximumFramesPerSecond)"))
+            rows.append(
+                ("EDR Potential", String(format: "%.2f", screen.potentialEDRHeadroom)))
+            rows.append(
+                ("EDR Current", String(format: "%.2f", screen.currentEDRHeadroom)))
+        }
+        return rows
+    }
+
+    private func colorTelemetryRows() -> [(label: String, value: String)] {
         let telemetry = player.dynamicRangeTelemetrySnapshot()
         func value(_ key: String) -> String? {
             guard let v = telemetry[key], !v.isEmpty,
@@ -1133,7 +1174,7 @@ final class AppleTvPlayerViewController: UIViewController {
             return "\(first) / \(value(b) ?? "?")"
         }
 
-        var rows: [(String, String)] = []
+        var rows: [(label: String, value: String)] = []
         if let v = value("mpv_hdr_type") { rows.append(("HDR Type", v)) }
         if let v = value("mpv_max_cll") { rows.append(("Max CLL", v)) }
         if let v = value("mpv_max_fall") { rows.append(("Max FALL", v)) }
@@ -1166,7 +1207,7 @@ final class AppleTvPlayerViewController: UIViewController {
             rows.append(("Decoder Drops", v))
         }
 
-        return rows.map { "\($0.0):  \($0.1)\n" }.joined()
+        return rows
     }
 
     private func presentCastPanel() {
@@ -1302,11 +1343,14 @@ final class AppleTvPlayerViewController: UIViewController {
     }
 }
 
-private final class InfoPanelViewController: UIViewController {
-    private let text: String
+private final class InfoPanelViewController: UIViewController, UITableViewDataSource,
+    UITableViewDelegate
+{
+    private let sections: [(title: String, rows: [(label: String, value: String)])]
+    private let tableView = UITableView(frame: .zero, style: .grouped)
 
-    init(text: String) {
-        self.text = text
+    init(sections: [(title: String, rows: [(label: String, value: String)])]) {
+        self.sections = sections
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -1320,41 +1364,95 @@ private final class InfoPanelViewController: UIViewController {
 
         let panel = UIView()
         panel.translatesAutoresizingMaskIntoConstraints = false
-        panel.backgroundColor = UIColor(white: 0.07, alpha: 0.98)
-        panel.layer.cornerRadius = 18
+        panel.backgroundColor = UIColor(white: 0.1, alpha: 0.97)
+        panel.layer.cornerRadius = 22
+        panel.clipsToBounds = true
         view.addSubview(panel)
 
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
         title.text = "Playback Information"
-        title.font = .systemFont(ofSize: 36, weight: .bold)
+        title.font = .systemFont(ofSize: 38, weight: .bold)
         title.textColor = .white
         panel.addSubview(title)
 
-        let textView = UITextView()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.isSelectable = true
-        textView.backgroundColor = .clear
-        textView.textColor = UIColor(white: 1, alpha: 0.9)
-        textView.font = .monospacedSystemFont(ofSize: 24, weight: .regular)
-        textView.text = text
-        textView.showsVerticalScrollIndicator = true
-        panel.addSubview(textView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 56
+        tableView.register(InfoCell.self, forCellReuseIdentifier: "cell")
+        panel.addSubview(tableView)
+
+        let closeButton = UIButton(type: .system)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("Close", for: .normal)
+        closeButton.titleLabel?.font = .systemFont(ofSize: 32, weight: .semibold)
+        closeButton.addAction(
+            UIAction { [weak self] _ in self?.dismiss(animated: true) }, for: .primaryActionTriggered)
+        panel.addSubview(closeButton)
 
         NSLayoutConstraint.activate([
             panel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            panel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            panel.widthAnchor.constraint(equalToConstant: 1100),
-            panel.heightAnchor.constraint(equalToConstant: 760),
+            panel.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
+            panel.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -60),
+            panel.widthAnchor.constraint(equalToConstant: 1180),
 
             title.topAnchor.constraint(equalTo: panel.topAnchor, constant: 40),
-            title.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 50),
+            title.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 56),
 
-            textView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 20),
-            textView.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 50),
-            textView.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -50),
-            textView.bottomAnchor.constraint(equalTo: panel.bottomAnchor, constant: -40),
+            tableView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: panel.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: panel.trailingAnchor),
+            tableView.bottomAnchor.constraint(
+                equalTo: closeButton.topAnchor, constant: -8),
+
+            closeButton.centerXAnchor.constraint(equalTo: panel.centerXAnchor),
+            closeButton.bottomAnchor.constraint(
+                equalTo: panel.bottomAnchor, constant: -24),
         ])
+    }
+
+    func numberOfSections(in tableView: UITableView) -> Int { sections.count }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int)
+        -> UIView?
+    {
+        let header = UIView()
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = sections[section].title
+        label.font = .systemFont(ofSize: 30, weight: .bold)
+        label.textColor = .white
+        header.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 8),
+            label.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -8),
+        ])
+        return header
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int)
+        -> CGFloat
+    {
+        section == 0 ? 56 : 72
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
+        -> UITableViewCell
+    {
+        let cell =
+            tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! InfoCell
+        let row = sections[indexPath.section].rows[indexPath.row]
+        cell.configure(label: row.label, value: row.value)
+        return cell
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -1363,6 +1461,68 @@ private final class InfoPanelViewController: UIViewController {
             return
         }
         super.pressesBegan(presses, with: event)
+    }
+}
+
+private final class InfoCell: UITableViewCell {
+    private let nameLabel = UILabel()
+    private let valueLabel = UILabel()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = UIColor(white: 1, alpha: 0.06)
+
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.font = .systemFont(ofSize: 26, weight: .regular)
+        nameLabel.textColor = UIColor(white: 1, alpha: 0.6)
+        nameLabel.numberOfLines = 0
+        contentView.addSubview(nameLabel)
+
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        valueLabel.font = .systemFont(ofSize: 26, weight: .medium)
+        valueLabel.textColor = .white
+        valueLabel.numberOfLines = 1
+        valueLabel.lineBreakMode = .byTruncatingTail
+        contentView.addSubview(valueLabel)
+
+        NSLayoutConstraint.activate([
+            nameLabel.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor, constant: 8),
+            nameLabel.topAnchor.constraint(
+                equalTo: contentView.topAnchor, constant: 12),
+            nameLabel.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor, constant: -12),
+            nameLabel.widthAnchor.constraint(equalToConstant: 360),
+
+            valueLabel.leadingAnchor.constraint(
+                equalTo: nameLabel.trailingAnchor, constant: 24),
+            valueLabel.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor, constant: -8),
+            valueLabel.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func configure(label: String, value: String) {
+        nameLabel.text = label
+        valueLabel.text = value
+    }
+
+    override func didUpdateFocus(
+        in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator
+    ) {
+        coordinator.addCoordinatedAnimations {
+            if self.isFocused {
+                self.backgroundColor = UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.9)
+                self.nameLabel.textColor = .white
+            } else {
+                self.backgroundColor = UIColor(white: 1, alpha: 0.06)
+                self.nameLabel.textColor = UIColor(white: 1, alpha: 0.6)
+            }
+        }
     }
 }
 

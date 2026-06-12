@@ -331,12 +331,12 @@ class _AppleTvPlayerHostScreenState extends State<AppleTvPlayerHostScreen> {
         rowEntry('Transcode Reasons', res.transcodingReasons.join(', ')),
       rowEntry('Player', 'MPVKit (libmpv)'),
       rowEntry('Container', container),
+      rowEntry('Bitrate', _formatBitrate(mediaSource?['Bitrate'] as int?)),
       rowEntry(
-        'Bitrate',
-        overrideMbps != null
-            ? '$overrideMbps Mbps (override)'
-            : _formatBitrate(mediaSource?['Bitrate'] as int?),
+        'Max Bitrate',
+        overrideMbps != null ? '$overrideMbps Mbps' : 'Auto',
       ),
+      rowEntry('Max Resolution', _maxResolutionLabel()),
     ]);
 
     if (videoStream != null) {
@@ -810,6 +810,17 @@ class _AppleTvPlayerHostScreenState extends State<AppleTvPlayerHostScreen> {
     );
 
     _resolveCastAsync(item);
+  }
+
+  String _maxResolutionLabel() {
+    try {
+      final res = GetIt.instance<UserPreferences>().get(
+        UserPreferences.maxVideoResolution,
+      );
+      return res == MaxVideoResolution.auto ? 'Auto' : '${res.height}p';
+    } catch (_) {
+      return 'Auto';
+    }
   }
 
   int _nextUpThresholdMs() {
