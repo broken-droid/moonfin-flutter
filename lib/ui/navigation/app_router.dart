@@ -52,6 +52,7 @@ import '../screens/playback/still_watching_screen.dart';
 import '../screens/playback/trailer_player_screen.dart';
 import '../screens/playback/video_player_screen.dart';
 import '../screens/playback/appletv_player_host_screen.dart';
+import '../screens/playback/appletv_livetv_player_host_screen.dart';
 import '../screens/search/search_screen.dart';
 import '../screens/settings/settings_side_panel.dart';
 import '../screens/admin/admin_shell_screen.dart';
@@ -409,12 +410,19 @@ final appRouter = GoRouter(
           path: 'player',
           pageBuilder: (context, state) {
             final extra = state.extra as Map<String, dynamic>;
+            final channels = extra['channels'] as List<GuideChannel>;
+            final startIndex = extra['startIndex'] as int;
             return _opaqueFullScreenPage<void>(
               state: state,
-              child: LiveTvPlayerScreen(
-                channels: extra['channels'] as List<GuideChannel>,
-                startIndex: extra['startIndex'] as int,
-              ),
+              child: PlatformDetection.isAppleTV
+                  ? AppleTvLiveTvPlayerHostScreen(
+                      channels: channels,
+                      startIndex: startIndex,
+                    )
+                  : LiveTvPlayerScreen(
+                      channels: channels,
+                      startIndex: startIndex,
+                    ),
             );
           },
         ),

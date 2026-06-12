@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:playback_core/playback_core.dart';
 
-import '../preference/preference_constants.dart';
 import '../preference/user_preferences.dart';
 import '../util/platform_detection.dart';
 import 'audio_capability_profile.dart';
@@ -128,6 +127,7 @@ class AppleTvMpvBackend implements PlayerBackend {
       case 'selectSubtitle':
       case 'setSpeed':
       case 'setBitrate':
+      case 'selectChannel':
         _uiActionStream.add(map.cast<String, dynamic>());
       case 'tracksChanged':
         _tracksKnown = true;
@@ -373,6 +373,11 @@ class AppleTvMpvBackend implements PlayerBackend {
     int nextUpThresholdMs = 0,
     Map<String, dynamic>? pauseMeta,
     int selectedBitrateMbps = -1,
+    bool isLive = false,
+    Map<String, dynamic>? liveProgram,
+    String liveChannelNumber = '',
+    List<Map<String, dynamic>> channelList = const [],
+    List<Map<String, dynamic>> streamStats = const [],
   }) async {
     await _invoke<void>('setUiMetadata', {
       'topTitle': topTitle,
@@ -393,6 +398,11 @@ class AppleTvMpvBackend implements PlayerBackend {
       'nextUpThresholdMs': nextUpThresholdMs,
       'pauseMeta': ?pauseMeta,
       'selectedBitrateMbps': selectedBitrateMbps,
+      'isLive': isLive,
+      'liveProgram': ?liveProgram,
+      'liveChannelNumber': liveChannelNumber,
+      'channelList': channelList,
+      'streamStats': streamStats,
     });
   }
 

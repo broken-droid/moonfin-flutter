@@ -165,6 +165,9 @@ final class AppleTvVideoChannel: NSObject, FlutterStreamHandler {
         vc.onSetBitrate = { [weak self] mbps in
             self?.send(["event": "setBitrate", "mbps": mbps])
         }
+        vc.onSelectChannel = { [weak self] channelId in
+            self?.send(["event": "selectChannel", "channelId": channelId])
+        }
         if let meta = lastMetadata {
             vc.applyUiMetadata(meta)
         }

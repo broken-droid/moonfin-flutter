@@ -10,6 +10,7 @@ final class AppleTvPlayerViewController: UIViewController {
     var onSelectSubtitle: ((Int) -> Void)?
     var onSetSpeed: ((Double) -> Void)?
     var onSetBitrate: ((Int) -> Void)?
+    var onSelectChannel: ((String) -> Void)?
     var baseSubtitlePos = 92
     private var didAttachSurface = false
     private var updateTimer: Timer?
@@ -42,6 +43,15 @@ final class AppleTvPlayerViewController: UIViewController {
 
     private var pauseMeta: (overview: String, imageUrl: String)?
 
+    private var isLive = false
+    private var liveProgram:
+        (name: String, episodeTitle: String, startMs: Int, endMs: Int, hasTimer: Bool)?
+    private var liveChannelNumber = ""
+    private var channelList:
+        [(id: String, number: String, name: String, logoUrl: String, programName: String,
+            selected: Bool)] = []
+    private var streamStats: [(label: String, value: String)] = []
+
     private var scrubTargetMs: Int?
     private var scrubCommitTimer: Timer?
 
@@ -58,7 +68,7 @@ final class AppleTvPlayerViewController: UIViewController {
     private enum Zone { case scrubber, buttons }
     private enum ControlId {
         case prev, skipBack, playPause, skipForward, next
-        case speed, chapters, subtitles, audio, cast, quality, zoom, info
+        case speed, chapters, subtitles, audio, cast, quality, zoom, info, channels
     }
     private var focusedZone: Zone = .buttons
     private var focusedControlIndex = 0
@@ -89,6 +99,14 @@ final class AppleTvPlayerViewController: UIViewController {
     private let logoImageView = UIImageView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
+
+    private let liveHeaderStack = UIStackView()
+    private let liveChannelRow = UIStackView()
+    private let channelBadge = PaddedLabel()
+    private let channelNameLabel = UILabel()
+    private let recordingDot = UIView()
+    private let programLabel = UILabel()
+    private let statsStack = UIStackView()
 
     private let nextUpCard = UIView()
     private let nextUpImage = UIImageView()
@@ -126,6 +144,7 @@ final class AppleTvPlayerViewController: UIViewController {
         setupOsd()
         rebuildControls()
         layoutHeader()
+        rebuildStats()
     }
 
     private func setupOsd() {
@@ -277,6 +296,107 @@ final class AppleTvPlayerViewController: UIViewController {
         setupTrickplay()
         setupNextUpCard()
         setupPauseOverlay()
+        setupLiveOverlays()
+    }
+
+    private func setupLiveOverlays() {
+        channelBadge.translatesAutoresizingMaskIntoConstraints = false
+        channelBadge.font = .systemFont(ofSize: 26, weight: .bold)
+        channelBadge.textColor = .white
+        channelBadge.backgroundColor = UIColor(red: 0.9, green: 0.1, blue: 0.55, alpha: 1)
+        channelBadge.layer.cornerRadius = 6
+        channelBadge.clipsToBounds = true
+        channelBadge.setContentHuggingPriority(.required, for: .horizontal)
+
+        channelNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        channelNameLabel.font = .systemFont(ofSize: 42, weight: .bold)
+        channelNameLabel.textColor = .white
+        channelNameLabel.numberOfLines = 1
+
+        recordingDot.translatesAutoresizingMaskIntoConstraints = false
+        recordingDot.backgroundColor = UIColor(red: 0.95, green: 0.2, blue: 0.2, alpha: 1)
+        recordingDot.layer.cornerRadius = 9
+        recordingDot.isHidden = true
+        recordingDot.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        recordingDot.heightAnchor.constraint(equalToConstant: 18).isActive = true
+
+        let spacer = UIView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+
+        liveChannelRow.translatesAutoresizingMaskIntoConstraints = false
+        liveChannelRow.axis = .horizontal
+        liveChannelRow.alignment = .center
+        liveChannelRow.spacing = 18
+        liveChannelRow.addArrangedSubview(channelBadge)
+        liveChannelRow.addArrangedSubview(channelNameLabel)
+        liveChannelRow.addArrangedSubview(spacer)
+        liveChannelRow.addArrangedSubview(recordingDot)
+
+        programLabel.translatesAutoresizingMaskIntoConstraints = false
+        programLabel.font = .systemFont(ofSize: 28, weight: .semibold)
+        programLabel.textColor = UIColor(white: 1, alpha: 0.75)
+        programLabel.numberOfLines = 1
+
+        liveHeaderStack.translatesAutoresizingMaskIntoConstraints = false
+        liveHeaderStack.axis = .vertical
+        liveHeaderStack.alignment = .fill
+        liveHeaderStack.spacing = 10
+        liveHeaderStack.isHidden = true
+        liveHeaderStack.addArrangedSubview(liveChannelRow)
+        liveHeaderStack.addArrangedSubview(programLabel)
+        topContainer.addSubview(liveHeaderStack)
+
+        statsStack.translatesAutoresizingMaskIntoConstraints = false
+        statsStack.axis = .horizontal
+        statsStack.alignment = .center
+        statsStack.spacing = 12
+        statsStack.isHidden = true
+        osdContainer.addSubview(statsStack)
+
+        NSLayoutConstraint.activate([
+            liveHeaderStack.leadingAnchor.constraint(
+                equalTo: topContainer.leadingAnchor, constant: 90),
+            liveHeaderStack.trailingAnchor.constraint(
+                equalTo: topContainer.trailingAnchor, constant: -90),
+            liveHeaderStack.topAnchor.constraint(
+                equalTo: topContainer.safeAreaLayoutGuide.topAnchor, constant: 40),
+
+            statsStack.leadingAnchor.constraint(equalTo: controlBar.leadingAnchor),
+            statsStack.bottomAnchor.constraint(
+                equalTo: scrubber.topAnchor, constant: -10),
+        ])
+    }
+
+    private func rebuildStats() {
+        statsStack.arrangedSubviews.forEach {
+            statsStack.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
+        for stat in streamStats {
+            statsStack.addArrangedSubview(makeStatChip(stat.label, stat.value))
+        }
+        statsStack.isHidden = !isLive || streamStats.isEmpty
+    }
+
+    private func makeStatChip(_ label: String, _ value: String) -> UIView {
+        let chip = UIView()
+        chip.translatesAutoresizingMaskIntoConstraints = false
+        chip.backgroundColor = UIColor(white: 1, alpha: 0.12)
+        chip.layer.cornerRadius = 8
+        let text = UILabel()
+        text.translatesAutoresizingMaskIntoConstraints = false
+        text.font = .systemFont(ofSize: 22, weight: .medium)
+        text.textColor = .white
+        text.text = "\(label): \(value)"
+        chip.addSubview(text)
+        NSLayoutConstraint.activate([
+            text.leadingAnchor.constraint(equalTo: chip.leadingAnchor, constant: 14),
+            text.trailingAnchor.constraint(equalTo: chip.trailingAnchor, constant: -14),
+            text.topAnchor.constraint(equalTo: chip.topAnchor, constant: 8),
+            text.bottomAnchor.constraint(equalTo: chip.bottomAnchor, constant: -8),
+        ])
+        return chip
     }
 
     private func setupTrickplay() {
@@ -428,6 +548,21 @@ final class AppleTvPlayerViewController: UIViewController {
     }
 
     private func layoutHeader() {
+        if isLive {
+            headerStack.isHidden = true
+            liveHeaderStack.isHidden = false
+            channelBadge.text = liveChannelNumber
+            channelBadge.isHidden = liveChannelNumber.isEmpty
+            channelNameLabel.text = headerPrimary
+            let programName = liveProgram?.name ?? headerSecondary
+            programLabel.text = programName
+            programLabel.isHidden = programName.isEmpty
+            recordingDot.isHidden = !(liveProgram?.hasTimer ?? false)
+            return
+        }
+
+        liveHeaderStack.isHidden = true
+        headerStack.isHidden = false
         headerStack.arrangedSubviews.forEach {
             headerStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
@@ -459,6 +594,7 @@ final class AppleTvPlayerViewController: UIViewController {
         case .quality: return "line.3.horizontal.decrease"
         case .zoom: return player.zoomMode.iconName
         case .info: return "info.circle"
+        case .channels: return "list.bullet.rectangle"
         }
     }
 
@@ -496,19 +632,25 @@ final class AppleTvPlayerViewController: UIViewController {
         controlIcons.removeAll()
 
         var ids: [ControlId] = []
-        if hasPrevious { ids.append(.prev) }
-        ids.append(.skipBack)
-        ids.append(.playPause)
-        ids.append(.skipForward)
-        if hasNext { ids.append(.next) }
-        ids.append(.speed)
-        if chapters.count > 1 { ids.append(.chapters) }
-        if !subtitleTracks.isEmpty { ids.append(.subtitles) }
-        if audioTracks.count > 1 { ids.append(.audio) }
-        if hasCast { ids.append(.cast) }
-        ids.append(.quality)
-        ids.append(.zoom)
-        if !streamInfoSections.isEmpty { ids.append(.info) }
+        if isLive {
+            ids.append(.playPause)
+            if !channelList.isEmpty { ids.append(.channels) }
+            if !streamInfoSections.isEmpty { ids.append(.info) }
+        } else {
+            if hasPrevious { ids.append(.prev) }
+            ids.append(.skipBack)
+            ids.append(.playPause)
+            ids.append(.skipForward)
+            if hasNext { ids.append(.next) }
+            ids.append(.speed)
+            if chapters.count > 1 { ids.append(.chapters) }
+            if !subtitleTracks.isEmpty { ids.append(.subtitles) }
+            if audioTracks.count > 1 { ids.append(.audio) }
+            if hasCast { ids.append(.cast) }
+            ids.append(.quality)
+            ids.append(.zoom)
+            if !streamInfoSections.isEmpty { ids.append(.info) }
+        }
 
         controls = ids
         for id in ids {
@@ -567,13 +709,53 @@ final class AppleTvPlayerViewController: UIViewController {
         parseTrickplay(args["trickplay"])
         parseNextUp(args["nextUp"])
         parsePauseMeta(args["pauseMeta"])
+        parseLive(args)
 
         loadLogo((args["logoUrl"] as? String) ?? "")
 
         if isViewLoaded {
             layoutHeader()
             rebuildControls()
+            rebuildStats()
             view.setNeedsLayout()
+        }
+    }
+
+    private func parseLive(_ args: [String: Any]) {
+        isLive = (args["isLive"] as? Bool) ?? false
+        liveChannelNumber = (args["liveChannelNumber"] as? String) ?? ""
+
+        if let dict = args["liveProgram"] as? [String: Any],
+            let name = dict["name"] as? String
+        {
+            liveProgram = (
+                name: name,
+                episodeTitle: (dict["episodeTitle"] as? String) ?? "",
+                startMs: (dict["startMs"] as? NSNumber)?.intValue ?? 0,
+                endMs: (dict["endMs"] as? NSNumber)?.intValue ?? 0,
+                hasTimer: (dict["hasTimer"] as? Bool) ?? false
+            )
+        } else {
+            liveProgram = nil
+        }
+
+        channelList = ((args["channelList"] as? [[String: Any]]) ?? []).compactMap {
+            entry in
+            guard let id = entry["id"] as? String, !id.isEmpty else { return nil }
+            return (
+                id: id,
+                number: (entry["number"] as? String) ?? "",
+                name: (entry["name"] as? String) ?? "",
+                logoUrl: (entry["logoUrl"] as? String) ?? "",
+                programName: (entry["programName"] as? String) ?? "",
+                selected: (entry["selected"] as? Bool) ?? false
+            )
+        }
+
+        streamStats = ((args["streamStats"] as? [[String: Any]]) ?? []).compactMap {
+            entry in
+            guard let label = entry["label"] as? String else { return nil }
+            return (label: label, value: (entry["value"] as? String) ?? "")
         }
     }
 
@@ -738,6 +920,10 @@ final class AppleTvPlayerViewController: UIViewController {
                     return
                 }
             case .upArrow:
+                if isLive {
+                    showOsd()
+                    return
+                }
                 focusedZone = .scrubber
                 updateFocusHighlight()
                 showOsd()
@@ -831,7 +1017,19 @@ final class AppleTvPlayerViewController: UIViewController {
                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 27, weight: .medium))
         case .info:
             presentInfoPanel()
+        case .channels:
+            presentChannelList()
         }
+    }
+
+    private func presentChannelList() {
+        guard !channelList.isEmpty else { return }
+        let panel = ChannelListViewController(channels: channelList) {
+            [weak self] channelId in
+            self?.onSelectChannel?(channelId)
+        }
+        panel.modalPresentationStyle = .overFullScreen
+        present(panel, animated: true)
     }
 
     private func updateFocusHighlight() {
@@ -868,6 +1066,7 @@ final class AppleTvPlayerViewController: UIViewController {
         case .quality: return "Playback Quality"
         case .zoom: return "Zoom Mode"
         case .info: return "Playback Information"
+        case .channels: return "Channels"
         }
     }
 
@@ -913,6 +1112,7 @@ final class AppleTvPlayerViewController: UIViewController {
     }
 
     private func adjustScrub(byMs deltaMs: Int) {
+        guard !isLive else { return }
         let durationMs = Int(player.duration * 1000)
         guard durationMs > 0 else { return }
         let base = scrubTargetMs ?? Int(player.currentTime * 1000)
@@ -1283,6 +1483,10 @@ final class AppleTvPlayerViewController: UIViewController {
     }
 
     private func renderProgress() {
+        if isLive {
+            renderLiveProgress()
+            return
+        }
         let duration = player.duration
         let current = scrubTargetMs.map { Double($0) / 1000.0 } ?? player.currentTime
         scrubber.progress = duration > 0 ? Float(min(1, max(0, current / duration))) : 0
@@ -1298,6 +1502,27 @@ final class AppleTvPlayerViewController: UIViewController {
         } else {
             endsAtLabel.isHidden = true
         }
+    }
+
+    private func renderLiveProgress() {
+        endsAtLabel.isHidden = true
+        if let program = liveProgram, program.endMs > program.startMs {
+            let nowMs = Date().timeIntervalSince1970 * 1000
+            let span = Double(program.endMs - program.startMs)
+            let progress = (nowMs - Double(program.startMs)) / span
+            scrubber.progress = Float(min(1, max(0, progress)))
+            currentTimeLabel.text = clockString(epochMs: program.startMs)
+            durationLabel.text = clockString(epochMs: program.endMs)
+        } else {
+            scrubber.progress = 1
+            currentTimeLabel.text = Self.endTimeFormatter.string(from: Date())
+            durationLabel.text = "LIVE"
+        }
+    }
+
+    private func clockString(epochMs: Int) -> String {
+        let date = Date(timeIntervalSince1970: Double(epochMs) / 1000.0)
+        return Self.endTimeFormatter.string(from: date)
     }
 
     private func updateOsd() {
@@ -1676,6 +1901,253 @@ private final class CastCell: UICollectionViewCell {
                 focused ? CGAffineTransform(scaleX: 1.1, y: 1.1) : .identity
             self.imageView.layer.borderWidth = focused ? 4 : 0
             self.imageView.layer.borderColor = UIColor.white.cgColor
+        }
+    }
+}
+
+final class PaddedLabel: UILabel {
+    var insets = UIEdgeInsets(top: 4, left: 12, bottom: 4, right: 12)
+
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: insets))
+    }
+
+    override var intrinsicContentSize: CGSize {
+        let size = super.intrinsicContentSize
+        return CGSize(
+            width: size.width + insets.left + insets.right,
+            height: size.height + insets.top + insets.bottom)
+    }
+}
+
+private final class ChannelListViewController: UIViewController, UITableViewDataSource,
+    UITableViewDelegate
+{
+    private let channels:
+        [(id: String, number: String, name: String, logoUrl: String, programName: String,
+            selected: Bool)]
+    private let onSelect: (String) -> Void
+    private let tableView = UITableView(frame: .zero, style: .plain)
+    private let selectedIndex: Int
+
+    init(
+        channels: [(
+            id: String, number: String, name: String, logoUrl: String, programName: String,
+            selected: Bool
+        )],
+        onSelect: @escaping (String) -> Void
+    ) {
+        self.channels = channels
+        self.onSelect = onSelect
+        self.selectedIndex = channels.firstIndex(where: { $0.selected }) ?? 0
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor(white: 0, alpha: 0.55)
+
+        let panel = UIView()
+        panel.translatesAutoresizingMaskIntoConstraints = false
+        panel.backgroundColor = UIColor(white: 0.1, alpha: 0.97)
+        panel.layer.cornerRadius = 22
+        panel.clipsToBounds = true
+        view.addSubview(panel)
+
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = "Channels"
+        title.font = .systemFont(ofSize: 38, weight: .bold)
+        title.textColor = .white
+        panel.addSubview(title)
+
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = 110
+        tableView.remembersLastFocusedIndexPath = true
+        tableView.register(ChannelRowCell.self, forCellReuseIdentifier: "channel")
+        panel.addSubview(tableView)
+
+        NSLayoutConstraint.activate([
+            panel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            panel.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
+            panel.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -60),
+            panel.widthAnchor.constraint(equalToConstant: 980),
+
+            title.topAnchor.constraint(equalTo: panel.topAnchor, constant: 40),
+            title.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 56),
+
+            tableView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 24),
+            tableView.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -24),
+            tableView.bottomAnchor.constraint(equalTo: panel.bottomAnchor, constant: -24),
+        ])
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard channels.indices.contains(selectedIndex) else { return }
+        tableView.scrollToRow(
+            at: IndexPath(row: selectedIndex, section: 0), at: .middle, animated: false)
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        channels.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
+        -> UITableViewCell
+    {
+        let cell =
+            tableView.dequeueReusableCell(withIdentifier: "channel", for: indexPath)
+            as! ChannelRowCell
+        let channel = channels[indexPath.row]
+        cell.configure(
+            number: channel.number, name: channel.name, program: channel.programName,
+            logoUrl: channel.logoUrl, isCurrent: channel.selected)
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let channel = channels[indexPath.row]
+        dismiss(animated: true) { [onSelect] in
+            onSelect(channel.id)
+        }
+    }
+
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses where press.type == .menu {
+            dismiss(animated: true)
+            return
+        }
+        super.pressesBegan(presses, with: event)
+    }
+}
+
+private final class ChannelRowCell: UITableViewCell {
+    private let logoView = UIImageView()
+    private let numberLabel = UILabel()
+    private let nameLabel = UILabel()
+    private let programLabel = UILabel()
+    private let liveTag = PaddedLabel()
+    private var logoUrl = ""
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
+        selectionStyle = .none
+
+        logoView.translatesAutoresizingMaskIntoConstraints = false
+        logoView.contentMode = .scaleAspectFit
+        logoView.backgroundColor = UIColor(white: 1, alpha: 0.08)
+        logoView.layer.cornerRadius = 8
+        logoView.clipsToBounds = true
+        contentView.addSubview(logoView)
+
+        numberLabel.translatesAutoresizingMaskIntoConstraints = false
+        numberLabel.font = .monospacedDigitSystemFont(ofSize: 28, weight: .bold)
+        numberLabel.textColor = UIColor(white: 1, alpha: 0.7)
+        numberLabel.textAlignment = .center
+        contentView.addSubview(numberLabel)
+
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.font = .systemFont(ofSize: 28, weight: .semibold)
+        nameLabel.textColor = .white
+        nameLabel.numberOfLines = 1
+        contentView.addSubview(nameLabel)
+
+        programLabel.translatesAutoresizingMaskIntoConstraints = false
+        programLabel.font = .systemFont(ofSize: 22, weight: .regular)
+        programLabel.textColor = UIColor(white: 1, alpha: 0.55)
+        programLabel.numberOfLines = 1
+        contentView.addSubview(programLabel)
+
+        liveTag.translatesAutoresizingMaskIntoConstraints = false
+        liveTag.text = "NOW PLAYING"
+        liveTag.font = .systemFont(ofSize: 18, weight: .bold)
+        liveTag.textColor = .white
+        liveTag.backgroundColor = UIColor(red: 0.9, green: 0.1, blue: 0.55, alpha: 1)
+        liveTag.layer.cornerRadius = 6
+        liveTag.clipsToBounds = true
+        liveTag.isHidden = true
+        contentView.addSubview(liveTag)
+
+        NSLayoutConstraint.activate([
+            numberLabel.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor, constant: 12),
+            numberLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            numberLabel.widthAnchor.constraint(equalToConstant: 84),
+
+            logoView.leadingAnchor.constraint(
+                equalTo: numberLabel.trailingAnchor, constant: 12),
+            logoView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            logoView.widthAnchor.constraint(equalToConstant: 120),
+            logoView.heightAnchor.constraint(equalToConstant: 72),
+
+            nameLabel.leadingAnchor.constraint(
+                equalTo: logoView.trailingAnchor, constant: 24),
+            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            nameLabel.trailingAnchor.constraint(
+                lessThanOrEqualTo: liveTag.leadingAnchor, constant: -16),
+
+            programLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            programLabel.topAnchor.constraint(
+                equalTo: nameLabel.bottomAnchor, constant: 4),
+            programLabel.trailingAnchor.constraint(
+                lessThanOrEqualTo: liveTag.leadingAnchor, constant: -16),
+
+            liveTag.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor, constant: -16),
+            liveTag.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func configure(
+        number: String, name: String, program: String, logoUrl: String, isCurrent: Bool
+    ) {
+        numberLabel.text = number
+        nameLabel.text = name
+        programLabel.text = program
+        programLabel.isHidden = program.isEmpty
+        liveTag.isHidden = !isCurrent
+        self.logoUrl = logoUrl
+        logoView.image = nil
+        guard !logoUrl.isEmpty, let url = URL(string: logoUrl) else { return }
+        let expected = logoUrl
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+            let image = data.flatMap { UIImage(data: $0) }
+            DispatchQueue.main.async {
+                guard let self, self.logoUrl == expected else { return }
+                self.logoView.image = image
+            }
+        }.resume()
+    }
+
+    override func didUpdateFocus(
+        in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator
+    ) {
+        coordinator.addCoordinatedAnimations {
+            if self.isFocused {
+                self.backgroundColor = UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.9)
+                self.numberLabel.textColor = .white
+                self.programLabel.textColor = UIColor(white: 1, alpha: 0.85)
+            } else {
+                self.backgroundColor = .clear
+                self.numberLabel.textColor = UIColor(white: 1, alpha: 0.7)
+                self.programLabel.textColor = UIColor(white: 1, alpha: 0.55)
+            }
         }
     }
 }
