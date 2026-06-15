@@ -1242,6 +1242,20 @@ class PlaybackManager implements AudioOwnable {
       audioStreamIndex: _audioStreamIndex,
       subtitleStreamIndex: _subtitleStreamIndex,
     );
+
+    // Live TV played directly from the upstream URL no longer needs the server's
+    // live-stream session; close it so only the client's connection remains
+    // (providers often cap connections). Safe: the played URL is the upstream,
+    // not the server, and directPlay+liveStreamId only happens via the live
+    // upstream branch.
+    final directLiveStreamId = resolution.liveStreamId;
+    if (resolution.playMethod == StreamPlayMethod.directPlay &&
+        directLiveStreamId != null &&
+        directLiveStreamId.isNotEmpty) {
+      final closeFuture = _service?.closeLiveStream(directLiveStreamId);
+      if (closeFuture != null) unawaited(closeFuture);
+    }
+
     _startProgressTimer();
     _setBringupState(
       PlaybackBringupState(
