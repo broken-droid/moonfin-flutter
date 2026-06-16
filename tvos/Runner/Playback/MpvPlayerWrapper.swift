@@ -572,6 +572,7 @@ class MpvPlayerWrapper: NSObject, ObservableObject {
     }
 
     func setAudioTrack(_ trackIndex: Int32) {
+        if hybridAudioActive { return }
         _ = engine?.setAudioTrack(trackIndex)
         currentAudioTrackIndex = trackIndex
     }
