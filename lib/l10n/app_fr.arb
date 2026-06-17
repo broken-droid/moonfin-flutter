@@ -2295,7 +2295,7 @@
             }
         }
     },
-    "seerr": "Voyant",
+    "seerr": "Seerr",
     "@seerr": {
         "description": "Seerr brand name"
     },
@@ -2340,7 +2340,7 @@
             }
         }
     },
-    "tracksCount": "{count} tracks",
+    "tracksCount": "{count} pistes",
     "@tracksCount": {
         "description": "Number of tracks in an album",
         "placeholders": {
@@ -2468,7 +2468,7 @@
             }
         }
     },
-    "episodeCount": "{count, plural, =1{1 episode} other{{count} episodes}}",
+    "episodeCount": "{count, plural, =0{0 épisode} =1{1 épisode} other{{count} épisodes}}",
     "@episodeCount": {
         "description": "Number of episodes with pluralization",
         "placeholders": {
@@ -2696,7 +2696,7 @@
     "@showBackdropImages": {
         "description": "Description for background backdrops"
     },
-    "seriesThumbnails": "Vignettes de séries",
+    "seriesThumbnails": "Afficher les vignettes des séries",
     "@seriesThumbnails": {
         "description": "Setting for series thumbnails"
     },
@@ -2942,7 +2942,7 @@
     "@polish": {
         "description": "Language: Polish"
     },
-    "ac3Passthrough": "Pass-through AC3",
+    "ac3Passthrough": "Passthrough AC3",
     "@ac3Passthrough": {
         "description": "Setting for AC3 passthrough"
     },
@@ -3047,7 +3047,7 @@
     "@resumeAndSkip": {
         "description": "Section title for resume and skip settings"
     },
-    "resumeRewind": "Retour arrière à la reprise",
+    "resumeRewind": "Retour arrière à la reprise de la lecture",
     "@resumeRewind": {
         "description": "Setting for resume rewind"
     },
@@ -3167,7 +3167,7 @@
     "@semiTransparentBlack": {
         "description": "Color: semi-transparent black"
     },
-    "global": "Mondial",
+    "global": "Global",
     "@global": {
         "description": "Profile: global"
     },
@@ -3434,7 +3434,7 @@
     "@bannerLabel": {
         "description": "Image type: banner"
     },
-    "overridePerLibrarySettings": "Remplacer les paramètres par bibliothèque",
+    "overridePerLibrarySettings": "Écraser les paramètres par bibliothèque",
     "@overridePerLibrarySettings": {
         "description": "Setting for overriding per-library settings"
     },
@@ -3503,7 +3503,7 @@
     "@mediaBarMode": {
         "description": "Setting for choosing media bar style"
     },
-    "mediaBarModeDescription": "Choisissez Moonfin, MakD ou desactivez la barre media",
+    "mediaBarModeDescription": "Choisissez parmi différents styles pour la barre média ou désactivez la barre média",
     "@mediaBarModeDescription": {
         "description": "Description for media bar style setting"
     },
@@ -3515,7 +3515,7 @@
     "@mediaBarModeMakd": {
         "description": "Media bar style option: MakD"
     },
-    "mediaBarModeOff": "Desactive",
+    "mediaBarModeOff": "Désactivé",
     "@mediaBarModeOff": {
         "description": "Media bar style option: Off"
     },
@@ -3583,7 +3583,7 @@
     "@episodePreviewDescription": {
         "description": "Description for episode preview"
     },
-    "previewAudio": "Audio de l’aperçu",
+    "previewAudio": "Aperçu de l'audio",
     "@previewAudio": {
         "description": "Setting for preview audio"
     },
@@ -6292,15 +6292,15 @@
             }
         }
     },
-    "dtsPassthrough": "Passage DTS",
+    "dtsPassthrough": "Passthrough DTS",
     "@dtsPassthrough": {
         "description": "Setting for DTS passthrough"
     },
-    "enableDtsPassthrough": "Audio Bitstream DTS vers AVR uniquement ; nécessite la prise en charge du récepteur et la piste source DTS",
+    "enableDtsPassthrough": "Audio Bitstream DTS vers AVR uniquement ; nécessite la piste source DTS et sa prise en charge par l'AVR",
     "@enableDtsPassthrough": {
         "description": "Description for DTS passthrough"
     },
-    "unpauseRewind": "Reprendre le rembobinage",
+    "unpauseRewind": "Retour arrière après avoir mis en pause",
     "@unpauseRewind": {
         "description": "Setting for rewinding a little when resuming from pause"
     },
@@ -6725,7 +6725,7 @@
             }
         }
     },
-    "desktopUiScale": "Échelle de l'interface utilisateur de bureau",
+    "desktopUiScale": "Échelle de l'interface utilisateur",
     "@desktopUiScale": {
         "description": "Setting for desktop UI scale"
     },
@@ -6749,7 +6749,7 @@
     "@jellyfinAccount": {
         "description": "Auth option label for Seerr sign in using Jellyfin credentials"
     },
-    "localAccount": "Locale",
+    "localAccount": "Local",
     "@localAccount": {
         "description": "Auth option label for Seerr sign in using local Seerr credentials"
     },
@@ -6757,7 +6757,7 @@
     "@seasonalEffectsDescription": {
         "description": "Description for seasonal effects settings"
     },
-    "mediaSources": "Sources médiatiques",
+    "mediaSources": "Média sources",
     "@mediaSources": {
         "description": "Section heading for media source options"
     },
@@ -6821,11 +6821,11 @@
     "@settingsAudioOutputMode": {
         "description": "Setting for audio output mode"
     },
-    "settingsAudioOutputModeAvrPassthrough": "Passage AVR",
+    "settingsAudioOutputModeAvrPassthrough": "AVR Passthrough",
     "@settingsAudioOutputModeAvrPassthrough": {
         "description": "Audio output mode option for AVR passthrough"
     },
-    "settingsAudioFallbackCodec": "Codec de secours audio",
+    "settingsAudioFallbackCodec": "Codec audio de secours",
     "@settingsAudioFallbackCodec": {
         "description": "Setting for fallback audio codec"
     },
@@ -6845,7 +6845,7 @@
     "@settingsAudioPassthroughAdvanced": {
         "description": "Section title for advanced passthrough controls"
     },
-    "settingsAudioCodecPassthrough": "Passage de codecs",
+    "settingsAudioCodecPassthrough": "Passthrough de codecs",
     "@settingsAudioCodecPassthrough": {
         "description": "Title for codec passthrough settings group"
     },
@@ -6853,27 +6853,27 @@
     "@settingsAudioCodecPassthroughDescription": {
         "description": "Description for codec passthrough settings group"
     },
-    "settingsAudioEac3Passthrough": "Passage EAC3",
+    "settingsAudioEac3Passthrough": "Passthrough EAC3",
     "@settingsAudioEac3Passthrough": {
         "description": "Setting for EAC3 passthrough"
     },
-    "settingsAudioEac3JocPassthrough": "Passage EAC3 JOC (Atmos)",
+    "settingsAudioEac3JocPassthrough": "Passthrough EAC3 JOC (Atmos)",
     "@settingsAudioEac3JocPassthrough": {
         "description": "Setting for EAC3 JOC Atmos passthrough"
     },
-    "settingsAudioDtsCorePassthrough": "Passage de base DTS",
+    "settingsAudioDtsCorePassthrough": "Passthrough DTS Core",
     "@settingsAudioDtsCorePassthrough": {
         "description": "Setting for DTS core passthrough"
     },
-    "settingsAudioDtsHdPassthrough": "Passage DTS-HD MA",
+    "settingsAudioDtsHdPassthrough": "Passthrough DTS-HD MA",
     "@settingsAudioDtsHdPassthrough": {
         "description": "Setting for DTS-HD MA passthrough"
     },
-    "settingsAudioTrueHdPassthrough": "Passage TrueHD",
+    "settingsAudioTrueHdPassthrough": "Passthrough TrueHD",
     "@settingsAudioTrueHdPassthrough": {
         "description": "Setting for TrueHD passthrough"
     },
-    "settingsAudioTrueHdAtmosPassthrough": "Passage TrueHD Atmos",
+    "settingsAudioTrueHdAtmosPassthrough": "Passthrough TrueHD Atmos",
     "@settingsAudioTrueHdAtmosPassthrough": {
         "description": "Setting for TrueHD Atmos passthrough"
     },
@@ -6881,11 +6881,11 @@
     "@settingsAudioBitstreamEac3ToExternalDecoder": {
         "description": "Description for EAC3 passthrough"
     },
-    "settingsAudioBitstreamEac3JocToExternalDecoder": "Bitstream Dolby Atmos sur EAC3 (JOC) vers un décodeur externe.",
+    "settingsAudioBitstreamEac3JocToExternalDecoder": "Bitstream Dolby Atmos via EAC3 (JOC) vers un décodeur externe.",
     "@settingsAudioBitstreamEac3JocToExternalDecoder": {
         "description": "Description for EAC3 JOC passthrough"
     },
-    "settingsAudioBitstreamDtsHdToExternalDecoder": "Bitstream DTS-HD MA (inclut le noyau DTS) vers un décodeur externe.",
+    "settingsAudioBitstreamDtsHdToExternalDecoder": "Bitstream DTS-HD MA (DTS Core inclus) vers un décodeur externe.",
     "@settingsAudioBitstreamDtsHdToExternalDecoder": {
         "description": "Description for DTS-HD MA passthrough"
     },
@@ -6901,19 +6901,19 @@
     "@settingsDetectedAudioCapabilitiesUnavailable": {
         "description": "Message shown when runtime audio capability snapshot is missing"
     },
-    "settingsAudioRouteLabel": "Itinéraire",
+    "settingsAudioRouteLabel": "Sortie",
     "@settingsAudioRouteLabel": {
         "description": "Label for active audio route row"
     },
-    "settingsAudioDecodeLabel": "Décoder",
+    "settingsAudioDecodeLabel": "Décodage",
     "@settingsAudioDecodeLabel": {
         "description": "Label for audio decode capability row"
     },
-    "settingsAudioPassthroughLabel": "Passage",
+    "settingsAudioPassthroughLabel": "Passthrough",
     "@settingsAudioPassthroughLabel": {
         "description": "Label for audio passthrough capability row"
     },
-    "settingsAudioHdRoute": "Parcours audio HD",
+    "settingsAudioHdRoute": "Sortie audio HD",
     "@settingsAudioHdRoute": {
         "description": "Label indicating the active route supports HD audio"
     },
@@ -6933,7 +6933,7 @@
     "@settingsAudioRouteBluetooth": {
         "description": "Audio route type Bluetooth"
     },
-    "settingsAudioRouteSpeaker": "Conférencier",
+    "settingsAudioRouteSpeaker": "Enceintes",
     "@settingsAudioRouteSpeaker": {
         "description": "Audio route type speaker"
     },
@@ -6974,11 +6974,11 @@
     "@settingsAudioDiagnosticsHlsFmp4AudioCodecs": {
         "description": "Diagnostics label for HLS fMP4 audio codecs"
     },
-    "settingsAudioDiagnosticsAudioSpdifPassthrough": "relais audio-SPDIF",
+    "settingsAudioDiagnosticsAudioSpdifPassthrough": "Passthrough audio-SPDIF",
     "@settingsAudioDiagnosticsAudioSpdifPassthrough": {
         "description": "Diagnostics label for audio-spdif passthrough codecs"
     },
-    "settingsAudioDiagnosticsActiveAudioRoute": "Itinéraire audio actif",
+    "settingsAudioDiagnosticsActiveAudioRoute": "Sortie audio active",
     "@settingsAudioDiagnosticsActiveAudioRoute": {
         "description": "Diagnostics label for active audio route"
     },
@@ -7406,5 +7406,121 @@
     "themeGlassSubtitle": "Style \"Verre liquide\" avec arrière-plan en dégradé animé, surfaces dépolies et touches de bleu Apple",
     "@themeGlassSubtitle": {
         "description": "Preview description for the Glass theme"
+    },
+    "settingsScrollWheelAction": "Défilement avec la molette de la souris",
+    "@settingsScrollWheelAction": {
+        "description": "Setting title for the mouse scroll wheel action during playback"
+    },
+    "settingsScrollWheelActionDescription": "Choisir l'action du défilement avec la molette de la souris durant la lecture.",
+    "@settingsScrollWheelActionDescription": {
+        "description": "Description for the mouse scroll wheel action setting"
+    },
+    "scrollWheelActionOff": "Désactivé",
+    "@scrollWheelActionOff": {
+        "description": "Scroll wheel action option: do nothing"
+    },
+    "scrollWheelActionSeek": "Défilement (avant / arrière)",
+    "@scrollWheelActionSeek": {
+        "description": "Scroll wheel action option: seek forward and back"
+    },
+    "scrollWheelActionVolume": "Volume",
+    "@scrollWheelActionVolume": {
+        "description": "Scroll wheel action option: adjust volume"
+    },
+    "settingsAudioFallbackCodecDescription": "Sélectionnez le format cible pour transcoder l'audio multicanal lorsque le flux source ne peut pas être lu directement ou transmis en passthrough.",
+    "@settingsAudioFallbackCodecDescription": {
+        "description": "Description for audio fallback codec setting"
+    },
+    "settingsAudioFallbackCodecAuto": "Détection automatique\n(Recommandé)",
+    "@settingsAudioFallbackCodecAuto": {
+        "description": "Fallback codec option: Auto"
+    },
+    "settingsAudioFallbackCodecAac": "AAC\n(Par défaut)",
+    "@settingsAudioFallbackCodecAac": {
+        "description": "Fallback codec option: AAC"
+    },
+    "settingsAudioFallbackCodecAc3": "AC3\n(Dolby Digital)",
+    "@settingsAudioFallbackCodecAc3": {
+        "description": "Fallback codec option: AC3"
+    },
+    "settingsAudioFallbackCodecEac3": "EAC3\n(Dolby Digital Plus)",
+    "@settingsAudioFallbackCodecEac3": {
+        "description": "Fallback codec option: EAC3"
+    },
+    "settingsAudioFallbackCodecTrueHd": "TrueHD\n(Lossless)",
+    "@settingsAudioFallbackCodecTrueHd": {
+        "description": "Fallback codec option: TrueHD"
+    },
+    "settingsAudioFallbackCodecMp3": "MP3\n(Stéréo uniquement)",
+    "@settingsAudioFallbackCodecMp3": {
+        "description": "Fallback codec option: MP3"
+    },
+    "settingsAudioFallbackCodecOpus": "Opus\n(Efficient)",
+    "@settingsAudioFallbackCodecOpus": {
+        "description": "Fallback codec option: Opus"
+    },
+    "settingsAudioFallbackCodecFlac": "FLAC\n(Lossless)",
+    "@settingsAudioFallbackCodecFlac": {
+        "description": "Fallback codec option: FLAC"
+    },
+    "settingsMaxAudioChannels": "Nombre maximum de canaux audio",
+    "@settingsMaxAudioChannels": {
+        "description": "Setting for maximum audio channels capability"
+    },
+    "settingsMaxAudioChannelsDescription": "Configurez le nombre maximum de canaux de votre installation audio. Les flux multicanaux dépassant cette limite feront l'objet d'un downmix ou d'un transcodage.",
+    "@settingsMaxAudioChannelsDescription": {
+        "description": "Description for maximum audio channels setting"
+    },
+    "settingsMaxAudioChannelsAuto": "Détection automatique\n(Réglage matériel par défaut))",
+    "@settingsMaxAudioChannelsAuto": {
+        "description": "Option: Auto detect channels"
+    },
+    "settingsMaxAudioChannelsMono": "1.0 Mono",
+    "@settingsMaxAudioChannelsMono": {
+        "description": "Option: Mono (1 channel)"
+    },
+    "settingsMaxAudioChannelsStereo": "2.0 Stéréo",
+    "@settingsMaxAudioChannelsStereo": {
+        "description": "Option: Stereo (2 channels)"
+    },
+    "settingsMaxAudioChannels3_0": "3.0 / 2.1 Surround",
+    "@settingsMaxAudioChannels3_0": {
+        "description": "Option: 3 channels"
+    },
+    "settingsMaxAudioChannels4_0": "4.0 / 3.1 Quadraphonique",
+    "@settingsMaxAudioChannels4_0": {
+        "description": "Option: 4 channels"
+    },
+    "settingsMaxAudioChannels5_0": "5.0 / 4.1 Surround",
+    "@settingsMaxAudioChannels5_0": {
+        "description": "Option: 5 channels"
+    },
+    "settingsMaxAudioChannels5_1": "5.1 Surround",
+    "@settingsMaxAudioChannels5_1": {
+        "description": "Option: 5.1 Surround channels"
+    },
+    "settingsMaxAudioChannels6_1": "6.1 Surround",
+    "@settingsMaxAudioChannels6_1": {
+        "description": "Option: 6.1 Surround channels"
+    },
+    "settingsMaxAudioChannels7_1": "7.1 Surround",
+    "@settingsMaxAudioChannels7_1": {
+        "description": "Option: 7.1 Surround channels"
+    },
+    "showSeerrButton": "Afficher le bouton Seerr",
+    "@showSeerrButton": {
+        "description": "Setting for showing Seerr button"
+    },
+    "fullScreenRows": "Rangées d'accueil étendues",
+    "@fullScreenRows": {
+        "description": "Setting for full screen home rows"
+    },
+    "fullScreenRowsDescription": "Limiter les rangées d'accueil à une par écran",
+    "@fullScreenRowsDescription": {
+        "description": "Description for full screen home rows"
+    },
+    "currentUser": "Utilisateur actuel",
+    "@currentUser": {
+        "description": "Option: current user"
     }
 }
