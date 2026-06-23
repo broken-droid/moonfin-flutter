@@ -45,6 +45,11 @@ class PlatformDetection {
   static bool get isMobile => (isAndroid || isIOS) && !_isTv;
   static bool get isDesktop => isMacOS || isWindows || isLinux;
 
+  /// True on Apple platforms (iOS/iPadOS/macOS) where the UI should adopt a
+  /// Cupertino/liquid-glass look. Apple TV is excluded — it uses the leanback
+  /// UI and is handled by [isAppleTV]/[useLeanbackUi].
+  static bool get isApple => isIOS || isMacOS;
+
   static bool get isTV => _isTv || isTizen || isAppleTV;
   static bool _isTv = false;
   static void setTvMode(bool value) => _isTv = value;
