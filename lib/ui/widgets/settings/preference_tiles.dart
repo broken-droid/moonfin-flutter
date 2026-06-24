@@ -8,6 +8,7 @@ import 'package:jellyfin_preference/jellyfin_preference.dart';
 import '../../../util/idiom/app_ui_idiom.dart';
 import '../../../util/focus/dpad_keys.dart';
 import '../adaptive/adaptive_icons.dart';
+import '../adaptive/sf_symbol.dart';
 import '../overlay_sheet.dart';
 import 'preference_binding.dart';
 
@@ -66,20 +67,23 @@ Widget buildSettingsLeadingIconShell(
   required bool focused,
   required Color iconColor,
 }) {
-  if (AppUiIdiomResolver.current == AppUiIdiom.iosMobile) {
+  if (AppUiIdiomResolver.isApple) {
     final glyph = icon is Icon ? icon.icon : null;
-    return SizedBox(
+    final base = glyph != null
+        ? appleSettingsIconColor(glyph)
+        : AppColorScheme.accent;
+    return Container(
       width: _kSettingsIconShellSize,
       height: _kSettingsIconShellSize,
+      decoration: BoxDecoration(
+        color: Color.lerp(base, const Color(0xFF1C1C1E), 0.4),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Center(
         child: glyph != null
-            ? Icon(
-                cupertinoGlyphFor(glyph),
-                size: 24,
-                color: appleSettingsIconColor(glyph),
-              )
+            ? SfSymbol(material: glyph, size: 18, color: Colors.white)
             : IconTheme(
-                data: IconThemeData(size: 24, color: iconColor),
+                data: const IconThemeData(size: 18, color: Colors.white),
                 child: icon,
               ),
       ),
@@ -109,6 +113,9 @@ Widget buildSettingsLeadingIconShell(
 }
 
 EdgeInsets _settingsTileOuterPadding(BuildContext context) {
+  if (AppUiIdiomResolver.isApple) {
+    return EdgeInsets.zero;
+  }
   final inDialog =
       context.findAncestorWidgetOfExactType<SimpleDialog>() != null ||
       context.findAncestorWidgetOfExactType<AlertDialog>() != null;
@@ -122,6 +129,17 @@ BoxDecoration _settingsTileDecoration(
   BuildContext context, {
   required bool focused,
 }) {
+  if (AppUiIdiomResolver.isApple) {
+    if (!focused) return const BoxDecoration();
+    return BoxDecoration(
+      color: AppColorScheme.onSurface.withValues(alpha: 0.14),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(
+        color: AppColorScheme.accent.withValues(alpha: 0.9),
+        width: 1,
+      ),
+    );
+  }
   final colorScheme = Theme.of(context).colorScheme;
   final borderTokens = ThemeRegistry.active.borders;
   final baseBorder = borderTokens.cardBorder.color;
@@ -156,7 +174,11 @@ BoxDecoration _settingsTileDecoration(
   );
 }
 
-Widget buildSettingsSelectionBubble(BuildContext context, String label, bool focused) {
+Widget buildSettingsSelectionBubble(
+  BuildContext context,
+  String label,
+  bool focused,
+) {
   final theme = Theme.of(context);
   final colorScheme = theme.colorScheme;
   return Container(
@@ -186,7 +208,6 @@ Widget buildSettingsSelectionBubble(BuildContext context, String label, bool foc
     ),
   );
 }
-
 
 void _ensureFocusVisible(BuildContext context, {double alignment = 0.9}) {
   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -401,7 +422,10 @@ class _EnumPreferenceTileState<T extends Enum>
             title: Text(widget.title, style: _kSettingsTitleTextStyle),
             trailing: buildSettingsSelectionBubble(context, label, focused),
             subtitle: widget.description != null
-                ? Text(widget.description!, style: _kSettingsDescriptionTextStyle)
+                ? Text(
+                    widget.description!,
+                    style: _kSettingsDescriptionTextStyle,
+                  )
                 : null,
             isThreeLine: widget.description != null,
             onTap: () => _showPicker(context, current),
@@ -436,7 +460,14 @@ class _EnumPreferenceTileState<T extends Enum>
                   (widget.dialogLabelOf ?? widget.labelOf)(v),
                   style: _kSettingsTitleTextStyle,
                 ),
-                trailing: selected ? const Icon(Icons.check) : null,
+                trailing: selected
+                    ? Icon(
+                        Icons.check,
+                        color: AppUiIdiomResolver.isApple
+                            ? AppColorScheme.accent
+                            : null,
+                      )
+                    : null,
                 onTap: () {
                   if (picked) return;
                   picked = true;
@@ -604,7 +635,7 @@ class _SliderPreferenceTileState extends State<SliderPreferenceTile> {
                               : AppColorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
-                    AppUiIdiomResolver.current == AppUiIdiom.iosMobile
+                    AppUiIdiomResolver.isApple
                         ? CupertinoSlider(
                             value: value.toDouble().clamp(
                               widget.min,
@@ -705,7 +736,10 @@ class _StringPickerPreferenceTileState
             title: Text(widget.title, style: _kSettingsTitleTextStyle),
             trailing: buildSettingsSelectionBubble(context, label, focused),
             subtitle: widget.description != null
-                ? Text(widget.description!, style: _kSettingsDescriptionTextStyle)
+                ? Text(
+                    widget.description!,
+                    style: _kSettingsDescriptionTextStyle,
+                  )
                 : null,
             isThreeLine: widget.description != null,
             onTap: () => _showPicker(context, value),
@@ -821,7 +855,10 @@ class _IntPickerPreferenceTileState extends State<IntPickerPreferenceTile> {
             title: Text(widget.title, style: _kSettingsTitleTextStyle),
             trailing: buildSettingsSelectionBubble(context, label, focused),
             subtitle: widget.description != null
-                ? Text(widget.description!, style: _kSettingsDescriptionTextStyle)
+                ? Text(
+                    widget.description!,
+                    style: _kSettingsDescriptionTextStyle,
+                  )
                 : null,
             isThreeLine: widget.description != null,
             onTap: () => _showPicker(context, value),
@@ -918,6 +955,7 @@ class _TvFocusHighlightState extends State<TvFocusHighlight> {
 
   @override
   Widget build(BuildContext context) {
+    final highlighted = _focused && !AppUiIdiomResolver.isApple;
     return Focus(
       focusNode: _effectiveFocusNode,
       canRequestFocus: false,
@@ -933,10 +971,10 @@ class _TvFocusHighlightState extends State<TvFocusHighlight> {
             curve: Curves.easeOut,
             decoration: _settingsTileDecoration(context, focused: _focused),
             child: ListTileTheme.merge(
-              textColor: _focused
+              textColor: highlighted
                   ? AppColors.black.withValues(alpha: 0.87)
                   : AppColorScheme.onSurface,
-              iconColor: _focused
+              iconColor: highlighted
                   ? AppColors.black.withValues(alpha: 0.54)
                   : AppColorScheme.onSurface.withValues(alpha: 0.7),
               titleTextStyle: _kSettingsTitleTextStyle,

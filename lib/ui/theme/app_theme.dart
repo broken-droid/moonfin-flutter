@@ -61,9 +61,12 @@ class AppTheme {
     final c = spec.colors;
     return ThemeData(
       useMaterial3: true,
-      platform: AppUiIdiomResolver.current == AppUiIdiom.iosMobile
-          ? TargetPlatform.iOS
-          : null,
+      platform: switch (AppUiIdiomResolver.current) {
+        AppUiIdiom.iosMobile => TargetPlatform.iOS,
+        AppUiIdiom.macDesktop => TargetPlatform.macOS,
+        AppUiIdiom.material => TargetPlatform.android,
+        AppUiIdiom.tvosLeanback => null,
+      },
       brightness: Brightness.dark,
       fontFamily: spec.fontFamily,
       colorScheme: ColorScheme.dark(

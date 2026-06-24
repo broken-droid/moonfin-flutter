@@ -256,7 +256,7 @@ class _DoubleSliderTileState extends State<_DoubleSliderTile> {
                               : AppColorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
-                      AppUiIdiomResolver.current == AppUiIdiom.iosMobile
+                      AppUiIdiomResolver.isApple
                           ? CupertinoSlider(
                               value: value.clamp(widget.min, widget.max),
                               min: widget.min,

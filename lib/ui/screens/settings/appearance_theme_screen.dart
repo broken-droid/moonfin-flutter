@@ -64,33 +64,31 @@ class _AppearanceThemeScreenState extends State<AppearanceThemeScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  if (AppUiIdiomResolver.styleAvailable()) ...[
-                    Text(
-                      l10n.interfaceStyle,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 10),
-                    adaptiveSegmented<InterfaceStyle>(
-                      options: {
-                        InterfaceStyle.automatic: l10n.interfaceStyleAutomatic,
-                        InterfaceStyle.apple: l10n.interfaceStyleApple,
-                        InterfaceStyle.material: l10n.interfaceStyleMaterial,
-                      },
-                      selected: prefs.get(UserPreferences.interfaceStyle),
-                      onChanged: (s) =>
-                          prefs.set(UserPreferences.interfaceStyle, s),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.interfaceStyleSubtitle,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.6,
-                        ),
+                  Text(
+                    l10n.interfaceStyle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  adaptiveSegmented<InterfaceStyle>(
+                    options: {
+                      InterfaceStyle.automatic: l10n.interfaceStyleAutomatic,
+                      InterfaceStyle.apple: l10n.interfaceStyleApple,
+                      InterfaceStyle.material: l10n.interfaceStyleMaterial,
+                    },
+                    selected: prefs.get(UserPreferences.interfaceStyle),
+                    onChanged: (s) =>
+                        prefs.set(UserPreferences.interfaceStyle, s),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.interfaceStyleSubtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.6,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                  ],
+                  ),
+                  const SizedBox(height: 24),
                   Text(
                     l10n.settingsAppearanceThemeSubtitle,
                     style: theme.textTheme.bodyMedium?.copyWith(

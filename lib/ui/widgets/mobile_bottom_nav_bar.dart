@@ -21,6 +21,7 @@ import '../navigation/home_refresh_bus.dart';
 import '../screens/settings/settings_side_panel.dart';
 import '../screens/syncplay/syncplay_screen.dart';
 import 'adaptive/adaptive_glass.dart';
+import 'adaptive/sf_symbol.dart';
 import 'seerr_icons.dart';
 import 'settings/settings_panel.dart';
 import 'shuffle_overlay.dart';
@@ -539,8 +540,11 @@ class _MobileBottomNavBarState extends State<MobileBottomNavBar> {
   }
 
   Widget _icon(_BottomNavAction action, {required Color color}) {
+    final icon = action.icon;
     return action.iconBuilder?.call(_kIconSize, color) ??
-        Icon(action.icon, size: _kIconSize, color: color);
+        (icon != null
+            ? AdaptiveIcon(icon, size: _kIconSize, color: color)
+            : const SizedBox.shrink());
   }
 
   Widget _buildTab(BuildContext context, _BottomNavAction action,

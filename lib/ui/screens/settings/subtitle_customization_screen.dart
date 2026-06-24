@@ -257,7 +257,7 @@ class _SubtitleCustomizationScreenState
                 hoverColor: Colors.transparent,
                 leading: Icon(icon),
                 title: Text(label),
-                subtitle: AppUiIdiomResolver.current == AppUiIdiom.iosMobile
+                subtitle: AppUiIdiomResolver.isApple
                     ? CupertinoSlider(
                         value: value.clamp(min, max),
                         min: min,

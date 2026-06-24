@@ -37,6 +37,7 @@ import 'package:playback_core/playback_core.dart';
 import '../../data/models/aggregated_item.dart';
 import '../../data/services/media_server_client_factory.dart';
 import '../navigation/app_router.dart';
+import 'adaptive/sf_symbol.dart';
 
 const _kExpandedWidthDesktop = 240.0;
 const _kExpandedWidthMobile = 260.0;
@@ -1346,7 +1347,13 @@ class _SidebarItemState extends State<_SidebarItem> {
                     width: iconSlotWidth,
                     child:
                         widget.iconBuilder?.call(iconSize, fgColor) ??
-                        Icon(widget.icon, size: iconSize, color: fgColor),
+                        (widget.icon != null
+                            ? AdaptiveIcon(
+                                widget.icon!,
+                                size: iconSize,
+                                color: fgColor,
+                              )
+                            : const SizedBox.shrink()),
                   ),
                   if (widget.showLabel) ...[
                     const SizedBox(width: 12),

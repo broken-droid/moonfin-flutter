@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:moonfin_design/moonfin_design.dart';
 
 import '../../../util/idiom/app_ui_idiom.dart';
+import 'adaptive_glass.dart';
 
 Widget adaptiveListSection({required List<Widget> children}) {
-  if (AppUiIdiomResolver.current == AppUiIdiom.iosMobile) {
+  if (AppUiIdiomResolver.isApple) {
     final rows = <Widget>[];
     for (var i = 0; i < children.length; i++) {
       if (i > 0) {
@@ -21,14 +22,14 @@ Widget adaptiveListSection({required List<Widget> children}) {
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: ColoredBox(
-          color: AppColorScheme.onSurface.withValues(alpha: 0.06),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: rows,
-          ),
+      child: adaptiveGlass(
+        cornerRadius: 12,
+        blur: 18,
+        tint: AppColorScheme.onSurface.withValues(alpha: 0.05),
+        fallbackColor: AppColorScheme.onSurface.withValues(alpha: 0.12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: rows,
         ),
       ),
     );
@@ -36,6 +37,6 @@ Widget adaptiveListSection({required List<Widget> children}) {
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [...children, const Divider()],
+    children: children,
   );
 }

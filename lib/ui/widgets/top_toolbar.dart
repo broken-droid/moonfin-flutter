@@ -39,6 +39,7 @@ import '../../data/models/aggregated_item.dart';
 import '../../data/services/media_server_client_factory.dart';
 import '../../util/focus/dpad_keys.dart';
 import '../navigation/app_router.dart';
+import 'adaptive/sf_symbol.dart';
 
 const _kToolbarHeightTV = 95.0;
 const _kToolbarHeightDesktop = 80.0;
@@ -2007,7 +2008,7 @@ class _TopMusicBarState extends State<TopMusicBar> {
                     ? AppColorScheme.onSurface
                     : Colors.transparent,
               ),
-              child: Icon(
+              child: AdaptiveIcon(
                 icon,
                 size: 20,
                 color: focused ? AppColorScheme.surface : AppColorScheme.onSurface,

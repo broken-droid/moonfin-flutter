@@ -15,25 +15,32 @@ class AppUiIdiomResolver {
   }
 
   static AppUiIdiom _resolve(InterfaceStyle style) {
-    if (PlatformDetection.isAppleTV) return AppUiIdiom.tvosLeanback;
-    if (PlatformDetection.isMacOS) return AppUiIdiom.macDesktop;
     switch (style) {
       case InterfaceStyle.material:
         return AppUiIdiom.material;
       case InterfaceStyle.apple:
-        return PlatformDetection.isIOS || PlatformDetection.useMobileUi
-            ? AppUiIdiom.iosMobile
-            : AppUiIdiom.material;
+        return _appleIdiom();
       case InterfaceStyle.automatic:
-        return PlatformDetection.isIOS
-            ? AppUiIdiom.iosMobile
-            : AppUiIdiom.material;
+        return _automaticIdiom();
     }
+  }
+
+  static AppUiIdiom _automaticIdiom() {
+    if (PlatformDetection.isAppleTV) return AppUiIdiom.tvosLeanback;
+    if (PlatformDetection.isMacOS) return AppUiIdiom.macDesktop;
+    if (PlatformDetection.isIOS) return AppUiIdiom.iosMobile;
+    return AppUiIdiom.material;
+  }
+
+  static AppUiIdiom _appleIdiom() {
+    if (PlatformDetection.isAppleTV) return AppUiIdiom.tvosLeanback;
+    if (PlatformDetection.isMacOS) return AppUiIdiom.macDesktop;
+    if (PlatformDetection.isIOS) return AppUiIdiom.iosMobile;
+    return PlatformDetection.useMobileUi
+        ? AppUiIdiom.iosMobile
+        : AppUiIdiom.macDesktop;
   }
 
   static bool get isApple =>
       _current == AppUiIdiom.iosMobile || _current == AppUiIdiom.macDesktop;
-
-  static bool styleAvailable() =>
-      !(PlatformDetection.isAppleTV || PlatformDetection.isMacOS);
 }

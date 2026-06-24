@@ -101,55 +101,58 @@ class _TvSettingsListTileState extends State<_TvSettingsListTile> {
         return KeyEventResult.handled;
       },
       child: TvFocusHighlight(
-        builder: (context, focused) => ListTile(
-          focusNode: _focusNode,
-          autofocus: widget.autofocus,
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          leading: widget.leading != null
-              ? buildSettingsLeadingIconShell(
-                  context,
-                  icon: widget.leading!,
-                  focused: focused,
-                  iconColor: focused
-                      ? AppColors.black.withValues(alpha: 0.54)
-                      : AppColorScheme.onSurface.withValues(alpha: 0.78),
-                )
-              : null,
-          title: DefaultTextStyle.merge(
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: focused
-                  ? AppColors.black.withValues(alpha: 0.87)
-                  : AppColorScheme.onSurface,
+        builder: (context, focused) {
+          final highlighted = focused && !AppUiIdiomResolver.isApple;
+          return ListTile(
+            focusNode: _focusNode,
+            autofocus: widget.autofocus,
+            focusColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            leading: widget.leading != null
+                ? buildSettingsLeadingIconShell(
+                    context,
+                    icon: widget.leading!,
+                    focused: focused,
+                    iconColor: focused
+                        ? AppColors.black.withValues(alpha: 0.54)
+                        : AppColorScheme.onSurface.withValues(alpha: 0.78),
+                  )
+                : null,
+            title: DefaultTextStyle.merge(
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: highlighted
+                    ? AppColors.black.withValues(alpha: 0.87)
+                    : AppColorScheme.onSurface,
+              ),
+              child: widget.title,
             ),
-            child: widget.title,
-          ),
-          subtitle: widget.subtitle != null
-              ? DefaultTextStyle.merge(
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: focused
-                        ? AppColors.black.withValues(alpha: 0.54)
-                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
-                  child: widget.subtitle!,
-                )
-              : null,
-          trailing: resolvedTrailing != null
-              ? IconTheme(
-                  data: IconThemeData(
-                    size: 20,
-                    color: focused
-                        ? AppColors.black.withValues(alpha: 0.54)
-                        : AppColorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
-                  child: resolvedTrailing,
-                )
-              : null,
-          onTap: _invokeTap,
-        ),
+            subtitle: widget.subtitle != null
+                ? DefaultTextStyle.merge(
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: highlighted
+                          ? AppColors.black.withValues(alpha: 0.54)
+                          : AppColorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                    child: widget.subtitle!,
+                  )
+                : null,
+            trailing: resolvedTrailing != null
+                ? IconTheme(
+                    data: IconThemeData(
+                      size: 20,
+                      color: highlighted
+                          ? AppColors.black.withValues(alpha: 0.54)
+                          : AppColorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                    child: resolvedTrailing,
+                  )
+                : null,
+            onTap: _invokeTap,
+          );
+        },
       ),
     );
   }

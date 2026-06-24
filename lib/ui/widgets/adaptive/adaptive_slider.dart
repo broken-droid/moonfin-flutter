@@ -12,7 +12,7 @@ Widget adaptiveSlider({
   int? divisions,
   String? label,
 }) {
-  if (AppUiIdiomResolver.current == AppUiIdiom.iosMobile) {
+  if (AppUiIdiomResolver.isApple) {
     return CupertinoSlider(
       value: value.clamp(min, max),
       onChanged: onChanged,

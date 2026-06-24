@@ -9,6 +9,7 @@ class AppDelegate: FlutterAppDelegate {
     private var systemChannel: AppleTvSystemChannel?
     private var audioChannel: AppleTvAudioChannel?
     private var themeMusicChannel: AppleTvThemeMusicChannel?
+    private var sfSymbolChannel: AppleTvSfSymbolChannel?
 
     override func application(
         _ application: UIApplication,
@@ -35,6 +36,8 @@ class AppDelegate: FlutterAppDelegate {
         audioChannel = AppleTvAudioChannel(
             messenger: flutterViewController.binaryMessenger)
         themeMusicChannel = AppleTvThemeMusicChannel(
+            messenger: flutterViewController.binaryMessenger)
+        sfSymbolChannel = AppleTvSfSymbolChannel(
             messenger: flutterViewController.binaryMessenger)
 
         if let launchUrl = launchOptions?[.url] as? URL {
