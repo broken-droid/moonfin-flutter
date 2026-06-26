@@ -139,12 +139,13 @@ class _NavigationLayoutState extends State<NavigationLayout> with WidgetsBinding
     if (!widget.showNavigationChrome) {
       return widget.child;
     }
-    return switch (_position) {
+    final layout = switch (_position) {
       NavbarPosition.left => _buildSidebar(),
       NavbarPosition.top => _buildToolbar(),
       NavbarPosition.bottom =>
         NavigationLayout.allowBottomNavbar ? _buildBottomBar() : _buildToolbar(),
     };
+    return AppColorScheme.isGlass ? BackdropGroup(child: layout) : layout;
   }
 
   Widget _buildBottomBar() {
