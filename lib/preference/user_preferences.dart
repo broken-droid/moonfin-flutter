@@ -37,7 +37,7 @@ class UserPreferences extends ChangeNotifier {
     _migrateSeerrPreferenceKeys();
     _enforceMediaQueuingAlwaysOn();
     _migrateSubtitleModePreference();
-    _initializeSubtitleLanguagePreferences();
+    _initializeFallbackSubtitleLanguagePreferences();
   }
 
   // Carry over the pre-rename jellyseerr* preference keys to their seerr* names.
@@ -98,33 +98,53 @@ class UserPreferences extends ChangeNotifier {
   ///   explicitly stored), replace it with the server's AudioLanguagePreference.
   /// - Subtitles: if the local pref has never been explicitly stored (empty
   ///   default), replace it with the server's SubtitleLanguagePreference.
-  ///
+  /// - SubtitleMode: if the local pref has never been explicitly stored (empty
+  ///   default), convert it to the closest Moonfin subtitle mode.
   void initLanguagePrefs(UserConfiguration config) {
     // defaultAudioLanguage
-    if (!_store.containsKey(defaultAudioLanguage.key)) {
+    if (!containsPreference(defaultAudioLanguage)) {
       final serverAudio = config.audioLanguagePreference;
       if (serverAudio != null && serverAudio.isNotEmpty) {
         _store.set(defaultAudioLanguage, serverAudio.toLowerCase());
+      } else {
+        // system language default
+        final sysLang = ui.PlatformDispatcher.instance.locale.languageCode;
+        final iso3 = toIso3Language(normalizeLanguage(sysLang));
+        _store.set(defaultSubtitleLanguage, iso3);
       }
     }
     // defaultSubtitleLanguage
-    if (!_store.containsKey(defaultSubtitleLanguage.key)) {
+    if (!containsPreference(defaultSubtitleLanguage)) {
       final serverSub = config.subtitleLanguagePreference;
       if (serverSub != null && serverSub.isNotEmpty) {
         _store.set(defaultSubtitleLanguage, serverSub.toLowerCase());
+      } else {
+        // system language default
+        final sysLang = ui.PlatformDispatcher.instance.locale.languageCode;
+        final iso3 = toIso3Language(normalizeLanguage(sysLang));
+        _store.set(defaultSubtitleLanguage, iso3);
+      }
+    }
+    // subtitleMode
+    if (!containsPreference(subtitleMode)) {
+      final mode = switch (config.subtitleMode) {
+        'default' => SubtitleMode.flagged,
+        'smart' => SubtitleMode.foreign,
+        'onlyforced' => SubtitleMode.forced,
+        'always' => SubtitleMode.always,
+        'none' => SubtitleMode.none,
+        _ => null,
+      };
+      if (mode != null) {
+        _store.set(subtitleMode, mode);
+      } else {
+        // flagged default
+        _store.set(subtitleMode, SubtitleMode.flagged);
       }
     }
   }
 
-  void _initializeSubtitleLanguagePreferences() {
-    if (!_store.containsKey(subtitleMode.key)) {
-      _store.set(subtitleMode, SubtitleMode.flagged);
-    }
-    if (!_store.containsKey(defaultSubtitleLanguage.key)) {
-      final sysLang = ui.PlatformDispatcher.instance.locale.languageCode;
-      final iso3 = toIso3Language(normalizeLanguage(sysLang));
-      _store.set(defaultSubtitleLanguage, iso3);
-    }
+  void _initializeFallbackSubtitleLanguagePreferences() {
     if (!_store.containsKey(fallbackSubtitleLanguage.key)) {
       _store.set(fallbackSubtitleLanguage, '');
     }
