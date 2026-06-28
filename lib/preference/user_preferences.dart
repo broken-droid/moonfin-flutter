@@ -115,7 +115,6 @@ class UserPreferences extends ChangeNotifier {
     }
   }
 
-
   String? _activeProfileScopeSuffix() {
     final serverId = (_store.getString(_lastServerIdPreferenceKey) ?? '')
         .trim();
@@ -278,11 +277,11 @@ class UserPreferences extends ChangeNotifier {
       final prevMode = get(subtitleMode);
       final newMode = value as SubtitleMode;
       if (newMode == SubtitleMode.none) {
-        await _store.set(defaultSubtitleLanguage, '');
+        await set(defaultSubtitleLanguage, '');
       } else if (prevMode == SubtitleMode.none && get(defaultSubtitleLanguage).isEmpty) {
         final sysLang = ui.PlatformDispatcher.instance.locale.languageCode;
         final iso3 = toIso3Language(normalizeLanguage(sysLang));
-        await _store.set(defaultSubtitleLanguage, iso3);
+        await set(defaultSubtitleLanguage, iso3);
       }
     }
 
