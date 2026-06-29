@@ -460,6 +460,30 @@ abstract class AppLocalizations {
   /// **'App Theme'**
   String get settingsAppearanceTheme;
 
+  /// Label for the media detail screen layout style setting
+  ///
+  /// In en, this message translates to:
+  /// **'Detail screen style'**
+  String get detailScreenStyle;
+
+  /// Explanation under the detail screen style setting
+  ///
+  /// In en, this message translates to:
+  /// **'Moonfin is the classic layout. Modern is a responsive cinematic layout.'**
+  String get detailScreenStyleSubtitle;
+
+  /// Detail screen style option: the classic centered layout
+  ///
+  /// In en, this message translates to:
+  /// **'Moonfin'**
+  String get detailScreenStyleMoonfin;
+
+  /// Detail screen style option: the responsive cinematic layout
+  ///
+  /// In en, this message translates to:
+  /// **'Modern'**
+  String get detailScreenStyleModern;
+
   /// Label for the Automatic/Apple/Material interface style setting
   ///
   /// In en, this message translates to:
@@ -1695,6 +1719,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ends at {time}'**
   String endsAt(String time);
+
+  /// Tab label for the items in a collection/box set
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get items;
+
+  /// Tab label for special features / extras
+  ///
+  /// In en, this message translates to:
+  /// **'Extras'**
+  String get extras;
+
+  /// Label showing remaining playback time, e.g. '42m remaining'
+  ///
+  /// In en, this message translates to:
+  /// **'{time} remaining'**
+  String timeRemaining(String time);
 
   /// Label showing remaining time for segment or timeout
   ///

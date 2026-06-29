@@ -25,6 +25,7 @@ import '../../../data/services/book_reader_service.dart';
 import '../../../data/services/theme_music_service.dart';
 import '../../../data/viewmodels/item_detail_view_model.dart';
 import '../../../data/services/plugin_sync_service.dart';
+import 'modern/modern_detail_content.dart';
 import '../../../data/repositories/seerr_repository.dart';
 import '../../../data/services/seerr/seerr_api_models.dart';
 import '../../../l10n/app_localizations.dart';
@@ -388,17 +389,30 @@ class _ItemDetailScreenState extends State<ItemDetailScreen>
           ],
         ),
       ),
-      ItemDetailState.ready => _DetailContent(
-        viewModel: _viewModel,
-        prefs: _prefs,
-        backdropUrl: _backdropUrl,
-        selectedMediaSourceId: _selectedMediaSourceId,
-        initialFocusNode: _ensureInitialFocusNode(),
-        onSelectedMediaSourceChanged: (id) =>
-            setState(() => _selectedMediaSourceId = id),
-        onBackdropItemFocused: _onBackdropItemFocused,
-        autoPlay: widget.autoPlay,
-      ),
+      ItemDetailState.ready =>
+        _prefs.get(UserPreferences.detailScreenStyle) ==
+                DetailScreenStyle.modern
+            ? ModernDetailContent(
+                viewModel: _viewModel,
+                prefs: _prefs,
+                backdropUrl: _backdropUrl,
+                selectedMediaSourceId: _selectedMediaSourceId,
+                initialFocusNode: _ensureInitialFocusNode(),
+                onSelectedMediaSourceChanged: (id) =>
+                    setState(() => _selectedMediaSourceId = id),
+                autoPlay: widget.autoPlay,
+              )
+            : _DetailContent(
+                viewModel: _viewModel,
+                prefs: _prefs,
+                backdropUrl: _backdropUrl,
+                selectedMediaSourceId: _selectedMediaSourceId,
+                initialFocusNode: _ensureInitialFocusNode(),
+                onSelectedMediaSourceChanged: (id) =>
+                    setState(() => _selectedMediaSourceId = id),
+                onBackdropItemFocused: _onBackdropItemFocused,
+                autoPlay: widget.autoPlay,
+              ),
     };
   }
 }
@@ -632,7 +646,7 @@ class _DetailContentState extends State<_DetailContent> {
   double _sectionFocusAlignment(FocusNode target) {
     final primaryContext = FocusManager.instance.primaryFocus?.context;
     final fromActionButtons =
-        primaryContext?.findAncestorWidgetOfExactType<_ActionButtons>() != null;
+        primaryContext?.findAncestorWidgetOfExactType<DetailActionButtons>() != null;
     if (!fromActionButtons) {
       return 0.2;
     }
@@ -963,7 +977,7 @@ class _DetailContentState extends State<_DetailContent> {
     final headerOverviewFocusNode = _headerOverviewFocusNode(item);
     _ensureTvAlbumPlayFocus(item);
     final isReadableBook = _isReadableBookItem(item);
-    final selectedMediaSource = _selectedMediaSourceForItem(
+    final selectedMediaSource = selectedMediaSourceForItem(
       item,
       widget.selectedMediaSourceId,
     );
@@ -1155,7 +1169,7 @@ class _DetailContentState extends State<_DetailContent> {
     ];
 
     return [
-      _ActionButtons(
+      DetailActionButtons(
         viewModel: viewModel,
         itemId: viewModel.item?.id,
         selectedMediaSourceId: selectedMediaSourceId,
@@ -1363,7 +1377,7 @@ class _DetailContentState extends State<_DetailContent> {
         ],
       ),
       const SizedBox(height: 20),
-      _ActionButtons(
+      DetailActionButtons(
         viewModel: viewModel,
         itemId: viewModel.item?.id,
         selectedMediaSourceId: selectedMediaSourceId,
@@ -1445,7 +1459,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: viewModel.similar,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -1494,7 +1508,7 @@ class _DetailContentState extends State<_DetailContent> {
     final collectionUpTarget = castFocusNode ?? chapterFeatureLastNode;
 
     return [
-      _ActionButtons(
+      DetailActionButtons(
         viewModel: viewModel,
         itemId: viewModel.item?.id,
         selectedMediaSourceId: selectedMediaSourceId,
@@ -1507,7 +1521,7 @@ class _DetailContentState extends State<_DetailContent> {
       ),
       if (_hasMetadata(item)) ...[
         const SizedBox(height: 24),
-        _MetadataSection(
+        DetailMetadataSection(
           viewModel: viewModel,
           firstItemFocusNode: metadataFocusNode,
           upTarget: actionButtonsFocusNode,
@@ -1532,7 +1546,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _CastRow(
+          builder: (_, ctrl) => DetailCastRow(
             people: viewModel.actors,
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
@@ -1554,7 +1568,7 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: viewModel.parentCollectionName ?? l10n.collection,
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: viewModel.parentCollectionItems,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -1583,7 +1597,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: viewModel.similar,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -1638,7 +1652,7 @@ class _DetailContentState extends State<_DetailContent> {
         similarFocusNode;
 
     return [
-      _ActionButtons(
+      DetailActionButtons(
         viewModel: viewModel,
         itemId: viewModel.item?.id,
         selectedMediaSourceId: selectedMediaSourceId,
@@ -1651,7 +1665,7 @@ class _DetailContentState extends State<_DetailContent> {
       ),
       if (_hasMetadata(item)) ...[
         const SizedBox(height: 24),
-        _MetadataSection(
+        DetailMetadataSection(
           viewModel: viewModel,
           firstItemFocusNode: metadataFocusNode,
           upTarget: actionButtonsFocusNode,
@@ -1673,7 +1687,7 @@ class _DetailContentState extends State<_DetailContent> {
           ),
         ),
         const SizedBox(height: 12),
-        _NextUpCard(
+        DetailNextUpCard(
           episode: viewModel.nextUp!,
           imageApi: viewModel.imageApi,
           focusNode: seriesNextUpFocusNode,
@@ -1715,7 +1729,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _SeasonsRow(
+          builder: (_, ctrl) => DetailSeasonsRow(
             seasons: viewModel.seasons,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -1747,7 +1761,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _CastRow(
+          builder: (_, ctrl) => DetailCastRow(
             people: viewModel.actors,
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
@@ -1779,7 +1793,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: viewModel.similar,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -1810,7 +1824,7 @@ class _DetailContentState extends State<_DetailContent> {
   List<Widget> _buildSeasonContent(BuildContext context, AggregatedItem item) {
     final l10n = AppLocalizations.of(context);
     return [
-      _ActionButtons(
+      DetailActionButtons(
         viewModel: viewModel,
         itemId: viewModel.item?.id,
         selectedMediaSourceId: selectedMediaSourceId,
@@ -1827,7 +1841,7 @@ class _DetailContentState extends State<_DetailContent> {
         ...viewModel.episodes.map(
           (ep) => Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: _EpisodeCard(
+            child: DetailEpisodeCard(
               episode: ep,
               imageApi: viewModel.imageApi,
               onChanged: () => viewModel.load(),
@@ -1887,7 +1901,7 @@ class _DetailContentState extends State<_DetailContent> {
               : (metadataFocusNode ?? actionButtonsFocusNode));
 
     return [
-      _ActionButtons(
+      DetailActionButtons(
         viewModel: viewModel,
         itemId: viewModel.item?.id,
         selectedMediaSourceId: selectedMediaSourceId,
@@ -1900,7 +1914,7 @@ class _DetailContentState extends State<_DetailContent> {
       ),
       if (_hasMetadata(item)) ...[
         const SizedBox(height: 24),
-        _MetadataSection(
+        DetailMetadataSection(
           viewModel: viewModel,
           firstItemFocusNode: metadataFocusNode,
           upTarget: actionButtonsFocusNode,
@@ -1932,7 +1946,7 @@ class _DetailContentState extends State<_DetailContent> {
                   fontSize: _isCompact(context) ? 17 : null,
                 ),
               ),
-              _NextUpCard(
+              DetailNextUpCard(
                 episode: nextEpisode,
                 imageApi: viewModel.imageApi,
                 focusNode: nextEpisodeFocusNode,
@@ -2002,7 +2016,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _CastRow(
+          builder: (_, ctrl) => DetailCastRow(
             people: viewModel.actors,
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
@@ -2033,7 +2047,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: viewModel.similar,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -2109,7 +2123,7 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.chapters,
-          builder: (_, ctrl) => _ChaptersRow(
+          builder: (_, ctrl) => DetailChaptersRow(
             item: item,
             imageApi: viewModel.imageApi,
             onPlayFromChapter: (position) => unawaited(
@@ -2133,7 +2147,7 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.features,
-          builder: (_, ctrl) => _FeaturesRow(
+          builder: (_, ctrl) => DetailFeaturesRow(
             items: viewModel.features,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -2713,7 +2727,7 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 32),
         HorizontalScrollSection(
           title: l10n.similarArtists,
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: viewModel.similar,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -2800,7 +2814,7 @@ class _DetailContentState extends State<_DetailContent> {
               : (isAudiobook ? l10n.tableOfContents : l10n.tracklist),
         ),
         const SizedBox(height: 12),
-        _TrackList(
+        DetailTrackList(
           tracks: viewModel.tracks,
           getFocusNode: _getTrackFocusNode,
           onFirstTrackUp: () {
@@ -3092,7 +3106,7 @@ class _DetailContentState extends State<_DetailContent> {
 
     return [
       if (!_hasMetadata(item)) _NavbarFocusPoint(focusNode: firstFocus),
-      _ActionButtons(
+      DetailActionButtons(
         viewModel: viewModel,
         itemId: viewModel.item?.id,
         selectedMediaSourceId: selectedMediaSourceId,
@@ -3104,7 +3118,7 @@ class _DetailContentState extends State<_DetailContent> {
       ),
       if (_hasMetadata(item)) ...[
         const SizedBox(height: 24),
-        _MetadataSection(
+        DetailMetadataSection(
           viewModel: viewModel,
           firstItemFocusNode: metadataFocusNode,
           upTarget: actionButtonsFocusNode,
@@ -3116,7 +3130,7 @@ class _DetailContentState extends State<_DetailContent> {
         const SizedBox(height: 8),
         HorizontalScrollSection(
           title: l10n.movies,
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: movies,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -3139,7 +3153,7 @@ class _DetailContentState extends State<_DetailContent> {
         SizedBox(height: movies.isEmpty ? 8 : 32),
         HorizontalScrollSection(
           title: l10n.series,
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: series,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -3165,7 +3179,7 @@ class _DetailContentState extends State<_DetailContent> {
         SizedBox(height: (movies.isEmpty && series.isEmpty) ? 8 : 32),
         HorizontalScrollSection(
           title: l10n.other,
-          builder: (_, ctrl) => _SimilarRow(
+          builder: (_, ctrl) => DetailSimilarRow(
             items: other,
             imageApi: viewModel.imageApi,
             prefs: prefs,
@@ -3198,7 +3212,7 @@ class _DetailContentState extends State<_DetailContent> {
                 : Colors.white,
             fontWeight: FontWeight.w700,
           ),
-          builder: (_, ctrl) => _CastRow(
+          builder: (_, ctrl) => DetailCastRow(
             people: viewModel.actors,
             imageApi: viewModel.imageApi,
             serverId: viewModel.item?.serverId,
@@ -3409,7 +3423,7 @@ class _HeaderSection extends StatelessWidget {
             textAlign: isMobile ? TextAlign.center : null,
           ),
         const SizedBox(height: 8),
-        _MetadataRow(item: item, selectedMediaSource: selectedMediaSource),
+        DetailMetadataRow(item: item, selectedMediaSource: selectedMediaSource),
         if (viewModel.ratings.isNotEmpty ||
             item.communityRating != null ||
             item.criticRating != null) ...[
@@ -3467,7 +3481,7 @@ class _HeaderSection extends StatelessWidget {
 
     final posterWidget = isEpisode
         ? _EpisodeThumbnail(item: item, imageApi: imageApi)
-        : _PosterImage(item: item, imageApi: imageApi);
+        : DetailPosterImage(item: item, imageApi: imageApi);
 
     final safeTop = MediaQuery.of(context).padding.top;
 
@@ -3645,11 +3659,11 @@ class _DownloadedBadgeState extends State<_DownloadedBadge> {
   }
 }
 
-class _PosterImage extends StatelessWidget {
+class DetailPosterImage extends StatelessWidget {
   final AggregatedItem item;
   final ImageApi imageApi;
 
-  const _PosterImage({required this.item, required this.imageApi});
+  const DetailPosterImage({required this.item, required this.imageApi});
 
   @override
   Widget build(BuildContext context) {
@@ -3824,11 +3838,20 @@ class _EpisodeThumbnail extends StatelessWidget {
   }
 }
 
-class _MetadataRow extends StatelessWidget {
+class DetailMetadataRow extends StatelessWidget {
   final AggregatedItem item;
   final Map<String, dynamic>? selectedMediaSource;
 
-  const _MetadataRow({required this.item, this.selectedMediaSource});
+  /// When true, render only the file size and technical badges (no year, rating,
+  /// runtime, seasons, status, ends-at or genres). Used by the Modern Details
+  /// tab, where those fields already live in the hero metadata row.
+  final bool technicalOnly;
+
+  const DetailMetadataRow({
+    required this.item,
+    this.selectedMediaSource,
+    this.technicalOnly = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -3836,11 +3859,11 @@ class _MetadataRow extends StatelessWidget {
     final theme = Theme.of(context);
     final isNeon = ThemeRegistry.active.id == ThemeRegistry.neonPulseId;
 
-    if (item.productionYear != null) {
+    if (!technicalOnly && item.productionYear != null) {
       parts.add(_text(theme, item.productionYear.toString()));
     }
 
-    if (item.officialRating != null) {
+    if (!technicalOnly && item.officialRating != null) {
       parts.add(_badge(theme, item.officialRating!));
     }
 
@@ -3864,13 +3887,13 @@ class _MetadataRow extends StatelessWidget {
     }
 
     final runtime = _runtimeForItem(item, selectedMediaSource);
-    if (runtime != null && item.type != 'Series') {
+    if (!technicalOnly && runtime != null && item.type != 'Series') {
       final h = runtime.inHours;
       final m = runtime.inMinutes.remainder(60);
       parts.add(_text(theme, h > 0 ? '${h}h ${m}m' : '${m}m'));
     }
 
-    if (item.type == 'Series') {
+    if (!technicalOnly && item.type == 'Series') {
       final count = item.childCount;
       if (count != null) {
         parts.add(
@@ -3887,11 +3910,11 @@ class _MetadataRow extends StatelessWidget {
       UserPreferences.use24HourClock,
     );
     final endsAt = _endsAt(item, runtime, use24Hour: use24);
-    if (endsAt != null && item.type != 'Series') {
+    if (!technicalOnly && endsAt != null && item.type != 'Series') {
       parts.add(_text(theme, AppLocalizations.of(context).endsAt(endsAt)));
     }
 
-    if (item.genres.isNotEmpty) {
+    if (!technicalOnly && item.genres.isNotEmpty) {
       parts.add(_text(theme, item.genres.take(3).join(' \u2022 ')));
     }
 
@@ -4049,7 +4072,7 @@ class _MetadataRow extends StatelessWidget {
   }
 }
 
-class _ActionButtons extends StatefulWidget {
+class DetailActionButtons extends StatefulWidget {
   final ItemDetailViewModel viewModel;
   final String? itemId;
   final String? selectedMediaSourceId;
@@ -4060,7 +4083,27 @@ class _ActionButtons extends StatefulWidget {
   final KeyEventResult Function(FocusNode? target)? onRequestFocus;
   final bool autoPlay;
 
-  const _ActionButtons({
+  /// When set, caps the number of buttons shown before the rest collapse under
+  /// "More", regardless of form factor. Used by layouts (e.g. Modern) that
+  /// host the buttons in a narrow pane where the width-based heuristic would
+  /// otherwise show too many.
+  final int? maxVisibleButtonsOverride;
+
+  /// Invoked when the right arrow is pressed on the rightmost visible button.
+  /// Lets a host layout move focus out of the button cluster (e.g. into a tab
+  /// rail) instead of trapping it.
+  final VoidCallback? onArrowRightAtEnd;
+
+  /// Renders the "modern" detail style: a high-contrast Play pill plus circular
+  /// secondary icon buttons. Defaults to the classic square layout.
+  final bool modernStyle;
+
+  /// In modern style, render the primary Play as a full-width pill (portrait).
+  /// When false the pill is content-width and sits inline with the secondary
+  /// circular buttons (landscape).
+  final bool fullWidthPrimary;
+
+  const DetailActionButtons({
     required this.viewModel,
     this.itemId,
     this.selectedMediaSourceId,
@@ -4070,10 +4113,14 @@ class _ActionButtons extends StatefulWidget {
     this.downTarget,
     this.onRequestFocus,
     this.autoPlay = false,
+    this.maxVisibleButtonsOverride,
+    this.onArrowRightAtEnd,
+    this.modernStyle = false,
+    this.fullWidthPrimary = false,
   });
 
   @override
-  State<_ActionButtons> createState() => _ActionButtonsState();
+  State<DetailActionButtons> createState() => DetailActionButtonsState();
 }
 
 class _BookAuthorDetailScreen extends StatefulWidget {
@@ -4800,7 +4847,7 @@ class _DolbyVisionPlayDecision {
   });
 }
 
-class _ActionButtonsState extends State<_ActionButtons> {
+class DetailActionButtonsState extends State<DetailActionButtons> {
   int? get _selectedAudioIndex => viewModel.selectedAudioIndex;
   set _selectedAudioIndex(int? value) => viewModel.selectedAudioIndex = value;
 
@@ -4885,6 +4932,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
       neonAccentColor: button.neonAccentColor,
       suppressAutoScrollToTop:
           suppressAutoScrollToTop ?? button.suppressAutoScrollToTop,
+      isPrimary: button.isPrimary,
     );
   }
 
@@ -5014,6 +5062,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
   void _onDownloadChanged() => _checkOffline();
 
   int _calculateMaxVisibleButtons(BuildContext context) {
+    final override = widget.maxVisibleButtonsOverride;
+    if (override != null) return override > 2 ? override : 2;
     if (PlatformDetection.isTV) {
       final desktopScale = _desktopUiScale();
       final maxTVButtons = (7 / desktopScale).floor();
@@ -5063,7 +5113,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }
 
   @override
-  void didUpdateWidget(covariant _ActionButtons oldWidget) {
+  void didUpdateWidget(covariant DetailActionButtons oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selectedMediaSourceId != widget.selectedMediaSourceId ||
         oldWidget.itemId != widget.itemId) {
@@ -5154,7 +5204,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }
 
   void _openAudioSelector(BuildContext context, AggregatedItem item) {
-    final selectedSource = _selectedMediaSourceForItem(
+    final selectedSource = selectedMediaSourceForItem(
       item,
       widget.selectedMediaSourceId,
     );
@@ -5168,7 +5218,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }
 
   void _openSubtitleSelector(BuildContext context, AggregatedItem item) {
-    final selectedSource = _selectedMediaSourceForItem(
+    final selectedSource = selectedMediaSourceForItem(
       item,
       widget.selectedMediaSourceId,
     );
@@ -5221,7 +5271,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
       boxSetAllWatched = false;
       boxSetAllUnwatched = false;
     }
-    final selectedSource = _selectedMediaSourceForItem(
+    final selectedSource = selectedMediaSourceForItem(
       item,
       widget.selectedMediaSourceId,
     );
@@ -5290,6 +5340,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
     var allButtons = <Widget>[
       _DetailActionButton(
         label: playButtonLabel,
+        isPrimary: true,
         icon: isPhoto
             ? Icons.photo
             : isBook
@@ -5487,7 +5538,10 @@ class _ActionButtonsState extends State<_ActionButtons> {
     final buttonRunSpacing = compact ? 12.0 : 14.0 * desktopScale;
     final maxVisible = _calculateMaxVisibleButtons(context);
     final needsOverflow =
-        (compact || PlatformDetection.isTV) && allButtons.length > maxVisible;
+        (compact ||
+            PlatformDetection.isTV ||
+            widget.maxVisibleButtonsOverride != null) &&
+        allButtons.length > maxVisible;
 
     final Widget rowContent;
     if (!needsOverflow) {
@@ -5502,14 +5556,21 @@ class _ActionButtonsState extends State<_ActionButtons> {
               (widget.upTarget != null ? _focusUpTarget : null),
           onArrowLeft: index == 0 ? _focusSidebar : null,
           onArrowDown: widget.downTarget != null ? _focusDownTarget : null,
-          onArrowRight: index == allButtons.length - 1 ? () {} : null,
+          onArrowRight: index == allButtons.length - 1
+              ? (widget.onArrowRightAtEnd ?? () {})
+              : null,
         );
       }).toList();
-      rowContent = Center(
+      rowContent = Align(
+        alignment:
+            widget.modernStyle ? Alignment.centerLeft : Alignment.center,
         child: Wrap(
           spacing: buttonSpacing,
           runSpacing: buttonRunSpacing,
-          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: widget.modernStyle
+              ? WrapAlignment.start
+              : WrapAlignment.center,
           children: normalizedButtons,
         ),
       );
@@ -5547,7 +5608,9 @@ class _ActionButtonsState extends State<_ActionButtons> {
           },
           onArrowDown: widget.downTarget != null ? _focusDownTarget : null,
           onArrowLeft: index == 0 ? _focusSidebar : null,
-          onArrowRight: index == extraButtons.length - 1 ? () {} : null,
+          onArrowRight: index == extraButtons.length - 1
+              ? (widget.onArrowRightAtEnd ?? () {})
+              : null,
           suppressAutoScrollToTop: true,
         );
       }).toList();
@@ -5559,17 +5622,25 @@ class _ActionButtonsState extends State<_ActionButtons> {
         onArrowDown: _expanded
             ? () => _focusFirstExpandedOverflowButton(context)
             : null,
-        onArrowRight: () {},
+        onArrowRight: widget.onArrowRightAtEnd ?? () {},
         onPressed: () => setState(() => _expanded = !_expanded),
       );
-      rowContent = Center(
+      final wrapAlignment =
+          widget.modernStyle ? WrapAlignment.start : WrapAlignment.center;
+      rowContent = Align(
+        alignment:
+            widget.modernStyle ? Alignment.centerLeft : Alignment.center,
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: widget.modernStyle
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.center,
           children: [
             Wrap(
               spacing: buttonSpacing,
               runSpacing: buttonRunSpacing,
-              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: wrapAlignment,
               children: [...normalizedPrimaryButtons, moreButton],
             ),
             if (_expanded) ...[
@@ -5577,7 +5648,8 @@ class _ActionButtonsState extends State<_ActionButtons> {
               Wrap(
                 spacing: buttonSpacing,
                 runSpacing: buttonRunSpacing,
-                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: wrapAlignment,
                 children: normalizedExtraButtons,
               ),
             ],
@@ -6777,7 +6849,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   List<Map<String, dynamic>> _mediaStreamsForCurrentSelection(
     AggregatedItem item,
   ) {
-    final selectedSource = _selectedMediaSourceForItem(
+    final selectedSource = selectedMediaSourceForItem(
       item,
       widget.selectedMediaSourceId,
     );
@@ -7105,7 +7177,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
 
       final refreshedItem = viewModel.item;
       if (refreshedItem != null) {
-        final mediaSource = _selectedMediaSourceForItem(
+        final mediaSource = selectedMediaSourceForItem(
           refreshedItem,
           widget.selectedMediaSourceId,
         );
@@ -7397,7 +7469,7 @@ class _ActionButtonsState extends State<_ActionButtons> {
   }
 }
 
-Map<String, dynamic>? _selectedMediaSourceForItem(
+Map<String, dynamic>? selectedMediaSourceForItem(
   AggregatedItem item,
   String? selectedMediaSourceId,
 ) {
@@ -7522,7 +7594,7 @@ Future<bool> _runWithDolbyVisionStartupFallbackPrompt(
   var hasUnsupportedProfile = false;
 
   for (final item in queue) {
-    final selectedSource = _selectedMediaSourceForItem(item, mediaSourceId);
+    final selectedSource = selectedMediaSourceForItem(item, mediaSourceId);
     final streams = _mediaStreamsForItem(item, selectedSource);
     for (final stream in streams) {
       if (!hasDolbyVision &&
@@ -8333,6 +8405,10 @@ class _DetailActionButton extends StatefulWidget {
   final bool autofocus;
   final bool suppressAutoScrollToTop;
 
+  /// In the "modern" detail style this button is rendered as the high-contrast
+  /// primary Play pill; secondary buttons render as circular icon buttons.
+  final bool isPrimary;
+
   const _DetailActionButton({
     required this.label,
     this.icon,
@@ -8350,6 +8426,7 @@ class _DetailActionButton extends StatefulWidget {
     this.focusNode,
     this.autofocus = false,
     this.suppressAutoScrollToTop = false,
+    this.isPrimary = false,
   });
 
   @override
@@ -8366,6 +8443,103 @@ class _DetailActionButtonState extends State<_DetailActionButton>
   void dispose() {
     _longPressTimer?.cancel();
     super.dispose();
+  }
+
+  /// Modern detail style: primary Play renders as a high-contrast light pill,
+  /// secondary actions as circular outline icon buttons (icon only in landscape,
+  /// icon + label in portrait).
+  Widget _buildModernChild(
+    BuildContext context, {
+    required bool isMobile,
+    required bool showHighlight,
+    required Color focusColor,
+    required Color iconColor,
+  }) {
+    if (widget.isPrimary) {
+      const fg = Color(0xFF101417);
+      // Portrait spans the primary Play full width (circular secondary actions
+      // wrap beneath); landscape keeps it content-width, inline with them.
+      final fullWidth = context
+              .findAncestorWidgetOfExactType<DetailActionButtons>()
+              ?.fullWidthPrimary ??
+          false;
+      // NOTE: only set `alignment` when full-width. A Container with an
+      // alignment expands to fill the parent's bounded width, which would make
+      // the pill stretch even in landscape.
+      final pill = Container(
+        height: isMobile ? 50 : 54,
+        alignment: fullWidth ? Alignment.center : null,
+        padding: const EdgeInsets.symmetric(horizontal: 22),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          border: showHighlight
+              ? Border.all(color: focusColor, width: 3)
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AdaptiveIcon(widget.icon ?? Icons.play_arrow, color: fg, size: 24),
+            const SizedBox(width: 10),
+            Text(
+              widget.label,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: fg,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ],
+        ),
+      );
+      return fullWidth ? SizedBox(width: double.infinity, child: pill) : pill;
+    }
+
+    final diameter = isMobile ? 48.0 : 52.0;
+    final circle = Container(
+      width: diameter,
+      height: diameter,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: showHighlight
+            ? AppColorScheme.buttonFocused
+            : (widget.isActive
+                ? (widget.activeColor ?? AppColorScheme.accent)
+                    .withValues(alpha: 0.18)
+                : Colors.white.withValues(alpha: 0.06)),
+        border: Border.all(
+          color: showHighlight
+              ? focusColor
+              : AppColorScheme.onSurface.withValues(alpha: 0.35),
+          width: showHighlight ? 2.5 : 1.5,
+        ),
+      ),
+      child: widget.iconBuilder != null
+          ? widget.iconBuilder!(24, iconColor)
+          : AdaptiveIcon(widget.icon!, color: iconColor, size: 24),
+    );
+    if (!isMobile) return circle;
+    return SizedBox(
+      width: 76,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          circle,
+          const SizedBox(height: 6),
+          Text(
+            widget.label,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColorScheme.onSurface.withValues(alpha: 0.85),
+                  fontWeight: FontWeight.w600,
+                ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
   }
 
   bool _tryFocusSidebar() {
@@ -8411,7 +8585,7 @@ class _DetailActionButtonState extends State<_DetailActionButton>
       if (!mounted) return;
       final primary = FocusManager.instance.primaryFocus;
       final inActionButtons =
-          primary?.context?.findAncestorWidgetOfExactType<_ActionButtons>() !=
+          primary?.context?.findAncestorWidgetOfExactType<DetailActionButtons>() !=
               null ||
           primary?.context?.findAncestorWidgetOfExactType<_AlbumActions>() !=
               null;
@@ -8438,6 +8612,10 @@ class _DetailActionButtonState extends State<_DetailActionButton>
     );
     final nodeHasFocus = widget.focusNode?.hasFocus ?? false;
     final showHighlight = showFocusBorder || nodeHasFocus;
+    final modern = context
+            .findAncestorWidgetOfExactType<DetailActionButtons>()
+            ?.modernStyle ??
+        false;
 
     final activeColor = widget.isActive ? widget.activeColor : null;
     final neonAccent = widget.neonAccentColor ?? AppColorScheme.onSurface;
@@ -8551,62 +8729,76 @@ class _DetailActionButtonState extends State<_DetailActionButton>
           onTap: widget.onPressed,
           onLongPress: widget.onLongPress,
           onSecondaryTap: widget.onLongPress,
-          child: SizedBox(
-            width: isMobile ? 80 : 108 * desktopScale,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: isMobile ? 44 : 58 * desktopScale,
-                  height: isMobile ? 44 : 58 * desktopScale,
-                  decoration: BoxDecoration(
-                    color: showHighlight
-                        ? (isNeon
-                              ? Colors.transparent
-                              : AppColorScheme.buttonFocused)
-                        : activeColor != null
-                        ? activeColor.withValues(alpha: isNeon ? 0.12 : 0.15)
-                        : (isNeon
-                              ? Colors.transparent
-                              : Colors.white.withValues(alpha: 0.08)),
-                    border: showHighlight
-                        ? Border.fromBorderSide(
-                            ThemeRegistry.active.borders.focusBorder.copyWith(
-                              color: isNeon
-                                  ? AppColorScheme.accent
-                                  : focusColor,
-                            ),
-                          )
-                        : null,
-                    borderRadius: BorderRadius.circular(
-                      isMobile ? 14 : 15 * desktopScale,
-                    ),
-                  ),
-                  child: widget.iconBuilder != null
-                      ? widget.iconBuilder!(
-                          isMobile ? 22 : 27 * desktopScale,
-                          iconColor,
-                        )
-                      : AdaptiveIcon(
-                          widget.icon!,
-                          color: iconColor,
-                          size: isMobile ? 22 : 27 * desktopScale,
+          child: modern
+              ? _buildModernChild(
+                  context,
+                  isMobile: isMobile,
+                  showHighlight: showHighlight,
+                  focusColor: focusColor,
+                  iconColor: iconColor,
+                )
+              : SizedBox(
+                  width: isMobile ? 80 : 108 * desktopScale,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: isMobile ? 44 : 58 * desktopScale,
+                        height: isMobile ? 44 : 58 * desktopScale,
+                        decoration: BoxDecoration(
+                          color: showHighlight
+                              ? (isNeon
+                                    ? Colors.transparent
+                                    : AppColorScheme.buttonFocused)
+                              : activeColor != null
+                              ? activeColor.withValues(
+                                  alpha: isNeon ? 0.12 : 0.15)
+                              : (isNeon
+                                    ? Colors.transparent
+                                    : Colors.white.withValues(alpha: 0.08)),
+                          border: showHighlight
+                              ? Border.fromBorderSide(
+                                  ThemeRegistry
+                                      .active.borders.focusBorder
+                                      .copyWith(
+                                    color: isNeon
+                                        ? AppColorScheme.accent
+                                        : focusColor,
+                                  ),
+                                )
+                              : null,
+                          borderRadius: BorderRadius.circular(
+                            isMobile ? 14 : 15 * desktopScale,
+                          ),
                         ),
-                ),
-                SizedBox(height: isMobile ? 6 : 8 * desktopScale),
-                Text(
-                  widget.label,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: labelColor,
-                    fontWeight: FontWeight.w600,
+                        child: widget.iconBuilder != null
+                            ? widget.iconBuilder!(
+                                isMobile ? 22 : 27 * desktopScale,
+                                iconColor,
+                              )
+                            : AdaptiveIcon(
+                                widget.icon!,
+                                color: iconColor,
+                                size: isMobile ? 22 : 27 * desktopScale,
+                              ),
+                      ),
+                      SizedBox(height: isMobile ? 6 : 8 * desktopScale),
+                      Text(
+                        widget.label,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelSmall
+                            ?.copyWith(
+                              color: labelColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
-          ),
         ),
       ),
     );
@@ -8633,7 +8825,7 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _CastRow extends StatelessWidget {
+class DetailCastRow extends StatelessWidget {
   final List<Map<String, dynamic>> people;
   final ImageApi imageApi;
   final String? serverId;
@@ -8641,7 +8833,7 @@ class _CastRow extends StatelessWidget {
   final FocusNode? firstItemFocusNode;
   final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
-  const _CastRow({
+  const DetailCastRow({
     required this.people,
     required this.imageApi,
     this.serverId,
@@ -8842,7 +9034,7 @@ class _CastPersonCardState extends State<_CastPersonCard> with FocusStateMixin {
   }
 }
 
-class _SimilarRow extends StatelessWidget {
+class DetailSimilarRow extends StatelessWidget {
   final List<AggregatedItem> items;
   final ImageApi imageApi;
   final UserPreferences prefs;
@@ -8851,7 +9043,7 @@ class _SimilarRow extends StatelessWidget {
   final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
   final ValueChanged<AggregatedItem>? onItemLongPress;
 
-  const _SimilarRow({
+  const DetailSimilarRow({
     required this.items,
     required this.imageApi,
     required this.prefs,
@@ -8922,7 +9114,7 @@ class _SimilarRow extends StatelessWidget {
   }
 }
 
-class _FeaturesRow extends StatelessWidget {
+class DetailFeaturesRow extends StatelessWidget {
   final List<AggregatedItem> items;
   final ImageApi imageApi;
   final UserPreferences prefs;
@@ -8931,7 +9123,7 @@ class _FeaturesRow extends StatelessWidget {
   final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
   final void Function(AggregatedItem item)? onItemLongPress;
 
-  const _FeaturesRow({
+  const DetailFeaturesRow({
     required this.items,
     required this.imageApi,
     required this.prefs,
@@ -9002,7 +9194,7 @@ class _FeaturesRow extends StatelessWidget {
   }
 }
 
-class _ChaptersRow extends StatelessWidget {
+class DetailChaptersRow extends StatelessWidget {
   final AggregatedItem item;
   final ImageApi imageApi;
   final ValueChanged<Duration> onPlayFromChapter;
@@ -9010,7 +9202,7 @@ class _ChaptersRow extends StatelessWidget {
   final FocusNode? firstItemFocusNode;
   final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
 
-  const _ChaptersRow({
+  const DetailChaptersRow({
     required this.item,
     required this.imageApi,
     required this.onPlayFromChapter,
@@ -9433,14 +9625,14 @@ class _MetadataGroupCellState extends State<_MetadataGroupCell>
   }
 }
 
-class _MetadataSection extends StatefulWidget {
+class DetailMetadataSection extends StatefulWidget {
   final ItemDetailViewModel viewModel;
   final FocusNode? firstItemFocusNode;
   final FocusNode? upTarget;
   final FocusNode? downTarget;
   final KeyEventResult Function(FocusNode? target)? onRequestFocus;
 
-  const _MetadataSection({
+  const DetailMetadataSection({
     required this.viewModel,
     this.firstItemFocusNode,
     this.upTarget,
@@ -9449,10 +9641,10 @@ class _MetadataSection extends StatefulWidget {
   });
 
   @override
-  State<_MetadataSection> createState() => _MetadataSectionState();
+  State<DetailMetadataSection> createState() => DetailMetadataSectionState();
 }
 
-class _MetadataSectionState extends State<_MetadataSection> {
+class DetailMetadataSectionState extends State<DetailMetadataSection> {
   final List<FocusNode> _groupFocusNodes = [];
   final List<List<FocusNode>> _childFocusNodes = [];
   // Per-category scope that traps directional traversal while entered.
@@ -9475,7 +9667,7 @@ class _MetadataSectionState extends State<_MetadataSection> {
   }
 
   @override
-  void didUpdateWidget(covariant _MetadataSection oldWidget) {
+  void didUpdateWidget(covariant DetailMetadataSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.viewModel.item != oldWidget.viewModel.item) {
       _buildGroupsAndFocusNodes();
@@ -9830,7 +10022,7 @@ class _EpisodeProgressBar extends StatelessWidget {
   }
 }
 
-class _SeasonsRow extends StatelessWidget {
+class DetailSeasonsRow extends StatelessWidget {
   final List<AggregatedItem> seasons;
   final ImageApi imageApi;
   final UserPreferences prefs;
@@ -9839,7 +10031,7 @@ class _SeasonsRow extends StatelessWidget {
   final KeyEventResult Function(int index, KeyEvent event)? onItemKeyEvent;
   final void Function(AggregatedItem item)? onItemLongPress;
 
-  const _SeasonsRow({
+  const DetailSeasonsRow({
     required this.seasons,
     required this.imageApi,
     required this.prefs,
@@ -10224,13 +10416,13 @@ class _EpisodeListCardState extends State<_EpisodeListCard>
   }
 }
 
-class _NextUpCard extends StatefulWidget {
+class DetailNextUpCard extends StatefulWidget {
   final AggregatedItem episode;
   final ImageApi imageApi;
   final FocusNode? focusNode;
   final KeyEventResult Function(KeyEvent event)? onKeyEvent;
 
-  const _NextUpCard({
+  const DetailNextUpCard({
     required this.episode,
     required this.imageApi,
     this.focusNode,
@@ -10238,10 +10430,10 @@ class _NextUpCard extends StatefulWidget {
   });
 
   @override
-  State<_NextUpCard> createState() => _NextUpCardState();
+  State<DetailNextUpCard> createState() => DetailNextUpCardState();
 }
 
-class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
+class DetailNextUpCardState extends State<DetailNextUpCard> with FocusStateMixin {
   @override
   Widget build(BuildContext context) {
     final episode = widget.episode;
@@ -10384,22 +10576,22 @@ class _NextUpCardState extends State<_NextUpCard> with FocusStateMixin {
   }
 }
 
-class _EpisodeCard extends StatefulWidget {
+class DetailEpisodeCard extends StatefulWidget {
   final AggregatedItem episode;
   final ImageApi imageApi;
   final VoidCallback? onChanged;
 
-  const _EpisodeCard({
+  const DetailEpisodeCard({
     required this.episode,
     required this.imageApi,
     this.onChanged,
   });
 
   @override
-  State<_EpisodeCard> createState() => _EpisodeCardState();
+  State<DetailEpisodeCard> createState() => DetailEpisodeCardState();
 }
 
-class _EpisodeCardState extends State<_EpisodeCard> with FocusStateMixin {
+class DetailEpisodeCardState extends State<DetailEpisodeCard> with FocusStateMixin {
   final _selectKeyHandler = LongPressSelectKeyHandler();
 
   @override
@@ -11804,7 +11996,7 @@ class _AlbumsRow extends StatelessWidget {
   }
 }
 
-class _TrackList extends StatelessWidget {
+class DetailTrackList extends StatelessWidget {
   final List<AggregatedItem> tracks;
   final FocusNode Function(String) getFocusNode;
   final VoidCallback? onFirstTrackUp;
@@ -11820,7 +12012,7 @@ class _TrackList extends StatelessWidget {
   final bool isPlaylist;
   final ImageApi? imageApi;
 
-  const _TrackList({
+  const DetailTrackList({
     required this.tracks,
     required this.getFocusNode,
     this.onFirstTrackUp,

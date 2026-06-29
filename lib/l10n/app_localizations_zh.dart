@@ -140,6 +140,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAppearanceTheme => '应用主题';
 
   @override
+  String get detailScreenStyle => 'Detail screen style';
+
+  @override
+  String get detailScreenStyleSubtitle =>
+      'Moonfin is the classic layout. Modern is a responsive cinematic layout.';
+
+  @override
+  String get detailScreenStyleMoonfin => 'Moonfin';
+
+  @override
+  String get detailScreenStyleModern => 'Modern';
+
+  @override
   String get interfaceStyle => '';
 
   @override
@@ -814,6 +827,17 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String endsAt(String time) {
     return '$time 结束';
+  }
+
+  @override
+  String get items => 'Items';
+
+  @override
+  String get extras => 'Extras';
+
+  @override
+  String timeRemaining(String time) {
+    return '$time remaining';
   }
 
   @override

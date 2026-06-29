@@ -60,6 +60,13 @@ class ItemDetailViewModel extends ChangeNotifier {
   List<AggregatedItem> _episodes = const [];
   List<AggregatedItem> get episodes => _episodes;
 
+  List<AggregatedItem> _seriesEpisodes = const [];
+  bool _seriesEpisodesRequested = false;
+
+  /// All episodes of a Series across every season, in the server's
+  /// season/episode order. Empty until [loadAllSeriesEpisodes] completes.
+  List<AggregatedItem> get seriesEpisodes => _seriesEpisodes;
+
   AggregatedItem? _nextUp;
   AggregatedItem? get nextUp => _nextUp;
 
@@ -214,6 +221,27 @@ class ItemDetailViewModel extends ChangeNotifier {
       _episodes = _mapItems(items);
       notifyListeners();
     } catch (_) {}
+  }
+
+  /// Loads every episode of the current Series (all seasons) on demand. Used by
+  /// the Modern detail layout's Episodes tab and accurate season counts. No-op
+  /// for non-Series items or once already loaded.
+  Future<void> loadAllSeriesEpisodes() async {
+    final item = _item;
+    if (item == null || item.type != 'Series') return;
+    if (_seriesEpisodesRequested) return;
+    _seriesEpisodesRequested = true;
+    try {
+      final data = await _client.itemsApi.getEpisodes(
+        itemId,
+        fields: _episodeOverviewFields,
+      );
+      final items = (data['Items'] as List?) ?? [];
+      _seriesEpisodes = _mapItems(items);
+      notifyListeners();
+    } catch (_) {
+      _seriesEpisodesRequested = false;
+    }
   }
 
   Future<void> _loadNextUp() async {

@@ -141,6 +141,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAppearanceTheme => 'App Theme';
 
   @override
+  String get detailScreenStyle => 'Detail screen style';
+
+  @override
+  String get detailScreenStyleSubtitle =>
+      'Moonfin is the classic layout. Modern is a responsive cinematic layout.';
+
+  @override
+  String get detailScreenStyleMoonfin => 'Moonfin';
+
+  @override
+  String get detailScreenStyleModern => 'Modern';
+
+  @override
   String get interfaceStyle => 'Interface style';
 
   @override
@@ -842,6 +855,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String endsAt(String time) {
     return 'Ends at $time';
+  }
+
+  @override
+  String get items => 'Items';
+
+  @override
+  String get extras => 'Extras';
+
+  @override
+  String timeRemaining(String time) {
+    return '$time remaining';
   }
 
   @override

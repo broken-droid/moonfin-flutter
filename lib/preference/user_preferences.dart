@@ -837,6 +837,14 @@ class UserPreferences extends ChangeNotifier {
     values: InterfaceStyle.values,
   );
 
+  /// Structural style for the media detail screen. Global (not scoped per
+  /// server/user), so it is deliberately omitted from [_scopedPreferenceKeys].
+  static final detailScreenStyle = EnumPreference(
+    key: 'pref_detail_screen_style',
+    defaultValue: DetailScreenStyle.moonfin,
+    values: DetailScreenStyle.values,
+  );
+
   /// Optional id of a plugin-supplied custom theme. When non-empty and the id
   /// resolves to a registered custom theme, it overrides [visualTheme].
   /// Empty string means "use the built-in [visualTheme] selection".
