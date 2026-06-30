@@ -105,8 +105,6 @@ class _HomeShellState extends State<_HomeShell>
   final ValueNotifier<bool> _isHoverPausedNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isScrolledToTopNotifier = ValueNotifier(true);
   String _lastSectionsJson = '';
-  Type? _lastMediaBarStateRuntime;
-  int _lastMediaBarItemCount = 0;
   bool _lastMultiServer = false;
   bool _lastMergeContinueWatchingNextUp = false;
   String _lastBlockedParentalRatings = '';
@@ -134,12 +132,6 @@ class _HomeShellState extends State<_HomeShell>
     });
     _backdropUrlNotifier.value = _backgroundService.currentUrl;
 
-    _viewModel.addListener(_onViewModelChanged);
-    _viewModel.mediaBarViewModel.addListener(_onMediaBarStateChanged);
-    _lastMediaBarStateRuntime = _viewModel.mediaBarViewModel.state.runtimeType;
-    _lastMediaBarItemCount = _viewModel.mediaBarViewModel.state is MediaBarReady
-        ? (_viewModel.mediaBarViewModel.state as MediaBarReady).items.length
-        : 0;
     _lastSectionsJson = _userPrefs.get(UserPreferences.homeSectionsJson);
     _lastMultiServer = _userPrefs.get(
       UserPreferences.enableMultiServerLibraries,
@@ -186,8 +178,6 @@ class _HomeShellState extends State<_HomeShell>
     _backdropUrlNotifier.dispose();
     _isHoverPausedNotifier.dispose();
     _isScrolledToTopNotifier.dispose();
-    _viewModel.mediaBarViewModel.removeListener(_onMediaBarStateChanged);
-    _viewModel.removeListener(_onViewModelChanged);
     _pluginSyncService.removeListener(_onPluginSyncChanged);
     _userPrefs.removeListener(_onPrefsChanged);
     if (_themeMusicRegistered) {
@@ -197,9 +187,6 @@ class _HomeShellState extends State<_HomeShell>
     super.dispose();
   }
 
-  void _onViewModelChanged() {
-    if (mounted) setState(() {});
-  }
 
   void _onPluginSyncChanged() {
     if (!mounted) return;
@@ -207,20 +194,6 @@ class _HomeShellState extends State<_HomeShell>
     if (seerrAvailable == _lastSeerrAvailable) return;
     _lastSeerrAvailable = seerrAvailable;
     _viewModel.refresh(preserveExisting: true);
-  }
-
-  void _onMediaBarStateChanged() {
-    if (!mounted) return;
-    final state = _viewModel.mediaBarViewModel.state;
-    final runtime = state.runtimeType;
-    final itemCount = state is MediaBarReady ? state.items.length : 0;
-    if (runtime == _lastMediaBarStateRuntime &&
-        itemCount == _lastMediaBarItemCount) {
-      return;
-    }
-    _lastMediaBarStateRuntime = runtime;
-    _lastMediaBarItemCount = itemCount;
-    setState(() {});
   }
 
   @override
@@ -616,6 +589,8 @@ class _ContentRowsState extends State<_ContentRows>
   int _cachedExtentPrefsVersion = -1;
   List<double>? _cachedRowExtents;
   int _layoutPrefsVersion = 0;
+  Type? _lastMediaBarStateRuntime;
+  int _lastMediaBarItemCount = 0;
   // Cache for non-focused row image URLs (independent of focus state). Cleared
   // with the extent cache on data/pref/scale change, and size-capped.
   final Map<String, String?> _rowImageUrlCache = {};
@@ -959,9 +934,33 @@ class _ContentRowsState extends State<_ContentRows>
       _onMainPlaybackChanged,
     );
     _audioArbiter.register(this);
+    widget.viewModel.addListener(_onViewModelChanged);
+    widget.mediaBarViewModel.addListener(_onMediaBarStateChanged);
+    _lastMediaBarStateRuntime = widget.mediaBarViewModel.state.runtimeType;
+    _lastMediaBarItemCount = widget.mediaBarViewModel.state is MediaBarReady
+        ? (widget.mediaBarViewModel.state as MediaBarReady).items.length
+        : 0;
     if (!_isMediaBarEnabledByMode()) {
       _infoRevealed = true;
     }
+  }
+
+  void _onViewModelChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _onMediaBarStateChanged() {
+    if (!mounted) return;
+    final state = widget.mediaBarViewModel.state;
+    final runtime = state.runtimeType;
+    final itemCount = state is MediaBarReady ? state.items.length : 0;
+    if (runtime == _lastMediaBarStateRuntime &&
+        itemCount == _lastMediaBarItemCount) {
+      return;
+    }
+    _lastMediaBarStateRuntime = runtime;
+    _lastMediaBarItemCount = itemCount;
+    setState(() {});
   }
 
   @override
@@ -1008,6 +1007,8 @@ class _ContentRowsState extends State<_ContentRows>
     }
     _scrollIdleTimer?.cancel();
     _mediaBarFocusNode.dispose();
+    widget.viewModel.removeListener(_onViewModelChanged);
+    widget.mediaBarViewModel.removeListener(_onMediaBarStateChanged);
     _mainPlaybackSub?.cancel();
     widget.prefs.removeListener(_onPreviewPrefsChanged);
     _rowKeys.clear();
