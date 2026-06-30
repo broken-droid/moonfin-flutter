@@ -96,13 +96,13 @@ class _HomeShellState extends State<_HomeShell>
   final _pluginSyncService = GetIt.instance<PluginSyncService>();
   late final HomeViewModel _viewModel;
 
-  AggregatedItem? _selectedItem;
+  final ValueNotifier<AggregatedItem?> _selectedItemNotifier = ValueNotifier(null);
   String? _backdropUrl;
   Timer? _selectionDebounce;
   Timer? _backdropDebounce;
   Timer? _hoverPauseTimer;
   StreamSubscription<String?>? _backgroundSub;
-  bool _isHoverPaused = false;
+  final ValueNotifier<bool> _isHoverPausedNotifier = ValueNotifier(false);
   bool _isScrolledToTop = true;
   String _lastSectionsJson = '';
   Type? _lastMediaBarStateRuntime;
@@ -182,6 +182,8 @@ class _HomeShellState extends State<_HomeShell>
     _backdropDebounce?.cancel();
     _hoverPauseTimer?.cancel();
     _backgroundSub?.cancel();
+    _selectedItemNotifier.dispose();
+    _isHoverPausedNotifier.dispose();
     _viewModel.mediaBarViewModel.removeListener(_onMediaBarStateChanged);
     _viewModel.removeListener(_onViewModelChanged);
     _pluginSyncService.removeListener(_onPluginSyncChanged);
@@ -268,14 +270,12 @@ class _HomeShellState extends State<_HomeShell>
     _selectionDebounce?.cancel();
     _selectionDebounce = Timer(_selectionDelay, () {
       if (!mounted) return;
-      setState(() {
-        _selectedItem = item;
-        _isHoverPaused = true;
-      });
+      _selectedItemNotifier.value = item;
+      _isHoverPausedNotifier.value = true;
 
       _hoverPauseTimer?.cancel();
       _hoverPauseTimer = Timer(const Duration(seconds: 15), () {
-        if (mounted) setState(() => _isHoverPaused = false);
+        if (mounted) _isHoverPausedNotifier.value = false;
       });
 
       _backdropDebounce?.cancel();
@@ -340,8 +340,8 @@ class _HomeShellState extends State<_HomeShell>
     }
 
     _maybeRegisterThemeMusic();
-    if (_selectedItem != null) {
-      _maybePlayThemeMusic(_selectedItem);
+    if (_selectedItemNotifier.value != null) {
+      _maybePlayThemeMusic(_selectedItemNotifier.value);
     }
   }
 
@@ -366,8 +366,8 @@ class _HomeShellState extends State<_HomeShell>
       }
     });
     _maybeRegisterThemeMusic();
-    if (_selectedItem != null) {
-      _maybePlayThemeMusic(_selectedItem);
+    if (_selectedItemNotifier.value != null) {
+      _maybePlayThemeMusic(_selectedItemNotifier.value);
     }
   }
 
@@ -411,9 +411,9 @@ class _HomeShellState extends State<_HomeShell>
                   viewModel: _viewModel,
                   mediaBarViewModel: _viewModel.mediaBarViewModel,
                   prefs: _userPrefs,
-                  selectedItem: _selectedItem,
+                  selectedItemNotifier: _selectedItemNotifier,
                   onItemSelected: onItemSelected,
-                  isHoverPaused: _isHoverPaused,
+                  isHoverPausedNotifier: _isHoverPausedNotifier,
                   onScrolledToTopChanged: (atTop) {
                     if (atTop != _isScrolledToTop) {
                       setState(() => _isScrolledToTop = atTop);
@@ -556,18 +556,18 @@ class _ContentRows extends StatefulWidget {
   final HomeViewModel viewModel;
   final MediaBarViewModel mediaBarViewModel;
   final UserPreferences prefs;
-  final AggregatedItem? selectedItem;
+  final ValueNotifier<AggregatedItem?> selectedItemNotifier;
   final ValueChanged<AggregatedItem?> onItemSelected;
-  final bool isHoverPaused;
+  final ValueNotifier<bool> isHoverPausedNotifier;
   final ValueChanged<bool>? onScrolledToTopChanged;
 
   const _ContentRows({
     required this.viewModel,
     required this.mediaBarViewModel,
     required this.prefs,
-    required this.selectedItem,
+    required this.selectedItemNotifier,
     required this.onItemSelected,
-    this.isHoverPaused = false,
+    required this.isHoverPausedNotifier,
     this.onScrolledToTopChanged,
   });
 
@@ -3151,11 +3151,6 @@ class _ContentRowsState extends State<_ContentRows>
     final includeMediaBar = _isMediaBarIncluded();
     final bannerMode = _isBannerMode();
     final mediaBarHeight = _mediaBarHeight();
-    final carouselPaused =
-        widget.isHoverPaused ||
-        !_isScrolledToTop ||
-        _isActivelyScrolling ||
-        _chromeAudioActive;
     final showInfoOverlay = _showHomeRowInfoOverlay();
     final safeTop = MediaQuery.of(context).padding.top;
     final desktopScale = _desktopUiScaleFactor();
@@ -3301,57 +3296,67 @@ class _ContentRowsState extends State<_ContentRows>
                   cacheExtent: 600,
                   itemBuilder: (context, index) {
                     if (includeMediaBar && index == 0) {
-                      return AnimatedOpacity(
-                        duration: _mediaBarFadeDuration,
-                        curve: Curves.easeInOutCubic,
-                        opacity: _mediaBarVisible ? 1.0 : 0.0,
-                        child: IgnorePointer(
-                          ignoring: !_mediaBarVisible,
-                          child: bannerMode
-                              ? BannerMediaBar(
-                                  viewModel: widget.mediaBarViewModel,
-                                  prefs: prefs,
-                                  height: mediaBarHeight,
-                                  externallyPaused:
-                                      carouselPaused ||
-                                      !_mediaBarVisible ||
-                                      _activePreviewKey != null,
-                                  focusNode: _mediaBarFocusNode,
-                                  onNavigateDown: _moveFocusFromMediaBarToRows,
-                                  onNavigateUp: _navigateFromMediaBarToNavbar,
-                                  onNavigateLeft: navbarIsLeft
-                                      ? _navigateFromMediaBarToNavbar
-                                      : null,
-                                  onOpen: (item) => context.push(
-                                    Destinations.item(
-                                      item.itemId,
-                                      serverId: item.serverId,
+                      return ValueListenableBuilder<bool>(
+                        valueListenable: widget.isHoverPausedNotifier,
+                        builder: (context, isHoverPaused, _) {
+                          final barPaused = isHoverPaused ||
+                              !_isScrolledToTop ||
+                              _isActivelyScrolling ||
+                              _chromeAudioActive;
+
+                          return AnimatedOpacity(
+                            duration: _mediaBarFadeDuration,
+                            curve: Curves.easeInOutCubic,
+                            opacity: _mediaBarVisible ? 1.0 : 0.0,
+                            child: IgnorePointer(
+                              ignoring: !_mediaBarVisible,
+                              child: bannerMode
+                                  ? BannerMediaBar(
+                                      viewModel: widget.mediaBarViewModel,
+                                      prefs: prefs,
+                                      height: mediaBarHeight,
+                                      externallyPaused:
+                                          barPaused ||
+                                          !_mediaBarVisible ||
+                                          _activePreviewKey != null,
+                                      focusNode: _mediaBarFocusNode,
+                                      onNavigateDown: _moveFocusFromMediaBarToRows,
+                                      onNavigateUp: _navigateFromMediaBarToNavbar,
+                                      onNavigateLeft: navbarIsLeft
+                                          ? _navigateFromMediaBarToNavbar
+                                          : null,
+                                      onOpen: (item) => context.push(
+                                        Destinations.item(
+                                          item.itemId,
+                                          serverId: item.serverId,
+                                        ),
+                                      ),
+                                      onPlay: (item) => context.push(
+                                        Destinations.item(
+                                          item.itemId,
+                                          serverId: item.serverId,
+                                          autoPlay: true,
+                                        ),
+                                      ),
+                                    )
+                                  : MediaBar(
+                                      viewModel: widget.mediaBarViewModel,
+                                      prefs: prefs,
+                                      externallyPaused:
+                                          barPaused ||
+                                          !_mediaBarVisible ||
+                                          _activePreviewKey != null,
+                                      height: mediaBarHeight,
+                                      onNavigateDown: _moveFocusFromMediaBarToRows,
+                                      onNavigateUp: _navigateFromMediaBarToNavbar,
+                                      onNavigateLeft: navbarIsLeft
+                                          ? _navigateFromMediaBarToNavbar
+                                          : null,
+                                      focusNode: _mediaBarFocusNode,
                                     ),
-                                  ),
-                                  onPlay: (item) => context.push(
-                                    Destinations.item(
-                                      item.itemId,
-                                      serverId: item.serverId,
-                                      autoPlay: true,
-                                    ),
-                                  ),
-                                )
-                              : MediaBar(
-                                  viewModel: widget.mediaBarViewModel,
-                                  prefs: prefs,
-                                  externallyPaused:
-                                      carouselPaused ||
-                                      !_mediaBarVisible ||
-                                      _activePreviewKey != null,
-                                  height: mediaBarHeight,
-                                  onNavigateDown: _moveFocusFromMediaBarToRows,
-                                  onNavigateUp: _navigateFromMediaBarToNavbar,
-                                  onNavigateLeft: navbarIsLeft
-                                      ? _navigateFromMediaBarToNavbar
-                                      : null,
-                                  focusNode: _mediaBarFocusNode,
-                                ),
-                        ),
+                            ),
+                          );
+                        },
                       );
                     }
                     final infoIndex = includeMediaBar ? 1 : 0;
@@ -3497,9 +3502,14 @@ class _ContentRowsState extends State<_ContentRows>
                   16,
                   8,
                 ),
-                child: InfoArea(
-                  item: widget.selectedItem,
-                  headerLeftInset: infoHeaderLeftInset,
+                child: ValueListenableBuilder<AggregatedItem?>(
+                  valueListenable: widget.selectedItemNotifier,
+                  builder: (context, selectedItem, _) {
+                    return InfoArea(
+                      item: selectedItem,
+                      headerLeftInset: infoHeaderLeftInset,
+                    );
+                  },
                 ),
               ),
             ),
