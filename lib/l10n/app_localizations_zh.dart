@@ -2805,6 +2805,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get showLibrariesInToolbar => '在工具栏中显示媒体库';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => '显示 Seerr 按钮';
 
   @override
@@ -6831,6 +6834,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsShowSeerrButtonInNavigation => '在导航栏中显示 Seerr 按钮';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

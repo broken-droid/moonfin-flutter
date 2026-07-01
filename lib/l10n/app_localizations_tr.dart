@@ -2889,6 +2889,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get showLibrariesInToolbar => 'Kitaplıkları Araç Çubuğunda Göster';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => 'Seerr Butonunu Göster';
 
   @override
@@ -7064,6 +7067,10 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get settingsShowSeerrButtonInNavigation =>
       'Gezinti çubuğunda Seerr butonunu göster';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

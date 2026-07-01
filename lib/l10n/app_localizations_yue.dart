@@ -2808,6 +2808,9 @@ class AppLocalizationsYue extends AppLocalizations {
   String get showLibrariesInToolbar => '在工具列中顯示庫';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => '';
 
   @override
@@ -6834,6 +6837,10 @@ class AppLocalizationsYue extends AppLocalizations {
 
   @override
   String get settingsShowSeerrButtonInNavigation => '';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

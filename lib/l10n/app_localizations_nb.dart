@@ -2871,6 +2871,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get showLibrariesInToolbar => 'Vis biblioteker i verktøylinjen';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => '';
 
   @override
@@ -7045,6 +7048,10 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get settingsShowSeerrButtonInNavigation => '';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

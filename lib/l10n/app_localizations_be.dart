@@ -2877,6 +2877,9 @@ class AppLocalizationsBe extends AppLocalizations {
       'Паказаць бібліятэкі на панэлі інструментаў';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => '';
 
   @override
@@ -7061,6 +7064,10 @@ class AppLocalizationsBe extends AppLocalizations {
 
   @override
   String get settingsShowSeerrButtonInNavigation => '';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

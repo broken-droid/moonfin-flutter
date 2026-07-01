@@ -5254,6 +5254,12 @@ abstract class AppLocalizations {
   /// **'Show Libraries in Toolbar'**
   String get showLibrariesInToolbar;
 
+  /// Setting to keep every top navbar heading's text label visible at all times, tvOS-style
+  ///
+  /// In en, this message translates to:
+  /// **'Always Expand Navbar Labels'**
+  String get navbarAlwaysExpanded;
+
   /// Setting for showing Seerr button
   ///
   /// In en, this message translates to:
@@ -12609,6 +12615,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show the Seerr button in the navigation bar'**
   String get settingsShowSeerrButtonInNavigation;
+
+  /// No description provided for @settingsAlwaysExpandNavbarLabels.
+  ///
+  /// In en, this message translates to:
+  /// **'Always show text labels in the top navigation bar'**
+  String get settingsAlwaysExpandNavbarLabels;
 
   /// No description provided for @settingsLibraryVisibilitySubtitle.
   ///

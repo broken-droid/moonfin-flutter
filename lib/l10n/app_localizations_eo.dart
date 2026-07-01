@@ -2870,6 +2870,9 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showLibrariesInToolbar => 'Montru Bibliotekojn en Ilobreto';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => '';
 
   @override
@@ -7032,6 +7035,10 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String get settingsShowSeerrButtonInNavigation => '';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

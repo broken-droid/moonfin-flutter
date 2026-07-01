@@ -2875,6 +2875,9 @@ class AppLocalizationsLt extends AppLocalizations {
   String get showLibrariesInToolbar => 'Rodyti bibliotekas įrankių juostoje';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => '';
 
   @override
@@ -7066,6 +7069,10 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get settingsShowSeerrButtonInNavigation => '';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

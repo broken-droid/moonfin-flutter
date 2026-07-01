@@ -209,6 +209,7 @@ class UserPreferences extends ChangeNotifier {
     'pref_show_favorites_button',
     'pref_show_syncplay_button',
     'pref_show_libraries_in_toolbar',
+    'pref_navbar_always_expanded',
     'pref_shuffle_content_type',
     'pref_merge_continue_watching_next_up',
     'enable_multi_server_libraries',
@@ -903,6 +904,11 @@ class UserPreferences extends ChangeNotifier {
   static final showLibrariesInToolbar = Preference(
     key: 'pref_show_libraries_in_toolbar',
     defaultValue: true,
+  );
+
+  static final navbarAlwaysExpanded = Preference(
+    key: 'pref_navbar_always_expanded',
+    defaultValue: false,
   );
 
   static final showSeerrButton = Preference(

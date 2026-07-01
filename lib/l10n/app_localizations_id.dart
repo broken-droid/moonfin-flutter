@@ -2882,6 +2882,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get showLibrariesInToolbar => 'Tampilkan Pustaka di Toolbar';
 
   @override
+  String get navbarAlwaysExpanded => 'Always Expand Navbar Labels';
+
+  @override
   String get showSeerrButton => 'Tampilkan Tombol Seerr';
 
   @override
@@ -7059,6 +7062,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get settingsShowSeerrButtonInNavigation =>
       'Tampilkan tombol Seerr di bilah navigasi';
+
+  @override
+  String get settingsAlwaysExpandNavbarLabels =>
+      'Always show text labels in the top navigation bar';
 
   @override
   String get settingsLibraryVisibilitySubtitle =>

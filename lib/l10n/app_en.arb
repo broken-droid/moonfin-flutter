@@ -3999,6 +3999,10 @@
   "@showLibrariesInToolbar": {
     "description": "Setting for showing libraries in toolbar"
   },
+  "navbarAlwaysExpanded": "Always Expand Navbar Labels",
+  "@navbarAlwaysExpanded": {
+    "description": "Setting to keep every top navbar heading's text label visible at all times, tvOS-style"
+  },
   "showSeerrButton": "Show Seerr Button",
   "@showSeerrButton": {
     "description": "Setting for showing Seerr button"
@@ -7039,6 +7043,7 @@
   "settingsShowFavoritesButtonInNavigation": "Show the favorites button in the navigation bar",
   "settingsShowLibrariesButtonInNavigation": "Show the libraries button in the navigation bar",
   "settingsShowSeerrButtonInNavigation": "Show the Seerr button in the navigation bar",
+  "settingsAlwaysExpandNavbarLabels": "Always show text labels in the top navigation bar",
   "settingsLibraryVisibilitySubtitle": "Toggle home page visibility per library. Restart Moonfin for changes to take effect.",
   "settingsMediaBarAndLocalPreviews": "Media Bar & Local Previews",
   "settingsVisualOverlays": "Visual Overlays",
