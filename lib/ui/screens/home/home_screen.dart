@@ -348,7 +348,6 @@ class _HomeShellState extends State<_HomeShell>
 
   @override
   Widget build(BuildContext context) {
-    final watch = Stopwatch()..start();
     final backdropEnabled = _userPrefs.get(UserPreferences.backdropEnabled);
     final blurAmount = _userPrefs
         .get(UserPreferences.browsingBackgroundBlurAmount)
@@ -361,7 +360,7 @@ class _HomeShellState extends State<_HomeShell>
         PlatformDetection.useMobileUi &&
         mediaBarMode == UserPreferences.mediaBarModeMakd;
 
-    final result = PopScope(
+    return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
@@ -409,8 +408,6 @@ class _HomeShellState extends State<_HomeShell>
         ),
       ),
     );
-    _homeBuildMonitor.recordShell(watch.elapsedMicroseconds);
-    return result;
   }
 
   Future<void> _showExitConfirmation(BuildContext context) async {
@@ -3242,7 +3239,6 @@ class _ContentRowsState extends State<_ContentRows>
 
   @override
   Widget build(BuildContext context) {
-    final watch = Stopwatch()..start();
     final rows = widget.viewModel.rows;
     // Guard against a stale focused-row index pointing past the end of the
     // (potentially shorter) new row list
@@ -3371,7 +3367,7 @@ class _ContentRowsState extends State<_ContentRows>
       );
     }
 
-    final result = Listener(
+    return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_) => _markUserGesture(),
       onPointerSignal: (pointerSignal) {
@@ -3643,8 +3639,6 @@ class _ContentRowsState extends State<_ContentRows>
       ],
     ),
     );
-    _homeBuildMonitor.recordContent(watch.elapsedMicroseconds);
-    return result;
   }
 
   Widget _buildLiveTvRow(
@@ -3818,7 +3812,6 @@ class _ContentRowsState extends State<_ContentRows>
     required bool useSeriesThumbs,
     required AppLocalizations l10n,
   }) {
-    final watch = Stopwatch()..start();
     final suppressFocusGlow = ThemeRegistry.active.borders.focusGlow.isNotEmpty;
     final isSeerrRowOverride = _isSeerrFilterRow(row);
     final isRowsV2 =
@@ -3896,7 +3889,7 @@ class _ContentRowsState extends State<_ContentRows>
 
     final subtitle = _rowSubtitle(row, l10n);
     final hasSubtitle = subtitle != null;
-    final result = _buildTitledRow(
+    return _buildTitledRow(
       key: _rowContainerKey(rowIndex),
       title: _localizedRowTitle(row, l10n),
       subtitle: subtitle,
@@ -4281,8 +4274,6 @@ class _ContentRowsState extends State<_ContentRows>
       ),
     ),
     );
-    _homeBuildMonitor.recordRow(watch.elapsedMicroseconds);
-    return result;
   }
 
   Widget _buildV2ExtendedSection(
@@ -5245,52 +5236,5 @@ class _PreviewCardShell extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-final _homeBuildMonitor = _BuildMonitor();
-
-class _BuildMonitor {
-  int _shellCount = 0;
-  int _contentCount = 0;
-  int _rowCount = 0;
-  int _totalTimeUs = 0;
-  Timer? _reportTimer;
-
-  void recordShell(int us) {
-    _shellCount++;
-    _totalTimeUs += us;
-    _ensureTimer();
-  }
-
-  void recordContent(int us) {
-    _contentCount++;
-    _totalTimeUs += us;
-    _ensureTimer();
-  }
-
-  void recordRow(int us) {
-    _rowCount++;
-    _totalTimeUs += us;
-    _ensureTimer();
-  }
-
-  void _ensureTimer() {
-    _reportTimer ??= Timer(const Duration(seconds: 2), () {
-      final shell = _shellCount;
-      final content = _contentCount;
-      final row = _rowCount;
-      final avgTime = shell + content + row == 0 
-          ? 0 
-          : _totalTimeUs / (shell + content + row);
-      
-      debugPrint('[BASELINE] 2s Window | Shell: $shell | Content: $content | Rows: $row | Avg Build: ${avgTime.toStringAsFixed(1)}μs');
-      
-      _shellCount = 0;
-      _contentCount = 0;
-      _rowCount = 0;
-      _totalTimeUs = 0;
-      _reportTimer = null;
-    });
   }
 }
