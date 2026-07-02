@@ -8613,6 +8613,32 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get adminControls => 'Admin Controls';
+
+  @override
+  String get impellerRendering => 'Rendering engine (Impeller)';
+
+  @override
+  String get impellerRenderingSubtitle =>
+      'Impeller is Flutter\'s modern GPU renderer for smoother animations and less stutter. On some TV boxes and older GPUs it can cause glitches or black video; switch it Off if you see those. Automatic picks the best default for your device. Restart Moonfin to apply.';
+
+  @override
+  String get impellerAuto => 'Automatic';
+
+  @override
+  String get impellerOn => 'On';
+
+  @override
+  String get impellerOff => 'Off';
+
+  @override
+  String get impellerRestartTitle => 'Restart required';
+
+  @override
+  String get impellerRestartMessage =>
+      'Moonfin needs to restart to change the rendering engine. Close the app now, then reopen it to apply.';
+
+  @override
+  String get impellerCloseNow => 'Close app now';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).

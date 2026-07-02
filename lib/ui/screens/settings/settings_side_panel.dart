@@ -29,6 +29,7 @@ import '../../../util/locale_names.dart';
 import '../../../util/overlay_color_palette.dart';
 import '../../../util/platform_detection.dart';
 import '../../../util/app_distribution.dart';
+import '../../../util/app_exit.dart';
 import '../../widgets/app_update_dialog.dart';
 
 import '../../../auth/store/authentication_preferences.dart';

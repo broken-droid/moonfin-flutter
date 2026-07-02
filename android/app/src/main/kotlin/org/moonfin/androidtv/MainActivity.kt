@@ -47,6 +47,7 @@ import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.common.images.WebImage
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.FlutterShellArgs
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
@@ -170,6 +171,29 @@ class MainActivity : AudioServiceActivity() {
         }
     }
 
+    private fun isTvDevice(): Boolean {
+        val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
+        val pm = packageManager
+        return uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION ||
+            pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ||
+            pm.hasSystemFeature("amazon.hardware.fire_tv")
+    }
+
+    // Selects the renderer at engine startup (before Dart) from the persisted
+    // preference. Single source of truth: no static EnableImpeller manifest flag.
+    override fun getFlutterShellArgs(): FlutterShellArgs {
+        val args = super.getFlutterShellArgs()
+        val mode = getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            .getString("flutter.pref_impeller_mode", "auto")
+        val enable = when (mode) {
+            "on" -> true
+            "off" -> false
+            else -> !isTvDevice() // auto: match the old default (off on TV boxes)
+        }
+        args.add(if (enable) "--enable-impeller=true" else "--enable-impeller=false")
+        return args
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -184,12 +208,7 @@ class MainActivity : AudioServiceActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "isTvDevice" -> {
-                    val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
-                    val pm = packageManager
-                    val isTv = uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION ||
-                        pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ||
-                        pm.hasSystemFeature("amazon.hardware.fire_tv")
-                    result.success(isTv)
+                    result.success(isTvDevice())
                 }
                 "displayHdrTypes" -> result.success(getDisplayHdrTypes())
                 "dolbyVisionCodecCapabilities" -> {

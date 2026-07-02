@@ -1115,6 +1115,13 @@ class UserPreferences extends ChangeNotifier {
     values: DesktopScrollWheelAction.values,
   );
 
+  // Read by native Android startup code; keep the key in sync with MainActivity.
+  static final impellerMode = EnumPreference(
+    key: 'pref_impeller_mode',
+    defaultValue: ImpellerMode.auto,
+    values: ImpellerMode.values,
+  );
+
   static final trickPlayEnabled = Preference(
     key: 'trick_play_enabled',
     defaultValue: false,

@@ -161,6 +161,11 @@ enum DesktopScrollWheelAction {
   volume,
 }
 
+/// Rendering engine selection. Read natively at Android engine startup
+/// (MainActivity.getFlutterShellArgs) via the key `flutter.pref_impeller_mode`,
+/// so these enum names must stay stable. `auto` keeps the per-device default.
+enum ImpellerMode { auto, on, off }
+
 enum AppTheme {
   white(0xFFFFFFFF),
   black(0xFF000000),

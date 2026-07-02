@@ -15249,6 +15249,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Admin Controls'**
   String get adminControls;
+
+  /// Title of the setting that selects the Flutter rendering engine (Impeller vs. legacy).
+  ///
+  /// In en, this message translates to:
+  /// **'Rendering engine (Impeller)'**
+  String get impellerRendering;
+
+  /// Explanatory description under the rendering engine setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Impeller is Flutter\'s modern GPU renderer for smoother animations and less stutter. On some TV boxes and older GPUs it can cause glitches or black video; switch it Off if you see those. Automatic picks the best default for your device. Restart Moonfin to apply.'**
+  String get impellerRenderingSubtitle;
+
+  /// No description provided for @impellerAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get impellerAuto;
+
+  /// No description provided for @impellerOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get impellerOn;
+
+  /// No description provided for @impellerOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get impellerOff;
+
+  /// Title of the dialog shown after changing the rendering engine.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart required'**
+  String get impellerRestartTitle;
+
+  /// Body of the dialog shown after changing the rendering engine.
+  ///
+  /// In en, this message translates to:
+  /// **'Moonfin needs to restart to change the rendering engine. Close the app now, then reopen it to apply.'**
+  String get impellerRestartMessage;
+
+  /// Button that closes the app so the new rendering engine takes effect on next launch.
+  ///
+  /// In en, this message translates to:
+  /// **'Close app now'**
+  String get impellerCloseNow;
 }
 
 class _AppLocalizationsDelegate
